@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -67,7 +66,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         if (-1 !== $id) {
             $person = $this->getContainer()->getEm()->find('DeskPRO:Person', $id);
             if (!($person && $person['is_agent'] && !$person['is_deleted'])) {
-                return null;
+                return;
             }
         }
 
@@ -89,10 +88,10 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $due_date = $this->getActionOption('date_due', '');
 
         $assigned_agent_team = null;
-        $assigned_agent = null;
+        $assigned_agent      = null;
 
         $assignee = $this->getActionOption('assignee', '');
-        $context->getLogger()->debug('[CreateTask] assignee is ' . $assignee);
+        $context->getLogger()->debug('[CreateTask] assignee is '.$assignee);
         if ($assignee = Strings::extractRegexMatch('#^(?P<type>.*?):(?P<id>-?\d+)$#', $assignee, -1)) {
             switch ($assignee['type']) {
                 case 'agent':
@@ -101,7 +100,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
                         $context->getLogger()->debug('[CreateTask] assignee = current agent');
                         if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
                             $assigned_agent = $context->getPersonContext()->id;
-                            $context->getLogger()->debug('[CreateTask] current agent is ' . $assigned_agent);
+                            $context->getLogger()->debug('[CreateTask] current agent is '.$assigned_agent);
                         } else {
                             $assigned_agent = null;
                             $context->getLogger()->debug('[CreateTask] current agent is null');
@@ -125,12 +124,12 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
             'person'              => $person['id'],
             'ticket'              => $ticket['id'],
             'assigned_agent'      => $assigned_agent,
-            'assigned_agent_team' => $assigned_agent_team
+            'assigned_agent_team' => $assigned_agent_team,
         );
 
         $form->submit($formData);
         if (!$form->isValid()) {
-            $context->getLogger()->debug('[CreateTask] Validation error: ' . (string)$form->getErrorsAsString());
+            $context->getLogger()->debug('[CreateTask] Validation error: '.(string) $form->getErrorsAsString());
 
             return;
         }
@@ -146,7 +145,6 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $context->getLogger()->debug(sprintf('[CreateTask] Created new Task "%s"', $task['title']));
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -154,7 +152,6 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     {
         return false;
     }
-
 
     /**
      * {@inheritDoc}
@@ -166,13 +163,13 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         }
 
         $loader = new AgentPermsPersonDbLoader($person, $this->getContainer()->getEm());
-        $perms = $loader->getEffectivePermissions()->toArray();
+        $perms  = $loader->getEffectivePermissions()->toArray();
 
         if (!$perms['tasks']) {
             return array('tasks');
         }
 
-        return null;
+        return;
     }
 
     /**

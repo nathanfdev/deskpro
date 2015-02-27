@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,8 +45,9 @@ class Setting extends AbstractEntityRepository
      *
      * <code>$this->container->get('settings')->setSetting($name, $value);</code>
      *
-     * @param  string                              $name  The name of the setting
-     * @param  mixed                               $value The value to set. Null means any existing value will be unset
+     * @param string $name  The name of the setting
+     * @param mixed  $value The value to set. Null means any existing value will be unset
+     *
      * @return \Application\DeskPRO\Entity\Setting
      */
     public function updateSetting($name, $value)

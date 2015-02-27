@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages\Build;
@@ -69,11 +67,10 @@ class TransifexBuild extends AbstractBuild
      */
     public function __construct($url, $username, $password)
     {
-        $this->url      = rtrim($url, '/') . '/api/2';
+        $this->url      = rtrim($url, '/').'/api/2';
         $this->username = $username;
         $this->password = $password;
     }
-
 
     /**
      * @return \Zend\Http\Client
@@ -88,16 +85,17 @@ class TransifexBuild extends AbstractBuild
         return $http;
     }
 
-
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restGet($path, $silent = false)
     {
         $http = $this->getHttpClient();
-        $http->setUri($this->url . '/' . ltrim($path, '/'));
+        $http->setUri($this->url.'/'.ltrim($path, '/'));
 
         $req = new HttpRequest();
         $req->setMethod(HttpRequest::METHOD_GET);
@@ -118,17 +116,18 @@ class TransifexBuild extends AbstractBuild
         return $data;
     }
 
-
     /**
-     * @param  string            $path
-     * @param  array             $data
-     * @return array
+     * @param string $path
+     * @param array  $data
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restPostJson($path, array $data)
     {
         $http = $this->getHttpClient();
-        $http->setUri($this->url . '/' . ltrim($path, '/'));
+        $http->setUri($this->url.'/'.ltrim($path, '/'));
 
         $req = new HttpRequest();
         $req->setMethod(HttpRequest::METHOD_POST);
@@ -148,17 +147,18 @@ class TransifexBuild extends AbstractBuild
         return $data;
     }
 
-
     /**
-     * @param  string            $path
-     * @param  array             $data
-     * @return array
+     * @param string $path
+     * @param array  $data
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restPutJson($path, array $data)
     {
         $http = $this->getHttpClient();
-        $http->setUri($this->url . '/' . ltrim($path, '/'));
+        $http->setUri($this->url.'/'.ltrim($path, '/'));
 
         $req = new HttpRequest();
         $req->setMethod(HttpRequest::METHOD_PUT);
@@ -178,9 +178,9 @@ class TransifexBuild extends AbstractBuild
         return $data;
     }
 
-
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return array
      */
     public function getCategoryWords($id, $section, $category)
@@ -227,15 +227,16 @@ class TransifexBuild extends AbstractBuild
         return $words;
     }
 
-
     /**
-     * Update a source phrase with the PO file from $source_file
+     * Update a source phrase with the PO file from $source_file.
      *
-     * @param  string                    $section
-     * @param  string                    $category
-     * @param  string                    $source_file If not specified, the default file from the default export dir will be used
-     * @return array
+     * @param string $section
+     * @param string $category
+     * @param string $source_file If not specified, the default file from the default export dir will be used
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function updateSourcePhrases($section, $category, $source_file = null)
     {
@@ -243,12 +244,12 @@ class TransifexBuild extends AbstractBuild
         $project_url  = $this->getProjectName($section);
 
         if (!$source_file) {
-            $source_file = $this->getLangPackInfo()->getLangDir() . '/default/' . $section . '/export/' . $category . '.po';
+            $source_file = $this->getLangPackInfo()->getLangDir().'/default/'.$section.'/export/'.$category.'.po';
         }
 
         if (!file_exists($source_file)) {
-            $this->getLogger()->logDebug("$section.$category invalid source file: " . $source_file);
-            throw new \InvalidArgumentException("PO file does not exist: " . $source_file);
+            $this->getLogger()->logDebug("$section.$category invalid source file: ".$source_file);
+            throw new \InvalidArgumentException("PO file does not exist: ".$source_file);
         }
 
         $this->getLogger()->logDebug("$section.$category source file: $source_file");
@@ -269,7 +270,7 @@ class TransifexBuild extends AbstractBuild
                 'name'                 => ucfirst($category),
                 'accept_translations'  => true,
                 'content'              => file_get_contents($source_file),
-                'i18n_type'            => 'PO'
+                'i18n_type'            => 'PO',
             ));
         }
 
@@ -284,13 +285,14 @@ class TransifexBuild extends AbstractBuild
         ));
     }
 
-
     /**
-     * Gets the project name used in transifex
+     * Gets the project name used in transifex.
      *
-     * @param  string                    $section
-     * @return string
+     * @param string $section
+     *
      * @throws \InvalidArgumentException
+     * @return string
+     *
      */
     public function getProjectName($section)
     {

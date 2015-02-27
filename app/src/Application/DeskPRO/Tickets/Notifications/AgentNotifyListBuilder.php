@@ -26,19 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Tickets\Notifications;
 
+use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
-use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\Filters\FilterChangeSet;
@@ -91,7 +90,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $this->logger = new NullLogger();
     }
 
-
     /**
      * Sets the person context. This is the person who is firing this notification event.
      * We will not notify the person of their own action.
@@ -103,7 +101,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $this->person_context = $person;
     }
 
-
     /**
      * @param Logger $logger
      */
@@ -112,15 +109,13 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $this->logger = $logger;
     }
 
-
     /**
      * @param string $message
      */
     private function logMessage($message)
     {
-        $this->logger->info("[AgentNotifyListBuilder] " . $message);
+        $this->logger->info("[AgentNotifyListBuilder] ".$message);
     }
-
 
     /**
      * Generate the notify list.
@@ -135,7 +130,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
             return array();
         }
-
 
         #------------------------------
         # Sort out which kind of notification we need to send
@@ -209,7 +203,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
                     continue;
                 }
 
-                $sub = $agent_subs[$agent->id][$filter->id];
+                $sub   = $agent_subs[$agent->id][$filter->id];
                 $types = $this->getSubTypesForFilterNewMatch($event_types, isset($agents_with_orig_match[$agent->id]), $filter, $sub);
                 if ($types) {
                     $this->addTypesToList($notify_list, $agent, $filter, 'new', $types);
@@ -223,7 +217,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
                     continue;
                 }
 
-                $sub = $agent_subs[$agent->id][$filter->id];
+                $sub   = $agent_subs[$agent->id][$filter->id];
                 $types = $this->getSubTypesForFilterOrigMatch($event_types, isset($agents_with_new_match[$agent->id]), $filter, $sub);
                 if ($types) {
                     $this->addTypesToList($notify_list, $agent, $filter, 'update', $types);
@@ -235,7 +229,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
         return $notify_list;
     }
-
 
     /**
      * @param array        $notify_list
@@ -250,7 +243,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
             $notify_list[$agent->id] = array(
                 'agent'       => $agent,
                 'filter_subs' => array(),
-                'types'       => array()
+                'types'       => array(),
             );
         }
         if (!isset($notify_list[$agent->id]['filter_subs'][$filter->id])) {
@@ -258,24 +251,24 @@ class AgentNotifyListBuilder implements PersonContextInterface
                 'filter'     => $filter,
                 'is_new'     => false,
                 'is_update'  => false,
-                'types'      => array()
+                'types'      => array(),
             );
         }
 
         $notify_list[$agent->id]['filter_subs'][$filter->id]["is_$change_type"] = true;
-        $notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_merge($notify_list[$agent->id]['filter_subs'][$filter->id]['types'], $notify_types);
-        $notify_list[$agent->id]['filter_subs'][$filter->id]['types'] = array_unique($notify_list[$agent->id]['filter_subs'][$filter->id]['types']);
+        $notify_list[$agent->id]['filter_subs'][$filter->id]['types']           = array_merge($notify_list[$agent->id]['filter_subs'][$filter->id]['types'], $notify_types);
+        $notify_list[$agent->id]['filter_subs'][$filter->id]['types']           = array_unique($notify_list[$agent->id]['filter_subs'][$filter->id]['types']);
 
         $notify_list[$agent->id]['types'] = array_merge($notify_list[$agent->id]['types'], $notify_types);
         $notify_list[$agent->id]['types'] = array_unique($notify_list[$agent->id]['types']);
     }
 
-
     /**
-     * @param  array                    $event_types
-     * @param                           $with_origmatch
-     * @param  TicketFilter             $filter
-     * @param  TicketFilterSubscription $sub
+     * @param array                    $event_types
+     * @param                          $with_origmatch
+     * @param TicketFilter             $filter
+     * @param TicketFilterSubscription $sub
+     *
      * @return array
      */
     private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, TicketFilter $filter, TicketFilterSubscription $sub)
@@ -310,12 +303,12 @@ class AgentNotifyListBuilder implements PersonContextInterface
         return $types;
     }
 
-
     /**
-     * @param  array                    $event_types
+     * @param array                    $event_types
      * @param $with_newmatch
-     * @param  TicketFilter             $filter
-     * @param  TicketFilterSubscription $sub
+     * @param TicketFilter             $filter
+     * @param TicketFilterSubscription $sub
+     *
      * @return array
      */
     private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, TicketFilter $filter, TicketFilterSubscription $sub)
@@ -367,7 +360,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
     }
 
     /**
-     * Get an array of subscriptions for the agents and filters
+     * Get an array of subscriptions for the agents and filters.
      *
      * @return \Application\DeskPRO\Entity\TicketFilterSubscription[]
      */
@@ -394,7 +387,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
         }
 
         $for_filter_ids = array_unique($for_filter_ids, \SORT_NUMERIC);
-        $for_agent_ids = array_unique($for_agent_ids, \SORT_NUMERIC);
+        $for_agent_ids  = array_unique($for_agent_ids, \SORT_NUMERIC);
 
         if (!$for_agent_ids || !$for_filter_ids) {
             $this->logMessage("no agents or filters match, no notifications to send");

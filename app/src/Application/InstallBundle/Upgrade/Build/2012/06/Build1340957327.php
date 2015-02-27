@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -43,7 +40,7 @@ class Build1340957327 extends AbstractBuild
 
         if ($count) {
             $this->container->getDb()->replace('settings', array(
-                'name' => 'core.use_agent_team',
+                'name'  => 'core.use_agent_team',
                 'value' => '1',
             ));
         }

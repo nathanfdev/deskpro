@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Tickets;
 
@@ -41,7 +39,8 @@ class Tickets
     /**
      * Get an array of tickets from the passed IDs.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getTicketsFromIds(array $ids)
@@ -51,10 +50,9 @@ class Tickets
             ->getTicketsFromIds($ids);
     }
 
-
-
     /**
-     * @param  Ticket     $ticket
+     * @param Ticket $ticket
+     *
      * @return TicketEdit
      */
     public function getTicketEditor(Entity\Ticket $ticket)
@@ -64,12 +62,11 @@ class Tickets
         return $ticket_edit;
     }
 
-
-
     /**
      * Get an array of various options used on the new ticket page.
      *
-     * @param  mixed $person The person we're fetching for. This will define the permissions/context.
+     * @param mixed $person The person we're fetching for. This will define the permissions/context.
+     *
      * @return array
      */
     public function getTicketOptions($person)
@@ -90,12 +87,12 @@ class Tickets
 
         if (App::getSetting('core.use_ticket_category')) {
             $options['ticket_categories_hierarchy'] = App::getDataService('TicketCategory')->getInHierarchy();
-            $options['ticket_categories_full'] = App::getDataService('TicketCategory')->getFullNames(null, false);
-            $options['ticket_categories'] = App::getDataService('TicketCategory')->getNames(null, false);
+            $options['ticket_categories_full']      = App::getDataService('TicketCategory')->getFullNames(null, false);
+            $options['ticket_categories']           = App::getDataService('TicketCategory')->getNames(null, false);
         } else {
             $options['ticket_categories_hierarchy'] = array();
-            $options['ticket_categories_full'] = array();
-            $options['ticket_categories'] = array();
+            $options['ticket_categories_full']      = array();
+            $options['ticket_categories']           = array();
         }
 
         if (App::getSetting('core.use_ticket_workflow')) {
@@ -105,10 +102,10 @@ class Tickets
         }
 
         if (App::getSetting('core.use_product')) {
-            $options['products'] = App::getDataService('Product')->getNames();
+            $options['products']            = App::getDataService('Product')->getNames();
             $options['products_hierarchy']  = App::getDataService('Product')->getInHierarchy();
         } else {
-            $options['products'] = array();
+            $options['products']            = array();
             $options['products_hierarchy']  = array();
         }
 

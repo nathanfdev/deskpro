@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -96,9 +95,11 @@ class TimeUnit
     }
 
     /**
-     * @param  int|TimeUnit              $val
-     * @return bool
+     * @param int|TimeUnit $val
+     *
      * @throws \InvalidArgumentException
+     * @return bool
+     *
      */
     public function equals($val)
     {
@@ -114,9 +115,11 @@ class TimeUnit
     }
 
     /**
-     * @param  int|TimeUnit              $val
-     * @return int
+     * @param int|TimeUnit $val
+     *
      * @throws \InvalidArgumentException
+     * @return int
+     *
      */
     public function compare($val)
     {

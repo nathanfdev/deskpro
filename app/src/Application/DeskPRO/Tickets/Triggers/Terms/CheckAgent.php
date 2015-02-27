@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks current agent
+ * Checks current agent.
  *
  * @option int[] agent_ids
  */
@@ -55,7 +54,6 @@ class CheckAgent extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

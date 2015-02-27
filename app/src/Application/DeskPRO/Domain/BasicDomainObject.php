@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,7 +43,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 
 /**
- * The basic entitiy class
+ * The basic entitiy class.
  */
 abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 {
@@ -54,9 +53,10 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     const TOARRAY_LOAD_UNLOADED   = 8;
 
     /**
-     * Array of listeners
+     * Array of listeners.
      *
      * @see addPropertyChangedListener
+     *
      * @var array
      */
     private $_listeners = array();
@@ -85,7 +85,8 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     public $__dp_is_preloaded_repos = null;
 
     /**
-     * Set values from an array
+     * Set values from an array.
+     *
      * @param array $values The values to set
      */
     public function fromArray(array $values)
@@ -96,9 +97,10 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     }
 
     /**
-     * Get a simple array representation of this entity
+     * Get a simple array representation of this entity.
      *
-     * @param  bool  $mode
+     * @param bool $mode
+     *
      * @return array
      */
     public function toArray($mode = self::TOARRAY_NOOP)
@@ -183,7 +185,8 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      * Checks to see if a particular field on this object exists and is a real database field.
      * By convention, this is any protected property on the object whose name doesnt start with an underscore.
      *
-     * @param  string $field
+     * @param string $field
+     *
      * @return bool
      */
     public function propertyFieldExists($field)
@@ -208,7 +211,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     }
 
     /**
-     * Get a property of this entity. Same as using $entity[something]
+     * Get a property of this entity. Same as using $entity[something].
      *
      * @param string $name The property to get
      */
@@ -218,7 +221,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     }
 
     /**
-     * Set the value of a property. Same as using $entity[something]
+     * Set the value of a property. Same as using $entity[something].
      *
      * @param string $name  The property to set
      * @param mixed  $value The value to set
@@ -490,6 +493,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
     /**
      * Returns a clone of this entity which represents the state before changes were made to it.
+     *
      * @return object
      */
     public function getOriginalStateClone()

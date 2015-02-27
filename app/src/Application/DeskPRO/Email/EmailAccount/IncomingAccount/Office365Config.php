@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -61,7 +60,6 @@ class Office365Config implements AccountConfigInterface
         );
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -75,7 +73,6 @@ class Office365Config implements AccountConfigInterface
         return $obj;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -83,7 +80,6 @@ class Office365Config implements AccountConfigInterface
     {
         return 'office365';
     }
-
 
     ############################################################################
     # Validation Metadata

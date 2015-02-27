@@ -6,17 +6,17 @@ use Elastica\Query;
 use Elastica\Util as ElasticaUtil;
 
 /**
- * Organization Repository
+ * Organization Repository.
  */
 class OrganizationRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
     protected $highlightFields = array(
-        'name' => array('fragment_size' => 100)
+        'name' => array('fragment_size' => 100),
     );
 
     /**
@@ -29,6 +29,7 @@ class OrganizationRepository extends AbstractRepository implements WithLabelsInt
 
     /**
      * @param $q
+     *
      * @return Query\MultiMatch
      */
     protected function getQueryString($q)

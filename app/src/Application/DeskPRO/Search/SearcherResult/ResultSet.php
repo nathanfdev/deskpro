@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
 namespace Application\DeskPRO\Search\SearcherResult;
 
 /**
- * Search adapter
+ * Search adapter.
  */
 class ResultSet implements \Countable, \IteratorAggregate
 {
@@ -45,14 +44,15 @@ class ResultSet implements \Countable, \IteratorAggregate
     protected $total = 0;
 
     /**
-     * Array of results
+     * Array of results.
+     *
      * @var Application\DeskPRO\Search\SearcherResult\ResultInterface[]
      */
     protected $results = array();
 
     public function __construct($total, array $results)
     {
-        $this->total = $total;
+        $this->total   = $total;
         $this->results = $results;
     }
 
@@ -67,7 +67,7 @@ class ResultSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * How many results in this object? Note: NOT the same as total
+     * How many results in this object? Note: NOT the same as total.
      *
      * @return int
      */
@@ -77,7 +77,7 @@ class ResultSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Get a result by index, or null if the index doesnt exist
+     * Get a result by index, or null if the index doesnt exist.
      *
      * @return \Application\DeskPRO\Search\SearcherResult\ResultInterface
      */
@@ -87,7 +87,7 @@ class ResultSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Get results
+     * Get results.
      *
      * @var \Application\DeskPRO\Search\SearcherResult\ResultInterface[]
      */
@@ -97,7 +97,7 @@ class ResultSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Get iterator
+     * Get iterator.
      *
      * @return \ArrayObject
      */
@@ -114,6 +114,6 @@ class ResultSet implements \Countable, \IteratorAggregate
      */
     public function getCacheId()
     {
-        return null;
+        return;
     }
 }

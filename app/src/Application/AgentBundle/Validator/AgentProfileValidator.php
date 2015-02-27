@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Validator;
@@ -46,15 +43,16 @@ class AgentProfileValidator extends AbstractValidator
     protected $profile;
 
     /**
-     * @param  \Application\AgentBundle\Form\Model\SettingsProfile $profile
+     * @param \Application\AgentBundle\Form\Model\SettingsProfile $profile
+     *
      * @return bool
      */
     protected function checkIsValid($profile)
     {
         $this->profile = $profile;
 
-        if (!PhoneNumbers::looksEmpty($this->profile->primary_phone_number_text)) {
-            if (!PhoneNumbers::isValid($this->profile->primary_phone_number_text)) {
+        if (!PhoneNumbers::looksEmpty($this->profile->primary_phone['number'])) {
+            if (!PhoneNumbers::isValid($this->profile->primary_phone['number'])) {
                 $this->addError('phone_number.invalid');
             }
         }
@@ -84,7 +82,7 @@ class AgentProfileValidator extends AbstractValidator
             $error = null;
             if (!$password_validator->checkPassword($this->profile->password, $this->profile->getPerson(), $error)) {
                 $this->addError('password.invalid');
-                $this->addError('password.invalid.' . $error);
+                $this->addError('password.invalid.'.$error);
             } elseif ($this->profile->password != $this->profile->password2) {
                 $this->addError('password.mismatch');
             }

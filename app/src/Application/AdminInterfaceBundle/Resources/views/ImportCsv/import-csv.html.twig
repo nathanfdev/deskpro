@@ -139,6 +139,7 @@
 										<option value="password">Password</option>
 										<option value="organization">Organization</option>
 										<option value="organization_position">Organization Position</option>
+										<option value="language">Language</option>
 									</optgroup>
 									<optgroup label="Contact Details">
 										<option value="phone">Phone Number</option>
@@ -283,6 +284,21 @@
 						This should be selected if the "column name" values above contain actual data.
 					</label>
 				</div>
+
+				<div class="inner-group">
+					<label style="font-weight: normal; display: block;">
+						When a user from your CSV already exists in DeskPRO:
+						<select
+								ui-select2
+								ng-model="importSettings.updateIfExists"
+								class="no-search"
+								>
+							<option value="1">Update the user with information from the CSV file</option>
+							<option value="">Skip</option>
+						</select>
+					</label>
+				</div>
+
 				<div class="inner-group">
 					<label><input type="checkbox" ng-model="importSettings.welcomeEmail" /> Send welcome email to every new user</label>
 				</div>
@@ -308,7 +324,7 @@
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
 				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
-				
+
 			</div>
 
             <br />

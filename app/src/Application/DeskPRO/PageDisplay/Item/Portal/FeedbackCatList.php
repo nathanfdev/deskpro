@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -45,7 +42,6 @@ class FeedbackCatList extends PortalItemAbstract implements CacheableItem
 
     public function init()
     {
-
     }
 
     public function checkPermission()

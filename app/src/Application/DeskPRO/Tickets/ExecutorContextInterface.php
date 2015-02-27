@@ -3,8 +3,9 @@
  * Created by PhpStorm.
  * User: chroder
  * Date: 07/03/2014
- * Time: 12:30
+ * Time: 12:30.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -92,7 +93,8 @@ interface ExecutorContextInterface
     public function setEventMethod($event_method, array $event_method_options = array());
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getEventMethodOption($name);

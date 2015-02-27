@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Form\Captcha;
@@ -54,7 +51,7 @@ class Recaptcha extends CaptchaAbstract
     public function init()
     {
         $this->setOptions(array(
-            'template' => 'DeskPRO:Common:recaptcha.html.twig'
+            'template' => 'DeskPRO:Common:recaptcha.html.twig',
         ));
 
         $this->public_key  = $this->getOptionOrSetting('public_key', 'core.recaptcha_public_key');
@@ -63,9 +60,9 @@ class Recaptcha extends CaptchaAbstract
 
     public function getHtml()
     {
-        $tpl = $this->getOption('template');
+        $tpl  = $this->getOption('template');
         $vars = array(
-            'public_key' => $this->public_key
+            'public_key' => $this->public_key,
         );
 
         return $this->getTemplating()->render($tpl, $vars);
@@ -90,7 +87,7 @@ class Recaptcha extends CaptchaAbstract
 
         try {
             $r_response = $client->send();
-            $r_body = $r_response->getBody();
+            $r_body     = $r_response->getBody();
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e, false);
             $r_body = '';

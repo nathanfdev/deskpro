@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\FeedbackTypes;
@@ -41,7 +39,6 @@ class FeedbackTypeEdit
     /**
      * @var \Application\DeskPRO\Entity\FeedbackCategory
      */
-
     public $feedback_type;
 
     public function __construct(FeedbackCategory $feedback_type)
@@ -52,7 +49,6 @@ class FeedbackTypeEdit
     /**
      * @param EntityManager $em
      */
-
     public function save(EntityManager $em)
     {
         $em->persist($this->feedback_type);

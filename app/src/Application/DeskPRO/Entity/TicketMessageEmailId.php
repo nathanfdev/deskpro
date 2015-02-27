@@ -26,64 +26,62 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
 {
-	protected $id;
+    protected $id;
 
-	protected $message;
+    protected $message;
 
-	protected $email_id;
+    protected $email_id;
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 //		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageEmailId';
-		$metadata->setPrimaryTable(array(
-			'name' => 'tickets_message_email_id',
-			'indexes' => array(
-				'email_id_idx' => array('columns' => array('email_id')),
-			)
-		));
+        $metadata->setPrimaryTable(array(
+            'name'    => 'tickets_message_email_id',
+            'indexes' => array(
+                'email_id_idx' => array('columns' => array('email_id')),
+            ),
+        ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'id',
-			'id' => true,
-			'type' => 'integer',
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'id',
+            'id'        => true,
+            'type'      => 'integer',
+        ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'email_id',
-			'nullable' => false,
-			'columnName' => 'email_id',
-		));
+        $metadata->mapField(array(
+            'fieldName'  => 'email_id',
+            'nullable'   => false,
+            'columnName' => 'email_id',
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'message',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-			'inversedBy' => 'email_message_id',
-			'joinColumns' => array(array(
-				'name' => 'message_id',
-				'referencedColumnName' => 'id',
-				'onDelete' => 'CASCADE',
-			)),
-		));
-	}
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'message',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'inversedBy'   => 'email_message_id',
+            'joinColumns'  => array(array(
+                'name'                 => 'message_id',
+                'referencedColumnName' => 'id',
+                'onDelete'             => 'CASCADE',
+            )),
+        ));
+    }
 }

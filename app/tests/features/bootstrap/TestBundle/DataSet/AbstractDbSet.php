@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle\DataSet;
@@ -74,14 +72,13 @@ abstract class AbstractDbSet implements DataSetInterface
 
     public function __construct(ContainerInterface $container, EntityManager $em, Connection $db, $cache_dir, $mysql_bin_path = 'mysql', $mysqldump_bin_path = 'mysqldump')
     {
-        $this->container = $container;
-        $this->em = $em;
-        $this->db = $db;
-        $this->cache_dir = $cache_dir;
-        $this->mysql_bin_path = $mysql_bin_path;
+        $this->container          = $container;
+        $this->em                 = $em;
+        $this->db                 = $db;
+        $this->cache_dir          = $cache_dir;
+        $this->mysql_bin_path     = $mysql_bin_path;
         $this->mysqldump_bin_path = $mysqldump_bin_path;
     }
-
 
     /**
      * @return \Application\DeskPRO\DBAL\Connection
@@ -91,7 +88,6 @@ abstract class AbstractDbSet implements DataSetInterface
         return $this->db;
     }
 
-
     /**
      * @return \Application\DeskPRO\ORM\EntityManager
      */
@@ -100,7 +96,6 @@ abstract class AbstractDbSet implements DataSetInterface
         return $this->em;
     }
 
-
     /**
      * @return DeskproContainer
      */
@@ -108,7 +103,6 @@ abstract class AbstractDbSet implements DataSetInterface
     {
         return $this->container;
     }
-
 
     /**
      * @return int Number of tables dropped
@@ -125,9 +119,8 @@ abstract class AbstractDbSet implements DataSetInterface
         return 1;
     }
 
-
     /**
-     * Get the cache name for this set
+     * Get the cache name for this set.
      *
      * @return string
      */
@@ -136,9 +129,8 @@ abstract class AbstractDbSet implements DataSetInterface
         return Util::getBaseClassname($this);
     }
 
-
     /**
-     * Get the cache file path for this set
+     * Get the cache file path for this set.
      *
      * @return string
      */
@@ -148,9 +140,8 @@ abstract class AbstractDbSet implements DataSetInterface
             throw new \RuntimeException("No cache directory is set");
         }
 
-        return $this->cache_dir . DIRECTORY_SEPARATOR . $this->getCacheName();
+        return $this->cache_dir.DIRECTORY_SEPARATOR.$this->getCacheName();
     }
-
 
     /**
      * @return bool
@@ -164,9 +155,8 @@ abstract class AbstractDbSet implements DataSetInterface
         return false;
     }
 
-
     /**
-     * Dumps the database to the cache file
+     * Dumps the database to the cache file.
      */
     private function dumpToCache()
     {
@@ -199,14 +189,13 @@ abstract class AbstractDbSet implements DataSetInterface
 
         if ($ret) {
             echo "Command Failed: $cmd\n";
-            echo implode("\n",$out);
+            echo implode("\n", $out);
             throw new \RuntimeException(print_r(array($cmd, $out), 1));
         }
     }
 
-
     /**
-     * Installs the set from the cached SQL
+     * Installs the set from the cached SQL.
      *
      * @return bool
      */
@@ -239,14 +228,13 @@ abstract class AbstractDbSet implements DataSetInterface
 
         if ($ret) {
             echo "Command Failed: $cmd\n";
-            echo implode("\n",$out);
+            echo implode("\n", $out);
             throw new \RuntimeException(print_r(array($cmd, $out), 1));
         }
     }
 
-
     /**
-     * Installs this db set
+     * Installs this db set.
      */
     public function install()
     {
@@ -263,7 +251,6 @@ abstract class AbstractDbSet implements DataSetInterface
         }
     }
 
-
     /**
      * Installs a fresh DeskPRO database with the bare data to make it a functional install.
      *
@@ -273,16 +260,16 @@ abstract class AbstractDbSet implements DataSetInterface
     {
         $base_schema_cache = null;
         if ($this->cache_dir) {
-            $base_schema_cache = $this->cache_dir . '/base_schema.php';
+            $base_schema_cache = $this->cache_dir.'/base_schema.php';
         }
 
         if ($base_schema_cache && file_exists($base_schema_cache)) {
-            $queries = require($base_schema_cache);
+            $queries = require $base_schema_cache;
         } else {
-            $gs = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
+            $gs      = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
             $queries = array(
                 'creates' => $gs->getCreates(),
-                'alters'  => $gs->getAlters()
+                'alters'  => $gs->getAlters(),
             );
 
             if (!is_dir($this->cache_dir)) {
@@ -297,7 +284,7 @@ abstract class AbstractDbSet implements DataSetInterface
             if ($base_schema_cache) {
                 file_put_contents(
                     $base_schema_cache,
-                    "<?php return " . var_export($queries, true) . ";\n"
+                    "<?php return ".var_export($queries, true).";\n"
                 );
             }
         }
@@ -327,7 +314,6 @@ abstract class AbstractDbSet implements DataSetInterface
 
         return $count;
     }
-
 
     /**
      * @return string

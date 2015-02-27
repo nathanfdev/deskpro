@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users name matches
+ * Checks if the users name matches.
  *
  * @option string name
  */
@@ -55,7 +54,6 @@ class CheckUserName extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

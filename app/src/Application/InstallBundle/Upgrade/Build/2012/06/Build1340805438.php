@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -57,14 +54,13 @@ class Build1340805438 extends AbstractBuild
 
         // If this is a dp3 import, then move the registered group into place
         $is_dp3_import = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro3importer'");
-        $dp3_reg_ug = 0;
+        $dp3_reg_ug    = 0;
         if ($is_dp3_import) {
             // We only know based off the title ...
             $dp3_reg_ug = $this->container->getDb()->fetchColumn("SELECT id FROM usergroups WHERE title = 'Registered'");
         }
 
         if ($dp3_reg_ug) {
-
             $this->execMutateSql("UPDATE usergroups SET id = 2 WHERE id = $dp3_reg_ug");
             $this->execMutateSql("UPDATE article_category2usergroup SET usergroup_id = 2 WHERE usergroup_id = $dp3_reg_ug");
             $this->execMutateSql("UPDATE download_category2usergroup SET usergroup_id = 2 WHERE usergroup_id = $dp3_reg_ug");

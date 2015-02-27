@@ -6,13 +6,11 @@ use FOS\ElasticaBundle\Command\PopulateCommand;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Index Elasticsearch Command
+ * Index Elasticsearch Command.
  *
  * Extends the populate command from FOS_Elastica bundle and
  * adds an extra argument for limiting the indexing up to a
  * certain number.
- *
- * @package DeskPRO
  */
 class IndexElasticsearchCommand extends PopulateCommand
 {

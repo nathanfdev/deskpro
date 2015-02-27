@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
- * Figures out agent permissions
+ * Figures out agent permissions.
  */
 class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterface
 {
@@ -58,9 +57,9 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     public function getShortCallableNames()
     {
         return array(
-            'getAgentPermissions' => '_getthis',
+            'getAgentPermissions'      => '_getthis',
             'getDisallowedDepartments' => 'getDisallowedDepartments',
-            'getAllowedDepartments' => 'getAllowedDepartments',
+            'getAllowedDepartments'    => 'getAllowedDepartments',
         );
     }
 
@@ -68,14 +67,16 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     // so the caller gets this, and can use it as an array.
     // So if the caller gets it through a another array access, it means
     // we support $whatever['thishelper']['thisobject'];
-    public function _getthis() { return $this; }
-
-
+    public function _getthis()
+    {
+        return $this;
+    }
 
     /**
-     * Check if the user is allowed to use a particular department
+     * Check if the user is allowed to use a particular department.
      *
-     * @param  int|Department $dep
+     * @param int|Department $dep
+     *
      * @return bool
      */
     public function isDepartmentAllowed($dep, $context = 'tickets')
@@ -87,10 +88,8 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         return in_array($dep, $this->getAllowedDepartments($context));
     }
 
-
-
     /**
-     * Get an array of departments the user isn't allowed to see
+     * Get an array of departments the user isn't allowed to see.
      *
      * @return array
      */
@@ -112,7 +111,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     }
 
     /**
-     * Get an array of departments the user is allowed to see
+     * Get an array of departments the user is allowed to see.
      *
      * @return array
      */

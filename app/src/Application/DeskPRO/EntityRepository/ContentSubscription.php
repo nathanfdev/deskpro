@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,10 +42,11 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 class ContentSubscription extends AbstractEntityRepository
 {
     /**
-     * Get a subscription for a type of content
+     * Get a subscription for a type of content.
      *
      * @param $content_object An Article, Feedback, News or Download
-     * @param  \Application\DeskPRO\Entity\Person              $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return \Application\DeskPRO\Entity\ContentSubscription
      */
     public function getSubscription($content_object, PersonEntity $person)
@@ -65,7 +65,7 @@ class ContentSubscription extends AbstractEntityRepository
         } elseif ($content_object instanceof FeedbackEntity) {
             $qb->andWhere("s.feedback = ?2");
         } else {
-            throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Feedback. Got `" . get_class($content_object) . "`");
+            throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Feedback. Got `".get_class($content_object)."`");
         }
 
         $qb->setParameters(array(1 => $person, 2 => $content_object));
@@ -73,7 +73,7 @@ class ContentSubscription extends AbstractEntityRepository
         try {
             return $qb->getQuery()->getSingleResult();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 

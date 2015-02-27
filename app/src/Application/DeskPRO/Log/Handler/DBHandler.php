@@ -25,14 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 namespace Application\DeskPRO\Log\Handler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 
 abstract class DBHandler extends AbstractProcessingHandler
 {
@@ -58,8 +57,10 @@ abstract class DBHandler extends AbstractProcessingHandler
     }
 
     /**
-     * create/return prepared insert statement
-     * @param  DomainObject                                             $entity
+     * create/return prepared insert statement.
+     *
+     * @param DomainObject $entity
+     *
      * @return \Doctrine\DBAL\Driver\Statement|\Doctrine\DBAL\Statement
      */
     protected function getStatement(DomainObject $entity)
@@ -76,13 +77,15 @@ abstract class DBHandler extends AbstractProcessingHandler
             ',
             $meta['table'],
             implode(', ', array_keys($meta['fields'])),
-            ':' . implode(', :', array_values($meta['fields']))
+            ':'.implode(', :', array_values($meta['fields']))
         ));
     }
 
     /**
-     * table/fields metadata
-     * @param  DomainObject $entity
+     * table/fields metadata.
+     *
+     * @param DomainObject $entity
+     *
      * @return array
      */
     protected function getMeta(DomainObject $entity)
@@ -92,9 +95,9 @@ abstract class DBHandler extends AbstractProcessingHandler
             return $this->meta[$class];
         }
 
-        $data = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
+        $data               = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
         $this->meta[$class] = array(
-            'table' => $data->table['name'],
+            'table'  => $data->table['name'],
             'fields' => $data->fieldNames,
         );
 
@@ -104,7 +107,6 @@ abstract class DBHandler extends AbstractProcessingHandler
                 foreach ($mapping['joinColumns'] as $joinColumn) {
                     $this->meta[$class]['fields'][$joinColumn['name']] = $property;
                 }
-
             }
         }
 
@@ -117,9 +119,9 @@ abstract class DBHandler extends AbstractProcessingHandler
     protected function write(array $record)
     {
         $entity = $record['context']['_entity'];
-        $meta = $this->getMeta($entity);
-        $stmt = $this->getStatement($entity);
-        $data = array();
+        $meta   = $this->getMeta($entity);
+        $stmt   = $this->getStatement($entity);
+        $data   = array();
         foreach ($meta['fields'] as $fieldName) {
             $data[$fieldName] = $entity[$fieldName] instanceof DomainObject
                 ? $entity[$fieldName]['id'] // todo

@@ -26,11 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 
 namespace Application\UserBundle\Controller;
 
@@ -73,16 +70,15 @@ class MainController extends AbstractController
                 $type_class = $type;
             }
 
-            $data = $page_display->data;
-            $data['pid'] = $page_display->id;
-            $data['is_enabled'] = $page_display->is_enabled;
+            $data                  = $page_display->data;
+            $data['pid']           = $page_display->id;
+            $data['is_enabled']    = $page_display->is_enabled;
             $data['display_order'] = $page_display->display_order;
-            $data['admin_mode'] = true;
+            $data['admin_mode']    = true;
 
             $obj = new $type_class($page_display->section, $page_display->data, $this->container, $this->person);
 
             $res = new \Symfony\Component\HttpFoundation\Response($obj->getHtml(), 200);
-
         } else {
             $res = null;
             switch ($type) {
@@ -123,7 +119,7 @@ class MainController extends AbstractController
         $security_token = $this->in->getString('security_token');
         if (!$this->container->checkStaticSecurityToken('attach_temp', $security_token)) {
             return $this->createJsonResponse(array(array(
-                'error_code' => 'invalid_security_token'
+                'error_code' => 'invalid_security_token',
             )), 403);
         }
 
@@ -136,12 +132,12 @@ class MainController extends AbstractController
         $error = $accept->getError($file, 'user');
         if ($error) {
             switch ($error['error_code']) {
-                case 'size': $phrase_id = 'user.error.attach_size'; break;
-                case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
-                case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
-                case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
+                case 'size': $phrase_id                = 'user.error.attach_size'; break;
+                case 'failed_upload': $phrase_id       = 'user.error.attach_failed'; break;
+                case 'no_file': $phrase_id             = 'user.error.attach_no-file'; break;
+                case 'server_error': $phrase_id        = 'user.error.attach_unknown-error'; break;
                 case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
-                case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+                case 'not_allowed_exts': $phrase_id    = 'user.error.attach_ext-not-allow'; break;
             }
             $error['error'] = $this->container->getTranslator()->phrase($phrase_id, $error);
 
@@ -149,7 +145,7 @@ class MainController extends AbstractController
         }
 
         if ($error) {
-            $error['error'] = $this->container->getTranslator()->phrase('user.error.attach_' . $error['error_code'], $error);
+            $error['error'] = $this->container->getTranslator()->phrase('user.error.attach_'.$error['error_code'], $error);
 
             return $this->createJsonResponse(array($error));
         }
@@ -158,10 +154,10 @@ class MainController extends AbstractController
 
         return $this->createJsonResponse(array(array(
             'blob_id'           => $blob->getId(),
-            'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
             'download_url'      => $blob->getDownloadUrl(true),
             'filename'          => $blob->getFilename(),
-            'filesize_readable' => $blob->getReadableFilesize()
+            'filesize_readable' => $blob->getReadableFilesize(),
         )));
     }
 
@@ -183,9 +179,9 @@ class MainController extends AbstractController
         $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
         if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
             return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
-                'email' => $email_exists,
-                'person' => $validator->getPerson(),
-                'ticket_ids' => $validator->getTicketIds()
+                'email'      => $email_exists,
+                'person'     => $validator->getPerson(),
+                'ticket_ids' => $validator->getTicketIds(),
             ));
         }
 
@@ -200,9 +196,9 @@ class MainController extends AbstractController
         }
 
         return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
-            'email' => $email,
-            'person' => $validator->getPerson(),
-            'ticket_ids' => $validator->getTicketIds()
+            'email'      => $email,
+            'person'     => $validator->getPerson(),
+            'ticket_ids' => $validator->getTicketIds(),
         ));
     }
 
@@ -217,21 +213,20 @@ class MainController extends AbstractController
 
         // A new email address
         if ($ticket->person_email_validating) {
-            $validator = new EmailValidator($ticket->person_email_validating);
+            $validator       = new EmailValidator($ticket->person_email_validating);
             $valdating_email = $validator->getValidatingEmail();
 
             $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
             if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
-
                 // Unset the email on the ticket
                 $ticket->person_email_validating = null;
                 $this->em->persist($ticket);
                 $this->em->flush();
 
                 return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
-                    'email' => $email_exists,
-                    'person' => $validator->getPerson(),
-                    'ticket_ids' => $validator->getTicketIds()
+                    'email'      => $email_exists,
+                    'person'     => $validator->getPerson(),
+                    'ticket_ids' => $validator->getTicketIds(),
                 ));
             }
 
@@ -246,9 +241,9 @@ class MainController extends AbstractController
         }
 
         return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
-            'email' => $email,
-            'person' => $validator->getPerson(),
-            'ticket_ids' => $validator->getTicketIds()
+            'email'      => $email,
+            'person'     => $validator->getPerson(),
+            'ticket_ids' => $validator->getTicketIds(),
         ));
     }
 
@@ -260,13 +255,12 @@ class MainController extends AbstractController
 
         if ($this->person->isGuest()) {
             $person_data = array(
-                'person_id' => 0
+                'person_id' => 0,
             );
         } else {
-
             $person_data = array(
-                'person_id' => $this->person->id,
-                'person_name' => $this->person->name,
+                'person_id'    => $this->person->id,
+                'person_name'  => $this->person->name,
                 'person_email' => $this->person->getPrimaryEmailAddress(),
             );
 

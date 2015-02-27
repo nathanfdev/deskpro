@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DBAL;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\DBAL;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
 /**
- * Checks a database for tables that use fields named after reserved words
+ * Checks a database for tables that use fields named after reserved words.
  */
 class ReservedWords
 {

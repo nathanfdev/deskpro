@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -58,23 +55,25 @@ class Build1402588458 extends AbstractBuild
     }
 
     /**
-     * @param  string $terms     JSON encoded string
-     * @param  string $term_type Term type we're looking for
-     * @param  string $new_op    The new op to set
+     * @param string $terms     JSON encoded string
+     * @param string $term_type Term type we're looking for
+     * @param string $new_op    The new op to set
+     *
      * @return string A new JSON string to save
      */
     private function procTriggerTerms($terms, $term_type, $new_op)
     {
-        $terms = json_decode($terms, true);
+        $terms                   = json_decode($terms, true);
         $terms['@DATA']['terms'] = $this->procTermsSet($terms['@DATA']['terms'] ?: array(), $term_type, $new_op);
 
         return json_encode($terms);
     }
 
     /**
-     * @param  array  $set
-     * @param  string $term_type
-     * @param  string $new_op
+     * @param array  $set
+     * @param string $term_type
+     * @param string $new_op
+     *
      * @return array
      */
     private function procTermsSet(array $set, $term_type, $new_op)

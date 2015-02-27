@@ -2,8 +2,8 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
-use Elastica\Document;
 use Application\DeskPRO\Entity\ChatConversation;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -11,7 +11,7 @@ use Orb\Util\Strings;
 class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param ChatConversation $object
      * @param array            $fields

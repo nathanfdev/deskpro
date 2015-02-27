@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,7 +42,7 @@ class TicketAccessCode extends AbstractEntityRepository
     {
         $info = Entity\TicketAccessCode::decodeAccessCode($access_code);
         if (!$info) {
-            return null;
+            return;
         }
 
         try {
@@ -53,7 +52,7 @@ class TicketAccessCode extends AbstractEntityRepository
                 WHERE tac.id = :access_code_id AND tac.auth = :auth
             ")->setParameters($info)->setMaxResults(1)->getSingleResult();
         } catch (\Doctrine\ORM\NoResultException $e) {
-            return null;
+            return;
         }
 
         return $rec;
@@ -63,7 +62,7 @@ class TicketAccessCode extends AbstractEntityRepository
     {
         $info = Entity\TicketAccessCode::decodeAccessCode($access_code);
         if (!$info) {
-            return null;
+            return;
         }
 
         $tac = App::getDb()->fetchAssoc("
@@ -73,7 +72,7 @@ class TicketAccessCode extends AbstractEntityRepository
         ", array($info['access_code_id'], $info['auth']));
 
         if (!$tac) {
-            return null;
+            return;
         }
 
         return $tac;
@@ -82,18 +81,18 @@ class TicketAccessCode extends AbstractEntityRepository
     public function findByTicketAndPerson($ticket, $person)
     {
         if (!$person->id || !$ticket->id) {
-            return null;
+            return;
         }
         try {
             $rec = $this->getEntityManager()->createQuery("
                 SELECT tac
                 FROM DeskPRO:TicketAccessCode tac
                 WHERE tac.ticket = ?1 AND tac.person = ?2
-            ")->setParameters(array(1=>$ticket, 2=>$person))->setMaxResults(1)->getSingleResult();
+            ")->setParameters(array(1 => $ticket, 2 => $person))->setMaxResults(1)->getSingleResult();
 
             return $rec;
         } catch (\Doctrine\ORM\NoResultException $e) {
-            return null;
+            return;
         }
     }
 }

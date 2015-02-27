@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -53,7 +52,7 @@ class SetContainerListener implements EventSubscriber
 
     public function getSubscribedEvents()
     {
-       return array(Events::postLoad);
+        return array(Events::postLoad);
     }
 
     public function postLoad(LifecycleEventArgs $args)

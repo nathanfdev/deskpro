@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Model;
@@ -78,8 +75,11 @@ class NewFeedback
         $feedback         = new Feedback();
         $feedback->person = $this->_person_context;
         $feedback->setStatusCode($this->status_code);
-        $feedback->title   = $this->title;
-        $feedback->content = $this->content ?: '';
+        $feedback->title = $this->title;
+
+        $feedback->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
         $cat                = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
         $feedback->category = $cat;

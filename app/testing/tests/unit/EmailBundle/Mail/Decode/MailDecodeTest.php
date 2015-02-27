@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\EmailBundle\Mail\Decode;
@@ -121,13 +118,15 @@ class MailDecodeTest extends \DpUnitTestCase
             'Check HTML part'
         );
 
-        $attach = array_map(function($a) { unset($a['bin_data']); return $a; }, $m->getAttachments());
+        $attach = array_map(function ($a) { unset($a['bin_data']);
+
+return $a; }, $m->getAttachments());
         $this->assertEquals(
             array(array(
                 'filename' => 'text-file.txt',
                 'cid'      => null,
                 'type'     => 'application/octet-stream',
-                'crc32'    => '1f28f50a'
+                'crc32'    => '1f28f50a',
             )),
             $attach,
             'Check attachments'
@@ -172,13 +171,15 @@ class MailDecodeTest extends \DpUnitTestCase
             'Check HTML part'
         );
 
-        $attach = array_map(function($a) { unset($a['bin_data']); return $a; }, $m->getAttachments());
+        $attach = array_map(function ($a) { unset($a['bin_data']);
+
+return $a; }, $m->getAttachments());
         $this->assertEquals(
             array(array(
                 'filename' => 'super_man.gif',
                 'cid'      => '<51340020-E84B-44BF-A4DA-AEC6D2BA14F6@xxxxxxxxxxx.com>',
                 'type'     => 'image/gif',
-                'crc32'    => 'd29df63c'
+                'crc32'    => 'd29df63c',
             )),
             $attach,
             'Check attachments'

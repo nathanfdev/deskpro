@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -38,7 +35,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
- * Abstract base for parts of a DPQL statement
+ * Abstract base for parts of a DPQL statement.
  */
 abstract class AbstractPart
 {

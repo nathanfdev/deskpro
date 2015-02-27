@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -223,7 +222,7 @@ class TicketPermissions implements PermissionValueInterface
             'modify_department_others', 'modify_fields_others', 'modify_assign_agent_others', 'modify_assign_team_others', 'modify_assign_self_others',
             'modify_cc_others', 'modify_merge_others', 'modify_labels_others', 'modify_slas_others', 'modify_notes_others', 'modify_set_hold_others',
             'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_set_unresolved_others', 'modify_messages_others', 'delete_others', 'modify_billing',
-            'create_labels'
+            'create_labels',
         );
     }
 

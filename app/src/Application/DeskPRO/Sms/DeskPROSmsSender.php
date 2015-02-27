@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Sms;
@@ -75,12 +73,13 @@ class DeskPROSmsSender extends SmsSender
     }
 
     /**
-     * Same as the Orb SmsSender, except DeskPRO can fail a message if it exceeds a set max chunks
+     * Same as the Orb SmsSender, except DeskPRO can fail a message if it exceeds a set max chunks.
      *
-     * @param  string               $to_number
-     * @param  SmsMessage           $message
-     * @param  null                 $from_number
-     * @param  SmsProviderInterface $provider
+     * @param string               $to_number
+     * @param SmsMessage           $message
+     * @param null                 $from_number
+     * @param SmsProviderInterface $provider
+     *
      * @return bool
      */
     public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
@@ -106,7 +105,7 @@ class DeskPROSmsSender extends SmsSender
             'provider_params' => $provider->getParams(),
             'to_number'       => $to_number,
             'from_number'     => $from_number,
-            'message'         => $message->getRawMessage()
+            'message'         => $message->getRawMessage(),
         );
         $job = new Job(
             OutgoingSmsProcessor::JOB_TYPE,

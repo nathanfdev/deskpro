@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,8 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     }
 
     /**
-     * @param  AgentRequestContext                        $context
+     * @param AgentRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function callApiAction(AgentRequestContext $context)
@@ -118,10 +118,11 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     }
 
     /**
-     * @param  string               $email
-     * @param  array                $fields
-     * @param  AgentRequestContext  $context
-     * @param  \SforcePartnerClient $sforce
+     * @param string               $email
+     * @param array                $fields
+     * @param AgentRequestContext  $context
+     * @param \SforcePartnerClient $sforce
+     *
      * @return array
      */
     private function lookupUsers($email, $fields, AgentRequestContext $context, \SforcePartnerClient $sforce)
@@ -165,9 +166,10 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     }
 
     /**
-     * @param  AgentRequestContext  $context
-     * @param  \SforcePartnerClient $sforce
-     * @param  bool                 $force_reset
+     * @param AgentRequestContext  $context
+     * @param \SforcePartnerClient $sforce
+     * @param bool                 $force_reset
+     *
      * @return array
      */
     private function getFields(AgentRequestContext $context, \SforcePartnerClient $sforce, $force_reset = false)

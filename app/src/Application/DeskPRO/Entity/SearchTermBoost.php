@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Stores which documents have been boosted, and by which terms
- *
+ * Stores which documents have been boosted, and by which terms.
  */
 class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,7 +48,7 @@ class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
     const METHOD_VOTE = 'vote';
 
     /**
-     * An 'agent' boost means an agent has manually entered a boost term
+     * An 'agent' boost means an agent has manually entered a boost term.
      */
     const METHOD_AGENT = 'agent';
 

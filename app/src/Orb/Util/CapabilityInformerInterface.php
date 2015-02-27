@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -54,16 +53,17 @@ namespace Orb\Util;
 interface CapabilityInformerInterface
 {
     /**
-     * Returns an array of all capabilities
+     * Returns an array of all capabilities.
      *
      * @return array
      */
     public function getCapabilities();
 
     /**
-     * Check if this object is capable of a specific thing
+     * Check if this object is capable of a specific thing.
      *
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability);

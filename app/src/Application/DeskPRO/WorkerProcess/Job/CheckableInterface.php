@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;

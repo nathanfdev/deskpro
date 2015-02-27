@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
@@ -61,7 +58,6 @@ class LayoutUpgrader
      */
     private $ticket_fm;
 
-
     /**
      * @param array              $form_new
      * @param array              $form_view
@@ -76,9 +72,9 @@ class LayoutUpgrader
         $this->ticket_fm = $ticket_fm;
     }
 
-
     /**
-     * @param  array $old_field
+     * @param array $old_field
+     *
      * @return bool
      */
     private function isAgentOnlyField(array $old_field)
@@ -97,20 +93,18 @@ class LayoutUpgrader
         return false;
     }
 
-
     /**
      * @return TicketLayoutEntity
      */
     public function getTicketLayout()
     {
-        $ticket_layout = new TicketLayoutEntity();
-        $ticket_layout->is_enabled = true;
-        $ticket_layout->user_layout = $this->getUserLayout();
+        $ticket_layout               = new TicketLayoutEntity();
+        $ticket_layout->is_enabled   = true;
+        $ticket_layout->user_layout  = $this->getUserLayout();
         $ticket_layout->agent_layout = $this->getAgentLayout();
 
         return $ticket_layout;
     }
-
 
     /**
      * @return TicketLayout\Layout
@@ -132,11 +126,17 @@ class LayoutUpgrader
             }
 
             $field = $this->convertField($old_field);
-            if (!$field) continue;
+            if (!$field) {
+                continue;
+            }
 
             $field->enableOnNew();
-            if (!$has_view) $field->enableOnView();
-            if (!$has_edit) $field->enableOnEdit();
+            if (!$has_view) {
+                $field->enableOnView();
+            }
+            if (!$has_edit) {
+                $field->enableOnEdit();
+            }
             $layout->add($field);
         }
         foreach ($this->form_view as $old_field) {
@@ -145,7 +145,9 @@ class LayoutUpgrader
             }
 
             $field = $this->convertField($old_field);
-            if (!$field) continue;
+            if (!$field) {
+                continue;
+            }
 
             if ($layout->has($field->getId())) {
                 $field = $layout->get($field->getId());
@@ -161,7 +163,9 @@ class LayoutUpgrader
             }
 
             $field = $this->convertField($old_field);
-            if (!$field) continue;
+            if (!$field) {
+                continue;
+            }
 
             if ($layout->has($field->getId())) {
                 $field = $layout->get($field->getId());
@@ -174,7 +178,6 @@ class LayoutUpgrader
 
         return $layout;
     }
-
 
     /**
      * @return TicketLayout\Layout
@@ -185,7 +188,9 @@ class LayoutUpgrader
 
         foreach ($this->form_new as $old_field) {
             $field = $this->convertField($old_field);
-            if (!$field) continue;
+            if (!$field) {
+                continue;
+            }
 
             $field->enableOnNew();
             $field->enableOnView();
@@ -194,7 +199,9 @@ class LayoutUpgrader
         }
         foreach ($this->form_view as $old_field) {
             $field = $this->convertField($old_field);
-            if (!$field) continue;
+            if (!$field) {
+                continue;
+            }
 
             if ($layout->has($field->getId())) {
                 $field = $layout->get($field->getId());
@@ -208,7 +215,9 @@ class LayoutUpgrader
         }
         foreach ($this->form_edit as $old_field) {
             $field = $this->convertField($old_field);
-            if (!$field) continue;
+            if (!$field) {
+                continue;
+            }
 
             if ($layout->has($field->getId())) {
                 $field = $layout->get($field->getId());
@@ -224,23 +233,23 @@ class LayoutUpgrader
         return $layout;
     }
 
-
     /**
-     * @param  array                    $info
+     * @param array $info
+     *
      * @return TicketLayout\LayoutField
      */
     private function convertField(array $info)
     {
         try {
             $field = $this->getFieldFromLegacyField($info);
-            $crit = $this->getCriteriaFromLegacyField($info);
+            $crit  = $this->getCriteriaFromLegacyField($info);
             if ($crit) {
                 $field->setCriteria($crit);
             }
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e);
 
-            return null;
+            return;
         }
 
         // Default to all off
@@ -251,9 +260,9 @@ class LayoutUpgrader
         return $field;
     }
 
-
     /**
-     * @param  array                    $info
+     * @param array $info
+     *
      * @return TicketLayout\LayoutField
      */
     private function getFieldFromLegacyField(array $info)
@@ -288,15 +297,15 @@ class LayoutUpgrader
         }
     }
 
-
     /**
-     * @param  array                                 $info
+     * @param array $info
+     *
      * @return TicketLayout\LayoutFieldCriteria|null
      */
     private function getCriteriaFromLegacyField(array $info)
     {
         if (empty($info['rules'])) {
-            return null;
+            return;
         }
 
         $crit = new TicketLayout\LayoutFieldCriteria();
@@ -315,42 +324,50 @@ class LayoutUpgrader
         }
 
         if (!$crit->count()) {
-            return null;
+            return;
         }
 
         return $crit;
     }
 
-
     /**
-     * @param  array                                            $rule
+     * @param array $rule
+     *
      * @return TicketLayout\Terms\AbstractTicketLayoutTerm|null
      */
     private function getCriteriaTermFromLegacyTerm(array $rule)
     {
         switch ($rule['type']) {
             case 'category':
-                if (empty($rule['options']['category'])) return null;
+                if (empty($rule['options']['category'])) {
+                    return;
+                }
                 $ids = is_array($rule['options']['category']) ? $rule['options']['category'] : array($rule['options']['category']);
 
                 return new TicketLayout\Terms\CheckCategory($rule['op'], array('category_ids' => $ids));
             case 'priority':
-                if (empty($rule['options']['priority'])) return null;
+                if (empty($rule['options']['priority'])) {
+                    return;
+                }
                 $ids = is_array($rule['options']['priority']) ? $rule['options']['priority'] : array($rule['options']['priority']);
 
                 return new TicketLayout\Terms\CheckPriority($rule['op'], array('priority_ids' => $ids));
             case 'workflow':
-                if (empty($rule['options']['workflow'])) return null;
+                if (empty($rule['options']['workflow'])) {
+                    return;
+                }
                 $ids = is_array($rule['options']['workflow']) ? $rule['options']['workflow'] : array($rule['options']['workflow']);
 
                 return new TicketLayout\Terms\CheckWorkflow($rule['op'], array('workflow_ids' => $ids));
             case 'product':
-                if (empty($rule['options']['product'])) return null;
+                if (empty($rule['options']['product'])) {
+                    return;
+                }
                 $ids = is_array($rule['options']['product']) ? $rule['options']['product'] : array($rule['options']['product']);
 
                 return new TicketLayout\Terms\CheckProduct($rule['op'], array('product_ids' => $ids));
             default:
-                return null;
+                return;
         }
     }
 }

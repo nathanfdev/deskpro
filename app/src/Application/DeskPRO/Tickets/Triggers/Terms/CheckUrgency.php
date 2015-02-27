@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks urgency
+ * Checks urgency.
  *
  * @option int urgency1
  * @option int urgency2
@@ -57,7 +56,6 @@ class CheckUrgency extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

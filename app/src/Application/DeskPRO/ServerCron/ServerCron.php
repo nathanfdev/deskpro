@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerCron;
@@ -43,13 +41,11 @@ class ServerCron
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var int
      */
-
     protected $per_page = 100;
 
     public function __construct(EntityManager $em)
@@ -60,7 +56,6 @@ class ServerCron
     /**
      * @return array
      */
-
     public function getAllForApi()
     {
         $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->getAll();
@@ -68,9 +63,7 @@ class ServerCron
         $resData = array();
 
         foreach ($jobs as $key => $job) {
-
             if ($job instanceof DomainObject) {
-
                 $resData[$key]                      = $job->toApiData(false, true);
                 $resData[$key]['interval_readable'] = $job->getIntervalReadable();
                 $resData[$key]['next_run_time']     = $job->getNextRunRelativeTime();
@@ -83,7 +76,6 @@ class ServerCron
     /**
      * @return array
      */
-
     public function getTimes()
     {
         $last_start = App::getContainer()->getSetting('core.last_cron_start');
@@ -97,20 +89,19 @@ class ServerCron
         $last_run = App::getContainer()->getSetting('core.last_cron_run');
 
         if (!$last_run) {
-
             $last_run = 0;
         }
 
         $time_since_run = time() - $last_run;
 
         return array(
-            'last_run'                  => (int)$last_run,
-            'last_run_ms'               => (int)$last_run * 1000,
-            'time_since_run'            => (int)$time_since_run,
+            'last_run'                  => (int) $last_run,
+            'last_run_ms'               => (int) $last_run * 1000,
+            'time_since_run'            => (int) $time_since_run,
             'time_since_run_readable'   => Dates::secsToReadable($time_since_run),
-            'last_start'                => (int)$last_start,
-            'last_start_ms'             => (int)$last_start * 1000,
-            'time_since_start'          => (int)$time_since_start,
+            'last_start'                => (int) $last_start,
+            'last_start_ms'             => (int) $last_start * 1000,
+            'time_since_start'          => (int) $time_since_start,
             'time_since_start_readable' => Dates::secsToReadable($time_since_start),
         );
     }
@@ -122,7 +113,6 @@ class ServerCron
      *
      * @return array
      */
-
     public function getLogs($job_id = null, $priority = null, $page = 1)
     {
         $params = $this->initializeParams($job_id, $priority);
@@ -142,7 +132,6 @@ class ServerCron
      *
      * @return int
      */
-
     public function getPagesCount($job_id = null, $priority = null)
     {
         $params = $this->initializeParams($job_id, $priority);
@@ -157,7 +146,6 @@ class ServerCron
     /**
      * @return bool
      */
-
     public function clearAllLogs()
     {
         $this->em->getRepository('DeskPRO:WorkerJob')->clearAllLogs();
@@ -171,20 +159,15 @@ class ServerCron
      *
      * @return array
      */
-
     protected function initializeParams($job_id = null, $priority = null)
     {
         if (!$job_id) {
-
             $job_id = 'worker_job.%';
-
         } else {
-
-            $job_id = 'worker_job.' . $job_id;
+            $job_id = 'worker_job.'.$job_id;
         }
 
         if (!$priority) {
-
             $priority = 10;
         }
 

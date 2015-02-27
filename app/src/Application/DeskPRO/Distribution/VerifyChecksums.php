@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category File
  */
 
@@ -79,10 +78,10 @@ class VerifyChecksums
         }
 
         $results = array(
-            'added' => array(),
+            'added'   => array(),
             'removed' => array(),
             'changed' => array(),
-            'okay' => array(),
+            'okay'    => array(),
         );
 
         foreach ($chunk_hashes as $path => $checksum) {
@@ -101,7 +100,8 @@ class VerifyChecksums
     }
 
     /**
-     * @param  string $file_contents
+     * @param string $file_contents
+     *
      * @return string
      */
     protected function normalizeFileString($file_contents)
@@ -122,10 +122,11 @@ class VerifyChecksums
     }
 
     /**
-     * Get a chunk
+     * Get a chunk.
      *
-     * @param  int   $chunk
-     * @param  int   $chunk_size
+     * @param int $chunk
+     * @param int $chunk_size
+     *
      * @return array
      */
     public function getStandardChunk($chunk)
@@ -138,7 +139,8 @@ class VerifyChecksums
     }
 
     /**
-     * Count how many chunks there are
+     * Count how many chunks there are.
+     *
      * @return int
      */
     public function countChunks()

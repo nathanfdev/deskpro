@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Cache;
@@ -52,7 +49,6 @@ namespace Application\DeskPRO\Cache;
  *  $template = $convenient->get('brand2.template5', function () use ($template_service, $something) {
  *     $template_service->render($something)
  *  });
- *
  */
 class ConvenientCache implements CacheAdapterInterface
 {
@@ -78,11 +74,12 @@ class ConvenientCache implements CacheAdapterInterface
     }
 
     /**
-     * Similar to CacheAdapterInterface but adds a default value (which also sets on cache if used)
+     * Similar to CacheAdapterInterface but adds a default value (which also sets on cache if used).
      *
-     * @param             $key
-     * @param  null       $default
-     * @param  array      $params if $default is a callable, $params will be passed as arguments
+     * @param       $key
+     * @param null  $default
+     * @param array $params  if $default is a callable, $params will be passed as arguments
+     *
      * @return mixed|null
      */
     public function get($key, $default = null, array $params = array())

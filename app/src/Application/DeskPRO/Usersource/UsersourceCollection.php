@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Usersource;
 /**
  * Used to filter results down to what you want
  * UsersourceManager returns instances of this offering you a flexible filtering API
- * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection
+ * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection.
  */
 class UsersourceCollection extends \ArrayObject
 {
@@ -62,15 +59,16 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
-     * Limits to this ID only, still allowing other filters to fit your criteria
+     * Limits to this ID only, still allowing other filters to fit your criteria.
      *
-     * @param  int                  $id id
+     * @param int $id id
+     *
      * @return UsersourceCollection
      */
     public function mustHaveId($id)
     {
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) use ($id) {
+            (array) $this, function (Usersource $us) use ($id) {
                 return $us->id == $id;
             }
         );
@@ -135,7 +133,8 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
-     * @param  array|string         $capability a string with a single capability, or an array of strings
+     * @param array|string $capability a string with a single capability, or an array of strings
+     *
      * @return UsersourceCollection with usersources that have at least one of the passed capabilities
      */
     public function withCapability($capability)
@@ -143,7 +142,7 @@ class UsersourceCollection extends \ArrayObject
         $filtered = array_filter(
             (array) $this, function (Usersource $us) use ($capability) {
                 if (is_array($capability)) {
-                    foreach($capability as $cap) {
+                    foreach ($capability as $cap) {
                         if ($us->getAdapter()->isCapable($cap)) {
                             return true;
                         }
@@ -167,7 +166,7 @@ class UsersourceCollection extends \ArrayObject
         $type = strtolower($type);
 
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) use ($type) {
+            (array) $this, function (Usersource $us) use ($type) {
                 return strtolower($us->source_type) == $type;
             }
         );
@@ -181,7 +180,7 @@ class UsersourceCollection extends \ArrayObject
     public function withBackgroundSso()
     {
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) {
+            (array) $this, function (Usersource $us) {
                 return $us->is_sso_background;
             }
         );
@@ -195,7 +194,7 @@ class UsersourceCollection extends \ArrayObject
     public function withAutoSso()
     {
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) {
+            (array) $this, function (Usersource $us) {
                 return $us->is_sso_auto;
             }
         );
@@ -229,7 +228,7 @@ class UsersourceCollection extends \ArrayObject
 
     public function contains(Usersource $usersource)
     {
-        $arr = (array)$this;
+        $arr = (array) $this;
         foreach ($arr as $us) {
             if ($us->id == $usersource->id) {
                 return true;

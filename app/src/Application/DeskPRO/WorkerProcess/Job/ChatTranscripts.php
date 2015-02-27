@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -64,7 +61,7 @@ class ChatTranscripts extends AbstractJob
             $chat = App::getOrm()->find('DeskPRO:ChatConversation', $chat_id);
 
             $email = '';
-            $name = '';
+            $name  = '';
             if ($chat->person && $chat->person->getPrimaryEmailAddress()) {
                 $email = $chat->person->getPrimaryEmailAddress();
             } elseif ($chat->person_email) {
@@ -85,8 +82,8 @@ class ChatTranscripts extends AbstractJob
                 ")->setParameter(1, $chat)->execute();
 
                 $vars = array(
-                    'convo' => $chat,
-                    'convo_messages' => $convo_messages
+                    'convo'          => $chat,
+                    'convo_messages' => $convo_messages,
                 );
 
                 $message = App::getMailer()->createMessage();
@@ -102,7 +99,7 @@ class ChatTranscripts extends AbstractJob
                     'is_user_hidden'  => 0,
                     'is_html'         => 0,
                     'metadata'        => serialize(array('phrase_id' => 'transcript_sent', 'email' => $email)),
-                    'date_created'    => date('Y-m-d H:i:s'),
+                    'date_created'                                   => date('Y-m-d H:i:s'),
                 ));
             }
 
@@ -110,6 +107,6 @@ class ChatTranscripts extends AbstractJob
             $chat = null;
         }
 
-        $this->logger->log("Sent " . count($chat_ids) . " chat transcripts", Logger::INFO);
+        $this->logger->log("Sent ".count($chat_ids)." chat transcripts", Logger::INFO);
     }
 }

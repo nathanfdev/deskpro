@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form\Model;
@@ -42,7 +39,7 @@ class Register implements \ArrayAccess
 {
     /** @var array  */
     protected static $prop_names = array(
-        'name' => 1, 'email' => 1, 'password' => 1, 'password2' => 1,
+        'name'        => 1, 'email' => 1, 'password' => 1, 'password2' => 1,
         'language_id' => 1, 'no_validation' => 1, 'custom_fields' => 1,
     );
 
@@ -95,18 +92,17 @@ class Register implements \ArrayAccess
         $this->em->getConnection()->beginTransaction();
 
         try {
-
             $email_validating = null;
             if (!$person->findEmailAddress($this->email)) {
                 if (!$this->no_validation && App::getSetting('core.email_validation')) {
                     $email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
                     if (!$email_validating) {
-                        $email_validating = new PersonEmailValidating();
-                        $email_validating->email = $this->email;
+                        $email_validating         = new PersonEmailValidating();
+                        $email_validating->email  = $this->email;
                         $email_validating->person = $person;
                     }
 
-                    $person->is_user = false;
+                    $person->is_user      = false;
                     $person->is_confirmed = false;
                 } else {
                     $person->addEmailAddressString($this->email);
@@ -138,14 +134,14 @@ class Register implements \ArrayAccess
                 $message = App::getMailer()->createMessage();
                 $message->setTo($email_validating->email, $this->name);
                 $message->setTemplate('DeskPRO:emails_user:register-validate.html.twig', array(
-                    'vemail' => $email_validating
+                    'vemail' => $email_validating,
                 ));
                 App::getMailer()->send($message);
             } else {
                 $message = App::getMailer()->createMessage();
                 $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
                 $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
-                    'person' => $person
+                    'person' => $person,
                 ));
                 App::getMailer()->send($message);
             }
@@ -168,8 +164,26 @@ class Register implements \ArrayAccess
         $this->_custom_fields = $custom_fields;
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

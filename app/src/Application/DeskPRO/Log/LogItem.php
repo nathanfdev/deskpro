@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Log
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\Log;
 class LogItem extends \Orb\Log\LogItem
 {
     const LOG_NAME = 'log_name';
-    const FLAG = 'flag';
+    const FLAG     = 'flag';
 
     protected function init()
     {

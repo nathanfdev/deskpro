@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,17 +42,16 @@ class BanEmail extends AbstractEntityRepository
     protected $counts = array();
 
     /**
-     * Get a list of emails suitable for display
+     * Get a list of emails suitable for display.
      */
-
     public function getList($from = 0, $limit = 20, $search_phrase = '', $wildcard = false)
     {
-        $where = '1';
+        $where  = '1';
         $params = array();
 
         if (!empty($search_phrase)) {
             $where .= " AND banned_email LIKE :search";
-            $params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+            $params['search'] = '%'.str_replace('%', '\%', $search_phrase).'%';
         }
 
         if ($wildcard) {
@@ -73,9 +71,10 @@ class BanEmail extends AbstractEntityRepository
     }
 
     /**
-     * @param  int    $per_page
-     * @param  string $search_phrase
-     * @param  bool   $wildcard
+     * @param int    $per_page
+     * @param string $search_phrase
+     * @param bool   $wildcard
+     *
      * @return int
      */
     public function getPageCount($per_page = 20, $search_phrase = '', $wildcard = false)
@@ -100,9 +99,10 @@ class BanEmail extends AbstractEntityRepository
     }
 
     /**
-     * Check if an email address is banned
+     * Check if an email address is banned.
      *
      * @param $email
+     *
      * @return bool
      */
     public function isEmailBanned($email, &$match = null)
@@ -134,8 +134,9 @@ class BanEmail extends AbstractEntityRepository
     }
 
     /**
-     * @param  string $search_phrase
-     * @param  bool   $wildcard
+     * @param string $search_phrase
+     * @param bool   $wildcard
+     *
      * @return int
      */
     public function getCount($search_phrase = '', $wildcard = false)
@@ -144,12 +145,12 @@ class BanEmail extends AbstractEntityRepository
             return $this->counts[$search_phrase];
         }
 
-        $where = '1';
+        $where  = '1';
         $params = array();
 
         if (!empty($search_phrase)) {
             $where .= " AND banned_email LIKE :search";
-            $params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+            $params['search'] = '%'.str_replace('%', '\%', $search_phrase).'%';
         }
 
         if ($wildcard) {
@@ -167,7 +168,8 @@ class BanEmail extends AbstractEntityRepository
     }
 
     /**
-     * complete list of email bans
+     * complete list of email bans.
+     *
      * @return array
      */
     public function getAll()

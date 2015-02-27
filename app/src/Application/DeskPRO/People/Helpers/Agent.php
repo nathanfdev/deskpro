@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -83,53 +82,53 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     {
         return array(
             'getAgent' => '_getThis',
-            'agent' => '_getThis',
+            'agent'    => '_getThis',
 
-            'teams' => 'getTeams',
+            'teams'    => 'getTeams',
             'getTeams' => 'getTeams',
 
-            'team' => 'getTeam',
+            'team'    => 'getTeam',
             'getTeam' => 'getTeam',
 
-            'isSingleTeam' => 'isSingleTeam',
+            'isSingleTeam'    => 'isSingleTeam',
             'getIsSingleTeam' => 'isSingleTeam',
-            'countTeams' => 'countTeams',
-            'getCountTeams' => 'countTeams',
-            'hasTeams' => 'hasTeams',
-            'getHasTeams' => 'hasTeams',
+            'countTeams'      => 'countTeams',
+            'getCountTeams'   => 'countTeams',
+            'hasTeams'        => 'hasTeams',
+            'getHasTeams'     => 'hasTeams',
 
-            'getSignature' => 'getSignature',
-            'getSignatureHtml' => 'getSignatureHtml',
-            'getTweetSignature' => 'getTweetSignature'
+            'getSignature'      => 'getSignature',
+            'getSignatureHtml'  => 'getSignatureHtml',
+            'getTweetSignature' => 'getTweetSignature',
         );
     }
 
-
-
     /**
-     * Get the permissions helper
+     * Get the permissions helper.
      *
      * @return \Application\DeskPRO\People\Helpers\AgentPermissions
      */
     public function getPermissions()
     {
-        if ($this->_permissions !== null) return $this->_permissions;
+        if ($this->_permissions !== null) {
+            return $this->_permissions;
+        }
 
         $this->_permissions = new AgentPermissions($this->person);
 
         return $this->_permissions;
     }
 
-
-
     /**
-     * Get a collection of teams the user is part of
+     * Get a collection of teams the user is part of.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getTeams()
     {
-        if ($this->_agent_teams !== null) return $this->_agent_teams;
+        if ($this->_agent_teams !== null) {
+            return $this->_agent_teams;
+        }
 
         try {
             $this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
@@ -140,7 +139,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return $this->_agent_teams;
     }
 
-
     /**
      * Get an array of team IDs the user is part of.
      *
@@ -148,7 +146,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
      */
     public function getTeamIds()
     {
-        if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
+        if ($this->_agent_team_ids !== null) {
+            return $this->_agent_team_ids;
+        }
 
         $this->_agent_team_ids = array();
         foreach ($this->getTeams() as $team) {
@@ -158,9 +158,8 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return $this->_agent_team_ids;
     }
 
-
     /**
-     * Count how many teams the user belongs to
+     * Count how many teams the user belongs to.
      *
      * @return int
      */
@@ -168,7 +167,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     {
         return count($this->getTeams());
     }
-
 
     /**
      * Does the user belong to exactly 1 team?
@@ -184,7 +182,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return false;
     }
 
-
     /**
      * Does this user belong to at least one team?
      *
@@ -195,10 +192,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return ($this->countTeams() > 0);
     }
 
-
     /**
      * Get the persons team. If a person has more than one team ID, then this
-     * will return the first
+     * will return the first.
      *
      * @return int
      */
@@ -214,11 +210,11 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return $t;
     }
 
-
     /**
-     * Check if the user is part of a specific team
+     * Check if the user is part of a specific team.
      *
      * @param $team_id
+     *
      * @return bool
      */
     public function isTeamMember($team_id)
@@ -231,24 +227,21 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return false;
     }
 
-
     /**
      * Add the user to a team.
      *
-     * @param  \Application\DeskPRO\Entity\AgentTeam $team
-     * @return void
+     * @param \Application\DeskPRO\Entity\AgentTeam $team
      */
     public function addToTeam(Entity\AgentTeam $team)
     {
         return $team->addPerson($this);
     }
 
-
-
     /**
-     * Check if the user is allowed to use a particular department
+     * Check if the user is allowed to use a particular department.
      *
-     * @param  int|Department $dep
+     * @param int|Department $dep
+     *
      * @return bool
      */
     public function isDepartmentAllowed($dep)
@@ -260,18 +253,18 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return in_array($dep, $this->getAllowedDepartments());
     }
 
-
-
     /**
-     * Get an array of departments the user isn't allowed to see
+     * Get an array of departments the user isn't allowed to see.
      *
      * @return array
      */
     public function getDisallowedDepartmentIds()
     {
-        if ($this->_dep_disallowed_ids !== null) return $this->_dep_disallowed_ids;
+        if ($this->_dep_disallowed_ids !== null) {
+            return $this->_dep_disallowed_ids;
+        }
 
-        $all_ids = App::getDataService('Department')->getIds();
+        $all_ids     = App::getDataService('Department')->getIds();
         $allowed_ids = $this->getAllowedDepartments();
 
         $disallowed_ids = array_diff($all_ids, $allowed_ids);
@@ -282,13 +275,15 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Get an array of departments the user is allowed to see
+     * Get an array of departments the user is allowed to see.
      *
      * @return array
      */
     public function getAllowedDepartmentIds()
     {
-        if ($this->_dep_allowed_ids !== null) return $this->_dep_allowed_ids;
+        if ($this->_dep_allowed_ids !== null) {
+            return $this->_dep_allowed_ids;
+        }
 
         $this->_dep_allowed_ids = array();
         foreach ($this->_access['departments'] as $dep) {
@@ -299,7 +294,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Gets the agent's text signature
+     * Gets the agent's text signature.
      *
      * @return string
      */
@@ -319,7 +314,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Gets the agent's HTML signature
+     * Gets the agent's HTML signature.
      *
      * @return string
      */
@@ -329,7 +324,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         if (!$sig_html) {
             $sig = $this->person->getPref('agent.ticket_signature');
             if ($sig) {
-                $sig_html = '<p class="dp-signature-start">' . nl2br(htmlspecialchars(trim($sig))) . '</p>';
+                $sig_html = '<p class="dp-signature-start">'.nl2br(htmlspecialchars(trim($sig))).'</p>';
             }
         }
 
@@ -359,10 +354,10 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
                                   ->getSnippetsForAgent('tickets', $this->person);
 
             $snippets_flat = array();
-            $cats_flat = array();
+            $cats_flat     = array();
             foreach ($this->_snippets as $group) {
                 $snippets_flat = array_merge($snippets_flat, $group['snippets']);
-                $cats_flat[] = $group['category'];
+                $cats_flat[]   = $group['category'];
             }
             foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
                 App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
@@ -423,13 +418,13 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Gets the agent's Tweet signature
+     * Gets the agent's Tweet signature.
      *
      * @return string
      */
     public function getTweetSignature()
     {
-        return (string)$this->person->getPref('agent.tweet_signature');
+        return (string) $this->person->getPref('agent.tweet_signature');
     }
 
     public function getPrimaryTeam()

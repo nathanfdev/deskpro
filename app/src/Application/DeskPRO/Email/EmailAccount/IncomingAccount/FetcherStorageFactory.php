@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,9 +41,11 @@ use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 class FetcherStorageFactory
 {
     /**
-     * @param  AccountConfigInterface    $config
-     * @return FetcherStorageInterface
+     * @param AccountConfigInterface $config
+     *
      * @throws \InvalidArgumentException
+     * @return FetcherStorageInterface
+     *
      */
     public function createFetcherStorage(AccountConfigInterface $config)
     {
@@ -58,7 +59,8 @@ class FetcherStorageFactory
     }
 
     /**
-     * @param  Pop3Config  $config
+     * @param Pop3Config $config
+     *
      * @return Pop3Storage
      */
     public function createPop3FetcherStorage(Pop3Config $config)
@@ -73,7 +75,8 @@ class FetcherStorageFactory
     }
 
     /**
-     * @param  GmailConfig $config
+     * @param GmailConfig $config
+     *
      * @return Pop3Storage
      */
     public function createGmailFetcherStorage(GmailConfig $config)
@@ -87,9 +90,9 @@ class FetcherStorageFactory
         );
     }
 
-
     /**
-     * @param  Office365Config $config
+     * @param Office365Config $config
+     *
      * @return Pop3Storage
      */
     public function createOffice365FetcherStorage(Office365Config $config)

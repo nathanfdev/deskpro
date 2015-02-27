@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -48,28 +47,29 @@ class RestrictionSet
     const ERR_FAIL_NOT_EXT  = 'not_allowed_exts';
 
     /**
-     * The max size to accept
+     * The max size to accept.
      *
      * @var int
      */
     protected $max_size = 5242880; // 5 MB
 
     /**
-     * Whitelist of extention to accept
+     * Whitelist of extention to accept.
      *
      * @var array
      */
     protected $allowed_exts = null;
 
     /**
-     * Blacklist of extensions to reject
+     * Blacklist of extensions to reject.
      *
      * @var array
      */
     protected $disallowed_exts = null;
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\File $file
+     * @param \Symfony\Component\HttpFoundation\File\File $file
+     *
      * @return array|null
      */
     public function getError(File $file)
@@ -90,9 +90,10 @@ class RestrictionSet
     /**
      * Check properties against this restriction set. $props can be:
      * - size (filesize)
-     * - ext (file extension)
+     * - ext (file extension).
      *
-     * @param  array      $props
+     * @param array $props
+     *
      * @return array|null
      */
     public function getErrorForProperties(array $props)
@@ -122,11 +123,12 @@ class RestrictionSet
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  array $allowed_exts
+     * @param array $allowed_exts
+     *
      * @return $this
      */
     public function setAllowedExts(array $allowed_exts = null)
@@ -148,7 +150,8 @@ class RestrictionSet
     }
 
     /**
-     * @param  array $disallowed_exts
+     * @param array $disallowed_exts
+     *
      * @return $this
      */
     public function setDisallowedExts(array $disallowed_exts = null)
@@ -170,7 +173,8 @@ class RestrictionSet
     }
 
     /**
-     * @param  int   $max_size
+     * @param int $max_size
+     *
      * @return $this
      */
     public function setMaxSize($max_size = null)

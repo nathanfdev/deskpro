@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -38,31 +37,30 @@ use Orb\Validator\Callback as CallbackValidator;
 use Orb\Validator\ValidatorInterface;
 
 /**
- * Like a normal options array except that we run validations
+ * Like a normal options array except that we run validations.
  */
 class CheckedOptionsArray extends OptionsArray
 {
     /**
-     * Array if name=>array(ValidatorInterface)
+     * Array if name=>array(ValidatorInterface).
      *
      * @var array
      */
     private $validators = array();
 
     /**
-     * An array of the only valid names
+     * An array of the only valid names.
      *
      * @var array
      */
     private $valid_names = array();
 
     /**
-     * An array of required names
+     * An array of required names.
      *
      * @var array
      */
     private $required_names = array();
-
 
     /**
      * Add required names. If you are also using valid names, required names are automatically
@@ -85,9 +83,8 @@ class CheckedOptionsArray extends OptionsArray
         }
     }
 
-
     /**
-     * Add valid names
+     * Add valid names.
      *
      * @param string|string[] $name...
      */
@@ -106,21 +103,19 @@ class CheckedOptionsArray extends OptionsArray
         }
     }
 
-
     /**
-     * Ensures we have all the required options
+     * Ensures we have all the required options.
      *
      * @throws CheckedOptionsException
      */
     public function ensureRequired()
     {
         $required_names = array_keys($this->required_names);
-        $diff = array_diff($required_names, array_keys($this->options));
+        $diff           = array_diff($required_names, array_keys($this->options));
         if ($diff) {
-            throw new CheckedOptionsException("Missing required options: " . implode(', ', $diff), array('required'), array('names' => $diff));
+            throw new CheckedOptionsException("Missing required options: ".implode(', ', $diff), array('required'), array('names' => $diff));
         }
     }
-
 
     /**
      * @return array
@@ -130,7 +125,6 @@ class CheckedOptionsArray extends OptionsArray
         return array_keys($this->required_names);
     }
 
-
     /**
      * @return array
      */
@@ -138,7 +132,6 @@ class CheckedOptionsArray extends OptionsArray
     {
         return array_keys($this->valid_names);
     }
-
 
     /**
      * Adds a checked option. When $name is set, it will run through the validator.
@@ -154,7 +147,6 @@ class CheckedOptionsArray extends OptionsArray
 
         $this->validators[$name][] = $validator;
     }
-
 
     /**
      * Adds a checked option with a custom callback that does the checking.
@@ -179,13 +171,12 @@ class CheckedOptionsArray extends OptionsArray
                 return array(array('invalid_value', array('expected_type' => 'callback')));
             }
 
-            return null;
+            return;
         };
 
         $validator = new CallbackValidator(array('callback_function' => $fn));
         $this->addCheckedOption($name, $validator);
     }
-
 
     /**
      * Add a not-null validator for $name.
@@ -199,16 +190,15 @@ class CheckedOptionsArray extends OptionsArray
                 return array(array('null_value', array('expected_type' => 'not_null')));
             }
 
-            return null;
+            return;
         };
 
         $validator = new CallbackValidator(array('callback_function' => $fn));
         $this->addCheckedOption($name, $validator);
     }
 
-
     /**
-     * Ensure $name is an instance of $type
+     * Ensure $name is an instance of $type.
      *
      * @param string $name
      * @param string $type
@@ -234,16 +224,16 @@ class CheckedOptionsArray extends OptionsArray
         $this->addCheckedOption($name, $validator);
     }
 
-
     /**
-     * @param  string                  $name
-     * @param  mixed                   $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @throws CheckedOptionsException
      */
     public function set($name, $value)
     {
         if ($this->valid_names && (!isset($this->valid_names[$name]) && !isset($this->required_names[$name]))) {
-            throw new CheckedOptionsException("Invalid option name: " . $name, array('invalid_name'), array('name' => $name));
+            throw new CheckedOptionsException("Invalid option name: ".$name, array('invalid_name'), array('name' => $name));
         }
 
         if (isset($this->validators[$name])) {

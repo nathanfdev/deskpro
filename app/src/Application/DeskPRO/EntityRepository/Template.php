@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,17 +35,18 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\Template as TemplateEntity;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 
 class Template extends AbstractEntityRepository
 {
     /**
-     * @var array of loaded db templates by brand id. example: $loadedTemplates[$brand_id][$theme_id][$template_name]
+     * @var array of loaded db templates by brand id. example:[$brand_id][$theme_id][$template_name]
      */
     protected $loadedTemplates;
 
     /**
      * @param $name
+     *
      * @return null|\Application\DeskPRO\Entity\Template
      */
     public function getTemplateByName($name)
@@ -54,42 +54,43 @@ class Template extends AbstractEntityRepository
         return $this->findOneBy(array('name' => $name));
     }
 
-
     /**
-     * @param             $template_name
-     * @param  null       $style
+     * @param      $template_name
+     * @param null $style
+     *
      * @return mixed|null
      * @depreated - still in use so cant delete, but styles dont exist anymore so will always return null
      */
     public function getTemplateForStyle($template_name, $style = null)
     {
         try {
-            if ($style === null OR $style === 0) {
+            if ($style === null or $style === 0) {
                 $q = $this->getEntityManager()->createQuery("
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style IS NULL AND t.name = ?1
-                ")->setParameters(array(1=>$template_name));
+                ")->setParameters(array(1 => $template_name));
             } else {
                 $q = $this->getEntityManager()->createQuery("
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style = ?1 AND t.name = ?2
-                ")->setParameters(array(1=>$style, 2=>$template_name));
+                ")->setParameters(array(1 => $style, 2 => $template_name));
             }
 
             $r = $q->getSingleResult();
 
             return $r;
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
-
     /**
      * @param $style
+     *
      * @return array
+     *
      * @deprecated
      */
     public function getCustomTemplateNamesInStyle($style)
@@ -99,7 +100,9 @@ class Template extends AbstractEntityRepository
 
     /**
      * @param $style
+     *
      * @return array
+     *
      * @deprecated
      */
     public function getCustomTemplateInfoInStyle($style)
@@ -107,24 +110,23 @@ class Template extends AbstractEntityRepository
         return array();
     }
 
-
     /**
-     * @param                      $name
-     * @param  BrandEntity         $brand
-     * @param  ThemeInterface      $theme
+     * @param                $name
+     * @param BrandEntity    $brand
+     * @param ThemeInterface $theme
+     *
      * @return null|TemplateEntity
      */
     public function getBrandTemplate($name, BrandEntity $brand, ThemeInterface $theme)
     {
-        $loaded = $this->getLoadedTemplatesForBrand($brand);
+        $loaded   = $this->getLoadedTemplatesForBrand($brand);
         $theme_id = $theme->getId();
         if (isset($loaded[$theme_id])) {
-            return isset($loaded[$theme_id][(string)$name]) ? $loaded[$theme_id][(string)$name] : null;
+            return isset($loaded[$theme_id][(string) $name]) ? $loaded[$theme_id][(string) $name] : null;
         }
 
-        return null;
+        return;
     }
-
 
     public function getLoadedTemplatesForBrand(BrandEntity $brand)
     {
@@ -135,12 +137,11 @@ class Template extends AbstractEntityRepository
         return $this->loadedTemplates[$brand->id];
     }
 
-
     protected function loadTemplates(BrandEntity $brand)
     {
         $found_brand_templates = $this->findBy(
             array(
-                'brand'    => $brand
+                'brand'    => $brand,
             )
         );
 

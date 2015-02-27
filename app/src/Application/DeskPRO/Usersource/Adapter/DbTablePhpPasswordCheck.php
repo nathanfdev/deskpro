@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -57,13 +54,14 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         );
     }
 
-
     /**
      * @return \Doctrine\DBAL\Connection
      */
     public function getDb()
     {
-        if ($this->db) return $this->db;
+        if ($this->db) {
+            return $this->db;
+        }
 
         if ($this->usersource->getOption('connection_options')) {
             $options = $this->usersource->getOption('connection_options');
@@ -101,6 +99,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
      * Find a user identity just by an email address.
      *
      * @param $id_input
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -118,12 +117,14 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
                 $userinfo = $adapter->getUserInfoForUsername($id_input);
             }
         } catch (\Exception $e) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            }
             throw $e;
         }
 
         if (!$userinfo) {
-            return null;
+            return;
         }
 
         $identify = $adapter->getIdentityFromUserInfo($userinfo);
@@ -147,12 +148,13 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_GET_USER_INFO,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
         );
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

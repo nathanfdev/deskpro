@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks subject of the email
+ * Checks subject of the email.
  *
  * @option string subject
  */
@@ -55,7 +54,6 @@ class CheckEmailSubject extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,7 +46,9 @@ class AbstractCategoryRepository extends AbstractEntityRepository
      */
     public function getCategoryHelper()
     {
-        if ($this->_cat_helper !== null) return $this->_cat_helper;
+        if ($this->_cat_helper !== null) {
+            return $this->_cat_helper;
+        }
 
         $this->_cat_helper = new CategoryHierarchy(
             $this->getEntityManager(),
@@ -62,9 +63,8 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 
     public function getPermissionTableName()
     {
-        return null;
+        return;
     }
-
 
     /**
      * Runs through the hierarchy to reset 'depth' and 'root' values,
@@ -73,8 +73,6 @@ class AbstractCategoryRepository extends AbstractEntityRepository
      *
      * This isnt just "bad" thing, it sholud be called for example
      * when a new category is created, or one is deleted.
-     *
-     * @return void
      */
     public function repair()
     {
@@ -104,11 +102,11 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 
                 $display_order += 10;
                 $cat->display_order = $display_order;
-                $cat->depth = $cinfo['depth'];
+                $cat->depth         = $cinfo['depth'];
 
                 if (!$cat->parent) {
                     $current_root = $cat;
-                    $cat->root = $cat->getId();
+                    $cat->root    = $cat->getId();
                 } else {
                     $cat->root = $current_root['id'];
                 }
@@ -125,10 +123,11 @@ class AbstractCategoryRepository extends AbstractEntityRepository
     }
 
     /**
-     * Pass through to helper
+     * Pass through to helper.
      *
      * @param $method
      * @param $args
+     *
      * @return mixed
      */
     public function __call($method, $args)

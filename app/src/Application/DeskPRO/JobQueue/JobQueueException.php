@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\JobQueue;
 use Orb\Util\Strings;
 
 /**
- * Anything that goes wrong that a worker (or router) detects
+ * Anything that goes wrong that a worker (or router) detects.
  *
  * Default error code: 1545
  */

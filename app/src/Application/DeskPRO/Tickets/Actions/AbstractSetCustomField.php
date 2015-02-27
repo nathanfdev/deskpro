@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Util;
@@ -52,42 +50,40 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         return $options;
     }
 
-
     /**
-     * @param  Ticket                                         $ticket
-     * @param  ExecutorContextInterface                       $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return \Application\DeskPRO\CustomFields\FieldManager
      */
     abstract public function getFieldManager(Ticket $ticket, ExecutorContextInterface $context);
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return mixed
      */
     abstract public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context);
-
 
     /**
      * {@inheritDoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $fm = $this->getFieldManager($ticket, $context);
+        $fm  = $this->getFieldManager($ticket, $context);
         $obj = $this->getApplicableObject($ticket, $context);
 
         if (!$fm || !$obj) {
             return;
         }
 
-        $field_id = $this->getActionOption('field_id');
-        $value    = $this->getActionOption('value');
+        $field_id   = $this->getActionOption('field_id');
+        $value      = $this->getActionOption('value');
         $form_array = array("field_{$field_id}" => $value);
 
         $fm->saveFormToObject($form_array, $obj, true);
     }
-
 
     /**
      * {@inheritDoc}
@@ -101,7 +97,6 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         return array();
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -110,12 +105,11 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $this->applyAction($ticket, $context);
     }
 
-
     /**
      * @return string
      */
     public function getActionType()
     {
-        return Util::getBaseClassname($this) . $this->getActionOption('field_id');
+        return Util::getBaseClassname($this).$this->getActionOption('field_id');
     }
 }

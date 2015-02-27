@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -77,7 +74,7 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Sets some useful objects from options
+     * Sets some useful objects from options.
      */
     protected function init()
     {
@@ -85,9 +82,10 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Get a trigger or escalation
+     * Get a trigger or escalation.
      *
-     * @param  int                                        $trigger_id
+     * @param int $trigger_id
+     *
      * @return \Application\DeskPRO\Entity\TicketPriority
      */
     public function get($trigger_id)
@@ -98,7 +96,7 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Get all triggers and escalations
+     * Get all triggers and escalations.
      *
      * @return \Application\DeskPRO\Entity\TicketPriority[]
      */
@@ -110,7 +108,7 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Get all triggers
+     * Get all triggers.
      *
      * @return \Application\DeskPRO\Entity\TicketTrigger[]
      */
@@ -122,7 +120,7 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Get all escalations
+     * Get all escalations.
      *
      * @return \Application\DeskPRO\Entity\TicketTrigger[]
      */
@@ -134,7 +132,7 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Loads all tikcet priorities into this object
+     * Loads all tikcet priorities into this object.
      */
     protected function preload()
     {
@@ -162,7 +160,8 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  array                                        $ids
+     * @param array $ids
+     *
      * @return \Application\DeskPRO\Entity\TicketPriority[]
      */
     public function getByIds(array $ids)
@@ -180,9 +179,10 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Check if a specific trigger exists and is a trigger
+     * Check if a specific trigger exists and is a trigger.
      *
-     * @param  int  $trigger_id
+     * @param int $trigger_id
+     *
      * @return bool
      */
     public function hasTriggerId($trigger_id)
@@ -193,9 +193,10 @@ class TicketTriggerDataService extends BaseRepositoryService
     }
 
     /**
-     * Check if a specific trigger exists and is an escalation
+     * Check if a specific trigger exists and is an escalation.
      *
-     * @param  int  $trigger_id
+     * @param int $trigger_id
+     *
      * @return bool
      */
     public function hasEscalationId($trigger_id)
@@ -209,7 +210,8 @@ class TicketTriggerDataService extends BaseRepositoryService
      * Calls a method on the repository class and caches the result.
      *
      * @param $method
-     * @param  array $args
+     * @param array $args
+     *
      * @return mixed
      */
     public function __call($method, array $args = array())

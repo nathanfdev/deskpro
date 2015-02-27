@@ -9,13 +9,13 @@ class WebHelper extends \Codeception\Module
     private $openAdminInterface_containerCount = null;
 
     /**
-     * Opens admin interface
+     * Opens admin interface.
      */
     public function openAdminInterface($as_agent_email = null)
     {
         // We dont need to refresh the page and regenerate a new session
         // if we already have a session and the db has not changed
-        $container_count = (int)$this->getDpControlHelper()->getContainerCounter();
+        $container_count = (int) $this->getDpControlHelper()->getContainerCounter();
         if ($container_count === $this->openAdminInterface_containerCount && $this->getModule('WebDriver')->grabCookie('dptest-has-agent-sid') && preg_match('#/admin/#', $this->getModule('WebDriver')->grabFromCurrentUrl())) {
             return;
         }
@@ -28,7 +28,7 @@ class WebHelper extends \Codeception\Module
         $this->getModule('WebDriver')->amOnPage("/");
 
         $container = $this->getDpControlHelper()->getSymfonyContainer();
-        $db = $container->getDb();
+        $db        = $container->getDb();
 
         if ($as_agent_email === null) {
             $agent_id = $db->fetchColumn("
@@ -50,11 +50,11 @@ class WebHelper extends \Codeception\Module
         @session_start();
         $_SESSION = array(
             '_sf2_attributes' => array(
-                'dp_interface' => 'agent',
+                'dp_interface'   => 'agent',
                 'auth_person_id' => $agent_id,
             ),
             '_sf2_flashes' => array(),
-            '_sf2_meta' => array()
+            '_sf2_meta'    => array(),
         );
 
         $db->executeUpdate("
@@ -79,7 +79,7 @@ class WebHelper extends \Codeception\Module
 
         $id = $db->lastInsertId();
 
-        $id_enc = Util::baseEncode($id, Util::BASE36_ALPHABET) . '-HDJWW7T8CWRZ2NN';
+        $id_enc = Util::baseEncode($id, Util::BASE36_ALPHABET).'-HDJWW7T8CWRZ2NN';
         $this->getModule('WebDriver')->setCookie('dpsid-agent', $id_enc);
         $this->getModule('WebDriver')->setCookie('dptest-has-agent-sid', '1');
         $this->getModule('WebDriver')->amOnPage('/admin');
@@ -100,9 +100,9 @@ class WebHelper extends \Codeception\Module
      */
     public function amOnAdminPage($page)
     {
-        $page = "/" . ltrim($page, '/');
+        $page = "/".ltrim($page, '/');
         $this->getModule('WebDriver')->executeJS('window.DP_NO_DIRTYSTATE_CONFIRM = true;');
-        $this->getModule('WebDriver')->executeJS('parent.location.hash = "'. addslashes($page) . '";');
+        $this->getModule('WebDriver')->executeJS('parent.location.hash = "'.addslashes($page).'";');
         $this->getModule('WebDriver')->wait(1.2);
         $this->waitForAdminLoad();
     }

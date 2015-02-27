@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -59,10 +56,10 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
             return;
         }
 
-        $item = new ReplySnippetActionItem();
+        $item             = new ReplySnippetActionItem();
         $item->snippet_id = $snippet_id;
         $item->reply_pos  = $reply_pos;
-        $item->snippet = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
+        $item->snippet    = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
 
         if (!$item->snippet) {
             return;
@@ -73,7 +70,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
     }
 
-
     /**
      * @param ReplySnippetActionItem $item
      */
@@ -82,7 +78,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $this->snippet_items[] = $item;
     }
 
-
     /**
      * @return ReplySnippetActionItem[]
      */
@@ -90,7 +85,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     {
         return $this->snippet_items;
     }
-
 
     /**
      * @return string[]
@@ -108,7 +102,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         return $titles;
     }
 
-
     /**
      * @return int[]
      */
@@ -125,16 +118,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         return $ids;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
-
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -146,7 +136,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -179,7 +169,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
             return;
         }
 
-        $message = new TicketMessage();
+        $message         = new TicketMessage();
         $message->person = $this->person_context;
 
         $snippet_text = array();
@@ -189,7 +179,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 'snippet',
                 array(
                     $ticket->language,
-                    $this->person_context->getRealLanguage()
+                    $this->person_context->getRealLanguage(),
                 )
             );
             $text = trim($text);
@@ -221,9 +211,8 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $ticket->addMessage($message);
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -234,13 +223,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
 
         return array(
-            array('action' => 'reply_snippet')
+            array('action' => 'reply_snippet'),
         );
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -265,7 +254,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         // when being viewed from replybox
         // See TicketController::ajaxGetMacroAction
         if (isset($_GET['macro_reply_context'])) {
-            $ret = array();
+            $ret       = array();
             $reply_pos = null;
 
             foreach ($this->snippet_items as $item) {
@@ -273,11 +262,11 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                     $reply_pos = $item->reply_pos;
                 }
                 if ($item->reply_pos == 'overwrite') {
-                    $ret[] = "Reply with snippet: " . $item->snippet->title;
+                    $ret[] = "Reply with snippet: ".$item->snippet->title;
                 } elseif ($item->reply_pos == 'append') {
-                    $ret[] = "Append snippet to reply: " . $item->snippet->title;
+                    $ret[] = "Append snippet to reply: ".$item->snippet->title;
                 } else {
-                    $ret[] ="Prepend snippet to reply: " . $item->snippet->title;
+                    $ret[] = "Prepend snippet to reply: ".$item->snippet->title;
                 }
             }
 
@@ -285,14 +274,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
             $html = '';
             if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-
                 $snippet_text = array();
                 foreach ($this->snippet_items as $item) {
                     $text = App::getTranslator()->objectChoosePhraseText(
                         $item->snippet,
                         'snippet',
                         array(
-                            $GLOBALS['DP_ACTIVE_TICKET']->language
+                            $GLOBALS['DP_ACTIVE_TICKET']->language,
                         )
                     );
                     $text = trim($text);
@@ -314,17 +302,17 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 }
 
                 $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
-                $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+                $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
                 $formatter->addVar('agent_signature', '');
                 $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
             }
 
-            $ret = '<span class="with-reply" data-reply-pos="' . $reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
+            $ret = '<span class="with-reply" data-reply-pos="'.$reply_pos.'">'.$ret.'<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
 
             return $ret;
         }
 
-        return "Reply with snippet: " . implode(', ', $this->getSnippetTitles());
+        return "Reply with snippet: ".implode(', ', $this->getSnippetTitles());
     }
 }
 
@@ -341,7 +329,8 @@ class ReplySnippetActionItem
     public $snippet_id;
 
     /**
-     * Possible values: append, prepend, overwrite
+     * Possible values: append, prepend, overwrite.
+     *
      * @var string
      */
     public $reply_pos;

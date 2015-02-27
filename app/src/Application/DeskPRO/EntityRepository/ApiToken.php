@@ -26,19 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
+
 use Application\DeskPRO\App;
 
 class ApiToken extends AbstractEntityRepository
 {
     /**
-     * Find an API key based off of a key string. A key string is: "id:code"
+     * Find an API key based off of a key string. A key string is: "id:code".
      *
      * @param string $api_string
      *
@@ -46,13 +46,20 @@ class ApiToken extends AbstractEntityRepository
      */
     public function findByTokenString($token_string)
     {
-        if (strpos($token_string, ':') === false) return null;
+        if (strpos($token_string, ':') === false) {
+            return;
+        }
 
-        list ($id, $token) = explode(':', $token_string, 2);
+        list($id, $token) = explode(':', $token_string, 2);
 
         $token_obj = $this->find($id);
-        if (!$token_obj) return null;
-        if ($token_obj->token != $token) return null;
+        if (!$token_obj) {
+            return;
+        }
+        if ($token_obj->token != $token) {
+            return;
+        }
+
         return $token_obj;
     }
 
@@ -75,17 +82,17 @@ class ApiToken extends AbstractEntityRepository
 
         if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
             App::getDb()->delete('api_token_rate_limit', array(
-                'api_token_id' => $api_token->id
+                'api_token_id' => $api_token->id,
             ));
         }
 
         $interval = (int) App::getSetting('core.api_rate_limit_interval');
         if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
             $rate_limit = array(
-                'api_token_id' => $api_token->id,
-                'hits' => 0,
+                'api_token_id'  => $api_token->id,
+                'hits'          => 0,
                 'created_stamp' => time(),
-                'reset_stamp' => time() + $interval
+                'reset_stamp'   => time() + $interval,
             );
         }
 

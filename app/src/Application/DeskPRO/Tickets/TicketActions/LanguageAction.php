@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -48,9 +45,8 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         $this->language_id = $language;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -58,7 +54,6 @@ class LanguageAction extends AbstractAction implements PermissionableAction
     {
         $ticket['language_id'] = $this->language_id;
     }
-
 
     /**
      * {@inheritDoc}
@@ -76,9 +71,8 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -89,13 +83,12 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'language', 'language_id' => $this->language_id)
+            array('action' => 'language', 'language_id' => $this->language_id),
         );
     }
 
-
     /**
-     * Get the language id
+     * Get the language id.
      *
      * @return int
      */
@@ -104,16 +97,15 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         return $this->language_id;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string

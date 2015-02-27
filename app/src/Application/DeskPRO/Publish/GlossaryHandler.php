@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Addons
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish;
@@ -39,24 +36,27 @@ use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Handles linking glossary words in texts
+ * Handles linking glossary words in texts.
  */
 class GlossaryHandler
 {
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $db;
 
     /**
-     * All words defined
+     * All words defined.
+     *
      * @var array
      */
     protected $_words = null;
@@ -74,7 +74,9 @@ class GlossaryHandler
 
     protected function _initWords()
     {
-        if ($this->_words !== null) return;
+        if ($this->_words !== null) {
+            return;
+        }
 
         $this->_words = $this->db->fetchAllCol("
             SELECT word
@@ -95,7 +97,6 @@ class GlossaryHandler
 
         $load = array_diff($words, array_keys($this->_defs));
         if ($load) {
-
             $words = $this->db->fetchAllKeyValue("
                 SELECT word, glossary_word_definitions.definition
                 FROM glossary_words
@@ -116,6 +117,7 @@ class GlossaryHandler
 
     /**
      * @param $text
+     *
      * @return array
      */
     public function findWords($text)
@@ -124,7 +126,7 @@ class GlossaryHandler
 
         $load = array();
         foreach ($this->_words as $word) {
-            if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
+            if (preg_match('#\b'.preg_quote($word, '#').'\b#i', $text)) {
                 $load[] = $word;
             }
         }
@@ -134,6 +136,7 @@ class GlossaryHandler
 
     /**
      * @param $text
+     *
      * @return mixed
      */
     public function processText($text)
@@ -142,7 +145,7 @@ class GlossaryHandler
 
         $load = array();
         foreach ($this->_words as $word) {
-            if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
+            if (preg_match('#\b'.preg_quote($word, '#').'\b#i', $text)) {
                 $load[] = $word;
             }
         }
@@ -154,15 +157,15 @@ class GlossaryHandler
             $word_u = urlencode($word);
 
             $text = preg_replace_callback(
-                '#(\b)(' . preg_quote($word, '#') . ')(\b)#i',
+                '#(\b)('.preg_quote($word, '#').')(\b)#i',
                 function ($m) use ($word_h, $word_u, $url_base) {
                     $url = str_replace('__DP_WORD__', $word_u, $url_base);
 
                     return $m[1]
-                        . '<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
-                        . $m[2]
-                        . '</span>'
-                        . $m[3];
+                        .'<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
+                        .$m[2]
+                        .'</span>'
+                        .$m[3];
                 },
                 $text,
                 1

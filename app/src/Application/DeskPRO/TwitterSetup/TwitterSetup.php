@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\TwitterSetup;
@@ -38,7 +36,6 @@ class TwitterSetup
     /**
      * @var \Application\DeskPRO\Settings\Settings
      */
-
     private $settings;
 
     /** @var string */
@@ -55,7 +52,6 @@ class TwitterSetup
     /**
      * @param \Application\DeskPRO\Settings\Settings $settings
      */
-
     public function __construct(\Application\DeskPRO\Settings\Settings $settings)
     {
         $this->settings = $settings;
@@ -65,7 +61,6 @@ class TwitterSetup
     /**
      * Resets twitter setup based on stored values.
      */
-
     public function resetTwitterSetup()
     {
         $this->twitter_agent_consumer_key    = $this->settings->get('core.twitter_agent_consumer_key');
@@ -78,7 +73,6 @@ class TwitterSetup
     /**
      * @return array
      */
-
     public function toArray()
     {
         $export_settings = array();
@@ -91,7 +85,6 @@ class TwitterSetup
                 'twitter_user_consumer_secret',
                 'twitter_auto_remove_time',
             ) as $s) {
-
             $export_settings[$s] = $this->$s;
         }
 
@@ -101,7 +94,6 @@ class TwitterSetup
     /**
      * @param array $new_values
      */
-
     public function setArray(array $new_values)
     {
         foreach ($new_values as $v => $val) {
@@ -112,9 +104,8 @@ class TwitterSetup
     }
 
     /**
-     * Persists twitter setup
+     * Persists twitter setup.
      */
-
     public function saveTwitterSetup()
     {
         $this->settings->setSetting('core.twitter_agent_consumer_key', $this->twitter_agent_consumer_key);

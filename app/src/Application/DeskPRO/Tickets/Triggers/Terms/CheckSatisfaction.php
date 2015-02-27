@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks satisfaction
+ * Checks satisfaction.
  *
  * @option int rating
  */
@@ -55,7 +54,6 @@ class CheckSatisfaction extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}
@@ -75,7 +73,7 @@ class CheckSatisfaction extends AbstractTriggerTerm
             return true;
         }
 
-        $rating = (int)$this->getTermOptions()->get('rating', 0);
+        $rating = (int) $this->getTermOptions()->get('rating', 0);
         if ($rating < 0) {
             $rating = -1;
         } elseif ($rating > 0) {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form;
@@ -39,7 +36,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * The new ticket form
+ * The new ticket form.
  */
 class ProfileType extends AbstractType
 {
@@ -48,13 +45,13 @@ class ProfileType extends AbstractType
         $builder->add('first_name', 'text');
         $builder->add('last_name', 'text');
         $builder->add('timezone', 'choice', array(
-            'choices' => array_combine(array_values(\DateTimeZone::listIdentifiers()), array_values(\DateTimeZone::listIdentifiers()))
+            'choices' => array_combine(array_values(\DateTimeZone::listIdentifiers()), array_values(\DateTimeZone::listIdentifiers())),
         ));
 
         $langs = App::getDataService('Language')->getTitles();
         if (count($langs) != 1) {
             $builder->add('language_id', 'choice', array(
-                'choices' => $langs
+                'choices' => $langs,
             ));
         }
     }

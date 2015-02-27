@@ -26,22 +26,23 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\FormBundle\Collection\CustomDataCollection;
+use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
- * Feedback (feedback)
+ * Feedback (feedback).
+ *
  * @SWG\Model
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
@@ -120,7 +121,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $_is_new = false;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
@@ -137,13 +138,13 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         $this->_is_new = true;
 
-        $this->comments    = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments    = new ArrayCollection();
+        $this->custom_data = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
     }
 
     /**
-     * Set the validating status
+     * Set the validating status.
      *
      * @param string $validating
      */
@@ -159,7 +160,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int                $field_id
+     * @param int $field_id
+     *
      * @return CustomDataFeedback
      */
     public function getCustomDataForField($field_id)
@@ -174,7 +176,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -184,6 +186,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         $this->custom_data->add($data);
         $data['feedback'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     /**
@@ -222,14 +225,36 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->category['id'];
     }
 
+    /**
+     * Set a category.
+     *
+     * @param FeedbackCategory $category
+     *
+     * @return $this
+     */
+    public function setCategory(FeedbackCategory $category = null)
+    {
+        if ($category) {
+            $this->setModelField('category', $category);
+        } else {
+            $this->setModelField('category', -1);
+        }
+
+        return $this;
+    }
+
     public function setCategoryId($id)
     {
         $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
+
+        return $this;
     }
 
     /**
      * @param bool $absolute
+     *
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getLink($absolute = true)
@@ -241,7 +266,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @param bool $absolute
+     *
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getPermalink($absolute = true)
@@ -257,13 +284,13 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * At the moment, there is only one custom_data set, this is just a quick way to access its value in twig
+     * At the moment, there is only one custom_data set, this is just a quick way to access its value in twig.
      */
     public function getCustomDataSelection()
     {
-        /** @var \Application\DeskPRO\Entity\CustomDataFeedback $data */
+        /* @var \Application\DeskPRO\Entity\CustomDataFeedback $data */
         if (!$data = $this->custom_data->last()) {
-            return null;
+            return;
         }
 
         return $data->field->getChildById($data->getValue());
@@ -376,7 +403,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Add an attachment
+     * Add an attachment.
      *
      * @param FeedbackAttachment $attach
      */
@@ -418,9 +445,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -431,7 +459,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -484,8 +512,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $metadata->setPrimaryTable(array(
             'name'    => 'feedback',
             'indexes' => array(
-                'date_published_idx' => array('columns' => array( 0 => 'date_published' )),
-                'status_idx'                                        => array('columns' => array('status')),
+                'date_published_idx'                                => array('columns' => array( 0 => 'date_published' )),
+                'status_idx'                                                                       => array('columns' => array('status')),
             ),
         ));
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
@@ -580,7 +608,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'fieldName'    => 'status_category',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory', 'mappedBy' => null,
                 'inversedBy'   => null, 'joinColumns' => array(
-                0 => array(
+                0              => array(
                     'name'     => 'status_category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'set null', 'columnDefinition' => null,
                 ),
@@ -589,10 +617,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapManyToOne(
             array(
-                'fieldName'   => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
-                'mappedBy'    => null, 'inversedBy' => null,
-                'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id')),
-                'dpApi'                                  => true,
+                'fieldName'                              => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+                'mappedBy'                               => null, 'inversedBy' => null,
+                'joinColumns'                            => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id')),
+                'dpApi'                                                             => true,
             )
         );
         $metadata->mapOneToMany(
@@ -609,23 +637,23 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
-                'orphanRemoval'            => true,
+                'fieldName'                => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback',
+                'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
+                'orphanRemoval'                       => true,
             )
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'     => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
-                'orphanRemoval'            => true, 'dpApi'            => true,
+                'fieldName'                => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
+                'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
+                'orphanRemoval'                       => true, 'dpApi'                       => true,
             )
         );
         $metadata->mapManyToOne(
             array(
                 'fieldName'  => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
                 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0            => array(
                     'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => 'set null', 'columnDefinition' => null,
                 ),
@@ -636,7 +664,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
                 'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),
@@ -645,14 +673,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
-                'dpApi'                => true, 'dpApiDeep'            => true, 'dpApiPrimary'            => true,
+                'fieldName'            => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
+                'cascade'              => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
+                'dpApi'                           => true, 'dpApiDeep'                       => true, 'dpApiPrimary'                       => true,
             )
         );
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'
+            'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
         ));
     }
 }

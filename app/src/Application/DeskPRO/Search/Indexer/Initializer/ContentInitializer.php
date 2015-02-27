@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Search
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Search\IndexInitializer;
@@ -49,14 +46,14 @@ abstract class ContentInitializer extends AbstractInitializer
         #------------------------------
 
         $time_start = microtime(true);
-        $total = 0;
+        $total      = 0;
         try {
             $total += $this->runForType('article',  'DeskPRO:Article');
             $total += $this->runForType('download', 'DeskPRO:Download');
             $total += $this->runForType('feedback',     'DeskPRO:Feedback');
             $total += $this->runForType('news',     'DeskPRO:News');
         } catch (\Exception $e) {
-            $this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);
+            $this->logger->log('Exception: '.$e->getMessage(), Logger::ERR);
             throw $e;
         }
 
@@ -79,7 +76,7 @@ abstract class ContentInitializer extends AbstractInitializer
         $this->logger->log("START $entity_name ($count objects)", Logger::INFO);
 
         $per_page = 25;
-        $pages = ceil($count / $per_page);
+        $pages    = ceil($count / $per_page);
 
         for ($i = 0; $i < $pages; $i++) {
             $offset = $i * $per_page;

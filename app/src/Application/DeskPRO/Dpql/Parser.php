@@ -26,10 +26,7 @@
         \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql;
@@ -111,7 +108,7 @@ class ParseyyToken implements \ArrayAccess
 }
 
 /** The following structure represents a single element of the
- * parser's stack.  Information stored includes:
+ * parser's stack.  Information stored includes:.
  *
  *   +  The state number for the parser at this level of the stack.
  *
@@ -548,7 +545,7 @@ class Parser#line 102 "Parser.php"
     const YYERRSYMDT    = 'yy0';
     const YYFALLBACK    = 0;
     /** The next table maps tokens into fallback tokens.  If a construct
-     * like the following:
+     * like the following:.
      *
      *      %fallback ID X Y Z.
      *
@@ -562,7 +559,7 @@ class Parser#line 102 "Parser.php"
     /**
      * Turn parser tracing on by giving a stream to which to write the trace
      * and a prompt to preface each trace message.  Tracing is turned off
-     * by making either argument NULL
+     * by making either argument NULL.
      *
      * Inputs:
      *
@@ -575,6 +572,7 @@ class Parser#line 102 "Parser.php"
      * Outputs:
      *
      * - None.
+     *
      * @param resource
      * @param string
      */
@@ -590,7 +588,7 @@ class Parser#line 102 "Parser.php"
     }
 
     /**
-     * Output debug information to output (php://output stream)
+     * Output debug information to output (php://output stream).
      */
     public static function PrintTrace()
     {
@@ -603,7 +601,8 @@ class Parser#line 102 "Parser.php"
      */
     public static $yyTraceFILE;
     /**
-     * String to prepend to debug output
+     * String to prepend to debug output.
+     *
      * @var string|0
      */
     public static $yyTracePrompt;
@@ -622,7 +621,8 @@ class Parser#line 102 "Parser.php"
 
     /**
      * For tracing shifts, the names of all terminals and nonterminals
-     * are required.  The following table supplies these names
+     * are required.  The following table supplies these names.
+     *
      * @var array
      */
     public static $yyTokenName = array(
@@ -650,6 +650,7 @@ class Parser#line 102 "Parser.php"
 
     /**
      * For tracing reduce actions, the names of all rules are required.
+     *
      * @var array
      */
     public static $yyRuleName = array(
@@ -731,7 +732,9 @@ class Parser#line 102 "Parser.php"
     /**
      * This function returns the symbolic name associated with a token
      * value.
+     *
      * @param int
+     *
      * @return string
      */
     public function tokenName($tokenType)
@@ -749,6 +752,7 @@ class Parser#line 102 "Parser.php"
     /**
      * The following function deletes the value associated with a
      * symbol.  The symbol can be either a terminal or nonterminal.
+     *
      * @param int the symbol code
      * @param mixed the symbol's value
      */
@@ -776,7 +780,9 @@ class Parser#line 102 "Parser.php"
      * is popped from the stack, then call it.
      *
      * Return the major token number for the symbol popped.
+     *
      * @param ParseyyParser
+     *
      * @return int
      */
     public function yy_pop_parser_stack()
@@ -813,8 +819,10 @@ class Parser#line 102 "Parser.php"
 
     /**
      * Based on the current state and parser stack, get a list of all
-     * possible lookahead tokens
+     * possible lookahead tokens.
+     *
      * @param int
+     *
      * @return array
      */
     public function yy_get_expected_tokens($token)
@@ -891,7 +899,9 @@ class Parser#line 102 "Parser.php"
      *
      * The parser will convert the token value to an error token if not.  This
      * catches some unusual edge cases where the parser would fail.
+     *
      * @param int
+     *
      * @return bool
      */
     public function yy_is_expected_token($token)
@@ -974,6 +984,7 @@ class Parser#line 102 "Parser.php"
      * If the look-ahead token is YYNOCODE, then check to see if the action is
      * independent of the look-ahead.  If it is, return the action, otherwise
      * return YY_NO_ACTION.
+     *
      * @param int The look-ahead token
      */
     public function yy_find_shift_action($iLookAhead)
@@ -1019,6 +1030,7 @@ class Parser#line 102 "Parser.php"
      * If the look-ahead token is self::YYNOCODE, then check to see if the action is
      * independent of the look-ahead.  If it is, return the action, otherwise
      * return self::YY_NO_ACTION.
+     *
      * @param int Current state number
      * @param int The look-ahead token
      */
@@ -1047,6 +1059,7 @@ class Parser#line 102 "Parser.php"
 
     /**
      * Perform a shift action.
+     *
      * @param int The new state to shift in
      * @param int The major token to shift in
      * @param mixed the minor token to shift in
@@ -1641,6 +1654,7 @@ class Parser#line 102 "Parser.php"
      * (B, blah, and C in our example rule), and then push the result of the action
      * back on to the stack with the resulting state reduced to (as described in the .out
      * file)
+     *
      * @param int Number of the rule by which to reduce
      */
     public function yy_reduce($yyruleno)
@@ -1693,7 +1707,7 @@ class Parser#line 102 "Parser.php"
     }
 
     /**
-     * The following code executes when the parse fails
+     * The following code executes when the parse fails.
      *
      * Code from %parse_fail is inserted here
      */
@@ -1713,6 +1727,7 @@ class Parser#line 102 "Parser.php"
      * The following code executes when a syntax error first occurs.
      *
      * %syntax_error code is inserted here
+     *
      * @param int The major type of the error token
      * @param mixed The minor type of the error token
      */
@@ -1725,7 +1740,7 @@ class Parser#line 102 "Parser.php"
     }
 
     /**
-     * The following is executed when the parser accepts
+     * The following is executed when the parser accepts.
      *
      * %parse_accept code is inserted here
      */
@@ -1750,8 +1765,6 @@ class Parser#line 102 "Parser.php"
      * @param int   $yymajor      the token number
      * @param mixed $yytokenvalue the token value
      * @param mixed ...           any extra arguments that should be passed to handlers
-     *
-     * @return void
      */
     public function doParse($yymajor, $yytokenvalue)
     {

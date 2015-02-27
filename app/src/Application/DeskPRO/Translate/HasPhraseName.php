@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
@@ -40,19 +39,21 @@ namespace Application\DeskPRO\Translate;
 interface HasPhraseName
 {
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate The translate object requesting
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate The translate object requesting
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate);
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate The translate object requesting
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate The translate object requesting
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate);

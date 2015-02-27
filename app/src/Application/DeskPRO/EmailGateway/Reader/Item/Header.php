@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Reader\Item;
@@ -48,7 +46,7 @@ class Header
     public function getHeader()
     {
         if (!$this->header_parts) {
-            return null;
+            return;
         }
 
         return $this->header_parts[0];

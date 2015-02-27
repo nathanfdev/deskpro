@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Feedback;
@@ -44,7 +41,7 @@ use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\Entity\Visitor;
 
 /**
- * New feedback acts as the processor and domain object for a newfeedback form
+ * New feedback acts as the processor and domain object for a newfeedback form.
  */
 class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 {
@@ -114,7 +111,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
         return $this->person_context;
     }
 
-
     /**
      * @param array $attach_ids
      */
@@ -128,34 +124,31 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
         }
     }
 
-
     public function save()
     {
         $this->em->getConnection()->beginTransaction();
 
         try {
-
             #------------------------------
             # Handle the person first
             #------------------------------
 
             $validating = null;
 
-            $person = null;
-            $email = null;
+            $person           = null;
+            $email            = null;
             $email_validating = null;
 
             if ($this->person_context->isGuest()) {
-
                 $person_processor = new PersonFromEmailProcessor();
-                $person = $person_processor->findPersonByEmailAddress($this->person_email);
+                $person           = $person_processor->findPersonByEmailAddress($this->person_email);
 
                 if ($person) {
-                    $email = $person->getPrimaryEmail();
+                    $email            = $person->getPrimaryEmail();
                     $email_validating = null;
                 } else {
-                    $person = null;
-                    $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
+                    $person           = null;
+                    $email            = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
                     $email_validating = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
                 }
 
@@ -183,11 +176,10 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
                         }
                         $this->em->persist($person);
 
-                        $email_validating = new PersonEmailValidating();
-                        $email_validating->email = $this->person_email;
+                        $email_validating         = new PersonEmailValidating();
+                        $email_validating->email  = $this->person_email;
                         $email_validating->person = $person;
                         $this->em->persist($email_validating);
-
                     } else {
                         $person = $email_validating->person;
                     }
@@ -202,8 +194,8 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
                     }
                     $this->em->persist($person);
 
-                    $email = new PersonEmail();
-                    $email->email = $this->person_email;
+                    $email         = new PersonEmail();
+                    $email->email  = $this->person_email;
                     $email->person = $person;
                     $person->addEmailAddress($email);
                     $this->em->persist($email);
@@ -247,7 +239,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
             }
 
             foreach ($this->attach_blobs as $blob) {
-                $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
                 $attach->person   = $person;
                 $attach->feedback = $feedback;
                 $attach->blob     = $blob;
@@ -259,7 +251,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
             $this->em->persist($feedback);
             $this->em->flush();
 
-            $rating = Rating::create(1);
+            $rating         = Rating::create(1);
             $rating->person = $person;
             $feedback->addRating($rating);
 
@@ -288,11 +280,11 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
                     }
 
                     $vars = array(
-                        'feedback' => $feedback,
-                        'person' => $person,
+                        'feedback'         => $feedback,
+                        'person'           => $person,
                         'email_validating' => $email_validating,
-                        'email' => $email,
-                        'validating' => $validating,
+                        'email'            => $email,
+                        'validating'       => $validating,
                     );
 
                     $message = App::getMailer()->createMessage();
@@ -302,7 +294,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
                     App::getMailer()->send($message);
                 });
             }
-
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;

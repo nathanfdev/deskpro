@@ -26,15 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -209,11 +205,11 @@ SRC;
         $to_email   = $input->getOption('to-email');
         $time       = date('Y-m-d H:i:s');
 
-            $source = str_replace('%FROM_EMAIL%', $from_email, $source);
-            $source = str_replace('%TO_EMAIL%', $to_email, $source);
-            $source = str_replace('%TIME%', $time, $source);
-            $source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
+        $source = str_replace('%FROM_EMAIL%', $from_email, $source);
+        $source = str_replace('%TO_EMAIL%', $to_email, $source);
+        $source = str_replace('%TIME%', $time, $source);
+        $source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
 
-            echo $source;
-        }
+        echo $source;
     }
+}

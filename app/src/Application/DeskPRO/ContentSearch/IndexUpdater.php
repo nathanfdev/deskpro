@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ContentSearch
  */
 
@@ -37,7 +36,7 @@ namespace Application\DeskPRO\ContentSearch;
 use Application\DeskPRO\App;
 
 /**
- * When an entity is updated, this should be called from a post* method to update its index
+ * When an entity is updated, this should be called from a post* method to update its index.
  */
 class IndexUpdater
 {

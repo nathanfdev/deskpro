@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Hierarchy;
@@ -53,14 +51,14 @@ abstract class LazyPreloadedHierarchy
     }
 
     /**
-     * Loads records for the hierarchy
+     * Loads records for the hierarchy.
      *
      * @return array
      */
     abstract protected function loadRecords();
 
     /**
-     * Loads department data from the database
+     * Loads department data from the database.
      */
     private function preload()
     {
@@ -93,7 +91,8 @@ abstract class LazyPreloadedHierarchy
     ####################################################################################################################
 
     /**
-     * @param  int   $id
+     * @param int $id
+     *
      * @return mixed Returns null when not found
      */
     public function getById($id)
@@ -104,7 +103,8 @@ abstract class LazyPreloadedHierarchy
     }
 
     /**
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getByIds(array $ids)
@@ -115,7 +115,8 @@ abstract class LazyPreloadedHierarchy
     }
 
     /**
-     * @param  mixed $obj_or_id
+     * @param mixed $obj_or_id
+     *
      * @return bool
      */
     public function isChild($obj_or_id)
@@ -126,7 +127,8 @@ abstract class LazyPreloadedHierarchy
     }
 
     /**
-     * @param  mixed $obj_or_id
+     * @param mixed $obj_or_id
+     *
      * @return bool
      */
     public function isRoot($obj_or_id)
@@ -138,6 +140,7 @@ abstract class LazyPreloadedHierarchy
 
     /**
      * @param $obj_or_id
+     *
      * @return array
      */
     public function getParent($obj_or_id)
@@ -149,7 +152,6 @@ abstract class LazyPreloadedHierarchy
 
     /**
      * @param $obj_or_id
-     * @return null
      */
     public function getParentId($obj_or_id)
     {
@@ -180,6 +182,7 @@ abstract class LazyPreloadedHierarchy
 
     /**
      * @param $obj_or_id
+     *
      * @return bool
      */
     public function hasChildren($obj_or_id)
@@ -201,6 +204,7 @@ abstract class LazyPreloadedHierarchy
 
     /**
      * @param $obj_or_id
+     *
      * @return bool
      */
     public function getChildrenIds($obj_or_id)

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Validator;
@@ -66,7 +63,6 @@ class NewCommentValidator extends AbstractValidator implements PersonContextInte
 
     public function init()
     {
-
     }
 
     /**
@@ -80,7 +76,8 @@ class NewCommentValidator extends AbstractValidator implements PersonContextInte
     /**
      * Check $value to see if its valid.
      *
-     * @param  \Application\DeskPRO\Comments\NewComment $newfeedback
+     * @param \Application\DeskPRO\Comments\NewComment $newfeedback
+     *
      * @return bool
      */
     protected function checkIsValid($newcomment)

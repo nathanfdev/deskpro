@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO;
@@ -55,7 +53,7 @@ class LazyContainer
 
     public function has($id)
     {
-        return array_key_exists($id, $this->items) OR isset($this->wait_items[$id]);
+        return array_key_exists($id, $this->items) or isset($this->wait_items[$id]);
     }
 
     public function get($id)
@@ -75,7 +73,7 @@ class LazyContainer
             return $this->items[$id];
         }
 
-        return null;
+        return;
     }
 
     public function __get($id)

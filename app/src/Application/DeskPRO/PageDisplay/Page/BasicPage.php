@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Page;
@@ -76,25 +73,23 @@ class BasicPage
     const SECTION_DEFAULT = 'default';
 
     /**
-     * array[section] = page_display
+     * array[section] = page_display.
+     *
      * @var \Application\DeskPRO\Entity\PageDisplayAbstract[]
      */
     protected $page_displays = array();
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
-     * @return void
+     * @param \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
      */
     public function addPageDisplay(PageDisplayAbstract $page_display)
     {
-        $section = $page_display['section'];
+        $section                       = $page_display['section'];
         $this->page_displays[$section] = $page_display;
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract[] $page_displays
-     * @return void
+     * @param \Application\DeskPRO\Entity\PageDisplayAbstract[] $page_displays
      */
     public function addPageDisplays(array $page_displays)
     {
@@ -104,9 +99,10 @@ class BasicPage
     }
 
     /**
-     * Check to see if a section has been set
+     * Check to see if a section has been set.
      *
-     * @param  string $section
+     * @param string $section
+     *
      * @return bool
      */
     public function hasPageDisplay($section)
@@ -115,22 +111,23 @@ class BasicPage
     }
 
     /**
-     * Returns a section
+     * Returns a section.
      *
      * @param  $section
+     *
      * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]|null
      */
     public function getPageDisplay($section)
     {
         if (!isset($this->page_displays[$section])) {
-            return null;
+            return;
         }
 
         return $this->page_displays[$section];
     }
 
     /**
-     * Get all page displays
+     * Get all page displays.
      *
      * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]
      */

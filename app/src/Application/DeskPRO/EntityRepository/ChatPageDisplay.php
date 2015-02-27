@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -67,7 +66,7 @@ class ChatPageDisplay extends AbstractEntityRepository
 
             return $d;
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -99,7 +98,7 @@ class ChatPageDisplay extends AbstractEntityRepository
         // then we're auto-generating a 'create' form for everything there is in the system (oh, lawdy!)
         if ($page_data === null) {
             $is_resolved = true;
-            $page_data = $this->generateFullSectionData($zone);
+            $page_data   = $this->generateFullSectionData($zone);
         }
 
         return $page_data;
@@ -116,27 +115,27 @@ class ChatPageDisplay extends AbstractEntityRepository
 
         if ($zone == 'create') {
             $page_data[] = array(
-                'id' => 'person_name',
-                'field_type' => 'person_name'
+                'id'         => 'person_name',
+                'field_type' => 'person_name',
             );
             $page_data[] = array(
-                'id' => 'person_email',
-                'field_type' => 'person_email'
+                'id'         => 'person_email',
+                'field_type' => 'person_email',
             );
         }
 
         $page_data[] = array(
-            'id' => 'chat_department',
-            'field_type' => 'chat_department'
+            'id'         => 'chat_department',
+            'field_type' => 'chat_department',
         );
 
         // Custom fields
         $fields = App::getSystemService('chat_fields_manager')->getFields();
         foreach ($fields as $f) {
             $page_data[] = array(
-                'id' => 'chat_field['.$f->getId().']',
+                'id'         => 'chat_field['.$f->getId().']',
                 'field_type' => 'chat_field',
-                'field_id' => $f->getId()
+                'field_id'   => $f->getId(),
             );
         }
 
@@ -163,7 +162,7 @@ class ChatPageDisplay extends AbstractEntityRepository
         }
 
         if (!$data) {
-            return null;
+            return;
         }
 
         if ($data) {
@@ -182,13 +181,14 @@ class ChatPageDisplay extends AbstractEntityRepository
         $d = null;
         try {
             $d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         if (!$d) {
-            $d = new ChatPageDisplayEntity();
+            $d             = new ChatPageDisplayEntity();
             $d->department = $department;
-            $d['zone'] = $zone;
-            $d['section'] = $section;
+            $d['zone']     = $zone;
+            $d['section']  = $section;
         }
 
         return $d;

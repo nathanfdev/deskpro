@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -92,14 +90,15 @@ class Dp3Detector implements TicketDetectorInterface
             return $ticket;
         }
 
-        return null;
+        return;
     }
 
     /**
      * Subject codes like: [AAAA-0000-AAAA] [ABC123D4]
      * That is (1) ticket ref and (2) ticket authcode.
      *
-     * @param  string                                  $subject_text
+     * @param string $subject_text
+     *
      * @return \Application\DeskPRO\Entity\Ticket|null
      */
     public function userMatchSubject($subject_text)
@@ -109,7 +108,7 @@ class Dp3Detector implements TicketDetectorInterface
         #------------------------------
 
         if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})\]#', $subject_text, $m)) {
-            return null;
+            return;
         }
         $old_ref = $m[1];
 
@@ -120,7 +119,7 @@ class Dp3Detector implements TicketDetectorInterface
         $pos = strpos($subject_text, $m[0]);
 
         if (!preg_match('#\[([a-zA-Z0-9]{8})\]#', $subject_text, $m, null, $pos)) {
-            return null;
+            return;
         }
         $old_auth = $m[1];
 
@@ -140,7 +139,7 @@ class Dp3Detector implements TicketDetectorInterface
             }
         }
         if (!$map_info) {
-            return null;
+            return;
         }
 
         #------------------------------
@@ -148,7 +147,7 @@ class Dp3Detector implements TicketDetectorInterface
         #------------------------------
 
         if ($old_auth != $map_info['old_auth']) {
-            return null;
+            return;
         }
 
         return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
@@ -156,15 +155,16 @@ class Dp3Detector implements TicketDetectorInterface
 
     /**
      * In the body we have: <=== AAAA-0000-AAAA --- ABC123D4 ===>
-     * Thats (1) The old ticket ref and (2) the old ticket auth
+     * Thats (1) The old ticket ref and (2) the old ticket auth.
      *
-     * @param  string                             $body_text
+     * @param string $body_text
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function userMatchBody($body_text)
     {
         if (!preg_match('#<=== ([0-9]{4}-[A-Za-z]{4}-[0-9]{4}) --- ([a-zA-Z0-9]{8}) ===>#', $body_text, $m)) {
-            return null;
+            return;
         }
 
         $old_ref  = $m[1];
@@ -186,7 +186,7 @@ class Dp3Detector implements TicketDetectorInterface
             }
         }
         if (!$map_info) {
-            return null;
+            return;
         }
 
         #------------------------------
@@ -194,7 +194,7 @@ class Dp3Detector implements TicketDetectorInterface
         #------------------------------
 
         if ($old_auth != $map_info['old_auth']) {
-            return null;
+            return;
         }
 
         return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
@@ -202,15 +202,16 @@ class Dp3Detector implements TicketDetectorInterface
 
     /**
      * Tech subjec codes are like: [AAAA-0000-AAAA-8-asd3fda3]
-     * That is (1) the old ticket ref (2) the old tech id (3) substr(md5(old tech pass . old ticket auth), 0, 8)
+     * That is (1) the old ticket ref (2) the old tech id (3) substr(md5(old tech pass . old ticket auth), 0, 8).
      *
-     * @param  string                             $subject_text
+     * @param string $subject_text
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function techMatchSubject($subject_text)
     {
         if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})-([0-9]+)-([a-zA-Z0-9]{8})\]#', $subject_text, $m)) {
-            return null;
+            return;
         }
 
         $old_ref       = $m[1];
@@ -226,7 +227,7 @@ class Dp3Detector implements TicketDetectorInterface
             $map_info = @unserialize($map_info);
         }
         if (!$map_info) {
-            return null;
+            return;
         }
 
         $techmap_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_techpass_'.$old_tech_id));
@@ -234,7 +235,7 @@ class Dp3Detector implements TicketDetectorInterface
             $techmap_info = @unserialize($techmap_info);
         }
         if (!$techmap_info) {
-            return null;
+            return;
         }
 
         #------------------------------
@@ -243,12 +244,12 @@ class Dp3Detector implements TicketDetectorInterface
 
         $check_tech_auth = substr(md5($techmap_info['old_pass'].$map_info['old_auth']), 0, 8);
         if ($check_tech_auth != $old_tech_auth) {
-            return null;
+            return;
         }
 
         $agent = App::getOrm()->getRepository('DeskPRO:Person')->find($techmap_info['new_id']);
         if (!$agent) {
-            return null;
+            return;
         }
 
         $this->_found_person = $agent;

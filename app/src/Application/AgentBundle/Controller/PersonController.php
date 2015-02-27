@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -41,15 +38,15 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
-use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Handles viewing and editing a person
+ * Handles viewing and editing a person.
  */
 class PersonController extends AbstractController
 {
@@ -147,6 +144,15 @@ class PersonController extends AbstractController
             }
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
+
+        $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+            'type'         => new PhoneNumberType(),
+            'allow_add'    => true,
+            'allow_delete' => true,
+            'options'      => array(
+                'label' => false,
+            ),
+        ))->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         $visitor = null;
@@ -296,7 +302,7 @@ class PersonController extends AbstractController
 
         $changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
             array('subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null),
-            array('id' => 'DESC')
+            array('id'      => 'DESC')
         );
 
         return $this->render('AgentBundle:Person:view.html.twig', array(
@@ -384,8 +390,8 @@ class PersonController extends AbstractController
         }
 
         // removed visitor assocations
-        $visitor        = null;
-        $related_person = null;
+        $visitor            = null;
+        $related_person     = null;
         $person_chats       = array();
         $person_chats_count = 0;
 
@@ -599,14 +605,18 @@ class PersonController extends AbstractController
                     : array();
 
                 foreach ($person->usergroups as $personGroup) {
-                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
+                    if ($personGroup->is_agent_group) {
+                        continue;
+                    } // dont touch agent groups
                     if (false === in_array($personGroup, $usergroups, true)) {
                         $person->removeUsergroup($personGroup);
                     }
                 }
 
                 foreach ($usergroups as $personGroup) {
-                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
+                    if ($personGroup->is_agent_group) {
+                        continue;
+                    } // dont touch agent groups
                     $person->addUsergroup($personGroup);
                 }
 
@@ -779,8 +789,8 @@ class PersonController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($person);
 
         return $this->createJsonResponse(array(
-            'success' => true,
-            'tpl'     => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+            'success'                       => true,
+            'tpl'                           => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
                 'timezone_options'          => $timezone_options,
                 'person'                    => $person,
                 'custom_fields'             => $custom_fields,
@@ -839,7 +849,7 @@ class PersonController extends AbstractController
     # save-contact-data
     ############################################################################
 
-    public function saveContactDataAction($person_id)
+    public function saveContactDataAction(Request $request, $person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
@@ -861,6 +871,15 @@ class PersonController extends AbstractController
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
         $added = array();
+
+        $phones_form = $this->createForm('collection', $person->phone_numbers, array(
+            'type'         => new PhoneNumberType(),
+            'allow_add'    => true,
+            'allow_delete' => true,
+            'options'      => array(
+                'label' => false,
+            ),
+        ));
 
         try {
             if ($this->person->hasPerm('agent_people.manage_emails')) {
@@ -972,8 +991,27 @@ class PersonController extends AbstractController
             throw $e;
         }
 
+        $phones_form->handleRequest($request);
+        if ($phones_form->isValid()) {
+            foreach ($phones_form->getData() as $phone) {
+                if ($phone->person) {
+                    continue;
+                }
+                $phone->person = $person;
+                $this->em->persist($phone);
+            }
+            $this->em->flush();
+        } else {
+            foreach ($phones_form->getErrors(true, true) as $error) {
+                /* @var $error FormError */
+                $errors[] = $error->getMessage();
+            }
+        }
+
         // Reset display array
-        $contact_data_array = array();
+        $contact_data_array = array(
+            'phone_numbers' => $phones_form->createView(),
+        );
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
                 $contact_data_array[$cd->contact_type] = array();
@@ -1438,20 +1476,20 @@ class PersonController extends AbstractController
                     }
             $this->em->flush();
 
-                    if ($this->in->getString('newperson.send_welcome_email')) {
-                        /** @var Mailer $mailer */
+            if ($this->in->getString('newperson.send_welcome_email')) {
+                /** @var Mailer $mailer */
                         $mailer = $this->get('mailer');
-                        $message = $mailer->createMessage();
-                        $message->setToPerson($person);
-                        $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                            'person' => $person
+                $message        = $mailer->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
+                            'person' => $person,
                         ));
-                        $mailer->sendNow($message);
-                    }
+                $mailer->send($message);
+            }
 
-                    return $this->createJsonResponse(array(
-                            'success' => true,
-                            'person_id' => $person['id']
+            return $this->createJsonResponse(array(
+                            'success'   => true,
+                            'person_id' => $person['id'],
                     ));
         }
 
@@ -1487,14 +1525,14 @@ class PersonController extends AbstractController
 
             if ($this->in->getString('newperson.send_welcome_email')) {
                 /** @var Mailer $mailer */
-                $mailer = $this->get('mailer');
+                $mailer  = $this->get('mailer');
                 $message = $mailer->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                    'person' => $person
+                    'person' => $person,
                 ));
 
-                $mailer->sendNow($message);
+                $mailer->send($message);
             }
 
             return $this->createJsonResponse(array(
@@ -1549,7 +1587,8 @@ class PersonController extends AbstractController
     }
 
     /**
-     * todo: we use this only for agents now
+     * todo: we use this only for agents now.
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function listAction()

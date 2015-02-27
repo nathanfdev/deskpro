@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -52,13 +49,13 @@ class Build1361540185 extends AbstractBuild
         ");
 
         // Insert new worker job
-        $j = new \Application\DeskPRO\Entity\WorkerJob();
-        $j['id'] = 'chat_transcripts';
+        $j                 = new \Application\DeskPRO\Entity\WorkerJob();
+        $j['id']           = 'chat_transcripts';
         $j['worker_group'] = 'chat';
-        $j['title'] = 'Send Chat Transcripts';
-        $j['description'] = 'Send chat transcripts';
-        $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatTranscripts';
-        $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ChatTranscripts::DEFAULT_INTERVAL;
+        $j['title']        = 'Send Chat Transcripts';
+        $j['description']  = 'Send chat transcripts';
+        $j['job_class']    = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatTranscripts';
+        $j['interval']     = \Application\DeskPRO\WorkerProcess\Job\ChatTranscripts::DEFAULT_INTERVAL;
         $this->container->getEm()->persist($j);
         $this->container->getEm()->flush();
     }

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Form\Type;
@@ -41,17 +39,17 @@ class PermissionRowType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array(
-            'required' => false
+            'required' => false,
         ));
         $builder->add('usergroup_id', 'integer', array(
-            'required' => false
+            'required' => false,
         ));
         $builder->add('person_id', 'integer', array(
-            'required' => false
+            'required' => false,
         ));
         $builder->add('value', 'integer', array(
             'required' => false,
-            'data'     => '1'
+            'data'     => '1',
         ));
     }
 

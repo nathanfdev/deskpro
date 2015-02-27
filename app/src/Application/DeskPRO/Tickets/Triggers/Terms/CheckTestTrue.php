@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
- * A test term that always matches
+ * A test term that always matches.
  */
 class CheckTestTrue extends AbstractTriggerTerm
 {

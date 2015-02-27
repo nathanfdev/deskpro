@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Net\Dns\Rdns;
@@ -38,11 +35,13 @@ class RdnsNull implements RdnsInterface
 {
     /**
      * @param string $ip
-     * @return string|null
+     *
      * @throws \RuntimeException
+     * @return string|null
+     *
      */
     public function lookup($ip)
     {
-        return null;
+        return;
     }
 }

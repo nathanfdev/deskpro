@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 
 class PhoneNumber extends AbstractEntityRepository
 {

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -76,13 +74,14 @@ abstract class AbstractGatewayProcessor
     protected $options = array();
 
     /**
-     * Indexed by blob id
+     * Indexed by blob id.
+     *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
     protected $processed_blobs = null;
 
     /**
-     * Same as processed_blobs except indexed by Content-ID
+     * Same as processed_blobs except indexed by Content-ID.
      *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
@@ -146,7 +145,7 @@ abstract class AbstractGatewayProcessor
     }
 
     /**
-     * Empty hook method for init
+     * Empty hook method for init.
      */
     protected function init()
     {
@@ -235,8 +234,9 @@ abstract class AbstractGatewayProcessor
     /**
      * Get an option. This accepts dot notation for deep array keys.
      *
-     * @param  string $name    The option to fetch
-     * @param  mixed  $default The default value if the option is not set
+     * @param string $name    The option to fetch
+     * @param mixed  $default The default value if the option is not set
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -265,7 +265,7 @@ abstract class AbstractGatewayProcessor
      */
     public function getErrorCode()
     {
-        return null;
+        return;
     }
 
     /**

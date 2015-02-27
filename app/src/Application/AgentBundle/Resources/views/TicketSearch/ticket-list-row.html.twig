@@ -32,7 +32,7 @@
 			</span>
 
             <% if (ticket_display.locked_by_agent) { %>
-            <span class="agent-inline-icon pull-left">
+			<span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
                 <i class="icon-lock" style="font-size: 150%;"></i>
             </span>
             <% } %>

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,12 +36,14 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
- * Article
+ * Article.
  */
 class Article extends ContentAbstract implements HighlightableModelInterface
 {
@@ -96,11 +97,12 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     protected $custom_data;
 
     /**
+     * \Doctrine\Common\Collections\ArrayCollection.
      */
     protected $labels;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
@@ -110,10 +112,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->products    = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->categories  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->products    = new ArrayCollection();
+        $this->categories  = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
+        $this->custom_data = new ArrayCollection();
+        $this->labels      = new ArrayCollection();
     }
 
     /**
@@ -126,6 +129,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getLink()
@@ -137,6 +141,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getPermalink()
@@ -144,6 +149,18 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $url = App::getRouter()->generate('user_articles_article', array('slug' => $this->id), true);
 
         return $url;
+    }
+
+    /**
+     * @param DateTime $date_end
+     *
+     * @return $this
+     */
+    public function setDateEnd(DateTime $date_end = null)
+    {
+        $this->setModelField('date_end', $date_end);
+
+        return $this;
     }
 
     public function setStatus($status)
@@ -158,22 +175,26 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         } else {
             $this->setModelField('status', $status);
         }
+
+        return $this;
     }
 
     /**
-     * Add a label
-     * @param \Application\DeskPRO\Entity\LabelTicket $label
+     * Add a label.
+     *
+     * @param LabelArticle $label
      */
     public function addLabel(LabelArticle $label)
     {
-        $label['article'] = $this;
         $this->labels->add($label);
+        $label['article'] = $this;
     }
 
     public function addCustomData(CustomDataArticle $data)
     {
         $this->custom_data->add($data);
         $data['article'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     public function isInCategory(ArticleCategory $cat)
@@ -186,7 +207,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         parent::addComment($comment);
         $this->setModelField('date_last_comment', new \DateTime());
     }
-
 
     public function addToCategory(ArticleCategory $cat)
     {
@@ -246,7 +266,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     public function getPrimaryCategory()
     {
         if (!$this->categories) {
-            return null;
+            return;
         }
 
         foreach ($this->categories as $c) {
@@ -292,9 +312,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -305,7 +326,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -325,7 +346,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
         return $history;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -461,10 +481,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'categories', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array(
+                'fieldName'             => 'categories', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
+                'cascade'               => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array(
                 'name'                  => 'article_to_categories', 'schema' => null, 'joinColumns' => array(
-                    0 => array(
+                    0                   => array(
                         'name'     => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
@@ -479,10 +499,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'products', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array(
+                'fieldName'             => 'products', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+                'cascade'               => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array(
                 'name'                  => 'article_to_product', 'schema' => null, 'joinColumns' => array(
-                    0 => array(
+                    0                   => array(
                         'name'     => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
@@ -509,23 +529,23 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'     => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
-                'orphanRemoval'            => true, 'dpApi'            => true,
+                'fieldName'                => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
+                'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
+                'orphanRemoval'                       => true, 'dpApi'                       => true,
             )
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
-                'orphanRemoval'            => true,
+                'fieldName'                => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle',
+                'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
+                'orphanRemoval'                       => true,
             )
         );
         $metadata->mapManyToOne(
             array(
                 'fieldName'  => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
                 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0            => array(
                     'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => 'set null', 'columnDefinition' => null,
                 ),
@@ -536,7 +556,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
                 'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),
@@ -545,7 +565,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article'
+            'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
         ));
 
         ObjectTranslatable::loadEntityMetadata($metadata);

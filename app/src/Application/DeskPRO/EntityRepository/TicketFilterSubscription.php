@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,7 +46,7 @@ class TicketFilterSubscription extends AbstractEntityRepository
             FROM DeskPRO:TicketFilterSubscription s
             LEFT JOIN s.filter f
             WHERE s.person = ?1
-        ")->execute(array(1=> $person));
+        ")->execute(array(1 => $person));
 
         $ret = array();
 
@@ -72,8 +71,9 @@ class TicketFilterSubscription extends AbstractEntityRepository
      * )
      * </code>
      *
-     * @param  array $people
-     * @param  array $filters
+     * @param array $people
+     * @param array $filters
+     *
      * @return array
      */
     public function getForAgents(array $people, array $filters = null)
@@ -126,10 +126,12 @@ class TicketFilterSubscription extends AbstractEntityRepository
         $ret = array();
 
         foreach ($results as $s) {
-            $agent_id = $s->person->id;
+            $agent_id  = $s->person->id;
             $filter_id = $s->filter->id;
 
-            if (!isset($ret[$agent_id])) $ret[$agent_id] = array();
+            if (!isset($ret[$agent_id])) {
+                $ret[$agent_id] = array();
+            }
 
             $ret[$agent_id][$filter_id] = $s;
         }

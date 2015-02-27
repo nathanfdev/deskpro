@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -76,9 +74,9 @@ class Detect
         $this->lang_data = $lang_data;
     }
 
-
     /**
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function detectLanguageCode($string)
@@ -86,10 +84,10 @@ class Detect
         $d = $this->getLanguageDetect();
 
         if (!$this->detectable_langs) {
-            return null;
+            return;
         }
 
-        $string = strip_tags($string);
+        $string        = strip_tags($string);
         $detected_code = null;
 
         if (!$detected_code && $this->has_jpn) {
@@ -116,23 +114,22 @@ class Detect
         return $detected_code ? $detected_code : null;
     }
 
-
     /**
-     * @param  string                               $string
+     * @param string $string
+     *
      * @return \Application\DeskPRO\Entity\Language
      */
     public function detectLanguage($string)
     {
         $code = $this->detectLanguageCode($string);
         if (!$code) {
-            return null;
+            return;
         }
 
         $lang = $this->lang_data->findLangCode($code);
 
         return $lang;
     }
-
 
     /**
      * @return \Text_LanguageDetect
@@ -160,7 +157,6 @@ class Detect
         return $this->lang_detect;
     }
 
-
     /**
      * @return string[]
      */
@@ -175,7 +171,6 @@ class Detect
         return $this->detectable_langs;
     }
 
-
     /**
      * @return array
      */
@@ -185,7 +180,7 @@ class Detect
             return $this->jpn_data;
         }
 
-        $this->jpn_data = require(__DIR__.'/data/japanese-common-words.php');
+        $this->jpn_data = require __DIR__.'/data/japanese-common-words.php';
 
         return $this->jpn_data;
     }

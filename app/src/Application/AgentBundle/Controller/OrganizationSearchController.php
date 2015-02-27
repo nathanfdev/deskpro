@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -43,7 +40,7 @@ use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 
 /**
- * Handles searching for orgs
+ * Handles searching for orgs.
  */
 class OrganizationSearchController extends AbstractController
 {

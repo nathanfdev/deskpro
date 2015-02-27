@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -57,7 +54,7 @@ class ArticlesController extends AbstractController
         // The articleAgentIframeAction hadnles its own special auth
         $this->person = $this->session->getPerson();
 
-        return null;
+        return;
     }
 
     public function sectionPermissionCheck()
@@ -66,7 +63,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * Main index shows initial category listing
+     * Main index shows initial category listing.
      */
     public function browseAction($slug = '')
     {
@@ -80,7 +77,7 @@ class ArticlesController extends AbstractController
 
         if ($slug) {
             $category_id = $this->container->getRouter()->getIdFromSlug($slug);
-            $category = null;
+            $category    = null;
 
             if ($category_id && $structure->hasArticleCategory($category_id)) {
                 $category = $structure->getArticleCategory($category_id);
@@ -90,6 +87,7 @@ class ArticlesController extends AbstractController
                 if ($this->db->count('article_categories', array('id' => $category_id))) {
                     return $this->renderLoginOrPermissionError();
                 }
+
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
@@ -98,7 +96,7 @@ class ArticlesController extends AbstractController
                 return $this->redirectRoute('user_articles', array('slug' => $category->getUrlSlug()), 301);
             }
 
-            $category_path = $category->getTreeParents();
+            $category_path     = $category->getTreeParents();
             $category_children = array();
 
             $perm_manager = $this->person->PermissionsManager->get('ArticleCategories');
@@ -114,11 +112,11 @@ class ArticlesController extends AbstractController
             $searcher->addTerm('status', 'is', 'published');
             $searcher->setOrderBy('id', 'desc');
 
-            $total = $searcher->getCount();
+            $total    = $searcher->getCount();
             $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
-            $limit = array(
+            $limit    = array(
                 'offset' => ($pageinfo['curpage']-1) * $per_page,
-                'max' => $per_page
+                'max'    => $per_page,
             );
 
             $article_ids = $searcher->getMatches($limit);
@@ -126,13 +124,12 @@ class ArticlesController extends AbstractController
             $articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 
             $pageinfo = Numbers::getPaginationPages($total, $page, $per_page);
-
         } else {
-            $category = null;
+            $category          = null;
             $category_children = $structure->getArticleRootCategories();
-            $category_path = array();
-            $articles = array();
-            $pageinfo = null;
+            $category_path     = array();
+            $articles          = array();
+            $pageinfo          = null;
         }
 
         $category_counts = $structure->getArticleCategoryCounts($this->person);
@@ -158,19 +155,18 @@ class ArticlesController extends AbstractController
         }
 
         return $this->render($tpl, array(
-            'pageinfo' => $pageinfo,
-            'category' => $category,
-            'category_path' => $category_path,
-            'category_children' => $category_children,
+            'pageinfo'                   => $pageinfo,
+            'category'                   => $category,
+            'category_path'              => $category_path,
+            'category_children'          => $category_children,
             'category_children_articles' => $category_children_articles,
-            'category_counts' => $category_counts,
-            'articles' => $articles,
-            'comment_counts' => $comment_counts,
-            'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts(),
-            'is_subscribed'  => $is_subscribed,
+            'category_counts'            => $category_counts,
+            'articles'                   => $articles,
+            'comment_counts'             => $comment_counts,
+            'section_counts'             => $this->em->getRepository('DeskPRO:Article')->getSectionCounts(),
+            'is_subscribed'              => $is_subscribed,
         ));
     }
-
 
     public function filterAction()
     {
@@ -189,9 +185,9 @@ class ArticlesController extends AbstractController
         $searcher->setPersonContext($this->person);
         $searcher->addTerm('status', 'is', 'published');
 
-        $search_options = array();
-        $search_options['order_by'] = '';
-        $search_options['product_id'] = '';
+        $search_options                = array();
+        $search_options['order_by']    = '';
+        $search_options['product_id']  = '';
         $search_options['category_id'] = '';
 
         if ($this->in->getString('order_by')) {
@@ -207,10 +203,10 @@ class ArticlesController extends AbstractController
             $search_options['product_id'] = $this->in->getUint('product_id');
         }
 
-        $total = $searcher->getCount();
+        $total       = $searcher->getCount();
         $article_ids = $searcher->getMatches(array(
             'offset' => ($page-1) * $per_page,
-            'max' => $per_page
+            'max'    => $per_page,
         ));
 
         if ($article_ids) {
@@ -223,20 +219,19 @@ class ArticlesController extends AbstractController
         $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 
         return $this->render('UserBundle:Articles:find.html.twig', array(
-            'kb_cats' => $kb_cats,
-            'products' => $products,
-            'pageinfo' => $pageinfo,
-            'search_options' => $search_options,
+            'kb_cats'            => $kb_cats,
+            'products'           => $products,
+            'pageinfo'           => $pageinfo,
+            'search_options'     => $search_options,
             'search_options_url' => http_build_query($search_options, null, '&amp;'),
-            'articles' => $articles,
-            'num_results' => $total,
-            'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts($this->person),
+            'articles'           => $articles,
+            'num_results'        => $total,
+            'section_counts'     => $this->em->getRepository('DeskPRO:Article')->getSectionCounts($this->person),
         ));
     }
 
-
     /**
-     * View an article listing
+     * View an article listing.
      *
      * @param  $article_id
      */
@@ -259,12 +254,12 @@ class ArticlesController extends AbstractController
 
         $all_categories = array();
         foreach ($article['categories'] as $cat) {
-            $cats = array();
+            $cats   = array();
             $cats[] = $cat;
-            $p = $cat['parent'];
+            $p      = $cat['parent'];
             while ($p) {
                 $cats[] = $p;
-                $p = $p['parent'];
+                $p      = $p['parent'];
             }
 
             $all_categories[$cat['id']] = array_reverse($cats);
@@ -272,7 +267,7 @@ class ArticlesController extends AbstractController
 
         $this->container->getObjectLangRepository()->preloadObject(null, $article);
 
-        $comments = null;
+        $comments        = null;
         $comments_widget = null;
         $comments_helper = Comments::create($article);
         if ($comments_helper) {
@@ -282,11 +277,11 @@ class ArticlesController extends AbstractController
         }
 
         if ($this->container->getSetting('core.facebook_like')) {
-            $like_helper = FacebookLike::create($article);
+            $like_helper   = FacebookLike::create($article);
             $facebook_like = $like_helper->getHtml();
         }
 
-        $related_finder = new RelatedContentFinder($this->person, $article);
+        $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities();
 
         $content_rating = new ContentRating($article, $this->person, null);
@@ -294,9 +289,9 @@ class ArticlesController extends AbstractController
         $rating = $content_rating->getRating();
 
         if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-            $this->session->set('article.' . $article['id'], $rating_log_search_id);
-        } elseif ($this->session->has('article.' . $article['id'])) {
-            $rating_log_search_id = $this->session->get('article.' . $article['id']);
+            $this->session->set('article.'.$article['id'], $rating_log_search_id);
+        } elseif ($this->session->has('article.'.$article['id'])) {
+            $rating_log_search_id = $this->session->get('article.'.$article['id']);
         } else {
             $rating_log_search_id = 0;
         }
@@ -306,9 +301,9 @@ class ArticlesController extends AbstractController
             $tpl = 'UserBundle:Articles:article-overlay.html.twig';
         }
 
-        $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
         $glossary_words = $glossary->findWords($article->content);
-        $word_defs = $glossary->getWordDefs($glossary_words);
+        $word_defs      = $glossary->getWordDefs($glossary_words);
 
         $this->container->getSystemService('view_log')->view($article);
 
@@ -322,19 +317,19 @@ class ArticlesController extends AbstractController
         }
 
         return $this->render($tpl, array(
-            'rating' => $rating,
+            'rating'               => $rating,
             'rating_log_search_id' => $rating_log_search_id,
 
-            'article' => $article,
-            'glossary_words' => $glossary_words,
-            'word_defs' => $word_defs,
-            'all_categories' => $all_categories,
-            'comments' => $comments,
+            'article'         => $article,
+            'glossary_words'  => $glossary_words,
+            'word_defs'       => $word_defs,
+            'all_categories'  => $all_categories,
+            'comments'        => $comments,
             'comments_widget' => $comments_widget,
-            'facebook_like' => isset($facebook_like) ? $facebook_like : null,
+            'facebook_like'   => isset($facebook_like) ? $facebook_like : null,
 
             'related_content' => $related_content,
-            'is_subscribed' => $is_subscribed,
+            'is_subscribed'   => $is_subscribed,
         ));
     }
 
@@ -365,18 +360,18 @@ class ArticlesController extends AbstractController
         if ($exist) {
             $this->db->delete('kb_subscriptions', array(
                 'person_id'  => $this->person->getId(),
-                'article_id' => $article->getId()
+                'article_id' => $article->getId(),
             ));
         } else {
             $this->db->insert('kb_subscriptions', array(
                 'person_id'  => $this->person->getId(),
-                'article_id' => $article->getId()
+                'article_id' => $article->getId(),
             ));
         }
 
         $url = $this->generateUrl('user_articles_article', array('slug' => $article->getUrlSlug()), true);
 
-        return $this->redirect($url . '#dp_sb');
+        return $this->redirect($url.'#dp_sb');
     }
 
     /**
@@ -406,18 +401,18 @@ class ArticlesController extends AbstractController
         if ($exist) {
             $this->db->delete('kb_subscriptions', array(
                 'person_id'   => $this->person->getId(),
-                'category_id' => $category->getId()
+                'category_id' => $category->getId(),
             ));
         } else {
             $this->db->insert('kb_subscriptions', array(
                 'person_id'   => $this->person->getId(),
-                'category_id' => $category->getId()
+                'category_id' => $category->getId(),
             ));
         }
 
         $url = $this->generateUrl('user_articles', array('slug' => $category->getUrlSlug()), true);
 
-        return $this->redirect($url . '#dp_sb');
+        return $this->redirect($url.'#dp_sb');
     }
 
     public function unsubscribeAllAction($person_id, $auth)
@@ -427,7 +422,7 @@ class ArticlesController extends AbstractController
             return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
         }
 
-        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, App::getSetting('core.app_secret') . $person->getId() . $person->secret_string)) {
+        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, App::getSetting('core.app_secret').$person->getId().$person->secret_string)) {
             return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
         }
 
@@ -445,9 +440,8 @@ class ArticlesController extends AbstractController
         return $this->redirectRoute('user');
     }
 
-
     /**
-     * Submit a new comment
+     * Submit a new comment.
      *
      * @param  $article_id
      */
@@ -473,8 +467,8 @@ class ArticlesController extends AbstractController
         );
 
         $newcomment_formtype = new NewCommentFormType($this->person);
-        $form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
-        $validator = new \Application\UserBundle\Validator\NewCommentValidator();
+        $form                = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+        $validator           = new \Application\UserBundle\Validator\NewCommentValidator();
         $validator->setPersonContext($this->person);
 
         /** @var RateLimit $rateLimit */
@@ -485,7 +479,6 @@ class ArticlesController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;
@@ -493,7 +486,7 @@ class ArticlesController extends AbstractController
 
             if (!$this->consumeRequest('newcomment_articles') || $trap_fail) {
                 return $this->redirectRoute('user_articles_article', array(
-                    'slug' => $article->getUrlSlug()
+                    'slug' => $article->getUrlSlug(),
                 ));
             }
 
@@ -503,7 +496,7 @@ class ArticlesController extends AbstractController
                 $this->session->setFlash('comment_error', $validator->getErrors(true));
 
                 return $this->redirectRoute('user_articles_article', array(
-                    'slug' => $article->getUrlSlug()
+                    'slug' => $article->getUrlSlug(),
                 ));
             }
 
@@ -515,7 +508,7 @@ class ArticlesController extends AbstractController
             if ($new_comment->require_login) {
                 $return_url = $this->generateUrl('user_newcomment_finishlogin', array(
                     'comment_type' => 'article',
-                    'comment_id' => $comment->id,
+                    'comment_id'   => $comment->id,
                 ));
 
                 return $this->redirectRoute('user_login', array('return' => $return_url));
@@ -523,7 +516,7 @@ class ArticlesController extends AbstractController
         }
 
         return $this->redirectRoute('user_articles_article', array(
-            'slug' => $article->getUrlSlug()
+            'slug' => $article->getUrlSlug(),
         ));
     }
 }

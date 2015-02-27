@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -129,7 +128,6 @@ class ChatConversation extends AbstractEntityRepository
         return $qb->getQuery()->execute($params);
     }
 
-
     public function getAgentList($agent)
     {
         $agent_ids = App::getDb()->fetchAllCol("
@@ -191,7 +189,7 @@ class ChatConversation extends AbstractEntityRepository
         $conversation_ids = $this->getEntityManager()->getConnection()->fetchAllCol($sql, array($person1, $person2));
 
         if (!$conversation_ids) {
-            return null;
+            return;
         }
 
         $conversations = $this->getEntityManager()->createQuery("
@@ -229,9 +227,8 @@ class ChatConversation extends AbstractEntityRepository
         return $this->getByIds($convo_ids, true);
     }
 
-
     /**
-     * Count how many chats there have been between a person, and someone else
+     * Count how many chats there have been between a person, and someone else.
      *
      * @param $person
      * @param $person_ids
@@ -240,7 +237,7 @@ class ChatConversation extends AbstractEntityRepository
     {
         $is_array = true;
         if (!is_array($person_ids)) {
-            $is_array = false;
+            $is_array   = false;
             $person_ids = array($person_ids);
         }
 
@@ -269,15 +266,13 @@ class ChatConversation extends AbstractEntityRepository
             ', array($agent['id']));
     }
 
-
     /**
      * This fetches the latest conversation where all $participants participated, and only
      * they participated. Usually this is used to find a private conversation between two people
      * (for agent chats see the ChatController).
      *
-     * @param  array $participant_ids
-     * @param  null  $date_limit
-     * @return void
+     * @param array $participant_ids
+     * @param null  $date_limit
      */
     public function getRecentForPeople(array $participant_ids, $date_limit = null)
     {
@@ -285,7 +280,7 @@ class ChatConversation extends AbstractEntityRepository
             throw new \InvalidArgumentException('$participant_ids should be an array of at least two people');
         }
 
-        if ($date_limit !== null AND !($date_limit instanceof \DateTime)) {
+        if ($date_limit !== null and !($date_limit instanceof \DateTime)) {
             $date_limit = new \DateTime($date_limit);
         }
         if ($date_limit) {
@@ -300,10 +295,10 @@ class ChatConversation extends AbstractEntityRepository
 
         $participant_ids = Arrays::removeFalsey($participant_ids);
         $participant_ids = array_unique($participant_ids);
-        $count = count($participant_ids);
+        $count           = count($participant_ids);
 
         if (!$count) {
-            return null;
+            return;
         }
 
         // todo fix query
@@ -311,21 +306,20 @@ class ChatConversation extends AbstractEntityRepository
             SELECT c.id
             FROM chat_conversations c
             INNER JOIN chat_conversation_to_person p ON (p.conversation_id = c.id)
-            " . ($date_limit ? "WHERE c.date_created > '$date_limit'" : '') . "
+            ".($date_limit ? "WHERE c.date_created > '$date_limit'" : '')."
             GROUP BY c.id
-            HAVING SUM(IF(p.person_id IN (" . implode(',', $participant_ids) . "), 1, 0)) = $count AND COUNT(*) = $count
+            HAVING SUM(IF(p.person_id IN (".implode(',', $participant_ids)."), 1, 0)) = $count AND COUNT(*) = $count
             ORDER BY c.id DESC
             LIMIT 1
         ";
 
         $conversation_id = $this->getEntityManager()->getConnection()->fetchColumn($sql);
         if (!$conversation_id) {
-            return null;
+            return;
         }
 
         return $this->find($conversation_id);
     }
-
 
     public function getActiveChatForVisitor($visitor)
     {

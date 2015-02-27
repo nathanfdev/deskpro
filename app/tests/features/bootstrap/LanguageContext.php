@@ -26,29 +26,22 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class LanguageContext extends BasePortalContext
 {
     /**
-     * @var LanguageManager
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     private $language_manager;
     /**
@@ -69,12 +62,11 @@ class LanguageContext extends BasePortalContext
         EntityManager $em,
         LanguageRepo $lang_repo,
         LanguageStack $lang_stack
-    )
-    {
+    ) {
         $this->language_manager = $language_manager;
-        $this->em = $em;
-        $this->lang_repo = $lang_repo;
-        $this->lang_stack = $lang_stack;
+        $this->em               = $em;
+        $this->lang_repo        = $lang_repo;
+        $this->lang_stack       = $lang_stack;
     }
 
     /**
@@ -98,7 +90,7 @@ class LanguageContext extends BasePortalContext
 
         // add new if not existing
         $langpacks = new LangPackInfo();
-        foreach($langs as $lang) {
+        foreach ($langs as $lang) {
             if (!$this->language_manager->getLanguageBySystemName($lang)) {
                 $new_lang = $langpacks->newLanguageEntity($lang);
                 $this->em->persist($new_lang);
@@ -138,7 +130,7 @@ class LanguageContext extends BasePortalContext
     }
 
     /**
-     * @return LanguageManager
+     * @return \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     public function getLanguageManager()
     {

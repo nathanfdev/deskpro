@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EventDispatcher
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EventDispatcher;
 
 /**
  * An object wrapper that will fire a callback when the property changed method
- * is called (used for doctrine PropertyChagned)
+ * is called (used for doctrine PropertyChagned).
  */
 class PropertyChangedCallback implements \Doctrine\Common\PropertyChangedListener
 {

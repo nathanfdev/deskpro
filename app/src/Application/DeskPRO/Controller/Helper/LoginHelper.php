@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -76,7 +75,7 @@ class LoginHelper
         ')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
         $return = $this->controller->request->getReturnParam();
-        if ($return AND $return[0] != '/') {
+        if ($return and $return[0] != '/') {
             // Always be a path on the current domain,
             // or else it might be a trick to go to some other domain etc
             $return = '';

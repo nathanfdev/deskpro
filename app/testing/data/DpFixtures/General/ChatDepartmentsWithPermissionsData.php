@@ -1,13 +1,12 @@
 <?php
 namespace DpFixtures\General;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\Persistence\ObjectManager;
-
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
-use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\Persistence\ObjectManager;
 
 class ChatDepartmentsWithPermissionsData extends AbstractFixture
 {

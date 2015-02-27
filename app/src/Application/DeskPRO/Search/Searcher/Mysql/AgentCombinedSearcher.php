@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -41,7 +40,7 @@ use Application\DeskPRO\Search\SearcherResult\Result;
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
 
 /**
- * The combined searcher searches everything: articles, news, downloads, feedback
+ * The combined searcher searches everything: articles, news, downloads, feedback.
  */
 class AgentCombinedSearcher
 {
@@ -60,17 +59,17 @@ class AgentCombinedSearcher
 
     public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = true)
     {
-        $limit_types = \Orb\Util\Arrays::removeFalsey((array)$limit_types);
+        $limit_types = \Orb\Util\Arrays::removeFalsey((array) $limit_types);
 
         // Incase they are label matches, try encoding those as labels
         $words = explode(' ', $query_text);
         foreach ($words as $w) {
-            $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+            $query_text .= " ".MysqlAdapter::encodeLabel(strtolower($w));
         }
 
         if ($limit_types) {
-            $limit_types = "'" . implode('\',\'', $limit_types) . "'";
-            $where = "
+            $limit_types = "'".implode('\',\'', $limit_types)."'";
+            $where       = "
                 object_type IN ($limit_types)
                 AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
             ";
@@ -79,7 +78,6 @@ class AgentCombinedSearcher
                 MATCH (content) AGAINST (? IN BOOLEAN MODE)
             ";
         }
-
 
         $total = null;
         if (!$top) {
@@ -91,7 +89,7 @@ class AgentCombinedSearcher
             $total = App::getDbRead('search.searcher.combined')->fetchColumn($count_query, array($query_text));
         }
 
-        $start = ($page - 1) * $per_page;
+        $start        = ($page - 1) * $per_page;
         $select_query = "
             SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _relevancy
             FROM content_search
@@ -105,7 +103,7 @@ class AgentCombinedSearcher
 
         foreach ($results_raw as $result_raw) {
             $result = Result::newFromArray(array(
-                'id' => $result_raw['object_id'],
+                'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
             ));
 

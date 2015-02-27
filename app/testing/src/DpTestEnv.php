@@ -45,14 +45,15 @@ class DpTestEnv
     public static function init()
     {
         static $has_init;
-        if ($has_init) return;
+        if ($has_init) {
+            return;
+        }
 
         @file_put_contents(DP_WEB_ROOT.'/running_tests.trigger', time());
         register_shutdown_function(function () {
             @unlink(DP_WEB_ROOT.'/running_tests.trigger');
         });
     }
-
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -71,12 +72,9 @@ class DpTestEnv
         return $kernel->getContainer();
     }
 
-
     public static function getMockBuilder($name)
     {
-
     }
-
 
     /**
      * @return int
@@ -85,7 +83,6 @@ class DpTestEnv
     {
         return self::$container_count;
     }
-
 
     /**
      * Resets the container so next time it'll be re-created.
@@ -106,9 +103,9 @@ class DpTestEnv
     {
         self::resetContainer();
 
-        require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
-        if (file_exists(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php')) {
-            require_once(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php');
+        require_once DP_ROOT.'/testing/data/DpDbSets/AbstractDbSet.php';
+        if (file_exists(DP_ROOT.'/testing/data/DpDbSets/'.$set_name.'.php')) {
+            require_once DP_ROOT.'/testing/data/DpDbSets/'.$set_name.'.php';
         }
 
         $cache_path = DP_ROOT.'/testing/data/dbset-cache';
@@ -122,7 +119,7 @@ class DpTestEnv
             throw new \InvalidArgumentException("Invalid set name: $set_name ($set_class)");
         }
 
-        $GLOBALS['DP_TESTING_USEDB'] = 'dp_test_' . strtolower($set_name);
+        $GLOBALS['DP_TESTING_USEDB'] = 'dp_test_'.strtolower($set_name);
 
         $set = new $set_class(self::getContainer());
         $set->enableCache(

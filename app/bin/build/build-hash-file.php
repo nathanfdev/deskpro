@@ -15,6 +15,7 @@ require DP_ROOT.'/sys/load_config.php';
 require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
+
 $loader = new UniversalClassLoader();
 $loader->register();
 

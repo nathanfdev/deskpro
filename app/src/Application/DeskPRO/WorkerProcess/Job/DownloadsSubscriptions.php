@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 /**
- * Sends article and category notifications to users with subscriptions
+ * Sends article and category notifications to users with subscriptions.
  */
 class DownloadsSubscriptions extends AbstractJob
 {
@@ -51,7 +48,7 @@ class DownloadsSubscriptions extends AbstractJob
 
         App::getDb()->replace('settings', array(
             'name'  => 'user.download_subscriptions_last',
-            'value' => time()
+            'value' => time(),
         ));
 
         if (!App::getSetting('user.downloads_subscriptions')) {
@@ -92,9 +89,9 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper = $structure->getDownloadCategoryHelper();
+        $helper    = $structure->getDownloadCategoryHelper();
 
-        $category_ids = array();
+        $category_ids   = array();
         $downloads_ids  = array();
 
         foreach ($published as $a) {
@@ -104,14 +101,13 @@ class DownloadsSubscriptions extends AbstractJob
             $downloads_ids[] = $a->id;
         }
 
-        $category_ids = array_unique($category_ids);
+        $category_ids  = array_unique($category_ids);
         $downloads_ids = array_unique($downloads_ids);
 
         $cat_subs     = array();
         $article_subs = array();
 
         if ($category_ids) {
-
             // Users can be subscribed to a category higher-up,
             // so for each article need to include subs for the whole path
             $add_ids = array();
@@ -148,12 +144,14 @@ class DownloadsSubscriptions extends AbstractJob
 
         foreach ($cat_subs as $person_id => $cids) {
             foreach ($published as $downloads) {
-                $cat = $downloads->category;
-                $path = $helper->getPathIds($cat);
+                $cat    = $downloads->category;
+                $path   = $helper->getPathIds($cat);
                 $path[] = $cat->getId();
 
                 if (Arrays::isIn($path, $cids)) {
-                    if (!isset($user_to_downloads[$person_id])) $user_to_downloads[$person_id] = array();
+                    if (!isset($user_to_downloads[$person_id])) {
+                        $user_to_downloads[$person_id] = array();
+                    }
                     $user_to_downloads[$person_id][$downloads->getId()] = $downloads;
                 }
             }
@@ -161,9 +159,13 @@ class DownloadsSubscriptions extends AbstractJob
 
         foreach ($article_subs as $person_id => $aids) {
             foreach ($aids as $aid) {
-                if (!isset($updated[$aid])) continue;
+                if (!isset($updated[$aid])) {
+                    continue;
+                }
 
-                if (!isset($user_to_downloads[$person_id])) $user_to_downloads[$person_id] = array();
+                if (!isset($user_to_downloads[$person_id])) {
+                    $user_to_downloads[$person_id] = array();
+                }
                 $user_to_downloads[$person_id][$aid] = $updated[$aid];
             }
         }
@@ -219,11 +221,12 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         foreach ($user_to_downloads as $person_id => $articles) {
-
             //var_dump($person_id, $articles);exit;
 
             $person = App::getOrm()->find('DeskPRO:Person', $person_id);
-            if (!$person) continue;
+            if (!$person) {
+                continue;
+            }
 
             $new_downloads     = array();
             $updated_downloads = array();
@@ -239,9 +242,9 @@ class DownloadsSubscriptions extends AbstractJob
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:download-subscription.html.twig', array(
-                'person'           => $person,
+                'person'            => $person,
                 'new_downloads'     => $new_downloads,
-                'updated_downloads' => $updated_downloads
+                'updated_downloads' => $updated_downloads,
             ));
             $message->enableQueueHint(1);
 
@@ -252,7 +255,7 @@ class DownloadsSubscriptions extends AbstractJob
         }
 
         if ($user_to_downloads) {
-            $this->logStatus("Send " . count($user_to_downloads) . " notifications");
+            $this->logStatus("Send ".count($user_to_downloads)." notifications");
         }
     }
 }

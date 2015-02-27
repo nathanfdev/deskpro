@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
-use Orb\Util\WorkHoursInterface;
 use Orb\Util\TimeUnit;
+use Orb\Util\WorkHoursInterface;
 use Orb\Util\WorkHoursSetAll;
 
 class SlaCalculator
@@ -66,7 +63,6 @@ class SlaCalculator
      */
     private $fail_time;
 
-
     /**
      * @param                    $type
      * @param WorkHoursInterface $work_hours
@@ -81,12 +77,12 @@ class SlaCalculator
         $this->fail_time  = $fail_time;
     }
 
-
     /**
      * Calculates a date in the future where a SLA fail/warn status is breached.
      *
-     * @param  Ticket         $ticket
-     * @param  int            $delay
+     * @param Ticket $ticket
+     * @param int    $delay
+     *
      * @return \DateTime|null
      */
     private function _calculateDate(Ticket $ticket, $delay)
@@ -99,7 +95,7 @@ class SlaCalculator
             case self::TYPE_WAITING_TIME:
                 if ($ticket->status != 'awaiting_agent') {
                     // can't know when it will expire
-                    return null;
+                    return;
                 }
 
                 if ($this->work_hours instanceof WorkHoursSetAll) {
@@ -108,11 +104,11 @@ class SlaCalculator
                         $wait_time += time() - $ticket->date_user_waiting->getTimestamp();
                     }
 
-                    return new \DateTime('+' . ($delay - $wait_time) . ' seconds', new \DateTimeZone('UTC'));
+                    return new \DateTime('+'.($delay - $wait_time).' seconds', new \DateTimeZone('UTC'));
                 } else {
                     $wait_time = 0;
                     if ($ticket->waiting_times) {
-                        foreach ($ticket->waiting_times AS $waiting) {
+                        foreach ($ticket->waiting_times as $waiting) {
                             if ($waiting['type'] == 'user') {
                                 $wait_time += $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
                             }
@@ -129,14 +125,14 @@ class SlaCalculator
                 break;
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Calculate the date the ticket will reach warning status.
      *
-     * @param  Ticket         $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime|null
      */
     public function calculateWarnDate(Ticket $ticket)
@@ -144,11 +140,11 @@ class SlaCalculator
         return $this->_calculateDate($ticket, $this->warn_time->getSecs());
     }
 
-
     /**
      * Calculate the date the ticket will reach failing status.
      *
-     * @param  Ticket         $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime|null
      */
     public function calculateFailDate(Ticket $ticket)
@@ -156,11 +152,11 @@ class SlaCalculator
         return $this->_calculateDate($ticket, $this->fail_time->getSecs());
     }
 
-
     /**
      * Calculate the date that the SLA completed, or null if it is not completed.
      *
-     * @param  Ticket         $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime|null
      */
     public function calculateCompletedDate(Ticket $ticket)
@@ -186,7 +182,9 @@ class SlaCalculator
         if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
             if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
                 // don't auto resolve sla on ticket creation, even if created by an agent
-                if ($ticket->date_first_agent_reply) $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                if ($ticket->date_first_agent_reply) {
+                    $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                }
                 $dates[] = $ticket->date_last_agent_reply->getTimestamp();
             }
         }
@@ -196,17 +194,18 @@ class SlaCalculator
         }
 
         if ($dates) {
-            return new \DateTime('@' . min($dates));
+            return new \DateTime('@'.min($dates));
         }
 
-        return null;
+        return;
     }
 
     /**
      * Calculate SLA countable time (in seconds) that happened in ticket between start and $ate.
      *
-     * @param  Ticket    $ticket
-     * @param  \DateTime $date
+     * @param Ticket    $ticket
+     * @param \DateTime $date
+     *
      * @return int
      */
     public function calculateTimeUntil(Ticket $ticket, \DateTime $date)
@@ -215,7 +214,7 @@ class SlaCalculator
 
         if ($this->type == self::TYPE_WAITING_TIME) {
             $time = 0;
-            foreach ($ticket->waiting_times AS $waiting) {
+            foreach ($ticket->waiting_times as $waiting) {
                 if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
                     $time += $this->work_hours->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
                 }
@@ -230,7 +229,8 @@ class SlaCalculator
     /**
      * Gets the appropriate Date to compare against warn/fail dates.
      *
-     * @param  Ticket    $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime
      */
     public function getTestTime(Ticket $ticket)
@@ -240,7 +240,9 @@ class SlaCalculator
         if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
             if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
                 // don't auto resolve sla on ticket creation, even if created by an agent
-                if ($ticket->date_first_agent_reply) $times[] = $ticket->date_first_agent_reply->getTimestamp();
+                if ($ticket->date_first_agent_reply) {
+                    $times[] = $ticket->date_first_agent_reply->getTimestamp();
+                }
             }
         }
 
@@ -252,12 +254,13 @@ class SlaCalculator
             $times[] = $ticket->date_resolved->getTimestamp();
         }
 
-        return new \DateTime('@' . min($times));
+        return new \DateTime('@'.min($times));
     }
 
     /**
-     * @param  Ticket    $ticket
-     * @param  TicketSla $ticket_sla
+     * @param Ticket    $ticket
+     * @param TicketSla $ticket_sla
+     *
      * @return bool
      */
     public function isTicketSlaWarning(Ticket $ticket, TicketSla $ticket_sla)
@@ -272,8 +275,9 @@ class SlaCalculator
     }
 
     /**
-     * @param  Ticket    $ticket
-     * @param  TicketSla $ticket_sla
+     * @param Ticket    $ticket
+     * @param TicketSla $ticket_sla
+     *
      * @return bool
      */
     public function isTicketSlaFailed(Ticket $ticket, TicketSla $ticket_sla)

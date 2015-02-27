@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Service\Phirehose;
 
 /**
  * Concrete Twitter API User Stream consuming class.
- *
  */
 class UserStream extends \UserstreamPhirehose
 {
@@ -69,8 +66,7 @@ class UserStream extends \UserstreamPhirehose
     /**
      * Suppress Phirehose @error_log output.
      *
-     * @param  string $message
-     * @return void
+     * @param string $message
      */
     protected function log($message)
     {
@@ -87,7 +83,6 @@ class UserStream extends \UserstreamPhirehose
 
     /**
      * @param \Doctrine\DBAL\Connection
-     * @return void
      */
     public function setConnection(\Doctrine\DBAL\Connection $connection = null)
     {
@@ -119,8 +114,7 @@ class UserStream extends \UserstreamPhirehose
     }
 
     /**
-     * @param  array $account
-     * @return void
+     * @param array $account
      */
     public function setAccount(array $account)
     {
@@ -146,15 +140,14 @@ class UserStream extends \UserstreamPhirehose
     /**
      * Process raw streaming data.
      *
-     * @param  string $status
-     * @return void
+     * @param string $status
      */
     public function enqueueStatus($status)
     {
         try {
             if ($this->callback) {
                 $callback = $this->callback;
-                $status = $callback($status, $this);
+                $status   = $callback($status, $this);
             }
 
             // skip "ping -> pong"
@@ -166,7 +159,7 @@ class UserStream extends \UserstreamPhirehose
 
             // decode json
             $status = json_decode($status);
-            $event = 'unknown';
+            $event  = 'unknown';
 
             // check if status is a tweet
             if (isset($status->text)) {
@@ -193,10 +186,10 @@ class UserStream extends \UserstreamPhirehose
             }
 
             $data = array(
-                'account_id' => $this->account['id'],
-                'event' => $event,
-                'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'account_id'   => $this->account['id'],
+                'event'        => $event,
+                'data'         => serialize($status),
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {

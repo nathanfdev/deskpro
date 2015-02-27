@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Chat
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Chat\UserChat;
@@ -82,9 +79,7 @@ class StatusCheck
 
     /**
      * These checks are done by the agent:
-     * - Check if user has timedout
-     *
-     * @return void
+     * - Check if user has timedout.
      */
     public function runChecksByAgents()
     {
@@ -124,9 +119,7 @@ class StatusCheck
 
     /**
      * The checks run by the user:
-     * - Check if agent has tiemdout
-     *
-     * @return void
+     * - Check if agent has tiemdout.
      */
     public function runChecksByUser()
     {

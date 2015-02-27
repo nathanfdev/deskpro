@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,10 +38,9 @@ use Application\DeskPRO\Entity\AppInstance;
 interface AppContextInterface
 {
     /**
-     * Sets the app instance
+     * Sets the app instance.
      *
-     * @param  AppInstance $app
-     * @return void
+     * @param AppInstance $app
      */
     public function setApp(AppInstance $app);
 }

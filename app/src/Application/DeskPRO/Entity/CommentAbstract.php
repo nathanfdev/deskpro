@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Base comments
- *
+ * Base comments.
  */
 abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -123,8 +120,10 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @static
-     * @param  Person                                      $person
-     * @param  bool                                        $use_request not used anymore?
+     *
+     * @param Person $person
+     * @param bool   $use_request not used anymore?
+     *
      * @return \Application\DeskPRO\Entity\CommentAbstract
      */
     public static function newForPerson(Person $person, $use_request = true)
@@ -198,7 +197,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set the Status
+     * Set the Status.
      *
      * @param $new_status
      */
@@ -279,7 +278,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the author ID
+     * Get the author ID.
      *
      * @return int
      */
@@ -306,7 +305,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set the content object
+     * Set the content object.
      *
      * @param mixed $obj
      */
@@ -317,7 +316,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the base clasname of the object
+     * Get the base clasname of the object.
      *
      * @return string
      */
@@ -327,7 +326,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the "content-type" of the object on this comment
+     * Get the "content-type" of the object on this comment.
      *
      * @return string
      */

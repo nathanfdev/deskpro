@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log;
@@ -41,10 +38,12 @@ class DbErrorLoggerQueue
     /** @var array */
     protected $waiting = array();
 
-    private function __construct() { }
+    private function __construct()
+    {
+    }
 
     /**
-     * Get the single instance of the queue
+     * Get the single instance of the queue.
      *
      * @return DbErrorLoggerQueue
      */
@@ -58,22 +57,21 @@ class DbErrorLoggerQueue
         return $inst;
     }
 
-
     /**
-     * Inits the queue once
+     * Inits the queue once.
      */
     public static function initQueue()
     {
         static $has_init;
         if (!$has_init) {
             App::getDb()->getEventManager()->addEventListener(array(
-                'onPostCommit', 'onPostRollback'
+                'onPostCommit', 'onPostRollback',
             ), self::getInstance());
         }
     }
 
     /**
-     * Adds a queued log
+     * Adds a queued log.
      *
      * @param $logger
      * @param $item
@@ -84,7 +82,7 @@ class DbErrorLoggerQueue
     }
 
     /**
-     * Flushes all waiting logs to be written
+     * Flushes all waiting logs to be written.
      */
     public function flush()
     {
@@ -94,7 +92,7 @@ class DbErrorLoggerQueue
 
         foreach ($this->waiting as $info) {
             $logger = $info[0];
-            $item = $info[1];
+            $item   = $info[1];
 
             $logger->logItem($item);
         }
@@ -109,7 +107,8 @@ class DbErrorLoggerQueue
     {
         try {
             $this->flush();
-        } catch (\Exception $e){}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -119,6 +118,7 @@ class DbErrorLoggerQueue
     {
         try {
             $this->flush();
-        } catch (\Exception $e){}
+        } catch (\Exception $e) {
+        }
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Doctrine\DBAL\Connection;
 
 /**
- * Archives old tickets
+ * Archives old tickets.
  */
 class ArchiveTickets extends AbstractJob
 {
@@ -51,7 +48,7 @@ class ArchiveTickets extends AbstractJob
         }
 
         $datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.auto_archive_time'));
-        $now = date('Y-m-d H:i:s');
+        $now     = date('Y-m-d H:i:s');
 
         $ticket_ids = App::getDb()->fetchAllCol("
             SELECT id FROM tickets_search_active
@@ -59,16 +56,15 @@ class ArchiveTickets extends AbstractJob
             LIMIT 3000
         ", array($datecut));
 
-        $count = count($ticket_ids);
+        $count      = count($ticket_ids);
         $ticket_ids = array_chunk($ticket_ids, 500, false);
 
         $details_arr = serialize(array(
             'old_status' => 'resolved',
-            'new_status' => 'archived'
+            'new_status' => 'archived',
         ));
 
         foreach ($ticket_ids as $ids) {
-
             // Re-fetch IDs from tickets table in case
             // search table is corrupt
             $ids = App::getDb()->fetchAllCol("
@@ -88,7 +84,7 @@ class ArchiveTickets extends AbstractJob
                     'id_before'    => 200,
                     'id_after'     => 210,
                     'details'      => $details_arr,
-                    'date_created' => $now
+                    'date_created' => $now,
                 );
             }
 

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketFilter;
 
 /**
- * Represents a changed filter in the FilterChangeDetector
+ * Represents a changed filter in the FilterChangeDetector.
  */
 class FilterChange
 {

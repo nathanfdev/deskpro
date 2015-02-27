@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -45,8 +44,7 @@ interface SessionStateInterface extends AdapterInterface
     /**
      * Sets the state handler.
      *
-     * @param  Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-     * @return void
+     * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
      */
     public function setStateHandler(StateHandlerInterface $state);
 }

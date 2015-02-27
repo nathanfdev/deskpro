@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -82,7 +81,6 @@ class LabelDef extends DomainObject
      *
      * @return string
      */
-
     public function getLabelEntityName()
     {
         return App::getEntityRepository('DeskPRO:LabelDef')->getLabelEntityFromType($this->label_type);
@@ -93,7 +91,6 @@ class LabelDef extends DomainObject
      *
      * @return string
      */
-
     public function getLabelTable()
     {
         $ent   = App::getEntityRepository('DeskPRO:LabelDef')->getLabelEntityFromType($this->label_type);

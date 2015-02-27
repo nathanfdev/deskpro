@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DBAL
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DBAL\Logging;

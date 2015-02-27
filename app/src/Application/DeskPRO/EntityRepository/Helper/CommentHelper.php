@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -91,8 +90,7 @@ class CommentHelper
         $comment_entity_name,
         $comment_table_name,
         $comment_join_field
-    )
-    {
+    ) {
         $this->repos       = $repos;
         $this->em          = $em;
         $this->class       = $class;
@@ -104,12 +102,12 @@ class CommentHelper
         $this->comment_join_field  = $comment_join_field;
     }
 
-
     /**
-     * Count the number of comments on a record
+     * Count the number of comments on a record.
      *
      * @param $record
-     * @param  bool $user_visible
+     * @param bool $user_visible
+     *
      * @return int
      */
     public function countOn($record, $user_visible = true)
@@ -131,12 +129,12 @@ class CommentHelper
         return $this->em->getConnection()->fetchColumn($sql, array($record->getId()));
     }
 
-
     /**
-     * Count the number of comments on a number of records
+     * Count the number of comments on a number of records.
      *
-     * @param  array $records
-     * @param  bool  $user_visible
+     * @param array $records
+     * @param bool  $user_visible
+     *
      * @return array
      */
     public function countsOnCollection(array $records, $user_visible = true)
@@ -169,7 +167,7 @@ class CommentHelper
 
         /** @var Connection $conn */
         $conn = $this->em->getConnection();
-        $sql = "
+        $sql  = "
             SELECT {$conn->quoteIdentifier($this->comment_join_field)}, COUNT(*)
             FROM {$conn->quoteIdentifier($this->comment_table_name)}
             WHERE

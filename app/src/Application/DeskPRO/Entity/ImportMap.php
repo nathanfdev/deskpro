@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,13 +37,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A general map that maps old IDs to new IDs
- *
+ * A general map that maps old IDs to new IDs.
  */
 class ImportMap extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The type of id/thing/whatever this is mapping.
+     *
      * @var string
      */
     protected $typename;

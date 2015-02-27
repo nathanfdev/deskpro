@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Domain;
@@ -71,7 +69,7 @@ class ObjectTranslatable
     protected $try_langs = null;
 
     /**
-     * Config:
+     * Config:.
      *
      * - with_lang_prop: When true, we consider the object itself defines default translation
      * data. For example, Article has $title and with_lang_prop as 'language'. Getting the 'title' property in $language therefore just results in
@@ -103,7 +101,7 @@ class ObjectTranslatable
     }
 
     /**
-     * Gets the try langs
+     * Gets the try langs.
      *
      * If no try langs have been set explicity with setTryLangs(), we will try langs based on the try langs
      * set by the ObjectLangRepository. If this object has a with_lang_prop, that will always be tried
@@ -143,8 +141,7 @@ class ObjectTranslatable
     }
 
     /**
-     * @param  string $prop
-     * @return null
+     * @param string $prop
      */
     public function getObjectProp($prop, $lang = null)
     {
@@ -181,13 +178,12 @@ class ObjectTranslatable
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  string $prop
-     * @param  string $value
-     * @return void
+     * @param string $prop
+     * @param string $value
      */
     public function setObjectProp($prop, $value, $lang = null)
     {
@@ -207,7 +203,7 @@ class ObjectTranslatable
             $method = "setReal$prop";
             $this->entity->$method($value);
 
-            return null;
+            return;
         }
 
         if (!$this->entity->getId()) {
@@ -230,7 +226,7 @@ class ObjectTranslatable
 
         $this->getObjLangRepos()->setRec($lang, $this->entity, $prop, $value);
 
-        return null;
+        return;
     }
 
     ####################################################################################################################

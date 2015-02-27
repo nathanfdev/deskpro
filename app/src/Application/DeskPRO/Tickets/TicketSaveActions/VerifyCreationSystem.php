@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -40,9 +39,8 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 class VerifyCreationSystem implements TicketSaveActionInterface
 {
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -86,5 +84,4 @@ class VerifyCreationSystem implements TicketSaveActionInterface
             }
         }
     }
-
 }

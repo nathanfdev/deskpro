@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Departments;
@@ -41,7 +39,6 @@ class ChatDepartments extends LazyPreloadedHierarchy
     /**
      * @return array
      */
-
     protected function loadRecords()
     {
         return $this->em->getRepository('DeskPRO:Department')->getChatDepartments();
@@ -51,20 +48,20 @@ class ChatDepartments extends LazyPreloadedHierarchy
     // implementing these just for better auto-complete in the IDE (due to @return) :-)
 
     /**
-     * @param  int                                    $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Department
      */
-
     public function getById($id)
     {
         return parent::getById($id);
     }
 
     /**
-     * @param  array                                    $ids
+     * @param array $ids
+     *
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getByIds(array $ids)
     {
         return parent::getByIds($ids);
@@ -72,9 +69,9 @@ class ChatDepartments extends LazyPreloadedHierarchy
 
     /**
      * @param $obj_or_id
+     *
      * @return \Application\DeskPRO\Entity\Department
      */
-
     public function getParent($obj_or_id)
     {
         return parent::getParent($obj_or_id);
@@ -86,17 +83,16 @@ class ChatDepartments extends LazyPreloadedHierarchy
      *
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getParentPath($obj_or_id, $keyed = false)
     {
         return parent::getParentPath($obj_or_id, $keyed);
     }
 
     /**
-     * @param                                           $obj_or_id
+     * @param   $obj_or_id
+     *
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getChildren($obj_or_id)
     {
         return parent::getChildren($obj_or_id);
@@ -105,7 +101,6 @@ class ChatDepartments extends LazyPreloadedHierarchy
     /**
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getRoots()
     {
         return parent::getRoots();
@@ -114,7 +109,6 @@ class ChatDepartments extends LazyPreloadedHierarchy
     /**
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getAll()
     {
         return parent::getAll();
@@ -125,7 +119,6 @@ class ChatDepartments extends LazyPreloadedHierarchy
      *
      * @return array
      */
-
     public function getPermissionsInfo(Department $dep)
     {
         return $this->em->getRepository('DeskPRO:Department')->getPermissionsInfo($dep);

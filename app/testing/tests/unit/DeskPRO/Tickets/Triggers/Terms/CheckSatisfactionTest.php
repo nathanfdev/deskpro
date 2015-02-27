@@ -12,10 +12,10 @@ class CheckSatisfactionTest extends \DpUnitTestCase
     public function testPositive()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $ticket->date_feedback_rating = new \DateTime();
-        $ticket->feedback_rating = 1;
+        $ticket->feedback_rating      = 1;
 
         $check = new CheckSatisfaction('is', array('rating' => 1));
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
@@ -24,10 +24,10 @@ class CheckSatisfactionTest extends \DpUnitTestCase
     public function testNegative()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $ticket->date_feedback_rating = new \DateTime();
-        $ticket->feedback_rating = -1;
+        $ticket->feedback_rating      = -1;
 
         $check = new CheckSatisfaction('is', array('rating' => -1));
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
@@ -36,10 +36,10 @@ class CheckSatisfactionTest extends \DpUnitTestCase
     public function testNeutral()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $ticket->date_feedback_rating = new \DateTime();
-        $ticket->feedback_rating = 0;
+        $ticket->feedback_rating      = 0;
 
         $check = new CheckSatisfaction('is', array('rating' => 0));
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
@@ -48,10 +48,10 @@ class CheckSatisfactionTest extends \DpUnitTestCase
     public function testIsset()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $ticket->date_feedback_rating = new \DateTime();
-        $ticket->feedback_rating = 0;
+        $ticket->feedback_rating      = 0;
 
         $check = new CheckSatisfaction('isset');
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
@@ -60,7 +60,7 @@ class CheckSatisfactionTest extends \DpUnitTestCase
     public function testNotIsset()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $check = new CheckSatisfaction('not_isset');
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));

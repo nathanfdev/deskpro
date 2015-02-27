@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Scraper
+ * Orb.
  */
 
 namespace Orb\Scraper;
@@ -42,7 +39,8 @@ namespace Orb\Scraper;
 abstract class AbstractScraper
 {
     /**
-     * Array of options
+     * Array of options.
+     *
      * @var array
      */
     protected $_options;
@@ -53,7 +51,7 @@ abstract class AbstractScraper
     }
 
     /**
-     * Get the value of an option
+     * Get the value of an option.
      *
      * @param string $key     The option to get
      * @param mixed  $default What to return if the option doesnt exist
@@ -64,9 +62,10 @@ abstract class AbstractScraper
     }
 
     /**
-     * Check to see if an option exists
+     * Check to see if an option exists.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function hasOption($key)
@@ -75,7 +74,8 @@ abstract class AbstractScraper
     }
 
     /**
-     * @param  mixed         $identity Info we're requesting. A URL, an ID, etc. Depends on the scraper.
+     * @param mixed $identity Info we're requesting. A URL, an ID, etc. Depends on the scraper.
+     *
      * @return ItemInterface
      */
     abstract public function getData($identity = null);

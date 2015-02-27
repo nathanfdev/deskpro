@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -71,7 +68,8 @@ class Dp3Ldap extends AbstractAdapter
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

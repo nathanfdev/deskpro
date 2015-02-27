@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,7 +54,6 @@ class ChangeObject implements ChangeInterface
      * @var bool
      */
     private $is_same = false;
-
 
     /**
      * @param string $field_id

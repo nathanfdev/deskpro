@@ -26,19 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Dpql;
 
 /**
- * Place holder for the last 1 hour
+ * Place holder for the last 1 hour.
  */
 class PastHour extends AbstractDateRange
 {
@@ -49,10 +45,10 @@ class PastHour extends AbstractDateRange
      */
     protected function _getDateRange()
     {
-        $tz = App::getCurrentPerson()->getTimezone();
+        $tz   = App::getCurrentPerson()->getTimezone();
         $date = new \DateTime('now', new \DateTimeZone($tz));
 
-        $now = $date->format('Y-m-d H:i:s');
+        $now   = $date->format('Y-m-d H:i:s');
         $today = $date->format('Y-m-d H:i:s');
 
         $date->modify('-1 hour');

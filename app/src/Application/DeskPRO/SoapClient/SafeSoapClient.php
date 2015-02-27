@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\SoapClient;
@@ -79,5 +76,4 @@ if (!class_exists('\SoapClient', false)) {
 
 class SafeSoapClientException extends \SoapFault
 {
-
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -37,8 +36,8 @@ namespace Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
-use Orb\Util\Util;
 use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\Util;
 
 /**
  * This converts between 'new' and 'old' style term definitions.
@@ -57,9 +56,11 @@ class LegacyTermsTransformer
     /**
      * Convert FilterTerms into legacy-style terms array.
      *
-     * @param  FilterTerms               $terms
-     * @return array
+     * @param FilterTerms $terms
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function toLegacyTerms(FilterTerms $terms)
     {
@@ -71,7 +72,7 @@ class LegacyTermsTransformer
             $t = $this->_termToLegacyTerms($term);
 
             if (!$t) {
-                throw new \InvalidArgumentException("New term has no mapping to legacy term: " . get_class($terms));
+                throw new \InvalidArgumentException("New term has no mapping to legacy term: ".get_class($terms));
             }
 
             if (isset($t['type'])) {
@@ -85,8 +86,9 @@ class LegacyTermsTransformer
     }
 
     /**
-     * @param  CriteriaTermInterface $term
-     * @return array                 Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     * @param CriteriaTermInterface $term
+     *
+     * @return array Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
      */
     private function _termToLegacyTerms($term)
     {
@@ -110,42 +112,42 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'agent',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('agent' => $options['agent_ids'])
+                    'options' => array('agent' => $options['agent_ids']),
                 );
 
             case 'FilterAgentParticipant':
                 return array(
                     'type'    => 'participant',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('agent' => $options['agent_ids'])
+                    'options' => array('agent' => $options['agent_ids']),
                 );
 
             case 'FilterAgentTeam':
                 return array(
                     'type'    => 'agent_team',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('agent_team' => $options['team_ids'])
+                    'options' => array('agent_team' => $options['team_ids']),
                 );
 
             case 'FilterCategory':
                 return array(
                     'type'    => 'category',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('category' => $options['category_ids'])
+                    'options' => array('category' => $options['category_ids']),
                 );
 
             case 'FilterDepartment':
                 return array(
                     'type'    => 'department',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('department' => $options['department_ids'])
+                    'options' => array('department' => $options['department_ids']),
                 );
 
             case 'FilterHoldStatus':
                 return array(
                     'type'    => 'is_hold',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('is_hold' => $options['is_hold'])
+                    'options' => array('is_hold' => $options['is_hold']),
                 );
 
             case 'FilterLabels':
@@ -154,28 +156,28 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'label',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('label' => $labels)
+                    'options' => array('label' => $labels),
                 );
 
             case 'FilterLanguage':
                 return array(
                     'type'    => 'language',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('language' => $options['language_ids'])
+                    'options' => array('language' => $options['language_ids']),
                 );
 
             case 'FilterOrgEmailDomain':
                 return array(
                     'type'    => 'org_email_domain',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('email_domain' => $options['domain'])
+                    'options' => array('email_domain' => $options['domain']),
                 );
 
             case 'FilterOrgId':
                 return array(
                     'type'    => 'organization',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('organization' => $options['org_ids'])
+                    'options' => array('organization' => $options['org_ids']),
                 );
 
             case 'FilterOrgLabels':
@@ -184,42 +186,42 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'org_label',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('labels' => $labels)
+                    'options' => array('labels' => $labels),
                 );
 
             case 'FilterPriority':
                 return array(
                     'type'    => 'priority',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('priority' => $options['priority_ids'])
+                    'options' => array('priority' => $options['priority_ids']),
                 );
 
             case 'FilterProduct':
                 return array(
                     'type'    => 'product',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('product' => $options['product_ids'])
+                    'options' => array('product' => $options['product_ids']),
                 );
 
             case 'FilterStatus':
                 return array(
                     'type'    => 'status',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('status' => $options['status'])
+                    'options' => array('status' => $options['status']),
                 );
 
             case 'FilterSubject':
                 return array(
                     'type'    => 'subject',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('subject' => $options['subject'])
+                    'options' => array('subject' => $options['subject']),
                 );
 
             case 'FilterUrgency':
                 return array(
                     'type'    => 'urgency',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('num' => $options['urgency'])
+                    'options' => array('num' => $options['urgency']),
                 );
 
             case 'FilterUserEmailAddress':
@@ -227,13 +229,13 @@ class LegacyTermsTransformer
                     return array(
                         'type'    => 'person_email_domain',
                         'op'      => $term->getTermOperator(),
-                        'options' => array('email_domain' => substr($options['email'], 1))
+                        'options' => array('email_domain' => substr($options['email'], 1)),
                     );
                 } else {
                     return array(
                         'type'    => 'person_email',
                         'op'      => $term->getTermOperator(),
-                        'options' => array('email' => $options['email'])
+                        'options' => array('email' => $options['email']),
                     );
                 }
 
@@ -241,7 +243,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'person_usergroup',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('usergroup' => $options['group_ids'])
+                    'options' => array('usergroup' => $options['group_ids']),
                 );
 
             case 'FilterUserLabels':
@@ -250,133 +252,140 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'person_label',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('labels' => $labels)
+                    'options' => array('labels' => $labels),
                 );
 
             case 'FilterWorkflow':
                 return array(
                     'type'    => 'workflow',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('workflow' => $options['workflow_ids'])
+                    'options' => array('workflow' => $options['workflow_ids']),
                 );
 
             case 'FilterEmailAccount':
                 return array(
                     'type'    => 'email_account',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('email_account_ids' => $options['email_account_ids'])
+                    'options' => array('email_account_ids' => $options['email_account_ids']),
                 );
 
             case 'FilterSlaStatus':
                 return array(
                     'type'    => 'sla_status',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterSla':
                 return array(
                     'type'    => 'sla',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterUserContactPhone':
                 return array(
                     'type'    => 'person_contact_phone',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterUserContactAddress':
                 return array(
                     'type'    => 'person_contact_address',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterUserContactIm':
                 return array(
                     'type'    => 'person_contact_im',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterOrgContactPhone':
                 return array(
                     'type'    => 'org_contact_phone',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterOrgContactAddress':
                 return array(
                     'type'    => 'org_contact_address',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterOrgContactIm':
                 return array(
                     'type'    => 'org_contact_im',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterDateCreated':
                 return array(
                     'type'    => 'date_created',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterDateResolved':
                 return array(
                     'type'    => 'date_resolved',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterDateArchived':
                 return array(
                     'type'    => 'date_archived',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterDateLastAgentReply':
                 return array(
                     'type'    => 'date_last_agent_reply',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterDateLastUserReply':
                 return array(
                     'type'    => 'date_last_user_reply',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterUserDateCreated':
                 return array(
                     'type'    => 'person_date_created',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
+                );
+
+            case 'FilterCreationSystem':
+                return array(
+                    'type'    => 'creation_system',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
                 );
 
             case 'FilterOrgName':
                 return array(
                     'type'    => 'org_name',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterOrgDateCreated':
                 return array(
                     'type'    => 'org_date_created',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterUserWaiting':
@@ -388,8 +397,8 @@ class LegacyTermsTransformer
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'waiting_time'      => $t[0],
-                        'waiting_time_unit' => $t[1]
-                    )
+                        'waiting_time_unit' => $t[1],
+                    ),
                 );
 
             case 'FilterTotalUserWaiting':
@@ -401,12 +410,12 @@ class LegacyTermsTransformer
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'waiting_time'      => $t[0],
-                        'waiting_time_unit' => $t[1]
-                    )
+                        'waiting_time_unit' => $t[1],
+                    ),
                 );
 
             case 'FilterTicketField':
-                $t = $term->getTermOptions();
+                $t   = $term->getTermOptions();
                 $fid = $t['field_id'];
 
                 return array(
@@ -414,13 +423,13 @@ class LegacyTermsTransformer
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null
-                        )
-                    )
+                            "field_{$fid}" => @$t['value'] ?: null,
+                        ),
+                    ),
                 );
 
             case 'FilterUserField':
-                $t = $term->getTermOptions();
+                $t   = $term->getTermOptions();
                 $fid = $t['field_id'];
 
                 return array(
@@ -428,13 +437,13 @@ class LegacyTermsTransformer
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null
-                        )
-                    )
+                            "field_{$fid}" => @$t['value'] ?: null,
+                        ),
+                    ),
                 );
 
             case 'FilterOrgField':
-                $t = $term->getTermOptions();
+                $t   = $term->getTermOptions();
                 $fid = $t['field_id'];
 
                 return array(
@@ -442,9 +451,9 @@ class LegacyTermsTransformer
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null
-                        )
-                    )
+                            "field_{$fid}" => @$t['value'] ?: null,
+                        ),
+                    ),
                 );
         }
 
@@ -454,9 +463,11 @@ class LegacyTermsTransformer
     /**
      * Convert legacy-style terms array into FilterTerms.
      *
-     * @param  array                     $legacy_terms
-     * @return FilterTerms               Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     * @param array $legacy_terms
+     *
      * @throws \InvalidArgumentException
+     * @return FilterTerms               Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     *
      */
     public function toFilterTerms(array $legacy_terms)
     {
@@ -466,7 +477,7 @@ class LegacyTermsTransformer
             $t = $this->_legacyTermToFilterTerm($term);
 
             if (!$t) {
-                throw new \InvalidArgumentException("Legacy term has no mapping to new term: " . @$term['type']);
+                throw new \InvalidArgumentException("Legacy term has no mapping to new term: ".@$term['type']);
             }
 
             $terms->addTerm($t);
@@ -476,20 +487,21 @@ class LegacyTermsTransformer
     }
 
     /**
-     * @param  array               $legacy_term
+     * @param array $legacy_term
+     *
      * @return FilterTermInterface
      */
     private function _legacyTermToFilterTerm(array $legacy_term)
     {
         if (empty($legacy_term['op'])) {
-            return null;
+            return;
         }
 
-        $op = $legacy_term['op'];
+        $op      = $legacy_term['op'];
         $options = $legacy_term['options'];
 
         $type_name = $legacy_term['type'];
-        $type_id = null;
+        $type_id   = null;
         if (preg_match('#^(.*?)\[(\d+)\]$#', $type_name, $m)) {
             $type_name = $m[1];
             $type_id   = $m[2];
@@ -498,7 +510,7 @@ class LegacyTermsTransformer
         switch ($type_name) {
             case 'subject':
                 return new Terms\FilterSubject($op, array(
-                    'subject' => @$options['subject'] ?: ''
+                    'subject' => @$options['subject'] ?: '',
                 ));
 
             case 'department':
@@ -508,7 +520,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterDepartment($op, array(
-                    'department_ids' => $ids
+                    'department_ids' => $ids,
                 ));
 
             case 'agent':
@@ -518,7 +530,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterAgent($op, array(
-                    'agent_ids' => $ids
+                    'agent_ids' => $ids,
                 ));
 
             case 'agent_team':
@@ -528,7 +540,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterAgentTeam($op, array(
-                    'team_ids' => $ids
+                    'team_ids' => $ids,
                 ));
 
             case 'participant':
@@ -538,7 +550,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterAgentParticipant($op, array(
-                    'agent_ids' => $ids
+                    'agent_ids' => $ids,
                 ));
 
             case 'label':
@@ -548,7 +560,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterLabels($op, array(
-                    'labels' => $labels
+                    'labels' => $labels,
                 ));
 
             case 'status':
@@ -558,12 +570,12 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterStatus($op, array(
-                    'status' => $status
+                    'status' => $status,
                 ));
 
             case 'is_hold':
                 return new Terms\FilterHoldStatus($op, array(
-                    'is_hold' => (bool)($options['is_hold'] ?: false)
+                    'is_hold' => (bool) ($options['is_hold'] ?: false),
                 ));
 
             case 'organization':
@@ -573,7 +585,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterOrgId($op, array(
-                    'org_ids' => $ids
+                    'org_ids' => $ids,
                 ));
 
             case 'product':
@@ -583,7 +595,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterProduct($op, array(
-                    'product_ids' => $ids
+                    'product_ids' => $ids,
                 ));
 
             case 'category':
@@ -593,14 +605,14 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterCategory($op, array(
-                    'category_ids' => $ids
+                    'category_ids' => $ids,
                 ));
 
             case 'urgency':
                 $urgency = @$options['num'] ?: 0;
 
                 return new Terms\FilterUrgency($op, array(
-                    'urgency' => $urgency
+                    'urgency' => $urgency,
                 ));
 
             case 'priority':
@@ -610,7 +622,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterPriority($op, array(
-                    'priority_ids' => $ids
+                    'priority_ids' => $ids,
                 ));
 
             case 'workflow':
@@ -620,7 +632,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterWorkflow($op, array(
-                    'workflow_ids' => $ids
+                    'workflow_ids' => $ids,
                 ));
 
             case 'email_account':
@@ -630,7 +642,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterEmailAccount($op, array(
-                    'email_account_ids' => $ids
+                    'email_account_ids' => $ids,
                 ));
 
             case 'language':
@@ -640,7 +652,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterLanguage($op, array(
-                    'language_ids' => $ids
+                    'language_ids' => $ids,
                 ));
 
             case 'sla':
@@ -649,23 +661,23 @@ class LegacyTermsTransformer
             case 'sla_status':
                 return new Terms\FilterSlaStatus($op, array(
                     'sla_ids'    => @$options['sla_ids'] ?: array(),
-                    'sla_status' => @$options['sla_status'] ?: ''
+                    'sla_status' => @$options['sla_status'] ?: '',
                 ));
 
             case 'user_waiting':
                 return new Terms\FilterUserWaiting($op, array(
                     'time' => array(
                         @$options['waiting_time'] ?: 1,
-                        @$options['waiting_time_unit'] ?: 'days'
-                    )
+                        @$options['waiting_time_unit'] ?: 'days',
+                    ),
                 ));
 
             case 'total_user_waiting':
                 return new Terms\FilterTotalUserWaiting($op, array(
                     'time' => array(
                         @$options['waiting_time'] ?: 1,
-                        @$options['waiting_time_unit'] ?: 'days'
-                    )
+                        @$options['waiting_time_unit'] ?: 'days',
+                    ),
                 ));
 
             case 'date_created':
@@ -683,19 +695,22 @@ class LegacyTermsTransformer
             case 'date_last_user_reply':
                 return new Terms\FilterDateLastUserReply($op, $options);
 
+            case 'creation_system':
+                return new Terms\FilterCreationSystem($op, array('creation_system' => @$options['creation_system']));
+
             case 'person_name':
                 return new Terms\FilterUserName($op, array(
-                    'name' => @$options['name'] ?: ''
+                    'name' => @$options['name'] ?: '',
                 ));
 
             case 'person_email':
                 return new Terms\FilterUserEmailAddress($op, array(
-                    'email' => @$options['email'] ?: ''
+                    'email' => @$options['email'] ?: '',
                 ));
 
             case 'person_email_domain':
                 return new Terms\FilterUserEmailAddress($op, array(
-                    'email' => '@' . (@$options['email_domain'] ?: '')
+                    'email' => '@'.(@$options['email_domain'] ?: ''),
                 ));
 
             case 'person_organization':
@@ -705,7 +720,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterOrgId($op, array(
-                    'org_ids' => $ids
+                    'org_ids' => $ids,
                 ));
 
             case 'person_usergroup':
@@ -715,12 +730,12 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterUserGroups($op, array(
-                    'group_ids' => $ids
+                    'group_ids' => $ids,
                 ));
 
             case 'person_username':
                 return new Terms\FilterUserName($op, array(
-                    'name' => @$options['name'] ?: ''
+                    'name' => @$options['name'] ?: '',
                 ));
 
             case 'person_id':
@@ -730,7 +745,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterUserId($op, array(
-                    'user_ids' => $ids
+                    'user_ids' => $ids,
                 ));
 
             case 'person_language':
@@ -740,7 +755,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterUserLanguage($op, array(
-                    'language_ids' => $ids
+                    'language_ids' => $ids,
                 ));
 
             case 'person_date_created':
@@ -753,7 +768,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterUserLabels($op, array(
-                    'labels' => $labels
+                    'labels' => $labels,
                 ));
 
             case 'person_contact_phone':
@@ -773,7 +788,7 @@ class LegacyTermsTransformer
 
             case 'org_email_domain':
                 return new Terms\FilterOrgEmailDomain($op, array(
-                    'domain' => @$options['email_domain'] ?: ''
+                    'domain' => @$options['email_domain'] ?: '',
                 ));
 
             case 'org_label':
@@ -783,7 +798,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterOrgLabels($op, array(
-                    'labels' => $labels
+                    'labels' => $labels,
                 ));
 
             case 'org_contact_phone':
@@ -796,27 +811,27 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts = array();
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterTicketField($op, $new_opts);
 
             case 'person_field':
-                $new_opts = array();
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterUserField($op, $new_opts);
 
             case 'org_field':
-                $new_opts = array();
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterOrgField($op, $new_opts);
         }
 
-        return null;
+        return;
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -58,7 +55,7 @@ class Heartbeat extends AbstractJob
             if (!empty($ret_data['replace_license_code'])) {
                 App::getDb()->replace('settings', array(
                     'name'  => 'core.license',
-                    'value' => $ret_data['replace_license_code']
+                    'value' => $ret_data['replace_license_code'],
                 ));
                 $this->logStatus('Updated license code');
             }

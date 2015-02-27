@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpDbSets;
@@ -72,13 +70,12 @@ abstract class AbstractDbSet
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->em = $container->getEm();
-        $this->db = $this->em->getConnection();
+        $this->em        = $container->getEm();
+        $this->db        = $this->em->getConnection();
     }
 
-
     /**
-     * Disables the cache
+     * Disables the cache.
      */
     public function enableCache($cache_dir, $mysql_bin_path = 'mysql', $mysqldump_bin_path = 'mysqldump')
     {
@@ -86,7 +83,6 @@ abstract class AbstractDbSet
         $this->mysql_bin_path     = $mysql_bin_path;
         $this->mysqldump_bin_path = $mysqldump_bin_path;
     }
-
 
     /**
      * @return \Application\DeskPRO\DBAL\Connection
@@ -96,7 +92,6 @@ abstract class AbstractDbSet
         return $this->db;
     }
 
-
     /**
      * @return \Application\DeskPRO\ORM\EntityManager
      */
@@ -105,7 +100,6 @@ abstract class AbstractDbSet
         return $this->em;
     }
 
-
     /**
      * @return DeskproContainer
      */
@@ -113,7 +107,6 @@ abstract class AbstractDbSet
     {
         return $this->container;
     }
-
 
     /**
      * @return int Number of tables dropped
@@ -130,9 +123,8 @@ abstract class AbstractDbSet
         return 1;
     }
 
-
     /**
-     * Get the cache name for this set
+     * Get the cache name for this set.
      *
      * @return string
      */
@@ -141,9 +133,8 @@ abstract class AbstractDbSet
         return Util::getBaseClassname($this);
     }
 
-
     /**
-     * Get the cache file path for this set
+     * Get the cache file path for this set.
      *
      * @return string
      */
@@ -153,9 +144,8 @@ abstract class AbstractDbSet
             throw new \RuntimeException("No cache directory is set");
         }
 
-        return $this->cache_dir . DIRECTORY_SEPARATOR . $this->getCacheName();
+        return $this->cache_dir.DIRECTORY_SEPARATOR.$this->getCacheName();
     }
-
 
     /**
      * @return bool
@@ -169,9 +159,8 @@ abstract class AbstractDbSet
         return false;
     }
 
-
     /**
-     * Dumps the database to the cache file
+     * Dumps the database to the cache file.
      */
     private function dumpToCache()
     {
@@ -192,14 +181,13 @@ abstract class AbstractDbSet
 
         if ($ret) {
             echo "Command Failed: $cmd\n";
-            echo implode("\n",$out);
+            echo implode("\n", $out);
             throw new \RuntimeException(print_r(array($cmd, $out), 1));
         }
     }
 
-
     /**
-     * Installs the set from the cached SQL
+     * Installs the set from the cached SQL.
      *
      * @return bool
      */
@@ -221,17 +209,16 @@ abstract class AbstractDbSet
 
         if ($ret) {
             echo "Command Failed: $cmd\n";
-            echo implode("\n",$out);
+            echo implode("\n", $out);
             throw new \RuntimeException(print_r(array($cmd, $out), 1));
         }
     }
-
 
     /**
      * Installs the db set:
      * - Clears the current database if its not empty
      * - Installs a fresh DeskPRO version
-     * - Applies the set that installs any additional data on the database
+     * - Applies the set that installs any additional data on the database.
      *
      * @param bool $force       True to force resetting the DB even if the set is already installed (e.g., resetting after every test)
      * @param bool $reset_after Reset the database after (eg next time it is used). Use this to reset the db after a destructive test.
@@ -273,7 +260,7 @@ abstract class AbstractDbSet
 
             $this->getDb()->exec("
                 REPLACE INTO `settings` (`name`, `value`)
-                VALUES ('core.dp_testing_dbset', '" . $this->getCacheName() . "')
+                VALUES ('core.dp_testing_dbset', '".$this->getCacheName()."')
             ");
 
             if ($reset_after) {
@@ -285,7 +272,6 @@ abstract class AbstractDbSet
         }
     }
 
-
     /**
      * Installs a fresh DeskPRO database with the bare data to make it a functional install.
      *
@@ -295,22 +281,22 @@ abstract class AbstractDbSet
     {
         $base_schema_cache = null;
         if ($this->cache_dir) {
-            $base_schema_cache = $this->cache_dir . '/base_schema.php';
+            $base_schema_cache = $this->cache_dir.'/base_schema.php';
         }
 
         if ($base_schema_cache && file_exists($base_schema_cache)) {
-            $queries = require($base_schema_cache);
+            $queries = require $base_schema_cache;
         } else {
-            $gs = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
+            $gs      = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
             $queries = array(
                 'creates' => $gs->getCreates(),
-                'alters'  => $gs->getAlters()
+                'alters'  => $gs->getAlters(),
             );
 
             if ($base_schema_cache) {
                 file_put_contents(
                     $base_schema_cache,
-                    "<?php return " . var_export($queries, true) . ";\n"
+                    "<?php return ".var_export($queries, true).";\n"
                 );
             }
         }
@@ -340,7 +326,6 @@ abstract class AbstractDbSet
 
         return $count;
     }
-
 
     /**
      * @return string

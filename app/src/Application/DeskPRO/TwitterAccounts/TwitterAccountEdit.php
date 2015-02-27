@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\TwitterAccounts;
@@ -41,7 +39,6 @@ class TwitterAccountEdit
     /**
      * @var \Application\DeskPRO\Entity\TwitterAccount
      */
-
     public $twitter_account;
 
     public function __construct(TwitterAccount $twitter_account)
@@ -52,7 +49,6 @@ class TwitterAccountEdit
     /**
      * @param EntityManager $em
      */
-
     public function save(EntityManager $em)
     {
         $em->persist($this->twitter_account);

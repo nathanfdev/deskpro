@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -41,7 +40,8 @@ namespace Orb\Util;
 class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 {
     /**
-     * An array of classname => file
+     * An array of classname => file.
+     *
      * @var array
      */
     protected $class_map = array();
@@ -54,7 +54,6 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
      */
     protected $namespace_callback = array();
 
-
     /**
      * Get the current class map.
      *
@@ -65,19 +64,16 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
         return $this->class_map;
     }
 
-
     /**
-     * Register a new namespace callback loader
+     * Register a new namespace callback loader.
      *
-     * @param  string   $namespace
-     * @param  callback $callback
-     * @return void
+     * @param string   $namespace
+     * @param callback $callback
      */
     public function registerNamespaceCallback($namespace, $callback)
     {
         $this->namespace_callback[$namespace] = $callback;
     }
-
 
     /**
      * Register a classname to a particular path.
@@ -90,8 +86,6 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
         $this->class_map[$class_name] = $path;
     }
 
-
-
     /**
      * Register an array of classnames.
      *
@@ -101,7 +95,6 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
     {
         $this->class_map = array_merge($this->class_map, $class_names);
     }
-
 
     public function findFile($class_name)
     {
@@ -115,13 +108,13 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
         $file = parent::findFile($class_name);
 
         if (!$file) {
-            $m = null;
+            $m        = null;
             $ns_parts = explode('\\', $class_name, 2);
             if (count($ns_parts) == 2) {
                 $ns = $ns_parts[0];
                 if (isset($this->namespace_callback[$ns])) {
                     $callback = $this->namespace_callback[$ns];
-                    $file = call_user_func($callback, $class_name);
+                    $file     = call_user_func($callback, $class_name);
                 }
             }
         }

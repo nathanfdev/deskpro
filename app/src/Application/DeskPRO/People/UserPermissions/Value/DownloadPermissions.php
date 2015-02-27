@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -44,7 +43,6 @@ class DownloadPermissions implements PermissionValueInterface
     public $comment             = false;
     /** @var bool  */
     public $no_comment_validate = false;
-
 
     public function getNames()
     {

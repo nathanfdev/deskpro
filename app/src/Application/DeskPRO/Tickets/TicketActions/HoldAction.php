@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * Sets/removes on hold status
+ * Sets/removes on hold status.
  */
 class HoldAction extends AbstractAction implements PermissionableAction
 {
@@ -55,12 +52,12 @@ class HoldAction extends AbstractAction implements PermissionableAction
 
     public function __construct($is_hold, TicketChangeTracker $tracker = null)
     {
-        $this->is_hold = (bool)$is_hold;
+        $this->is_hold = (bool) $is_hold;
         $this->tracker = $tracker;
     }
 
     /**
-     * True to stop processing actions after this one
+     * True to stop processing actions after this one.
      *
      * @return bool
      */
@@ -79,7 +76,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -88,9 +85,8 @@ class HoldAction extends AbstractAction implements PermissionableAction
         $ticket->is_hold = $this->is_hold;
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -101,12 +97,13 @@ class HoldAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'hold', 'is_hold' => $this->is_hold)
+            array('action' => 'hold', 'is_hold' => $this->is_hold),
         );
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

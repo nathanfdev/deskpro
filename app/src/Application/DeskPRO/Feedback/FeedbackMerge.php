@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -41,7 +40,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Handles merging of one feedback into the other
+ * Handles merging of one feedback into the other.
  */
 class FeedbackMerge implements PersonContextInterface
 {
@@ -66,16 +65,17 @@ class FeedbackMerge implements PersonContextInterface
     protected $em;
 
     /**
-     * @throws \InvalidArgumentException
+     *
      * @param  \Application\DeskPRO\Entity\Person   $person_performer
      * @param  \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
      * @param  \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
+     * @throws \InvalidArgumentException
      */
     public function __construct(Person $person_performer, Feedback $feedback, Feedback $other_feedback)
     {
         $this->em = App::getOrm();
 
-        $this->feedback = $feedback;
+        $this->feedback       = $feedback;
         $this->other_feedback = $other_feedback;
         $this->setPersonContext($person_performer);
 
@@ -103,7 +103,6 @@ class FeedbackMerge implements PersonContextInterface
         $this->em->beginTransaction();
 
         try {
-
             $this->mergeProps();
             $this->mergeVotes();
             $this->mergeComments();
@@ -115,7 +114,6 @@ class FeedbackMerge implements PersonContextInterface
             $this->em->flush();
 
             $this->em->commit();
-
         } catch (\Exception $e) {
             $this->em->rollback();
 
@@ -135,7 +133,7 @@ class FeedbackMerge implements PersonContextInterface
 
     protected function mergeVotes()
     {
-        $votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->feedback->id);
+        $votes       = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->feedback->id);
         $other_votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->other_feedback->id);
 
         $finished_votes = $votes;
@@ -187,8 +185,8 @@ class FeedbackMerge implements PersonContextInterface
     {
         $comment = new FeedbackComment();
 
-        $comment->person = $this->other_feedback->person;
-        $comment->content = $this->other_feedback->content;
+        $comment->person       = $this->other_feedback->person;
+        $comment->content      = $this->other_feedback->content;
         $comment->date_created = $this->other_feedback->date_created;
 
         $this->feedback->addComment($comment);

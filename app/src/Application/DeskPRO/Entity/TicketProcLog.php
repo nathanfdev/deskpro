@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 /**
  * @property int    $id
@@ -90,10 +88,10 @@ class TicketProcLog extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_proc_log',
+            'name'    => 'ticket_proc_log',
             'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created'))
-            )
+                'date_created_idx' => array('columns' => array('date_created')),
+            ),
         ));
 
         $metadata->mapField(array(
@@ -119,8 +117,8 @@ class TicketProcLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL
-            ))
+                'columnDefinition'     => null,
+            )),
         ));
 
         $metadata->mapManyToOne(array(
@@ -131,8 +129,8 @@ class TicketProcLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL
-            ))
+                'columnDefinition'     => null,
+            )),
         ));
     }
 }

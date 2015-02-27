@@ -26,16 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\Page\Portal;
 
-use DpBehat\BasePortalContext;
 use DpBehat\Page\BasePage;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class ViewTickets extends BasePage
 {

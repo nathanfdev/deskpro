@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,6 +36,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
@@ -106,6 +106,11 @@ class TicketEmail
     private $sent_with_ccs;
 
     /**
+     * @var int
+     */
+    private $sendmail_source_id;
+
+    /**
      * @var \Application\DeskPRO\Entity\Ticket
      */
     private $ticket;
@@ -158,7 +163,8 @@ class TicketEmail
     /**
      * Use TicketEmailBuilder to build the options array easier.
      *
-     * @param  array                     $options
+     * @param array $options
+     *
      * @throws \InvalidArgumentException When there are invalid options
      */
     public function __construct(array $options)
@@ -233,7 +239,6 @@ class TicketEmail
         }
     }
 
-
     /**
      * @return string
      */
@@ -241,7 +246,6 @@ class TicketEmail
     {
         return $this->user_mode;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\EmailAccount
@@ -251,7 +255,6 @@ class TicketEmail
         return $this->from_email_account;
     }
 
-
     /**
      * @return null|string
      */
@@ -259,7 +262,6 @@ class TicketEmail
     {
         return $this->from_name;
     }
-
 
     /**
      * @return boolean
@@ -269,7 +271,6 @@ class TicketEmail
         return $this->do_cc_users;
     }
 
-
     /**
      * @return string
      */
@@ -277,7 +278,6 @@ class TicketEmail
     {
         return $this->template_name;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Ticket
@@ -287,7 +287,6 @@ class TicketEmail
         return $this->ticket;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -295,7 +294,6 @@ class TicketEmail
     {
         return $this->to_person;
     }
-
 
     /**
      * @param array $vars
@@ -353,7 +351,7 @@ class TicketEmail
 
         $to_name  = $this->to_person->getDisplayName();
 
-        $state = $this->ticket->getStateChangeRecorder();
+        $state              = $this->ticket->getStateChangeRecorder();
         $ticket_attachments = array();
         if ($state->hasNewReply() && !$this->is_auto) {
             $last_message = Arrays::getFirstItem($vars['messages']);
@@ -391,7 +389,7 @@ class TicketEmail
                 $to_email = $this->ticket->person_email->email;
                 $this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
             } elseif ($this->ticket->person_email_validating) {
-                $to_email = $this->ticket->person_email_validating->email;
+                $to_email                 = $this->ticket->person_email_validating->email;
                 $vars['validating_email'] = $this->ticket->person_email_validating;
                 $this->logger->info(sprintf("[TicketEmail] to_email(2): %s -- validating", $to_email));
             } elseif ($this->to_person->primary_email) {
@@ -424,7 +422,7 @@ class TicketEmail
         }
         $vars['tac'] = $tac;
 
-        $this->sent_to_name = $to_name;
+        $this->sent_to_name  = $to_name;
         $this->sent_to_email = $to_email;
         $this->sent_with_ccs = array();
 
@@ -475,7 +473,7 @@ class TicketEmail
         }
 
         $from_email = $this->from_email_account->getUseEmailAddress();
-        $from_name = $this->from_name;
+        $from_name  = $this->from_name;
 
         $this->logger->info(sprintf("[TicketEmail] From: %s -- Name: %s", $from_email, $from_name));
         $message->setFrom($from_email, $from_name);
@@ -514,7 +512,17 @@ class TicketEmail
         }
 
         $start = microtime(true);
-        $mailer->send($message);
+
+        if ($mailer instanceof StorageTransportInterface) {
+            $id = $mailer->queueMessage($message);
+            if ($id) {
+                $this->logger->info(sprintf("[TicketEmail] SendmailSource ID #%d", $id));
+                $this->sendmail_source_id = $id;
+            }
+        } else {
+            $mailer->send($message);
+        }
+
         $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
     }
 
@@ -540,5 +548,13 @@ class TicketEmail
     public function getSentWithCcs()
     {
         return $this->sent_with_ccs;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSendmailSourceId()
+    {
+        return $this->sendmail_source_id;
     }
 }

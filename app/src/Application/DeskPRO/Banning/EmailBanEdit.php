@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Banning;
@@ -42,19 +40,16 @@ class EmailBanEdit
     /**
      * @var \Application\DeskPRO\Entity\BanEmail
      */
-
     public $email_ban;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
      */
-
     public $db;
 
     /**
      * @var string
      */
-
     protected $old_email;
 
     public function __construct(BanEmail $email_ban)
@@ -70,7 +65,6 @@ class EmailBanEdit
      *
      * @throws \Exception
      */
-
     public function save(EntityManager $em)
     {
         $new_email = $this->email_ban->banned_email;

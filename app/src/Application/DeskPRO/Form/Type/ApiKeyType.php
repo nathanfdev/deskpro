@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Form\Type;
@@ -58,13 +56,13 @@ class ApiKeyType extends AbstractType
                      return $er->createQueryBuilder('p')->where(
                          'p.is_agent = true AND p.is_deleted = false'
                      );
-                 }
+                 },
             )
         );
         $builder->add('flags', 'choice', array(
-            'choices' => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE),
-            'multiple' => true, // an array
-            'required' => false,
+            'choices'  => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE),
+            'multiple'                                 => true, // an array
+            'required'                                 => false,
         ));
 
         // cleanup extra data

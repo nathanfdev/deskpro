@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,17 +54,19 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
         return $this->identity_helper;
     }
 
-
     /**
-     * Get a collection of entities by ID
+     * Get a collection of entities by ID.
      *
-     * @param  array $ids
-     * @param  bool  $keep_order True to order the resulting array in the same order that ids are provided in $ids
+     * @param array $ids
+     * @param bool  $keep_order True to order the resulting array in the same order that ids are provided in $ids
+     *
      * @return array
      */
     public function getByIds(array $ids, $keep_order = false)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $class = $this->getName();
 
@@ -106,9 +107,10 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * Alias for find
+     * Alias for find.
      *
-     * @param  int    $id
+     * @param int $id
+     *
      * @return object
      */
     public function get($id)

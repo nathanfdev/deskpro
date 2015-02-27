@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
 namespace Orb\Util;
-
 
 /**
  * A special object representing no value.
@@ -43,7 +41,9 @@ namespace Orb\Util;
  */
 class NullValue
 {
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * @return NullValue
@@ -60,9 +60,10 @@ class NullValue
     }
 
     /**
-     * Check if a variable is a NullValue
+     * Check if a variable is a NullValue.
      *
-     * @param  mixed $var
+     * @param mixed $var
+     *
      * @return bool
      */
     public static function is($var)

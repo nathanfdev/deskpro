@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Net\Dns\Rdns;
@@ -66,8 +63,10 @@ class CachedRdns implements RdnsInterface
 
     /**
      * @param string $ip
-     * @return string|null
+     *
      * @throws \RuntimeException
+     * @return string|null
+     *
      */
     public function lookup($ip)
     {
@@ -76,10 +75,13 @@ class CachedRdns implements RdnsInterface
             return '';
         }
 
-        $key = $this->genCacheId($ip);
+        $key   = $this->genCacheId($ip);
         $exist = $this->em->getRepository('DeskPRO:Cache')->load($key);
         if ($exist) {
-            if ($exist === 'fail') return null;
+            if ($exist === 'fail') {
+                return;
+            }
+
             return $exist;
         }
 
@@ -105,10 +107,11 @@ class CachedRdns implements RdnsInterface
 
     /**
      * @param string $ip
+     *
      * @return string
      */
     private function genCacheId($ip)
     {
-        return "ip2host--" . $ip;
+        return "ip2host--".$ip;
     }
 }

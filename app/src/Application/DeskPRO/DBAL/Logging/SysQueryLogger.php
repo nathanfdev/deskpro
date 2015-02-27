@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DBAL
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DBAL\Logging;
@@ -80,7 +77,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     private $_last_query = null;
 
     /**
-     * Info about all the queries this current request
+     * Info about all the queries this current request.
      *
      * @var array
      */
@@ -97,7 +94,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     private $_query_id_names = array();
 
     /**
-     * Number of queries executed
+     * Number of queries executed.
      *
      * @var int
      */
@@ -109,7 +106,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     private $_count_tracked = 0;
 
     /**
-     * A count of DB time used so far
+     * A count of DB time used so far.
      *
      * @var int
      */
@@ -463,7 +460,6 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     }
 
     /**
-     * @return void
      */
     private function _procQueryArray()
     {
@@ -513,7 +509,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     }
 
     /**
-     * @param  array  $queryinfo
+     * @param array $queryinfo
+     *
      * @return string
      */
     private function _formatQueryRow(array $queryinfo)
@@ -538,7 +535,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     }
 
     /**
-     * @param  array    $all_queryinfo
+     * @param array $all_queryinfo
+     *
      * @return string[]
      */
     private function _formatAllQueryRows(array $all_queryinfo)
@@ -553,7 +551,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     }
 
     /**
-     * @param  array    $repeated_queries
+     * @param array $repeated_queries
+     *
      * @return string[]
      */
     private function _formatRepeatedQueries(array $repeated_queries)
@@ -582,8 +581,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     }
 
     /**
-     * @param  string $path
-     * @param  array  $lines
+     * @param string $path
+     * @param array  $lines
+     *
      * @return int
      */
     private function _writeLogFile($path, array $lines)

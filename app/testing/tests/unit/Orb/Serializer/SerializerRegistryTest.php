@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\Orb\Serializer;
 
-use Orb\Serializer\Serializer\ArraySerializer;
 use Orb\Serializer\SerializerRegistry;
+use Orb\Serializer\Serializer\ArraySerializer;
 
 class SerializerRegistryTest extends \DpUnitTestCase
 {
@@ -43,7 +40,7 @@ class SerializerRegistryTest extends \DpUnitTestCase
     {
         $serializer = new SerializerRegistry(
             array(
-                new ArraySerializer()
+                new ArraySerializer(),
             )
         );
 

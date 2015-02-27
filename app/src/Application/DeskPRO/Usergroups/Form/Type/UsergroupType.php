@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usergroups\Form\Type;
@@ -49,7 +47,7 @@ class UsergroupType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\Usergroups\\UsergroupEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }

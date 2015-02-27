@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,15 +36,16 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition as FieldDefinition;
 use Application\DeskPRO\TicketLayout\Layout;
-use Doctrine\DBAL\Connection;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\DBAL\Connection;
 
 class CustomFieldData extends AbstractEntityRepository
 {
     /**
-     * @param  DomainObject $owner
-     * @param  DomainObject $context
-     * @param  Layout       $layout
+     * @param DomainObject $owner
+     * @param DomainObject $context
+     * @param Layout       $layout
+     *
      * @return mixed
      */
     public function getAllDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
@@ -56,7 +56,7 @@ class CustomFieldData extends AbstractEntityRepository
             ->innerJoin('da.root_definition', 'rde')
             ->where('da.owner_id = :owner_id and de.owner_class = :owner_class and rde.is_enabled = 1')
             ->setParameters(array(
-                'owner_id' => (int) $owner['id'], // null -> 0
+                'owner_id'    => (int) $owner['id'], // null -> 0
                 'owner_class' => ClassUtils::getClass($owner),
             ));
 
@@ -80,14 +80,15 @@ class CustomFieldData extends AbstractEntityRepository
     }
 
     /**
-     * @param  FieldDefinition $definition
-     * @param  DomainObject    $owner
+     * @param FieldDefinition $definition
+     * @param DomainObject    $owner
+     *
      * @return array|null
      */
     public function getFieldData(FieldDefinition $definition, DomainObject $owner)
     {
         if (!$definition['id'] || !$owner['id']) {
-            return null;
+            return;
         }
 
         $qb = $this->createQueryBuilder('da')
@@ -101,14 +102,15 @@ class CustomFieldData extends AbstractEntityRepository
     }
 
     /**
-     * @param  FieldDefinition $definition
-     * @param  DomainObject    $owner
+     * @param FieldDefinition $definition
+     * @param DomainObject    $owner
+     *
      * @return mixed|null
      */
     public function getFieldRawData(FieldDefinition $definition, DomainObject $owner)
     {
         if (!$definition['id'] || !$owner['id']) {
-            return null;
+            return;
         }
 
         $qb = $this->getEntityManager()->createQueryBuilder()

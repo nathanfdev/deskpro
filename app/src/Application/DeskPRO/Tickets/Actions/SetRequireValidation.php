@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Enable or disable email validation
+ * Enable or disable email validation.
  *
  * @option bool force
  * @option bool require_validation
@@ -58,7 +57,6 @@ class SetRequireValidation extends AbstractContainerAwareAction implements Actio
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -69,14 +67,13 @@ class SetRequireValidation extends AbstractContainerAwareAction implements Actio
             return true;
         }
 
-        $email->is_validated = false;
+        $email->is_validated   = false;
         $email->date_validated = null;
 
         $ticket->status = 'hidden.validating';
 
         $this->getContainer()->getEm()->persist($email);
     }
-
 
     /**
      * {@inheritDoc}

@@ -1,8 +1,8 @@
 <?php
 namespace DpUnitTests\Orb\Util;
 
-use Orb\Util\OptionsArray;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\OptionsArray;
 
 class OptionsArrayTest extends \DpUnitTestCase
 {
@@ -12,7 +12,7 @@ class OptionsArrayTest extends \DpUnitTestCase
             'a' => 1,
             'b' => 2,
             'c' => 3,
-            'd' => 4
+            'd' => 4,
         ));
 
         $this->assertTrue($options->has('a'));
@@ -107,7 +107,7 @@ class OptionsArrayTest extends \DpUnitTestCase
             'b' => 2,
             'c' => 3,
             'd' => new \DateTime(),
-            'e' => 100
+            'e' => 100,
         ));
 
         $options->ensureRequired();

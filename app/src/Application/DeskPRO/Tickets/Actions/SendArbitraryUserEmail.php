@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -42,7 +41,7 @@ use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Send an email to the user
+ * Send an email to the user.
  *
  * @option bool     template          The template to send
  * @option bool     from_name         Who to send the email from
@@ -62,7 +61,6 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}
@@ -119,9 +117,9 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 }
                 $person_processor = new PersonFromEmailProcessor();
 
-                $eml = new EmailAddress();
+                $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person = $person_processor->createPerson($eml, true);
+                $person     = $person_processor->createPerson($eml, true);
 
                 if ($person) {
                     $send_people[] = $person;
@@ -163,10 +161,9 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 throw $e;
             }
 
-            $context->getLogger() ->info(sprintf("[SendArbitraryUserEmail] Sent message in %.3fs", microtime(true) - $start_time));
+            $context->getLogger()->info(sprintf("[SendArbitraryUserEmail] Sent message in %.3fs", microtime(true) - $start_time));
         }
     }
-
 
     /**
      * {@inheritDoc}

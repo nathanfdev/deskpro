@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
@@ -62,6 +60,7 @@ class Generic implements ForwardDef, QuoteDef
      * to mark the beginning.
      *
      * @param $body
+     *
      * @return array|null
      */
     public function splitFromFirstHeaderText($body)
@@ -124,7 +123,7 @@ class Generic implements ForwardDef, QuoteDef
         // If we didnt find at least two of the four headers,
         // consider it a no-match
         if ($found < 2) {
-            return null;
+            return;
         }
 
         $parts = array(
@@ -139,10 +138,11 @@ class Generic implements ForwardDef, QuoteDef
     }
 
     /**
-     * Get an array of info from the forwarded block
+     * Get an array of info from the forwarded block.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return array
      */
     public function getForwardInfo($body, $is_html = false)
@@ -293,10 +293,11 @@ class Generic implements ForwardDef, QuoteDef
     }
 
     /**
-     * Cut out the quote block
+     * Cut out the quote block.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return string
      */
     public function cutQuoteBlock($body, $is_html = false)
@@ -350,10 +351,11 @@ class Generic implements ForwardDef, QuoteDef
     }
 
     /**
-     * Try to cut out text below the email as well
+     * Try to cut out text below the email as well.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return string
      */
     public function cutBottomBlock($body, $is_html = false)

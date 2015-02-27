@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -44,7 +43,8 @@ abstract class AbstractContentType implements ContentTypeInterface
     /**
      * Convert a result from a search into the real content object.
      *
-     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     *
      * @return mixed
      */
     public function resultToObject(ResultInterface $result)
@@ -57,7 +57,8 @@ abstract class AbstractContentType implements ContentTypeInterface
      *
      * Default (inefficient) implementation.
      *
-     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $results
+     * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $results
+     *
      * @return array
      */
     public function resultsToObjects(array $results)

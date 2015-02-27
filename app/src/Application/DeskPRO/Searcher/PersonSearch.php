@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -44,8 +42,8 @@ use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
 {
-    const MODE_ANY = 'any';
-    const MODE_USER = 'user';
+    const MODE_ANY   = 'any';
+    const MODE_USER  = 'user';
     const MODE_AGENT = 'agent';
 
     // These are all prefixed with person_ because this searcher
@@ -78,13 +76,15 @@ class PersonSearch extends SearcherAbstract
     const TERM_IP_ADDRESS         = 'person_ip';
 
     /**
-     * From getSqlParts()
+     * From getSqlParts().
+     *
      * @var array
      */
     protected $sql_parts = null;
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
@@ -94,25 +94,25 @@ class PersonSearch extends SearcherAbstract
      */
     protected $mode = 'user';
 
-
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getMatches()
     {
         $db = App::getDbRead('search.filter.people');
 
-        $sql = $this->getSql();
+        $sql        = $this->getSql();
         $people_ids = $db->fetchAllCol($sql);
 
         return $people_ids;
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @array
      */
@@ -132,14 +132,15 @@ class PersonSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
     {
         $sql = "SELECT people.id FROM people ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -148,7 +149,7 @@ class PersonSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
             }
@@ -177,8 +178,6 @@ class PersonSearch extends SearcherAbstract
         return $sql;
     }
 
-
-
     /**
      * Get the ORDER BY clause based on order info set.
      *
@@ -194,17 +193,16 @@ class PersonSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
         $term_id = null;
-        $m = null;
+        $m       = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
-            $type = $m[1];
+            $type    = $m[1];
             $term_id = $m[2];
         }
-
 
         $order_by = '';
 
@@ -221,21 +219,21 @@ class PersonSearch extends SearcherAbstract
             case 'people.email':
                 $order_by = array(
                     "LEFT JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)",
-                    "sort_table.email $dir"
+                    "sort_table.email $dir",
                 );
                 break;
 
             case 'people.organization':
                 $order_by = array(
                     "LEFT JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)",
-                    "sort_table.name $dir"
+                    "sort_table.name $dir",
                 );
                 break;
 
             case 'people.num_tickets':
                 $order_by = array(
                     "LEFT JOIN tickets AS sort_table ON (sort_table.person_id = people.id)",
-                    "COUNT(sort_table.id) $dir, people.id DESC"
+                    "COUNT(sort_table.id) $dir, people.id DESC",
                 );
                 break;
 
@@ -245,7 +243,9 @@ class PersonSearch extends SearcherAbstract
 
             case 'people.people_field':
                 $field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
-                if (!$field) break;
+                if (!$field) {
+                    break;
+                }
 
                 $search_type = $field->getHandler()->getSearchType();
 
@@ -254,7 +254,7 @@ class PersonSearch extends SearcherAbstract
                     case 'value':
                         $order_by = array(
                             "INNER JOIN custom_data_person AS sort_table ON (sort_table.person_id = people.id AND sort_table.id = $term_id)",
-                            "sort_table.$search_type $dir"
+                            "sort_table.$search_type $dir",
                         );
                         break;
                 }
@@ -264,8 +264,6 @@ class PersonSearch extends SearcherAbstract
         return $order_by;
     }
 
-
-
     /**
      * Get the SQL parts we need in the query.
      *
@@ -273,7 +271,9 @@ class PersonSearch extends SearcherAbstract
      */
     public function getSqlParts()
     {
-        if ($this->sql_parts !== null) return $this->sql_parts;
+        if ($this->sql_parts !== null) {
+            return $this->sql_parts;
+        }
 
         $people_table = 'people';
 
@@ -281,10 +281,10 @@ class PersonSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array();
+        $joins  = array();
 
         foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
+            $join_id   = Util::requestUniqueId();
             $join_name = "j_$join_id";
 
             list($term, $op, $choice) = $info;
@@ -294,7 +294,7 @@ class PersonSearch extends SearcherAbstract
             // $term of people_field[12] becomes $term=people_field, $term_id=12
             $m = null;
             if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
+                $term    = $m[1];
                 $term_id = $m[2];
             }
 
@@ -339,9 +339,9 @@ class PersonSearch extends SearcherAbstract
                                 }
 
                                 if ($op == self::OP_NOT) {
-                                    $wheres[] = "$people_table.id NOT IN (" . implode(',', $ids) . ")";
+                                    $wheres[] = "$people_table.id NOT IN (".implode(',', $ids).")";
                                 } else {
-                                    $wheres[] = "$people_table.id IN (" . implode(',', $ids) . ")";
+                                    $wheres[] = "$people_table.id IN (".implode(',', $ids).")";
                                 }
                         }
                     } else {
@@ -357,7 +357,7 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_ORGANIZATION_NAME:
                     $joins[] = array(
                         'organizations',
-                        "LEFT JOIN organizations AS $join_name ON ($join_name.id = people.organization_id)"
+                        "LEFT JOIN organizations AS $join_name ON ($join_name.id = people.organization_id)",
                     );
                     $wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
                     break;
@@ -365,8 +365,10 @@ class PersonSearch extends SearcherAbstract
                     if (isset($choice['usergroup_ids'])) {
                         $choice = $choice['usergroup_ids'];
                     }
-                    $choice = array_map('intval', (array)$choice);
-                    if (!$choice) $choice = array(0);
+                    $choice = array_map('intval', (array) $choice);
+                    if (!$choice) {
+                        $choice = array(0);
+                    }
                     $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
                         SELECT person_id
                         FROM person2usergroups
@@ -385,18 +387,18 @@ class PersonSearch extends SearcherAbstract
                         // too many, need to do the join method
                         $joins[] = array(
                             'person2usergroups',
-                            "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
+                            "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)",
                         );
                         if ($org_ids) {
-                            $wheres[] = '(' . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice) . " OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+                            $wheres[] = '('.$this->_choiceMatch("$join_name.usergroup_id", $op, $choice)." OR $people_table.organization_id IN (".implode(',', $org_ids)."))";
                         } else {
                             $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
                         }
                     } else {
                         if ($org_ids) {
-                            $wheres[] = "($people_table.id IN (" .  implode(',', $person_ids) . ") OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+                            $wheres[] = "($people_table.id IN (".implode(',', $person_ids).") OR $people_table.organization_id IN (".implode(',', $org_ids)."))";
                         } else {
-                            $wheres[] = "$people_table.id IN (" .  implode(',', $person_ids) . ")";
+                            $wheres[] = "$people_table.id IN (".implode(',', $person_ids).")";
                         }
                     }
 
@@ -406,7 +408,7 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_EMAIL:
                     $joins[] = array(
                         'people_emails',
-                        "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
+                        "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)",
                     );
 
                     $suffix_only = false;
@@ -416,12 +418,12 @@ class PersonSearch extends SearcherAbstract
 
                     $wheres[] = $this->_stringMatch("$join_name.email", $op, $choice, $suffix_only);
 
-                    $choice = implode(' or ', (array)$choice);
+                    $choice = implode(' or ', (array) $choice);
 
                     break;
                 case self::TERM_EMAIL_DOMAIN:
 
-                    if (is_array($choice) AND count($choice) == 1) {
+                    if (is_array($choice) and count($choice) == 1) {
                         $choice = Arrays::getFirstItem($choice);
                     }
 
@@ -441,11 +443,11 @@ class PersonSearch extends SearcherAbstract
 
                     $joins[] = array(
                         'people_emails',
-                        "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
+                        "LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)",
                     );
                     $wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice, $suffix_only);
 
-                    $choice = implode(' or ', (array)$choice);
+                    $choice = implode(' or ', (array) $choice);
 
                     break;
 
@@ -464,17 +466,17 @@ class PersonSearch extends SearcherAbstract
 
                     $wheres[] = $w;
 
-                    $choice = implode(' or ', (array)$choice);
+                    $choice = implode(' or ', (array) $choice);
 
                     break;
 
                 case self::TERM_USERNAME:
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $choice = array_pop($choice);
 
                     $joins[] = array(
                         'person_usersource_assoc',
-                        "LEFT JOIN person_usersource_assoc AS $join_name ON ($join_name.person_id = people.id)"
+                        "LEFT JOIN person_usersource_assoc AS $join_name ON ($join_name.person_id = people.id)",
                     );
                     $wheres[] = $this->_stringMatch("$join_name.identity_friendly", $op, $choice, true, true);
 
@@ -483,7 +485,6 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_ALPHA:
 
                     $wheres[] = $this->_stringMatch("people.last_name", $op, $choice, true, true);
-
 
                     break;
 
@@ -504,24 +505,28 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_PHONE:
 
-                    if (is_array($choice) && isset($choice['phone'])) $choice = $choice['phone'];
+                    if (is_array($choice) && isset($choice['phone'])) {
+                        $choice = $choice['phone'];
+                    }
 
-                    $choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
+                    $choice  = preg_replace('#[^0-9]#', '', $choice);
                     $joins[] = array(
-                        'people_contact_data',
-                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'phone')"
+                        'phone_numbers',
+                        "JOIN phone_numbers AS $join_name ON ($join_name.person_id = people.id)",
                     );
-                    $wheres[] = $this->_stringMatch("$join_name.field_10", $op, $choice, false, true);
+                    $wheres[] = $this->_stringMatch("$join_name.number", $op, $choice, false, true);
 
                     break;
 
                 case self::TERM_CONTACT_ADDRESS:
 
-                    if (is_array($choice) && isset($choice['address'])) $choice = $choice['address'];
+                    if (is_array($choice) && isset($choice['address'])) {
+                        $choice = $choice['address'];
+                    }
 
                     $joins[] = array(
                         'people_contact_data',
-                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'address')"
+                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'address')",
                     );
                     $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
@@ -529,11 +534,13 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_IM:
 
-                    if (is_array($choice) && isset($choice['im'])) $choice = $choice['im'];
+                    if (is_array($choice) && isset($choice['im'])) {
+                        $choice = $choice['im'];
+                    }
 
                     $joins[] = array(
                         'people_contact_data',
-                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'instant_message')"
+                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'instant_message')",
                     );
                     $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
@@ -544,32 +551,34 @@ class PersonSearch extends SearcherAbstract
 
                     $choices_in = array();
                     if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
+                        foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
                         }
                         $choices_in = implode(',', $choices_in);
-                        if (!$choices_in) $choices_in = '\'\'';
+                        if (!$choices_in) {
+                            $choices_in = '\'\'';
+                        }
                     }
 
                     switch ($op) {
                         case self::OP_IS:
                             $joins[] = array(
                                 'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)",
                             );
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
                             $joins[] = array(
                                 'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).")"
+                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).")",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
                             $joins[] = array(
                                 'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)",
                             );
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
@@ -577,7 +586,7 @@ class PersonSearch extends SearcherAbstract
                         case self::OP_NOTCONTAINS:
                             $joins[] = array(
                                 'labels_people',
-                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in))"
+                                "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in))",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
@@ -617,12 +626,14 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_PERSON_FIELD:
 
                     $field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
-                    if (!$field) break;
+                    if (!$field) {
+                        break;
+                    }
 
                     $search_type = $field->getHandler()->getSearchType();
 
-                    if (isset($choice['custom_fields']['field_' . $term_id])) {
-                        $choice = $choice['custom_fields']['field_' . $term_id];
+                    if (isset($choice['custom_fields']['field_'.$term_id])) {
+                        $choice = $choice['custom_fields']['field_'.$term_id];
                     }
 
                     switch ($search_type) {
@@ -632,24 +643,24 @@ class PersonSearch extends SearcherAbstract
                             $join_id = Util::requestUniqueId();
                             $joins[] = array(
                                 'custom_data_person',
-                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)"
+                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)",
                             );
 
                             if (is_array($choice)) {
                                 $choice = array_pop($choice);
                             }
 
-                            if ($choice === null){
+                            if ($choice === null) {
                                 $choice = 'DP_NO_SELECTION';
                             }
 
                             $field = 'custom_data_person_'.$join_id.'.'.$search_type;
                             switch ($op) {
                                 case self::OP_IS:
-                                    $wheres[] = "$field = " . $db->quote($choice);
+                                    $wheres[] = "$field = ".$db->quote($choice);
                                     break;
                                 case self::OP_NOT:
-                                    $w = "$field != " . $db->quote($choice);
+                                    $w = "$field != ".$db->quote($choice);
 
                                     if ($choice != "") {
                                         $w = "($w OR $field IS NULL)";
@@ -661,8 +672,10 @@ class PersonSearch extends SearcherAbstract
                                 case self::OP_CONTAINS:
                                 case self::OP_NOTCONTAINS:
                                     $op = 'LIKE';
-                                    if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-                                    $w = "$field $op " . $db->quote('%'.$choice.'%');
+                                    if ($op == self::OP_NOTCONTAINS) {
+                                        $op = 'NOT LIKE';
+                                    }
+                                    $w = "$field $op ".$db->quote('%'.$choice.'%');
 
                                     if ($op == self::OP_NOTCONTAINS) {
                                         $w = "($w OR $field IS NULL)";
@@ -674,11 +687,11 @@ class PersonSearch extends SearcherAbstract
                             break;
 
                         case 'id':
-                            $join_id = Util::requestUniqueId();
+                            $join_id    = Util::requestUniqueId();
                             $choices_in = array();
 
                             if ($choice != 'DP_NO_SELECTION') {
-                                $choice = (array)$choice;
+                                $choice = (array) $choice;
                                 if (isset($choice["field_{$field->getId()}"])) {
                                     $choice = $choice["field_{$field->getId()}"];
                                 }
@@ -686,7 +699,7 @@ class PersonSearch extends SearcherAbstract
                                     $choice = array($choice);
                                 }
                                 foreach ($choice as $c) {
-                                    $choices_in[] = (int)$c;
+                                    $choices_in[] = (int) $c;
                                 }
                                 $choices_in = implode(',', $choices_in);
                             }
@@ -702,13 +715,13 @@ class PersonSearch extends SearcherAbstract
                                     if ($choice == 'DP_NO_SELECTION') {
                                         $joins[] = array(
                                             'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
                                         );
                                         $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                     } else {
                                         $joins[] = array(
                                             'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))",
                                         );
                                         $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                     }
@@ -719,13 +732,13 @@ class PersonSearch extends SearcherAbstract
                                     if ($choice == 'DP_NO_SELECTION') {
                                         $joins[] = array(
                                             'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
                                         );
                                         $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                     } else {
                                         $joins[] = array(
                                             'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))",
                                         );
                                         $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                     }
@@ -741,7 +754,7 @@ class PersonSearch extends SearcherAbstract
 
                     $joins[] = array(
                         'agent_team_members',
-                        "LEFT JOIN agent_team_members AS $join_name ON ($join_name.person_id = people.id)"
+                        "LEFT JOIN agent_team_members AS $join_name ON ($join_name.person_id = people.id)",
                     );
 
                     $wheres[] = $this->_choiceMatch("$join_name.team_id", $op, $choice, true);
@@ -763,7 +776,7 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_IP_ADDRESS:
                     $joins[] = array(
                         'tickets_messages',
-                        "LEFT JOIN tickets_messages AS $join_name ON ($join_name.person_id = people.id)"
+                        "LEFT JOIN tickets_messages AS $join_name ON ($join_name.person_id = people.id)",
                     );
 
                     $field = "$join_name.ip_address";
@@ -795,16 +808,17 @@ class PersonSearch extends SearcherAbstract
         $wheres[] = 'people.is_deleted = 0';
 
         $this->sql_parts = array(
-            'joins' => $joins,
-            'wheres' => $wheres
+            'joins'  => $joins,
+            'wheres' => $wheres,
         );
 
         return $this->sql_parts;
     }
 
     /**
-     * @param  Entity\Person $person
-     * @param  Entity\Ticket $ticket
+     * @param Entity\Person $person
+     * @param Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function doesPersontMatch(Entity\Person $person, Entity\Ticket $ticket = null)
@@ -862,9 +876,13 @@ class PersonSearch extends SearcherAbstract
                                 }
 
                                 if ($op == self::OP_NOT) {
-                                    if ($match) return false;
+                                    if ($match) {
+                                        return false;
+                                    }
                                 } elseif ($op == self::OP_IS) {
-                                    if (!$match) return false;
+                                    if (!$match) {
+                                        return false;
+                                    }
                                 }
                         }
                     } else {
@@ -873,15 +891,21 @@ class PersonSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_DATE_CREATED:
-                    if (!$this->_testDateMatch($person['date_created'], $op, $choice)) return false;
+                    if (!$this->_testDateMatch($person['date_created'], $op, $choice)) {
+                        return false;
+                    }
                     break;
 
                 case self::TERM_ORGANIZATION:
-                    if (!$this->_testChoiceMatch($person['organization_id'], $op, $choice)) return false;
+                    if (!$this->_testChoiceMatch($person['organization_id'], $op, $choice)) {
+                        return false;
+                    }
                     break;
 
                 case self::TERM_LANGUAGE:
-                    if (!$this->_testChoiceMatch($person['language_id'], $op, $choice)) return false;
+                    if (!$this->_testChoiceMatch($person['language_id'], $op, $choice)) {
+                        return false;
+                    }
                     break;
 
                 case self::TERM_NAME:
@@ -891,24 +915,36 @@ class PersonSearch extends SearcherAbstract
 
                     switch ($op) {
                         case self::OP_IS:
-                            if (strtolower($person['name']) != strtolower($choice)) return false;
+                            if (strtolower($person['name']) != strtolower($choice)) {
+                                return false;
+                            }
                             break;
                         case self::OP_NOT:
-                            if (strtolower($person['name']) == strtolower($choice)) return false;
+                            if (strtolower($person['name']) == strtolower($choice)) {
+                                return false;
+                            }
                             break;
                         case self::OP_CONTAINS:
-                            if (strpos(strtolower($person['name']), strtolower($choice)) === false) return false;
+                            if (strpos(strtolower($person['name']), strtolower($choice)) === false) {
+                                return false;
+                            }
                             break;
                         case self::OP_NOTCONTAINS:
-                            if (strpos(strtolower($person['name']), strtolower($choice)) !== false) return false;
+                            if (strpos(strtolower($person['name']), strtolower($choice)) !== false) {
+                                return false;
+                            }
                             break;
                     }
                     break;
 
                 case self::TERM_EMAIL:
 
-                    if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-                    if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+                    if ($op == self::OP_IS) {
+                        $op = self::OP_CONTAINS;
+                    }
+                    if ($op == self::OP_NOT) {
+                        $op = self::OP_NOTCONTAINS;
+                    }
 
                     $any = false;
                     if (is_array($choice)) {
@@ -923,15 +959,19 @@ class PersonSearch extends SearcherAbstract
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                     break;
 
                 case self::TERM_EMAIL_DOMAIN:
 
-                    if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-                    if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+                    if ($op == self::OP_IS) {
+                        $op = self::OP_CONTAINS;
+                    }
+                    if ($op == self::OP_NOT) {
+                        $op = self::OP_NOTCONTAINS;
+                    }
 
                     $any = false;
                     if (is_array($choice)) {
@@ -947,7 +987,7 @@ class PersonSearch extends SearcherAbstract
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                     break;
@@ -955,7 +995,7 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_USERGROUP:
                     $any = false;
 
-                    $choice = isset($choice['usergroup']) ? (array)$choice['usergroup'] : array();
+                    $choice = isset($choice['usergroup']) ? (array) $choice['usergroup'] : array();
 
                     foreach ($person->getUsergroupIds() as $ug_id) {
                         if (in_array($ug_id, $choice)) {
@@ -964,17 +1004,17 @@ class PersonSearch extends SearcherAbstract
                         }
                     }
 
-                    if (($op == self::OP_IS || $op == self::OP_CONTAINS) AND !$any) {
+                    if (($op == self::OP_IS || $op == self::OP_CONTAINS) and !$any) {
                         return false;
                     }
-                    if (($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) AND $any) {
-                            return false;
+                    if (($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) and $any) {
+                        return false;
                     }
                     break;
 
                 case self::TERM_ORGANIZATION:
-                    $name = $person->organization ? $person->organization->name : '';
-                    $choice = isset($choice['name']) ? (array)$choice['name'] : array();
+                    $name   = $person->organization ? $person->organization->name : '';
+                    $choice = isset($choice['name']) ? (array) $choice['name'] : array();
                     if (!$this->_testStringMatch($name, $op, $choice)) {
                         return false;
                     }
@@ -983,10 +1023,12 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_ADDRESS:
                 case self::TERM_CONTACT_IM:
-                case self::TERM_CONTACT_PHONE:
-                    if ($term == self::TERM_CONTACT_ADDRESS) $field = 'addresss';
-                    if ($term == self::TERM_CONTACT_IM)      $field = 'instant_message';
-                    if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
+                    if ($term == self::TERM_CONTACT_ADDRESS) {
+                        $field = 'addresss';
+                    }
+                    if ($term == self::TERM_CONTACT_IM) {
+                        $field = 'instant_message';
+                    }
 
                     $any = false;
                     foreach ($person->getContactData($field) as $cd) {
@@ -998,9 +1040,26 @@ class PersonSearch extends SearcherAbstract
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+                    break;
+
+                case self::TERM_CONTACT_PHONE:
+                    $any = false;
+                    foreach ($person->phone_numbers as $pn) {
+                        /* @var $pn Entity\PhoneNumber */
+                        if (substr($pn['number'], 0, 1) === preg_replace('/[^0-9]/', '', $choice)) {
+                            $any = true;
+                            if ($op == self::OP_NOTCONTAINS) {
+                                return false;
+                            }
+                        }
+                    }
+                    if ($op == self::OP_CONTAINS and !$any) {
+                        return false;
+                    }
+
                     break;
 
                 case self::TERM_LABEL:
@@ -1011,7 +1070,7 @@ class PersonSearch extends SearcherAbstract
                             $choice['labels'] = explode(',', $choice['labels']);
                         }
                         foreach ($choice['labels'] as $l) {
-                            $l = Strings::utf8_strtolower($l);
+                            $l                 = Strings::utf8_strtolower($l);
                             $choice_labels[$l] = trim($l);
                         }
                     }
@@ -1042,7 +1101,7 @@ class PersonSearch extends SearcherAbstract
                         $terms = new TicketTerms(array(array(
                             'type'    => $term,
                             'op'      => $op,
-                            'options' => $choice
+                            'options' => $choice,
                         )));
                         if (!$terms->doesTicketMatch($ticket)) {
                             return false;

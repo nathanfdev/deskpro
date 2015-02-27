@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -44,16 +43,13 @@ abstract class ActionTypeAbstract implements PersonContextInterface
      */
     protected $person;
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
         $this->person;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Person
@@ -63,9 +59,9 @@ abstract class ActionTypeAbstract implements PersonContextInterface
         return $this->person;
     }
 
-
     /**
-     * Get a plain array of details that'll be stored in the databaes
+     * Get a plain array of details that'll be stored in the databaes.
+     *
      * @return array
      */
     abstract public function getDetails();

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Orb\Util\Strings;
 
 /**
- * Handles the text field
+ * Handles the text field.
  */
 class Text extends HandlerAbstract
 {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -44,7 +41,7 @@ use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 /**
- * Handles searching for people
+ * Handles searching for people.
  */
 class PeopleSearchController extends AbstractController
 {
@@ -244,6 +241,7 @@ class PeopleSearchController extends AbstractController
 
     /**
      * Render a new pageset.
+     *
      * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
     public function getPeoplePageAction()
@@ -832,6 +830,8 @@ class PeopleSearchController extends AbstractController
 
         $email_ids = array();
 
+        $tm = $this->container->getTicketManager();
+
         $this->db->beginTransaction();
         try {
             $ids = array();
@@ -854,8 +854,12 @@ class PeopleSearchController extends AbstractController
 
                     foreach ($ticket_ids as $ticket_id) {
                         $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-                        $ticket->setStatus('awaiting_agent');
-                        $this->em->persist($ticket);
+                        if ($ticket) {
+                            $context = $tm->createAgentExecutorContext($this->person, 'newreply', 'web');
+                            $tm->markAsManaged($ticket);
+                            $ticket->setStatus('awaiting_agent');
+                            $tm->saveTicket($ticket, $context);
+                        }
                     }
                 }
             }

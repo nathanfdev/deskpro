@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * A general data store
+ * A general data store.
  */
 class DataStore extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,29 +49,30 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * A string name to uniquely identify the record
+     * A string name to uniquely identify the record.
      *
      * @var string
      */
     protected $name = null;
 
     /**
-     * The authcode to possibly verify with
+     * The authcode to possibly verify with.
      *
      * @var string
      */
     protected $auth;
 
     /**
-     * Data
+     * Data.
      *
      * @var array
      */
     protected $data = array();
 
     /**
-     * @param  string                              $type
-     * @param  array                               $data
+     * @param string $type
+     * @param array  $data
+     *
      * @return \Application\DeskPRO\Entity\TmpData
      */
     public static function create($type, array $data = array())
@@ -101,7 +101,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the type
+     * Get the type.
      *
      * @return string
      */
@@ -111,7 +111,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set the type
+     * Set the type.
      *
      * @param string $type
      */
@@ -121,7 +121,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get some data from the extra array
+     * Get some data from the extra array.
      */
     public function getData($key = null, $default = null)
     {
@@ -137,7 +137,6 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param  $key
      * @param  $value
-     * @return void
      */
     public function setData($key, $value)
     {
@@ -160,16 +159,17 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Splits a code into its id and auth
+     * Splits a code into its id and auth.
      *
      * @param  $code
+     *
      * @return array
      */
     public static function getPartsFromCode($code)
     {
         $parts = explode('-', $code, 2);
         if (count($parts) != 2) {
-            return null;
+            return;
         }
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);

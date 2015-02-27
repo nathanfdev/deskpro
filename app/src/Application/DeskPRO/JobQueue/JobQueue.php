@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -51,13 +48,12 @@ class JobQueue
 
     public function __construct(EntityManager $em, JobScheduler $scheduler)
     {
-        $this->em = $em;
+        $this->em        = $em;
         $this->scheduler = $scheduler;
     }
 
-
     /**
-     * Allows adding a job with just the job type and payload
+     * Allows adding a job with just the job type and payload.
      *
      * @param           $type
      * @param array     $data
@@ -68,9 +64,8 @@ class JobQueue
         $this->addJob(new Job($type, $data), $nextTry);
     }
 
-
     /**
-     * allows adding a job directly
+     * allows adding a job directly.
      *
      * @param Job       $job
      * @param \DateTime $nextTry
@@ -90,7 +85,6 @@ class JobQueue
         $this->saveJob($job);
     }
 
-
     /**
      * This will usually be run if the isReady() check returns false. Responsible for ensuring this job will attempt
      * to run sometime in the future.
@@ -103,18 +97,17 @@ class JobQueue
         $this->saveJob($job);
     }
 
-
     public function retry(Job $job, \DateTime $when)
     {
         $job->retry($when);
         $this->saveJob($job);
     }
 
-
     /**
-     * Determines if the job is ready to run now
+     * Determines if the job is ready to run now.
      *
-     * @param  Job  $job
+     * @param Job $job
+     *
      * @return bool
      */
     public function isReady(Job $job)
@@ -122,11 +115,11 @@ class JobQueue
         return $this->scheduler->isReady($job);
     }
 
-
     /**
-     * Useful proxy if you only have the job ID
+     * Useful proxy if you only have the job ID.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function isReadyByJobId($id)
@@ -134,9 +127,8 @@ class JobQueue
         return $this->isReady($this->getJob($id));
     }
 
-
     /**
-     * Useful proxy if you only have the job ID
+     * Useful proxy if you only have the job ID.
      *
      * @param int $id
      */
@@ -145,9 +137,8 @@ class JobQueue
         $this->reschedule($this->getJob($id));
     }
 
-
     /**
-     * Useful proxy if you only have the job ID
+     * Useful proxy if you only have the job ID.
      *
      * @param int $id
      */
@@ -156,9 +147,8 @@ class JobQueue
         $this->retry($this->getJob($id), $when);
     }
 
-
     /**
-     * Save a Job
+     * Save a Job.
      *
      * @param Job $job
      */
@@ -169,11 +159,11 @@ class JobQueue
         $this->em->flush($job);
     }
 
-
     /**
-     * Get a Job directly from the database (refreshes)
+     * Get a Job directly from the database (refreshes).
      *
-     * @param  int      $id the job id
+     * @param int $id the job id
+     *
      * @return Job|null
      */
     public function getJob($id)

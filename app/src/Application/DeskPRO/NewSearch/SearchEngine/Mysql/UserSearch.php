@@ -50,22 +50,21 @@ class UserSearch implements UserSearchInterface
      */
     private $transformer;
 
-
     /**
      * @param Connection              $db
      * @param MysqlResultsTransformer $transformer
      */
     public function __construct(Connection $db, MysqlResultsTransformer $transformer)
     {
-        $this->db = $db;
+        $this->db          = $db;
         $this->transformer = $transformer;
     }
 
-
     /**
-     * @param  SearchContextInterface $context
-     * @param  string                 $query
-     * @param  array                  $options
+     * @param SearchContextInterface $context
+     * @param string                 $query
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
@@ -87,13 +86,13 @@ class UserSearch implements UserSearchInterface
         $limit_types_array = $limit_types;
 
         $context_params = $this->buildParams($context, $limit_types);
-        $types = $context_params['types'];
+        $types          = $context_params['types'];
 
         if (!$types) {
             return new ResultSet(array());
         }
 
-        $limit_types = "'" . implode('\',\'', $types) . "'";
+        $limit_types = "'".implode('\',\'', $types)."'";
 
         $query_words = explode(' ', $query);
         if (!$query_words) {
@@ -101,14 +100,14 @@ class UserSearch implements UserSearchInterface
         }
 
         $params = array();
-        $likes = array();
+        $likes  = array();
         foreach ($query_words as $w) {
             if (strlen($w) <= 2) {
                 continue;
             }
 
-            $likes[] = "content_search.content LIKE ?";
-            $params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+            $likes[]  = "content_search.content LIKE ?";
+            $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
 
             if (count($likes) >= self::MAX_WORDS) {
                 break;
@@ -117,7 +116,7 @@ class UserSearch implements UserSearchInterface
         if ($likes) {
             $where = "
                 content_search.object_type IN ($limit_types)
-                AND (" . implode(' OR ', $likes) . ")
+                AND (".implode(' OR ', $likes).")
             ";
 
             if (!$ignore_perms) {
@@ -127,7 +126,7 @@ class UserSearch implements UserSearchInterface
                     $perm_where = '1';
                 }
             } else {
-                $perm_join = '';
+                $perm_join  = '';
                 $perm_where = '1';
             }
 
@@ -139,7 +138,7 @@ class UserSearch implements UserSearchInterface
                 LIMIT $per_page
             ";
 
-            $start = ($page - 1) * $per_page;
+            $start        = ($page - 1) * $per_page;
             $select_query = "
                 SELECT content_search.object_type, content_search.object_id
                 FROM content_search
@@ -149,7 +148,7 @@ class UserSearch implements UserSearchInterface
                 LIMIT $start, $per_page
             ";
 
-            $total = $this->db->fetchColumn($count_query, $params);
+            $total    = $this->db->fetchColumn($count_query, $params);
             $results  = $this->db->fetchAll($select_query, $params);
         } else {
             $total       = 0;
@@ -187,7 +186,7 @@ class UserSearch implements UserSearchInterface
             }
 
             $search_places[] = "tickets_messages.message LIKE ?";
-            $search_params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+            $search_params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
 
             if (count($search_params) >= self::MAX_WORDS) {
                 break;
@@ -204,7 +203,7 @@ class UserSearch implements UserSearchInterface
             $params = array(
                 $context->getPerson()->getId(),
                 $context->getPerson()->getId(),
-                $context->getPerson()->organization->getId()
+                $context->getPerson()->organization->getId(),
             );
 
             $params = array_merge($params, $search_params);
@@ -259,8 +258,9 @@ class UserSearch implements UserSearchInterface
     }
 
     /**
-     * @param  SearchContextInterface $context
-     * @param  array                  $limit_types
+     * @param SearchContextInterface $context
+     * @param array                  $limit_types
+     *
      * @return ResultSet
      */
     private function buildParams(SearchContextInterface $context, array $limit_types = null)
@@ -271,7 +271,7 @@ class UserSearch implements UserSearchInterface
 
         $x = 0;
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getArticleCategoryIds());
 
             $types[]  = 'article';
@@ -279,7 +279,7 @@ class UserSearch implements UserSearchInterface
             $wheres[] = "($jn.object_type = 'article' AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getNewsCategoryIds());
 
             $types[]  = 'news';
@@ -287,15 +287,15 @@ class UserSearch implements UserSearchInterface
             $wheres[] = "($jn.object_type = 'news' AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getFeedbackCategoryIds());
 
             $types[]  = 'feedback';
-            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";;
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
             $wheres[] = "($jn.object_type AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getDownloadCategoryIds());
 
             $types[]  = 'download';
@@ -306,7 +306,7 @@ class UserSearch implements UserSearchInterface
         return array(
             'types' => $types,
             'join'  => implode("\n", $joins),
-            'where' =>  "(" . implode(' OR ', $wheres) . ")"
+            'where' => "(".implode(' OR ', $wheres).")",
         );
     }
 }

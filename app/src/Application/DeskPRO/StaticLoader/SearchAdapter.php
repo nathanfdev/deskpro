@@ -27,9 +27,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\StaticLoader;
@@ -46,7 +44,7 @@ class SearchAdapter
     public static function getSearchAdapter()
     {
         $adapter_name = strtolower(App::getConfig('search.adapter'));
-        $config = App::getConfig('search.options');
+        $config       = App::getConfig('search.options');
 
         switch ($adapter_name) {
             case 'elastic':

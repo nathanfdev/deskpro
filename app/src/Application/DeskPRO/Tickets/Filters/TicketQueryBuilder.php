@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,21 +38,22 @@ use Application\DeskPRO\Tickets\Filters\Terms\FilterQuery;
 class TicketQueryBuilder
 {
     /**
-     * @param  array       $fields
-     * @param  FilterQuery $query
-     * @return array       array('sql' => '...', 'params' => array(...))
+     * @param array       $fields
+     * @param FilterQuery $query
+     *
+     * @return array array('sql' => '...', 'params' => array(...))
      */
     public function getSelectQuery(array $fields, FilterQuery $query)
     {
         $parts = $query->getQueryParts();
 
-        $query = "SELECT " . implode(', ', $fields) . "\n";
+        $query = "SELECT ".implode(', ', $fields)."\n";
         $query .= "FROM tickets\n";
 
         $join_map = array();
         if (!empty($parts['joins'])) {
             $count = 0;
-            foreach ($parts['joins'] AS $join) {
+            foreach ($parts['joins'] as $join) {
                 $count++;
                 $alias = $join['alias'] ? $join['alias'] : $join['input_alias'];
                 $query .= "LEFT JOIN {$join['join']} AS $alias ON ({$join['condition']})\n";
@@ -62,7 +62,7 @@ class TicketQueryBuilder
                 }
             }
         }
-        $query .= "WHERE\n" . $parts['where'];
+        $query .= "WHERE\n".$parts['where'];
 
         $param_map = array();
         foreach ($parts['params'] as $p) {
@@ -70,7 +70,7 @@ class TicketQueryBuilder
         }
 
         $ret_params = array();
-        $query = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
+        $query      = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
             $ret_params[] = $param_map[$m[0]];
 
             return '?';
@@ -85,10 +85,10 @@ class TicketQueryBuilder
         );
     }
 
-
     /**
-     * @param  FilterQuery $query
-     * @return array       array('sql' => '...', 'params' => array(...))
+     * @param FilterQuery $query
+     *
+     * @return array array('sql' => '...', 'params' => array(...))
      */
     public function getCountQuery(FilterQuery $query)
     {
@@ -100,7 +100,7 @@ class TicketQueryBuilder
         $join_map = array();
         if (!empty($parts['joins'])) {
             $count = 0;
-            foreach ($parts['joins'] AS $join) {
+            foreach ($parts['joins'] as $join) {
                 $count++;
                 $alias = $join['alias'] ? $join['alias'] : $join['input_alias'];
                 $query .= "LEFT JOIN {$join['join']} AS $alias ON ({$join['condition']})\n";
@@ -109,7 +109,7 @@ class TicketQueryBuilder
                 }
             }
         }
-        $query .= "WHERE\n" . $parts['where'];
+        $query .= "WHERE\n".$parts['where'];
 
         $param_map = array();
         foreach ($parts['params'] as $p) {
@@ -117,7 +117,7 @@ class TicketQueryBuilder
         }
 
         $ret_params = array();
-        $query = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
+        $query      = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
             $ret_params[] = $param_map[$m[0]];
 
             return '?';

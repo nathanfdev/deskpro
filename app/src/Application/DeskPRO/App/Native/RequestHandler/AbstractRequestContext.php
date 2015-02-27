@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -176,7 +175,8 @@ class AbstractRequestContext
     }
 
     /**
-     * @param  string                                                        $message
+     * @param string $message
+     *
      * @return \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function createNotFoundException($message = 'Not Found')
@@ -187,8 +187,9 @@ class AbstractRequestContext
     /**
      * Create a JSON response.
      *
-     * @param  string|array                               $content
-     * @param  int                                        $status_code
+     * @param string|array $content
+     * @param int          $status_code
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createJsonResponse($content, $status_code = 200)
@@ -199,8 +200,9 @@ class AbstractRequestContext
     /**
      * Create a JSON response.
      *
-     * @param  string                                     $content
-     * @param  int                                        $status_code
+     * @param string $content
+     * @param int    $status_code
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createResponse($content, $status_code = 200)

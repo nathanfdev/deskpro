@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -42,7 +41,7 @@ interface SsoCapableInterface extends CallbackInterface
 {
     /**
      * URL we send the deskpro user to after they log out of our system
-     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
+     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation.
      *
      * @return string
      */

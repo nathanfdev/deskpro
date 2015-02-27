@@ -26,15 +26,11 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Filter
+ * Orb.
  */
 
 namespace Orb\Filter;
 
 interface FilterInterface extends \Zend\Filter\FilterInterface
 {
-
 }

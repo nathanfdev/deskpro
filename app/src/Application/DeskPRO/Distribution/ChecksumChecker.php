@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category File
  */
 
@@ -62,7 +61,7 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
     }
 
     /**
-     * Compare the current fileset with the distributed list
+     * Compare the current fileset with the distributed list.
      *
      * @return array
      */
@@ -72,7 +71,7 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
     }
 
     /**
-     * Dump current hashes to standard checksum file for deskpro
+     * Dump current hashes to standard checksum file for deskpro.
      */
     public function dumpToStardnardFile()
     {

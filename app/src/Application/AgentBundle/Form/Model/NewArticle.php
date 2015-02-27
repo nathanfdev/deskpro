@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Model;
@@ -86,8 +83,11 @@ class NewArticle
             $article->setStatusCode('hidden.validating');
         }
 
-        $article->title   = $this->title;
-        $article->content = $this->content ?: '';
+        $article->title = $this->title;
+
+        $article->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
         $lang = null;
         if ($this->language_id) {

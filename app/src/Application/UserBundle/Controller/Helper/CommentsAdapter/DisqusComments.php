@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper\CommentsAdapter;
@@ -41,7 +38,7 @@ use Orb\Util\Util;
 class DisqusComments extends AbstractComments
 {
     /**
-     * Get the HTML block for disqus templates
+     * Get the HTML block for disqus templates.
      *
      * @return string
      */
@@ -54,7 +51,7 @@ class DisqusComments extends AbstractComments
 
             'disqus_shortname' => App::getSetting('core.disqus_shortname'),
             'page_id'          => $this->page_id,
-            'page_permalink'   => $this->page_url
+            'page_permalink'   => $this->page_url,
         ));
 
         return $html;

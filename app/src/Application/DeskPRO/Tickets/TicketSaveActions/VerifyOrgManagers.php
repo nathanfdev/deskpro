@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class VerifyOrgManagers implements TicketSaveActionInterface
@@ -45,7 +44,6 @@ class VerifyOrgManagers implements TicketSaveActionInterface
      */
     private $org_repos;
 
-
     /**
      * @param OrganizationRepository $org_repos
      */
@@ -54,10 +52,10 @@ class VerifyOrgManagers implements TicketSaveActionInterface
         $this->org_repos = $org_repos;
     }
 
-
     /**
-     * @param  Ticket                                     $ticket
-     * @param  ExecutorContextInterface                   $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -71,12 +69,11 @@ class VerifyOrgManagers implements TicketSaveActionInterface
 
         if ($ticket->organization) {
             $managers = $this->org_repos->getManagers($ticket->organization);
-            foreach ($managers AS $manager) {
+            foreach ($managers as $manager) {
                 if ($manager->getPref('org.manager_auto_add')) {
                     $ticket->addParticipantPerson($manager);
                 }
             }
         }
     }
-
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Validator
  */
 
@@ -51,7 +50,7 @@ use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 class ClassMetadataFactory extends LazyLoadingMetadataFactory
 {
     /**
-     * Array of classnames we've done
+     * Array of classnames we've done.
      *
      * @var array
      */
@@ -66,7 +65,7 @@ class ClassMetadataFactory extends LazyLoadingMetadataFactory
             throw new NoSuchMetadataException(sprintf('Cannot create metadata for non-objects. Got: %s', gettype($value)));
         }
 
-        $class = ltrim(is_object($value) ? get_class($value) : $value, '\\');
+        $class    = ltrim(is_object($value) ? get_class($value) : $value, '\\');
         $metadata = parent::getMetadataFor($value);
 
         if (isset($this->done_classes[$class])) {
@@ -112,13 +111,13 @@ class ClassMetadataFactory extends LazyLoadingMetadataFactory
                     $parts = explode('|', $val);
 
                     foreach ($parts as $key => $part) {
-                        $parts[$key] = '[' . $name . '] ' . $part;
+                        $parts[$key] = '['.$name.'] '.$part;
                     }
 
-                    $val = implode('|', $parts);
+                    $val               = implode('|', $parts);
                     $constraint->$prop = $val;
                 } else {
-                    $constraint->$prop = '[' . $name . '] ' . $val;
+                    $constraint->$prop = '['.$name.'] '.$val;
                 }
             }
         }

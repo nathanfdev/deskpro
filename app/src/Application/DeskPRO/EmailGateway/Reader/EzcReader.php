@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Reader;
@@ -246,7 +244,7 @@ class EzcReader extends AbstractReader
     {
         $header = $this->getHeader('Thread-Topic');
         if (!$header || empty($header->header_parts)) {
-            return null;
+            return;
         }
 
         $subject                   = new Item\Subject();
@@ -541,11 +539,12 @@ class EzcReader extends AbstractReader
     }
 
     /**
-    * Decode a Microsoft Outlook TNEF part (winmail.dat)
-    *
-    * @param $part Message part to decode
-    * @return array
-    */
+     * Decode a Microsoft Outlook TNEF part (winmail.dat).
+     *
+     * @param $part Message part to decode
+     *
+     * @return array
+     */
     public function decodeTnef($part)
     {
         $attachments = array();

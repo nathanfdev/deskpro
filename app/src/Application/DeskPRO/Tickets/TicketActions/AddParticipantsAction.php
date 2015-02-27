@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Adds participants
+ * Adds participants.
  */
 class AddParticipantsAction extends AbstractAction
 {
@@ -50,9 +47,8 @@ class AddParticipantsAction extends AbstractAction
         $this->add_people_ids = $add_participants;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -64,9 +60,8 @@ class AddParticipantsAction extends AbstractAction
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -76,17 +71,16 @@ class AddParticipantsAction extends AbstractAction
 
         foreach ($this->add_people_ids as $pid) {
             $actions[] = array(
-                'action' => 'add_participant',
-                'person_id' => $pid
+                'action'    => 'add_participant',
+                'person_id' => $pid,
             );
         }
 
         return $actions;
     }
 
-
     /**
-     * Get the agent id
+     * Get the agent id.
      *
      * @return int
      */
@@ -95,9 +89,9 @@ class AddParticipantsAction extends AbstractAction
         return $this->add_people_ids;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -109,14 +103,13 @@ class AddParticipantsAction extends AbstractAction
         return new self($ids);
     }
 
-
     /**
      * @return string
      */
     public function getDescription($as_html = true)
     {
         $agents = array();
-        $users = array();
+        $users  = array();
 
         $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
 
@@ -131,10 +124,10 @@ class AddParticipantsAction extends AbstractAction
 
         $parts = array();
         if ($agents) {
-            $parts[] = "Add agent followers: " . implode(', ', $agents);
+            $parts[] = "Add agent followers: ".implode(', ', $agents);
         }
         if ($users) {
-            $parts[] = "CC users " . implode(', ', $users);
+            $parts[] = "CC users ".implode(', ', $users);
         }
 
         if (!$parts) {

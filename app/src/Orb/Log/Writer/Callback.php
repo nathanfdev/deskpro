@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Writer;
-use \Orb\Log\LogItem;
+
+use Orb\Log\LogItem;
 
 /**
- * This writer passes the log item to any callback
+ * This writer passes the log item to any callback.
  */
 class Callback extends AbstractWriter
 {

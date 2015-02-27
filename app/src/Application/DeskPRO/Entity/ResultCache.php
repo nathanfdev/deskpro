@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,13 +38,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A result cache is a cached result from a search or filter.
- *
  */
 class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -55,21 +52,21 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * Criteria information like what the user searched for
+     * Criteria information like what the user searched for.
      *
      * @var array
      */
     protected $criteria = array();
 
     /**
-     * An array of results
+     * An array of results.
      *
      * @var array
      */
     protected $results = array();
 
     /**
-     * Any extra data
+     * Any extra data.
      *
      * @var array
      */
@@ -96,7 +93,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get some data from the extra array
+     * Get some data from the extra array.
      */
     public function getExtraData($key, $default = null)
     {
@@ -108,7 +105,6 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param  $key
      * @param  $value
-     * @return void
      */
     public function setExtraData($key, $value)
     {
@@ -124,7 +120,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return integer
      */
@@ -159,6 +155,6 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->mapField(array( 'fieldName' => 'results_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'results_type'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -80,7 +79,7 @@ class Sla extends AbstractEntityRepository
     public function getPersonOrgAssociableSlas()
     {
         $slas = $this->getAllSlas();
-        foreach ($slas AS $k => $sla) {
+        foreach ($slas as $k => $sla) {
             if ($sla->apply_type != 'people_orgs') {
                 unset($slas[$k]);
             }
@@ -99,7 +98,7 @@ class Sla extends AbstractEntityRepository
             return array();
         }
 
-        foreach ($slas AS $key => $sla) {
+        foreach ($slas as $key => $sla) {
             if ($sla->apply_type != 'manual') {
                 unset($slas[$key]);
             }
@@ -111,7 +110,7 @@ class Sla extends AbstractEntityRepository
     public function getSlaTitles(array $ids = null)
     {
         $output = array();
-        foreach ($this->getAllSlas() AS $sla) {
+        foreach ($this->getAllSlas() as $sla) {
             if (!is_array($ids) || in_array($sla->id, $ids)) {
                 $output[$sla->id] = $sla->title;
             }

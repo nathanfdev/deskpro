@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper;
@@ -88,17 +85,15 @@ class ContentRating
      */
     public function __construct(ContentAbstract $content_object, Person $person, Visitor $visitor = null)
     {
-        $this->person = $person;
-        $this->visitor = $visitor;
+        $this->person         = $person;
+        $this->visitor        = $visitor;
         $this->content_object = $content_object;
 
         $this->em = App::getOrm();
     }
 
-
     /**
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return void
+     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function setRequest(Request $request)
     {
@@ -106,17 +101,19 @@ class ContentRating
         $this->session = $request->getSession();
     }
 
-
     /**
-     * Get this users existing rating
+     * Get this users existing rating.
      *
      * @return \Application\DeskPRO\Entity\Rating
      */
     public function getRating()
     {
         if ($this->rating !== null) {
-            if ($this->rating) return null;
-            else return null;
+            if ($this->rating) {
+                return;
+            } else {
+                return;
+            }
         }
 
         $em = App::getOrm();
@@ -144,7 +141,7 @@ class ContentRating
                         AND (r.person = ?3)
                 ")->setParameter(1, $this->content_object->getContentType())
                   ->setParameter(2, $this->content_object->getId())
-                  ->setParameter(3,$this->person)
+                  ->setParameter(3, $this->person)
                   ->execute();
             }
         } elseif ($this->visitor) {
@@ -160,31 +157,30 @@ class ContentRating
               ->execute();
         }
 
-        if ($res AND count($res)) {
+        if ($res and count($res)) {
             $this->rating = $res[0];
 
             return $this->rating;
         } else {
             $this->rating = false;
 
-            return null;
+            return;
         }
     }
 
-
     /**
-     * Get a search log ID that sholud be recorded if the user were to vote on the next page
+     * Get a search log ID that sholud be recorded if the user were to vote on the next page.
      *
      * @return int
      */
     public function getSearchLogId()
     {
-        if ($this->request AND $this->session AND $this->session->has('last_searchlog_id')) {
-            $ref = $this->request->server->get('HTTP_REFERER');
-            $search_url = App::getRouter()->generate('user', array(), true) . 'search';
+        if ($this->request and $this->session and $this->session->has('last_searchlog_id')) {
+            $ref        = $this->request->server->get('HTTP_REFERER');
+            $search_url = App::getRouter()->generate('user', array(), true).'search';
             $search_url = preg_replace('#^https?://#', '', $search_url);
 
-            if ($ref && preg_match('#' . preg_quote($search_url, '#') . '(\?.*?)?$#', $ref)) {
+            if ($ref && preg_match('#'.preg_quote($search_url, '#').'(\?.*?)?$#', $ref)) {
                 $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->has('last_searchlog_id'));
             }
         }
@@ -192,17 +188,17 @@ class ContentRating
         return 0;
     }
 
-
     /**
-     * Set the user rating on this
+     * Set the user rating on this.
      *
      * @param $user_rating
+     *
      * @return \Application\DeskPRO\Entity\Rating|
      */
     public function setRating($user_rating, $search_log_id = 0)
     {
         if (!$user_rating) {
-            return null;
+            return;
         }
 
         $rating = $this->getRating();
@@ -217,7 +213,7 @@ class ContentRating
             $searchlog = App::findEntity('DeskPRO:SearchLog', $search_log_id);
         } else {
             if ($this->session->get('from_search')) {
-                $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
+                $searchlog         = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
                 $rating->searchlog = $searchlog;
 
                 $this->session->remove('from_search');

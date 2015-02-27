@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -39,12 +36,12 @@ use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
- * Represents a unary operator (-, NOT, !)
+ * Represents a unary operator (-, NOT, !).
  */
 class UnaryOperator extends AbstractPart
 {
     /**
-     * Token ID of the operator
+     * Token ID of the operator.
      *
      * @var integer
      */
@@ -56,7 +53,7 @@ class UnaryOperator extends AbstractPart
     public $value;
 
     /**
-     * Maps from token IDs to printable/usable operators
+     * Maps from token IDs to printable/usable operators.
      *
      * @var array
      */

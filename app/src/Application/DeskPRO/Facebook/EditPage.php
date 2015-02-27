@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Facebook
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Facebook;
@@ -118,19 +115,19 @@ class EditPage
     {
         $this->page = $page;
 
-        $this->graph_id = $page->graph_id;
-        $this->user_graph_id = $page->user_graph_id;
-        $this->page_token = $page->page_token;
-        $this->user_token = $page->user_token;
-        $this->name = $page->name;
-        $this->picture_url = $page->picture_url;
-        $this->import_wall_posts = $page->import_wall_posts ? true : false;
+        $this->graph_id               = $page->graph_id;
+        $this->user_graph_id          = $page->user_graph_id;
+        $this->page_token             = $page->page_token;
+        $this->user_token             = $page->user_token;
+        $this->name                   = $page->name;
+        $this->picture_url            = $page->picture_url;
+        $this->import_wall_posts      = $page->import_wall_posts ? true : false;
         $this->disable_own_wall_posts = $page->disable_own_wall_posts ? true : false;
         $this->import_direct_messages = $page->import_direct_messages ? true : false;
-        $this->is_enabled = $page->is_enabled ? true : false;
-        $this->is_connected = $page->is_connected ? true : false;
-        $this->is_tested = $page->is_tested ? true : false;
-        $this->app = new EditApp($page->app);
+        $this->is_enabled             = $page->is_enabled ? true : false;
+        $this->is_connected           = $page->is_connected ? true : false;
+        $this->is_tested              = $page->is_tested ? true : false;
+        $this->app                    = new EditApp($page->app);
     }
 
     public function save(EntityManager $em)
@@ -139,19 +136,19 @@ class EditPage
 
         $page = $this->page;
 
-        $page->graph_id = $this->graph_id;
-        $page->user_graph_id = $this->user_graph_id;
-        $page->page_token = $this->page_token;
-        $page->user_token = $this->user_token;
-        $page->name = $this->name;
-        $page->picture_url = $this->picture_url;
-        $page->import_wall_posts = $this->import_wall_posts ? true : false;
+        $page->graph_id               = $this->graph_id;
+        $page->user_graph_id          = $this->user_graph_id;
+        $page->page_token             = $this->page_token;
+        $page->user_token             = $this->user_token;
+        $page->name                   = $this->name;
+        $page->picture_url            = $this->picture_url;
+        $page->import_wall_posts      = $this->import_wall_posts ? true : false;
         $page->disable_own_wall_posts = $this->disable_own_wall_posts ? true : false;
         $page->import_direct_messages = $this->import_direct_messages ? true : false;
-        $page->is_enabled = $this->is_enabled ? true : false;
-        $page->is_connected = $this->is_connected ? true : false;
-        $page->is_tested = $this->is_tested ? true : false;
-        $page->app = $fb_app;
+        $page->is_enabled             = $this->is_enabled ? true : false;
+        $page->is_connected           = $this->is_connected ? true : false;
+        $page->is_tested              = $this->is_tested ? true : false;
+        $page->app                    = $fb_app;
 
         if (!$page->id) {
             $fb = new FacebookApi($page->app);

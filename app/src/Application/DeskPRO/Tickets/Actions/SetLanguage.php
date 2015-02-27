@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -57,7 +56,6 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,7 +74,6 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
 
         $ticket->language = $lang;
     }
-
 
     /**
      * {@inheritDoc}
@@ -100,7 +97,6 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -110,7 +106,7 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
             return array('fields');
         }
 
-        return null;
+        return;
     }
 
     /**

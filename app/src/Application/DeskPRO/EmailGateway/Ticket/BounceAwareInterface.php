@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -40,7 +38,6 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 interface BounceAwareInterface
 {
     /**
-     * @return void
      */
     public function enableBouncedMode();
 }

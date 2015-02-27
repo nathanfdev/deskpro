@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -55,7 +52,8 @@ class Build1400056728 extends AbstractBuild
         // use the new schema before its been upgraded
         try {
             $db->exec("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         #------------------------------
         # Get current layouts
@@ -72,7 +70,7 @@ class Build1400056728 extends AbstractBuild
         }
 
         $dep_ids = array_keys($old_layouts);
-        $deps = array();
+        $deps    = array();
         if ($dep_ids) {
             $deps = $em->getRepository('DeskPRO:Department')->getByIds($dep_ids);
         }
@@ -83,8 +81,8 @@ class Build1400056728 extends AbstractBuild
 
         if (!isset($old_layouts[0])) {
             $this->out("No default layout exists, generating one");
-            $gen = new LayoutGenerator($this->container);
-            $layout = $gen->getTicketLayout();
+            $gen                = new LayoutGenerator($this->container);
+            $layout             = $gen->getTicketLayout();
             $layout->department = null;
             $em->persist($layout);
             $em->flush();
@@ -102,7 +100,7 @@ class Build1400056728 extends AbstractBuild
 
             $this->out("Upgrading layout for dep $dep_id ...");
 
-            $up = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
+            $up     = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
             $layout = $up->getTicketLayout();
 
             if ($dep_id) {
@@ -115,6 +113,7 @@ class Build1400056728 extends AbstractBuild
 
         try {
             $db->exec("ALTER TABLE departments DROP avatar_blob_id");
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 }

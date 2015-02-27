@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category HipChat
  */
 
@@ -63,9 +62,10 @@ class HipChatActionDef extends AbstractActionDef
     }
 
     /**
-     * Makes sure 'room' key is set, and adds 'app_id'
+     * Makes sure 'room' key is set, and adds 'app_id'.
      *
-     * @param  array $options
+     * @param array $options
+     *
      * @return array
      */
     public function processActionBuilderOptions(array $options)

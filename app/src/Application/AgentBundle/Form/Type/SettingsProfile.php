@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Type;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -43,7 +41,7 @@ class SettingsProfile extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array('required' => false));
-        $builder->add('primary_phone_number_text', 'text', array('required' => false));
+        $builder->add('primary_phone', new PhoneNumberType());
         $builder->add('override_display_name', 'text', array('required' => false));
         $builder->add('email', 'text', array('required' => false));
         $builder->add('timezone', 'choice', array(

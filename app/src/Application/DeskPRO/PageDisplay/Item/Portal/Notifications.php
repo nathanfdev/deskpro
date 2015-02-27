@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -48,7 +45,7 @@ class Notifications extends PortalItemAbstract
 
         $html = $this->renderView('UserBundle:Portal:notifications-topsection.html.twig', array(
             'section' => $this->section,
-            'options' => $this->options
+            'options' => $this->options,
         ));
 
         return $html;
@@ -57,7 +54,7 @@ class Notifications extends PortalItemAbstract
     public function getJsAssets()
     {
         return array(
-            'javascripts/DeskPRO/User/ElementHandler/Notifications.js'
+            'javascripts/DeskPRO/User/ElementHandler/Notifications.js',
         );
     }
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks the value of an org field
+ * Checks the value of an org field.
  *
  * @option int field_id   The field to check
  * @option mixed value    The value. For choice, this will be multiple ints. For others, it will be a string.
@@ -57,10 +56,10 @@ class CheckOrgField extends AbstractCheckCustomField
         return $options;
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context)
@@ -72,12 +71,11 @@ class CheckOrgField extends AbstractCheckCustomField
         }
     }
 
-
     /**
      * @return string
      */
     public function getTermType()
     {
-		return 'CheckOrgField' . $this->getTermOptions()->get('field_id');
+        return 'CheckOrgField'.$this->getTermOptions()->get('field_id');
     }
 }

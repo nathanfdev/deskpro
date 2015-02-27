@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -59,8 +58,9 @@ class NativePackageConfig
     private $app_dir;
 
     /**
-     * @param  AppPackage          $package
-     * @param  string              $app_dir
+     * @param AppPackage $package
+     * @param string     $app_dir
+     *
      * @return NativePackageConfig
      */
     public static function createFromPackage(AppPackage $package, $app_dir)

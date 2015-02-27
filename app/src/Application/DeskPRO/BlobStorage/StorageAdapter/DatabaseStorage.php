@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
@@ -91,7 +89,8 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function deleteBlob(Blob $blob)
@@ -116,7 +115,8 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return string
      */
     public function getDbPathId(Blob $blob)
@@ -129,7 +129,8 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function checkBlobExists(Blob $blob)
@@ -148,8 +149,9 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     *
      * @return mixed
      */
     public function writeBlobString(Blob $blob, $data)
@@ -184,8 +186,9 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function writeBlobFromStream(Blob $blob, $fp_source)
@@ -194,8 +197,9 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  string                                $source_path
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param string                                $source_path
+     *
      * @return int
      */
     public function writeBlobFromFile(Blob $blob, $source_path)
@@ -204,9 +208,10 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * Loads the entire blob into a string
+     * Loads the entire blob into a string.
      *
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return string
      */
     public function readBlobString(Blob $blob)
@@ -236,8 +241,9 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $target_path
+     *
      * @return int
      */
     public function readBlobToFile(Blob $blob, $target_path)
@@ -246,8 +252,9 @@ class DatabaseStorage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function readBlobToStream(Blob $blob, $fp_target)

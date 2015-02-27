@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle\DataSet;
@@ -45,7 +43,7 @@ class FreshDb extends AbstractDbSet
     }
 
     /**
-     * Install default/empty data
+     * Install default/empty data.
      *
      * @return int
      */
@@ -94,14 +92,14 @@ class FreshDb extends AbstractDbSet
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
 
         // Install data stuff
-        $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
         $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT = $admin; // can be used in data.php
-        $WEB_INSTALL = true;
-        $IMPORT_INSTALL = false;
+        $AGENT              = $admin; // can be used in data.php
+        $WEB_INSTALL        = true;
+        $IMPORT_INSTALL     = false;
 
         $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-        $translate = $this->getContainer()->get('deskpro.core.translate');
+        $translate    = $this->getContainer()->get('deskpro.core.translate');
 
         foreach ($install_data as $php) {
             eval($php);
@@ -125,16 +123,16 @@ class FreshDb extends AbstractDbSet
         if ($USERGROUP_EVERYONE) {
             $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
             foreach ($scanner->getNames() as $p_name) {
-                $p = new \Application\DeskPRO\Entity\Permission();
+                $p            = new \Application\DeskPRO\Entity\Permission();
                 $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name = $p_name;
-                $p->value = 1;
+                $p->name      = $p_name;
+                $p->value     = 1;
                 $em->persist($p);
             }
             $em->flush();
         }
 
-        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
         $data_init->admin_user = $admin;
         $data_init->run();
 // initial settings so we are "installed"
@@ -146,26 +144,26 @@ class FreshDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '" . time() . "'),
+                ('core.deskpro_build', '".time()."'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '" . time() . "'),
-                ('core.install_build', '" . time() . "'),
+                ('core.done_rewrite_urls_check', '".time()."'),
+                ('core.install_build', '".time()."'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '" . time() . "'),
+                ('core.install_timestamp', '".time()."'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '" . time() . "'),
-                ('core.last_cron_start', '" . time() . "'),
+                ('core.last_cron_run', '".time()."'),
+                ('core.last_cron_start', '".time()."'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '" . time() . "'),
-                ('core.twitter_last_cleanup', '" . time() . "'),
+                ('core.task_completed_add_ticketfield', '".time()."'),
+                ('core.twitter_last_cleanup', '".time()."'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '" . time() . "');
+                ('user.kb_subscriptions_last', '".time()."');
         ");
 
         // disable http cache
@@ -180,7 +178,6 @@ class FreshDb extends AbstractDbSet
                 ('portal.smaxage_user_tag', '0');
         ");
 
-
         $count++;
 
         return $count;
@@ -188,22 +185,22 @@ class FreshDb extends AbstractDbSet
 
     protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false)
     {
-        $new_user = new \Application\DeskPRO\Entity\Person();
+        $new_user             = new \Application\DeskPRO\Entity\Person();
         $new_user->first_name = $fname;
-        $new_user->last_name = $lname;
+        $new_user->last_name  = $lname;
         $new_user->setEmail($email, true);
         $new_user->setPassword($pass);
-        $new_user->is_user = true;
+        $new_user->is_user      = true;
         $new_user->is_confirmed = true;
 
         if ($agent || $admin) {
             $new_user->is_agent_confirmed = true;
-            $new_user->is_agent = true;
-            $new_user->can_agent = true;
+            $new_user->is_agent           = true;
+            $new_user->can_agent          = true;
         }
 
         if ($admin) {
-            $new_user->can_admin = true;
+            $new_user->can_admin   = true;
             $new_user->can_billing = true;
             $new_user->can_reports = true;
         }

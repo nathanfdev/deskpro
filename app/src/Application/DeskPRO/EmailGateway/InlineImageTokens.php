@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -56,7 +54,7 @@ class InlineImageTokens
     }
 
     /**
-     * Adds tokens to $body where inline tags
+     * Adds tokens to $body where inline tags.
      *
      * @param string $body
      */
@@ -131,7 +129,7 @@ class InlineImageTokens
     }
 
     /**
-     * Check if a content ID has a corresponding token
+     * Check if a content ID has a corresponding token.
      *
      * @param string $cid
      */
@@ -141,9 +139,10 @@ class InlineImageTokens
     }
 
     /**
-     * Get the token for a content id
+     * Get the token for a content id.
      *
-     * @param  string      $cid
+     * @param string $cid
+     *
      * @return string|null
      */
     public function getToken($cid, $first = true)
@@ -166,9 +165,10 @@ class InlineImageTokens
     /**
      * Replace a content ID with something in body.
      *
-     * @param  string $cid
-     * @param  string $replacement
-     * @param  string $body
+     * @param string $cid
+     * @param string $replacement
+     * @param string $body
+     *
      * @return string
      */
     public function replaceToken($cid, $replacement, $body)
@@ -186,7 +186,7 @@ class InlineImageTokens
     }
 
     /**
-     * Count how many tokens were read
+     * Count how many tokens were read.
      *
      * @return int
      */
@@ -196,7 +196,7 @@ class InlineImageTokens
     }
 
     /**
-     * Get the CID's we were able to read
+     * Get the CID's we were able to read.
      *
      * @return array
      */

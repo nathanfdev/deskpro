@@ -6,7 +6,7 @@ class DpIntegrationTestCase extends \Codeception\TestCase\Test
      * @var array
      */
     protected $backupGlobals = array(
-        'DP_CONFIG'
+        'DP_CONFIG',
     );
 
     /**
@@ -25,6 +25,10 @@ class DpIntegrationTestCase extends \Codeception\TestCase\Test
         $this->runAfter();
     }
 
-    public function runBefore() {}
-    public function runAfter() {}
+    public function runBefore()
+    {
+    }
+    public function runAfter()
+    {
+    }
 }

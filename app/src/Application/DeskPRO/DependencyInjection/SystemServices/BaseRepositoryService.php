@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -105,7 +102,7 @@ class BaseRepositoryService
     }
 
     /**
-     * The entity class
+     * The entity class.
      *
      * @return string
      */
@@ -115,7 +112,7 @@ class BaseRepositoryService
     }
 
     /**
-     * Reset the saved state
+     * Reset the saved state.
      */
     public function reset()
     {

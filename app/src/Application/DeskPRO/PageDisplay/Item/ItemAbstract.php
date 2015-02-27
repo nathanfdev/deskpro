@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item;
@@ -42,7 +39,7 @@ abstract class ItemAbstract implements ItemInterface
     protected $data = array();
 
     /**
-     * Get the item ID
+     * Get the item ID.
      *
      * @return int
      */
@@ -52,13 +49,11 @@ abstract class ItemAbstract implements ItemInterface
             return $this->data['item_id'];
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Sets item data
-     *
-     * @return void
+     * Sets item data.
      */
     public function setData(array $data)
     {
@@ -66,7 +61,7 @@ abstract class ItemAbstract implements ItemInterface
     }
 
     /**
-     * Set a speciifc value
+     * Set a speciifc value.
      *
      * @param string $k
      * @param mixed  $v
@@ -82,7 +77,7 @@ abstract class ItemAbstract implements ItemInterface
     }
 
     /**
-     * Returns item data
+     * Returns item data.
      *
      * @return array
      */

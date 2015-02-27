@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,9 +39,8 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 interface ActionInterface
 {
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context);
 }

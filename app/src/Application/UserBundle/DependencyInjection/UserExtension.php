@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -45,19 +44,19 @@ class UserExtension extends Extension
     {
         $definition = new Definition('Application\\DeskPRO\\PageDisplay\\Page\\PortalPage', array(
             new Reference('service_container'),
-            new Reference('deskpro.session_person')
+            new Reference('deskpro.session_person'),
         ));
         $container->setDefinition('deskpro.user_portal_page', $definition);
     }
 
     public function getXsdValidationBasePath()
     {
-        return null;
+        return;
     }
 
     public function getNamespace()
     {
-        return null;
+        return;
     }
 
     public function getAlias()

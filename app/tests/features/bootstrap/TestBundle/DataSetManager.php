@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle;
 
 /**
  * AbstractDbSet does so much work that is is basically what this class *should* be, but this is just a service we
- * use in test code to just install a db set
+ * use in test code to just install a db set.
  */
-class DataSetManager 
+class DataSetManager
 {
     /**
      * @var DataSet\DataSetInterface[]

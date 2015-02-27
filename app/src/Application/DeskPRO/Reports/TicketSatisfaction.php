@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports;
@@ -49,14 +47,14 @@ class TicketSatisfaction
         $this->em = $em;
     }
 
-
     /**
-     * @param  int   $page
+     * @param int $page
+     *
      * @return array
      */
     public function getVarsForFeedHtmlView($page)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\EntityRepository\TicketFeedback $repository
          */
 
@@ -74,9 +72,9 @@ class TicketSatisfaction
         return $vars;
     }
 
-
     /**
-     * @param  string $date
+     * @param string $date
+     *
      * @return array
      */
     public function getVarsForSummaryHtmlView($date)
@@ -85,7 +83,7 @@ class TicketSatisfaction
             $date = date('Y-m');
         }
 
-        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
+        $dt                 = new \DateTime('now', new \DateTimeZone('UTC'));
         list($year, $month) = explode('-', $date);
         $dt->setDate($year, $month, 1);
         $dt->setTime(0, 0, 0);

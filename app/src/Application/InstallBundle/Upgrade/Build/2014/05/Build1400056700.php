@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -44,7 +41,9 @@ class Build1400056700 extends AbstractBuild
 
         $fn_save_table = function ($table) use ($db, $me) {
             $recs = $db->fetchAll("SELECT * FROM $table");
-            if (!$recs) $recs = array();
+            if (!$recs) {
+                $recs = array();
+            }
             $me->saveUpgradeData('201404', $table, $recs);
         };
 

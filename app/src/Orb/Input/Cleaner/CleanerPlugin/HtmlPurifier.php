@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -39,7 +38,7 @@ use Orb\Input\Cleaner\Cleaner;
 use Orb\Util\Strings;
 
 /**
- * Uses HTMLPurifier to clean HTML input
+ * Uses HTMLPurifier to clean HTML input.
  */
 class HtmlPurifier implements CleanerPlugin
 {
@@ -103,7 +102,6 @@ class HtmlPurifier implements CleanerPlugin
         #------------------------------
 
         if ($type == 'html_email_preclean') {
-
             // This bit normalises the HTML document. Some clients quote an original
             // HTML email message, but add their own HTML document as well. So you end up
             // with two <html>..</html> documents in one message. This screws up the cleaner.
@@ -130,12 +128,12 @@ class HtmlPurifier implements CleanerPlugin
             }
 
             // Set a HTML 4.01 transitional doctype
-            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n" . $value;
+            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n".$value;
 
             $m = null;
             if (preg_match('#<head[^>]*>(.*?)</head>#is', $value, $m)) {
                 $value = str_replace($m[0], '', $value);
-                $value = str_replace('<html>', '<html>' . $m[0], $value);
+                $value = str_replace('<html>', '<html>'.$m[0], $value);
             } else {
                 $value = str_replace('<html>', '<html><head></head>', $value);
             }
@@ -164,13 +162,13 @@ class HtmlPurifier implements CleanerPlugin
             // but we need a full document like this so that DOMDocument "cleans" bad HTML properly.
             // E.g., a malformed meta tag could result in a whole paragraph erroneously being moved
             // under a <head> tag if we dont explicitly put them all under body
-            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n<html><head></head><body>" . $value . '</body></html>';
+            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n<html><head></head><body>".$value.'</body></html>';
 
             // Replace Wingdings characters with UTF-8 characters
             $map = array(
-                'J' => ':)',
-                'L' => ':(',
-                'K' => ':|',
+                'J'  => ':)',
+                'L'  => ':(',
+                'K'  => ':|',
                 'ß' => '<-',
                 'ç' => '<=',
                 'ó' => '<=>',
@@ -209,7 +207,7 @@ class HtmlPurifier implements CleanerPlugin
         require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
         $purifier = new \HTMLPurifier();
-        $config = $this->getConfigForType($type);
+        $config   = $this->getConfigForType($type);
 
         if ($type == 'html_email') {
             // Cut to the body, also cuts out multiple xml decls
@@ -235,7 +233,8 @@ class HtmlPurifier implements CleanerPlugin
     }
 
     /**
-     * @param  string               $type
+     * @param string $type
+     *
      * @return \HTMLPurifier_Config
      */
     public function getConfigForType($type)

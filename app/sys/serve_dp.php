@@ -26,16 +26,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Orb\Util\Strings;
@@ -45,9 +44,9 @@ use Orb\Util\Web;
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
 /**
- * A light-weight loader for website widgetss
+ * A light-weight loader for website widgetss.
  */
-class DpLoader extends LoaderAbstract
+class serve_dp extends LoaderAbstract
 {
     public function runAction()
     {
@@ -56,24 +55,18 @@ class DpLoader extends LoaderAbstract
 
             if (preg_match('#^/vis\.js#', $pathinfo)) {
                 $this->visitorPingAction();
-
             } elseif (preg_match('#^/chat/is-available\.js#', $pathinfo)) {
                 // Legacy
                 $_GET['chat'] = true;
                 $this->visitorPingAction();
-
             } elseif (preg_match('#^/request-session\.(json|js)#', $pathinfo)) {
                 $this->requestSessionAction();
-
             } elseif (preg_match('#^/session-ping\.json#', $pathinfo)) {
                 $this->sessionPingAction();
-
             } elseif (preg_match('#^/user-lang-(\d+)\.js#', $pathinfo, $match)) {
                 $this->userLanguageAction($match[1]);
-
             } elseif (preg_match('#^/agent-lang-(\d+)\.js#', $pathinfo, $match)) {
                 $this->agentLanguageAction($match[1]);
-
             } else {
                 header("HTTP/1.0 404 Not Found");
                 echo "Action not found. (1)";
@@ -83,7 +76,7 @@ class DpLoader extends LoaderAbstract
                 echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
                 $backtrace = $exception->getTrace();
-                $trace = self::formatBacktrace($backtrace);
+                $trace     = self::formatBacktrace($backtrace);
                 echo $trace;
             }
 
@@ -801,6 +794,7 @@ class DpLoader extends LoaderAbstract
     //    }
 
         $js_out = '';
+
         return implode("\n", $js_out);
     }
 
@@ -810,7 +804,7 @@ class DpLoader extends LoaderAbstract
 
     protected function sessionPingAction()
     {
-        $sids = array();
+        $sids       = array();
         $sids['u']  = !empty($_COOKIE['dpsid'])       ? $_COOKIE['dpsid']       : '';
         $sids['a']  = !empty($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : '';
         $sids['aa'] = !empty($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : '';
@@ -818,8 +812,8 @@ class DpLoader extends LoaderAbstract
         // i=u(user),a(agent),aa(admin)
         $interface = (!empty($_GET['i']) && is_scalar($_GET['i'])) ? $_GET['i'] : null;
 
-        $pdo = $this->getPdo();
-        $q = $pdo->prepare("UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?");
+        $pdo  = $this->getPdo();
+        $q    = $pdo->prepare("UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?");
         $date = date('Y-m-d H:i:s');
 
         $sessions = array();
@@ -828,38 +822,38 @@ class DpLoader extends LoaderAbstract
                 continue;
             }
 
-            list ($id, $auth) = explode('-', $sid, 2);
-            $id = Util::baseDecode($id, Util::BASE36_ALPHABET);
+            list($id, $auth) = explode('-', $sid, 2);
+            $id              = Util::baseDecode($id, Util::BASE36_ALPHABET);
 
             $sessions[$k] = array($id, $auth);
 
             $q->execute(array(
                 $date,
                 $id,
-                $auth
+                $auth,
             ));
         }
 
         $token = null;
         if ($interface && isset($sessions[$interface])) {
             $secret = $this->getSetting('core.app_secret', 'APP_SECRET');
-            $token = Util::generateStaticSecurityToken(md5(
-                $sessions[$interface][0] . // id
-                $sessions[$interface][1] . // auth
-                $secret .
+            $token  = Util::generateStaticSecurityToken(md5(
+                $sessions[$interface][0].// id
+                $sessions[$interface][1].// auth
+                $secret.
                 'request_token'
             ), 10800);
         }
 
         $content = json_encode(array(
-            'okay' => true,
-            'request_token' => $token
+            'okay'          => true,
+            'request_token' => $token,
         ));
         header("Content-Type: application/json; filename=session-ping.json");
-        header('Content-Length: ' . strlen($content));
+        header('Content-Length: '.strlen($content));
         header("Content-Disposition: inline; filename=session-ping.json");
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
         echo $content;
     }
@@ -874,7 +868,7 @@ class DpLoader extends LoaderAbstract
 
         $sessionObj = $container->get('session');
         $session_id = $sessionObj->getId();
-        $session = $sessionObj->getEntity();
+        $session    = $sessionObj->getEntity();
 
         $callback_name = false;
         if (isset($_GET['callback'])) {
@@ -894,10 +888,10 @@ class DpLoader extends LoaderAbstract
         }
 
         header("Content-Type: $filetype; filename=$filename");
-        header('Content-Length: ' . strlen($content));
+        header('Content-Length: '.strlen($content));
         header("Content-Disposition: inline; filename=$filename");
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
         echo $content;
     }
@@ -909,9 +903,9 @@ class DpLoader extends LoaderAbstract
     public function agentLanguageAction($language_id)
     {
         $language_id = intval($language_id);
-        $no_cache = !empty($_GET['nocache']);
-        $js = false;
-        $cache_file = dp_get_tmp_dir() . '/agent-lang-' . $language_id . '.cache';
+        $no_cache    = !empty($_GET['nocache']);
+        $js          = false;
+        $cache_file  = dp_get_tmp_dir().'/agent-lang-'.$language_id.'.cache';
 
         if (!$no_cache) {
             if (file_exists($cache_file)) {
@@ -934,19 +928,19 @@ class DpLoader extends LoaderAbstract
         if (!$js) {
             $container = $this->bootFullSystem();
 
-            $tr = $container->getTranslator();
+            $tr   = $container->getTranslator();
             $lang = $container->getEm()->getRepository('DeskPRO:Language')->find($language_id);
             if ($lang && $lang->has_agent) {
                 $tr->setLanguage($lang);
             } else {
                 $language_id = 0;
-                $cache_file = dp_get_tmp_dir() . '/agent-lang-' . $language_id . '.cache';
+                $cache_file  = dp_get_tmp_dir().'/agent-lang-'.$language_id.'.cache';
             }
 
-            $js_phrases = array();
+            $js_phrases                              = array();
             $js_phrases['agent.general.add_a_label'] = $tr->getPhraseText('agent.general.add_a_label');
-            $js_phrases['agent.general.on']    = $tr->getPhraseText('agent.general.on');
-            $js_phrases['agent.general.off']   = $tr->getPhraseText('agent.general.off');
+            $js_phrases['agent.general.on']          = $tr->getPhraseText('agent.general.on');
+            $js_phrases['agent.general.off']         = $tr->getPhraseText('agent.general.off');
 
             $js_phrases["agent.time.reltime_less_second"]    = $tr->getPhraseText("agent.time.reltime_less_second");
             $js_phrases["agent.time.reltime_less_minute"]    = $tr->getPhraseText("agent.time.reltime_less_minute");
@@ -988,7 +982,6 @@ class DpLoader extends LoaderAbstract
                 'agent.userchat.message_ended',
             );
 
-
             foreach ($add_phrases as $k) {
                 $js_phrases[$k] = $tr->getPhraseText($k);
             }
@@ -1000,13 +993,13 @@ class DpLoader extends LoaderAbstract
                 unset($p);
             }
 
-            $js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+            $js = "window.DESKPRO_LANG = ".json_encode($js_phrases).";";
             if (defined('DP_BUILD_TIME')) {
-                $js .= "\n/* DP_BUILD(" . DP_BUILD_TIME . ") */\n";
+                $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";
             }
 
             if (!$no_cache) {
-                $cache_slam_file = $cache_file . '.slam';
+                $cache_slam_file = $cache_file.'.slam';
                 if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
                     $slam_fp = @fopen($cache_slam_file, 'w');
                     if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -1023,19 +1016,19 @@ class DpLoader extends LoaderAbstract
         }
 
         header('Content-Type: application/javascript; charset=utf-8');
-        header('Content-Length: ' . strlen($js));
-        header('Content-Disposition: inline; filename=agent-lang-' . $language_id . '.js');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('Content-Length: '.strlen($js));
+        header('Content-Disposition: inline; filename=agent-lang-'.$language_id.'.js');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         echo $js;
     }
 
     public function userLanguageAction($language_id)
     {
         $language_id = intval($language_id);
-        $no_cache = !empty($_GET['nocache']);
-        $js = false;
-        $cache_file = dp_get_tmp_dir() . '/user-lang-' . $language_id . '.cache';
+        $no_cache    = !empty($_GET['nocache']);
+        $js          = false;
+        $cache_file  = dp_get_tmp_dir().'/user-lang-'.$language_id.'.cache';
 
         if (!$no_cache) {
             if (file_exists($cache_file)) {
@@ -1058,18 +1051,18 @@ class DpLoader extends LoaderAbstract
         if (!$js) {
             $container = $this->bootFullSystem();
 
-            $tr = $container->getTranslator();
+            $tr   = $container->getTranslator();
             $lang = $container->getEm()->getRepository('DeskPRO:Language')->find($language_id);
             if ($lang) {
                 $tr->setLanguage($lang);
             } else {
                 $language_id = 0;
-                $cache_file = dp_get_tmp_dir() . '/user-lang-' . $language_id . '.cache';
+                $cache_file  = dp_get_tmp_dir().'/user-lang-'.$language_id.'.cache';
             }
 
             $js_phrases = array();
 
-            $js_phrases["user.time.time_less_second"] = $tr->phrase("user.time.time_less_second");
+            $js_phrases["user.time.time_less_second"]     = $tr->phrase("user.time.time_less_second");
             $js_phrases["user.time.time-ago_less_second"] = $tr->phrase("user.time.time_less_second");
 
             foreach (array('time', 'time-ago') as $pre) {
@@ -1099,13 +1092,13 @@ class DpLoader extends LoaderAbstract
                 $js_phrases[$k] = $tr->getPhraseText($k);
             }
 
-            $js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+            $js = "window.DESKPRO_LANG = ".json_encode($js_phrases).";";
             if (defined('DP_BUILD_TIME')) {
-                $js .= "\n/* DP_BUILD(" . DP_BUILD_TIME . ") */\n";
+                $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";
             }
 
             if (!$no_cache) {
-                $cache_slam_file = $cache_file . '.slam';
+                $cache_slam_file = $cache_file.'.slam';
                 if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
                     $slam_fp = @fopen($cache_slam_file, 'w');
                     if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -1122,10 +1115,10 @@ class DpLoader extends LoaderAbstract
         }
 
         header('Content-Type: application/javascript; charset=utf-8');
-        header('Content-Length: ' . strlen($js));
-        header('Content-Disposition: inline; filename=user-lang-' . $language_id . '.js');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('Content-Length: '.strlen($js));
+        header('Content-Disposition: inline; filename=user-lang-'.$language_id.'.js');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         echo $js;
     }
 }

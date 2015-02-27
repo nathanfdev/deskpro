@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,15 +39,18 @@ use Application\DeskPRO\Entity\AppPackage;
 interface AppManagerInterface
 {
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasPackage($name);
 
     /**
-     * @param  string                    $name
-     * @return AppPackage
+     * @param string $name
+     *
      * @throws \InvalidArgumentException
+     * @return AppPackage
+     *
      */
     public function getPackage($name);
 
@@ -58,15 +60,18 @@ interface AppManagerInterface
     public function getAllPackages();
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasApp($id);
 
     /**
-     * @param  int                       $id
-     * @return AppInstance
+     * @param int $id
+     *
      * @throws \InvalidArgumentException
+     * @return AppInstance
+     *
      */
     public function getApp($id);
 
@@ -76,7 +81,8 @@ interface AppManagerInterface
     public function getAllApps();
 
     /**
-     * @param  string        $name The package name
+     * @param string $name The package name
+     *
      * @return AppInstance[]
      */
     public function getPackageApps($name);

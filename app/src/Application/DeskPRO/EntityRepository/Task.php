@@ -26,10 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
+ *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
 
@@ -37,9 +37,9 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
-use Application\DeskPRO\Entity;
 use Orb\Util\Dates;
 
 class Task extends AbstractEntityRepository
@@ -57,7 +57,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count overdue tasks.
      *
-     * @param  string $time_zone The time zone
+     * @param string $time_zone The time zone
+     *
      * @return int
      */
     public function countOverdueTasks(Entity\Person $person)
@@ -68,7 +69,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count due today tasks.
      *
-     * @param  string $time_zone The time zone
+     * @param string $time_zone The time zone
+     *
      * @return int
      */
     public function countDueTodayTasks(Entity\Person $person)
@@ -79,7 +81,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count due in future tasks.
      *
-     * @param  string $time_zone The time zone
+     * @param string $time_zone The time zone
+     *
      * @return int
      */
     public function countDueFutureTasks(Entity\Person $person)
@@ -90,7 +93,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count pending tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countPendingTasksForPerson(Entity\Person $person)
@@ -98,21 +102,23 @@ class Task extends AbstractEntityRepository
         return $this->filterTasksForPerson($person, '#total', null, null, 'incomplete');
     }
 
-    /**
-     * Count overdue tasks assigned to the person.
-     *
-     * @param  Person $person The person
-     * @return int
-     */
+        /**
+         * Count overdue tasks assigned to the person.
+         *
+         * @param  Person $person The person
+         *
+         * @return int
+         */
         public function countOverdueTasksForPerson(Entity\Person $person)
         {
             return $this->filterTasksForPerson($person, '#overdue', null, null, 'incomplete');
-    }
+        }
 
     /**
      * Count due today tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countDueTodayTasksForPerson(Entity\Person $person)
@@ -120,11 +126,11 @@ class Task extends AbstractEntityRepository
         return $this->filterTasksForPerson($person, '#today', null, null, 'incomplete');
     }
 
-
-        /**
+    /**
      * Count due in future tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countDueFutureTasksForPerson(Entity\Person $person)
@@ -135,7 +141,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count all pending tasks assigned to the person's teams.
      *
-     * @param  Entity\Person $person The person
+     * @param Entity\Person $person The person
+     *
      * @return int
      */
     public function countPendingTaksForPersonTeams(Entity\Person $person)
@@ -146,7 +153,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count overdue tasks assigned to the perso's teams.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countOverdueTasksForPersonTeams(Entity\Person $person)
@@ -157,7 +165,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count due today tasks assigned to the person's teamsT.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countDueTodayTasksForPersonTeams(Entity\Person $person)
@@ -165,10 +174,11 @@ class Task extends AbstractEntityRepository
         return $this->filterTaksForPersonTeams($person, '#today', null, null, 'incomplete');
     }
 
-        /**
+    /**
      * Count due in future tasks assigned to the person's teams.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countDueFutureTasksForPersonTeams(Entity\Person $person)
@@ -176,11 +186,11 @@ class Task extends AbstractEntityRepository
         return $this->filterTaksForPersonTeams($person, '#future', null, null, 'incomplete');
     }
 
-
     /**
      * Count pending delegated tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countPendingDelegatedTasksForPerson(Entity\Person $person)
@@ -191,7 +201,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count overdue delegated tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countOverdueDelegatedTasksForPerson(Entity\Person $person)
@@ -202,7 +213,8 @@ class Task extends AbstractEntityRepository
     /**
      * Count due today delegated tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countDueTodayDelegatedTasksForPerson(Entity\Person $person)
@@ -210,10 +222,11 @@ class Task extends AbstractEntityRepository
         return $this->filterDelegatedTasksForPerson($person, '#today', null, null, 'incomplete');
     }
 
-        /**
+    /**
      * Count due in future delegated tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function countDueFutureDelegatedTasksForPerson(Entity\Person $person)
@@ -224,14 +237,15 @@ class Task extends AbstractEntityRepository
     /**
      * All pending tasks assigned to the person.
      *
-     * @param Person $person The person
-         * @param string $filter_type
+     * @param Person $person      The person
+     * @param string $filter_type
+     *
      * @return task object
      */
     public function filterTasksForPerson(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
-        $today->setTime(0,0,0);
+        $today->setTime(0, 0, 0);
         $today = Dates::convertToUtcDateTime($today);
 
         $tomorrow = $person->getDateTime();
@@ -244,20 +258,20 @@ class Task extends AbstractEntityRepository
 
         $is_count = false;
         if ($filter_type[0] == '#') {
-            $is_count = true;
+            $is_count    = true;
             $filter_type = substr($filter_type, 1);
         }
 
-        if($filter_type == 'today') {
+        if ($filter_type == 'today') {
             $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[] = $today->format('Y-m-d H:i:s');
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'future') {
+            $params[]   = $today->format('Y-m-d H:i:s');
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'future') {
             $where_part = '(date_due >= ?)';
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'overdue') {
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'overdue') {
             $where_part = '(date_due < ?)';
-            $params[] = $now->format('Y-m-d H:i:s');
+            $params[]   = $now->format('Y-m-d H:i:s');
         } else {
             $where_part = '1';
         }
@@ -314,17 +328,18 @@ class Task extends AbstractEntityRepository
         }
     }
 
-        /**
+    /**
      * All pending tasks assigned to the person's teams.
      *
-     * @param Entity\Person $person The person
-         * @param string $filter_type
+     * @param Entity\Person $person      The person
+     * @param string        $filter_type
+     *
      * @return Task Object
      */
     public function filterTaksForPersonTeams(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
-        $today->setTime(0,0,0);
+        $today->setTime(0, 0, 0);
         $today = Dates::convertToUtcDateTime($today);
 
         $tomorrow = $person->getDateTime();
@@ -337,20 +352,20 @@ class Task extends AbstractEntityRepository
 
         $is_count = false;
         if ($filter_type[0] == '#') {
-            $is_count = true;
+            $is_count    = true;
             $filter_type = substr($filter_type, 1);
         }
 
-        if($filter_type == 'today') {
+        if ($filter_type == 'today') {
             $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[] = $today->format('Y-m-d H:i:s');
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'future') {
+            $params[]   = $today->format('Y-m-d H:i:s');
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'future') {
             $where_part = '(date_due >= ?)';
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'overdue') {
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'overdue') {
             $where_part = '(date_due < ?)';
-            $params[] = $now->format('Y-m-d H:i:s');
+            $params[]   = $now->format('Y-m-d H:i:s');
         } else {
             $where_part = '1';
         }
@@ -411,13 +426,14 @@ class Task extends AbstractEntityRepository
     /**
      * Count pending delegated tasks assigned to the person.
      *
-     * @param  Person $person The person
+     * @param Person $person The person
+     *
      * @return int
      */
     public function filterDelegatedTasksForPerson(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
-        $today->setTime(0,0,0);
+        $today->setTime(0, 0, 0);
         $today = Dates::convertToUtcDateTime($today);
 
         $tomorrow = $person->getDateTime();
@@ -430,20 +446,20 @@ class Task extends AbstractEntityRepository
 
         $is_count = false;
         if ($filter_type[0] == '#') {
-            $is_count = true;
+            $is_count    = true;
             $filter_type = substr($filter_type, 1);
         }
 
-        if($filter_type == 'today') {
+        if ($filter_type == 'today') {
             $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[] = $today->format('Y-m-d H:i:s');
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'future') {
+            $params[]   = $today->format('Y-m-d H:i:s');
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'future') {
             $where_part = '(date_due >= ?)';
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'overdue') {
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'overdue') {
             $where_part = '(date_due < ?)';
-            $params[] = $now->format('Y-m-d H:i:s');
+            $params[]   = $now->format('Y-m-d H:i:s');
         } else {
             $where_part = '1';
         }
@@ -501,16 +517,17 @@ class Task extends AbstractEntityRepository
         }
     }
 
-        /**
+    /**
      * Filter all pending tasks.
      *
-         * @param string $filter_type
+     * @param string $filter_type
+     *
      * @return int
      */
     public function filterAllPendingTasks(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
-        $today->setTime(0,0,0);
+        $today->setTime(0, 0, 0);
         $today = Dates::convertToUtcDateTime($today);
 
         $tomorrow = $person->getDateTime();
@@ -521,22 +538,22 @@ class Task extends AbstractEntityRepository
 
         $is_count = false;
         if ($filter_type[0] == '#') {
-            $is_count = true;
+            $is_count    = true;
             $filter_type = substr($filter_type, 1);
         }
 
         $params = array();
 
-        if($filter_type == 'today') {
+        if ($filter_type == 'today') {
             $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[] = $today->format('Y-m-d H:i:s');
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'future') {
+            $params[]   = $today->format('Y-m-d H:i:s');
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'future') {
             $where_part = '(date_due >= ?)';
-            $params[] = $tomorrow->format('Y-m-d H:i:s');
-        } elseif($filter_type == 'overdue') {
+            $params[]   = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filter_type == 'overdue') {
             $where_part = '(date_due < ?)';
-            $params[] = $now->format('Y-m-d H:i:s');
+            $params[]   = $now->format('Y-m-d H:i:s');
         } else {
             $where_part = '1';
         }
@@ -613,7 +630,7 @@ class Task extends AbstractEntityRepository
                 $person_context->getId(),
                 $person_context->getId(),
                 $team_ids,
-                $ticket->getId()
+                $ticket->getId(),
             ), array(
                 \PDO::PARAM_INT,
                 \PDO::PARAM_INT,
@@ -634,7 +651,7 @@ class Task extends AbstractEntityRepository
                 $person_context->getId(),
                 $person_context->getId(),
                 $team_ids,
-                $ticket->getId()
+                $ticket->getId(),
             ), array(
                 \PDO::PARAM_INT,
                 \PDO::PARAM_INT,

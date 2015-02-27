@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 /**
  * @property int $id
@@ -268,7 +265,8 @@ class TicketSearchActive extends DomainObject
     /**
      * Given a ticket, get a raw database array we can copy into the search active table.
      *
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     public static function copyTicketDbArray(Ticket $ticket)
@@ -279,7 +277,7 @@ class TicketSearchActive extends DomainObject
             $prop = $field;
             if (substr($prop, -3) == '_id') {
                 $prop = substr($prop, 0, -3);
-                $val = $ticket->$prop;
+                $val  = $ticket->$prop;
             } else {
                 $val = $ticket->$field;
             }
@@ -315,7 +313,7 @@ class TicketSearchActive extends DomainObject
                 'person_idx'       => array('columns' => array('person_id')),
                 'agent_idx'        => array('columns' => array('agent_id')),
                 'ref_idx'          => array('columns' => array('ref')),
-            )
+            ),
         ));
 
         $metadata->mapField(array(

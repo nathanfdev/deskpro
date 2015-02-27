@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Queue;
@@ -38,7 +35,6 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\EmailBundle\SourceMapper\DatabaseSourceMapper;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
-use Monolog;
 
 class QueueRunner
 {
@@ -88,11 +84,11 @@ class QueueRunner
     private $done_ids = array();
 
     /**
-     * @param Connection $db
-     * @param QueueProc $queue_proc
+     * @param Connection            $db
+     * @param QueueProc             $queue_proc
      * @param SourceMapperInterface $source_mapper
-     * @param SourceSender $source_sender
-     * @param LoggerInterface $logger
+     * @param SourceSender          $source_sender
+     * @param LoggerInterface       $logger
      */
     public function __construct(Connection $db, QueueProc $queue_proc, SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
@@ -104,8 +100,8 @@ class QueueRunner
     }
 
     /**
-     * @param int $proc_limit  Max number of emails to send
-     * @param int $time_limit  Max time to spend sending
+     * @param int $proc_limit Max number of emails to send
+     * @param int $time_limit Max time to spend sending
      */
     public function setLimits($proc_limit, $time_limit)
     {
@@ -116,8 +112,9 @@ class QueueRunner
     /**
      * Timeout sources that have been marked as processing too long.
      *
-     * @return int
      * @throws \Exception
+     * @return int
+     *
      */
     public function detectProblems()
     {
@@ -141,7 +138,7 @@ class QueueRunner
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $d   = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
                 $msg = sprintf(
                     '[%s] RETRY: Detected process timeout. Stuck at %s since %s (%s mins). Retrying.',
                     date('Y-m-d H:i:s'),
@@ -175,7 +172,7 @@ class QueueRunner
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $d   = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
                 $msg = sprintf(
                     '[%s] ERROR: Detected timeout. Stuck at %s since %s (%s mins)',
                     date('Y-m-d H:i:s'),
@@ -200,7 +197,7 @@ class QueueRunner
                 "); // 1 hrs
 
                 foreach ($batch as $r) {
-                    $this->source_mapper->setSourcePending($r);
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
                     $did = true;
                 }
             }
@@ -221,36 +218,46 @@ class QueueRunner
                     SELECT * FROM sendmail_sources
                     WHERE status IN ('pending') AND date_status < ?
                     LIMIT 250
-                ", array(date('Y-m-d H:i:s', time() - 3600))); // 1 hrs
+                ", array(date('Y-m-d H:i:s', time() - 1800))); // 30m
 
                 foreach ($batch as $r) {
-                    $this->source_mapper->setSourcePending($r);
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
+                    $did = true;
+                }
+
+                // retry statuses
+                $batch = $this->db->fetchAllKeyed("
+                    SELECT * FROM sendmail_sources
+                    WHERE status IN ('retry') AND date_next_attempt < ?
+                    LIMIT 250
+                ", array(date('Y-m-d H:i:s', time())));
+
+                foreach ($batch as $r) {
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
                     $did = true;
                 }
             }
-
         } while ($did);
 
         return $count;
     }
 
-
     /**
-     * Runs through the queue
+     * Runs through the queue.
      *
      * @return int
      */
     public function run()
     {
         $time_start = time();
-        $count = 0;
+        $count      = 0;
 
         $this->logger->info(sprintf('Starting -- Limit: %d -- Max Time: %ds', $this->proc_limit, $this->proc_time_limit));
 
         while (true) {
-            $did_break = false;
+            $did_break   = false;
             $batch_count = 0;
-            $batch = $this->reserveBatch();
+            $batch       = $this->reserveBatch();
             $this->logger->info(sprintf('Reserved %d records', count($batch)));
 
             $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
@@ -297,8 +304,9 @@ class QueueRunner
     }
 
     /**
-     * @return array Array of id=>status of records to process
      * @throws \Exception
+     * @return array      Array of id=>status of records to process
+     *
      */
     private function reserveBatch()
     {
@@ -313,7 +321,7 @@ class QueueRunner
             FROM sendmail_sources
             WHERE
               status IN ('pending', 'retry')
-              AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+              AND (date_next_attempt <= ? OR date_next_attempt IS NULL)
               AND id NOT IN (?)
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
@@ -321,7 +329,7 @@ class QueueRunner
         ", array(date('Y-m-d H:i:s'), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
 
         if ($batch) {
-            $batch_ids = array_map(function($r) { return $r['id']; }, $batch);
+            $batch_ids = array_map(function ($r) { return $r['id']; }, $batch);
             $this->done_ids = array_merge($this->done_ids, $batch_ids);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
@@ -335,12 +343,12 @@ class QueueRunner
         return $batch;
     }
 
-
     /**
      * Given a batch of records that we didnt get to (e.g., timeout happened first), release them back
      * to their original status so they can be run next time.
      *
      * @param array $batch
+     *
      * @throws \Exception
      */
     private function releaseRemaining(array $batch)
@@ -352,12 +360,12 @@ class QueueRunner
         $this->db->beginTransaction();
 
         $as_pending = array();
-        $as_retry = array();
+        $as_retry   = array();
 
         foreach ($batch as $info) {
             switch ($info['status']) {
                 case 'pending': $as_pending[] = $info['id']; break;
-                case 'retry':   $as_retry[] = $info['id']; break;
+                case 'retry':   $as_retry[]   = $info['id']; break;
             }
         }
 

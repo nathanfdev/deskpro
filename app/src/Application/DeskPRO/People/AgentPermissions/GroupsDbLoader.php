@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -72,7 +71,6 @@ class GroupsDbLoader
         'agent_tasks'   => 'tasks',
     );
 
-
     /**
      * @param int[]         $groups Group IDs or Usergroup objects
      * @param EntityManager $em
@@ -85,7 +83,7 @@ class GroupsDbLoader
             if (is_object($g)) {
                 $this->group_ids[] = $g->id;
             } elseif (is_int($g) || ctype_digit($g)) {
-                $this->group_ids[] = (int)$g;
+                $this->group_ids[] = (int) $g;
             }
         }
 
@@ -93,9 +91,9 @@ class GroupsDbLoader
         $this->db        = $em->getConnection();
     }
 
-
     /**
-     * @param  int   $group_id
+     * @param int $group_id
+     *
      * @return array
      */
     private function getPermissions($group_id)
@@ -130,9 +128,9 @@ class GroupsDbLoader
         return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
     }
 
-
     /**
      * @param $group_id
+     *
      * @return AgentPermissions
      */
     public function getGroupPermissions($group_id)
@@ -142,9 +140,9 @@ class GroupsDbLoader
         return $this->createAgentPermissions($perms);
     }
 
-
     /**
-     * @param  array            $perm_array
+     * @param array $perm_array
+     *
      * @return AgentPermissions
      */
     private function createAgentPermissions(array $perm_array)
@@ -152,15 +150,23 @@ class GroupsDbLoader
         $agent_perms = new AgentPermissions();
 
         foreach ($perm_array as $k => $v) {
-            if (!$v) continue; // disabled
-            if (strpos($k, '.') === false) continue; // invalid
+            if (!$v) {
+                continue;
+            } // disabled
+            if (strpos($k, '.') === false) {
+                continue;
+            } // invalid
 
-            list ($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) continue; // unknown type
+            list($type, $name) = explode('.', $k, 2);
+            if (!isset(self::$prefix_map[$type])) {
+                continue;
+            } // unknown type
 
             $obj_name = self::$prefix_map[$type];
-            $obj = $agent_perms->$obj_name;
-            if (!isset($obj->$name)) continue; // invalid;
+            $obj      = $agent_perms->$obj_name;
+            if (!isset($obj->$name)) {
+                continue;
+            } // invalid;
 
             $obj->$name = true;
         }

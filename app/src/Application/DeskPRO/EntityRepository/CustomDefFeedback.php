@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 
 class CustomDefFeedback extends CustomDefAbstract
 {
     /**
      * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
      */
-
     public function getCategoryField()
     {
         return $this->_em->createQuery("
@@ -55,23 +52,20 @@ class CustomDefFeedback extends CustomDefAbstract
      *
      * @return array
      */
-
     public function getAllFlatData(\Application\DeskPRO\Entity\CustomDefFeedback $parent_category)
     {
         $hierarchy = array();
 
         if ($parent_category['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-
             $choices = array();
 
             foreach ($parent_category->children as $child) {
-
                 $choices[$child->getId()] = $child;
 
                 $hierarchy[]      = array(
                     'id'        => $child->getId(),
                     'title'     => $child->getTitle(),
-                    'parent_id' => $child->getOption('parent_id', 0)
+                    'parent_id' => $child->getOption('parent_id', 0),
                 );
             }
 

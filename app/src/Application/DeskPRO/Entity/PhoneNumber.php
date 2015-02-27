@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -68,21 +67,21 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * The number, stored in E.164 string format, ie. +19021111111
+     * The number, stored in E.164 string format, ie. +19021111111.
      *
      * @var string
      */
     protected $number;
 
     /**
-     * The ISO 3166-1 country/region code of the phone number (2 char)
+     * The ISO 3166-1 country/region code of the phone number (2 char).
      *
      * @var string
      */
     protected $region;
 
     /**
-     * @var int see Orb\Utils\PhoneNumbers constants for the meanings of the ints stored here
+     * @var int see Orb\Util\PhoneNumbers constants for the meanings of the ints stored here
      */
     protected $guessed_type;
 
@@ -140,7 +139,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         try {
             return $phone_util->parse($this->number, null);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 

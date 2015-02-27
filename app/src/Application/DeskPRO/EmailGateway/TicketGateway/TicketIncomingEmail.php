@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category EmailGateway
  */
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 /**
- * A simple struct for keeping track of some ticket email properties
+ * A simple struct for keeping track of some ticket email properties.
  */
 class TicketIncomingEmail
 {

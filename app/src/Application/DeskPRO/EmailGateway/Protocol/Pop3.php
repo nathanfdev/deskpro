@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Protocol;
@@ -72,11 +69,13 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
     /**
-     * @param  string                                         $host
-     * @param  null                                           $port
-     * @param  bool                                           $ssl
-     * @return string
+     * @param string $host
+     * @param null   $port
+     * @param bool   $ssl
+     *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     * @return string
+     *
      */
     public function connect($host, $port = null, $ssl = false)
     {
@@ -136,9 +135,10 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
     /**
-     * Make a RETR call for retrieving a full message with headers and body
+     * Make a RETR call for retrieving a full message with headers and body.
      *
-     * @param  int    $msgno message number
+     * @param int $msgno message number
+     *
      * @return string message
      */
     public function retrieveToStream($msgno, $stream)
@@ -149,13 +149,14 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
     /**
-     * Send request and get resposne
+     * Send request and get resposne.
      *
      * @see sendRequest(), readResponse()
      *
-     * @param  string   $request request
-     * @param  resource $stream  stream
-     * @return int      Number of bytes read to stream
+     * @param string   $request request
+     * @param resource $stream  stream
+     *
+     * @return int Number of bytes read to stream
      */
     public function requestToStream($request, $stream)
     {
@@ -165,8 +166,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
     /**
-     * @param  string $request
-     * @return null
+     * @param string $request
      */
     public function sendRequest($request)
     {
@@ -182,9 +182,11 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
     /**
-     * @param  bool                                           $multiline
-     * @return string
+     * @param bool $multiline
+     *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     * @return string
+     *
      */
     public function readResponse($multiline = false)
     {
@@ -237,8 +239,10 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * This reads a multi-line response to a stream and returns the number of bytes read.
      *
      * @param $stream
-     * @return int
+     *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     * @return int
+     *
      */
     public function readResponseToStream($stream)
     {

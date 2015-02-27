@@ -46,7 +46,7 @@ class CheckAgentTest extends AbstractTicketEntityCheckTest
     {
         $agent = new Person();
 
-        $ticket = new Ticket();
+        $ticket        = new Ticket();
         $ticket->agent = $agent;
 
         $context = new ExecutorContext();
@@ -61,7 +61,7 @@ class CheckAgentTest extends AbstractTicketEntityCheckTest
     {
         $agent = new Person();
 
-        $ticket = new Ticket();
+        $ticket        = new Ticket();
         $ticket->agent = $agent;
         $ticket->resetStateChangeRecorder();
 

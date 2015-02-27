@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -40,7 +37,7 @@ class Userinfo extends Template
 {
     protected function init()
     {
-        $this->setOption('tpl', 'UserBundle:Portal:userinfo-' . $this->section . '.html.twig');
+        $this->setOption('tpl', 'UserBundle:Portal:userinfo-'.$this->section.'.html.twig');
     }
 
     public function getVars()
@@ -50,7 +47,7 @@ class Userinfo extends Template
         $chat_count       = 0;
 
         if (!$this->person_context->isGuest()) {
-            $counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
+            $counts           = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
             $ticket_count     = $counts['person'];
             $org_ticket_count = $counts['org'];
 

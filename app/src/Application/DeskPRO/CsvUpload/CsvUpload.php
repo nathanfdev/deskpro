@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CsvUpload;
@@ -45,13 +43,11 @@ class CsvUpload
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @param EntityManager $em
      */
-
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -62,7 +58,6 @@ class CsvUpload
      *
      * @return array
      */
-
     public function upload(UploadedFile $file, array $options = array())
     {
         if (!$file instanceof UploadedFile || !$file->getSize()) {
@@ -93,8 +88,7 @@ class CsvUpload
      *
      * @return array
      */
-
-    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, array $options = array())
+    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $update_if_exists, array $options = array())
     {
         $has_email = false;
 
@@ -116,12 +110,13 @@ class CsvUpload
         }
 
         $task_data = array(
-            'blob_id'       => $blob->getId(),
-            'field_maps'    => $field_maps,
-            'skip_first'    => $skip_first,
-            'welcome_email' => $welcome_email,
-            'user_filename' => $user_filename,
-            'options'       => $options,
+            'blob_id'          => $blob->getId(),
+            'field_maps'       => $field_maps,
+            'skip_first'       => $skip_first,
+            'update_if_exists' => $update_if_exists,
+            'welcome_email'    => $welcome_email,
+            'user_filename'    => $user_filename,
+            'options'          => $options,
         );
 
         $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
@@ -136,7 +131,6 @@ class CsvUpload
     /**
      * @return array
      */
-
     public function returnStatusOfImport()
     {
         $tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
@@ -152,7 +146,7 @@ class CsvUpload
             $data   = $task['task_data'];
 
             if ('completed' === $task['status'] || 'errored' === $task['status']) {
-                /** @var Blob $logBlob */
+                /* @var Blob $logBlob */
                 if (!empty($data['log_blob_id'])) {
                     $logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
                 } else {
@@ -181,7 +175,6 @@ class CsvUpload
      *
      * @return array
      */
-
     protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
     {
         $csv_path = dp_get_tmp_dir().'/blob-'.$filename.'.csv';
@@ -223,7 +216,7 @@ class CsvUpload
                     $example_total++;
 
                     if ($example_total == $column_count) {
-                        // have example for all columns
+                        // h$this->getApiData($result)ave example for all columns
                         break 2;
                     }
                 }

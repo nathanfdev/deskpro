@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 
 class UserRule extends AbstractEntityRepository
 {
     /**
      * @return UserRule[]
      */
-
     public function getAllUserRules()
     {
         return $this->_em->createQuery('
@@ -53,7 +50,6 @@ class UserRule extends AbstractEntityRepository
     /**
      * @return array
      */
-
     public function getAllUserRulesAsArray()
     {
         $resultData = array();
@@ -65,7 +61,6 @@ class UserRule extends AbstractEntityRepository
         ')->execute();
 
         foreach ($user_rules as $user_rule) {
-
             $data['id']             = $user_rule->id;
             $data['email_patterns'] = implode(' ', $user_rule->email_patterns);
             $data['run_order']      = $user_rule->run_order;
@@ -77,9 +72,10 @@ class UserRule extends AbstractEntityRepository
     }
 
     /**
-     * Find all matching rules on an email address
+     * Find all matching rules on an email address.
      *
      * @param $email_address
+     *
      * @return array
      */
     public function getMatching($email_address)

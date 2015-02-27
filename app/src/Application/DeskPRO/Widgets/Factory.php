@@ -28,13 +28,8 @@
 namespace Application\DeskPRO\Widgets;
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Widgets
+ * DeskPRO.
  */
-
-
 class Factory
 {
     public static function createHandlersForWidgets($widgets, $context, array $options = array())

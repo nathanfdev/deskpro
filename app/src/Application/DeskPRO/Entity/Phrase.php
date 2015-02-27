@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,8 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
 /**
- * Templates used in the system
- *
+ * Templates used in the system.
  */
 class Phrase extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -52,14 +50,14 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * The language this phrase belongs to
+     * The language this phrase belongs to.
      *
      * @var Language
      */
     protected $language;
 
     /**
-     * The name of the phrase
+     * The name of the phrase.
      *
      * @var string
      */
@@ -67,7 +65,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Phrases can belong to groups. The group is the string
-     * before the first dot in the name. deskpro.profile, the group is 'deskpro'
+     * before the first dot in the name. deskpro.profile, the group is 'deskpro'.
      *
      * @var string
      */
@@ -143,7 +141,8 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     public static function getGroupFromName($name)
@@ -180,6 +179,6 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at'));
         $metadata->mapField(array( 'fieldName' => 'updated_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'updated_at'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true  ));
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource;
@@ -38,12 +35,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
-use Orb\Auth\StateHandler\SessionWrapper;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Orb\Auth\StateHandler\SessionWrapper;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -77,22 +74,21 @@ class UsersourceAuthAdapterFactory
      */
     private $request;
 
-
     public function __construct(DeskproContainer $container, RouterInterface $router, Request $request, Session $session, $interface)
     {
         $this->container = $container;
-        $this->router = $router;
-        $this->session = $session;
+        $this->router    = $router;
+        $this->session   = $session;
         $this->interface = $interface;
-        $this->request = $request;
+        $this->request   = $request;
     }
 
-
     /**
-     * Logic around preparing an auth adapter for use
+     * Logic around preparing an auth adapter for use.
      *
-     * @param  Usersource                         $usersource
-     * @param  null                               $displayContext
+     * @param Usersource $usersource
+     * @param null       $displayContext
+     *
      * @return \Orb\Auth\Adapter\AdapterInterface
      */
     public function getAuthAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
@@ -129,22 +125,22 @@ class UsersourceAuthAdapterFactory
 
             if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type . '_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
+                    $route_type.'_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             } else {
                 $url = $this->router->generate(
-                    $route_type . '_login_callback', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_callback', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             }
@@ -184,19 +180,17 @@ class UsersourceAuthAdapterFactory
         return $adapter;
     }
 
-
     protected function _getAdapterLogger()
     {
         static $logger = null;
 
         if ($logger === null) {
             $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
+            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir().'/usersource_log.log'));
         }
 
         return $logger;
     }
-
 
     private function isAgentInterface($useInterface = null)
     {

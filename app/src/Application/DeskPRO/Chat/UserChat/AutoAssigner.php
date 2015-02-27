@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 
 /**
- * Manages how chats are assigned automatically
+ * Manages how chats are assigned automatically.
  */
 class AutoAssigner
 {
@@ -68,7 +66,7 @@ class AutoAssigner
                 break;
 
             default:
-                return null;
+                return;
         }
     }
 }

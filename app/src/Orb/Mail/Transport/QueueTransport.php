@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail\Transport;
@@ -37,7 +34,7 @@ namespace Orb\Mail\Transport;
 use Application\DeskPRO\App;
 
 /**
- * Queue mail transport
+ * Queue mail transport.
  */
 class QueueTransport implements \Swift_Transport
 {
@@ -49,9 +46,16 @@ class QueueTransport implements \Swift_Transport
         $this->_event_dispatcher = $event_dispatcher;
     }
 
-    public function isStarted() { return true; }
-    public function start() { }
-    public function stop() { }
+    public function isStarted()
+    {
+        return true;
+    }
+    public function start()
+    {
+    }
+    public function stop()
+    {
+    }
 
     public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
     {
@@ -77,7 +81,7 @@ class QueueTransport implements \Swift_Transport
             'date_next_attempt'   => date('Y-m-d H:i:s'),
             'priority'            => 10,
             'log'                 => '',
-            'status'              => 'pending'
+            'status'              => 'pending',
         );
 
         if ($message instanceof \Orb\Mail\Message) {

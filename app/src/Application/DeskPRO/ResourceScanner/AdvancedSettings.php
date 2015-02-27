@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
 namespace Application\DeskPRO\ResourceScanner;
 
-
 /**
- * Defines which settings are to be displayed in the 'advanced' page
+ * Defines which settings are to be displayed in the 'advanced' page.
  */
 class AdvancedSettings extends SettingFiles
 {

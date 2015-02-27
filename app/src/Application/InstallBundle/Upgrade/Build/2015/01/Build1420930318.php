@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -39,6 +36,6 @@ class Build1420930318 extends AbstractBuild
     public function run()
     {
         $this->out("Add visitor_id to ratings");
-		$this->execMutateSql("ALTER TABLE ratings ADD visitor_id VARCHAR(120) NOT NULL");
+        $this->execMutateSql("ALTER TABLE ratings ADD visitor_id VARCHAR(120) NOT NULL");
     }
 }

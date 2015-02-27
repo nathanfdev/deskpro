@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Templating
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Style;
-
 
 class UserStyle
 {
@@ -45,9 +41,8 @@ class UserStyle
         $this->raw = $raw_css;
     }
 
-
     /**
-     * Read CSS to get embedded vars and their default values as k=>v
+     * Read CSS to get embedded vars and their default values as k=>v.
      *
      * @return array
      */
@@ -60,8 +55,9 @@ class UserStyle
         $vars = array();
 
         foreach ($matches as $m) {
-
-            if ($m[1] == 'HEX_TO_RGB') continue;
+            if ($m[1] == 'HEX_TO_RGB') {
+                continue;
+            }
 
             // Set value (may overwrite existing if it appeared later in the file
             if (isset($m[3]) && $m[3]) {
@@ -80,14 +76,12 @@ class UserStyle
         return $vars;
     }
 
-
     /**
      * @param array $vars
      */
     public function compileCss(array $vars = array())
     {
         $vars = array_merge($this->getVars(), $vars);
-
 
         $css = str_replace('@HEX_TO_RGB(', '__DP_HEX_TO_RGB(', $this->raw);
 
@@ -101,7 +95,7 @@ class UserStyle
         }, $css);
 
         $self = $this;
-        $css = preg_replace_callback('#__DP_HEX_TO_RGB\((.*?)\)#', function ($m) use ($vars, $self) {
+        $css  = preg_replace_callback('#__DP_HEX_TO_RGB\((.*?)\)#', function ($m) use ($vars, $self) {
             $color = rtrim($m[1], '#');
 
             return $self->hex2RGB($color, ',');
@@ -127,14 +121,14 @@ class UserStyle
         $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
         $rgb = array();
         if (strlen($hex) == 6) {
-            $color_val = hexdec($hex);
-            $rgb['red'] = 0xFF & ($color_val >> 0x10);
+            $color_val    = hexdec($hex);
+            $rgb['red']   = 0xFF & ($color_val >> 0x10);
             $rgb['green'] = 0xFF & ($color_val >> 0x8);
-            $rgb['blue'] = 0xFF & $color_val;
+            $rgb['blue']  = 0xFF & $color_val;
         } elseif (strlen($hex) == 3) {
-            $rgb['red'] = hexdec(str_repeat(substr($hex, 0, 1), 2));
+            $rgb['red']   = hexdec(str_repeat(substr($hex, 0, 1), 2));
             $rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
-            $rgb['blue'] = hexdec(str_repeat(substr($hex, 2, 1), 2));
+            $rgb['blue']  = hexdec(str_repeat(substr($hex, 2, 1), 2));
         } else {
             return false;
         }
@@ -145,15 +139,15 @@ class UserStyle
     public function lightenHex($orig_color, $fraction_denom = 2)
     {
         $highest_val = hexdec('FF');
-        $r = hexdec(substr($orig_color,0,2));
-        $r = ($highest_val-$r)/$fraction_denom + $r;
+        $r           = hexdec(substr($orig_color, 0, 2));
+        $r           = ($highest_val-$r)/$fraction_denom + $r;
 
-        $g = hexdec(substr($orig_color,2,2));
+        $g = hexdec(substr($orig_color, 2, 2));
         $g = ($highest_val-$g)/$fraction_denom + $g;
 
-        $b = hexdec(substr($orig_color,4,2));
+        $b = hexdec(substr($orig_color, 4, 2));
         $b = ($highest_val-$b)/$fraction_denom + $b;
 
-        return dechex($r) . dechex($g) . dechex($b);
+        return dechex($r).dechex($g).dechex($b);
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue\Processor;
@@ -57,7 +54,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class IncomingSmsProcessor extends AbstractJobProcessor
 {
-    const JOB_TYPE = 'incoming_sms';
+    const JOB_TYPE               = 'incoming_sms';
     const TICKET_CREATION_SYSTEM = 'channel.sms.incoming';
 
     /**
@@ -89,13 +86,12 @@ class IncomingSmsProcessor extends AbstractJobProcessor
         PersonDetector $person_detector,
         TicketDetector $ticket_detector,
         TicketManager $ticket_manager
-    )
-    {
+    ) {
         parent::__construct($connection);
         $this->sms_account_detector = $sms_account_detector;
-        $this->person_detector = $person_detector;
-        $this->ticket_detector = $ticket_detector;
-        $this->ticket_manager = $ticket_manager;
+        $this->person_detector      = $person_detector;
+        $this->ticket_detector      = $ticket_detector;
+        $this->ticket_manager       = $ticket_manager;
     }
 
     /**
@@ -105,13 +101,13 @@ class IncomingSmsProcessor extends AbstractJobProcessor
     {
         $resolver->setRequired(array(
                 'message',
-                'from_number'
+                'from_number',
             )
         );
 
         $resolver->setDefaults(array(
                 'sms_account_id' => null,
-                'to_number' => null
+                'to_number'      => null,
             )
         );
     }
@@ -126,8 +122,8 @@ class IncomingSmsProcessor extends AbstractJobProcessor
          */
 
         $sms_account_id = $data['sms_account_id'];
-        $to_number = $data['to_number'];
-        $sms_account = $this->sms_account_detector->detect($sms_account_id, $to_number);
+        $to_number      = $data['to_number'];
+        $sms_account    = $this->sms_account_detector->detect($sms_account_id, $to_number);
         if (!$sms_account) {
             $this->markRejected($job, 'SMS Account not found', '', Job::STATUS_CODE_INVALID_DATA);
 
@@ -154,9 +150,9 @@ class IncomingSmsProcessor extends AbstractJobProcessor
         $ticket = $this->ticket_detector->detectBySender($from_person);
         if (!$ticket) {
             $context->setEventType(ExecutorContext::EVENT_NEW);
-            $ticket = $this->ticket_manager->createTicket();
-            $ticket->person = $from_person;
-            $ticket->subject = '(no subject)';
+            $ticket                  = $this->ticket_manager->createTicket();
+            $ticket->person          = $from_person;
+            $ticket->subject         = '(no subject)';
             $ticket->creation_system = static::TICKET_CREATION_SYSTEM;
         } else {
             $context->setEventType(ExecutorContext::EVENT_REPLY);
@@ -166,14 +162,14 @@ class IncomingSmsProcessor extends AbstractJobProcessor
          * Create a new Ticket SMS Message
          */
 
-        $message = new TicketSms('incoming');
-        $message->ticket = $ticket;
-        $message->person = $from_person;
+        $message              = new TicketSms('incoming');
+        $message->ticket      = $ticket;
+        $message->person      = $from_person;
         $message->sms_account = $sms_account;
-        $message->job_id = $job['id'];
-        $message->message = $data['message'];
+        $message->job_id      = $job['id'];
+        $message->message     = $data['message'];
         $message->from_number = $from_number;
-        $message->to_number = $to_number;
+        $message->to_number   = $to_number;
 
         /************************************
          * Add the new message to our ticket

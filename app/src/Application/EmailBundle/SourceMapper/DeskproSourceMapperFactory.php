@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\EmailBundle\SourceMapper\PendingQueuer\RedisPendingQueuer;
-use Symfony\Component\DependencyInjection\Container;
 use Predis;
+use Symfony\Component\DependencyInjection\Container;
 
 class DeskproSourceMapperFactory
 {
@@ -51,12 +48,12 @@ class DeskproSourceMapperFactory
 
         if (dp_get_config('sendmail_redis_queue')) {
             // see https://github.com/nrk/predis/wiki/Connection-Parameters
-            $client = new Predis\Client(dp_get_config('sendmail_redis_queue'));
+            $client       = new Predis\Client(dp_get_config('sendmail_redis_queue'));
             $redis_queuer = new RedisPendingQueuer($client, 'sendmail_queue');
 
             $external = new ExternalPendingQueue($source_mapper, $redis_queuer);
-            return $external;
 
+            return $external;
         } else {
             return $source_mapper;
         }

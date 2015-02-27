@@ -26,18 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Filter;
 
-use \Orb\Log\Logger;
-use \Orb\Log\LogItem;
-
-
+use Orb\Log\LogItem;
+use Orb\Log\Logger;
 
 /**
  * This filter fitlers out log events whose priority is below a certain level.
@@ -54,7 +49,9 @@ class PriorityFilter extends \Orb\Filter\AbstractFilter
 
     public function filter($log_item)
     {
-        if (!$log_item) return null;
+        if (!$log_item) {
+            return;
+        }
 
         if (isset($log_item['ignore_pri_filter'])) {
             unset($log_item['ignore_pri_filter']);
@@ -63,7 +60,7 @@ class PriorityFilter extends \Orb\Filter\AbstractFilter
         }
 
         if ($log_item[LogItem::PRIORITY] > $this->min_level) {
-            return null;
+            return;
         }
 
         return $log_item;

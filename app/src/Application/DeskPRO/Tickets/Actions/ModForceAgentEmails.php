@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -55,7 +54,6 @@ class ModForceAgentEmails extends AbstractContainerAwareAction implements Action
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -68,7 +66,7 @@ class ModForceAgentEmails extends AbstractContainerAwareAction implements Action
             $agent_ids = array($agent_ids);
         }
 
-        $agent_data = $this->getContainer()->getAgentData();
+        $agent_data     = $this->getContainer()->getAgentData();
         $person_context = $context->getPersonContext();
 
         foreach ($agent_ids as $aid) {
@@ -78,7 +76,7 @@ class ModForceAgentEmails extends AbstractContainerAwareAction implements Action
         $force_list = array_unique($force_list);
 
         $ids = array_map(function ($a) { return $a->id; }, $force_list);
-        $context->getLogger()->info("[ModForceAgents] Force list: " . implode(', ', $ids));
+        $context->getLogger()->info("[ModForceAgents] Force list: ".implode(', ', $ids));
 
         $context->getVars()->set('agent_force_subscription_list', $force_list);
     }

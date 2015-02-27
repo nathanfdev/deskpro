@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,6 @@ class Logger extends BaseLogger
      */
     private $test_handler;
 
-
     /**
      * @return bool
      */
@@ -54,7 +52,6 @@ class Logger extends BaseLogger
     {
         return $this->test_handler ? true : false;
     }
-
 
     /**
      * @return TestHandler
@@ -65,7 +62,6 @@ class Logger extends BaseLogger
 
         return $test_handler;
     }
-
 
     /**
      * Enables a local copy of all messages so you can easily fetch messages after
@@ -83,7 +79,6 @@ class Logger extends BaseLogger
         $this->pushHandler($this->test_handler);
     }
 
-
     /**
      * Clears any saved messages.
      *
@@ -95,16 +90,16 @@ class Logger extends BaseLogger
             throw new \LogicException("Saved messages has not been enabled.");
         }
 
-        $k = array_search($this->test_handler, $this->handlers, true);
+        $k                  = array_search($this->test_handler, $this->handlers, true);
         $this->test_handler = $this->_createTestHandler();
         $this->handlers[$k] = $this->test_handler;
     }
-
 
     /**
      * Gets a string of all the logged messages.
      *
      * @throws \LogicException
+     *
      * @return string
      */
     public function getSavedMessages()
@@ -127,12 +122,12 @@ class Logger extends BaseLogger
         return $log;
     }
 
-
     /**
      * Gets an array of raw records.
      *
-     * @return array
      * @throws \LogicException
+     * @return array
+     *
      */
     public function getSavedMessagesRaw()
     {
@@ -145,9 +140,11 @@ class Logger extends BaseLogger
 
     /**
      * @inheritdoc
-     * @param  int       $level
-     * @param  string    $message
-     * @param  array     $context
+     *
+     * @param int    $level
+     * @param string $message
+     * @param array  $context
+     *
      * @return bool|void
      */
     public function addRecord($level, $message, array $context = array())

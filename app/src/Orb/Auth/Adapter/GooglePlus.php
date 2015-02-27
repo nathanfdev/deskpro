@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -56,14 +55,12 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
      */
     private $domain;
 
-
     public function __construct($cid, $cs, $domain)
     {
-        $this->cid = $cid;
-        $this->cs = $cs;
+        $this->cid    = $cid;
+        $this->cs     = $cs;
         $this->domain = $domain;
     }
-
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
@@ -78,8 +75,6 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
 
         return $result;
     }
-
-
 
     /**
      * Process the callback and return a final result.
@@ -100,8 +95,8 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     return new Result(
                         Result::FAILURE, null,
                         array(
-                            'error_code' => 'invalid_argument',
-                            'error_message' => 'email does not match specified domain'
+                            'error_code'    => 'invalid_argument',
+                            'error_message' => 'email does not match specified domain',
                         )
                     );
                 }
@@ -111,7 +106,7 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     array(
                         'email'          => $attrs['payload']['email'],
                         'email_verified' => $attrs['payload']['email_verified'],
-                        'id'             => $attrs['payload']['id']
+                        'id'             => $attrs['payload']['id'],
                     )
                 );
                 $identity->setFriendlyIdentity($attrs['payload']['email']);
@@ -130,7 +125,6 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
         );
     }
 
-
     /**
      * @return \Google_Client
      */
@@ -145,14 +139,13 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
         return $client;
     }
 
-
     /**
      * @return array
      */
     public function getExtraDetails()
     {
         return array(
-            'callback_url' => $this->getCallbackUrl()
+            'callback_url' => $this->getCallbackUrl(),
         );
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Type;
@@ -54,8 +51,8 @@ class NewTask extends AbstractType
         ));
 
         $builder->add('visibility', 'choice', array(
-            'choices' => array(0 => 'Public', 2 => 'Private'),
-            'required'           => true,
+            'choices'            => array(0 => 'Public', 2 => 'Private'),
+            'required'                      => true,
         ));
         $builder->add('assigned_agent_team', 'entity', array(
             'class'       => 'Application\DeskPRO\Entity\AgentTeam',

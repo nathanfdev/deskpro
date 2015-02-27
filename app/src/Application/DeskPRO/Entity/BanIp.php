@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ban an IP addresses and ranges
+ * Ban an IP addresses and ranges.
  *
  * @property string $banned_ip
  * @property int $ip_start
@@ -48,33 +47,29 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class BanIp extends DomainObject
 {
     /**
-     * The banned IP address (human readable)
+     * The banned IP address (human readable).
      *
      * @var string
      */
-
     protected $banned_ip;
 
     /**
-     * Start of the IP range
+     * Start of the IP range.
      *
      * @var int
      */
-
     protected $ip_start;
 
     /**
-     * End of the IP range
+     * End of the IP range.
      *
      * @var int
      */
-
     protected $ip_end;
 
     /**
      * @return BanIp
      */
-
     public static function createBanIp()
     {
         return new self();

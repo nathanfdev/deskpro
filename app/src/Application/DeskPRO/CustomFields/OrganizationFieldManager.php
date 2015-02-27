@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields;
@@ -43,7 +40,6 @@ class OrganizationFieldManager extends FieldManager
      *
      * @return array
      */
-
     public function getDefinedFields()
     {
         return array_values($this->em->getRepository('DeskPRO:CustomDefOrganization')->getTopFields());
@@ -53,7 +49,6 @@ class OrganizationFieldManager extends FieldManager
      * @param string $id
      * @param bool   $enabled
      */
-
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {

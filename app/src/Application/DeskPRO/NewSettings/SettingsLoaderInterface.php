@@ -26,18 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Settings
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings;
 
 /**
- * Knows how to load some representation of settings from somewhere
- *
- * @package Application\DeskPRO\Settings
+ * Knows how to load some representation of settings from somewhere.
  */
 interface SettingsLoaderInterface
 {
@@ -46,7 +41,8 @@ interface SettingsLoaderInterface
      * many times in a single request, and the method contract requires the ability to force a reload of the data,
      * implying the same data is returned each time $force === false.
      *
-     * @param  bool  $force true if cache should be invalidated and forced to refresh the data
+     * @param bool $force true if cache should be invalidated and forced to refresh the data
+     *
      * @return array
      */
     public function load($force = false);

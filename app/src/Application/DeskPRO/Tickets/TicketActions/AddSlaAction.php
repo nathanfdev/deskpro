@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Adds SLA
+ * Adds SLA.
  */
 class AddSlaAction extends AbstractAction
 {
@@ -47,12 +44,11 @@ class AddSlaAction extends AbstractAction
 
     public function __construct($sla_id)
     {
-        $this->sla_ids = (array)$sla_id;
+        $this->sla_ids = (array) $sla_id;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -62,7 +58,7 @@ class AddSlaAction extends AbstractAction
             return;
         }
 
-        foreach ($this->sla_ids AS $sla_id) {
+        foreach ($this->sla_ids as $sla_id) {
             $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
             if ($sla) {
                 $ticket->addSla($sla);
@@ -70,19 +66,17 @@ class AddSlaAction extends AbstractAction
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'add_sla', 'sla_ids' => $this->sla_ids)
+            array('action' => 'add_sla', 'sla_ids' => $this->sla_ids),
         );
     }
-
 
     /**
      * @return array
@@ -92,9 +86,9 @@ class AddSlaAction extends AbstractAction
         return $this->sla_ids;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -105,17 +99,16 @@ class AddSlaAction extends AbstractAction
         return $this;
     }
 
-
     /**
      * @return string
      */
     public function getDescription($as_html = true)
     {
-        $tr = App::getTranslator();
+        $tr   = App::getTranslator();
         $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 
         $titles = array();
-        foreach ($slas AS $sla) {
+        foreach ($slas as $sla) {
             $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
         }
 

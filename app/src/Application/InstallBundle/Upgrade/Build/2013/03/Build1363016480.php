@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -60,7 +57,7 @@ class Build1363016480 extends AbstractBuild
             $this->container->getDb()->replace('permissions', array(
                 'usergroup_id' => $ug_id,
                 'name'         => 'tickets.reopen_resolved_createnew',
-                'value'        => 1
+                'value'        => 1,
             ));
         }
     }

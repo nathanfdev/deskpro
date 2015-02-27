@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -48,7 +45,7 @@ class Build1348128365 extends AbstractBuild
         // Save copy in backup dir
         foreach ($custom_emails as $info) {
             $filename = str_replace(':', '_', $info['name']);
-            $filepath = dp_get_backup_dir() . '/' . $filename;
+            $filepath = dp_get_backup_dir().'/'.$filename;
 
             @file_put_contents($filepath, $info['template_code']);
         }

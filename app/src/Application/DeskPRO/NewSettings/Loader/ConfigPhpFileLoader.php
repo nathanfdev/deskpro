@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings\Loader;
@@ -62,8 +59,8 @@ class ConfigPhpFileLoader implements SettingsLoaderInterface
 
     public function __construct($absFilePath, CacheAdapterInterface $cache)
     {
-        $this->cacheKey = static::KEY_PREFIX . $absFilePath;
-        $this->cache = new ConvenientCache($cache);
+        $this->cacheKey    = static::KEY_PREFIX.$absFilePath;
+        $this->cache       = new ConvenientCache($cache);
         $this->absFilePath = $absFilePath;
     }
 

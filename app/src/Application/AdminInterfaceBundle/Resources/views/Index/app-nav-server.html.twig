@@ -1,77 +1,16 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
-	<nav class="dp-appnav">
-		<ul>
-			<li dp-state-mark="server.server_settings">
-				<a href="{{ ng_href('server.server_settings') }}">
-					<i class="fa fa-cog"></i>
-					<span>Server Settings</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="setup.elastic_search">
-				<a href="{{ ng_href('server.elastic_search') }}">
-					<i class="fa fa-search"></i>
-					<span>Elasticsearch</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.report_file">
-				<a href="{{ ng_href('server.report_file') }}">
-					<i class="fa fa-download"></i>
-					<span>Download Report File</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.server_reqs">
-				<a href="{{ ng_href('server.server_reqs') }}">
-					<i class="fa fa-check-square-o"></i>
-					<span>Server Requirements</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.file_check">
-				<a href="{{ ng_href('server.file_check') }}">
-					<i class="fa fa-shield"></i>
-					<span>File Integrity</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.file_uploads">
-				<a href="{{ ng_href('server.file_uploads') }}">
-					<i class="fa fa-upload"></i>
-					<span>File Uploads</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.cron">
-				<a href="{{ ng_href('server.cron') }}">
-					<i class="fa fa-clock-o"></i>
-					<span>Scheduled Tasks</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.php_info">
-				<a href="{{ ng_href('server.php_info') }}">
-					<i class="fa fa-info-circle"></i>
-					<span>PHP Info</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.mysql_info">
-				<a href="{{ ng_href('server.mysql_info') }}">
-					<i class="fa fa-hdd-o"></i>
-					<span>MySQL Tools</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="server.error_logs">
-				<a href="{{ ng_href('server.error_logs') }}">
-					<i class="fa fa-exclamation"></i>
-					<span>Error Logs</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-		</ul>
-	</nav>
+	{{ nav.list() }}
+		{{ nav.list_item('Server Settings', ng_href('server.server_settings'), 'server.server_settings', 'fa-cog') }}
+		{{ nav.list_item('ElasticSearch', ng_href('server.elastic_search'), 'setup.elastic_search', 'fa-search') }}
+		{{ nav.list_item('Report File', ng_href('server.report_file'), 'server.report_file', 'fa-download') }}
+		{{ nav.list_item('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'fa-check-square-o') }}
+		{{ nav.list_item('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield') }}
+		{{ nav.list_item('File Uploads', ng_href('server.file_uploads'), 'server.file_uploads', 'fa-upload') }}
+		{{ nav.list_item('Scheduled Tasks', ng_href('server.cron'), 'server.cron', 'fa-clock-o') }}
+		{{ nav.list_item('PHP Info', ng_href('server.php_info'), 'server.php_info', 'fa-info-circle') }}
+		{{ nav.list_item('MySQL Info', ng_href('server.mysql_info'), 'server.mysql_info', 'fa-hdd-o') }}
+		{{ nav.list_item('Error Logs', ng_href('server.error_logs'), 'server.error_logs', 'fa-exclamation') }}
+	{{ nav.list_end() }}
 {% endblock %}

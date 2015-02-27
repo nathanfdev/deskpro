@@ -3,11 +3,12 @@
 // You should not change it manually as it will be overwritten on next build
 // @codingStandardsIgnoreFile
 
-use \Codeception\Maybe;
 use Codeception\Module\DpControlHelper;
+use \Codeception\Maybe;
 
 /**
- * Inherited methods
+ * Inherited methods.
+ *
  * @method void execute($callable)
  * @method void wantToTest($text)
  * @method void wantTo($text)
@@ -20,18 +21,18 @@ use Codeception\Module\DpControlHelper;
  * @method void offsetSet($offset, $value)
  * @method void offsetExists($offset)
  * @method void offsetUnset($offset)
-*/
-
+ */
 class IntegrationGuy extends \Codeception\AbstractGuy
 {
-
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     *
      * @see Codeception\Module\DpControlHelper::getSymfonyContainer()
+     *
      * @return \Codeception\Maybe
      */
     public function getSymfonyContainer()
@@ -49,13 +50,15 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * Sets the database set to a version of the set. If it already exists,
      * it will be re-used (not recreated).
      *
-     * @param  string             $set_name
+     * @param string $set_name
+     *
      * @see Codeception\Module\DpControlHelper::enableDatabaseSet()
+     *
      * @return \Codeception\Maybe
      */
     public function enableDatabaseSet($set_name)
@@ -73,12 +76,14 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * Like enableDatabaseSet but will always use a freshly built db.
      *
-     * @param  string             $set_name
+     * @param string $set_name
+     *
      * @see Codeception\Module\DpControlHelper::enableFreshDatabaseSet()
+     *
      * @return \Codeception\Maybe
      */
     public function enableFreshDatabaseSet($set_name)
@@ -96,13 +101,15 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * Like enableDatabaseSet except this will reset the database set afterwards.
      *
-     * @param  string             $set_name
-     * @param  bool               $reset    True to mark the db for reset
+     * @param string $set_name
+     * @param bool   $reset    True to mark the db for reset
+     *
      * @see Codeception\Module\DpControlHelper::enableDestructiveDatabaseSet()
+     *
      * @return \Codeception\Maybe
      */
     public function enableDestructiveDatabaseSet($set_name, $reset = null)
@@ -120,10 +127,12 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * Returns the currently set database back to the default.
+     *
      * @see Codeception\Module\DpControlHelper::useDefaultDatabase()
+     *
      * @return \Codeception\Maybe
      */
     public function useDefaultDatabase()
@@ -141,10 +150,12 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * @return int
+     *
      * @see Codeception\Module\DpControlHelper::getContainerCounter()
+     *
      * @return \Codeception\Maybe
      */
     public function getContainerCounter()
@@ -162,14 +173,17 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      * Loads fixtures into the current database.
      * Note that this will mark the database to be reset.
      *
-     * @param  array                     $f...
+     * @param array $f...
+     *
      * @throws \InvalidArgumentException
+     *
      * @see Codeception\Module\DpControlHelper::loadFixtures()
+     *
      * @return \Codeception\Maybe
      */
     public function loadFixtures($f)
@@ -187,10 +201,11 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      *
      * @see Codeception\Module::getName()
+     *
      * @return \Codeception\Maybe
      */
     public function getName()
@@ -208,10 +223,11 @@ class IntegrationGuy extends \Codeception\AbstractGuy
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
-     * ----------------------------------------------
+     * ----------------------------------------------.
      *
      *
      * @see Codeception\Module::indexElasticsearch()
+     *
      * @return \Codeception\Maybe
      */
     public function indexElasticsearch()

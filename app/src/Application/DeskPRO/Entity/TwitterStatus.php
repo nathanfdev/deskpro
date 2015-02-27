@@ -25,11 +25,9 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,8 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Twitter Status
- *
+ * Twitter Status.
  */
 class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -90,7 +87,6 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\TwitterUser
      */
     protected $recipient;
-
 
     /**
      * @var Boolean
@@ -148,16 +144,16 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     protected $_parsed_text;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
-        $this->replies = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
         $this->retweets = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->urls = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tags     = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->urls     = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->account_statuses = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -362,19 +358,19 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 
         ksort($replacements);
 
-        $cursor = 0;
+        $cursor             = 0;
         $this->_parsed_text = '';
         foreach ($replacements as $starts => $replacement) {
             $this->_parsed_text .= \Orb\Util\Strings::utf8_substr($this['text'], $cursor, $starts - $cursor);
             $replace = \Orb\Util\Strings::utf8_substr($this['text'], $starts, $replacement['ends'] - $starts);
-            $cursor = $replacement['ends'];
+            $cursor  = $replacement['ends'];
 
             switch (get_class($replacement)) {
                 case 'Application\\DeskPRO\\Entity\\TwitterStatusMention':
                     $this->_parsed_text .= sprintf('<a class="mention" href="https://twitter.com/%2$s" data-user-id="%1$s">@%2$s</a>', $replacement['user']['id'], htmlspecialchars($replacement['user']['screen_name']));
                     break;
                 case 'Application\\DeskPRO\\Entity\\TwitterStatusTag':
-                    $this->_parsed_text .= sprintf('<a class="hash" href="https://twitter.com/search?q=%2$s" target="twitter-hash" data-hash="%1$s">#%1$s</a>', htmlspecialchars($replacement['hash']), urlencode('#' . $replacement['hash']));
+                    $this->_parsed_text .= sprintf('<a class="hash" href="https://twitter.com/search?q=%2$s" target="twitter-hash" data-hash="%1$s">#%1$s</a>', htmlspecialchars($replacement['hash']), urlencode('#'.$replacement['hash']));
                     break;
                 case 'Application\\DeskPRO\\Entity\\TwitterStatusUrl':
                     $this->_parsed_text .= sprintf('<a class="url" href="%s" target="_twitter_url_%s">%s</a>',
@@ -389,7 +385,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        if ( \Orb\Util\Strings::utf8_strlen($this['text']) != $cursor) {
+        if (\Orb\Util\Strings::utf8_strlen($this['text']) != $cursor) {
             $this->_parsed_text .=  \Orb\Util\Strings::utf8_substr($this['text'], $cursor);
         }
 
@@ -401,12 +397,13 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
         if (!$length || $length > \Orb\Util\Strings::utf8_strlen($this->text)) {
             return $this->text;
         } else {
-            return \Orb\Util\Strings::utf8_substr($this->text, 0, $length) . '...';
+            return \Orb\Util\Strings::utf8_substr($this->text, 0, $length).'...';
         }
     }
 
     /**
-     * @param  object                                    $status
+     * @param object $status
+     *
      * @return \Application\DeskPRO\Entity\TwitterStatus
      */
     public static function createFromJson($status)
@@ -425,7 +422,8 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param  object                                    $dm
+     * @param object $dm
+     *
      * @return \Application\DeskPRO\Entity\TwitterStatus
      */
     public static function createFromDmJson($dm)
@@ -446,26 +444,26 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterStatus';
-        $metadata->setPrimaryTable(array( 'name' => 'twitter_statuses', ));
+        $metadata->setPrimaryTable(array( 'name' => 'twitter_statuses'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'text', ));
-        $metadata->mapField(array( 'fieldName' => 'is_truncated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_truncated', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'geo_latitude', 'type' => 'decimal', 'precision' => 10, 'scale' => 5, 'nullable' => true, 'columnName' => 'geo_latitude', ));
-        $metadata->mapField(array( 'fieldName' => 'geo_longitude', 'type' => 'decimal', 'precision' => 10, 'scale' => 5, 'nullable' => true, 'columnName' => 'geo_longitude', ));
-        $metadata->mapField(array( 'fieldName' => 'source', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source', ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'statuses', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'in_reply_to_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_status_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_status',  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'retweet', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'retweets', 'joinColumns' => array( 0 => array( 'name' => 'retweet_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'retweets', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'retweet',  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'in_reply_to_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'recipient', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'messages', 'joinColumns' => array( 0 => array( 'name' => 'recipient_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'long', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusLong', 'mappedBy' => 'status', 'inversedBy' => NULL  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'status',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'tags', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusTag', 'mappedBy' => 'status',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'urls', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusUrl', 'mappedBy' => 'status',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'account_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => 'status',  ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'text'));
+        $metadata->mapField(array( 'fieldName' => 'is_truncated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_truncated'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array( 'fieldName' => 'geo_latitude', 'type' => 'decimal', 'precision' => 10, 'scale' => 5, 'nullable' => true, 'columnName' => 'geo_latitude'));
+        $metadata->mapField(array( 'fieldName' => 'geo_longitude', 'type' => 'decimal', 'precision' => 10, 'scale' => 5, 'nullable' => true, 'columnName' => 'geo_longitude'));
+        $metadata->mapField(array( 'fieldName' => 'source', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => 'statuses', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => null, 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'in_reply_to_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => null, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_status_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_status'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'retweet', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => null, 'inversedBy' => 'retweets', 'joinColumns' => array( 0 => array( 'name' => 'retweet_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapOneToMany(array( 'fieldName' => 'retweets', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'retweet'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'in_reply_to_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => null, 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'recipient', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => 'messages', 'joinColumns' => array( 0 => array( 'name' => 'recipient_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => null, 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'long', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusLong', 'mappedBy' => 'status', 'inversedBy' => null  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'status'));
+        $metadata->mapOneToMany(array( 'fieldName' => 'tags', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusTag', 'mappedBy' => 'status'));
+        $metadata->mapOneToMany(array( 'fieldName' => 'urls', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusUrl', 'mappedBy' => 'status'));
+        $metadata->mapOneToMany(array( 'fieldName' => 'account_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => 'status'));
     }
 }

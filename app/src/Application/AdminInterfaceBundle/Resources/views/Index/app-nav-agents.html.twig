@@ -1,14 +1,12 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
-	<nav class="dp-appnav">
-		<ul>
-			<li dp-state-mark="agents.agents"><a href="#/agents/agents"><i class="fa fa-user"></i> Agents</a></li>
-			<li dp-state-mark="agents.usersources"><a href="{{ ng_href('agents.usersources') }}"><i class="fa fa-key"></i>
-					<span>Auth &amp; SSO</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="agents.teams"><a href="#/agents/teams"><i class="fa fa-users"></i> Teams</a></li>
-			<li dp-state-mark="agents.groups"><a href="#/agents/groups"><i class="fa fa-shield"></i> Permission Groups</a></li>
-			<li dp-state-mark="agents.audit_log"><a href="#/agents/audit_log"><i class="fa fa-files-o"></i> Audit Log</a></li>
-            <li dp-state-mark="agents.settings"><a href="#/agents/settings"><i class="fa fa-cog"></i> Settings</a></li>
-		</ul>
-	</nav>
+	{{ nav.list() }}
+		{{ nav.list_item('Agents', ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
+		{{ nav.list_item('Auth & SSO', ng_href('agents.usersources'), 'agents.usersources', 'fa-key') }}
+		{{ nav.list_item('Teams', ng_href('agents.teams'), 'agents.teams', 'fa-users') }}
+		{{ nav.list_item('Permission Groups', ng_href('agents.groups'), 'agents.groups', 'fa-shield') }}
+		{{ nav.list_item('Audit Log', ng_href('agents.audit_log'), 'agents.audit_log', 'fa-files-o') }}
+		{{ nav.list_item('Settings', ng_href('agents.settings'), 'agents.settings', 'fa-cog') }}
+	{{ nav.list_end() }}
 {% endblock %}

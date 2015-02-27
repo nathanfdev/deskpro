@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Ldap;
@@ -37,20 +34,21 @@ namespace Application\DeskPRO\Ldap;
 class Ldap extends \Zend\Ldap\Ldap
 {
     /**
-     * Custom version to support multiple %s placeholders in custom account filter format
+     * Custom version to support multiple %s placeholders in custom account filter format.
      *
      * @param $acctname
+     *
      * @return string
      */
     protected function _getAccountFilter($acctname)
     {
         $this->_splitName($acctname, $dname, $aname);
         $accountFilterFormat = $this->_getAccountFilterFormat();
-        $aname = \Zend\Ldap\Filter\AbstractFilter::escapeValue($aname);
+        $aname               = \Zend\Ldap\Filter\AbstractFilter::escapeValue($aname);
 
         if ($accountFilterFormat) {
             $count_args = substr_count($accountFilterFormat, '%s');
-            $args = array_fill(0, $count_args, $aname);
+            $args       = array_fill(0, $count_args, $aname);
 
             return vsprintf($accountFilterFormat, $args);
         }

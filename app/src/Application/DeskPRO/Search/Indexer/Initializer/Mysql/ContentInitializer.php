@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Search
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Search\IndexInitializer\Mysql;
@@ -44,5 +41,4 @@ class ContentInitializer extends BaseContentInitializer
         App::getDb()->exec("DELETE FROM content_search WHERE object_type IN ('article','download','feedback','news')");
         App::getDb()->exec("DELETE FROM content_search_attribute WHERE object_type IN ('article','download','feedback','news')");
     }
-
 }

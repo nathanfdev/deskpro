@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -55,9 +52,10 @@ class TemplateDataService extends BaseRepositoryService
     }
 
     /**
-     * Check if a given template is an existing custom email
+     * Check if a given template is an existing custom email.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function customEmailExists($name)

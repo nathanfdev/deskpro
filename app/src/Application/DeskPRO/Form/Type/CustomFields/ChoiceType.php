@@ -45,7 +45,7 @@ class ChoiceType extends CustomFieldType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $that = $this;
+        $that         = $this;
         $fieldOptions = $this->getValueOptions();
 
         $builder
@@ -53,8 +53,8 @@ class ChoiceType extends CustomFieldType
 
                 'empty_value' => ! empty($fieldOptions['expanded']) ? false : 'Choose an option',
 
-                'class' => 'DeskPRO:CustomFieldDefinition',
-                'property' => 'title',
+                'class'         => 'DeskPRO:CustomFieldDefinition',
+                'property'      => 'title',
                 'query_builder' => function (EntityRepository $er) use ($that, $options) {
                     return $that->getChoicesQueryBuilder($er, $options);
                 },
@@ -78,8 +78,9 @@ class ChoiceType extends CustomFieldType
     }
 
     /**
-     * @param  EntityRepository           $er
-     * @param  array                      $options
+     * @param EntityRepository $er
+     * @param array            $options
+     *
      * @return \Doctrine\ORM\QueryBuilder
      */
     protected function getChoicesQueryBuilder(EntityRepository $er, array $options)
@@ -132,7 +133,7 @@ class ChoiceType extends CustomFieldType
     }
 
     /**
-     * override parent call
+     * override parent call.
      */
     public function onPostSubmit(FormEvent $event)
     {

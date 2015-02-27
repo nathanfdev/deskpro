@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -82,13 +81,12 @@ class SendmailSource implements NotifyPropertyChanged
 
     /**
      * Indicates a problem while queueing an email with an external service.
-     * (Used when ExternalPendingQueue is used in source mapper)
+     * (Used when ExternalPendingQueue is used in source mapper).
      */
     const ERR_ENQUEUE_FAILED = 'enqueue_failed';
 
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -123,7 +121,7 @@ class SendmailSource implements NotifyPropertyChanged
     protected $context_info = null;
 
     /**
-     * Just the headers portion of the email
+     * Just the headers portion of the email.
      *
      * @var string
      */
@@ -170,6 +168,11 @@ class SendmailSource implements NotifyPropertyChanged
     protected $status = 'inserted';
 
     /**
+     * @var string
+     */
+    protected $options = null;
+
+    /**
      * @var \DateTime
      */
     protected $date_status = null;
@@ -203,6 +206,7 @@ class SendmailSource implements NotifyPropertyChanged
 
     /**
      * How many times the email has been processed.
+     *
      * @var int
      */
     protected $exec_count = 0;
@@ -402,7 +406,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setToEmails(array $to_emails = null)
     {
-        if (empty($to_emails)) $to_emails = null;
+        if (empty($to_emails)) {
+            $to_emails = null;
+        }
         $this->to_emails = $to_emails;
     }
 
@@ -419,7 +425,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setCcEmails($cc_emails)
     {
-        if (empty($cc_emails)) $cc_emails = null;
+        if (empty($cc_emails)) {
+            $cc_emails = null;
+        }
         $this->cc_emails = $cc_emails;
     }
 
@@ -436,7 +444,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setBccEmails($bcc_emails)
     {
-        if (empty($bcc_emails)) $bcc_emails = null;
+        if (empty($bcc_emails)) {
+            $bcc_emails = null;
+        }
         $this->bcc_emails = $bcc_emails;
     }
 
@@ -580,25 +590,76 @@ class SendmailSource implements NotifyPropertyChanged
         $this->setModelField('exec_count', $exec_count);
     }
 
+    /**
+     * @return array
+     */
+    public function getAllOptions()
+    {
+        return $this->options ?: array();
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setAllOptions(array $options = null)
+    {
+        $this->setModelField('options', $options ?: null);
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getOption($k, $default = null)
+    {
+        return ($this->options && isset($this->options[$k])) ? $this->options[$k] : $default;
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $v
+     */
+    public function setOption($k, $v = null)
+    {
+        $options = $this->options ?: array();
+
+        if ($v === null) {
+            if (isset($options[$k])) {
+                unset($options[$k]);
+            }
+        } else {
+            $options[$k] = $v;
+        }
+
+        if ($options) {
+            $this->setModelField('options', $options);
+        } else {
+            $this->setModelField('options', null);
+        }
+    }
+
     public function toArray()
     {
         $data = array();
 
-        $data['id'] = $this->id;
-        $data['ref'] = $this->ref;
-        $data['header_to'] = $this->header_to;
-        $data['header_from'] = $this->header_from;
+        $data['id']             = $this->id;
+        $data['ref']            = $this->ref;
+        $data['header_to']      = $this->header_to;
+        $data['header_from']    = $this->header_from;
         $data['header_subject'] = $this->header_subject;
-        $data['status'] = $this->status;
-        $data['error_code'] = $this->error_code;
-        $data['exec_count'] = $this->exec_count;
+        $data['status']         = $this->status;
+        $data['error_code']     = $this->error_code;
+        $data['exec_count']     = $this->exec_count;
+        $data['options']        = $this->options;
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
-                $data[$date_field] = $this->$date_field->format('Y-m-d H:i:s');
+                $data[$date_field]        = $this->$date_field->format('Y-m-d H:i:s');
                 $data["{$date_field}_ts"] = $this->$date_field->getTimestamp();
             } else {
-                $data[$date_field] = null;
+                $data[$date_field]        = null;
                 $data["{$date_field}_ts"] = null;
             }
         }
@@ -686,6 +747,12 @@ class SendmailSource implements NotifyPropertyChanged
             }
         }
 
+        if ($this->options) {
+            $data['options'] = json_encode($this->options);
+        } else {
+            $data['options'] = null;
+        }
+
         return $data;
     }
 
@@ -700,14 +767,14 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
         $metadata->setPrimaryTable(array(
-            'name' => 'sendmail_sources',
+            'name'    => 'sendmail_sources',
             'indexes' => array(
                 'status_idx'       => array('columns' => array('status')),
                 'date_created_idx' => array('columns' => array('date_created')),
             ),
             'uniqueConstraints' => array(
-                'ref_idx' => array('columns' => array('ref'))
-            )
+                'ref_idx' => array('columns' => array('ref')),
+            ),
         ));
 
         $metadata->mapField(array(
@@ -799,6 +866,12 @@ class SendmailSource implements NotifyPropertyChanged
             'nullable'   => false,
         ));
         $metadata->mapField(array(
+            'columnName' => 'options',
+            'fieldName'  => 'options',
+            'type'       => 'json_array',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
             'fieldName'  => 'date_status',
             'columnName' => 'date_status',
             'type'       => 'datetime',
@@ -857,7 +930,7 @@ class SendmailSource implements NotifyPropertyChanged
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'log_blob',
@@ -869,13 +942,22 @@ class SendmailSource implements NotifyPropertyChanged
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            ))
+            )),
         ));
     }
 
-    public function __getPropValue__($k)     { return $this->$k; }
-    public function __setPropValue__($k, $v) { $this->$k = $v; }
-    public function __hasRunLoad__()         { return true; }
+    public function __getPropValue__($k)
+    {
+        return $this->$k;
+    }
+    public function __setPropValue__($k, $v)
+    {
+        $this->$k = $v;
+    }
+    public function __hasRunLoad__()
+    {
+        return true;
+    }
 
     /** @var PropertyChangedListener[] */
     private $_listeners = array();

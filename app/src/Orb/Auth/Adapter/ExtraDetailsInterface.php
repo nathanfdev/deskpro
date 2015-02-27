@@ -26,16 +26,15 @@
  * \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package  Orb
  * @category Auth
  */
 
 namespace Orb\Auth\Adapter;
 
 /**
- * An auth adater that can provide extra details unqiue to itself (saml metadata, callback urls, etc)
+ * An auth adater that can provide extra details unqiue to itself (saml metadata, callback urls, etc).
  */
 interface ExtraDetailsInterface
 {

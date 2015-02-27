@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 
 /**
- * Releases old locks and locks that are from agents who have gone offline
+ * Releases old locks and locks that are from agents who have gone offline.
  */
 class ReleaseLockedTickets extends AbstractJob
 {
@@ -50,7 +47,7 @@ class ReleaseLockedTickets extends AbstractJob
         #------------------------------
 
         $offset = 60 * 2; // 2 minutes offline offset
-        $n = App::getOrm()->getRepository('DeskPRO:Ticket')->unlockOfflineAgentsTickets($offset);
+        $n      = App::getOrm()->getRepository('DeskPRO:Ticket')->unlockOfflineAgentsTickets($offset);
 
         if ($n) {
             $this->logStatus("Released $n stale locks");

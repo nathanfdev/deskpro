@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage GeoIp
+ * Orb.
  */
 
 namespace Orb\GeoIp;
@@ -40,8 +37,9 @@ class GeoIpExtension extends AbstractGeoIp
     private $last = null;
 
     /**
-     * @param  string $host
-     * @param  array  $what
+     * @param string $host
+     * @param array  $what
+     *
      * @return array
      */
     public function lookup($host, array $what = null)
@@ -70,7 +68,7 @@ class GeoIpExtension extends AbstractGeoIp
 
         $this->last = array(
             $host,
-            $rec
+            $rec,
         );
 
         if ($what === null) {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -49,7 +48,8 @@ interface SourceInterface
      * Then:
      * <var>$value = $mysource['user']['name'];</var>
      *
-     * @param  string|array $name The name of the variable
+     * @param string|array $name The name of the variable
+     *
      * @return mixed
      */
     public function getValue($name);
@@ -59,7 +59,8 @@ interface SourceInterface
      *
      * $name follows same rules as getValue().
      *
-     * @param  string|array $name The name of the variable
+     * @param string|array $name The name of the variable
+     *
      * @return bool
      */
     public function checkIsset($name);

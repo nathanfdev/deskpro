@@ -26,20 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
 use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on ticket org labels
+ * Filters based on ticket org labels.
  *
  * @option string[] labels
  */
@@ -55,7 +54,6 @@ class FilterOrgLabels extends AbstractFilterTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

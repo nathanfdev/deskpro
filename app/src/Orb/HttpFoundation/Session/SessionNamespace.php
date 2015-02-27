@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Usersources
  */
 
@@ -41,21 +40,23 @@ namespace Orb\HttpFoundation\Session;
 class SessionNamespace implements SessionInterface
 {
     /**
-     * The session object being used
+     * The session object being used.
+     *
      * @var Orb\HttpFoundation\Session\Session
      */
     protected $session;
 
     /**
-     * The string key used in the above session to store these values
+     * The string key used in the above session to store these values.
+     *
      * @var string
      */
     protected $namespace;
 
     protected function __construct(\Orb\HttpFoundation\Session\Session $session, $namespace)
     {
-        $this->session = $session;
-        $this->namespace = '__' . $namespace;
+        $this->session   = $session;
+        $this->namespace = '__'.$namespace;
     }
 
     /**
@@ -69,7 +70,8 @@ class SessionNamespace implements SessionInterface
     /**
      * Checks if a data item is defined.
      *
-     * @param  string  $name The data item name
+     * @param string $name The data item name
+     *
      * @return boolean
      */
     public function has($name)
@@ -82,8 +84,9 @@ class SessionNamespace implements SessionInterface
     /**
      * Returns a data item.
      *
-     * @param  string $name    The attribute name
-     * @param  mixed  $default The default value
+     * @param string $name    The attribute name
+     * @param mixed  $default The default value
+     *
      * @return mixed
      */
     public function get($name, $default = null)
@@ -145,7 +148,9 @@ class SessionNamespace implements SessionInterface
     public function remove($name)
     {
         $this->start();
-        if (!isset($this->session->data[$this->namespace])) return;
+        if (!isset($this->session->data[$this->namespace])) {
+            return;
+        }
 
         unset($this->session->data[$this->namespace][$name]);
 
@@ -156,7 +161,7 @@ class SessionNamespace implements SessionInterface
     }
 
     /**
-     * Removes all data
+     * Removes all data.
      */
     public function removeAllData()
     {
@@ -166,7 +171,7 @@ class SessionNamespace implements SessionInterface
     }
 
     /**
-     * Get this namespace name
+     * Get this namespace name.
      *
      * @return string
      */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * (such as beanstalkd) it's not a good feedback to store large amounts of data
  * in the task. So instead, we simply store the QueueItem ID and the task
  * worker can fetch the data when it processes the task.
- *
  */
 class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,7 +52,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
@@ -68,7 +65,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
     protected $groupname;
 
     /**
-     * The priority of this job
+     * The priority of this job.
      *
      * @var int
      */
@@ -128,7 +125,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * When a job is reserved, this should be the time the job should expire.
-     * That is, $reserved_at+$ttr
+     * That is, $reserved_at+$ttr.
      *
      * @var \DateTime
      */
@@ -142,7 +139,8 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
     protected $created_at = null;
 
     /**
-     * Any data pertaining to the job
+     * Any data pertaining to the job.
+     *
      * @var string
      */
     protected $data = array();

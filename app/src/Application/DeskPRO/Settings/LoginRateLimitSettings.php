@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
-
-use Orb\Util\Numbers;
 
 class LoginRateLimitSettings
 {
@@ -55,10 +51,10 @@ class LoginRateLimitSettings
     /** @var int */
     public $lock_time;
 
-
     /**
      * @param Settings $settings
-     * @param string $context
+     * @param string   $context
+     *
      * @throws \Exception
      */
     public function __construct(Settings $settings, $context = 'user')
@@ -67,7 +63,7 @@ class LoginRateLimitSettings
             throw new \Exception(sprintf('Wrong context "%s"', $context));
         }
         $this->settings = $settings;
-        $this->context = $context;
+        $this->context  = $context;
 
         $this->resetSettings();
     }
@@ -77,12 +73,11 @@ class LoginRateLimitSettings
      */
     public function resetSettings()
     {
-        $this->enabled = (bool) $this->settings->get($this->context . '.' . self::KEY . '.enabled');
-        $this->attempts = (int) $this->settings->get($this->context . '.' . self::KEY . '.attempts');
-        $this->attempts_time = (int) $this->settings->get($this->context . '.' . self::KEY . '.attempts_time');
-        $this->lock_time = (int) $this->settings->get($this->context . '.' . self::KEY . '.lock_time');
+        $this->enabled       = (bool) $this->settings->get($this->context.'.'.self::KEY.'.enabled');
+        $this->attempts      = (int) $this->settings->get($this->context.'.'.self::KEY.'.attempts');
+        $this->attempts_time = (int) $this->settings->get($this->context.'.'.self::KEY.'.attempts_time');
+        $this->lock_time     = (int) $this->settings->get($this->context.'.'.self::KEY.'.lock_time');
     }
-
 
     /**
      * @return array
@@ -103,7 +98,6 @@ class LoginRateLimitSettings
         return $ret;
     }
 
-
     /**
      * @param array $set_settings
      */
@@ -115,9 +109,8 @@ class LoginRateLimitSettings
         $this->lock_time      = (int) $set_settings['lock_time'];
     }
 
-
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {
@@ -127,7 +120,7 @@ class LoginRateLimitSettings
                      'attempts_time',
                      'lock_time',
                  ) as $opt) {
-            $this->settings->setSetting($this->context . '.' . self::KEY . '.' . $opt, $this->$opt);
+            $this->settings->setSetting($this->context.'.'.self::KEY.'.'.$opt, $this->$opt);
         }
     }
 }

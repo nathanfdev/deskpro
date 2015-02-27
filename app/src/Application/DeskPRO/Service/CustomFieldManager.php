@@ -29,18 +29,18 @@ namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\CustomFieldData;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
-use Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldManager
 {
@@ -73,17 +73,18 @@ class CustomFieldManager
 
     public function __construct(EntityManager $em, FormFactory $ff)
     {
-        $this->em = $em;
-        $this->ff = $ff;
+        $this->em            = $em;
+        $this->ff            = $ff;
         $this->repDefinition = $em->getRepository('DeskPRO:CustomFieldDefinition');
-        $this->repData = $em->getRepository('DeskPRO:CustomFieldData');
-        $this->persister = new CustomDataPersister();
+        $this->repData       = $em->getRepository('DeskPRO:CustomFieldData');
+        $this->persister     = new CustomDataPersister();
     }
 
     /**
-     * @param  DomainObject    $owner
-     * @param  DomainObject    $context
-     * @param  Layout          $layout
+     * @param DomainObject $owner
+     * @param DomainObject $context
+     * @param Layout       $layout
+     *
      * @return ArrayCollection
      */
     public function getCustomDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
@@ -96,7 +97,7 @@ class CustomFieldManager
 
         // fetch fields values
         foreach ($this->repData->getAllDataForOwner($owner, $context, $layout) as $data) {
-            /** @var $data CustomFieldData */
+            /* @var $data CustomFieldData */
             $rootId = $data->root_definition['id'];
 
             if (!isset($datas[$rootId])) {
@@ -121,11 +122,12 @@ class CustomFieldManager
     }
 
     /**
-     * creates form of defined custom fields
+     * creates form of defined custom fields.
      *
-     * @param  DomainObject                 $owner
-     * @param  DomainObject                 $context add contextual fields to form if context provided
-     * @param  Layout                       $layout
+     * @param DomainObject $owner
+     * @param DomainObject $context add contextual fields to form if context provided
+     * @param Layout       $layout
+     *
      * @return \Symfony\Component\Form\Form
      */
     public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = array())
@@ -136,7 +138,7 @@ class CustomFieldManager
         $builder = $this->ff->createNamedBuilder('custom_fields', 'form');
 
         foreach ($this->getDefinitions($owner, $context, $layout) as $def) {
-            /** @var $def CustomFieldDefinition */
+            /* @var $def CustomFieldDefinition */
             $builder->add($this->createFieldFormBuilder($def, $owner, $context, $datas, $options));
         }
 
@@ -154,11 +156,12 @@ class CustomFieldManager
     }
 
     /**
-     * @param  CustomFieldDefinition                        $definition
-     * @param  DomainObject                                 $owner
-     * @param  DomainObject                                 $context
-     * @param  ArrayCollection                              $datas
-     * @param  array                                        $options
+     * @param CustomFieldDefinition $definition
+     * @param DomainObject          $owner
+     * @param DomainObject          $context
+     * @param ArrayCollection       $datas
+     * @param array                 $options
+     *
      * @return \Symfony\Component\Form\FormBuilderInterface
      */
     public function createFieldFormBuilder(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, ArrayCollection $datas = null, $options = array())
@@ -175,13 +178,13 @@ class CustomFieldManager
         }
 
         $multiple = isset($definition['options']['multiple']) && $definition['options']['multiple'];
-        $data = $datas->get($definition['id']);
+        $data     = $datas->get($definition['id']);
         if (!$multiple && is_array($data)) {
             $data = reset($data);
         }
         $options = array_merge($options, array(
-            'owner' => $owner,
-            'context' => $context,
+            'owner'     => $owner,
+            'context'   => $context,
             'persister' => $this->persister,
         ));
 
@@ -189,16 +192,17 @@ class CustomFieldManager
     }
 
     /**
-     * @param  CustomFieldDefinition                        $definition
-     * @param  DomainObject                                 $owner
-     * @param  DomainObject                                 $context
+     * @param CustomFieldDefinition $definition
+     * @param DomainObject          $owner
+     * @param DomainObject          $context
+     *
      * @return \Symfony\Component\Form\FormBuilderInterface
      */
     public function createFieldForm(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, $options = array())
     {
         if (!$definition['is_enabled']) {
             // todo exception?
-            return null;
+            return;
         }
 
         return $this->createFieldFormBuilder($definition, $owner, $context, null, $options)->getForm();
@@ -206,18 +210,20 @@ class CustomFieldManager
 
     /**
      * @param $fieldId
-     * @param  DomainObject                                               $owner
-     * @return array|null
+     * @param DomainObject $owner
+     *
      * @throws \Symfony\Component\Form\Exception\InvalidArgumentException
+     * @return array|null
+     *
      */
     public function getFieldRawData($fieldId, DomainObject $owner)
     {
         if (!$owner['id']) {
-            return null;
+            return;
         }
 
         if (!$definition = $this->repDefinition->find($fieldId)) {
-            return null;
+            return;
         }
 
         if ($definition->parent) {
@@ -225,7 +231,7 @@ class CustomFieldManager
         }
 
         if (!$data = $this->repData->getFieldRawData($definition, $owner)) {
-            return null;
+            return;
         }
 
         $ret = array();
@@ -237,14 +243,15 @@ class CustomFieldManager
     }
 
     /**
-     * @param  FormInterface $form1
-     * @param  FormInterface $form2
+     * @param FormInterface $form1
+     * @param FormInterface $form2
+     *
      * @return FormInterface
      */
     public function merge(FormInterface $form1, FormInterface $form2)
     {
         foreach ($form2 as $name => $field) {
-            /** @var $field FormInterface */
+            /* @var $field FormInterface */
             $form2->remove($name);
             $form1->add($field);
         }
@@ -254,18 +261,19 @@ class CustomFieldManager
 
     /**
      * todo used for ContextualChoiceDefinition only (for now)
-     * the only place this form used is Person view in Agent Interface (to define contextual choices for this person)
+     * the only place this form used is Person view in Agent Interface (to define contextual choices for this person).
      *
-     * @param  DomainObject                 $context
+     * @param DomainObject $context
+     *
      * @return \Symfony\Component\Form\Form
      */
     public function createDefinitionsFormForContext(DomainObject $context)
     {
         // root definitions
         $definitions = $this->repDefinition->findBy(array(
-            'parent' => null,
+            'parent'        => null,
             'context_class' => ClassUtils::getClass($context),
-            'is_enabled' => true,
+            'is_enabled'    => true,
         ), array('display_order' => 'ASC'));
 
         $children = $this->buildDefinitionChildrenCollectionForContext($context);
@@ -274,16 +282,16 @@ class CustomFieldManager
         $builder = $this->ff->createNamedBuilder('custom_fields_definitions', 'form');
 
         foreach ($definitions as $def) {
-            /** @var $def CustomFieldDefinition */
+            /* @var $def CustomFieldDefinition */
 
-            $builder->add('definition_' . $def['id'], new ContextualChoiceDefinitionType(), array(
-                'context' => $context,
-                'data' => $def,
+            $builder->add('definition_'.$def['id'], new ContextualChoiceDefinitionType(), array(
+                'context'             => $context,
+                'data'                => $def,
                 'children_collection' => $children,
-                'children_only' => true,
-                'label' => $def['title'],
-                'persister' => $this->persister,
-                'allow_edit' => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
+                'children_only'       => true,
+                'label'               => $def['title'],
+                'persister'           => $this->persister,
+                'allow_edit'          => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
             ));
         }
 
@@ -291,7 +299,8 @@ class CustomFieldManager
     }
 
     /**
-     * @param  DomainObject    $context
+     * @param DomainObject $context
+     *
      * @return ArrayCollection
      */
     protected function buildDefinitionChildrenCollectionForContext(DomainObject $context)
@@ -305,7 +314,7 @@ class CustomFieldManager
 
         $_children = $this->repDefinition->findBy(array(
             'context_class' => ClassUtils::getClass($context),
-            'context_id' => $context['id'],
+            'context_id'    => $context['id'],
         ), array('display_order' => 'ASC'));
 
         // build child tree
@@ -325,9 +334,10 @@ class CustomFieldManager
     }
 
     /**
-     * @param  DomainObject $owner
-     * @param  DomainObject $context
-     * @param  Layout       $layout
+     * @param DomainObject $owner
+     * @param DomainObject $context
+     * @param Layout       $layout
+     *
      * @return array
      */
     public function getDefinitions(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
@@ -337,6 +347,7 @@ class CustomFieldManager
 
     /**
      * @param $fieldId
+     *
      * @return CustomFieldDefinition|null
      */
     public function getDefinition($fieldId)

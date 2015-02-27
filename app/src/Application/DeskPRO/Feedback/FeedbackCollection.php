@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Feedback;
@@ -70,14 +67,13 @@ class FeedbackCollection
     {
         $feedbacks = Arrays::keyFromData($feedbacks, 'id');
 
-        $this->feedbacks = $feedbacks;
-        $this->em = $em;
+        $this->feedbacks   = $feedbacks;
+        $this->em          = $em;
         $this->feedback_fm = $feedback_fm;
     }
 
-
     /**
-     * Get the full array of feedback
+     * Get the full array of feedback.
      *
      * @return \Application\DeskPRO\Entity\Feedback[]
      */
@@ -85,7 +81,6 @@ class FeedbackCollection
     {
         return $this->feedbacks;
     }
-
 
     /**
      * Get an array of display data which includes feedback and all associated data with it.
@@ -103,30 +98,29 @@ class FeedbackCollection
         return $data;
     }
 
-
     /**
-     * Get a display array for a feedback
+     * Get a display array for a feedback.
      *
-     * @param  \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return array
      */
     public function getDisplayArrayForFeedback(Feedback $feedback)
     {
-        $custom_data = $this->getDataForFeedback($feedback);
+        $custom_data   = $this->getDataForFeedback($feedback);
         $user_category = $this->getUserCategory($feedback);
 
         $data = array(
             'feedback'      => $feedback,
             'custom_data'   => $custom_data,
-            'user_category' => $user_category
+            'user_category' => $user_category,
         );
 
         return $data;
     }
 
-
     /**
-     * Get an array of all custom data on feedback
+     * Get an array of all custom data on feedback.
      *
      * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
      */
@@ -160,11 +154,11 @@ class FeedbackCollection
         return $this->feedback_data;
     }
 
-
     /**
-     * Get data for a specific feedback
+     * Get data for a specific feedback.
      *
-     * @param  \Application\DeskPRO\Entity\Feedback             $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
      */
     public function getDataForFeedback(Feedback $feedback)
@@ -174,11 +168,11 @@ class FeedbackCollection
         return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : array();
     }
 
-
     /**
-     * Get the user category title
+     * Get the user category title.
      *
-     * @param  \Application\DeskPRO\Entity\Feedback            $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return \Application\DeskPRO\Feedback\UserCategory|null
      */
     public function getUserCategory(Feedback $feedback)
@@ -191,14 +185,14 @@ class FeedbackCollection
         if (!$cat_field) {
             $this->user_cats[$feedback->getId()] = null;
 
-            return null;
+            return;
         }
 
         $options = $this->feedback_fm->getFieldChildren($cat_field);
         $options = Arrays::keyFromData($options, 'id');
 
         $custom_data = $this->getDataForFeedback($feedback);
-        $chosen = null;
+        $chosen      = null;
         foreach ($options as $opt) {
             if (isset($custom_data[$opt->getId()])) {
                 $chosen = $opt;
@@ -208,11 +202,11 @@ class FeedbackCollection
         if (!$chosen) {
             $this->user_cats[$feedback->getId()] = null;
 
-            return null;
+            return;
         }
 
         if ($chosen->getOption('parent_id')) {
-            $chosen_parent = $options[$chosen->getOption('parent_id')];
+            $chosen_parent                       = $options[$chosen->getOption('parent_id')];
             $this->user_cats[$feedback->getId()] = new UserCategory($chosen_parent, $chosen);
         } else {
             $this->user_cats[$feedback->getId()] = new UserCategory($chosen);

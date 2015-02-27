@@ -26,14 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Validator
+ * DeskPRO.
  */
 
 /**
- * Objects that implement this interface should have some validation logic
+ * Objects that implement this interface should have some validation logic.
  */
 
 namespace Application\DeskPRO\Validator;

@@ -26,10 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
+ *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
 
@@ -39,7 +39,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * Task-Ticket association class.
- *
  */
 class TaskAssociatedOrganization extends TaskAssociation
 {
@@ -55,6 +54,6 @@ class TaskAssociatedOrganization extends TaskAssociation
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => null, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true ));
     }
 }

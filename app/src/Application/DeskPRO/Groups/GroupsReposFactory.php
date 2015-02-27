@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Groups;
@@ -50,10 +48,10 @@ class GroupsReposFactory
      */
     private $groups;
 
-
     /**
-     * @param  EntityManager      $em
-     * @param  string             $entity_name
+     * @param EntityManager $em
+     * @param string        $entity_name
+     *
      * @return GroupsReposFactory
      */
     public static function createFromEntityManager(EntityManager $em, $entity_name = 'DeskPRO:Usergroup')
@@ -71,7 +69,9 @@ class GroupsReposFactory
 
     private function preloadGroups()
     {
-        if ($this->groups !== null) return;
+        if ($this->groups !== null) {
+            return;
+        }
         $this->groups = $this->repos->findAll();
     }
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -58,14 +55,16 @@ class DownloadsController extends AbstractController
         $structure = $this->container->getSystemService('publish_structure');
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
-        $search_options = array();
+        $search_options             = array();
         $search_options['order_by'] = $this->in->getString('order_by');
 
         if ($slug) {
             $category_id = $this->container->getRouter()->getIdFromSlug($slug);
-            $category = null;
+            $category    = null;
 
             if ($category_id && $structure->hasDownloadCategory($category_id)) {
                 $category = $structure->getDownloadCategory($category_id);
@@ -75,6 +74,7 @@ class DownloadsController extends AbstractController
                 if ($this->db->count('download_categories', array('id' => $category_id))) {
                     return $this->renderLoginOrPermissionError();
                 }
+
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
@@ -104,9 +104,9 @@ class DownloadsController extends AbstractController
             }
 
             $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 5);
-            $limit = array(
+            $limit    = array(
                 'offset' => ($pageinfo['curpage']-1) * $per_page,
-                'max' => $per_page
+                'max'    => $per_page,
             );
 
             $download_ids = $searcher->getMatches($limit);
@@ -122,17 +122,17 @@ class DownloadsController extends AbstractController
 
         // No category, no results to display
         } else {
-            $category = null;
+            $category      = null;
             $category_path = null;
 
-            $downloads = null;
+            $downloads      = null;
             $comment_counts = null;
-            $total = null;
-            $pageinfo = null;
+            $total          = null;
+            $pageinfo       = null;
         }
 
         $category_counts = $structure->getDownloadCategoryCounts($this->person);
-        $categories = $structure->getDownloadRootCategories();
+        $categories      = $structure->getDownloadRootCategories();
 
         if ($category) {
             $category_children = $category->getChildren();
@@ -141,22 +141,21 @@ class DownloadsController extends AbstractController
         }
 
         return $this->render('UserBundle:Downloads:browse.html.twig', array(
-            'categories' => $categories,
+            'categories'        => $categories,
             'category_children' => $category_children,
-            'category' => $category,
-            'category_counts' => $category_counts,
-            'category_path' => $category_path,
-            'downloads' => $downloads,
-            'comment_counts' => $comment_counts,
-            'num_results' => $total,
-            'pageinfo' => $pageinfo,
-            'section_counts' => $this->em->getRepository('DeskPRO:Download')->getSectionCounts($this->person),
+            'category'          => $category,
+            'category_counts'   => $category_counts,
+            'category_path'     => $category_path,
+            'downloads'         => $downloads,
+            'comment_counts'    => $comment_counts,
+            'num_results'       => $total,
+            'pageinfo'          => $pageinfo,
+            'section_counts'    => $this->em->getRepository('DeskPRO:Download')->getSectionCounts($this->person),
         ));
     }
 
-
     /**
-     * View a file
+     * View a file.
      *
      * @param  $article_id
      */
@@ -177,13 +176,13 @@ class DownloadsController extends AbstractController
             return $this->redirectRoute('user_downloads_file', array('slug' => $download->getUrlSlug()), 301);
         }
 
-        $category = $download->category;
+        $category      = $download->category;
         $category_path = $category->getTreeParents();
 
-        $related_finder = new RelatedContentFinder($this->person, $download);
+        $related_finder  = new RelatedContentFinder($this->person, $download);
         $related_content = $related_finder->getRelatedEntities();
 
-        $comments = null;
+        $comments        = null;
         $comments_widget = null;
         $comments_helper = Comments::create($download);
         if ($comments_helper) {
@@ -197,15 +196,15 @@ class DownloadsController extends AbstractController
         $rating = $content_rating->getRating();
 
         if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-            $this->session->set('download.' . $download['id'], $rating_log_search_id);
-        } elseif ($this->session->has('download.' . $download['id'])) {
-            $rating_log_search_id = $this->session->get('download.' . $download['id']);
+            $this->session->set('download.'.$download['id'], $rating_log_search_id);
+        } elseif ($this->session->has('download.'.$download['id'])) {
+            $rating_log_search_id = $this->session->get('download.'.$download['id']);
         } else {
             $rating_log_search_id = 0;
         }
 
         /** @var $structure \Application\DeskPRO\Publish\Structure */
-        $structure = $this->container->getSystemService('publish_structure');
+        $structure                            = $this->container->getSystemService('publish_structure');
         $download->category->structure_helper = $structure;
 
         $tpl = 'UserBundle:Downloads:file.html.twig';
@@ -216,20 +215,19 @@ class DownloadsController extends AbstractController
         $this->container->getSystemService('view_log')->view($download);
 
         return $this->render($tpl, array(
-            'rating' => $rating,
+            'rating'               => $rating,
             'rating_log_search_id' => $rating_log_search_id,
 
             'comments_widget' => $comments_widget,
-            'comments' => $comments,
+            'comments'        => $comments,
 
-            'download' => $download,
-            'category' => $category,
+            'download'      => $download,
+            'category'      => $category,
             'category_path' => $category_path,
 
-            'related_content' => $related_content
+            'related_content' => $related_content,
         ));
     }
-
 
     /**
      * @param $slug
@@ -257,9 +255,8 @@ class DownloadsController extends AbstractController
         return $this->redirectRoute('serve_blob', array('blob_auth_id' => $download->blob->auth_id, 'filename' => $download->getFilenameSafe()));
     }
 
-
     /**
-     * Submit a new comment
+     * Submit a new comment.
      *
      * @param  $download_id
      */
@@ -290,8 +287,8 @@ class DownloadsController extends AbstractController
         );
 
         $newcomment_formtype = new NewCommentFormType($this->person);
-        $form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
-        $validator = new \Application\UserBundle\Validator\NewCommentValidator();
+        $form                = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+        $validator           = new \Application\UserBundle\Validator\NewCommentValidator();
         $validator->setPersonContext($this->person);
 
         /** @var RateLimit $rateLimit */
@@ -302,7 +299,6 @@ class DownloadsController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;
@@ -333,7 +329,7 @@ class DownloadsController extends AbstractController
                 if ($new_comment->require_login) {
                     return $this->redirectRoute('user_newcomment_finishlogin', array(
                         'comment_type' => 'article',
-                        'comment_id' => $comment->id,
+                        'comment_id'   => $comment->id,
                     ));
                 }
             }

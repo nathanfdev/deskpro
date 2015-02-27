@@ -26,17 +26,12 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage NewSettings
+ * DeskPRO.
  */
 
 namespace DpUnitTests\AuthBundle\Permissions;
 
-
-
-use Application\AuthBundle\Permissions\PermissionsBag;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 
 class PermissionsBagTest extends \DpUnitTestCase
 {
@@ -55,7 +50,7 @@ class PermissionsBagTest extends \DpUnitTestCase
         $inputArray = array(
             'key'           => 'value',
             'setting'       => 2,
-            'extra_setting' => 0.9
+            'extra_setting' => 0.9,
         );
 
         $bag = new PermissionsBag($inputArray);

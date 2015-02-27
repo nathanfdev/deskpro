@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,10 @@ class Download extends AbstractEntityRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 
@@ -54,10 +56,11 @@ class Download extends AbstractEntityRepository
      */
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         if ($person_context) {
-
             $cat_ids = $person_context->getPermissionsManager()->DownloadCategories->getAllowedCategories();
             if (!$cat_ids) {
                 return array();
@@ -83,7 +86,9 @@ class Download extends AbstractEntityRepository
 
     public function getByResultIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $unsorted_downloads = $this->getEntityManager()->createQuery("
             SELECT d
@@ -124,7 +129,6 @@ class Download extends AbstractEntityRepository
         return $downloads;
     }
 
-
     public function getPopular($num = 10, $node = false)
     {
         if ($node) {
@@ -145,8 +149,6 @@ class Download extends AbstractEntityRepository
         return $downloads;
     }
 
-
-
     public function getInNode($node)
     {
         return $this->getEntityManager()->createQuery("
@@ -156,7 +158,6 @@ class Download extends AbstractEntityRepository
             ORDER BY d.title DESC
         ")->setParameter(1, $node)->execute();
     }
-
 
     public function getSectionCounts(PersonEntity $person_context = null)
     {
@@ -181,7 +182,6 @@ class Download extends AbstractEntityRepository
         return $counts;
     }
 
-
     public function countPublished()
     {
         return $this->getEntityManager()->createQuery(
@@ -197,9 +197,9 @@ class Download extends AbstractEntityRepository
     {
         return array(
             'views' => array(
-                'conditions' => '%1$s.object_type = 2 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
-            )
+                'conditions'   => '%1$s.object_type = 2 AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+            ),
         );
     }
 }

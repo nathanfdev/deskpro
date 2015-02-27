@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Auth
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Auth\Adapter;
@@ -49,7 +46,8 @@ use Orb\Log\Logger;
 class Local implements AdapterInterface, FormLoginInterface, Loggable, EntityManagerAwareInterface
 {
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
@@ -70,7 +68,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable, EntityMan
     }
 
     /**
-     * Sets the data got from a form
+     * Sets the data got from a form.
      *
      * @param array $form_data
      */
@@ -156,7 +154,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable, EntityMan
     }
 
     /**
-     * Set the logger
+     * Set the logger.
      *
      * @param \Orb\Log\Logger $logger
      */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Log;
@@ -64,7 +61,8 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
 
     /**
      * Log lines that happen while sending a message.
-     * This is an array of messageId=>array(lines)
+     * This is an array of messageId=>array(lines).
+     *
      * @var array
      */
     private $msg_lines = array();
@@ -98,10 +96,9 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
     }
 
     /**
-     * Writes the record down to the log of the implementing handler
+     * Writes the record down to the log of the implementing handler.
      *
-     * @param  array $record
-     * @return void
+     * @param array $record
      */
     protected function write(array $record)
     {
@@ -120,7 +117,8 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
     /**
      * Processes a record.
      *
-     * @param  array $record
+     * @param array $record
+     *
      * @return array
      */
     protected function processRecord(array $record)
@@ -229,14 +227,16 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
      * Get the log for a message ref.
      *
      * @param $source_id
+     *
      * @return string
      */
     public function getLogForMessage($source_id)
     {
         if (isset($this->msg_lines[$source_id])) {
-            $ret = implode("\n", array_map(function($r) {
+            $ret = implode("\n", array_map(function ($r) {
                 return trim($r['formatted']);
             }, $this->msg_lines[$source_id]));
+
             return $ret;
         } else {
             return "";

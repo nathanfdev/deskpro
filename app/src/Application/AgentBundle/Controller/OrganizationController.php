@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -46,7 +43,7 @@ use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Handles viewing and editing an org
+ * Handles viewing and editing an org.
  */
 class OrganizationController extends AbstractController
 {

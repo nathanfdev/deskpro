@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -43,7 +42,7 @@ use Orb\Util\CheckedOptionsArray;
 use Orb\Validator\StringEmail;
 
 /**
- * Sets the user owner of a ticket
+ * Sets the user owner of a ticket.
  *
  * @option int email_address
  * @option bool add_cc
@@ -62,7 +61,6 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -71,7 +69,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         $user_email = $this->getActionOption('email_address');
 
         $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-        $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
+        $person     = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
 
         if (!$person) {
             if ($reg_closed) {
@@ -79,16 +77,16 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
             }
             $person_processor = new PersonFromEmailProcessor();
 
-            $eml = new EmailAddress();
+            $eml        = new EmailAddress();
             $eml->email = $user_email;
-            $person = $person_processor->createPerson($eml, true);
+            $person     = $person_processor->createPerson($eml, true);
         }
 
         $orig_person = $ticket->person;
 
         if ($person) {
-            $ticket->person = $person;
-            $ticket->person_email = null;
+            $ticket->person                  = $person;
+            $ticket->person_email            = null;
             $ticket->person_email_validating = null;
 
             if ($this->getActionOption('add_cc')) {
@@ -98,7 +96,6 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
             }
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -116,7 +113,6 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -126,7 +122,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
             if ($set_agent_id == $person->getId()) {
                 if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-                    return null;
+                    return;
                 }
 
                 return array('assign_self');
@@ -135,7 +131,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
             return array('assign_agent');
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -20,9 +20,8 @@ class LabelsDataTest extends \DpIntegrationTestCase
 
     public function testGetLabelsAndCounts()
     {
-
         $definitions = $this->rep->getAllDefinitions();
-        $check = array();
+        $check       = array();
         foreach ($definitions as $def) {
             $check[$def['label']] = $def;
         }

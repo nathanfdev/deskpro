@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,7 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * When blobs are stored in the database, they are stored as muliple parts in this table.
  *
  * (Ordering is by id ASC)
- *
  */
 class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -56,7 +54,7 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
     protected $blob_id;
 
     /**
-     * The users name (best guess from other sources etc)
+     * The users name (best guess from other sources etc).
      *
      * @var string
      */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,7 +43,7 @@ class FilterOrgField extends AbstractFilterTerm
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
-        throw new NotImplementedException;
+        throw new NotImplementedException();
     }
 
     /**
@@ -52,6 +51,6 @@ class FilterOrgField extends AbstractFilterTerm
      */
     public function getTermType()
     {
-        return 'FilterOrgField' . $this->getTermOptions()->get('field_id');
+        return 'FilterOrgField'.$this->getTermOptions()->get('field_id');
     }
 }

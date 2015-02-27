@@ -26,15 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\TicketMerge\Property;
-
-
 
 /**
  * A standard property on a ticket where only one value can exist.

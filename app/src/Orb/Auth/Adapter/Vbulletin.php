@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Auth\Adapter;
@@ -42,7 +39,7 @@ class Vbulletin extends DbTable
     {
         parent::initOptions();
 
-        $this->options[self::OPT_TABLE]           = $this->options->get(self::OPT_TABLE_PREFIX, '') . 'user';
+        $this->options[self::OPT_TABLE]           = $this->options->get(self::OPT_TABLE_PREFIX, '').'user';
         $this->options[self::OPT_FIELD_ID]        = 'userid';
         $this->options[self::OPT_FIELD_USERNAME]  = 'username';
         $this->options[self::OPT_FIELD_PASSWORD]  = 'password';
@@ -51,7 +48,7 @@ class Vbulletin extends DbTable
 
     protected function isValidPassword(array $userinfo, $password_input)
     {
-        $hashed = md5(md5($password_input) . $userinfo['salt']);
+        $hashed = md5(md5($password_input).$userinfo['salt']);
 
         if ($userinfo['password'] == $hashed) {
             return true;

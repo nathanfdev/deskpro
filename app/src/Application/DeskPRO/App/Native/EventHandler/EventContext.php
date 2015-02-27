@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -77,7 +76,8 @@ class EventContext
      * Given an event ID, check to see if this event is of this type. This uses dot notation to separate
      * type types into hierarchies. E.g., 'my.event.type' would match 'my' and 'my.event' but not 'my.otherevent'. 'my' would match all three.
      *
-     * @param  string $event_id
+     * @param string $event_id
+     *
      * @return true
      */
     public function isEventType($event_id)

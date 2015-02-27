@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Controller;
 
 class BlobController extends AbstractController
 {
     /**
-     * Favicon
+     * Favicon.
      */
     public function faviconAction()
     {

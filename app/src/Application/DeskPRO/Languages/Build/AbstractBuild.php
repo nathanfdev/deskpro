@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages\Build;
@@ -50,19 +48,20 @@ abstract class AbstractBuild
     private $logger;
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return array
      */
     abstract public function getCategoryWords($id, $section, $category);
 
     /**
-     * @param  string $section
-     * @param  string $category
-     * @param  string $source_file
+     * @param string $section
+     * @param string $category
+     * @param string $source_file
+     *
      * @return array
      */
     abstract public function updateSourcePhrases($section, $category, $source_file = null);
-
 
     /**
      * @return \Orb\Log\Logger
@@ -76,7 +75,6 @@ abstract class AbstractBuild
         return $this->logger;
     }
 
-
     /**
      * @param \Orb\Log\Logger $logger
      */
@@ -84,7 +82,6 @@ abstract class AbstractBuild
     {
         $this->logger = $logger;
     }
-
 
     /**
      * @return LangPackInfo
@@ -98,7 +95,6 @@ abstract class AbstractBuild
         return $this->langinfo;
     }
 
-
     /**
      * @param LangPackInfo $langinfo
      */
@@ -107,26 +103,26 @@ abstract class AbstractBuild
         $this->langinfo = $langinfo;
     }
 
-
     /**
-     * Returns a diff of changed, added and removed phrase IDs
+     * Returns a diff of changed, added and removed phrase IDs.
      *
-     * @param  string $id
-     * @param  string $section
-     * @param  string $category
+     * @param string $id
+     * @param string $section
+     * @param string $category
+     *
      * @return array
      */
     public function writeLangFile($id, $section, $category, array $phrases)
     {
-        $dir = $this->getLangPackInfo()->getLangDir() . '/' . $id . '/' . $section;
+        $dir = $this->getLangPackInfo()->getLangDir().'/'.$id.'/'.$section;
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
-        $file = $dir . '/' . $category . '.php';
+        $file = $dir.'/'.$category.'.php';
 
         if (file_exists($file)) {
-            $exist = include($file);
+            $exist = include $file;
             unlink($file);
         } else {
             $exist = array();
@@ -135,11 +131,10 @@ abstract class AbstractBuild
         $diff = array(
             'changed' => array(),
             'added'   => array(),
-            'removed' => array()
+            'removed' => array(),
         );
 
         foreach ($phrases as $phrase_id => $string) {
-
             if (!isset($exist[$phrase_id])) {
                 $diff['added'][] = $phrase_id;
             } elseif (trim($exist[$phrase_id]) != trim($string)) {
@@ -167,14 +162,13 @@ abstract class AbstractBuild
         file_put_contents($file, $php);
         chmod($file, 0644);
 
-        $this->getLogger()->logInfo('Wrote file: ' . $file);
+        $this->getLogger()->logInfo('Wrote file: '.$file);
 
         return $diff;
     }
 
-
     /**
-     * Build all languages
+     * Build all languages.
      *
      * @return array The diff of every lang
      */
@@ -193,26 +187,26 @@ abstract class AbstractBuild
         return $diff;
     }
 
-
     /**
-     * Build a language
+     * Build a language.
      *
-     * @param  string $id The standard DeskPRO ID for the language
-     * @return array  The diff
+     * @param string $id The standard DeskPRO ID for the language
+     *
+     * @return array The diff
      */
     public function buildLanguage($id)
     {
         $diff = array(
             'changed' => array(),
             'added'   => array(),
-            'removed' => array()
+            'removed' => array(),
         );
 
         foreach ($this->getLangPackInfo()->getDefaultSections() as $section) {
             foreach ($this->getLangPackInfo()->getDefaultCategories($section) as $category) {
                 $words = $this->getCategoryWords($id, $section, $category);
                 if ($words) {
-                    $cat_diff = $this->writeLangFile($id, $section, $category, $words);
+                    $cat_diff        = $this->writeLangFile($id, $section, $category, $words);
                     $diff['changed'] = array_merge($diff['changed'], $cat_diff['changed']);
                     $diff['added']   = array_merge($diff['added'],   $cat_diff['added']);
                     $diff['removed'] = array_merge($diff['removed'], $cat_diff['removed']);
@@ -223,9 +217,8 @@ abstract class AbstractBuild
         return $diff;
     }
 
-
     /**
-     * Updates all sources for all sections and categories
+     * Updates all sources for all sections and categories.
      */
     public function updateAllSources()
     {
@@ -238,7 +231,6 @@ abstract class AbstractBuild
         }
     }
 
-
     /**
      * Clears out a lang from the filesystem.
      *
@@ -246,7 +238,7 @@ abstract class AbstractBuild
      */
     public function clearLang($id)
     {
-        $dir = $this->getLangPackInfo()->getLangDir() . '/' . $id;
+        $dir = $this->getLangPackInfo()->getLangDir().'/'.$id;
 
         // Nothing to do
         if (!is_dir($dir)) {

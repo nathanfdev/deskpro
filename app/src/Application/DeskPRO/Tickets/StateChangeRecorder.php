@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -62,7 +61,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         'date_locked'              => true,
         'has_attachments'          => true,
         'count_agent_replies'      => true,
-        'count_user_replies'       => true
+        'count_user_replies'       => true,
     );
 
     /**
@@ -76,13 +75,15 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private $no_id = false;
 
     /**
-     * If this is a trivial changeset
+     * If this is a trivial changeset.
+     *
      * @var bool
      */
     private $is_trivial = false;
 
     /**
-     * When the last trivial check was made
+     * When the last trivial check was made.
+     *
      * @var null
      */
     private $is_trivial_checkid = null;
@@ -100,14 +101,13 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         }
     }
 
-
     /**
      * @return bool
      */
     public function isTrivialChangeSet()
     {
         if ($this->is_trivial_checkid === null || $this->is_trivial_checkid < $this->getStateVersion()) {
-            $this->is_trivial = true;
+            $this->is_trivial         = true;
             $this->is_trivial_checkid = $this->getStateVersion();
 
             foreach ($this->getChangedFields() as $f) {
@@ -120,7 +120,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         return $this->is_trivial;
     }
-
 
     /**
      * @return bool
@@ -137,11 +136,11 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return false;
     }
 
-
     /**
-     * Check if there has been a new reply of type
+     * Check if there has been a new reply of type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function hasNewMessageOfType($type)
@@ -152,7 +151,9 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
-            if (!$message) continue;
+            if (!$message) {
+                continue;
+            }
 
             switch ($type) {
                 case 'agent_reply':
@@ -176,11 +177,11 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return false;
     }
 
-
     /**
-     * Get new messages of type
+     * Get new messages of type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function getNewMessagesOfType($type = 'any')
@@ -193,7 +194,9 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
-            if (!$message) continue;
+            if (!$message) {
+                continue;
+            }
 
             switch ($type) {
                 case 'any':
@@ -221,7 +224,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $messages;
     }
 
-
     /**
      * Has there been a new agent reply?
      *
@@ -231,7 +233,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->hasChangedField('message');
     }
-
 
     /**
      * Has there been a new agent reply?
@@ -243,7 +244,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->hasNewMessageOfType('agent_reply');
     }
 
-
     /**
      * Has there been a new agent note?
      *
@@ -253,7 +253,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->hasNewMessageOfType('agent_note');
     }
-
 
     /**
      * Has there been a new user reply?
@@ -265,9 +264,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->hasNewMessageOfType('user_reply');
     }
 
-
     /**
-     * Get an array of any new repies
+     * Get an array of any new repies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -276,9 +274,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('any');
     }
 
-
     /**
-     * Get an array of any new agent replies
+     * Get an array of any new agent replies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -287,9 +284,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('agent_reply');
     }
 
-
     /**
-     * Get an array of any new agent notes
+     * Get an array of any new agent notes.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -298,9 +294,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('agent_note');
     }
 
-
     /**
-     * Get an array of any new user replies
+     * Get an array of any new user replies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DataSync;
@@ -42,7 +40,7 @@ namespace Application\DeskPRO\DataSync;
 abstract class AbstractDataSync
 {
     /**
-     * Name of the table in the DB this refers to
+     * Name of the table in the DB this refers to.
      *
      * @var string
      */
@@ -136,9 +134,9 @@ abstract class AbstractDataSync
     /**
      * Syncs the base data to the live data.
      *
-     * @return array Array with counts of manipulation types: install, update, delete
-     *
      * @throws \Exception
+     * @return array      Array with counts of manipulation types: install, update, delete
+     *
      */
     public function syncBaseToLive()
     {
@@ -225,7 +223,7 @@ abstract class AbstractDataSync
     }
 
     /**
-     * Encodes the base data to a string
+     * Encodes the base data to a string.
      *
      * @param array $data
      *
@@ -244,7 +242,7 @@ abstract class AbstractDataSync
     }
 
     /**
-     * Decodes string from the base data file to an array
+     * Decodes string from the base data file to an array.
      *
      * @param string $data
      *

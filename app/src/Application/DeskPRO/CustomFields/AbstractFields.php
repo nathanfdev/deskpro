@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\CustomFields;
 
@@ -45,7 +43,7 @@ abstract class AbstractFields
     const ENTITY_NAME  = 'DeskPRO:CustomDefAbstract';
 
     /**
-     * Get a collection of all defined person fields
+     * Get a collection of all defined person fields.
      *
      * @return array
      */

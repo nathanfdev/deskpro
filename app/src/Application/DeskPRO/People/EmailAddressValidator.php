@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\BanEmail;
+use Application\DeskPRO\Entity\Person;
 use Orb\Validator\StringEmail;
 
 class EmailAddressValidator
@@ -70,7 +69,8 @@ class EmailAddressValidator
     /**
      * Check if a user inputted email address is valid.
      *
-     * @param  string $email
+     * @param string $email
+     *
      * @return bool
      */
     public function isValidUserEmail($email)
@@ -92,9 +92,10 @@ class EmailAddressValidator
     }
 
     /**
-     * Check if a person has any banned emails
+     * Check if a person has any banned emails.
      *
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return bool
      */
     public function personHasBannedEmail(Person $person)

@@ -26,39 +26,39 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
+ *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * History of slugs
+ * History of slugs.
  */
 class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
-     * The unique ID
+     * The unique ID.
      *
      * @var int
-     *
      */
     protected $id;
 
     /**
-     * The Download
+     * The Download.
      *
      * @var string
      */
     protected $download;
 
     /**
-     * The slug
+     * The slug.
      *
      * @var string
      */
@@ -71,7 +71,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param Download $download the content
-     * @param string $old_slug the slug to put in history
+     * @param string   $old_slug the slug to put in history
      */
     public function __construct(Download $download, $old_slug)
     {
@@ -132,7 +132,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
-                'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+                'fieldName'  => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false,
                 'columnName' => 'date_created',
             )
         );
@@ -140,7 +140,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', 'unique' => true));
         $metadata->mapManyToOne(array(
             'fieldName' => 'download', 'targetEntity' => 'Application\DeskPRO\Entity\Download',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history'
+            'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history',
         ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

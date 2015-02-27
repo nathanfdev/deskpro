@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -45,7 +42,7 @@ class Build1395063357 extends AbstractBuild
         ");
 
         foreach ($filters as $fid => $terms) {
-            $terms = unserialize($terms);
+            $terms  = unserialize($terms);
             $do_add = true;
             foreach ($terms as $t) {
                 if ($t['type'] == 'agent_team') {

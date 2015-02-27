@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -60,19 +59,19 @@ class TicketFeedback extends AbstractEntityRepository
               ->setMaxResults(1)
               ->getOneOrNullResult();
 
-        if (!$feedback AND $create_if_notexist) {
-            $feedback = new TicketFeedbackEntity();
-            $feedback->ticket = $message->ticket;
+        if (!$feedback and $create_if_notexist) {
+            $feedback                 = new TicketFeedbackEntity();
+            $feedback->ticket         = $message->ticket;
             $feedback->ticket_message = $message;
-            $feedback->person = $person;
+            $feedback->person         = $person;
         }
 
         return $feedback;
     }
 
-
     /**
-     * @param  TicketEntity $ticket
+     * @param TicketEntity $ticket
+     *
      * @return array
      */
     public function getFeedbackForTicket(TicketEntity $ticket)
@@ -92,9 +91,9 @@ class TicketFeedback extends AbstractEntityRepository
         return $res;
     }
 
-
     /**
-     * @param  int   $page
+     * @param int $page
+     *
      * @return mixed
      */
     public function getFeedbackForFeed($page)
@@ -109,7 +108,6 @@ class TicketFeedback extends AbstractEntityRepository
         return $query->execute();
     }
 
-
     /**
      * @return mixed
      */
@@ -122,7 +120,6 @@ class TicketFeedback extends AbstractEntityRepository
         return $query->execute();
     }
 
-
     /**
      * @return float
      */
@@ -133,15 +130,15 @@ class TicketFeedback extends AbstractEntityRepository
         return ceil($count[0][1] / $this->per_page);
     }
 
-
     /**
-     * @param  PersonEntity $agent
-     * @param               $date_range
+     * @param PersonEntity $agent
+     * @param              $date_range
+     *
      * @return array
      */
     public function getFeedbackRatingsForAgent(PersonEntity $agent, $date_range)
     {
-        $db = App::getDb();
+        $db     = App::getDb();
         $result = $db->fetchAll('
             SELECT tf.rating AS rating
             FROM ticket_feedback AS tf
@@ -154,13 +151,12 @@ class TicketFeedback extends AbstractEntityRepository
         return $result;
     }
 
-
     /**
      * @return mixed
      */
     public function getFirstCreatedDate()
     {
-        $db = App::getDb();
+        $db     = App::getDb();
         $result = $db->fetchColumn('SELECT MIN(date_created) FROM ticket_feedback');
 
         return $result;

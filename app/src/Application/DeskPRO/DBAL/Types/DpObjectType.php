@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Types
  */
 
@@ -49,7 +48,7 @@ class DpObjectType extends ObjectType
     {
         try {
             if ($value === null) {
-                return null;
+                return;
             }
 
             $value = (is_resource($value)) ? stream_get_contents($value) : $value;

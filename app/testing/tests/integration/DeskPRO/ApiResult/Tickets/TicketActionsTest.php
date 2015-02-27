@@ -4,7 +4,7 @@ namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
 
 use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
 
-require_once __DIR__ . '/../AbstractApiResultTest.php';
+require_once __DIR__.'/../AbstractApiResultTest.php';
 
 class TicketActionsTest extends AbstractApiResultTest
 {
@@ -129,7 +129,7 @@ class TicketActionsTest extends AbstractApiResultTest
 
     protected function _getExpectedTicketMessage()
     {
-        return require 'Data'. DIRECTORY_SEPARATOR . 'ExpectedTicketMessage.php';
+        return require 'Data'.DIRECTORY_SEPARATOR.'ExpectedTicketMessage.php';
     }
 
     protected function assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage)
@@ -150,7 +150,7 @@ class TicketActionsTest extends AbstractApiResultTest
             $this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field], "person.$field");
         }
 
-        foreach($this->_getIgnoreKeys('person') as $key) {
+        foreach ($this->_getIgnoreKeys('person') as $key) {
             $this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
             unset($retrievedTicketMessageArray['person'][$key]);
             unset($expectedTicketMessage['person'][$key]);

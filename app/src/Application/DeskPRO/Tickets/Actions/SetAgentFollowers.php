@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -61,12 +60,12 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
     protected function resolveAgent(ExecutorContextInterface $context, $id)
     {
         if (!$id) {
-            return null;
+            return;
         }
 
         if (-1 == $id) {
             if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
-                return null;
+                return;
             }
             $agent = $context->getPersonContext();
         } else {
@@ -117,7 +116,6 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
             }
         }
     }
-
 
     /**
      * {@inheritDoc}

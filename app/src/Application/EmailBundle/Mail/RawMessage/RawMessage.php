@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Mail\RawMessage;
@@ -43,19 +40,22 @@ namespace Application\EmailBundle\Mail\RawMessage;
 class RawMessage
 {
     /**
-     * array('email' => email, 'name' => 'name')
+     * array('email' => email, 'name' => 'name').
+     *
      * @var array
      */
     private $from = array();
 
     /**
-     * array(array('email' => email, 'name' => 'name'))
+     * array(array('email' => email, 'name' => 'name')).
+     *
      * @var array
      */
     private $tos = array();
 
     /**
-     * array(array('email' => email, 'name' => 'name'))
+     * array(array('email' => email, 'name' => 'name')).
+     *
      * @var array
      */
     private $ccs = array();
@@ -69,30 +69,35 @@ class RawMessage
      * Note: All headers are always arrays, even if there is only 1 value.
      *
      * array('Header-Name' => array('Value1', 'Value2'));
+     *
      * @var array
      */
     private $headers = array();
 
     /**
-     * array('body' => body, 'charset' => charset)
+     * array('body' => body, 'charset' => charset).
+     *
      * @var array
      */
     private $text_part = null;
 
     /**
-     * array('body' => body, 'charset' => charset)
+     * array('body' => body, 'charset' => charset).
+     *
      * @var array
      */
     private $html_part = null;
 
     /**
-     * array('filename' => filename, 'cid' => 'abc', 'tmp_path' => 'path on disk', 'bin_data' => 'or binary data', 'type' => 'mimetype')
+     * array('filename' => filename, 'cid' => 'abc', 'tmp_path' => 'path on disk', 'bin_data' => 'or binary data', 'type' => 'mimetype').
+     *
      * @var array
      */
     private $attachments = array();
 
     /**
      * @param array $info
+     *
      * @return RawMessage
      */
     public static function newFromArray(array $info)
@@ -208,7 +213,7 @@ class RawMessage
             'headers'     => $this->headers,
             'text_part'   => $this->text_part,
             'html_part'   => $this->html_part,
-            'attachments' => $this->attachments
+            'attachments' => $this->attachments,
         );
     }
 }

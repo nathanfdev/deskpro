@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,16 +37,16 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
 /**
- * A website visitor when we have no information about them
+ * A website visitor when we have no information about them.
  */
 class PersonGuest extends Person
 {
     public function __construct()
     {
-        $this->id = 0;
+        $this->id             = 0;
         $this->_usergroup_ids = array();
-        $this->usergroups = array();
-        $this->timezone = App::getSetting('core.default_timezone');
+        $this->usergroups     = array();
+        $this->timezone       = App::getSetting('core.default_timezone');
     }
 
     public function getUsergroups()
@@ -64,7 +63,6 @@ class PersonGuest extends Person
     {
         return array('ROLE_GUEST');
     }
-
 
     public function noPersist()
     {

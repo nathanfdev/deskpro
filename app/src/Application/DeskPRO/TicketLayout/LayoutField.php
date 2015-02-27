@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -76,7 +75,6 @@ class LayoutField implements \Serializable
      */
     private $criteria = null;
 
-
     /**
      * @param string   $field_type
      * @param int|null $field_id
@@ -86,7 +84,6 @@ class LayoutField implements \Serializable
         $this->field_type = $field_type;
         $this->field_id   = $field_id;
     }
-
 
     /**
      * @param array $options
@@ -115,7 +112,7 @@ class LayoutField implements \Serializable
 
         if ($options->has('criteria')) {
             $crit_options = new OptionsArray($options->get('criteria'));
-            $criteria = new LayoutFieldCriteria();
+            $criteria     = new LayoutFieldCriteria();
             $criteria->setMode($crit_options->get('mode') == 'all' ? 'all' : 'any');
 
             foreach ($crit_options->get('terms') as $term_info) {
@@ -159,7 +156,6 @@ class LayoutField implements \Serializable
         }
     }
 
-
     /**
      * Get an ident string for the field type (a combination of the field type and field id).
      *
@@ -169,12 +165,11 @@ class LayoutField implements \Serializable
     {
         $ident = $this->field_type;
         if ($this->field_id) {
-            $ident .= '_' . $this->field_id;
+            $ident .= '_'.$this->field_id;
         }
 
         return $ident;
     }
-
 
     /**
      * @return string
@@ -184,7 +179,6 @@ class LayoutField implements \Serializable
         return $this->field_type;
     }
 
-
     /**
      * @return int|null
      */
@@ -193,24 +187,21 @@ class LayoutField implements \Serializable
         return $this->field_id;
     }
 
-
     /**
-     * Enables field on new ticket
+     * Enables field on new ticket.
      */
     public function enableOnNew()
     {
         $this->on_newticket = true;
     }
 
-
     /**
-     * Disables field on new ticket
+     * Disables field on new ticket.
      */
     public function disableOnNew()
     {
         $this->on_newticket = false;
     }
-
 
     /**
      * @return bool
@@ -220,9 +211,8 @@ class LayoutField implements \Serializable
         return $this->on_newticket;
     }
 
-
     /**
-     * Enables field on ticket view
+     * Enables field on ticket view.
      *
      * @param string $mode View mode: Always show field or only show when there is a value
      */
@@ -232,16 +222,14 @@ class LayoutField implements \Serializable
         $this->on_viewticket_mode = ($mode == self::VIEW_VALUE ? self::VIEW_VALUE : self::VIEW_ALWAYS);
     }
 
-
     /**
-     * Disables field on ticket view
+     * Disables field on ticket view.
      */
     public function disableOnView()
     {
         $this->on_viewticket      = null;
         $this->on_viewticket_mode = null;
     }
-
 
     /**
      * @return bool
@@ -251,7 +239,6 @@ class LayoutField implements \Serializable
         return $this->on_viewticket;
     }
 
-
     /**
      * @return bool
      */
@@ -260,24 +247,21 @@ class LayoutField implements \Serializable
         return $this->on_viewticket_mode == self::VIEW_ALWAYS;
     }
 
-
     /**
-     * Enable field on ticket edit
+     * Enable field on ticket edit.
      */
     public function enableOnEdit()
     {
         $this->on_editticket = true;
     }
 
-
     /**
-     * Disable field on ticket edit
+     * Disable field on ticket edit.
      */
     public function disableOnEdit()
     {
         $this->on_editticket = false;
     }
-
 
     /**
      * @return bool
@@ -286,7 +270,6 @@ class LayoutField implements \Serializable
     {
         return $this->on_editticket;
     }
-
 
     /**
      * True if there is a criteria object and that object has at least one term.
@@ -302,7 +285,6 @@ class LayoutField implements \Serializable
         return false;
     }
 
-
     /**
      * @return LayoutFieldCriteria
      */
@@ -310,7 +292,6 @@ class LayoutField implements \Serializable
     {
         return $this->criteria;
     }
-
 
     /**
      * @param LayoutFieldCriteria $criteria
@@ -320,15 +301,13 @@ class LayoutField implements \Serializable
         $this->criteria = $criteria;
     }
 
-
     /**
-     * Removes criteria from the field
+     * Removes criteria from the field.
      */
     public function removeCriteria()
     {
         $this->criteria = null;
     }
-
 
     /**
      * @return string
@@ -342,7 +321,6 @@ class LayoutField implements \Serializable
         return $this->criteria->compileJsCheck();
     }
 
-
     /**
      * @return array
      */
@@ -350,7 +328,7 @@ class LayoutField implements \Serializable
     {
         $data = array();
 
-        $data['version']  = 1;
+        $data['version']    = 1;
         $data['field_type'] = $this->field_type;
         $data['field_id']   = $this->field_id;
         $data['options']    = array();
@@ -365,14 +343,13 @@ class LayoutField implements \Serializable
             'on_newticket',
             'on_viewticket',
             'on_viewticket_mode',
-            'on_editticket'
+            'on_editticket',
         ) as $prop) {
             $data['options'][$prop] = $this->$prop;
         }
 
         return $data;
     }
-
 
     /**
      * @return string
@@ -382,7 +359,6 @@ class LayoutField implements \Serializable
         return json_encode($this->exportToArray());
     }
 
-
     /**
      * @param array $data
      */
@@ -391,7 +367,6 @@ class LayoutField implements \Serializable
         $this->setOptionsFromArray($data['options']);
     }
 
-
     /**
      * @return string
      */
@@ -399,7 +374,6 @@ class LayoutField implements \Serializable
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,7 +42,8 @@ class FeedbackFetcher extends AbstractFetcher
     /**
      * Returns an array of entities identified by $related_ids, that the user is able to see.
      *
-     * @param  array $related_ids
+     * @param array $related_ids
+     *
      * @return array
      */
     public function getEntities(array $related_ids)

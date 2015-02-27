@@ -25,52 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\ImportBundle\Exception\BadDataException;
-use Application\ImportBundle\Exception\DuplicateValueException;
-use Application\ImportBundle\Exception\MissingMappingExceptionException;
-use Application\ImportBundle\Exception\MultipleMappingException;
-use Application\ImportBundle\RecordMapper\CommonRecordMapper;
-use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
-use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
-use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
-use Application\ImportBundle\RecordMapper\PersonRecordMapper;
-use Application\ImportBundle\RecordMapper\CustomDefTicketRecordMapper;
-use Application\ImportBundle\ArrayParser\PersonArrayParser;
-use Application\ImportBundle\ArrayParser\TicketArrayParser;
+use Application\ImportBundle\ArrayParser\DownloadArrayParser;
+use Application\ImportBundle\ArrayParser\FeedbackArrayParser;
 use Application\ImportBundle\ArrayParser\KbArrayParser;
 use Application\ImportBundle\ArrayParser\NewsArrayParser;
-use Application\ImportBundle\ArrayParser\FeedbackArrayParser;
-use Application\ImportBundle\ArrayParser\DownloadArrayParser;
+use Application\ImportBundle\ArrayParser\PersonArrayParser;
+use Application\ImportBundle\ArrayParser\TicketArrayParser;
+use Application\ImportBundle\Exception\BadDataException;
+use Application\ImportBundle\Exception\DuplicateValueException;
+use Application\ImportBundle\Exception\MissingMappingException;
+use Application\ImportBundle\Exception\MultipleMappingException;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
+use Application\ImportBundle\JsonReader\JsonReader;
+use Application\ImportBundle\JsonReader\JsonReaderInterface;
+use Application\ImportBundle\RecordMapper\CommonRecordMapper;
+use Application\ImportBundle\RecordMapper\CustomDefTicketRecordMapper;
+use Application\ImportBundle\RecordMapper\PersonRecordMapper;
+use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
+use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
-use Application\ImportBundle\ValueImporter\PersonValueImporter;
-use Application\ImportBundle\ValueImporter\TicketValueImporter;
+use Application\ImportBundle\ValueImporter\DownloadValueImporter;
+use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
 use Application\ImportBundle\ValueImporter\KbValueImporter;
 use Application\ImportBundle\ValueImporter\NewsValueImporter;
-use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
-use Application\ImportBundle\ValueImporter\DownloadValueImporter;
+use Application\ImportBundle\ValueImporter\PersonValueImporter;
+use Application\ImportBundle\ValueImporter\TicketValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
+/**
+ * Class Importer.
+ *
+ * @deprecated Use DeskPro import generator writer instead
+ */
 class Importer
 {
-    const EVENT_RESET_DONE       = 'reset_done_marker';
-    const EVENT_PRE_IMPORT_READ  = 'pre_import_read';
-    const EVENT_PRE_IMPORT       = 'pre_import';
-    const EVENT_POST_IMPORT      = 'post_import';
-    const EVENT_PRE_STEP         = 'pre_step';
-    const EVENT_POST_STEP        = 'post_step';
+    const EVENT_RESET_DONE      = 'reset_done_marker';
+    const EVENT_PRE_IMPORT_READ = 'pre_import_read';
+    const EVENT_PRE_IMPORT      = 'pre_import';
+    const EVENT_POST_IMPORT     = 'post_import';
+    const EVENT_PRE_STEP        = 'pre_step';
+    const EVENT_POST_STEP       = 'post_step';
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -102,56 +103,58 @@ class Importer
      */
     private $container;
 
+    /**
+     * @var JsonReaderInterface
+     */
+    private $json_reader;
 
     /**
-     * @param Connection      $db
-     * @param ImporterConfig  $config
-     * @param LoggerInterface $logger
+     * Constructor.
+     *
+     * @param DeskproContainer $container
+     * @param ImporterConfig   $config
+     * @param LoggerInterface  $logger
      */
     public function __construct(DeskproContainer $container, ImporterConfig $config, LoggerInterface $logger = null)
     {
-        $this->container = $container;
-
-        $this->db = $container->getDb();
-
-        $this->config = $config;
-
-        $this->mappers = new RecordMapperRegistry();
-        $this->mappers['person']		= new PersonRecordMapper($this->db);
-        $this->mappers['ticket_department']	= new TicketDepartmentRecordMapper($this->db);
-        $this->mappers['ticket_category']	= new CommonRecordMapper($this->db, 'ticket_categories', 'title');
-        $this->mappers['ticket_workflow']	= new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
-        $this->mappers['ticket_priority']	= new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
-        $this->mappers['ticket_status']		= new TicketStatusRecordMapper();
-        $this->mappers['department']		= new CommonRecordMapper($this->db, 'departments', 'title');
-        $this->mappers['product']		= new CommonRecordMapper($this->db, 'products', 'title');
-        $this->mappers['usergroup']		= new CommonRecordMapper($this->db, 'usergroups', 'title');
-        $this->mappers['organization']		= new CommonRecordMapper($this->db, 'organizations', 'name');
-        $this->mappers['language']		= new CommonRecordMapper($this->db, 'languages', 'title');
-        $this->mappers['article_category']	= new CommonRecordMapper($this->db, 'article_categories', 'title');
-        $this->mappers['article']		= new CommonRecordMapper($this->db, 'articles', 'title');
-        $this->mappers['news_category']		= new CommonRecordMapper($this->db, 'news_categories', 'title');
-        $this->mappers['news']			= new CommonRecordMapper($this->db, 'news', 'title');
-        $this->mappers['feedback_category']	= new CommonRecordMapper($this->db, 'feedback_categories', 'title');
-        $this->mappers['feedback']		= new CommonRecordMapper($this->db, 'feedback', 'title');
-        $this->mappers['download_category']	= new CommonRecordMapper($this->db, 'download_categories', 'title');
-        $this->mappers['download']		= new CommonRecordMapper($this->db, 'download', 'title');
-        $this->mappers['custom_def_ticket']	= new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title');
-        $this->mappers['custom_def_people']	= new CommonRecordMapper($this->db, 'custom_def_people', 'title');
+        $this->container   = $container;
+        $this->db          = $container->getDb();
+        $this->json_reader = new JsonReader();
+        $this->config      = $config;
+        $this->mappers     = new RecordMapperRegistry();
+        $this->mappers
+            ->addMapper(MapperInterface::TYPE_PERSON,            new PersonRecordMapper($this->db))
+            ->addMapper(MapperInterface::TYPE_TICKET_DEPARTMENT, new TicketDepartmentRecordMapper($this->db))
+            ->addMapper(MapperInterface::TYPE_TICKET_CATEGORY,   new CommonRecordMapper($this->db, 'ticket_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_TICKET_WORKFLOW,   new CommonRecordMapper($this->db, 'ticket_workflows', 'title'))
+            ->addMapper(MapperInterface::TYPE_TICKET_PRIORITY,   new CommonRecordMapper($this->db, 'ticket_priorities', 'title'))
+            ->addMapper(MapperInterface::TYPE_DEPARTMENT,        new CommonRecordMapper($this->db, 'departments', 'title'))
+            ->addMapper(MapperInterface::TYPE_PRODUCT,           new CommonRecordMapper($this->db, 'products', 'title'))
+            ->addMapper(MapperInterface::TYPE_USER_GROUP,        new CommonRecordMapper($this->db, 'usergroups', 'title'))
+            ->addMapper(MapperInterface::TYPE_ORGANIZATION,      new CommonRecordMapper($this->db, 'organizations', 'name'))
+            ->addMapper(MapperInterface::TYPE_LANGUAGE,          new CommonRecordMapper($this->db, 'languages', 'title'))
+            ->addMapper(MapperInterface::TYPE_ARTICLE_CATEGORY,  new CommonRecordMapper($this->db, 'article_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_ARTICLE,           new CommonRecordMapper($this->db, 'articles', 'title'))
+            ->addMapper(MapperInterface::TYPE_NEWS_CATEGORY,     new CommonRecordMapper($this->db, 'news_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_NEWS,              new CommonRecordMapper($this->db, 'news', 'title'))
+            ->addMapper(MapperInterface::TYPE_FEEDBACK_CATEGORY, new CommonRecordMapper($this->db, 'feedback_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_FEEDBACK,          new CommonRecordMapper($this->db, 'feedback', 'title'))
+            ->addMapper(MapperInterface::TYPE_DOWNLOAD_CATEGORY, new CommonRecordMapper($this->db, 'download_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_DOWNLOAD,          new CommonRecordMapper($this->db, 'download', 'title'))
+            ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_TICKET, new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title'))
+            ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_PERSON, new CommonRecordMapper($this->db, 'custom_def_people', 'title'));
 
         if (!$logger) {
             $logger = new Logger('importer');
         }
-
         if ($config->log_path) {
-            $logger->pushHandler(new StreamHandler($config->log_path . '.full.log', Logger::INFO));
-            $logger->pushHandler(new StreamHandler($config->log_path . '.notice.log', Logger::NOTICE));
-            $logger->pushHandler(new StreamHandler($config->log_path . '.error.log', Logger::ERROR));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.full.log', Logger::INFO));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.notice.log', Logger::NOTICE));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.error.log', Logger::ERROR));
         }
 
         $this->logger = $logger;
     }
-
 
     /**
      * @param ImporterStatusCallback $callback
@@ -161,21 +164,25 @@ class Importer
         $this->status_callback = $callback;
     }
 
-
     /**
      * Reset all done markers.
      */
     public function resetDoneMarkers()
     {
-        foreach ($this->getDirectoryIterator('/', false) as $file) {
-            if (file_exists($file->getPath() . '.done')) {
-                unlink(@file_exists($file->getPath() . '.done'));
-                if ($this->status_callback) $this->status_callback->postResetDoneMarker($this, $file);
+        foreach ($this->json_reader->getIterator($this->config->data_path, false) as $file) {
+            if (file_exists($file->getPath().'.done')) {
+                unlink(@file_exists($file->getPath().'.done'));
+
+                if ($this->status_callback) {
+                    $this->status_callback->postResetDoneMarker($this, $file);
+                }
             }
         }
     }
 
-
+    /**
+     * @throws \Exception
+     */
     public function processImports()
     {
         $this->processDirectory('people', new PersonValueImporter(
@@ -189,9 +196,11 @@ class Importer
             $this->config->mode,
             $this->container,
             $this->logger,
-            $this->mappers, function ($container) {
-                $container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
-            }
+            $this->mappers
+            // not used in the importer, remove?
+//            function ($container) {
+//                $container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+//            }
         ));
 
         $this->processDirectory('articles', new KbValueImporter(
@@ -223,91 +232,108 @@ class Importer
         ));
     }
 
-
     /**
-     * @param  string                $dir
-     * @param  AbstractValueImporter $value_importer
+     * @param string                $dir
+     * @param AbstractValueImporter $value_importer
+     * @param  $callback
+     *
      * @throws \Exception
      */
     private function processDirectory($dir, AbstractValueImporter $value_importer, $callback = null)
     {
-        if ($this->status_callback) $this->status_callback->preStep($this, $value_importer, $dir);
-        $step_start = microtime(true);
+        if ($this->status_callback) {
+            $this->status_callback->preStep($this, $value_importer, $dir);
+        }
 
-        $it = $this->getDirectoryIterator($dir, true);
+        $step_start = microtime(true);
+        $it         = $this->json_reader->getIterator($this->config->data_path.'/'.$dir, true);
 
         $count = 0;
         foreach ($it as $file) {
             $count++;
-            /** @var \SplFileInfo $file */
+            /* @var \SplFileInfo $file */
             $json = @file_get_contents($file->getRealPath());
 
-            if ($this->status_callback) $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
-
+            if ($this->status_callback) {
+                $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
+            }
             if (!$json) {
-                $this->getLogger()
-                    ->warning("File is not readable or empty: " . $file->getRealPath());
+                $this->getLogger()->warning("File is not readable or empty: ".$file->getRealPath());
                 continue;
             }
 
             $data = json_decode($json, true);
             unset($json);
             if (!$data) {
-                $this->getLogger()
-                    ->warning("Invalid JSON data file: " . $file->getRealPath());
+                $this->getLogger()->warning("Invalid JSON data file: ".$file->getRealPath());
                 continue;
             }
 
             try {
                 $start = microtime(true);
-
-                if ($this->status_callback) $this->status_callback->preImportValue($this, $value_importer, $file, $count, $data);
+                if ($this->status_callback) {
+                    $this->status_callback->preImportValue($this, $value_importer, $file, $count, $data);
+                }
 
                 //TODO clean this up
+                $value = null;
                 switch (Util::getBaseClassname($value_importer)) {
                     case 'PersonValueImporter':
                         $parser = new PersonArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'TicketValueImporter':
                         $parser = new TicketArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'KbValueImporter':
                         $parser = new KbArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'NewsValueImporter':
                         $parser = new NewsArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'FeedbackValueImporter':
                         $parser = new FeedbackArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'DownloadValueImporter':
                         $parser = new DownloadArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                 }
 
                 $value_importer->importValue($value);
-                if ($this->status_callback) $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
+                if ($this->status_callback) {
+                    $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
+                }
             } catch (BadDataException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Invalid or missing data in file (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Invalid or missing data in file (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
             } catch (DuplicateValueException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Duplicate value detected (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
-            } catch (MissingMappingExceptionException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Invalid mapping detected (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Duplicate value detected (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
+            } catch (MissingMappingException $ex) {
+                $this->getLogger()->warning(sprintf(
+                    "Invalid mapping detected (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
             } catch (MultipleMappingException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Multiple candidate mappings detected (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Multiple candidate mappings detected (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
             } catch (\Exception $ex) {
-                $this->getLogger()
-                    ->critical(sprintf("Unhandled exception while processing (@%s) -- %s\n%s", $file->getRealPath(), $ex->getMessage(), KernelErrorHandler::formatBacktrace($ex->getTrace())));
+                $this->getLogger()->critical(sprintf(
+                    "Unhandled exception while processing (@%s) -- %s\n%s",
+                    $file->getRealPath(), $ex->getMessage(), KernelErrorHandler::formatBacktrace($ex->getTrace())
+                ));
+
                 throw $ex;
             }
         }
@@ -315,37 +341,14 @@ class Importer
         if ($this->status_callback) {
             $this->status_callback->postStep($this, $value_importer, $dir, $count, microtime(true) - $step_start);
         } elseif (is_callable($callback)) {
-            call_user_fun($callback, $this->container);
+            call_user_func($callback, $this->container);
         }
-    }
-
-
-    /**
-     * @param  string                     $dir
-     * @param  bool                       $exclude_done
-     * @return \RecursiveIteratorIterator
-     */
-    public function getDirectoryIterator($dir, $exclude_done)
-    {
-        if (!is_dir($this->config->data_path . '/' . $dir)) {
-            return array();
-        }
-        $iterator = new RecursiveDirectoryIterator($this->config->data_path . '/' . $dir, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO);
-
-        $filter = new DirectoryIteratorFilter($iterator);
-        if ($exclude_done) {
-            $filter->excludeDone();
-        }
-
-        $it = new \RecursiveIteratorIterator($filter, \RecursiveIteratorIterator::SELF_FIRST | \RecursiveIteratorIterator::LEAVES_ONLY);
-
-        return $it;
     }
 
     /**
      * @return LoggerInterface
      */
-    public function getLogger()
+    private function getLogger()
     {
         return $this->logger;
     }

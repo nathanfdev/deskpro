@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -38,7 +35,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Updates the archive tables
+ * Updates the archive tables.
  */
 class TicketSearchUpdater
 {
@@ -54,6 +51,7 @@ class TicketSearchUpdater
 
     /**
      * Cols from TicketSearchActive::getFieldNames. Defined here just as a micro-opt.
+     *
      * @var string
      */
     private static $cols = "
@@ -67,12 +65,12 @@ class TicketSearchUpdater
 
     public function __construct(Connection $db, Ticket $ticket)
     {
-        $this->db = $db;
+        $this->db     = $db;
         $this->ticket = $ticket;
     }
 
     /**
-     * Remove the ticket from search tables
+     * Remove the ticket from search tables.
      */
     public function remove()
     {
@@ -80,7 +78,7 @@ class TicketSearchUpdater
     }
 
     /**
-     * Update or add ticket to search tables
+     * Update or add ticket to search tables.
      */
     public function update()
     {

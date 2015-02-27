@@ -26,18 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 
 class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
@@ -51,17 +50,15 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
      */
     private $db;
 
-
     /**
      * @param Connection           $db
      * @param FilterChangeDetector $filter_change_detector
      */
     public function __construct(Connection $db, FilterChangeDetector $filter_change_detector)
     {
-        $this->db = $db;
+        $this->db                     = $db;
         $this->filter_change_detector = $filter_change_detector;
     }
-
 
     /**
      * @param Ticket                   $ticket
@@ -73,7 +70,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
             return;
         }
 
-        $change_set = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
+        $change_set      = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
         $client_messages = $change_set->getListUpdateClientMessages();
 
         $rows = array();

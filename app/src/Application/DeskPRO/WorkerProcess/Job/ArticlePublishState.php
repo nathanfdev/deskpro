@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -67,7 +64,7 @@ class ArticlePublishState extends AbstractJob
         $count_unpublish = count($article_ids);
         $this->processUnpublish($article_ids);
 
-        if ($count_publish OR $count_unpublish) {
+        if ($count_publish or $count_unpublish) {
             $part = array();
             if ($count_publish) {
                 $part[] = "Published {$count_publish} articles";
@@ -83,7 +80,9 @@ class ArticlePublishState extends AbstractJob
 
     protected function processPublish(array $article_ids)
     {
-        if (!$article_ids) return;
+        if (!$article_ids) {
+            return;
+        }
 
         $batch = 0;
         foreach ($article_ids as $article_id) {
@@ -104,7 +103,9 @@ class ArticlePublishState extends AbstractJob
 
     protected function processUnpublish(array $article_ids)
     {
-        if (!$article_ids) return;
+        if (!$article_ids) {
+            return;
+        }
 
         $batch = 0;
         foreach ($article_ids as $article_id) {
@@ -113,7 +114,7 @@ class ArticlePublishState extends AbstractJob
             if ($article['end_action'] == Article::END_ACTION_ARCHIVE) {
                 $article['status_code'] = Article::STATUS_ARCHIVED;
             } else {
-                $article['status_code'] = Article::STATUS_HIDDEN . '.' . Article::HIDDEN_STATUS_DELETED;
+                $article['status_code'] = Article::STATUS_HIDDEN.'.'.Article::HIDDEN_STATUS_DELETED;
             }
 
             App::getOrm()->persist($article);

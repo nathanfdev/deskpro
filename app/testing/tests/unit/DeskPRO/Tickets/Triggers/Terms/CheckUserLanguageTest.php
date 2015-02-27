@@ -1,29 +1,43 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 
 require_once 'AbstractEntityCheckTest.php';
 
 class CheckUserLanguageTest extends AbstractEntityCheckTest
 {
     /**
-     * @param  int    $id
+     * @param int $id
      * @param $object
+     *
      * @return Ticket
      */
     public function createTicket($id, $object)
     {
-        $person = new Person();
-        $person->id = $id;
-        $person->language = $object;
+        if ($object === null) {
+            // no test for nulls
+            return;
+        }
 
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $person     = new Person();
+        $person->id = $id;
+
+        if ($object !== null) {
+            $person->language = $object;
+        }
+
+        $ticket         = new Ticket();
+        $ticket->id     = $id;
         $ticket->person = $person;
 
         return $ticket;
+    }
+
+    protected function useNullTest()
+    {
+        return false;
     }
 
     /**
@@ -43,7 +57,8 @@ class CheckUserLanguageTest extends AbstractEntityCheckTest
     }
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     public function getEntityClass()

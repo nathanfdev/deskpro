@@ -1,10 +1,10 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\SetDepartment;
-use DpTestingMocks\ContainerMock;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\SetDepartment;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use DpTestingMocks\ContainerMock;
 
 class SetDepartmentTest extends \DpUnitTestCase
 {
@@ -18,7 +18,9 @@ class SetDepartmentTest extends \DpUnitTestCase
      */
     private function getMockContainer()
     {
-        if ($this->container) return $this->container;
+        if ($this->container) {
+            return $this->container;
+        }
         $this->container = ContainerMock::create()->withTicketDepartments()->get();
 
         return $this->container;
@@ -26,9 +28,9 @@ class SetDepartmentTest extends \DpUnitTestCase
 
     public function testSet()
     {
-        $ticket = new Ticket();
+        $ticket             = new Ticket();
         $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
-        $exec   = new ExecutorContext();
+        $exec               = new ExecutorContext();
 
         $action = new SetDepartment(array('department_id' => 55));
         $action->setContainer($this->getMockContainer());
@@ -41,9 +43,9 @@ class SetDepartmentTest extends \DpUnitTestCase
 
     public function testSetNullNoop()
     {
-        $ticket = new Ticket();
+        $ticket             = new Ticket();
         $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
-        $exec   = new ExecutorContext();
+        $exec               = new ExecutorContext();
 
         $action = new SetDepartment(array('department_id' => 0));
         $action->setContainer($this->getMockContainer());
@@ -56,7 +58,7 @@ class SetDepartmentTest extends \DpUnitTestCase
 
     public function testNoop()
     {
-        $ticket = new Ticket();
+        $ticket             = new Ticket();
         $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(55);
 
         $exec = new ExecutorContext();
@@ -70,7 +72,7 @@ class SetDepartmentTest extends \DpUnitTestCase
     public function testInvalid()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $action = new SetDepartment(array('department_id' => 200));
         $action->setContainer($this->getMockContainer());

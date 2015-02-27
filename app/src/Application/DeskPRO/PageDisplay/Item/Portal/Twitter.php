@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -42,8 +39,8 @@ class Twitter extends PortalItemAbstract implements CacheableItem
     public function getCacheOptions()
     {
         return array(
-            'lifetime' => 1800, // 30 minutes
-            'user_indifferent' => true
+            'lifetime'         => 1800, // 30 minutes
+            'user_indifferent' => true,
         );
     }
 
@@ -72,7 +69,7 @@ class Twitter extends PortalItemAbstract implements CacheableItem
             $max_items = 5;
         }
 
-        $token = $this->getOption('token');
+        $token  = $this->getOption('token');
         $secret = $this->getOption('secret');
 
         if ($token && $secret) {
@@ -83,27 +80,28 @@ class Twitter extends PortalItemAbstract implements CacheableItem
             try {
                 $tweets = $twitter->get_statusesUser_timeline(array(
                     'screen_name' => $twitter_name,
-                    'count' => $max_items
+                    'count'       => $max_items,
                 ));
-                foreach ($tweets AS $tweet) {
+                foreach ($tweets as $tweet) {
                     $date = new \DateTime($tweet->created_at);
 
                     $feed_items[] = array(
-                        'id' => $tweet->id_str,
-                        'text' => $this->parseText($tweet->text),
-                        'date' => $date,
+                        'id'          => $tweet->id_str,
+                        'text'        => $this->parseText($tweet->text),
+                        'date'        => $date,
                         'screen_name' => $tweet->user->screen_name,
-                        'name' => $tweet->user->name
+                        'name'        => $tweet->user->name,
                     );
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         } else {
             $feed_items = array();
         }
 
         return $this->renderView('UserBundle:Portal:twitter-sidebar.html.twig', array(
             'twitter_name' => $twitter_name,
-            'feed_items' => $feed_items
+            'feed_items'   => $feed_items,
         ));
     }
 

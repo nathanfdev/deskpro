@@ -26,9 +26,8 @@
  * \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package  Orb
  * @category Auth
  */
 
@@ -56,7 +55,7 @@ interface SamlAdapterInterface
     public function performSingleLogOutService();
 
     /**
-     * Return a response to send to browser
+     * Return a response to send to browser.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */

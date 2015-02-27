@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
@@ -165,8 +163,9 @@ class EditEmailAccount
     }
 
     /**
-     * @param  EntityManager $em
-     * @param  array         $trigger_actions
+     * @param EntityManager $em
+     * @param array         $trigger_actions
+     *
      * @return TicketTrigger
      */
     public function saveTrigger(EntityManager $em, array $trigger_actions)
@@ -183,12 +182,12 @@ class EditEmailAccount
                 $em->flush();
             }
 
-            return null;
+            return;
         }
 
         if (!$trigger) {
-            $trigger = new TicketTrigger();
-            $trigger->is_enabled = (bool)$em->getConnection()->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger                = new TicketTrigger();
+            $trigger->is_enabled    = (bool) $em->getConnection()->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
             $trigger->email_account = $this->account;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('email');
@@ -244,7 +243,7 @@ class EditEmailAccount
                 return new NoopConfig();
 
             default:
-                return null;
+                return;
         }
     }
 
@@ -271,7 +270,7 @@ class EditEmailAccount
 
             default;
 
-                return null;
+                return;
         }
     }
 }

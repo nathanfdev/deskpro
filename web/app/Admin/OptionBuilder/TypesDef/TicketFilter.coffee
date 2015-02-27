@@ -282,13 +282,8 @@ define [
       @loadDataPromise = null
 
     loadDataOptions: ->
-      if @options_data
-        p = @$q.fcall( =>
-          return @options_data
-        )
-      else
-        @options_data = {}
-        p = @Api.sendDataGet({
+      if !@loadDataPromise
+        @loadDataPromise = @Api.sendDataGet({
           'agents':          '/agents',
           'agent_teams':     '/agent_teams',
           'ticket_deps':     '/ticket_deps',
@@ -321,13 +316,13 @@ define [
 
           if @options_data?.ticket_fields
             for f in @options_data.ticket_fields
-              @initFieldGetter('FilterTicketField', f)
+              @initFieldGetter 'FilterTicketField', f, true
           if @options_data?.user_fields
             for f in @options_data.user_fields
-              @initFieldGetter('FilterUserField', f)
+              @initFieldGetter 'FilterUserField', f, true
         )
 
-      return p
+      @loadDataPromise
 
     getFilterWorkflow: (options = {}) ->
       options.propName = 'workflow_ids'

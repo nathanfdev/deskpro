@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Util as DeskPROUtil;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the ticket has labels
+ * Checks if the ticket has labels.
  *
  * @option string[] labels
  */
@@ -59,7 +58,6 @@ class CheckLabel extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

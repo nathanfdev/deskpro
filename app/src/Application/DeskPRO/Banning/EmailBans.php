@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Banning;
@@ -41,35 +39,31 @@ class EmailBans
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\BanEmail[]
      */
-
     protected $email_bans;
 
     /**
      * @var int
      */
-
     protected $per_page = 20;
 
     /**
      * @var int
      */
-
     protected $from;
 
     /**
      * @var string
      */
-
     protected $search_phrase;
 
     /**
-     * filter wildcards only if true
+     * filter wildcards only if true.
+     *
      * @var bool
      */
     protected $wildcard = false;
@@ -77,7 +71,6 @@ class EmailBans
     /**
      * @param EntityManager $em
      */
-
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -88,7 +81,6 @@ class EmailBans
      *
      * @return $this
      */
-
     public function setPerPage($per_page)
     {
         $this->per_page = $per_page;
@@ -101,7 +93,6 @@ class EmailBans
      *
      * @return $this
      */
-
     public function setPage($page)
     {
         if ($page == 0) {
@@ -122,6 +113,7 @@ class EmailBans
 
     /**
      * @param $search_phrase
+     *
      * @return $this
      */
     public function setSearchPhrase($search_phrase)
@@ -132,9 +124,8 @@ class EmailBans
     }
 
     /**
-     * Loads twitter accounts data from the database
+     * Loads twitter accounts data from the database.
      */
-
     private function preload()
     {
         if ($this->email_bans !== null) {
@@ -153,17 +144,16 @@ class EmailBans
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->email_bans = null;
     }
 
     /**
-     * @param  int                                  $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\BanEmail
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:BanEmail')->get($id);
@@ -172,7 +162,6 @@ class EmailBans
     /**
      * @return \Application\DeskPRO\Entity\BanEmail[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -183,7 +172,6 @@ class EmailBans
     /**
      * @return array
      */
-
     public function getAllAsNestedArray()
     {
         $this->preload();
@@ -200,7 +188,6 @@ class EmailBans
     /**
      * @return int
      */
-
     public function getPageCount()
     {
         return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase, $this->wildcard);
@@ -217,7 +204,6 @@ class EmailBans
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -228,7 +214,6 @@ class EmailBans
     /**
      * @return BanEmail
      */
-
     public function createNew()
     {
         return BanEmail::createEmailBan();

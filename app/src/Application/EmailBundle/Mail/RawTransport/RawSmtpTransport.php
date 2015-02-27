@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Mail\RawTransport;
@@ -67,7 +64,9 @@ class RawSmtpTransport implements RawTransportInterface
 
         try {
             $this->tr->start();
-            if (!empty($tos)) $sent += $this->_doMail($from, $tos, $raw_fp, $failed);
+            if (!empty($tos)) {
+                $sent += $this->_doMail($from, $tos, $raw_fp, $failed);
+            }
         } catch (\Swift_TransportException $e) {
             $raw_e = new RawTransportException($e->getMessage(), $e->getCode(), $e);
             throw $raw_e;
@@ -81,6 +80,7 @@ class RawSmtpTransport implements RawTransportInterface
      * @param array $to
      * @param $raw_fp
      * @param array $failed
+     *
      * @return int
      */
     private function _doMail($from, array $to, $raw_fp, array &$failed)
@@ -114,6 +114,7 @@ class RawSmtpTransport implements RawTransportInterface
             $this->tr->executeCommand("\r\n.\r\n", array(250));
         } else {
             $this->tr->reset();
+
             return 0;
         }
 

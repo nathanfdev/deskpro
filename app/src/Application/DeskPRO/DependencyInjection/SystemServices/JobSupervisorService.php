@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -42,7 +41,8 @@ use Application\DeskPRO\JobQueue\SupervisorRules\ReservedTimeoutRule;
 class JobSupervisorService
 {
     /**
-     * @param  DeskproContainer $container
+     * @param DeskproContainer $container
+     *
      * @return JobSupervisor
      */
     public static function create(DeskproContainer $container)

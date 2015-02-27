@@ -26,16 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Brand;
 
-
-use Application\DeskPRO\Brand\BrandContainer;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 
 class BrandContainerTest extends \DpUnitTestCase
 {
@@ -43,19 +39,18 @@ class BrandContainerTest extends \DpUnitTestCase
     {
         $mockBrand     = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockSettings  = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
-        $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
+        $themeResolver = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver');
         $bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
 
         $this->assertSame($mockBrand, $bc->getBrand());
         $this->assertSame($mockSettings, $bc->getSettings());
     }
 
-
     public function testGetSetting()
     {
         $mockBrand     = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockSettings  = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
-        $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
+        $themeResolver = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver');
         $bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
 
         $mockSettings->shouldReceive('get')->with('setting_name', null)->andReturn('the val!')->once();

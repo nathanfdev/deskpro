@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Type;
@@ -46,7 +43,7 @@ class NewNews extends AbstractType
         #------------------------------
 
         $builder->add('title', 'text');
-        $builder->add('content', 'textarea');
+        $builder->add('content', 'textarea', array('filter_clean' => false));
 
         $builder->add('category_id', 'text');
         $builder->add('status', 'text');

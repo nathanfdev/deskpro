@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Notifications;
@@ -107,16 +104,15 @@ abstract class AbstractAgentNotification
         }
 
         $this->notify_list = array(
-            'email' => $send_email,
-            'browser' => $send_browser
+            'email'   => $send_email,
+            'browser' => $send_browser,
         );
 
         return $this->notify_list;
     }
 
-
     /**
-     * Send an email notification to agents from the build list
+     * Send an email notification to agents from the build list.
      *
      * @param string $tpl
      * @param array  $vars
@@ -129,14 +125,13 @@ abstract class AbstractAgentNotification
             return;
         }
 
-        foreach	($notify_list['email'] as $agent) {
+        foreach ($notify_list['email'] as $agent) {
             $message = App::getMailer()->createMessage();
             $message->setTemplate($tpl, $vars);
             $message->setToPerson($agent);
             App::getMailer()->send($message);
         }
     }
-
 
     /**
      * Send a browser notification to agents from the built list.
@@ -155,18 +150,18 @@ abstract class AbstractAgentNotification
             return;
         }
 
-        foreach	($notify_list['browser'] as $agent) {
+        foreach ($notify_list['browser'] as $agent) {
             $tpl_line = App::getTemplating()->render($tpl, $vars);
 
-            $data = $vars['notify_data'];
+            $data        = $vars['notify_data'];
             $data['row'] = $tpl_line;
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'agent-notify.' . $data['notify_type'],
-                'data' => $data,
+                'channel'           => 'agent-notify.'.$data['notify_type'],
+                'data'              => $data,
                 'for_person'        => $agent,
-                'created_by_client' => $this->client
+                'created_by_client' => $this->client,
             ));
             $this->em->persist($cm);
         }

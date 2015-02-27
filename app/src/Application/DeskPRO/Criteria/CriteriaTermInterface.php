@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,7 @@ namespace Application\DeskPRO\Criteria;
 interface CriteriaTermInterface
 {
     /**
-     * Gets the type name of the criteria
+     * Gets the type name of the criteria.
      *
      * @return string
      */
@@ -51,7 +50,7 @@ interface CriteriaTermInterface
     public function getTermOperator();
 
     /**
-     * Get's an array of options
+     * Get's an array of options.
      *
      * @return array
      */

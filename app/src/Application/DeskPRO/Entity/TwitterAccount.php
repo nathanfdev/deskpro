@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,8 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A Twitter Account contains twitter username and accesstoken
- *
+ * A Twitter Account contains twitter username and accesstoken.
  */
 class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -89,7 +87,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * )
+     *                                                   )
      */
     protected $persons;
 
@@ -99,20 +97,19 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     protected $_cache = array();
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
-        $this->friends = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->friends   = new \Doctrine\Common\Collections\ArrayCollection();
         $this->followers = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->searches = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->persons = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->searches  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->persons   = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * @return TwitterAccount
      */
-
     public static function createTwitterAccount()
     {
         return new self();
@@ -145,7 +142,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Retrieve a list of Twitter users this account follows.
      *
-     * @param  Boolean $cache (optional)
+     * @param Boolean $cache (optional)
+     *
      * @return array
      */
     public function getFriendIds($cache = true)
@@ -171,7 +169,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Retrieve a list of Twitter users following this account.
      *
-     * @param  Boolean $cache (optional)
+     * @param Boolean $cache (optional)
+     *
      * @return array
      */
     public function getFollowerIds($cache = true)
@@ -233,7 +232,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     public function getNewFollowers($page = 1, $limit = self::DEFAULT_LIMIT)
     {
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $limit;
 
         $query = App::getOrm()->createQuery("
@@ -277,7 +276,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     public function getFollowers($page = 1, $limit = self::DEFAULT_LIMIT)
     {
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $limit;
 
         $query = App::getOrm()->createQuery("
@@ -337,7 +336,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     public function getFollowing($page = 1, $limit = self::DEFAULT_LIMIT)
     {
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $limit;
 
         $query = App::getOrm()->createQuery("
@@ -386,8 +385,6 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -397,7 +394,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccount';
-        $metadata->setPrimaryTable(array('name' => 'twitter_accounts',));
+        $metadata->setPrimaryTable(array('name' => 'twitter_accounts'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -420,7 +417,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'nullable'   => false,
                  'columnName' => 'oauth_token',
                  'dpApi'      => false,
-                 'dpqlAccess' => false
+                 'dpqlAccess' => false,
             )
         );
         $metadata->mapField(
@@ -433,7 +430,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'nullable'   => false,
                  'columnName' => 'oauth_token_secret',
                  'dpApi'      => false,
-                 'dpqlAccess' => false
+                 'dpqlAccess' => false,
             )
         );
         $metadata->mapField(

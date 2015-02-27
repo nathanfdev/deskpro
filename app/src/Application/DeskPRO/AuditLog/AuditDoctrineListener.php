@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\AuditLog;
@@ -79,7 +77,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Disable the audit manager
+     * Disable the audit manager.
      */
     public function disable()
     {
@@ -87,7 +85,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Enable the audit manager
+     * Enable the audit manager.
      */
     public function enable()
     {
@@ -95,7 +93,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Check if the audit manager is enabled
+     * Check if the audit manager is enabled.
      */
     public function isEnabled()
     {
@@ -332,7 +330,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Flush logs on commit
+     * Flush logs on commit.
      */
     public function onPostCommit()
     {
@@ -341,6 +339,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
     /**
      * @param $value
+     *
      * @return string
      */
     private function _formatDataValue($value)
@@ -360,7 +359,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
             } elseif (is_array($value)) {
                 return print_r($value, true);
             } elseif (is_null($value)) {
-                return null;
+                return;
             } elseif (is_object($value)) {
                 return get_class($value);
             }

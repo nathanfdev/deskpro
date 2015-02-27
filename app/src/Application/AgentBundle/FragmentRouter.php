@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle;
@@ -37,7 +34,7 @@ namespace Application\AgentBundle;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * This generates JS hash router
+ * This generates JS hash router.
  */
 class FragmentRouter
 {

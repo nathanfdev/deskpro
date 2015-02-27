@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Translate\Translate;
 use Orb\Util\Numbers;
 
 /**
- * A custom field definition
+ * A custom field definition.
  *
  * @property int $display_order
  * @property CustomDefAbstract|null $parent
@@ -64,28 +63,28 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     protected $app = null;
 
     /**
-     * JS class to init
+     * JS class to init.
      *
      * @var string
      */
     protected $js_class = '';
 
     /**
-     * True if this field uses a custom template when rendering the form input
+     * True if this field uses a custom template when rendering the form input.
      *
      * @var string
      */
     protected $has_form_template = false;
 
     /**
-     * True i this field uses a custom template when rendering the form value for display
+     * True i this field uses a custom template when rendering the form value for display.
      *
      * @var string
      */
     protected $has_display_template = false;
 
     /**
-     * Field parent
+     * Field parent.
      *
      * MUST BE IMPLEMENT IN CHILD CLASS
      *
@@ -94,7 +93,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     //protected $parent = null;
 
     /**
-     * Field children
+     * Field children.
      *
      * MUST BE IMPLEMENT IN CHILD CLASS
      *
@@ -103,14 +102,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     //protected $children = null;
 
     /**
-     * The title
+     * The title.
      *
      * @var string
      */
     protected $title = '';
 
     /**
-     * The description
+     * The description.
      *
      * @var string
      */
@@ -127,8 +126,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     protected $handler_class = null;
 
     /**
-     * Options for the field
-     *
+     * Options for the field.
      */
     protected $options = array();
 
@@ -282,7 +280,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Add a child to this field
+     * Add a child to this field.
      *
      * @param CustomDefAbstract $def
      */
@@ -294,7 +292,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Remove a child field
+     * Remove a child field.
      *
      * @param CustomDefAbstract $def
      */
@@ -305,7 +303,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Remove a child based on the childs field id
+     * Remove a child based on the childs field id.
      *
      * @param int $def_id
      */
@@ -322,7 +320,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param  int               $def_id
+     * @param int $def_id
+     *
      * @return CustomDefAbstract
      */
     public function getChildById($def_id)
@@ -333,7 +332,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -422,7 +421,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * Get the value of an option, or a default value if none is set.
      *
      * @param  $name
-     * @param  null       $default
+     * @param null $default
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -459,7 +459,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Set a value of an option
+     * Set a value of an option.
      *
      * @param string $name
      * @param mixed  $value
@@ -479,41 +479,49 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * @param bool $isAgent
+     *
      * @return mixed
      */
     public function isRequired($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'required';
+
         return (bool) $this->getOption($option_name, false);
     }
 
     /**
      * @param bool $isAgent
+     *
      * @return mixed
      */
     public function getMinLength($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'min_length';
+
         return $this->getOption($option_name, 0);
     }
 
     /**
      * @param bool $isAgent
+     *
      * @return mixed
      */
     public function getMaxLength($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'max_length';
+
         return $this->getOption($option_name, 0);
     }
 
     /**
      * @param bool $isAgent
+     *
      * @return mixed
      */
     public function getRegex($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'regex';
+
         return $this->getOption($option_name, null);
     }
 
@@ -595,7 +603,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param  string $property
+     * @param string $property
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -612,7 +621,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param  string $property
+     * @param string $property
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)

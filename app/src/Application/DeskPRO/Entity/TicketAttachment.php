@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ticket attachments
- *
+ * Ticket attachments.
  */
 class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,7 +52,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     protected $ticket;
 
     /**
-     * Who created the attachment
+     * Who created the attachment.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -93,6 +91,34 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Set person.
+     *
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * Set blob data.
+     *
+     * @param Blob $blob
+     *
+     * @return $this
+     */
+    public function setBlob(Blob $blob)
+    {
+        $this->setModelField('blob', $blob);
+
+        return $this;
+    }
+
+    /**
      * @param $message
      */
     public function setMessage($message)
@@ -119,62 +145,9 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_note'));
         $metadata->mapField(array( 'fieldName' => 'is_inline', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_inline'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPerson()
-    {
-        return $this->person;
-    }
-
-    /**
-     * @return Blob
-     */
-    public function getBlob()
-    {
-        return $this->blob;
-    }
-
-    /**
-     * @return Ticket
-     */
-    public function getTicket()
-    {
-        return $this->ticket;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAgentNote()
-    {
-        return $this->is_agent_note;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isInline()
-    {
-        return $this->is_inline;
-    }
-
-    /**
-     * @return TicketMessage
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function setPerson(Person $person)
-    {
-        $this->setModelField('person', $person);
+        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

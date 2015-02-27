@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -69,7 +66,6 @@ class HardDeleteTickets extends AbstractJob
         ", array($date_cut));
 
         foreach ($ticket_ids as $ticket_id) {
-
             App::getDb()->beginTransaction();
 
             try {
@@ -84,7 +80,7 @@ class HardDeleteTickets extends AbstractJob
         }
 
         if ($ticket_ids) {
-            $this->logStatus("Removed " . count($ticket_ids) . " old soft-deleted tickets");
+            $this->logStatus("Removed ".count($ticket_ids)." old soft-deleted tickets");
         }
     }
 }

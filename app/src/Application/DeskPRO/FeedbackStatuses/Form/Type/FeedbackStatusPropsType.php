@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\FeedbackStatuses\Form\Type;
@@ -44,7 +42,7 @@ class FeedbackStatusPropsType extends AbstractType
         $builder->add('title', 'text', array('required' => true));
         $builder->add('status_type', 'choice', array(
             'choices'   => array('active' => 'active', 'closed' => 'closed'),
-            'required'  => true,
+            'required'                    => true,
         ));
     }
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Sets the ticket urgency to a specifc value
+ * Sets the ticket urgency to a specifc value.
  */
 class UrgencySetAction extends AbstractAction implements PermissionableAction
 {
@@ -50,13 +47,12 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
 
     public function __construct($num, $allow_lower = null)
     {
-        $this->num = $num;
+        $this->num         = $num;
         $this->allow_lower = $allow_lower;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -66,7 +62,6 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
             $ticket['urgency'] = $this->num;
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -80,9 +75,8 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -93,13 +87,12 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'urgency', 'urgency' => $this->num)
+            array('action' => 'urgency', 'urgency' => $this->num),
         );
     }
 
-
     /**
-     * Get the number modifier
+     * Get the number modifier.
      *
      * @return int
      */
@@ -108,16 +101,15 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         return $this->num;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string

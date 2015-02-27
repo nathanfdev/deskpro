@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -67,7 +65,7 @@ class SnippetFormatter implements PersonContextInterface
 
     public function getVars(Ticket $ticket)
     {
-        $data = $this->extra_vars;
+        $data           = $this->extra_vars;
         $data['ticket'] = $ticket->toApiData();
 
         if (isset($data['ticket']['person'])) {

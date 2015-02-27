@@ -31,9 +31,9 @@ class AgentDataServiceMock
                 return $agents[$id];
             }
             if ($id > 100) {
-                return null;
+                return;
             }
-            $agents[$id]= new Person();
+            $agents[$id] = new Person();
             $agents[$id]->id = $id;
             $agents[$id]->is_agent = true;
             $agents[$id]->name = "Agent{$id}_FN Agent{$id}_LN";
@@ -47,9 +47,9 @@ class AgentDataServiceMock
                 return $teams[$id];
             }
             if ($id > 100) {
-                return null;
+                return;
             }
-            $teams[$id]= new AgentTeam();
+            $teams[$id] = new AgentTeam();
             $teams[$id]->id = $id;
             $teams[$id]->name = "AgentTeam{$id}";
 

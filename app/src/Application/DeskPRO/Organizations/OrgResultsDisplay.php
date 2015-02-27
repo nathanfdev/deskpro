@@ -26,11 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Organizations
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\Organizations;
 
 use Application\DeskPRO\App;
@@ -85,15 +83,13 @@ class OrgResultsDisplay
      */
     public function __construct(array $orgs)
     {
-        $this->orgs = $orgs;
+        $this->orgs       = $orgs;
         $this->orgs_count = count($orgs);
-        $this->org_ids = Arrays::flattenToIndex($this->orgs, 'id');
-
+        $this->org_ids    = Arrays::flattenToIndex($this->orgs, 'id');
 
         $this->em = App::getOrm();
         $this->db = $this->em->getConnection();
     }
-
 
     /**
      * @return int
@@ -103,7 +99,6 @@ class OrgResultsDisplay
         return $this->orgs_count;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Organization[]
      */
@@ -112,13 +107,14 @@ class OrgResultsDisplay
         return $this->orgs;
     }
 
-
     /**
      * @return array
      */
     public function getAllLabels()
     {
-        if ($this->all_labels !== null) return $this->all_labels;
+        if ($this->all_labels !== null) {
+            return $this->all_labels;
+        }
 
         if (!$this->orgs_count) {
             $this->all_labels = array();
@@ -137,11 +133,11 @@ class OrgResultsDisplay
         return $this->all_labels;
     }
 
-
     /**
-     * Get an array of labels applied to an org
+     * Get an array of labels applied to an org.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return array
      */
     public function getOrgLabels(Organization $org)
@@ -151,11 +147,11 @@ class OrgResultsDisplay
         return empty($this->all_labels[$org->id]) ? array() : $this->all_labels[$org->id];
     }
 
-
     /**
-     * Check if an org has labels
+     * Check if an org has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return bool
      */
     public function hasOrgLabels(Organization $org)
@@ -165,13 +161,14 @@ class OrgResultsDisplay
         return !empty($this->all_labels[$org->id]);
     }
 
-
     /**
      * @return array
      */
     public function getAllOrgMemberCounts()
     {
-        if ($this->org_member_counts !== null) return $this->org_member_counts;
+        if ($this->org_member_counts !== null) {
+            return $this->org_member_counts;
+        }
 
         $this->org_member_counts = $this->db->fetchAllKeyValue('
             SELECT organization_id, COUNT(*)
@@ -183,11 +180,11 @@ class OrgResultsDisplay
         return $this->org_member_counts;
     }
 
-
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return int
      */
     public function getOrgMemberCount(Organization $org)
@@ -206,7 +203,9 @@ class OrgResultsDisplay
 
     public function getAllFieldsData()
     {
-        if ($this->all_fields_data !== null) return $this->all_fields_data;
+        if ($this->all_fields_data !== null) {
+            return $this->all_fields_data;
+        }
         $data = $this->em->createQuery("
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataOrganization AS d

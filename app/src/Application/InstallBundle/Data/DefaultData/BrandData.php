@@ -26,15 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Data\DefaultData;
-
-
 
 class BrandData extends AbstractDefaultData
 {
@@ -43,29 +38,25 @@ class BrandData extends AbstractDefaultData
         $this->installDefaultBrand();
     }
 
-
     public function runInstall()
     {
         $this->installDefaultBrand();
     }
 
-
     public function runReset()
     {
     }
 
-
     public function runSync()
     {
     }
-
 
     private function installDefaultBrand()
     {
         $num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
 
         if ($num_brands > 0) {
-            return null;
+            return;
         }
 
         $this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");

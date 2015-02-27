@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form;
@@ -39,7 +36,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * The new ticket form
+ * The new ticket form.
  */
 class NewFeedbackType extends AbstractType
 {
@@ -49,8 +46,8 @@ class NewFeedbackType extends AbstractType
         $builder->add('content', 'textarea');
 
         $builder->add('category_id', 'choice', array(
-            'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames(' > ', false),
-            'required' => false // needed for empty_value to appear
+            'choices'  => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames(' > ', false),
+            'required' => false, // needed for empty_value to appear
         ));
 
         $builder->add('person_name', 'text', array('required' => false));

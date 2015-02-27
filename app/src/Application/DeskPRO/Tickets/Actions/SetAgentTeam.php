@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Sets the assigned agent team
+ * Sets the assigned agent team.
  *
  * @option int agent_team_id
  */
@@ -57,13 +56,14 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
         return $options;
     }
 
-
     /**
      * @param $set_team_id
-     * @param  ExecutorContextInterface                   $context
-     * @return \Application\DeskPRO\Entity\AgentTeam|null
+     * @param ExecutorContextInterface $context
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\AgentTeam|null
+     *
      */
     private function resolveTeam($set_team_id, ExecutorContextInterface $context)
     {
@@ -76,7 +76,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
             $teams = array_values($agent->getHelper('Agent')->getTeams());
 
             if (!count($teams)) {
-                return null;
+                return;
             }
 
             $team = $teams[0];
@@ -91,7 +91,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 
         return $team;
     }
-
 
     /**
      * {@inheritDoc}
@@ -108,7 +107,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 
         $ticket->agent_team = $team;
     }
-
 
     /**
      * {@inheritDoc}
@@ -133,7 +131,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -143,7 +140,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
             return array('assign_team');
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -36,7 +34,7 @@ namespace Application\DeskPRO\Languages;
 use SimpleXMLElement;
 
 /**
- * A language pack file is simple XML that looks like this:
+ * A language pack file is simple XML that looks like this:.
  *
  * <pack>
  *     <language id="system_name">
@@ -68,15 +66,18 @@ class LanguagePackFile
 
     public function __construct(\SimpleXMLElement $xml)
     {
-        $this->xml = $xml;
+        $this->xml  = $xml;
         $this->pack = new LanguagePack();
     }
 
     /**
      * @static
-     * @param  string                                          $source
-     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
+     * @param string $source
+     *
      * @throws \RuntimeException
+     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
      */
     public static function newFromString($source)
     {
@@ -88,12 +89,14 @@ class LanguagePackFile
         return new self($xml);
     }
 
-
     /**
      * @static
-     * @param  string                                          $source
-     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
+     * @param string $source
+     *
      * @throws \RuntimeException
+     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
      */
     public static function newFromFile($path)
     {
@@ -106,7 +109,6 @@ class LanguagePackFile
         return self::newFromString($source);
     }
 
-
     /**
      * @return string
      */
@@ -116,11 +118,10 @@ class LanguagePackFile
             return $this->pack->sys_name;
         }
 
-        $this->pack->sys_name = (string)$this->xml->language['id'];
+        $this->pack->sys_name = (string) $this->xml->language['id'];
 
         return $this->pack->sys_name;
     }
-
 
     /**
      * @return string
@@ -131,11 +132,10 @@ class LanguagePackFile
             return $this->pack->title;
         }
 
-        $this->pack->title = (string)$this->xml->language->title;
+        $this->pack->title = (string) $this->xml->language->title;
 
         return $this->pack->title;
     }
-
 
     /**
      * @return string
@@ -146,11 +146,10 @@ class LanguagePackFile
             return $this->pack->lang_code;
         }
 
-        $this->pack->lang_code = (string)$this->xml->language->lang;
+        $this->pack->lang_code = (string) $this->xml->language->lang;
 
         return $this->pack->lang_code;
     }
-
 
     /**
      * @return string
@@ -161,11 +160,10 @@ class LanguagePackFile
             return $this->pack->locale;
         }
 
-        $this->pack->locale = (string)$this->xml->language->locale;
+        $this->pack->locale = (string) $this->xml->language->locale;
 
         return $this->pack->locale;
     }
-
 
     /**
      * @return string[]
@@ -179,8 +177,8 @@ class LanguagePackFile
         $this->pack->phrases = array();
 
         foreach ($this->xml->phrases->phrase as $node) {
-            $id = (string)$node['id'];
-            $text = (string)$node;
+            $id   = (string) $node['id'];
+            $text = (string) $node;
 
             $this->pack->phrases[$id] = $text;
         }

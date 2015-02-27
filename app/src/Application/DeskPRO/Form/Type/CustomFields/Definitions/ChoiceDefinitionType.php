@@ -40,12 +40,10 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
     {
         // if we need to define all properties, not only children
         if (!$options['children_only']) {
-
             parent::buildForm($builder, $options);
             $builder->get('options')
                 ->add('multiple', 'checkbox')
                 ->add('expanded', 'checkbox');
-
         } else {
             // called in parent
             $builder->addEventSubscriber($this);
@@ -58,18 +56,18 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 
         $builder
             ->add('_children', new DpCategoryBuilderType(), array(
-                'type' => new SimpleDefinitionType(),
-                'label' => false,
-                'allow_add' => true,
+                'type'         => new SimpleDefinitionType(),
+                'label'        => false,
+                'allow_add'    => true,
                 'allow_delete' => true,
-                'required' => false,
-                'data' => $children ?: new ArrayCollection(),
-                'mapped' => false,
-                'persister' => $options['persister'],
-                'options' => array(
-                    'label' => false,
+                'required'     => false,
+                'data'         => $children ?: new ArrayCollection(),
+                'mapped'       => false,
+                'persister'    => $options['persister'],
+                'options'      => array(
+                    'label'   => false,
                     'context' => $options['context'],
-                    'parent' => $options['data'],
+                    'parent'  => $options['data'],
                 ),
             ))
         ;
@@ -83,7 +81,7 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
         parent::setDefaultOptions($resolver);
         $resolver
             ->setDefaults(array(
-                'children_only' => false,
+                'children_only'       => false,
                 'children_collection' => null,
             ))
             ->setOptional(array(
@@ -111,6 +109,6 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
-        $view->vars['rendered_data'] = $form->get('_children')->count() . ' Options';
+        $view->vars['rendered_data'] = $form->get('_children')->count().' Options';
     }
 }

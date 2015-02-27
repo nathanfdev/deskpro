@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -71,7 +68,9 @@ class Build1420541683 extends AbstractBuild
 
         if ($insert_perms) {
             $super_ug_ids = $this->container->getDb()->fetchAllCol("SELECT id FROM usergroups WHERE sys_name IN ('agent_all_perms', 'agent_all_safe_perms')");
-            if (!$super_ug_ids) $super_ug_ids = array(0);
+            if (!$super_ug_ids) {
+                $super_ug_ids = array(0);
+            }
 
             $all_perm_agents = $this->container->getDb()->fetchAllCol("
                 SELECT people.id
@@ -79,7 +78,9 @@ class Build1420541683 extends AbstractBuild
                 LEFT JOIN person2usergroups ON (person2usergroups.person_id = people.id)
                 WHERE person2usergroups.usergroup_id IN (?)
             ", array($super_ug_ids), array(Connection::PARAM_INT_ARRAY));
-            if (!$all_perm_agents) $all_perm_agents = array(0);
+            if (!$all_perm_agents) {
+                $all_perm_agents = array(0);
+            }
 
             $agent_ids = $this->container->getDb()->fetchAllCol("
                 SELECT people.id
@@ -94,7 +95,7 @@ class Build1420541683 extends AbstractBuild
                     $batch[] = array(
                         'person_id' => $aid,
                         'name'      => $perm,
-                        'value'     => 1
+                        'value'     => 1,
                     );
                 }
             }

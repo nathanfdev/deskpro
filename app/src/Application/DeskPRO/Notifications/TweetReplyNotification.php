@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Notifications;
@@ -52,7 +49,7 @@ class TweetReplyNotification extends AbstractAgentNotification
     public function __construct(TwitterAccountStatus $account_status, TwitterAccountStatus $reply_account_status)
     {
         parent::__construct();
-        $this->account_status = $account_status;
+        $this->account_status       = $account_status;
         $this->reply_account_status = $reply_account_status;
     }
 
@@ -77,12 +74,12 @@ class TweetReplyNotification extends AbstractAgentNotification
     public function send()
     {
         $this->sendBrowserNotifications('AgentBundle:TwitterStatus:notify-row-reply.html.twig', array(
-            'account_status' => $this->account_status,
+            'account_status'       => $this->account_status,
             'reply_account_status' => $this->reply_account_status,
-            'notify_data' => array('notify_type' => 'twitter')
+            'notify_data'          => array('notify_type' => 'twitter'),
         ));
         $this->sendEmailNotifications('DeskPRO:emails_agent:tweet-reply.html.twig', array(
-            'account_status' => $this->account_status,
+            'account_status'       => $this->account_status,
             'reply_account_status' => $this->reply_account_status,
         ));
     }

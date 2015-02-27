@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log;
@@ -57,7 +54,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
         self::MESSAGE,
         self::MESSAGE_LINE,
         self::DATETIME,
-        self::SESSION_NAME
+        self::SESSION_NAME,
     );
 
     /**
@@ -94,15 +91,15 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Empty init method for children
+     * Empty init method for children.
      */
     protected function init()
     {
-
     }
 
     /**
-     * Get the numeric priority
+     * Get the numeric priority.
+     *
      * @return int
      */
     public function getPriority()
@@ -111,7 +108,8 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the priority name
+     * Get the priority name.
+     *
      * @return string
      */
     public function getPriorityName()
@@ -120,7 +118,8 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the log message
+     * Get the log message.
+     *
      * @return string
      */
     public function getMessage()
@@ -142,7 +141,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the time of the event
+     * Get the time of the event.
      *
      * @return DateTime
      */
@@ -152,7 +151,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * Get the session name
+     * Get the session name.
      *
      * @return string
      */

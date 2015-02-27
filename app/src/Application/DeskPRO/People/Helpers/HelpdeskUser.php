@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\HttpFoundation\Session;
 
 /**
- * Helper added to People who are using the user interface
+ * Helper added to People who are using the user interface.
  */
 class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
 {
@@ -54,7 +53,7 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
 
     public function __construct(Entity\Person $person, array $options)
     {
-        $this->person = $person;
+        $this->person  = $person;
         $this->session = $options['session'];
         $this->visitor = $options['visitor'];
     }
@@ -67,15 +66,17 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
     public function getShortCallableNames()
     {
         return array(
-            'HelpdeskUser' => '_getThis',
+            'HelpdeskUser'    => '_getThis',
             'getHelpdeskUser' => '_getThis',
-            'getTicketCount' => 'getTicketCount',
+            'getTicketCount'  => 'getTicketCount',
         );
     }
 
     public function getTicketCount()
     {
-        if ($this->ticket_count !== null) return $this->ticket_count;
+        if ($this->ticket_count !== null) {
+            return $this->ticket_count;
+        }
 
         $this->ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
 

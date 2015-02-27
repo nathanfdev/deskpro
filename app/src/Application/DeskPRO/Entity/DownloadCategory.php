@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Feedback categories
- *
+ * Feedback categories.
  */
 class DownloadCategory extends CategoryAbstract
 {
@@ -52,7 +50,7 @@ class DownloadCategory extends CategoryAbstract
     protected $children;
 
     /**
-     * ArrayCollection
+     * ArrayCollection.
      */
     protected $downloads;
 
@@ -112,7 +110,7 @@ class DownloadCategory extends CategoryAbstract
             array(
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
             ), 'dpApi'      => true,
@@ -126,10 +124,10 @@ class DownloadCategory extends CategoryAbstract
         );
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                'cascade'   => array('persist', 'merge'), 'joinTable' => array(
+                'fieldName'             => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'cascade'               => array('persist', 'merge'), 'joinTable' => array(
                 'name'                  => 'download_category2usergroup', 'schema' => null, 'joinColumns' => array(
-                    0 => array(
+                    0                   => array(
                         'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),

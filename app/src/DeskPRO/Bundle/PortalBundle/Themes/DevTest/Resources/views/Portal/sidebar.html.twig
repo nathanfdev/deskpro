@@ -1,0 +1,44 @@
+<div class="row">
+    {{ page.user_sidebar()|raw }}
+</div>
+
+<div class="row">
+    {{ page.get_in_touch()|raw }}
+</div>
+
+<div class="row">
+    <h1>KB Articles</h1>
+    {{ page.knowledgebase_articles_small({category: 2})|raw }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>KB Cats</h1>
+    {{ page.knowledgebase_list()|raw }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>News Cats</h1>
+    {{ page.news_posts_list()|raw }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>Download Cats</h1>
+    {{ page.downloads_list()|raw }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>News by Date</h1>
+    {{ page.news_date_list()|raw }}
+</div>
+
+<div class="row">
+    <h1>Satisfaction</h1>
+    {{ page.statisfaction_stats_list()|raw }}
+    <hr/>
+</div>
+
+{{ page.agents_online_list()|raw }}

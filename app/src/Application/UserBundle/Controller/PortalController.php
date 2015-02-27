@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage UserBundle
  * @category Controllers
  */
 
@@ -113,8 +111,8 @@ class PortalController extends AbstractController
 
     public function saveRatingAction($object_type, $object_id)
     {
-        $entity_name = 'DeskPRO:' . ucfirst($object_type);
-        
+        $entity_name = 'DeskPRO:'.ucfirst($object_type);
+
         $perm_name = false;
         switch ($entity_name) {
             case 'DeskPRO:Article':  $perm_name = 'articles.rate'; break;
@@ -123,7 +121,7 @@ class PortalController extends AbstractController
             case 'DeskPRO:Feedback': $perm_name = 'feedback.rate'; break;
             default: throw $this->createNotFoundException();
         }
-        
+
         $content_object = $this->em->find($entity_name, $object_id);
 
         if (!$content_object) {
@@ -161,7 +159,7 @@ class PortalController extends AbstractController
 
             if ($preticket) {
                 if ($rating < 1) {
-                    $unsolved = $preticket->unsolved_content;
+                    $unsolved   = $preticket->unsolved_content;
                     $unsolved[] = array($object_type, $object_id);
 
                     $preticket->unsolved_content = $unsolved;
@@ -186,24 +184,24 @@ class PortalController extends AbstractController
         if ($this->person->isGuest()) {
             $return_url = $this->generateUrl('user_newcomment_finishlogin', array(
                 'comment_type' => $comment_type,
-                'comment_id' => $comment_id
+                'comment_id'   => $comment_id,
             ));
 
             return $this->redirectRoute('user_login', array('return' => $return_url));
         }
 
         switch ($comment_type) {
-            case 'article': $entity = 'DeskPRO:ArticleComment'; break;
-            case 'news': $entity = 'DeskPRO:NewsComment'; break;
+            case 'article': $entity  = 'DeskPRO:ArticleComment'; break;
+            case 'news': $entity     = 'DeskPRO:NewsComment'; break;
             case 'download': $entity = 'DeskPRO:DownloadComment'; break;
             case 'feedback': $entity = 'DeskPRO:FeedbackComment'; break;
             default:
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         $comment = $this->em->find($entity, $comment_id);
         if (!$comment) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         $comment->status = 'validating';

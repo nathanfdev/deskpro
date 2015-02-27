@@ -12,7 +12,7 @@ class CheckDayOfWeekTest extends \DpUnitTestCase
     public function testInSingleDow()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         // Monday
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
@@ -27,15 +27,15 @@ class CheckDayOfWeekTest extends \DpUnitTestCase
     public function testInMultDow()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         // Wednesday
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-12 15:00:00', new \DateTimeZone('UTC'));
 
-        $check = new CheckDayOfWeek('is', array('days' => array(1,3,7), 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckDayOfWeek('is', array('days' => array(1, 3, 7), 'test_date' => $now, 'tz' => 'UTC'));
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckDayOfWeek('is', array('days' => array(1,7), 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckDayOfWeek('is', array('days' => array(1, 7), 'test_date' => $now, 'tz' => 'UTC'));
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 }

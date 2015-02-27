@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -37,11 +34,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\Actions\SetDepartment;
+use Application\DeskPRO\Tickets\Actions\SetEmailAccount;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckEmailAccount;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\DeskPRO\Tickets\Actions\SetEmailAccount;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\InstallBundle\Data\DefaultData\TriggerData;
 use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerActionConverter;
@@ -131,12 +128,12 @@ class Build1400056733 extends AbstractBuild
             }
 
             $old_dep = $old_deps[$dep->id];
-            $map_id = $old_dep['email_gateway_id'];
+            $map_id  = $old_dep['email_gateway_id'];
             if (!$map_id || !isset($email_accounts[$map_id])) {
                 continue;
             }
 
-            $trigger = new TicketTrigger();
+            $trigger                = new TicketTrigger();
             $trigger->department    = $dep;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('api', 'web');
@@ -153,7 +150,7 @@ class Build1400056733 extends AbstractBuild
             $actions_set = new TriggerActions();
             $actions_set->addAction(new SetEmailAccount(array('email_account_id' => $map_id)));
 
-            $trigger->terms = $term_sets;
+            $trigger->terms   = $term_sets;
             $trigger->actions = $actions_set;
 
             $em->persist($trigger);
@@ -177,12 +174,12 @@ class Build1400056733 extends AbstractBuild
             }
 
             $old_acc = $old_accounts[$acc->id];
-            $map_id = $old_acc['department_id'];
+            $map_id  = $old_acc['department_id'];
             if (!$map_id || !isset($deps[$map_id])) {
                 continue;
             }
 
-            $trigger = new TicketTrigger();
+            $trigger                = new TicketTrigger();
             $trigger->email_account = $acc;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('email');
@@ -199,7 +196,7 @@ class Build1400056733 extends AbstractBuild
             $actions_set = new TriggerActions();
             $actions_set->addAction(new SetDepartment(array('department_id' => $map_id)));
 
-            $trigger->terms = $term_sets;
+            $trigger->terms   = $term_sets;
             $trigger->actions = $actions_set;
 
             $em->persist($trigger);
@@ -211,8 +208,8 @@ class Build1400056733 extends AbstractBuild
         #------------------------------
 
         $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
-        $mappings = array(
-            'gateway_address_to_email_account' => $gateway_addr_map
+        $mappings         = array(
+            'gateway_address_to_email_account' => $gateway_addr_map,
         );
 
         $this->term_converter   = new TriggerTermConverter($mappings);
@@ -241,25 +238,24 @@ class Build1400056733 extends AbstractBuild
                 $this->out("-- Skipped");
             }
         }
-
     }
 
-
     /**
-     * @param  array              $old_trigger
+     * @param array $old_trigger
+     *
      * @return TicketTrigger|null
      */
     private function processTrigger(array $old_trigger)
     {
         // We dont do escalations or slas in this task
         if (strpos($old_trigger['event_trigger'], 'time') !== false || strpos($old_trigger['event_trigger'], 'sla') !== false) {
-            return null;
+            return;
         }
 
         // Default triggers just turn on depending on the status of the old default triggers
         if ($old_trigger['sys_name']) {
             if (!$old_trigger['is_enabled']) {
-                return null;
+                return;
             }
             switch ($old_trigger['sys_name']) {
                 case 'email_validation.email':
@@ -282,7 +278,7 @@ class Build1400056733 extends AbstractBuild
                     break;
             }
 
-            return null;
+            return;
         }
 
         $old_trigger['terms']     = @unserialize($old_trigger['terms']) ?: array();
@@ -304,23 +300,23 @@ class Build1400056733 extends AbstractBuild
         switch ($old_trigger['event_trigger']) {
             case 'new.email.user':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode = array('email');
+                $trigger->by_user_mode  = array('email');
                 break;
             case 'new.web.user':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode = array('portal', 'widget', 'form');
+                $trigger->by_user_mode  = array('portal', 'widget', 'form');
                 break;
             case 'new.web.user.portal':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode = array('portal');
+                $trigger->by_user_mode  = array('portal');
                 break;
             case 'new.web.user.embed':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode = array('form');
+                $trigger->by_user_mode  = array('form');
                 break;
             case 'new.web.user.widget':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode = array('widget');
+                $trigger->by_user_mode  = array('widget');
                 break;
             case 'new.email.agent':
                 $trigger->event_trigger = 'newticket';
@@ -341,7 +337,7 @@ class Build1400056733 extends AbstractBuild
                 break;
             case 'update.user':
                 $trigger->event_trigger = $replytype ? 'newreply' : 'update';
-                $trigger->by_user_mode = array('portal', 'email', 'api');
+                $trigger->by_user_mode  = array('portal', 'email', 'api');
                 break;
             case 'update.api':
                 $trigger->event_trigger = $replytype ? 'newreply' : 'update';
@@ -350,7 +346,7 @@ class Build1400056733 extends AbstractBuild
                 break;
             case 'new':
                 // 'new' is used by sla triggers
-                return null;
+                return;
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown event trigger: {$old_trigger['event_trigger']}");
@@ -441,19 +437,19 @@ class Build1400056733 extends AbstractBuild
         if (!count($actions_set)) {
             $this->out("-- Skipping no-action trigger");
 
-            return null;
+            return;
         }
 
         #------------------------------
         # Create trigger object
         #------------------------------
 
-        $trigger->title      = $old_trigger['title'] ?: 'Trigger ' . $old_trigger['id'];
+        $trigger->title      = $old_trigger['title'] ?: 'Trigger '.$old_trigger['id'];
         if ($is_incomplete) {
             $trigger->title .= ' (REQUIRES REVIEW)';
         }
-        $trigger->is_enabled = (bool)$old_trigger['is_enabled'] && !$is_incomplete;
-        $trigger->run_order  = (int)$old_trigger['run_order'];
+        $trigger->is_enabled = (bool) $old_trigger['is_enabled'] && !$is_incomplete;
+        $trigger->run_order  = (int) $old_trigger['run_order'];
         $trigger->terms      = $term_sets;
         $trigger->actions    = $actions_set;
 

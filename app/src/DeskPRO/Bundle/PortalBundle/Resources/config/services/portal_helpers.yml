@@ -1,0 +1,16 @@
+# Helpers we use in portal controllers
+services:
+
+  tabs_helper:
+      class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper
+      arguments: [@brand_stack, @security.authorization_checker]
+
+
+  ratings_helper:
+      class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
+      arguments: [@doctrine.orm.default_entity_manager, @request_stack]
+
+
+  subscriptions_helper:
+      class: DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper
+      arguments: [@doctrine.orm.default_entity_manager]

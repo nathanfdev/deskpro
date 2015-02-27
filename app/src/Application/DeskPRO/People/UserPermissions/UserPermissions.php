@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -83,7 +82,6 @@ class UserPermissions
         $this->news     = new NewsPermissions();
     }
 
-
     /**
      * @return array
      */
@@ -93,30 +91,30 @@ class UserPermissions
         foreach ($this->getTypes() as $prop) {
             $arr[$prop] = array();
             foreach ($this->$prop->getNames() as $name) {
-                $arr[$prop][$name] = (bool)$this->$prop->$name;
+                $arr[$prop][$name] = (bool) $this->$prop->$name;
             }
         }
 
         return $arr;
     }
 
-
     /**
-     * Reads perms in from an array
+     * Reads perms in from an array.
      *
      * @param array $perms
      */
     public function fromArray(array $perms)
     {
         foreach ($this->getTypes() as $prop) {
-            if (!isset($perms[$prop])) continue;
+            if (!isset($perms[$prop])) {
+                continue;
+            }
 
             foreach ($this->$prop->getNames() as $name) {
-                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
+                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool) $perms[$prop][$name]) : false;
             }
         }
     }
-
 
     /**
      * @return array

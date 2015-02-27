@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -42,7 +39,7 @@ use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 
 /**
- * Adds participants
+ * Adds participants.
  */
 class AddCcAction extends AbstractAction
 {
@@ -75,7 +72,6 @@ class AddCcAction extends AbstractAction
         $this->add_emails = $valid;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      */
@@ -97,9 +93,9 @@ class AddCcAction extends AbstractAction
                 }
                 $person_processor = new PersonFromEmailProcessor();
 
-                $eml = new EmailAddress();
+                $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person = $person_processor->createPerson($eml, false);
+                $person     = $person_processor->createPerson($eml, false);
 
                 if ($person) {
                     $this->add_people[$person->getId()] = $person;
@@ -110,9 +106,8 @@ class AddCcAction extends AbstractAction
         return $this->add_people;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -124,9 +119,8 @@ class AddCcAction extends AbstractAction
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -136,14 +130,13 @@ class AddCcAction extends AbstractAction
 
         foreach ($this->getPeople() as $pid => $person) {
             $actions[] = array(
-                'action' => 'add_participant',
-                'person_id' => $pid
+                'action'    => 'add_participant',
+                'person_id' => $pid,
             );
         }
 
         return $actions;
     }
-
 
     /**
      * @return string[]
@@ -153,9 +146,9 @@ class AddCcAction extends AbstractAction
         return $this->add_emails;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -169,7 +162,6 @@ class AddCcAction extends AbstractAction
         return $new;
     }
 
-
     /**
      * @return string
      */
@@ -179,6 +171,6 @@ class AddCcAction extends AbstractAction
             return '';
         }
 
-        return "CC users: " . implode(', ', $this->add_emails);
+        return "CC users: ".implode(', ', $this->add_emails);
     }
 }

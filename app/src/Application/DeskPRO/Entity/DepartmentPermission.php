@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,28 +38,27 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Stores who has access to departments
- *
+ * Stores who has access to departments.
  */
 class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
-     * Name of the "full access" permission
+     * Name of the "full access" permission.
      */
     const FULL = 'full';
 
     /**
-     * Name of the "assign" permission
+     * Name of the "assign" permission.
      */
     const ASSIGN = 'assign';
 
     /**
-     * name of the "tickets" app
+     * name of the "tickets" app.
      */
     const APP_TICKETS = 'tickets';
 
     /**
-     * name of the "chat" app
+     * name of the "chat" app.
      */
     const APP_CHAT = 'chat';
 
@@ -93,14 +91,14 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     protected $app;
 
     /**
-     * The name of the permission
+     * The name of the permission.
      *
      * @var string
      */
     protected $name = null;
 
     /**
-     * Any numeric number (ex filesize, flag)
+     * Any numeric number (ex filesize, flag).
      *
      * @var integer
      */
@@ -133,7 +131,7 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * A name that identifies this permission (eg could be used as an map key)
+     * A name that identifies this permission (eg could be used as an map key).
      *
      * @return string
      */
@@ -165,8 +163,8 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
         $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'departmentPermissions', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade' ))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'departmentPermissions', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade' ))));
     }
 }

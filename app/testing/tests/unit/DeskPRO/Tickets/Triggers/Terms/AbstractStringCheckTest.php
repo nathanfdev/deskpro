@@ -29,14 +29,15 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
 
     public function runBefore()
     {
-        $this->ticket1 = $this->createTicket(1, $this->getString1());
-        $this->ticket2 = $this->createTicket(2, $this->getString2());
+        $this->ticket1       = $this->createTicket(1, $this->getString1());
+        $this->ticket2       = $this->createTicket(2, $this->getString2());
         $this->exec_context1 = $this->createExecutorContext($this->ticket1);
         $this->exec_context2 = $this->createExecutorContext($this->ticket2);
     }
 
     /**
-     * @param  Ticket          $ticket
+     * @param Ticket $ticket
+     *
      * @return ExecutorContext
      */
     public function createExecutorContext(Ticket $ticket)
@@ -61,15 +62,17 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
     }
 
     /**
-     * @param  int    $id
-     * @param  string $test_string
+     * @param int    $id
+     * @param string $test_string
+     *
      * @return Ticket
      */
     abstract public function createTicket($id, $test_string);
 
     /**
-     * @param  string               $op
-     * @param  array                $options
+     * @param string $op
+     * @param array  $options
+     *
      * @return TriggerTermInterface
      */
     protected function createChecker($op, array $options)
@@ -88,13 +91,15 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
     }
 
     /**
-     * The term checker class
+     * The term checker class.
+     *
      * @return string
      */
     abstract protected function getCheckClass();
 
     /**
-     * The option key to supply IDs in
+     * The option key to supply IDs in.
+     *
      * @return string
      */
     abstract protected function getCheckClassOptionKey();
@@ -268,7 +273,7 @@ abstract class AbstractStringCheckTest extends \DpUnitTestCase
     public function testIsRegexWithAnchorStart()
     {
         $GLOBALS['begin'] = true;
-        $check = $this->createChecker('is_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'/'));
+        $check            = $this->createChecker('is_regex', array('%OPT%' => '/^'.preg_quote($this->getString1(), '/').'/'));
         $this->assertTrue($check->isTriggerMatch($this->ticket1, $this->exec_context1));
         unset($GLOBALS['begin']);
     }

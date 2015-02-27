@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -37,7 +35,7 @@ use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
- * Fetches mail from a pop3 server
+ * Fetches mail from a pop3 server.
  */
 class Pop3 extends AbstractFetcher
 {
@@ -88,7 +86,7 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -193,7 +191,7 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Get a list of message IDs
+     * Get a list of message IDs.
      */
     protected function _initMessageList($reload = false)
     {
@@ -277,7 +275,7 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Reads the next message in the inbox
+     * Reads the next message in the inbox.
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
@@ -293,7 +291,7 @@ class Pop3 extends AbstractFetcher
 
         $next = array_shift($this->message_list);
         if (!$next) {
-            return null;
+            return;
         }
 
         $message_size = $next['size'];
@@ -423,10 +421,11 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Tests the connection and returns the number of messages on success
+     * Tests the connection and returns the number of messages on success.
      *
-     * @return bool
      * @throws \Exception
+     * @return bool
+     *
      */
     public function test()
     {

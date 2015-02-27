@@ -32,8 +32,8 @@ use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Elastica\Filter;
 use Elastica\Query;
-use Orb\Util\Arrays;
 use Elastica\Util as ElasticaUtil;
+use Orb\Util\Arrays;
 
 class UserSearch implements UserSearchInterface
 {
@@ -49,22 +49,21 @@ class UserSearch implements UserSearchInterface
      */
     private $transformer;
 
-
     /**
      * @param \Elastica\Index            $index
      * @param ElasticaResultsTransformer $transformer
      */
     public function __construct(\Elastica\Index $index, ElasticaResultsTransformer $transformer)
     {
-        $this->index = $index;
+        $this->index       = $index;
         $this->transformer = $transformer;
     }
 
-
     /**
-     * @param  SearchContextInterface $context
-     * @param  string                 $query
-     * @param  array                  $options
+     * @param SearchContextInterface $context
+     * @param string                 $query
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
@@ -139,9 +138,9 @@ class UserSearch implements UserSearchInterface
         }
 
         $bool_query = new Query\Bool();
-        $qs = $this->getQueryString($query);
+        $qs         = $this->getQueryString($query);
         $qs->setDefaultField('_all');
-        $qs->setFields(array('title', 'labels', 'content'));
+        $qs->setFields(array('title', 'labels', 'content', 'messages'));
         $qs->setDefaultOperator('AND');
         $bool_query->addMust($qs);
 
@@ -152,17 +151,17 @@ class UserSearch implements UserSearchInterface
         $bool_query->addShould($sticky_match);
 
         $filtered_query = new Query\Filtered($qs, $filter);
-        $res = $search->search($filtered_query, array('limit' => 500));
-        $objects = $this->transformer->transform($res->getResults());
+        $res            = $search->search($filtered_query, array('limit' => 500));
+        $objects        = $this->transformer->transform($res->getResults());
 
         return new ResultSet($objects);
     }
 
-
     /**
-     * Makes sure a "query" var is formatted for use with QueryString
+     * Makes sure a "query" var is formatted for use with QueryString.
      *
-     * @param  string $q
+     * @param string $q
+     *
      * @return string
      */
     private function escapeQueryStringTerm($q)
@@ -173,11 +172,11 @@ class UserSearch implements UserSearchInterface
         return $q;
     }
 
-
     /**
-     * Constructs the query string
+     * Constructs the query string.
      *
      * @param $q
+     *
      * @return Query\QueryString|Query\MultiMatch
      */
     protected function getQueryString($q)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,8 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
 /**
- * Log of searches on userend
- *
+ * Log of searches on userend.
  */
 class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -114,7 +112,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Sets the query after trying to normalize it a bit
+     * Sets the query after trying to normalize it a bit.
      *
      * @param $query
      */
@@ -140,7 +138,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
             'name'    => 'searchlog',
             'indexes' => array(
                 'searchlog_query_idx' => array('columns' => array('query')),
-                'num_results_idx' => array('columns' => array('num_results')),
+                'num_results_idx'     => array('columns' => array('num_results')),
             ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -152,6 +150,6 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'num_results', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_results'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
     }
 }

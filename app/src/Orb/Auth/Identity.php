@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -46,19 +45,22 @@ namespace Orb\Auth;
 class Identity implements \ArrayAccess
 {
     /**
-     * A unique ID used by some service
+     * A unique ID used by some service.
+     *
      * @var mixed
      */
     protected $identity;
 
     /**
-     * A human-friendly identity. Still unique, but capable of changing (ie a username)
+     * A human-friendly identity. Still unique, but capable of changing (ie a username).
+     *
      * @var string
      */
     protected $friendly_identity;
 
     /**
-     * An array of raw userinfo
+     * An array of raw userinfo.
+     *
      * @var array
      */
     protected $raw_userinfo = array();
@@ -69,7 +71,7 @@ class Identity implements \ArrayAccess
      */
     public function __construct($identity, array $raw_userinfo = array())
     {
-        $this->identity = $identity;
+        $this->identity     = $identity;
         $this->raw_userinfo = $raw_userinfo;
 
         if (isset($raw_userinfo['friendly_identity'])) {
@@ -78,7 +80,7 @@ class Identity implements \ArrayAccess
     }
 
     /**
-     * Set the human friendly identity
+     * Set the human friendly identity.
      *
      * @param string $friendly_identity
      */
@@ -88,7 +90,7 @@ class Identity implements \ArrayAccess
     }
 
     /**
-     * Get the identitiy
+     * Get the identitiy.
      *
      * @return mixed
      */
@@ -98,7 +100,7 @@ class Identity implements \ArrayAccess
     }
 
     /**
-     * Get the human friendly identity
+     * Get the human friendly identity.
      *
      * @return string
      */
@@ -108,7 +110,7 @@ class Identity implements \ArrayAccess
     }
 
     /**
-     * Get the raw userdata returned with the auth record
+     * Get the raw userdata returned with the auth record.
      *
      * @return array
      */

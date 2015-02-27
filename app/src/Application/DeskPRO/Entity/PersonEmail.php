@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -68,14 +67,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * The email address
+     * The email address.
      *
      * @var string
      */
     protected $email;
 
     /**
-     * The email address domain
+     * The email address domain.
      *
      * @var string
      */
@@ -99,7 +98,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     protected $is_own_validated = false;
 
     /**
-     * A comment or description of the email address. For example, "work" or "home."
+     * A comment or description of the email address. For example, "work" or "home.".
      *
      * @var string
      */
@@ -156,9 +155,10 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Gets the gravatar URL for this email
+     * Gets the gravatar URL for this email.
      *
-     * @param  bool   $secure Use secure url? null to detect automatically based on current request
+     * @param bool $secure Use secure url? null to detect automatically based on current request
+     *
      * @return string
      */
     public function getGravatarUrl($secure = null)
@@ -208,9 +208,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
+     *
+     * @return $this
      */
     public function setEmail($email)
     {
@@ -226,6 +228,18 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('email_domain', $email_domain);
+
+        return $this;
+    }
+
+    /**
+     * Returns email.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     public function setIsValidated($yesno)
@@ -237,10 +251,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $this->setModelField('date_validated', null);
         }
+
+        return $this;
     }
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
@@ -248,6 +266,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         if ($person->is_agent) {
             $this->setIsValidated(true);
         }
+
+        return $this;
     }
 
     public function _postPersist()
@@ -303,14 +323,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_validated'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

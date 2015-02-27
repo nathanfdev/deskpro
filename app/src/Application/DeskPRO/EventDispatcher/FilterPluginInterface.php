@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailGateway
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EventDispatcher;
@@ -41,7 +38,8 @@ namespace Application\DeskPRO\EventDispatcher;
 interface FilterPluginInterface
 {
     /**
-     * @param  Plugin $plugins
+     * @param Plugin $plugins
+     *
      * @return bool
      */
     public function filterPlugins($plugin);

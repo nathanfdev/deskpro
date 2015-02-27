@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -42,7 +41,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Custom loading database creds from config.php
+ * Custom loading database creds from config.php.
  */
 class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
 {

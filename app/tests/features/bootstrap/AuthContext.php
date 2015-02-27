@@ -26,35 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-use Application\AuthBundle\Security\DpFormLoginToken;
-use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
-use Application\PortalBundle\Mode\PortalModeFactory;
-use Application\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Driver\BrowserKitDriver;
-use Behat\Mink\Exception\UnsupportedDriverActionException;
-use Behat\Mink\Tests\Driver\BrowserKitConfig;
-use Behat\Symfony2Extension\Driver\KernelDriver;
-use Doctrine\ORM\EntityManager;
 use DpBehat\TestBundle\UserDetailsRepo;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class AuthContext extends BasePortalContext
 {
@@ -70,10 +49,10 @@ class AuthContext extends BasePortalContext
 
     public function __construct(UserDetailsRepo $user_details, TokenStorage $token_storage)
     {
-        $this->user_details = $user_details;
+        $this->user_details  = $user_details;
         $this->token_storage = $token_storage;
     }
-    
+
     /**
      * @When I login using the sidebar with :who credentials
      */

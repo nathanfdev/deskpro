@@ -26,18 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\ArticleCategory as CategoryEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
+use Application\DeskPRO\Entity\ArticleCategory as CategoryEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -80,7 +79,9 @@ class ArticleCategory extends AbstractCategoryRepository
     {
         $ids = Arrays::removeFalsey($ids);
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $ids = implode(',', $ids);
 
@@ -94,7 +95,9 @@ class ArticleCategory extends AbstractCategoryRepository
 
     public function getCategoryOptions()
     {
-        if ($this->all_cats !== null) return $this->all_cats;
+        if ($this->all_cats !== null) {
+            return $this->all_cats;
+        }
 
         $this->all_cats = App::getDb()->fetchAllKeyed("
             SELECT id, parent_id, title
@@ -107,18 +110,22 @@ class ArticleCategory extends AbstractCategoryRepository
 
     public function getFullHierarchy()
     {
-        if ($this->hierarchy !== null) return $this->hierarchy;
+        if ($this->hierarchy !== null) {
+            return $this->hierarchy;
+        }
 
         $this->hierarchy = Arrays::intoHierarchy($this->getCategoryOptions());
 
         return $this->hierarchy;
     }
 
-
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 

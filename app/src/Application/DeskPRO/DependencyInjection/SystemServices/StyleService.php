@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -43,6 +42,6 @@ class StyleService
 {
     public static function create(DeskproContainer $container)
     {
-        return null;
+        return;
     }
 }

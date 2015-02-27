@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -45,7 +42,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class FeedbackController extends AbstractController
 {
@@ -509,7 +506,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * Merge a ticket interface
+     * Merge a ticket interface.
      */
     public function mergeAction($feedback_id, $other_feedback_id)
     {
@@ -552,7 +549,7 @@ class FeedbackController extends AbstractController
     ############################################################################
 
     /**
-     * Any general search. For example, status, category or label
+     * Any general search. For example, status, category or label.
      *
      * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
@@ -568,25 +565,26 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * A shortcut to run a filter on a category
+     * A shortcut to run a filter on a category.
      *
      * @param  $category_id
+     *
      * @return
      */
     public function categoryListAction($category_id)
     {
         $top_result_helper = FeedbackResults::newFromRequest($this, array(
             'specific_terms' => array(
-                'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                'status'                   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
+                'category'                 => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+                'status'                                   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
             ),
         ));
 
         if ($this->in->getString('subgroup')) {
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                    'status'                   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
+                    'category'                 => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+                    'status'                                   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
                 ),
             ));
         } else {
@@ -640,9 +638,10 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * A shortcut to run a filter on a label
+     * A shortcut to run a filter on a label.
      *
      * @param  $category_id
+     *
      * @return
      */
     public function labelListAction($label)
@@ -667,9 +666,10 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * A shortcut to run a filter on a status
+     * A shortcut to run a filter on a status.
      *
      * @param  $category_id
+     *
      * @return
      */
     public function statusListAction($status)
@@ -681,15 +681,15 @@ class FeedbackController extends AbstractController
             list($status, $v_status) = explode('.', $status);
             $top_result_helper       = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status'               => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
+                    'status'                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
                 ),
             ));
         } else {
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status'               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'status'                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         }
@@ -697,9 +697,9 @@ class FeedbackController extends AbstractController
         if ($this->in->getString('subgroup')) {
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'category'               => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'status'                                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'category'                                               => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
+                    'v_status'                                                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         } else {
@@ -724,11 +724,12 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * This takes a result helper and just handles rendering it
+     * This takes a result helper and just handles rendering it.
      *
      * @param  $result_helper
-     * @param  string                                              $template
-     * @param  array                                               $template_vars
+     * @param string $template
+     * @param array  $template_vars
+     *
      * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
     public function renderList($result_helper, $template = null, array $template_vars = array())

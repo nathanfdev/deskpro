@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -51,7 +49,8 @@ class InReplyToDetector implements TicketDetectorInterface
     protected $_found_person = null;
 
     /**
-     * @param  AbstractReader $reader
+     * @param AbstractReader $reader
+     *
      * @return Ticket|null
      */
     public function findExistingTicket(AbstractReader $reader)
@@ -125,12 +124,13 @@ class InReplyToDetector implements TicketDetectorInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  Ticket                                                                               $ticket
-     * @param  AbstractReader                                                                       $reader
+     * @param Ticket         $ticket
+     * @param AbstractReader $reader
+     *
      * @return \Application\DeskPRO\Entity\Person|\Application\DeskPRO\Entity\TicketAccessCode|null
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
@@ -139,15 +139,16 @@ class InReplyToDetector implements TicketDetectorInterface
             return $this->_found_person;
         }
 
-        return null;
+        return;
     }
 
     /**
      * Add unknown users, the reply code in the address is the PTAC
-     * so basically a passowrd
+     * so basically a passowrd.
      *
-     * @param  Ticket         $ticket
-     * @param  AbstractReader $reader
+     * @param Ticket         $ticket
+     * @param AbstractReader $reader
+     *
      * @return bool
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)

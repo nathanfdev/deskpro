@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category HttpFoundation
  */
 
@@ -53,7 +52,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
     protected $closed = false;
 
     /**
-     * Array of SessionBagInterface
+     * Array of SessionBagInterface.
      *
      * @var SessionBagInterface[]
      */
@@ -91,7 +90,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
     protected $last_save_hash = null;
 
-
     /**
      * @param EntityManager    $em
      * @param null             $options
@@ -99,15 +97,17 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      */
     public function __construct(EntityManager $em, $options = null, SettingsResolver $settings_resolver)
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
+        $this->em                = $em;
+        $this->db                = $em->getConnection();
         $this->settings_resolver = $settings_resolver;
-        $cookieDefaults = session_get_cookie_params();
+        $cookieDefaults          = session_get_cookie_params();
 
         $cookie_name = 'dpsid';
-        if (!defined('DP_INTERFACE')) define('DP_INTERFACE', 'user');
+        if (!defined('DP_INTERFACE')) {
+            define('DP_INTERFACE', 'user');
+        }
         if (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin') {
-            $cookie_name .= '-' . DP_INTERFACE;
+            $cookie_name .= '-'.DP_INTERFACE;
         }
 
         $this->options['name'] = $cookie_name;
@@ -133,7 +133,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         $this->setMetadataBag();
     }
-
 
     /**
      * Starts the session.
@@ -184,7 +183,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         // Sessions are deleted on cron, but we'll also enforce it here
         $cutoff = time() - $this->settings_resolver->getGlobalSettings()->get('core.sessions_lifetime');
 
-        $is_valid = ($session AND $session['date_last']->getTimestamp() > $cutoff);
+        $is_valid = ($session and $session['date_last']->getTimestamp() > $cutoff);
         if ($is_valid && $this->settings_resolver->getGlobalSettings()->get('core.session_keepalive_require_page') && $session['date_last_page']) {
             if ($session['date_last_page']->getTimestamp() < $cutoff) {
                 $is_valid = false;
@@ -202,7 +201,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $this->em->flush();
         }
 
-        $is_started = (bool)session_id();
+        $is_started = (bool) session_id();
 
         session_id($session->getSessionCode());
         $this->session = $session;
@@ -214,7 +213,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         $this->loadSession();
 
         $this->started = true;
-        $this->closed = false;
+        $this->closed  = false;
     }
 
     /**
@@ -245,9 +244,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      *
      * @param string $id A session ID
      *
-     * @return bool true, if the session was destroyed, otherwise an exception is thrown
-     *
      * @throws \RuntimeException If the session cannot be destroyed
+     * @return bool              true, if the session was destroyed, otherwise an exception is thrown
+     *
      */
     public function destroy($id)
     {
@@ -261,7 +260,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             try {
                 $this->db->delete('sessions', array('id' => $session->getId()));
                 $this->em->detach($session);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return true;
@@ -270,9 +270,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
     /**
      * Cleans up old sessions. This is a noop, sessions are cleaned on cron.
      *
-     * @param  int               $lifetime The lifetime of a session in seconds
-     * @return bool              true
+     * @param int $lifetime The lifetime of a session in seconds
+     *
      * @throws \RuntimeException If any old sessions cannot be cleaned
+     * @return bool              true
+     *
      */
     public function gc($lifetime)
     {
@@ -284,9 +286,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      *
      * @param string $id A session ID
      *
-     * @return string The session data if the session was read or created, otherwise an exception is thrown
-     *
      * @throws \RuntimeException If the session cannot be read
+     * @return string            The session data if the session was read or created, otherwise an exception is thrown
+     *
      */
     public function read($id)
     {
@@ -311,9 +313,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id   A session ID
      * @param string $data A serialized chunk of session data
      *
-     * @return bool true, if the session was written, otherwise an exception is thrown
-     *
      * @throws \RuntimeException If the session data cannot be written
+     * @return bool              true, if the session was written, otherwise an exception is thrown
+     *
      */
     public function write($id, $data)
     {
@@ -324,7 +326,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         // because the manager has lost its reference to the session state
         $id = self::getIdFromCode($id);
 
-        $save_hash = md5($id . $data);
+        $save_hash = md5($id.$data);
 
         // No changes were made to the session
         if ($this->last_save_hash && $this->last_save_hash == $save_hash) {
@@ -333,16 +335,16 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         $this->last_save_hash = $save_hash;
 
-        $sess_rec = array();
-        $sess_rec['data'] = $data;
+        $sess_rec              = array();
+        $sess_rec['data']      = $data;
         $sess_rec['date_last'] = isset($_SESSION['_sf2_attributes']['dplast']) ? date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplast']) : date('Y-m-d H:i:s', time());
 
         if (isset($_SESSION['_sf2_attributes']['dplastpage'])) {
             $sess_rec['date_last_page'] = date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplastpage']);
         }
 
-        $sess_rec['is_person'] = 0;
-        $sess_rec['person_id'] = null;
+        $sess_rec['is_person']  = 0;
+        $sess_rec['person_id']  = null;
         $sess_rec['visitor_id'] = (isset($_SESSION['_sf2_attributes']['dpvid']) ? $_SESSION['_sf2_attributes']['dpvid'] : null);
 
         if (!empty($GLOBALS['DP_CURRENT_USER_IP'])) {
@@ -370,13 +372,13 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
                     $sess_rec['active_status'] = '';
                 }
                 if ($sess_rec['active_status'] == 'available') {
-                    $sess_rec['is_chat_available'] = isset($_SESSION['_sf2_attributes']['is_chat_available']) ? (int)$_SESSION['_sf2_attributes']['is_chat_available'] : 0;
+                    $sess_rec['is_chat_available'] = isset($_SESSION['_sf2_attributes']['is_chat_available']) ? (int) $_SESSION['_sf2_attributes']['is_chat_available'] : 0;
                 } else {
                     $sess_rec['is_chat_available'] = 0;
                 }
             }
         } else {
-            $sess_rec['active_status'] = '';
+            $sess_rec['active_status']     = '';
             $sess_rec['is_chat_available'] = 0;
         }
 
@@ -384,7 +386,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $sess_rec['interface'] = $_SESSION['_sf2_attributes']['dp_interface'];
 
             if ($sess_rec['interface'] != 'agent') {
-                $sess_rec['active_status'] = '';
+                $sess_rec['active_status']     = '';
                 $sess_rec['is_chat_available'] = 0;
             }
         } else {
@@ -433,9 +435,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             return $this->session->getId();
         }
 
-        $id = $this->getId();
-        list($entity_id, ) = explode('-', $id, 2);
-        $entity_id = Util::baseDecode($entity_id, 'base36');
+        $id                = $this->getId();
+        list($entity_id,)  = explode('-', $id, 2);
+        $entity_id         = Util::baseDecode($entity_id, 'base36');
 
         return $entity_id;
     }
@@ -455,28 +457,32 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
     /**
      * @static
-     * @param  string   $sess_code
+     *
+     * @param string $sess_code
+     *
      * @return int|null
      */
     public static function getIdFromCode($sess_code)
     {
-        if (!strpos($sess_code, '-')) return null;
+        if (!strpos($sess_code, '-')) {
+            return;
+        }
 
-        list ($session_id, ) = explode('-', $sess_code, 2);
+        list($session_id,) = explode('-', $sess_code, 2);
 
         $alphabet = str_split('0123456789abcdefghijklmnopqrstuvwxyz');
         $base     = sizeof($alphabet);
         $strlen   = strlen($session_id);
-        $num = 0;
-        $idx = 0;
+        $num      = 0;
+        $idx      = 0;
 
-        $s = str_split($session_id);
+        $s        = str_split($session_id);
         $tebahpla = array_flip($alphabet);
 
         foreach ($s as $char) {
             // Invalid character found in string
             if (!isset($tebahpla[$char])) {
-                return null;
+                return;
             }
             $power = ($strlen - ($idx + 1));
             $num += $tebahpla[$char] * (pow($base, $power));
@@ -486,8 +492,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         return $num;
     }
 
-     /**
-     * Returns the session name
+    /**
+     * Returns the session name.
      *
      * @return mixed The session name.
      *
@@ -499,7 +505,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
     }
 
     /**
-     * Sets the session name
+     * Sets the session name.
      *
      * @param string $name
      *
@@ -523,13 +529,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         $ret = session_regenerate_id($destroy);
 
         if ($this->isStarted() && $this->getEntity()) {
-
             session_write_close();
             $session = new \Application\DeskPRO\Entity\Session();
 
             // hardcoded copy of old session params
             $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'is_person', 'is_bot',
-                'is_helpdesk', 'active_status', 'is_chat_available');
+                'is_helpdesk', 'active_status', 'is_chat_available', );
             foreach ($copyProps as $prop) {
                 $session[$prop] = $this->session[$prop];
             }
@@ -654,7 +659,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         $bags = array_merge($this->bags, array($this->metadataBag));
 
         foreach ($bags as $bag) {
-            $key = $bag->getStorageKey();
+            $key           = $bag->getStorageKey();
             $session[$key] = isset($session[$key]) ? $session[$key] : array();
             $bag->initialize($session[$key]);
         }

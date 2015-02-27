@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the org ID matches
+ * Checks if the org ID matches.
  *
  * @option int id
  */
@@ -56,7 +55,6 @@ class CheckOrgId extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -65,11 +63,17 @@ class CheckOrgId extends AbstractTriggerTerm
         $options = $this->getTermOptions();
 
         if ($this->getTermOperator() == 'isset') {
-            if ($ticket->organization) return true;
-            else return false;
+            if ($ticket->organization) {
+                return true;
+            } else {
+                return false;
+            }
         } elseif ($this->getTermOperator() == 'not_isset') {
-            if (!$ticket->organization) return true;
-            else return false;
+            if (!$ticket->organization) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         return $this->isEntityMatch($ticket, $context, 'organization', 'id', $options['id']);

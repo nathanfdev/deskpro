@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -67,20 +66,20 @@ class ChangeSimple implements ChangeInterface
         $this->old      = $old;
         $this->new      = $new;
 
-		if ($old == $new) {
-			if (is_null($old) && is_null($new)) {
-            $this->is_same = true;
-			} elseif (is_scalar($old) || is_scalar($new)) {
-				if (is_numeric($old) && is_numeric($new)) {
-					if ($new == $old) {
-						$this->is_same = true;
-					}
-				} else {
-					if ($new === $old) {
-						$this->is_same = true;
-					}
-				}
-			}
+        if ($old == $new) {
+            if (is_null($old) && is_null($new)) {
+                $this->is_same = true;
+            } elseif (is_scalar($old) || is_scalar($new)) {
+                if (is_numeric($old) && is_numeric($new)) {
+                    if ($new == $old) {
+                        $this->is_same = true;
+                    }
+                } else {
+                    if ($new === $old) {
+                        $this->is_same = true;
+                    }
+                }
+            }
         }
     }
 

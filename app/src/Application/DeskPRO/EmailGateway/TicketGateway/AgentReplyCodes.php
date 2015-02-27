@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
@@ -554,11 +552,12 @@ class AgentReplyCodes implements Loggable
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

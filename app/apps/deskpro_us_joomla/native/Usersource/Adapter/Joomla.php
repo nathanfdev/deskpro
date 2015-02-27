@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace deskpro_us_joomla\Usersource\Adapter;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
-use \Application\DeskPRO\App;
 
 class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 {
@@ -68,6 +65,7 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
      * Find a user identity just by an email address.
      *
      * @param $id_input
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -76,7 +74,7 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 
         $userinfo = $adapter->getUserInfoForEmail($id_input);
         if (!$userinfo) {
-            return null;
+            return;
         }
 
         return $adapter->getIdentityFromUserInfo($userinfo);

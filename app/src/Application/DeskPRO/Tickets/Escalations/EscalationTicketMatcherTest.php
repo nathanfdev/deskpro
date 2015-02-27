@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -49,8 +48,9 @@ class EscalationTicketMatcherTest extends EscalationTicketMatcher
     }
 
     /**
-     * @param  TicketEscalation                     $esc
-     * @param  int                                  $limit
+     * @param TicketEscalation $esc
+     * @param int              $limit
+     *
      * @return \Application\DeskPRO\Entity\Ticket[]
      */
     public function getMatches(TicketEscalation $esc, $limit = 100)

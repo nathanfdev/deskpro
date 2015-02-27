@@ -26,11 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
-
 class DpShutdown
 {
     /**
@@ -54,7 +51,7 @@ class DpShutdown
     private static $callbacks;
 
     /**
-     * Inits the queue
+     * Inits the queue.
      */
     private static function _init()
     {
@@ -68,13 +65,12 @@ class DpShutdown
             register_shutdown_function(array('DpShutdown', 'run'));
         }
 
-        self::$stack = array();
+        self::$stack     = array();
         self::$callbacks = array();
     }
 
-
     /**
-     *	Register a new shutdown function
+     *	Register a new shutdown function.
      *
      * @param callback $callback
      * @param int      $priority
@@ -83,7 +79,9 @@ class DpShutdown
     public static function add($callback, array $params = null, $tag = null, $priority = 0)
     {
         self::_init();
-        if ($tag === null) $tag	= 'shutdown';
+        if ($tag === null) {
+            $tag    = 'shutdown';
+        }
 
         static $gen_id = 0;
         $gen_id++;
@@ -96,17 +94,19 @@ class DpShutdown
         self::$callbacks['cb'.$gen_id] = array($callback, $params, $priority, $tag);
     }
 
-
     /**
-     * @param  string $tag
+     * @param string $tag
+     *
      * @return bool
      */
     public static function hasTag($tag = null)
     {
-        if ($tag === null) $tag	= 'shutdown';
+        if ($tag === null) {
+            $tag    = 'shutdown';
+        }
+
         return isset(self::$stack[$tag]);
     }
-
 
     /**
      * @param string $name
@@ -121,13 +121,14 @@ class DpShutdown
         self::$params[$name] = $value;
     }
 
-
     /**
-     * Run all shutdown functions
+     * Run all shutdown functions.
      */
     public static function run($tag = null)
     {
-        if ($tag === null) $tag	= 'shutdown';
+        if ($tag === null) {
+            $tag    = 'shutdown';
+        }
 
         if (!isset(self::$stack[$tag])) {
             return;

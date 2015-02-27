@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -70,7 +69,6 @@ class DetectAutoresponders implements TicketSaveActionInterface
      */
     private $max_replies_time;
 
-
     /**
      * @param EntityManager $em
      * @param int           $max_tickets
@@ -88,10 +86,10 @@ class DetectAutoresponders implements TicketSaveActionInterface
         $this->max_replies_time = $max_replies_time;
     }
 
-
     /**
-     * @param  Ticket                                     $ticket
-     * @param  ExecutorContextInterface                   $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -114,7 +112,7 @@ class DetectAutoresponders implements TicketSaveActionInterface
                 $context->getLogger()->info("[DetectAutoresponders] --> User is already an auto-responder");
             } else {
                 $date_cut = date('Y-m-d H:i:s', time() - $this->max_tickets_time);
-                $count = $this->db->fetchColumn("
+                $count    = $this->db->fetchColumn("
                     SELECT COUNT(*)
                     FROM tickets
                     WHERE person_id = ? AND date_created >= ?
@@ -136,11 +134,12 @@ class DetectAutoresponders implements TicketSaveActionInterface
         #------------------------------
 
         if ($this->max_replies && $context->getEventType() == 'newreply') {
-
             $message = $ticket->getStateChangeRecorder()->getNewUserReplies();
             $message = array_pop($message);
 
-            if (!$message) return;
+            if (!$message) {
+                return;
+            }
 
             $context->getLogger()->info(sprintf("[DetectAutoresponders] Checking %d %s for more than %d replies in %ds", $message->person->id, $message->person->getDisplayContact(), $this->max_replies, $this->max_replies_time));
 
@@ -148,7 +147,7 @@ class DetectAutoresponders implements TicketSaveActionInterface
                 $context->getLogger()->info("[DetectAutoresponders] --> User is already an auto-responder");
             } else {
                 $date_cut = date('Y-m-d H:i:s', time() - $this->max_replies_time);
-                $count = $this->db->fetchColumn("
+                $count    = $this->db->fetchColumn("
                     SELECT COUNT(*)
                     FROM tickets_messages
                     WHERE person_id = ? AND date_created >= ?

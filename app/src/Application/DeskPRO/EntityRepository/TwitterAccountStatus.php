@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -59,7 +58,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             return array();
         }
 
-        $output = array();
+        $output  = array();
         $results = $this->getEntityManager()->createQuery("
             SELECT s, t, u
             FROM DeskPRO:TwitterAccountStatus s
@@ -69,7 +68,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 AND s.account = ?1
         ")->setParameters(array($ids, $account))->execute();
 
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $output[$result->status->id] = $result;
         }
 
@@ -120,21 +119,21 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
         list($where, $params) = $this->_getTimelineWhereClause($account, $conditions);
 
-        $query .= ' ' . $where;
+        $query .= ' '.$where;
 
         return $this->getEntityManager()->createQuery($query)->setParameters($params)->getSingleScalarResult();
     }
 
     protected function _getTimelineWhereClause(TwitterAccountEntity $account, array $conditions = array())
     {
-        $query = 'WHERE s.account = ?0';
+        $query  = 'WHERE s.account = ?0';
         $params = array($account);
-        $i = 1;
+        $i      = 1;
 
         $type = isset($conditions['type']) ? $conditions['type'] : 'all';
 
         if ($type == 'sent') {
-            $conditions['include_self'] = true;
+            $conditions['include_self']     = true;
             $conditions['include_archived'] = true; // can't actually archive sent statuses
         }
 
@@ -178,8 +177,8 @@ class TwitterAccountStatus extends AbstractEntityRepository
             } elseif ($conditions['agent'] === false || $conditions['agent'] == '0') {
                 $where[] = "s.agent IS NULL";
             } elseif ($conditions['agent']) {
-                $conditions['agent'] = array_map('intval', (array)$conditions['agent']);
-                $where[] = "s.agent IN (" . implode(',', $conditions['agent']) . ")";
+                $conditions['agent'] = array_map('intval', (array) $conditions['agent']);
+                $where[]             = "s.agent IN (".implode(',', $conditions['agent']).")";
             }
         }
         if (isset($conditions['agent_team'])) {
@@ -188,8 +187,8 @@ class TwitterAccountStatus extends AbstractEntityRepository
             } elseif ($conditions['agent_team'] === false || $conditions['agent_team'] == '0') {
                 $where[] = "s.agent_team IS NULL";
             } elseif ($conditions['agent_team']) {
-                $conditions['agent_team'] = array_map('intval', (array)$conditions['agent_team']);
-                $where[] = "s.agent_team IN (" . implode(',', $conditions['agent_team']) . ")";
+                $conditions['agent_team'] = array_map('intval', (array) $conditions['agent_team']);
+                $where[]                  = "s.agent_team IN (".implode(',', $conditions['agent_team']).")";
             }
         }
         if (isset($conditions['assigned'])) {
@@ -208,18 +207,18 @@ class TwitterAccountStatus extends AbstractEntityRepository
         }
 
         if (empty($conditions['include_self'])) {
-            $where[] = "(s.status_type <> 'direct' OR t.user <> ?$i)";
+            $where[]  = "(s.status_type <> 'direct' OR t.user <> ?$i)";
             $params[] = $account->user->getId();
 
             if ($where) {
-                $query .= " AND " . implode(' AND ', $where);
+                $query .= " AND ".implode(' AND ', $where);
             }
         } else {
             $sent_condition = "(s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
-            $params[] = $account->user->getId();
+            $params[]       = $account->user->getId();
 
             if ($where) {
-                $query .= " AND ((" . implode(' AND ', $where) . ") OR $sent_condition)";
+                $query .= " AND ((".implode(' AND ', $where).") OR $sent_condition)";
             } else {
                 $query .= " AND $sent_condition";
             }
@@ -234,7 +233,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
         if ($accounts instanceof \Doctrine\Common\Collections\Collection) {
             $accounts = $accounts->toArray();
         } elseif (!is_array($accounts)) {
-            $single = $accounts->id;
+            $single   = $accounts->id;
             $accounts = array($accounts);
         }
         if (!$accounts) {
@@ -242,15 +241,15 @@ class TwitterAccountStatus extends AbstractEntityRepository
         }
 
         if (count($accounts) == 1) {
-            $account = reset($accounts);
-            $ids = array($account->id);
+            $account      = reset($accounts);
+            $ids          = array($account->id);
             $dm_sent_case = ($account->user->id+0);
         } else {
-            $ids = array();
+            $ids          = array();
             $dm_sent_case = 'CASE a.account_id';
-            foreach ($accounts AS $account) {
+            foreach ($accounts as $account) {
                 $ids[] = $account->id;
-                $dm_sent_case .= " WHEN $account->id THEN " . ($account->user->id+0);
+                $dm_sent_case .= " WHEN $account->id THEN ".($account->user->id+0);
             }
             $dm_sent_case .= " END";
         }
@@ -270,7 +269,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 SUM(IF(a.status_type IN ('mention', 'reply', 'retweet') OR (a.status_type = 'direct' AND s.user_id <> $dm_sent_case) OR a.is_favorited = 1, 1, 0)) AS `all`
             FROM twitter_accounts_statuses AS a
             INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
-            WHERE a.account_id IN (" . implode(',', $ids) . ")
+            WHERE a.account_id IN (".implode(',', $ids).")
                 AND a.is_archived = 0
             GROUP BY a.account_id
         ", array(), 'account_id');
@@ -286,25 +285,25 @@ class TwitterAccountStatus extends AbstractEntityRepository
     {
         $person = App::getCurrentPerson();
 
-        $type_limit = " AND (a.status_type IN ('mention', 'reply', 'retweet') OR (a.status_type = 'direct' AND s.user_id <> " . $account->user->id . ") OR a.is_favorited = 1)";
+        $type_limit = " AND (a.status_type IN ('mention', 'reply', 'retweet') OR (a.status_type = 'direct' AND s.user_id <> ".$account->user->id.") OR a.is_favorited = 1)";
 
         switch ($limit_type) {
             case 'mine':
-                $sql_condition = ' AND a.agent_id = ' . $person->getId();
+                $sql_condition = ' AND a.agent_id = '.$person->getId();
                 break;
 
             case 'team':
                 $person->loadHelper('AgentTeam');
                 $teams = $person->getAgentTeamIds();
                 if ($teams) {
-                    $sql_condition = ' AND a.agent_team_id IN (' . implode(',', $teams) . ')';
+                    $sql_condition = ' AND a.agent_team_id IN ('.implode(',', $teams).')';
                 } else {
                     $sql_condition = ' AND 1=0';
                 }
                 break;
 
             case 'unassigned':
-                $sql_condition = ' AND a.agent_id IS NULL AND a.agent_team_id IS NULL' . $type_limit;
+                $sql_condition = ' AND a.agent_id IS NULL AND a.agent_team_id IS NULL'.$type_limit;
                 break;
 
             case 'all':
@@ -354,7 +353,8 @@ class TwitterAccountStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  string $sortByDate (optional)
+     * @param string $sortByDate (optional)
+     *
      * @return string
      */
     protected function normalizeSortByDate($sortByDate = 'asc')
@@ -368,8 +368,9 @@ class TwitterAccountStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer $limit
-     * @param  integer $page
+     * @param integer $limit
+     * @param integer $page
+     *
      * @return integer
      */
     protected function calculateOffset($limit, $page)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -64,12 +63,12 @@ abstract class AbstractLoader implements \Serializable
 
     public function getSubkey()
     {
-        return null;
+        return;
     }
 
     public function setPersonContext(Person $person)
     {
-        $this->person = $person;
+        $this->person    = $person;
         $this->person_id = $person->id;
     }
 
@@ -93,11 +92,12 @@ abstract class AbstractLoader implements \Serializable
         $this->init();
     }
 
-    protected function init() {}
-
+    protected function init()
+    {
+    }
 
     /**
-     * Get the usergroup IDs represented by the loaded permissions
+     * Get the usergroup IDs represented by the loaded permissions.
      *
      * @return array
      */
@@ -106,9 +106,8 @@ abstract class AbstractLoader implements \Serializable
         return $this->usergroup_ids;
     }
 
-
     /**
-     * Get an array of data we'll serialize
+     * Get an array of data we'll serialize.
      *
      * @return array
      */
@@ -116,14 +115,14 @@ abstract class AbstractLoader implements \Serializable
 
     public function serialize()
     {
-        $data = $this->serializeData();
+        $data                  = $this->serializeData();
         $data['usergroup_ids'] = $this->usergroup_ids;
 
         return serialize($data);
     }
 
     /**
-     * Initialize this object with an array of saved data
+     * Initialize this object with an array of saved data.
      *
      * @param array $data
      */

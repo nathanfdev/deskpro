@@ -1,9 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage SystemScripts
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  */
@@ -17,7 +17,6 @@
  * - auth: Must be the defined DP_CHATSTATUS_AUTH
  * - is_chat_available: Either 1 or 0
  */
-
 require DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
@@ -39,7 +38,7 @@ if (!isset($_GET['auth']) || $_GET['auth'] != DP_CHATSTATUS_AUTH) {
 # Write file
 #------------------------------
 
-$trigger_file = dp_get_data_dir() . '/chat_is_available.trigger';
+$trigger_file = dp_get_data_dir().'/chat_is_available.trigger';
 if (isset($_GET['is_chat_available']) && $_GET['is_chat_available']) {
     if (!file_put_contents($trigger_file, time())) {
         echo "DP_CHATSTATUS_FAIL_AVAILABLE";

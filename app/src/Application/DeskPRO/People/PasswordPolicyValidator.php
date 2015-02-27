@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\PasswordHistory as PasswordHistoryRepos;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Settings\PasswordPolicy;
 use Orb\Util\Strings;
 
@@ -55,7 +53,6 @@ class PasswordPolicyValidator
      */
     private $history_repos;
 
-
     /**
      * @param PasswordPolicy       $user_policy
      * @param PasswordPolicy       $agent_policy
@@ -68,11 +65,11 @@ class PasswordPolicyValidator
         $this->history_repos = $history_repos;
     }
 
-
     /**
-     * @param  string $password The password to check
-     * @param  Person $person   The user to check on
-     * @param  string $error
+     * @param string $password The password to check
+     * @param Person $person   The user to check on
+     * @param string $error
+     *
      * @return bool
      */
     public function checkPassword($password, Person $person = null, &$error = null)
@@ -127,7 +124,8 @@ class PasswordPolicyValidator
     }
 
     /**
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return bool
      */
     public function isPasswordExpired(Person $person)

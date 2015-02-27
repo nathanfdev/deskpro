@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks cc address for a name
+ * Checks cc address for a name.
  *
  * @option string name
  */
@@ -56,7 +55,6 @@ class CheckEmailCcName extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -66,7 +64,7 @@ class CheckEmailCcName extends AbstractTriggerTerm
             return false;
         }
 
-        $reader = $context->getEmailContext();
+        $reader  = $context->getEmailContext();
         $strings = array();
         foreach ($reader->getCcAddresses() as $email) {
             $strings[] = $email->getNameUtf8();

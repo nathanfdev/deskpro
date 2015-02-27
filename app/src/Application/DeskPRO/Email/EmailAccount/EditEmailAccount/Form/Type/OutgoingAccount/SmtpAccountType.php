@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\OutgoingAccount;
@@ -46,9 +44,9 @@ class SmtpAccountType extends AbstractType
         $builder->add('host',        'text',    array('required' => true));
         $builder->add('port',        'text',    array('required' => true));
         $builder->add('secure_mode', 'choice',  array(
-            'required'      => false,
-            'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
-            'empty_value'                  => true,
+            'required'                     => false,
+            'choices'                      => array('ssl' => 'ssl', 'tls' => 'tls'),
+            'empty_value'                                 => true,
         ));
     }
 

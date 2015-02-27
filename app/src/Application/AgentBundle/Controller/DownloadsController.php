@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -297,7 +294,7 @@ class DownloadsController extends AbstractController
 
                 $changed_content = false;
                 if ($this->in->getString('content') != $download['content']) {
-                    $changed_content = true;
+                    $changed_content     = true;
                     $download['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
                         ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
                         : $this->in->getCleanValue('content', 'html');
@@ -361,7 +358,7 @@ class DownloadsController extends AbstractController
     ############################################################################
 
     /**
-     * View a list of feedback
+     * View a list of feedback.
      */
     public function listAction($category_id = 0)
     {

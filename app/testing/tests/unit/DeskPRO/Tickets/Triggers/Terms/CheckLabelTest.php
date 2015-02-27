@@ -9,16 +9,22 @@ require_once 'AbstractEntityCheckTest.php';
 class CheckLabelTest extends AbstractEntityCheckTest
 {
     /**
-     * @param  int    $id
+     * @param int $id
      * @param $object
+     *
      * @return Ticket
      */
     public function createTicket($id, $object)
     {
-        $bogus = new LabelTicket();
+        if ($object === null) {
+            // no test for nulls
+            return;
+        }
+
+        $bogus        = new LabelTicket();
         $bogus->label = "bogus";
 
-        $ticket = new Ticket();
+        $ticket     = new Ticket();
         $ticket->id = $id;
         $ticket->labels->add($bogus);
         $ticket->labels->add($object);
@@ -43,7 +49,8 @@ class CheckLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     public function getEntityClass()
@@ -52,12 +59,13 @@ class CheckLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * @param  int    $id
+     * @param int $id
+     *
      * @return object
      */
     public function createEntityObject($id)
     {
-        $object = new LabelTicket();
+        $object        = new LabelTicket();
         $object->label = $id;
 
         return $object;

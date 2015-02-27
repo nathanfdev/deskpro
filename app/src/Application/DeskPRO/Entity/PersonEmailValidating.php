@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,7 +55,6 @@ use Orb\Util\Strings;
  * It's important to look-up the email address first to see if it's in use by a person. Since
  * new content generally creates new Person records, we want to make sure each validating content
  * is attached to a single person and not many records.
- *
  */
 class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -64,7 +62,6 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
@@ -74,7 +71,7 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * The email address
+     * The email address.
      *
      * @var string
      */
@@ -158,6 +155,6 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->mapField(array( 'fieldName' => 'validating_content', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'validating_content'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,7 +54,6 @@ class ConstraintFactory
      */
     private $container;
 
-
     /**
      * @param DeskproContainer $container
      */
@@ -64,7 +62,6 @@ class ConstraintFactory
         $this->container = $container;
     }
 
-
     /**
      * @return AgentTeamValidator
      */
@@ -72,7 +69,6 @@ class ConstraintFactory
     {
         return new AgentTeamValidator($this->container->getAgentData());
     }
-
 
     /**
      * @return AgentGroupValidator

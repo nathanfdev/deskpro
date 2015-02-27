@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -39,6 +36,6 @@ class Build1421925247 extends AbstractBuild
     public function run()
     {
         $this->out("Add tickets_messages.hostname");
-		$this->execSlowAlterTable("tickets_messages", "ADD hostname VARCHAR(255) NOT NULL DEFAULT ''");
+        $this->execSlowAlterTable("tickets_messages", "ADD hostname VARCHAR(255) NOT NULL DEFAULT ''");
     }
 }

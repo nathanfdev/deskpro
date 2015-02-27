@@ -6,7 +6,7 @@ use Orb\Jira\Entity;
 
 /**
  * The IssueType Class
- * Emulates a Jira issue type
+ * Emulates a Jira issue type.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
@@ -17,7 +17,6 @@ class IssueType extends Entity
 
     /**
      * {@inheritdoc}
-     *
      */
     public function __construct(array $params = array())
     {
@@ -25,7 +24,7 @@ class IssueType extends Entity
             return false;
         }
 
-        $this->_id	= $params['id'];
+        $this->_id    = $params['id'];
 
         $this->setName($params['name']);
 
@@ -45,7 +44,7 @@ class IssueType extends Entity
     }
 
     /**
-     * Checks if it's a subtask
+     * Checks if it's a subtask.
      *
      * @return bool "TRUE" if it's a subtask and "FALSE" otherwise
      */
@@ -55,7 +54,7 @@ class IssueType extends Entity
     }
 
     /**
-     * Sets this to be a subtask
+     * Sets this to be a subtask.
      *
      * @return \Orb\Jira\Entity\IssueType
      */

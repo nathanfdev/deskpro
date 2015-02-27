@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package  DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Feedback categories
+ * Feedback categories.
  */
 class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {
@@ -57,7 +56,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-
     protected $usergroups;
 
     public function __construct()
@@ -78,7 +76,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-
     public function getUserGroups()
     {
         return $this->usergroups;
@@ -87,7 +84,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
-
     public function addUsergroup(Usergroup $usergroup)
     {
         if (!$this->usergroups->contains($usergroup)) {
@@ -98,7 +94,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
-
     public function removeUsergroup(Usergroup $usergroup)
     {
         $this->usergroups->removeElement($usergroup);

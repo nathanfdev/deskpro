@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
- * Templates used in the system
+ * Templates used in the system.
+ *
  * @property int $id
  * @property string $name
  * @property string $template_code
@@ -55,26 +55,25 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
-     * The logical name of the template. E.g., UserBundle:Main:resources.html.twig
+     * The logical name of the template. E.g., UserBundle:Main:resources.html.twig.
      *
      * @var string
      */
     protected $name;
 
     /**
-     * The raw template
+     * The raw template.
      *
      * @var string
      */
     protected $template_code = '';
 
     /**
-     * The template compiled to PHP
+     * The template compiled to PHP.
      *
      * @var string
      */

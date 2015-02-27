@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Signals that the ticket tab should be closed during a macro call
+ * Signals that the ticket tab should be closed during a macro call.
  */
 class CloseTicketTabAction extends AbstractAction
 {
@@ -50,7 +47,7 @@ class CloseTicketTabAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -60,7 +57,7 @@ class CloseTicketTabAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -70,7 +67,8 @@ class CloseTicketTabAction extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

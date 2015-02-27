@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -48,13 +45,12 @@ class Build1415210938 extends AbstractBuild
             'articles',
             'downloads',
             'feedback',
-            'news'
+            'news',
         );
 
         $conn->beginTransaction();
 
         try {
-
             foreach ($entity_tables as $table_name) {
                 $this->ensureNoDuplicateSlug($table_name, $conn);
             }
@@ -69,7 +65,6 @@ class Build1415210938 extends AbstractBuild
             $conn->rollback();
         }
     }
-
 
     protected function ensureNoDuplicateSlug($table_name, Connection $conn)
     {
@@ -92,11 +87,10 @@ class Build1415210938 extends AbstractBuild
             // if we have this slug in the table already, we need to de-dupe and prepend the id
             $slug = $content_row['slug'];
             if (in_array($slug, $existing_slugs)) {
-                $slug = $content_row['id'] . '-' . $slug;
+                $slug = $content_row['id'].'-'.$slug;
             }
             $existing_slugs[] = $slug;
             $conn->update($table_name, array('slug' => $slug), array('id' => $content_row['id']));
         }
     }
-
 }

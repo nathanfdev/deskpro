@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -86,12 +85,14 @@ class InstanceUninstaller
     }
 
     /**
-     * @param  AppPackage                $package
-     * @param  AppInstance               $app
-     * @param  array                     $settings
-     * @param  DeskproContainer          $container
-     * @return InstallerContext
+     * @param AppPackage       $package
+     * @param AppInstance      $app
+     * @param array            $settings
+     * @param DeskproContainer $container
+     *
      * @throws \UnexpectedValueException
+     * @return InstallerContext
+     *
      */
     protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container)
     {
@@ -120,7 +121,7 @@ class InstanceUninstaller
     }
 
     /**
-     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
+     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler.
      *
      * @return Native\InstallerHandler\InstallerHandlerInterface
      */

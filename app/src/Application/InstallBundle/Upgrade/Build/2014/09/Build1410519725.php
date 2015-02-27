@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -62,7 +59,7 @@ class Build1410519725 extends AbstractBuild
             $this->container->getDb()->insert('datastore', array(
                 'name' => 'sys.install.default_data',
                 'auth' => Strings::random(15),
-                'data' => serialize(array('installed' => $installed_list))
+                'data' => serialize(array('installed' => $installed_list)),
             ));
         }
     }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,22 +41,22 @@ class BanIp extends AbstractEntityRepository
     protected $counts = array();
 
     /**
-     * Get a list of IPs suitable for display
+     * Get a list of IPs suitable for display.
+     *
      * @param int    $from
      * @param int    $limit
      * @param string $search_phrase
      *
      * @return array
      */
-
     public function getList($from = 0, $limit = 20, $search_phrase = '')
     {
-        $where = '';
+        $where  = '';
         $params = array();
 
         if (!empty($search_phrase)) {
-            $where = " WHERE banned_ip LIKE :search";
-            $params['search'] = '%' . $search_phrase . '%';
+            $where            = " WHERE banned_ip LIKE :search";
+            $params['search'] = '%'.$search_phrase.'%';
         }
 
         $list = App::getDb()->fetchAllCol(sprintf("
@@ -78,7 +77,6 @@ class BanIp extends AbstractEntityRepository
      *
      * @return int
      */
-
     public function getPageCount($per_page = 20, $search_phrase = '')
     {
         return ceil($this->getCount($search_phrase) / $per_page);
@@ -90,12 +88,12 @@ class BanIp extends AbstractEntityRepository
             return $this->counts[$search_phrase];
         }
 
-        $where = '';
+        $where  = '';
         $params = array();
 
         if (!empty($search_phrase)) {
-            $where = "banned_ip LIKE :search";
-            $params['search'] = '%' . $search_phrase . '%';
+            $where            = "banned_ip LIKE :search";
+            $params['search'] = '%'.$search_phrase.'%';
         }
 
         $count = App::getDb()->countWithPlaceholders('ban_ips', $where, $params);
@@ -105,6 +103,7 @@ class BanIp extends AbstractEntityRepository
 
     /**
      * @param $ip
+     *
      * @return bool
      */
     public function isIpBanned($ip)

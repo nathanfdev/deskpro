@@ -15,6 +15,7 @@
 	RewriteRule "(^|/)\." - [F]
 
 	RewriteRule ^web/ - [NC,L]
+	RewriteRule ^pub/ - [NC,L]
 	RewriteRule ^admin/.*$ index.php [NC,L]
 	RewriteRule ^agent/.*$ index.php [NC,L]
 

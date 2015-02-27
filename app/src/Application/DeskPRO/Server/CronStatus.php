@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,6 @@ class CronStatus
         $this->db = $db;
     }
 
-
     /**
      * @return int
      */
@@ -77,7 +75,6 @@ class CronStatus
         return $this->last_run_ts;
     }
 
-
     /**
      * @return \DateTime|null
      */
@@ -85,7 +82,7 @@ class CronStatus
     {
         $ts = $this->getLastRunTimestamp();
         if (!$ts) {
-            return null;
+            return;
         }
 
         $date = new \DateTime("@$ts");
@@ -93,15 +90,14 @@ class CronStatus
         return $date;
     }
 
-
     /**
-     * Get how long it's been since the last cron
+     * Get how long it's been since the last cron.
      *
      * @return int
      */
     public function getSecsSinceLastRun()
     {
-        $now = time();
+        $now  = time();
         $last = $this->getLastRunTimestamp();
 
         return $now - $last;
@@ -116,7 +112,6 @@ class CronStatus
     {
         return $this->getSecsSinceLastRun() > 300;
     }
-
 
     /**
      * @return array
@@ -133,7 +128,7 @@ class CronStatus
         }
 
         if ($error_message) {
-            $split = explode('###', $error_message);
+            $split        = explode('###', $error_message);
             $codes_string = array_pop($split);
             $codes_string = trim($codes_string);
 
@@ -144,7 +139,7 @@ class CronStatus
                 $error_codes = $m[1];
             }
 
-            $web_ini_path = \Orb\Util\Env::getPhpIniPath();
+            $web_ini_path  = \Orb\Util\Env::getPhpIniPath();
             $is_zendserver = false;
             if ($web_ini_path) {
                 $is_zendserver = strpos($web_ini_path, 'ZendServer') !== false;
@@ -156,10 +151,10 @@ class CronStatus
                 'is_zendserver' => $is_zendserver,
                 'web_ini_path'  => $web_ini_path,
                 'data_dir'      => dp_get_data_dir(),
-                'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log') . "\n\n\n" . @file_get_contents(dp_get_log_dir() . '/cli-phperr.log')
+                'error_log'     => @file_get_contents(dp_get_log_dir().'/error.log')."\n\n\n".@file_get_contents(dp_get_log_dir().'/cli-phperr.log'),
             );
         }
 
-        return null;
+        return;
     }
 }

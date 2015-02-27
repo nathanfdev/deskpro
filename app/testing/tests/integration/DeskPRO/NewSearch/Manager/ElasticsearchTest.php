@@ -6,7 +6,9 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 {
     public function runBefore()
     {
-        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
+        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) {
+            return;
+        }
 
         $this->helper->enableFreshDatabaseSet('FreshDb');
         $this->helper->loadFixtures('General/SimpleDepartmentData');
@@ -17,13 +19,15 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 
     public function testQuickSearchReturnsResult()
     {
-        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
+        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) {
+            return;
+        }
 
         $elasticManager = $this->helper->getSymfonyContainer()->get('deskpro.search_manager.elasticsearch');
-        $entityManager = $this->helper->getSymfonyContainer()->getEm();
+        $entityManager  = $this->helper->getSymfonyContainer()->getEm();
 
         $agents = $entityManager->getRepository('DeskPRO:Person')->getAgents();
-        $teams = $entityManager->getRepository('DeskPRO:AgentTeam')->getTeams();
+        $teams  = $entityManager->getRepository('DeskPRO:AgentTeam')->getTeams();
 
         $agents[1]->loadHelper('Agent');
         $agents[1]->loadHelper('AgentPermissions');
@@ -40,13 +44,15 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 
     public function testAgentCanViewOthersTicketsIfPermitted()
     {
-        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
+        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) {
+            return;
+        }
 
         $elasticManager = $this->helper->getSymfonyContainer()->get('deskpro.search_manager.elasticsearch');
-        $entityManager = $this->helper->getSymfonyContainer()->getEm();
+        $entityManager  = $this->helper->getSymfonyContainer()->getEm();
 
         $agents = $entityManager->getRepository('DeskPRO:Person')->getAgents();
-        $teams = $entityManager->getRepository('DeskPRO:AgentTeam')->getTeams();
+        $teams  = $entityManager->getRepository('DeskPRO:AgentTeam')->getTeams();
 
         $agents[1]->loadHelper('Agent');
         $agents[1]->loadHelper('AgentPermissions');

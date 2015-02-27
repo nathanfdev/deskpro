@@ -26,13 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpFoundation;
 
+use Orb\Util\Strings;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
@@ -46,7 +45,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     protected $info;
 
     /**
-     * When a client sends _partial in POST/GET data, they're requesting a partial result
+     * When a client sends _partial in POST/GET data, they're requesting a partial result.
      *
      * For example: more search results, or a page being put into an existing page etc. The actual
      * meaning of what "partial" is depends on the page.
@@ -62,17 +61,22 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
         if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
             $val = $this->query->get(self::PARTIAL_REQUEST_KEY);
-            if (!$val) $val = 'partial';
+            if (!$val) {
+                $val = 'partial';
+            }
         } elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
             $val = $this->request->get(self::PARTIAL_REQUEST_KEY);
-            if (!$val) $val = 'partial';
+            if (!$val) {
+                $val = 'partial';
+            }
         }
 
         return $val;
     }
 
     /**
-     * returns bool only
+     * returns bool only.
+     *
      * @return bool
      */
     public function isPartial()
@@ -97,7 +101,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     public function getUrlLocale()
     {
-        if ($this->url_locale !== null) return $this->url_locale;
+        if ($this->url_locale !== null) {
+            return $this->url_locale;
+        }
 
         $this->url_locale = false;
 
@@ -109,7 +115,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             '/agent',
             '/admin',
             '/dev',
-            '/api'
+            '/api',
         );
 
         $check_for_locale = true;
@@ -217,16 +223,17 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
     /**
      * @param null $correctHost
+     *
      * @return bool|null
      */
     public function isCorrectHost($correctHost = null)
     {
         if (!$info = $this->getCorrectInfo($correctHost)) {
-            return null;
+            return false;
         }
 
         $host = $info['port']
-            ? $info['host'] . ':' . $info['port']
+            ? $info['host'].':'.$info['port']
             : $info['host'];
 
         return $this->getHttpHost() === $host;
@@ -234,19 +241,21 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
     /**
      * @param null $correctHost
+     *
      * @return bool|null
      */
     public function isCorrectScheme($correctHost = null)
     {
         if (!$info = $this->getCorrectInfo($correctHost)) {
-            return null;
+            return false;
         }
 
-        return 'https' === $this->getScheme() || 'http' === $info['scheme'];
+        return 'https' === $this->getScheme() || 'https' !== $info['scheme'];
     }
 
     /**
      * @param null $correctHost
+     *
      * @return bool|mixed
      */
     public function getCorrectInfo($correctHost = null)
@@ -255,15 +264,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             return $this->info;
         }
 
-        if ($correctHost && !$this->info) {
-            $this->info = parse_url($correctHost);
-            if (!$this->info || empty($this->info['host']) || empty($this->info['scheme'])) {
-                return false;
+        if ($correctHost) {
+            if (!$info = parse_url($correctHost)) {
+                return array();
             }
-
-            $this->info['scheme'] = strtolower($this->info['scheme']);
-            $this->info['host'] = strtolower($this->info['host']);
-            $this->info['port'] = @$this->info['port'] ?: null;
+            $info['scheme'] = strtolower(@$info['scheme']);
+            $info['host']   = strtolower(@$info['host']);
+            $info['port']   = @$info['port'];
+            $this->info     = $info;
         }
 
         return $this->info;
@@ -274,17 +282,22 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         if ('application/json' === $this->getContentType()) {
             if ($data = json_decode((string) $this->getContent(), 1)) {
                 if (!$return = @$data['return']) {
-                    return null;
+                    return;
                 }
             }
         }
 
         if (!$return = (string) $this->get('return')) {
-            return null;
+            return;
+        }
+
+        $return = Strings::removeInvisibleCharacters($return);
+        if (!$return) {
+            return;
         }
 
         if ('/' !== $return[0] || '//' === substr($return, 0, 2) || false !== strpos($return, '/validate-email/')) {
-            return null;
+            return;
         }
 
         return $return;

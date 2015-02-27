@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
 namespace Application\DeskPRO\Search\SearcherResult;
 
 /**
- * Search adapter
+ * Search adapter.
  */
 class Result implements ResultInterface
 {
@@ -61,9 +60,9 @@ class Result implements ResultInterface
 
     public static function newFromArray(array $info)
     {
-        $id = $info['id'];
+        $id           = $info['id'];
         $content_type = $info['content_type'];
-        $highlighted = !empty($info['highlighted']) ? $info['highlighted'] : null;
+        $highlighted  = !empty($info['highlighted']) ? $info['highlighted'] : null;
 
         unset($info['id'], $info['content_type'], $info['highlighted']);
 
@@ -100,7 +99,7 @@ class Result implements ResultInterface
     }
 
     /**
-     * Get the type of result this is
+     * Get the type of result this is.
      *
      * @return string
      */
@@ -110,7 +109,7 @@ class Result implements ResultInterface
     }
 
     /**
-     * Get the result ID
+     * Get the result ID.
      *
      * @return mixed
      */

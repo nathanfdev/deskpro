@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\ORM\Mapping\Builder;
@@ -43,7 +40,6 @@ class ClassMetadataBuilder extends BaseBuilder
         $this->createField($fieldName, 'integer')->generatedValue($type)->isPrimaryKey()->build();
     }
 
-
     public function mapString($fieldName, $length = 256, $nullable = true, $unique = false)
     {
         $this->addField(
@@ -51,18 +47,15 @@ class ClassMetadataBuilder extends BaseBuilder
         );
     }
 
-
     public function mapText($fieldName, $nullable = true)
     {
         $this->addField($fieldName, 'text', array('nullable' => $nullable));
     }
 
-
     public function mapBoolean($fieldName)
     {
         $this->addField($fieldName, 'boolean');
     }
-
 
     public function mapInteger($fieldName, $nullable = true, $precision = 0, $scale = 0)
     {
@@ -76,7 +69,6 @@ class ClassMetadataBuilder extends BaseBuilder
             )
         );
     }
-
 
     public function mapDateTime($fieldName, $nullable = true)
     {

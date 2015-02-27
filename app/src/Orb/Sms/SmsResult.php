@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms;
@@ -89,11 +86,11 @@ class SmsResult
         array $provider_metadata
     ) {
         $this->setStatus($status);
-        $this->to_number = $to_number;
-        $this->message = $message;
-        $this->provider = $providerId;
+        $this->to_number         = $to_number;
+        $this->message           = $message;
+        $this->provider          = $providerId;
         $this->provider_metadata = $provider_metadata;
-        $this->from_number = $from_number;
+        $this->from_number       = $from_number;
     }
 
     /**

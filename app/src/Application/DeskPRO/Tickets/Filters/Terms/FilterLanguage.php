@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on set language
+ * Filters based on set language.
  *
  * @option int[] language_ids
  */
@@ -54,7 +53,6 @@ class FilterLanguage extends AbstractFilterTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

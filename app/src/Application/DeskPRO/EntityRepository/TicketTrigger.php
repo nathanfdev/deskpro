@@ -26,19 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class TicketTrigger extends AbstractEntityRepository
 {
     /**
-     * @param  string                                      $event_type
+     * @param string $event_type
+     *
      * @return \Application\DeskPRO\Entity\TicketTrigger[]
      */
     public function getTriggersForEventType($event_type)
@@ -54,7 +53,8 @@ class TicketTrigger extends AbstractEntityRepository
     }
 
     /**
-     * @param  string|null                                 $type
+     * @param string|null $type
+     *
      * @return \Application\DeskPRO\Entity\TicketTrigger[]
      */
     public function getTriggers($type = null)
@@ -74,7 +74,6 @@ class TicketTrigger extends AbstractEntityRepository
             ")->execute();
         }
     }
-
 
     /**
      * @param array $run_orders
@@ -108,7 +107,7 @@ class TicketTrigger extends AbstractEntityRepository
                     WHERE email_account_id IS NOT NULL AND event_trigger = 'newticket'
                 ", array($x));
             } else {
-                $tr_id = (int)$tr_id;
+                $tr_id = (int) $tr_id;
                 $db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
             }
         }

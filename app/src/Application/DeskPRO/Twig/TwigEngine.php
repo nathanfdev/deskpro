@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Twig;
@@ -57,7 +54,7 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
         } else {
             try {
                 $GLOBALS['DP_IS_RENDERING_TPL'] = true;
-                $code = parent::render($name, $parameters);
+                $code                           = parent::render($name, $parameters);
                 if (strpos($name, 'DeskPRO:emails_') !== false) {
                     $proc = new \Application\DeskPRO\Twig\PostRenderFilter\EmailPostRenderFilter();
                     $code = $proc->process($name, $code);
@@ -67,20 +64,20 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
                 return $code;
             } catch (\Twig_Error_Syntax $e) {
                 $GLOBALS['DP_IS_RENDERING_TPL'] = false;
-                $exception = $e;
+                $exception                      = $e;
             } catch (\Twig_Error_Runtime $e) {
                 $GLOBALS['DP_IS_RENDERING_TPL'] = false;
-                $exception = $e;
+                $exception                      = $e;
             } catch (\Exception $e) {
                 $GLOBALS['DP_IS_RENDERING_TPL'] = false;
                 throw $e;
             }
 
-            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+            $errinfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
             $errinfo['no_send_error'] = true;
             \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
 
-            $this->environment->markCustomTemplateAsCrashed((string)$name);
+            $this->environment->markCustomTemplateAsCrashed((string) $name);
 
             try {
                 return $this->render($name, $parameters);

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
@@ -67,7 +65,7 @@ class DevLangCheckPhraseIdsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         $finder = Finder::create()->files()->name('*.php')->name('*.twig')->in($search_dirs);
         foreach ($finder as $file) {
-            /** @var $file \SplFileInfo */
+            /* @var $file \SplFileInfo */
             $path         = $file->getRealPath();
             $file_content = file_get_contents($path);
 

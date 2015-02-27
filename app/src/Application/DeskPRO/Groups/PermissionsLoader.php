@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Groups;
@@ -52,7 +50,6 @@ class PermissionsLoader
      */
     private $agent_override_perms;
 
-
     /**
      * @param Connection $db
      */
@@ -60,7 +57,6 @@ class PermissionsLoader
     {
         $this->db = $db;
     }
-
 
     /**
      * @return array
@@ -80,9 +76,9 @@ class PermissionsLoader
         return $this->ug_perms;
     }
 
-
     /**
-     * @param  array $ug_ids
+     * @param array $ug_ids
+     *
      * @return array
      */
     public function getUsergroupPermissions(array $ug_ids)
@@ -98,7 +94,6 @@ class PermissionsLoader
 
         return $ret;
     }
-
 
     /**
      * @return array
@@ -119,7 +114,8 @@ class PermissionsLoader
     }
 
     /**
-     * @param  int   $agent_id
+     * @param int $agent_id
+     *
      * @return array
      */
     public function getAgentOverridePermissions($agent_id)

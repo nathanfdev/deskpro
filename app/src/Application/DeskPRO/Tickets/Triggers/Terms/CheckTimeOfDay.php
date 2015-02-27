@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -72,7 +71,7 @@ class CheckTimeOfDay extends AbstractTriggerTerm
      */
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $op = $this->getTermOperator();
+        $op      = $this->getTermOperator();
         $options = $this->getTermOptions();
 
         try {
@@ -102,11 +101,11 @@ class CheckTimeOfDay extends AbstractTriggerTerm
 
         $fn_check = function ($time, $op) use ($now) {
             list($hour, $min) = explode(':', $time);
-            $hour = (int)$hour;
-            $min  = (int)$min;
+            $hour             = (int) $hour;
+            $min              = (int) $min;
 
-            $now_hour = (int)$now->format('G');
-            $now_min  = (int)$now->format('i');
+            $now_hour = (int) $now->format('G');
+            $now_min  = (int) $now->format('i');
 
             if ($op == 'gt' || $op == 'gte') {
                 if ($hour == $now_hour) {

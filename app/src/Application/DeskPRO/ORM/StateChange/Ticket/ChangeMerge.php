@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -66,7 +65,6 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
         $this->lost_data     = $lost_data;
     }
 
-
     /**
      * @return string
      */
@@ -75,15 +73,13 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
         return $this->field_id;
     }
 
-
     /**
      * @return array
      */
     public function getOld()
     {
-        return null;
+        return;
     }
-
 
     /**
      * @return array
@@ -93,7 +89,7 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
         return array(
             'field_id'      => $this->field_id,
             'old_ticket_id' => $this->old_ticket_id,
-            'lost_data'     => $this->lost_data
+            'lost_data'     => $this->lost_data,
         );
     }
 

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -53,7 +52,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
      */
     protected $options;
 
-
     /**
      * @param string $op
      * @param array  $options
@@ -64,9 +62,8 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
         $this->options = $options;
     }
 
-
     /**
-     * Gets the type name of the criteria
+     * Gets the type name of the criteria.
      *
      * @return string
      */
@@ -74,7 +71,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     {
         return Util::getBaseClassname($this);
     }
-
 
     /**
      * Gets criteria operator (is, is not, etc).
@@ -86,9 +82,8 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
         return $this->op;
     }
 
-
     /**
-     * Get's an array of options
+     * Get's an array of options.
      *
      * @return array
      */
@@ -100,13 +95,14 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     /**
      * Used on the server-side to check if the term matches.
      *
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return bool
      */
     public function isTicketMatch(Ticket $ticket)
     {
         // Cant be abstract in older versions of php see https://bugs.php.net/bug.php?id=43200
-        throw new NotImplementedException;
+        throw new NotImplementedException();
     }
 
     /**
@@ -118,6 +114,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     public function compileJsCheck()
     {
         // Cant be abstract in older versions of php see https://bugs.php.net/bug.php?id=43200
-        throw new NotImplementedException;
+        throw new NotImplementedException();
     }
 }

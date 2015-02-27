@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\Helper;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\ResultCache;
 use Orb\Util\Arrays;
 
 /**
- * Handles org searches
+ * Handles org searches.
  */
 class OrganizationResults
 {
@@ -88,7 +85,8 @@ class OrganizationResults
     }
 
     /**
-     * Set people IDs for the search results
+     * Set people IDs for the search results.
+     *
      * @param array $people_ids
      */
     public function setOrganizationIds(array $people_ids)
@@ -97,7 +95,7 @@ class OrganizationResults
     }
 
     /**
-     * Get people IDs
+     * Get people IDs.
      *
      * @return array
      */
@@ -107,7 +105,7 @@ class OrganizationResults
     }
 
     /**
-     * Get people for a particular page
+     * Get people for a particular page.
      *
      * @return array
      */

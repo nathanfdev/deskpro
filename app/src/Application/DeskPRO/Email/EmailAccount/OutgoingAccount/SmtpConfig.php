@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,8 @@ class SmtpConfig implements AccountConfigInterface
     public $host;
 
     /**
-     * Default SMTP port is 25, secure 465
+     * Default SMTP port is 25, secure 465.
+     *
      * @var int
      */
     public $port = 25;
@@ -62,7 +62,8 @@ class SmtpConfig implements AccountConfigInterface
     public $password;
 
     /**
-     * 'ssl' or 'tls'
+     * 'ssl' or 'tls'.
+     *
      * @var null|string
      */
     public $secure_mode = null;

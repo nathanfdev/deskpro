@@ -7,7 +7,6 @@ class FeedbackCategoriesDataTest extends \DpIntegrationTestCase
     /**
      * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
      */
-
     private $feedback_categories;
 
     public function runBefore()

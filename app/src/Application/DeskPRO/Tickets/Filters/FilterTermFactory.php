@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,7 +55,7 @@ class FilterTermFactory
     public function create($type, $op, array $options)
     {
         if (preg_match('#^Filter(User|Ticket|Org)Field(\d+)$#', $type, $m)) {
-            $class_type = 'Filter' . $m[1] . 'Field';
+            $class_type          = 'Filter'.$m[1].'Field';
             $options['field_id'] = $m[2];
         } else {
             $class_type = $type;

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -95,7 +94,8 @@ class LogEvent extends DomainObject implements Loggable
     }
 
     /**
-     * todo
+     * todo.
+     *
      * @return string
      */
     public function __toString()

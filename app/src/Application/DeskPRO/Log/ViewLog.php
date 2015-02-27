@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log;
@@ -56,17 +53,18 @@ class ViewLog
 
     public function __construct(Connection $db, Session $session = null)
     {
-        $this->db = $db;
+        $this->db      = $db;
         $this->session = $session;
     }
 
-
     /**
-     * Log a view on an object
+     * Log a view on an object.
      *
-     * @param  mixed                     $object
-     * @return int
+     * @param mixed $object
+     *
      * @throws \InvalidArgumentException
+     * @return int
+     *
      */
     public function view($object, $action = 1)
     {
@@ -82,7 +80,7 @@ class ViewLog
         }
 
         if (!$type) {
-            throw new \InvalidArgumentException("Invalid object type. Got `" . get_class($object) . "`");
+            throw new \InvalidArgumentException("Invalid object type. Got `".get_class($object)."`");
         }
 
         $person_id = null;
@@ -95,7 +93,7 @@ class ViewLog
             'object_id'     => $object->getId(),
             'view_action'   => $action,
             'person_id'     => $person_id,
-            'date_created'  => date('Y-m-d H:i:s')
+            'date_created'  => date('Y-m-d H:i:s'),
         ));
 
         return $this->db->lastInsertId();

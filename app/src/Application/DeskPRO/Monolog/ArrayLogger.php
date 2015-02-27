@@ -20,23 +20,22 @@ class ArrayLogger extends AbstractLogger
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level
+     * @param mixed  $level
      * @param string $message
-     * @param array $context
-     * @return null
+     * @param array  $context
      */
     public function log($level, $message, array $context = array())
     {
         $context['_dp_time'] = time();
-        $this->messages[] = array(
+        $this->messages[]    = array(
             'level'   => $level,
             'message' => $message,
-            'context' => $context
+            'context' => $context,
         );
     }
 
     /**
-     * Get raw messages as an array
+     * Get raw messages as an array.
      *
      * @return array
      */
@@ -55,7 +54,7 @@ class ArrayLogger extends AbstractLogger
         $str = array();
 
         foreach ($this->messages as $m) {
-            $str[] = "[" . date('Y-m-d H:i:s', $m['context']['_dp_time']) . "] " . $m['level'] . ": " . $m['message'];
+            $str[] = "[".date('Y-m-d H:i:s', $m['context']['_dp_time'])."] ".$m['level'].": ".$m['message'];
         }
 
         return implode("\n", $str);

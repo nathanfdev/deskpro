@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\TwitterAccounts;
@@ -41,13 +39,11 @@ class TwitterAccounts
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\TwitterAccount[]
      */
-
     protected $twitter_accounts;
 
     public function __construct(EntityManager $em)
@@ -56,9 +52,8 @@ class TwitterAccounts
     }
 
     /**
-     * Loads twitter accounts data from the database
+     * Loads twitter accounts data from the database.
      */
-
     private function preload()
     {
         if ($this->twitter_accounts !== null) {
@@ -68,22 +63,20 @@ class TwitterAccounts
         $this->twitter_accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->getAll();
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->twitter_accounts = null;
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\TwitterAccount
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
@@ -94,7 +87,6 @@ class TwitterAccounts
      *
      * @return array
      */
-
     public function getWithUserById($id)
     {
         $twitter_account = $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
@@ -102,7 +94,6 @@ class TwitterAccounts
         $resultData = array();
 
         if ($twitter_account) {
-
             $data['id']                        = $twitter_account->id;
             $data['verified']                  = $twitter_account->verifyCredentials();
             $data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
@@ -112,7 +103,6 @@ class TwitterAccounts
             $agentsArray = array();
 
             foreach ($twitter_account->persons as $agent) {
-
                 $agentsArray[] = array('id' => $agent->id, 'display_name' => $agent->display_name);
             }
 
@@ -127,7 +117,6 @@ class TwitterAccounts
     /**
      * @return \Application\DeskPRO\Entity\TwitterAccount[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -138,7 +127,6 @@ class TwitterAccounts
     /**
      * @return array
      */
-
     public function getAllWithUserAsArray()
     {
         $this->preload();
@@ -146,7 +134,6 @@ class TwitterAccounts
         $resultData = array();
 
         foreach ($this->twitter_accounts as $twitter_account) {
-
             $data['id']                        = $twitter_account->id;
             $data['verified']                  = $twitter_account->verifyCredentials();
             $data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
@@ -162,15 +149,13 @@ class TwitterAccounts
     /**
      * @return array
      */
-
     public function getAllAgents()
     {
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
         $resultData = array();
 
-        foreach($agents as $agent) {
-
+        foreach ($agents as $agent) {
             $data['id']           = $agent->id;
             $data['display_name'] = $agent->display_name;
 
@@ -183,7 +168,6 @@ class TwitterAccounts
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -194,7 +178,6 @@ class TwitterAccounts
     /**
      * @return \Application\DeskPRO\Entity\TwitterAccount
      */
-
     public function createNew()
     {
         return TwitterAccount::createTwitterAccount();

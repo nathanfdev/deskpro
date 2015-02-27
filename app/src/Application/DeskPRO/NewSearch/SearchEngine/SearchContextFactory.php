@@ -27,8 +27,8 @@
 
 namespace Application\DeskPRO\NewSearch\SearchEngine;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 
 class SearchContextFactory
 {
@@ -36,7 +36,6 @@ class SearchContextFactory
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
     private $container;
-
 
     /**
      * @param DeskproContainer $container
@@ -46,9 +45,9 @@ class SearchContextFactory
         $this->container = $container;
     }
 
-
     /**
-     * @param  Person                 $person
+     * @param Person $person
+     *
      * @return SearchContextInterface
      */
     public function createUserSearchContext(Person $person)

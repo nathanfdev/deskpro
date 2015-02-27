@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\App;
@@ -41,21 +38,21 @@ namespace Application\DeskPRO\App;
 class AppManipulatorContext
 {
     /**
-     * an array with the settings (keys are to be as defined in manifest.json)
+     * an array with the settings (keys are to be as defined in manifest.json).
      *
      * @var array|null
      */
     private $settings;
 
     /**
-     * a new title to give the app instance, otherwise the app package name is used
+     * a new title to give the app instance, otherwise the app package name is used.
      *
      * @var string|null
      */
     private $inputTitle;
 
     /**
-     * should be provided during an update manipulation
+     * should be provided during an update manipulation.
      *
      * @var array|null
      */
@@ -63,7 +60,7 @@ class AppManipulatorContext
 
     /**
      * if relevant (if app package is a usersource app) then this must be the
-     * usersource interface the app applies to ("user" or "agent")
+     * usersource interface the app applies to ("user" or "agent").
      *
      * @var string|null
      */

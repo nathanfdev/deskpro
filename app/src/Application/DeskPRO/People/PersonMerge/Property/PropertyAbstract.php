@@ -26,19 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
-
 use Application\DeskPRO\Entity\Person;
 
 /**
- * A property is something that can be merged in a person
+ * A property is something that can be merged in a person.
  */
 abstract class PropertyAbstract
 {
@@ -68,25 +66,24 @@ abstract class PropertyAbstract
 
     public function __construct(Person $person, Person $other_person)
     {
-        $this->person = $person;
+        $this->person       = $person;
         $this->other_person = $other_person;
     }
 
     /**
-     * Merge the two people
+     * Merge the two people.
      */
     abstract public function merge();
 
     /**
-     * Set the merge strategy (how to handle conflicts)
+     * Set the merge strategy (how to handle conflicts).
      *
-     * @param  string $strategy
-     * @return void
+     * @param string $strategy
      */
     public function setStrategy($strategy, array $options = array())
     {
         $this->strategy = $strategy;
-        $this->options = $options;
+        $this->options  = $options;
     }
 
     /**
@@ -98,10 +95,11 @@ abstract class PropertyAbstract
     }
 
     /**
-     * Get a strategy option
+     * Get a strategy option.
      *
-     * @param  string $name    Name of the option
-     * @param  string $default The default value if it wasnt set
+     * @param string $name    Name of the option
+     * @param string $default The default value if it wasnt set
+     *
      * @return mixed
      */
     public function getStrategyOption($name, $default = null)

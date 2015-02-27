@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -54,47 +53,50 @@ class PermissionNamesLoader
      */
     private $all_safe_names = null;
 
-
     private function load()
     {
-        $cache_path = DP_ROOT . '/sys/Resources/agent-perm-names.php';
+        $cache_path = DP_ROOT.'/sys/Resources/agent-perm-names.php';
         if ($this->debug || !file_exists($cache_path)) {
-            $scanner = new AgentGroupPermScanner();
+            $scanner    = new AgentGroupPermScanner();
             $perm_names = array(
-                'all' => $scanner->getNames(),
-                'safe' => $scanner->getSafeNames()
+                'all'  => $scanner->getNames(),
+                'safe' => $scanner->getSafeNames(),
             );
         } else {
-            $perm_names = require($cache_path);
+            $perm_names = require $cache_path;
         }
 
-        $this->all_names = $perm_names['all'];
+        $this->all_names      = $perm_names['all'];
         $this->all_safe_names = $perm_names['safe'];
     }
-
 
     /**
      * @return array
      */
     public function getNames()
     {
-        if ($this->all_names === null) $this->load();
+        if ($this->all_names === null) {
+            $this->load();
+        }
+
         return $this->all_names;
     }
-
 
     /**
      * @return array
      */
     public function getSafeNames()
     {
-        if ($this->all_safe_names === null) $this->load();
+        if ($this->all_safe_names === null) {
+            $this->load();
+        }
+
         return $this->all_safe_names;
     }
 
-
     /**
-     * @param  Usergroup|string $group Usergroup or string sys_name
+     * @param Usergroup|string $group Usergroup or string sys_name
+     *
      * @return array
      */
     public function getEnabledForGroup($group)

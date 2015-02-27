@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -62,7 +61,6 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -78,8 +76,8 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
 
             $calc = $ticket_sla->sla->getCalculator();
 
-            $ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
-            $ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+            $ticket_sla->warn_date  = $calc->calculateWarnDate($ticket);
+            $ticket_sla->fail_date  = $calc->calculateFailDate($ticket);
             $ticket_sla->sla_status = TicketSla::STATUS_OK;
             if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
                 if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
@@ -102,7 +100,6 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -112,7 +109,7 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
             return array('slas');
         }
 
-        return null;
+        return;
     }
 
     /**

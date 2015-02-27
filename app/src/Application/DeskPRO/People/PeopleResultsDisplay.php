@@ -26,11 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage People
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -103,18 +101,17 @@ class PeopleResultsDisplay
      */
     public function __construct(array $people)
     {
-        $this->people = $people;
+        $this->people       = $people;
         $this->people_count = count($people);
-        $this->people_ids = array();
+        $this->people_ids   = array();
         foreach ($this->people as $p) {
             $this->people_ids[] = $p->id;
         }
 
-        $this->em = App::getOrm();
-        $this->db = $this->em->getConnection();
+        $this->em            = App::getOrm();
+        $this->db            = $this->em->getConnection();
         $this->field_manager = App::getSystemService('person_fields_manager');
     }
-
 
     /**
      * @return int
@@ -124,7 +121,6 @@ class PeopleResultsDisplay
         return $this->people_count;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      */
@@ -133,13 +129,14 @@ class PeopleResultsDisplay
         return $this->people;
     }
 
-
     /**
      * @return array
      */
     public function getAllLabels()
     {
-        if ($this->all_labels !== null) return $this->all_labels;
+        if ($this->all_labels !== null) {
+            return $this->all_labels;
+        }
 
         if (!$this->people_count) {
             $this->all_labels = array();
@@ -163,7 +160,9 @@ class PeopleResultsDisplay
      */
     public function getAllUsernames()
     {
-        if ($this->people_usernames !== null) return $this->people_usernames;
+        if ($this->people_usernames !== null) {
+            return $this->people_usernames;
+        }
 
         if (!$this->people_count) {
             $this->people_usernames = array();
@@ -188,7 +187,7 @@ class PeopleResultsDisplay
     public function getEmail(Person $person)
     {
         if (!$person->primary_email) {
-            return null;
+            return;
         }
 
         if ($this->primary_emails === null) {
@@ -207,7 +206,9 @@ class PeopleResultsDisplay
 
     public function getAllFieldsData()
     {
-        if ($this->all_fields_data !== null) return $this->all_fields_data;
+        if ($this->all_fields_data !== null) {
+            return $this->all_fields_data;
+        }
         $data = $this->em->createQuery("
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataPerson AS d
@@ -230,7 +231,8 @@ class PeopleResultsDisplay
     }
 
     /**
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return array
      */
     public function getUserFieldData(Person $person)
@@ -275,11 +277,11 @@ class PeopleResultsDisplay
         }
     }
 
-
     /**
-     * Get an array of labels applied to a person
+     * Get an array of labels applied to a person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonLabels(Person $person)
@@ -289,11 +291,11 @@ class PeopleResultsDisplay
         return empty($this->all_labels[$person->id]) ? array() : $this->all_labels[$person->id];
     }
 
-
     /**
-     * Get an array of usernames from usersources applied to a person
+     * Get an array of usernames from usersources applied to a person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonUsernames(Person $person)
@@ -303,11 +305,11 @@ class PeopleResultsDisplay
         return empty($this->people_usernames[$person->id]) ? array() : $this->people_usernames[$person->id];
     }
 
-
     /**
-     * Check if a person has labels
+     * Check if a person has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return bool
      */
     public function hasPersonLabels(Person $person)
@@ -317,13 +319,14 @@ class PeopleResultsDisplay
         return !empty($this->all_labels[$person->id]);
     }
 
-
     /**
      * @return array
      */
     public function getAllPeopleTicketCounts()
     {
-        if ($this->people_ticket_counts !== null) return $this->people_ticket_counts;
+        if ($this->people_ticket_counts !== null) {
+            return $this->people_ticket_counts;
+        }
 
         $this->people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($this->people);
 
@@ -333,7 +336,8 @@ class PeopleResultsDisplay
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return int
      */
     public function getPersonTicketCount(Person $person)

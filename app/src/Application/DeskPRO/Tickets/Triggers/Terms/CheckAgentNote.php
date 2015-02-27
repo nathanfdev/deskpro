@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks the agent-added note
+ * Checks the agent-added note.
  *
  * @option string message
  * @option bool disable_full Do not check the full, raw message, only the cleaned cut one
@@ -57,14 +56,13 @@ class CheckAgentNote extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-        $state = $ticket->getStateChangeRecorder();
+        $state   = $ticket->getStateChangeRecorder();
 
         if (!$state->hasNewAgentNote()) {
             if ($this->getTermOperator() == 'not_isset') {
@@ -83,11 +81,11 @@ class CheckAgentNote extends AbstractTriggerTerm
 
         foreach ($state->getNewAgentNotes() as $reply) {
             $strings[] = $reply->message;
-            $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message)));
+            $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($reply->message)));
 
             if (!$no_full && $reply->message_raw) {
                 $strings[] = $reply->message_raw;
-                $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message_raw)));
+                $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($reply->message_raw)));
             }
         }
 

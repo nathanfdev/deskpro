@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat;
-
 
 use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Symfony\Component\Filesystem\Filesystem;
@@ -79,6 +76,6 @@ class BehatHooksContext extends BasePortalContext
      */
     private static function getCacheDir()
     {
-        return DP_ROOT . '/sys/cache/portal/test';
+        return DP_ROOT.'/sys/cache/portal/test';
     }
 }

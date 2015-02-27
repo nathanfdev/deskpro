@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -46,12 +43,12 @@ class Labels extends PortalItemAbstract implements CacheableItem
     public function getHtml()
     {
         $content_cloud = new ContentLabelCloud();
-        $cloud = $content_cloud->getCloud();
+        $cloud         = $content_cloud->getCloud();
 
         $vars = array(
             'section' => $this->section,
             'options' => $this->options,
-            'cloud' => $cloud
+            'cloud'   => $cloud,
         );
 
         $html = $this->renderView('UserBundle:Portal:labels-sidebar.html.twig', $vars);

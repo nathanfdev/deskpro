@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,21 +53,21 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The name of the setting
+     * The name of the setting.
      *
      * @var string
      */
     protected $name;
 
     /**
-     * The value of a setting
+     * The value of a setting.
      *
      * @var string
      */
     protected $value;
 
     /**
-     * The scope this settings is scoped to
+     * The scope this settings is scoped to.
      *
      * @var \Application\DeskPRO\Entity\Brand
      */
@@ -104,7 +103,7 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
             array(
                 'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
                 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0            => array(
                     'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => false,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),

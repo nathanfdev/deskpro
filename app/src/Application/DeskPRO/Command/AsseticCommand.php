@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Commands
  */
 
@@ -40,7 +39,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * dpdev:compile-js
+ * dpdev:compile-js.
  *
  * Compiles and minifies JS source files.
  *

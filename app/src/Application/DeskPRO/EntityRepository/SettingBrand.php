@@ -26,15 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
-use Application\DeskPRO\Entity;
 
 class SettingBrand extends AbstractEntityRepository
 {

@@ -1,17 +1,17 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetStatusTest extends \DpUnitTestCase
 {
     public function testSet()
     {
-        $ticket = new Ticket();
+        $ticket         = new Ticket();
         $ticket->status = 'awaiting_agent';
-        $exec   = new ExecutorContext();
+        $exec           = new ExecutorContext();
 
         $action = new SetStatus(array('status' => 'awaiting_user'));
 
@@ -22,9 +22,9 @@ class SetStatusTest extends \DpUnitTestCase
 
     public function testSet2()
     {
-        $ticket = new Ticket();
+        $ticket         = new Ticket();
         $ticket->status = 'awaiting_agent';
-        $exec   = new ExecutorContext();
+        $exec           = new ExecutorContext();
 
         $action = new SetStatus(array('status' => 'hidden.deleted'));
 
@@ -38,7 +38,7 @@ class SetStatusTest extends \DpUnitTestCase
      */
     public function testInvalid()
     {
-        $ticket = new Ticket();
+        $ticket         = new Ticket();
         $ticket->status = 'awaiting_agent';
 
         $exec = new ExecutorContext();
@@ -50,7 +50,7 @@ class SetStatusTest extends \DpUnitTestCase
 
     public function testNoop2()
     {
-        $ticket = new Ticket();
+        $ticket         = new Ticket();
         $ticket->status = 'awaiting_agent';
 
         $exec = new ExecutorContext();

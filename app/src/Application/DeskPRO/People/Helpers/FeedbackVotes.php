@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -36,11 +35,11 @@ namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 
 /**
- * Helps figure out this users votes on feedback and how many votes remain
+ * Helps figure out this users votes on feedback and how many votes remain.
  */
 class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
 {
@@ -68,7 +67,8 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     protected $num_votes_remaining = null;
 
     /**
-     * Number of votes cast on specific feedback
+     * Number of votes cast on specific feedback.
+     *
      * @var array
      */
     protected $feedback_votes = array();
@@ -87,7 +87,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get how many votes the user has left to cast
+     * Get how many votes the user has left to cast.
      *
      * @return int
      */
@@ -99,13 +99,15 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get how many votes the user has used
+     * Get how many votes the user has used.
      *
      * @return int
      */
     public function getVotesUsed()
     {
-        if ($this->num_votes !== null) return $this->num_votes;
+        if ($this->num_votes !== null) {
+            return $this->num_votes;
+        }
 
         if ($this->person['id']) {
             $num_votes = App::getDb()->fetchColumn("
@@ -117,27 +119,30 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
             $num_votes = 0;
         }
 
-        $this->num_votes = $num_votes;
+        $this->num_votes           = $num_votes;
         $this->num_votes_remaining = max(0, 10 - $this->num_votes);
 
         return $this->num_votes;
     }
 
     /**
-     * Get how many votes this user has cast on a specific feedback
+     * Get how many votes this user has cast on a specific feedback.
      *
-     * @param  Feedback|int $feedback An Feedback or an feedback ID
+     * @param Feedback|int $feedback An Feedback or an feedback ID
+     *
      * @return int
      */
     public function getVotesOnFeedback($feedback)
     {
         $feedback_id = $feedback;
-        if (is_object($feedback_id) OR is_array($feedback_id)) {
+        if (is_object($feedback_id) or is_array($feedback_id)) {
             $feedback_id = $feedback_id['id'];
         }
 
         // Already know it
-        if (isset($this->feedback_votes[$feedback_id])) return $this->feedback_votes[$feedback_id];
+        if (isset($this->feedback_votes[$feedback_id])) {
+            return $this->feedback_votes[$feedback_id];
+        }
 
         if ($this->person['id']) {
             $num_votes_this = App::getDb()->fetchColumn("
@@ -161,9 +166,10 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get vote status on a bunch of feedback
+     * Get vote status on a bunch of feedback.
      *
-     * @param  array $feedback
+     * @param array $feedback
+     *
      * @return array
      */
     public function getVotesOnFeedbackCollection(array $feedback)
@@ -174,7 +180,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
             if ($i instanceof \Application\DeskPRO\Entity\Feedback) {
                 $ids[] = $i->getId();
             } else {
-                $ids[] = (int)$i;
+                $ids[] = (int) $i;
             }
         }
 
@@ -218,5 +224,8 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
         );
     }
 
-    public function _getthis() { return $this; }
+    public function _getthis()
+    {
+        return $this;
+    }
 }

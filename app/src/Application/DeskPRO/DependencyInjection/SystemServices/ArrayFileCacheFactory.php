@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -65,7 +64,7 @@ class ArrayFileCacheFactory
                 if (!is_object($data)) {
                     return false;
                 }
-                /** @var $data \Doctrine\ORM\Query\ParserResult */
+                /* @var $data \Doctrine\ORM\Query\ParserResult */
                 $s = $data->getSqlExecutor()->getSqlStatements();
                 if (is_string($s)) {
                     // Hard-coded IDs

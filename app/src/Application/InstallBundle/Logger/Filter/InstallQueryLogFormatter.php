@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Logger\Filter;
@@ -52,7 +49,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 
         // Dont care if it ran quickly
         if ($log_item['queryinfo']['time_taken'] < $this->max_time) {
-            return null;
+            return;
         }
 
         // See if the SQL had a tag in it
@@ -64,7 +61,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 
             // Otherwise the tag is the type against the table
             } else {
-                $query_tag = md5($log_item['queryinfo']['query_typename'] . $log_item['queryinfo']['table']);
+                $query_tag = md5($log_item['queryinfo']['query_typename'].$log_item['queryinfo']['table']);
             }
         }
 
@@ -73,7 +70,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
             $this->done_log[$query_tag] = 0;
         }
         if ($this->done_log[$query_tag]++ > $this->log_max_type) {
-            return null;
+            return;
         }
 
         $params = array();
@@ -87,8 +84,8 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
                     }
                 }
 
-                $len = strlen($v);
-                $params[$k] = 'string(' . $len . ')';
+                $len        = strlen($v);
+                $params[$k] = 'string('.$len.')';
             }
         }
 
@@ -104,7 +101,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
             \DeskPRO\Kernel\KernelErrorHandler::varToString($params)
         );
 
-        $log_item[\Orb\Log\LogItem::PRIORITY] = \Orb\Log\Logger::DEBUG;
+        $log_item[\Orb\Log\LogItem::PRIORITY]      = \Orb\Log\Logger::DEBUG;
         $log_item[\Orb\Log\LogItem::PRIORITY_NAME] = 'DBEUG';
 
         return $log_item;

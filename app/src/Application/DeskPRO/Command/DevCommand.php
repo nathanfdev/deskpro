@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Commands
  */
 
@@ -67,8 +66,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -171,8 +171,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int
      */
     private function testdbRewriteEmailsAction(InputInterface $input, OutputInterface $output)
@@ -203,8 +204,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int
      */
     private function regenBuildManifestAction(InputInterface $input, OutputInterface $output)
@@ -233,8 +235,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int
      */
     private function touchBuildTimeAction(InputInterface $input, OutputInterface $output)
@@ -249,15 +252,16 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int
      */
     private function buildApiDocsAction(InputInterface $input, OutputInterface $output)
     {
         $start_time = microtime(true);
 
-        $save_path = DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs';
+        $save_path = DP_ROOT.'/src/Application/LegacyApiBundle/Resources/views/SwaggerDocs';
 
         $output->writeln("Generating Swagger resources");
         $output->writeln("-> Path: $save_path");
@@ -269,7 +273,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $output->writeln("-> OK");
 
         $output->writeln("Scanning ...");
-        $swagger = new Swagger(DP_ROOT.'/src/Application/ApiBundle');
+        $swagger = new Swagger(DP_ROOT.'/src/Application/LegacyApiBundle');
         $output->writeln("-> OK");
 
         $output->writeln("Generating resource-list.json...");
@@ -291,8 +295,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int
      */
     private function moveBuildScriptsAction(InputInterface $input, OutputInterface $output)

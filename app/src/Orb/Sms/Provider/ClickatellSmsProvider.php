@@ -26,17 +26,14 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms\Provider;
 
+use Bdt\Clickatell\ClickatellClient;
 use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
-use Bdt\Clickatell\ClickatellClient;
 use Orb\Sms\SmsResult;
 
 class ClickatellSmsProvider implements SmsProviderInterface
@@ -61,7 +58,6 @@ class ClickatellSmsProvider implements SmsProviderInterface
      */
     private $password;
 
-
     /**
      * @param $user The Clickatell User
      * @param $apiId The Clickatell API ID
@@ -70,9 +66,9 @@ class ClickatellSmsProvider implements SmsProviderInterface
     public function __construct($user, $password, $apiId)
     {
         $this->client = ClickatellClient::factory(array( 'api_id'   => $apiId, 'user' => $user,
-                                                         'password' => $password ));
-        $this->user = $user;
-        $this->apiId = $apiId;
+                                                         'password' => $password, ));
+        $this->user     = $user;
+        $this->apiId    = $apiId;
         $this->password = $password;
     }
 
@@ -85,7 +81,7 @@ class ClickatellSmsProvider implements SmsProviderInterface
 
         try {
             $result = $this->client->getCommand('SendMsg',
-                array( 'to' => $toPhoneNumber, 'text' => $textMessage, ))->execute();
+                array( 'to' => $toPhoneNumber, 'text' => $textMessage))->execute();
         } catch (\Exception $e) {
             $smsResult = new SmsResult(SmsResult::SMS_FAIL,
                 $fromPhoneNumber,
@@ -116,7 +112,6 @@ class ClickatellSmsProvider implements SmsProviderInterface
         return $smsResult;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -125,16 +120,15 @@ class ClickatellSmsProvider implements SmsProviderInterface
         return 'clickatell';
     }
 
-
     /**
      * {@inheritdoc}
      */
     public function getParams()
     {
         return array(
-            'user' => $this->user,
+            'user'     => $this->user,
             'password' => $this->password,
-            'api_id' => $this->apiId
+            'api_id'   => $this->apiId,
         );
     }
 }

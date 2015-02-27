@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Publish
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish;
@@ -73,7 +70,6 @@ class LatestContent
      */
     protected $use_selections;
 
-
     /**
      * @param \Doctrine\ORM\EntityManager $em
      */
@@ -82,23 +78,22 @@ class LatestContent
         $this->em = $em;
     }
 
-
     /**
      * @param array $use_selections
      */
     public function useSelections(array $use_selections)
     {
         $this->use_selections = $use_selections;
-        $this->max_article = 100;
-        $this->max_download = 100;
-        $this->max_news = 100;
-        $this->max_feedback = 100;
-        $this->count = 100;
+        $this->max_article    = 100;
+        $this->max_download   = 100;
+        $this->max_news       = 100;
+        $this->max_feedback   = 100;
+        $this->count          = 100;
     }
-
 
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxCount($x)
@@ -111,9 +106,9 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxArticles($x)
@@ -123,9 +118,9 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxFeedback($x)
@@ -135,9 +130,9 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxDownloads($x)
@@ -147,9 +142,9 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxNews($x)
@@ -158,7 +153,6 @@ class LatestContent
 
         return $this;
     }
-
 
     /**
      * @return array
@@ -223,14 +217,14 @@ class LatestContent
             $final_results = $results;
         } else {
             $final_results = array();
-            $counts = array();
+            $counts        = array();
 
             foreach ($results as $r) {
                 if (!isset($counts[$r['type']])) {
                     $counts[$r['type']] = 0;
                 }
 
-                $prop = 'max_' . $r['type'];
+                $prop = 'max_'.$r['type'];
 
                 if ($counts[$r['type']] >= $this->$prop) {
                     continue;

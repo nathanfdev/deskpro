@@ -1,21 +1,8 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
-	<nav class="dp-appnav">
-		<ul>
-			<li dp-state-mark="twitter.setup">
-				<a href="{{ ng_href('twitter.setup') }}">
-					<i class="fa fa-cog"></i>
-					<span>Setup</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="twitter.accounts">
-				<a href="{{ ng_href('twitter.accounts') }}">
-					<i class="fa fa-twitter"></i>
-					<span>Accounts</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-		</ul>
-	</nav>
+	{{ nav.list() }}
+		{{ nav.list_item('Twitter Setup', ng_href('twitter.setup'), 'twitter.setup', 'fa-cog') }}
+		{{ nav.list_item('Twitter Accounts', ng_href('twitter.accounts'), 'twitter.accounts', 'fa-twitter') }}
+	{{ nav.list_end() }}
 {% endblock %}

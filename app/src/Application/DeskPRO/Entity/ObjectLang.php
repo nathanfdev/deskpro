@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -81,14 +80,16 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     protected $_set_object;
 
     /**
-     * Create a new lang object
+     * Create a new lang object.
      *
-     * @param  Language|int                           $lang      The lang ID of a lang or the lang itself
-     * @param  object                                 $object    The domain object to set the lang for. This is any object that has getObjectRef
-     * @param  string                                 $prop_name The property ID of the thing we are translating
-     * @param  string                                 $value     The value ID of the thing we are translating
-     * @return \Application\DeskPRO\Entity\ObjectLang
+     * @param Language|int $lang      The lang ID of a lang or the lang itself
+     * @param object       $object    The domain object to set the lang for. This is any object that has getObjectRef
+     * @param string       $prop_name The property ID of the thing we are translating
+     * @param string       $value     The value ID of the thing we are translating
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\ObjectLang
+     *
      */
     public static function createObjectLang($lang, $object, $prop_name, $value)
     {
@@ -187,6 +188,6 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'prop_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'prop_name'));
         $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

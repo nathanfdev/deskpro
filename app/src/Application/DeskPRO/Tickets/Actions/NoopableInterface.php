@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,8 +46,9 @@ interface NoopableInterface
      *
      * We skip no-op actions.
      *
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return bool
      */
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context);

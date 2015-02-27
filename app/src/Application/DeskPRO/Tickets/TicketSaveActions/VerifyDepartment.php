@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -45,7 +44,6 @@ class VerifyDepartment implements TicketSaveActionInterface
      */
     private $ticket_deps;
 
-
     /**
      * @param TicketDepartments $ticket_deps
      */
@@ -54,11 +52,9 @@ class VerifyDepartment implements TicketSaveActionInterface
         $this->ticket_deps = $ticket_deps;
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -79,5 +75,4 @@ class VerifyDepartment implements TicketSaveActionInterface
             $ticket->department = $dep;
         }
     }
-
 }

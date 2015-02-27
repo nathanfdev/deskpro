@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -36,7 +34,7 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 use Application\DeskPRO\EmailGateway\Storage;
 
 /**
- * Fetches mail from an exchange server
+ * Fetches mail from an exchange server.
  */
 class Exchange extends AbstractFetcher
 {
@@ -66,39 +64,42 @@ class Exchange extends AbstractFetcher
     protected $storage;
 
     /**
-     * Messages retrieved in the current fetch
+     * Messages retrieved in the current fetch.
      *
      * @var Array An array of messages
      */
     protected $messages;
 
     /**
-     * Mailbox name to move messages after processing
+     * Mailbox name to move messages after processing.
+     *
      * @var String Mailbox name
      */
     private $archive_mailbox;
 
     /**
-     * Mailbox name to read messages from
+     * Mailbox name to read messages from.
+     *
      * @var String Mailbox name
      */
     private $read_mailbox;
 
     /**
-     * Max number of email IDs to fetch in one go
+     * Max number of email IDs to fetch in one go.
+     *
      * @var int
      */
     protected $fetch_limit = 100;
 
     /**
-     * Next Message index to read
+     * Next Message index to read.
      *
      * @var int
      */
     protected $next_index = 0;
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -166,7 +167,7 @@ class Exchange extends AbstractFetcher
     }
 
     /**
-     * Gets the message storage
+     * Gets the message storage.
      *
      * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
      */
@@ -177,7 +178,7 @@ class Exchange extends AbstractFetcher
 
     /**
      * Gets the next message
-     * Iterates over the fetched IDs and retrieves the next message in list
+     * Iterates over the fetched IDs and retrieves the next message in list.
      *
      * @return object
      */
@@ -188,6 +189,7 @@ class Exchange extends AbstractFetcher
 
     /**
      * {@inheritdoc}
+     *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
@@ -207,7 +209,7 @@ class Exchange extends AbstractFetcher
         $message = $this->storage->getEmailProps($message_id);
 
         if (!$message) {
-            return null;
+            return;
         }
 
         $raw_message       = new RawMessage();
@@ -253,7 +255,7 @@ class Exchange extends AbstractFetcher
 
     /**
      * Processes the message after reading it.
-     * Moves it to the DP_Mailbox folder marking it "read"
+     * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param int $id ID of the message
      */

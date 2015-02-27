@@ -26,28 +26,27 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Writer;
-use \Orb\Log\LogItem;
+
+use Orb\Log\LogItem;
 
 /**
- * A writer that calls other writers
+ * A writer that calls other writers.
  */
 class WriterChain extends AbstractWriter implements \Countable, \IteratorAggregate
 {
     /**
-     * An array of writers
+     * An array of writers.
+     *
      * @var array
      */
     protected $_writers = array();
 
     /**
-     * Add a new filter to the chain
+     * Add a new filter to the chain.
      *
      * @param FilterInterface $writer
      */
@@ -57,7 +56,7 @@ class WriterChain extends AbstractWriter implements \Countable, \IteratorAggrega
     }
 
     /**
-     * Add a new filter to the chain
+     * Add a new filter to the chain.
      *
      * @param FilterInterface $writer
      */
@@ -79,9 +78,10 @@ class WriterChain extends AbstractWriter implements \Countable, \IteratorAggrega
     }
 
     /**
-     * Write a log message
+     * Write a log message.
      *
-     * @param  LogItem $event
+     * @param LogItem $event
+     *
      * @return bool
      */
     public function _write(LogItem $log_item)
@@ -94,9 +94,7 @@ class WriterChain extends AbstractWriter implements \Countable, \IteratorAggrega
     }
 
     /**
-     * Perform shutdown activities
-     *
-     * @return void
+     * Perform shutdown activities.
      */
     public function shutdown()
     {

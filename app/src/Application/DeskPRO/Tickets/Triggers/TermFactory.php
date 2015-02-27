@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Triggers;
@@ -43,7 +41,7 @@ class TermFactory
     public function create($type, $op, array $options)
     {
         if (preg_match('#^Check(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
-            $class_type = 'Check' . $m[1] . $m[2] . 'Field';
+            $class_type          = 'Check'.$m[1].$m[2].'Field';
             $options['field_id'] = $m[3];
         } else {
             $class_type = $type;

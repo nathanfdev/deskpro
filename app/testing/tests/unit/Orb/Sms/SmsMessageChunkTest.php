@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Sms
+ * DeskPRO.
  */
 
 namespace DpUnitTests\Sms;

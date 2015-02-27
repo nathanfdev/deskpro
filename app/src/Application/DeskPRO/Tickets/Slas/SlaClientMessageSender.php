@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Slas;
@@ -60,7 +57,6 @@ class SlaClientMessageSender implements PersonContextInterface
      */
     private $queue = array();
 
-
     /**
      * @param Connection $db
      */
@@ -69,7 +65,6 @@ class SlaClientMessageSender implements PersonContextInterface
         $this->db = $db;
     }
 
-
     /**
      * @param Person $person
      */
@@ -77,7 +72,6 @@ class SlaClientMessageSender implements PersonContextInterface
     {
         $this->person = $person;
     }
-
 
     /**
      * @param Ticket    $ticket         The ticket
@@ -103,11 +97,10 @@ class SlaClientMessageSender implements PersonContextInterface
                 'is_completed'          => $ticket_sla->is_completed,
                 'original_is_completed' => $orig_completed,
                 'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
-                'via_person'            => $this->person ? $this->person->id : null
-            ))
+                'via_person'            => $this->person ? $this->person->id : null,
+            )),
         );
     }
-
 
     /**
      * Send all messages.
@@ -120,7 +113,7 @@ class SlaClientMessageSender implements PersonContextInterface
             return 0;
         }
 
-        $q = $this->queue;
+        $q           = $this->queue;
         $this->queue = array();
 
         $this->db->batchInsert('client_messages', $q);

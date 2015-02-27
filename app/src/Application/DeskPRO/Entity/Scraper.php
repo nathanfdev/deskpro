@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,7 +43,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  *
  * Actual scrapers are also responsible for how to store any scraped data (hence there is no
  * use in an abstract ScraperData class).
- *
  */
 abstract class Scraper
 {
@@ -52,7 +50,6 @@ abstract class Scraper
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id;
 
@@ -65,14 +62,14 @@ abstract class Scraper
     protected $handler_class;
 
     /**
-     * Options we'll pass to the handler
+     * Options we'll pass to the handler.
      *
      * @var array
      */
     protected $options = array();
 
     /**
-     * True if this scraper is enabled
+     * True if this scraper is enabled.
      *
      * @var bool
      */

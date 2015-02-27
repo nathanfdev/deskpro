@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\People;
 
@@ -40,7 +38,8 @@ class People
     /**
      * Get an array of tickets from the passed IDs.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getNotesForPerson(array $ids)
@@ -49,7 +48,6 @@ class People
             ->getRepository('DeskPRO:Ticket')
             ->getTicketsFromIds($ids);
     }
-
 
     public function getPeopleOptions()
     {

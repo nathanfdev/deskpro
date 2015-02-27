@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Queue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Queue;
@@ -58,10 +55,9 @@ class Queue extends ZendQueue
         # If the message is not too big, we can just store it in the queue store
         #------------------------------
 
-        if ((is_string($message) && strlen($message) < $max_size) OR $this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
+        if ((is_string($message) && strlen($message) < $max_size) or $this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
             return $this->getAdapter()->send($message);
         }
-
 
         #------------------------------
         # Otherwise we'll go and create a QueueItem, and change the message
@@ -75,19 +71,19 @@ class Queue extends ZendQueue
 
         $db = $this->getOption('em')->getConnection();
 
-        $item = array();
-        $item['created_at'] = date('Y-m-d H:i:s');
+        $item                = array();
+        $item['created_at']  = date('Y-m-d H:i:s');
         $item['is_dataonly'] = true;
-        $item['data'] = $message;
+        $item['data']        = $message;
 
         try {
             $db->insert('queue_items', $item);
             $item['id'] = $db->lastInsertId();
 
-            $message = '<QueueItem:' . $item['id'] . '>';
+            $message = '<QueueItem:'.$item['id'].'>';
 
             $success = $this->getAdapter()->send($message);
-            $e = null;
+            $e       = null;
         } catch (\Exception $e) {
             $success = false;
         }
@@ -95,7 +91,8 @@ class Queue extends ZendQueue
         if (!$success) {
             try {
                 $db->delete('queue_items', array('id' => $item['id']));
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             if ($e) {
                 throw $e;
@@ -104,7 +101,6 @@ class Queue extends ZendQueue
 
         return $success;
     }
-
 
     public function deleteMessage(ZendMessage $message)
     {

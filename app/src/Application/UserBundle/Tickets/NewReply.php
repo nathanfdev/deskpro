@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Tickets;
@@ -43,8 +40,8 @@ class NewReply extends \ArrayObject
 {
     /** @var array */
     protected static $prop_names = array(
-        'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
-        'attach_ids_authed' => 1
+        'message'           => 1, 'new_upload' => 1, 'attach_ids' => 1,
+        'attach_ids_authed' => 1,
     );
 
     /** @var string */
@@ -78,10 +75,10 @@ class NewReply extends \ArrayObject
     {
         $ticket_message = new TicketMessage();
         $ticket_message->setMessageText($this->message);
-        $ticket_message->ticket = $this->ticket;
-        $ticket_message->person = $this->person;
+        $ticket_message->ticket          = $this->ticket;
+        $ticket_message->person          = $this->person;
         $ticket_message->creation_system = TicketMessage::CREATED_WEB_PERSON_PORTAL;
-        $ticket_message->ip_address = dp_get_user_ip_address();
+        $ticket_message->ip_address      = dp_get_user_ip_address();
 
         if ($this->new_upload) {
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
@@ -89,8 +86,8 @@ class NewReply extends \ArrayObject
                 $this->new_upload->getClientOriginalName(),
                 $this->new_upload->getClientMimeType()
             );
-            $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new \Application\DeskPRO\Entity\TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             $ticket_message->addAttachment($attach);
@@ -104,8 +101,8 @@ class NewReply extends \ArrayObject
                     $blob = App::findEntity('DeskPRO:Blob', $blob_id);
                 }
                 if ($blob) {
-                    $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\TicketAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $ticket_message->addAttachment($attach);
@@ -118,32 +115,32 @@ class NewReply extends \ArrayObject
         }
 
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-            return null;
+            return;
         }
 
-            $this->ticket->addMessage($ticket_message);
+        $this->ticket->addMessage($ticket_message);
 
-            if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-                $this->ticket_message = $dupe_message;
+        if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+            $this->ticket_message = $dupe_message;
 
-                return;
-            }
+            return;
+        }
 
             // If status is pending, we'll switch it to open so agents will see it
             if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER || $this->ticket['status'] == Ticket::STATUS_RESOLVED) {
                 $this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
             }
 
-            if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
-                // someone like the org manager replying - need to make sure they're CC'd
+        if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
+            // someone like the org manager replying - need to make sure they're CC'd
                 $this->ticket->addParticipantPerson($this->person);
-            }
+        }
 
-            App::getOrm()->beginTransaction();
-            App::getOrm()->persist($ticket_message);
-            App::getOrm()->persist($this->ticket);
-            App::getOrm()->flush();
-            App::getOrm()->commit();
+        App::getOrm()->beginTransaction();
+        App::getOrm()->persist($ticket_message);
+        App::getOrm()->persist($this->ticket);
+        App::getOrm()->flush();
+        App::getOrm()->commit();
     }
 
     public function getNewMessage()
@@ -151,8 +148,26 @@ class NewReply extends \ArrayObject
         return $this->ticket_message;
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

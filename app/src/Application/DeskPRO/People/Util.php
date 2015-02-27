@@ -26,11 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage People
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -39,13 +37,16 @@ use Application\DeskPRO\Entity\Person;
 
 class Util
 {
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Takes a full name and an email address and tries to parse out a first and last name.
      *
-     * @param  string|null $full_name
-     * @param  string|null $email_address
+     * @param string|null $full_name
+     * @param string|null $email_address
+     *
      * @return array
      */
     public static function guessNameParts($full_name = null, $email_address = null)
@@ -55,16 +56,16 @@ class Util
         }
 
         $first_name = null;
-        $last_name = null;
+        $last_name  = null;
 
         if ($full_name && strpos($full_name, ' ') !== false) {
-            list ($first_name, $last_name) = explode(' ', $full_name, 2);
+            list($first_name, $last_name) = explode(' ', $full_name, 2);
         } elseif ($email_address) {
-            list ($email_name,) = explode('@', $email_address, 2);
+            list($email_name,) = explode('@', $email_address, 2);
             if (strpos($email_name, '.') !== false) {
-                list ($first_name, $last_name) = explode('.', $email_name, 2);
-                $first_name = ucfirst($first_name);
-                $last_name = ucfirst($last_name);
+                list($first_name, $last_name) = explode('.', $email_name, 2);
+                $first_name                   = ucfirst($first_name);
+                $last_name                    = ucfirst($last_name);
             }
         }
 
@@ -73,17 +74,16 @@ class Util
             if ($full_name) {
                 $first_name = $full_name;
             } elseif ($email_address) {
-                list ($email_name,) = explode('@', $email_address, 2);
-                $first_name = ucfirst($email_name);
+                list($email_name,)  = explode('@', $email_address, 2);
+                $first_name         = ucfirst($email_name);
             }
         }
 
         return array(
             $first_name,
-            $last_name
+            $last_name,
         );
     }
-
 
     /**
      * Given an array of permissions, return the overrides that matter. E.g., if a ug has a permission on,
@@ -101,7 +101,8 @@ class Util
      * )
      * </code>
      *
-     * @param  array $ug_perm_matrix
+     * @param array $ug_perm_matrix
+     *
      * @return array
      */
     public static function resolveOverridePermissions(array $ug_perm_matrix, array $usergroups, array $all_ug_perms)
@@ -117,20 +118,18 @@ class Util
         foreach ($ug_perm_matrix as $group => $ug_perms) {
             foreach (array(0, 1) as $run_num) {
                 foreach ($ug_perms as $ug_id => $perms) {
-
                     // Not one we enabled so we dont care
                     if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
                         continue;
                     }
 
                     foreach ($perms as $perm => $v) {
-
                         if (!$v) {
                             continue; //dont care about non 1's
                         }
 
                         $perm_name = "{$group}.{$perm}";
-                        $is_sub = false;
+                        $is_sub    = false;
 
                         // If this is a sub-permission and the ug has the parent on,
                         // then this is on too
@@ -177,7 +176,8 @@ class Util
     /**
      * Just like resolveOverridePermissions but runs with current permissions on an agent.
      *
-     * @param  Person $agent
+     * @param Person $agent
+     *
      * @return array
      */
     public static function resolveOverridePermissionsForAgent(Person $agent)
@@ -188,7 +188,7 @@ class Util
         $ug_ids = $db->fetchAllCol("SELECT usergroup_id FROM person2usergroups WHERE person_id = ?", array($agent->id));
 
         if ($ug_ids) {
-            $usergroups = $em->getRepository('DeskPRO:Usergroup')->getByIds($ug_ids);
+            $usergroups   = $em->getRepository('DeskPRO:Usergroup')->getByIds($ug_ids);
             $all_ug_perms = $db->fetchAllKeyValue("
                 SELECT name, value
                 FROM permissions
@@ -204,8 +204,8 @@ class Util
             ", array($ug_ids), 'usergroup_id', 'name', 'value', array(Connection::PARAM_INT_ARRAY));
         } else {
             $all_ug_perms = array();
-            $usergroups = array();
-            $ug_perms = array();
+            $usergroups   = array();
+            $ug_perms     = array();
         }
 
         $override_perms = $db->fetchAllKeyValue("
@@ -218,20 +218,28 @@ class Util
 
         foreach ($ug_perms as $ug_id => $perms) {
             foreach ($perms as $perm_name => $perm_val) {
-                list ($perm_group, $perm_endname) = explode('.', $perm_name, 2);
+                list($perm_group, $perm_endname) = explode('.', $perm_name, 2);
 
-                if (!isset($ug_perm_matrix[$perm_group])) $ug_perm_matrix[$perm_group] = array();
-                if (!isset($ug_perm_matrix[$perm_group][$ug_id])) $ug_perm_matrix[$perm_group][$ug_id] = array();
+                if (!isset($ug_perm_matrix[$perm_group])) {
+                    $ug_perm_matrix[$perm_group] = array();
+                }
+                if (!isset($ug_perm_matrix[$perm_group][$ug_id])) {
+                    $ug_perm_matrix[$perm_group][$ug_id] = array();
+                }
                 $ug_perm_matrix[$perm_group][$ug_id][$perm_endname] = $perm_val;
             }
         }
 
         foreach ($override_perms as $perm_name => $perm_val) {
-            $ug_id = 'override';
-            list ($perm_group, $perm_endname) = explode('.', $perm_name, 2);
+            $ug_id                           = 'override';
+            list($perm_group, $perm_endname) = explode('.', $perm_name, 2);
 
-            if (!isset($ug_perm_matrix[$perm_group])) $ug_perm_matrix[$perm_group] = array();
-            if (!isset($ug_perm_matrix[$perm_group][$ug_id])) $ug_perm_matrix[$perm_group][$ug_id] = array();
+            if (!isset($ug_perm_matrix[$perm_group])) {
+                $ug_perm_matrix[$perm_group] = array();
+            }
+            if (!isset($ug_perm_matrix[$perm_group][$ug_id])) {
+                $ug_perm_matrix[$perm_group][$ug_id] = array();
+            }
             $ug_perm_matrix[$perm_group][$ug_id][$perm_endname] = $perm_val;
         }
 

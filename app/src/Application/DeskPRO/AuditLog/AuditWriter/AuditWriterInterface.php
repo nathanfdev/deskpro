@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\AuditLog\AuditWriter;
@@ -36,10 +34,9 @@ namespace Application\DeskPRO\AuditLog\AuditWriter;
 interface AuditWriterInterface
 {
     /**
-     * Write a log entry
+     * Write a log entry.
      *
-     * @param  \Application\DeskPRO\Entity\AuditLog[] $log
-     * @return void
+     * @param \Application\DeskPRO\Entity\AuditLog[] $log
      */
     public function writeLogs(array $logs);
 }

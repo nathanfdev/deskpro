@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Model;
@@ -89,7 +86,11 @@ class NewDownload
         $download          = new Download();
         $download->person  = $this->_person_context;
         $download->title   = $this->title;
-        $download->content = $this->content ?: '';
+
+        $download->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
+
         $download->setStatusCode($this->status);
 
         if ($download->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {

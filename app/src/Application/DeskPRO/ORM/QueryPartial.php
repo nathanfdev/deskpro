@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -45,11 +44,13 @@ class QueryPartial
     /** @var int|null  */
     protected $max_results = null;
 
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function setOrderBy($order_by, $order_dir)
     {
-        $this->order_by = $order_by;
+        $this->order_by  = $order_by;
         $this->order_dir = $order_dir;
 
         return $this;

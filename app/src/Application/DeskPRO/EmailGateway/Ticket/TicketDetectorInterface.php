@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -45,7 +43,8 @@ interface TicketDetectorInterface
     /**
      * Should return a ticket if one was found. If no ticket is found, return null.
      *
-     * @param  \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+     * @param \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function findExistingTicket(AbstractReader $reader);
@@ -59,8 +58,9 @@ interface TicketDetectorInterface
      * then we can still associate accounts properly.
      * (ex multiple participants might each get a different code etc)
      *
-     * @param  \Application\DeskPRO\Entity\Ticket                      $ticket
-     * @param  \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+     * @param \Application\DeskPRO\Entity\Ticket                      $ticket
+     * @param \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader);
@@ -69,8 +69,9 @@ interface TicketDetectorInterface
      * If a ticket is found but a person isn't, should we add the new email address
      * as a new CC or should we deny the message?
      *
-     * @param  \Application\DeskPRO\Entity\Ticket                      $ticket
-     * @param  \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+     * @param \Application\DeskPRO\Entity\Ticket                      $ticket
+     * @param \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+     *
      * @return bool
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader);

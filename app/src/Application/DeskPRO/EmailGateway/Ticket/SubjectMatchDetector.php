@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -43,7 +41,7 @@ use Orb\Util\Strings;
 
 /**
  * Detects a ticket based off of a common subject and From email address.
- * For example "RE: Something"
+ * For example "RE: Something".
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
@@ -74,7 +72,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected $enable_exact_subject = false;
 
-
     /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
      * This will look for PTAC/TAC 'headers' in the body text.
@@ -102,7 +99,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     {
         $this->enable_exact_subject = true;
     }
-
 
     /**
      * @param int $time_cutoff Max age of a ticket before the subject match wont work
@@ -148,9 +144,8 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     /**
      * Tries to find a subject by stripping off standard subject prefixes.
      *
-     * @param  AbstractReader $reader
+     * @param AbstractReader $reader
      * @param $subject
-     * @return null
      */
     public function _findExistingTicketStandard(AbstractReader $reader, $subject)
     {
@@ -168,7 +163,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $ticket_ids = array();
 
         if ($this->enable_exact_subject) {
-            $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: ' . $subject);
+            $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: '.$subject);
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
                 SELECT id
                 FROM tickets
@@ -194,7 +189,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
                 $last_subject = $subject_re;
 
-                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: ".$subject_re);
 
                 // Now lets try to find it...
                 $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
@@ -212,7 +207,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         if (!$ticket_ids) {
             $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
 
-            return null;
+            return;
         }
 
         $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: ".implode(', ', $ticket_ids));
@@ -231,15 +226,14 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: ".$from);
 
-        return null;
+        return;
     }
 
     /**
-     * Tries to find a subject by stripping off anything before a colon (ie non-standard prefixes)
+     * Tries to find a subject by stripping off anything before a colon (ie non-standard prefixes).
      *
-     * @param  AbstractReader $reader
+     * @param AbstractReader $reader
      * @param $subject
-     * @return null
      */
     public function _findExistingTicketExtra(AbstractReader $reader, $subject)
     {
@@ -251,7 +245,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $subject_orig = $subject;
 
         if (strpos($subject, ':') === false) {
-            return null;
+            return;
         }
 
         // Strip off Re: prefix (and alternatives in some other langs)
@@ -285,7 +279,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         if (!$ticket_ids) {
             $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
 
-            return null;
+            return;
         }
 
         $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: ".implode(', ', $ticket_ids));
@@ -304,7 +298,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: ".$from);
 
-        return null;
+        return;
     }
 
     /**
@@ -316,7 +310,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             return $this->_found_person;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -328,7 +322,8 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

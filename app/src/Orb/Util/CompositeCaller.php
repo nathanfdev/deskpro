@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Orb\Util;
@@ -50,16 +48,15 @@ class CompositeCaller
      */
     private $_tag_to_objects = array();
 
-
     /**
-     * Add an object to the composite collection
+     * Add an object to the composite collection.
      *
      * @param mixed       $object
      * @param string|null $tag
      */
     public function addObject($object, $tag = null)
     {
-        $id = spl_object_hash($object);
+        $id                  = spl_object_hash($object);
         $this->_objects[$id] = $object;
 
         if ($tag !== null) {
@@ -67,15 +64,15 @@ class CompositeCaller
                 $this->_tag_to_objects[$tag] = array();
             }
             $this->_tag_to_objects[$tag][$id] = $object;
-            $this->_object_to_tag[$id] = $tag;
+            $this->_object_to_tag[$id]        = $tag;
         }
     }
 
-
     /**
-     * Count number of objects
+     * Count number of objects.
      *
-     * @param  string|null $for_tag
+     * @param string|null $for_tag
+     *
      * @return int
      */
     public function countObjects($for_tag = null)
@@ -91,11 +88,11 @@ class CompositeCaller
         return count($this->_objects);
     }
 
-
     /**
-     * Get objects
+     * Get objects.
      *
-     * @param  string|null $for_tag
+     * @param string|null $for_tag
+     *
      * @return array
      */
     public function getObjects($for_tag = null)
@@ -111,9 +108,8 @@ class CompositeCaller
         return $this->_objects;
     }
 
-
     /**
-     * Remove an object
+     * Remove an object.
      *
      * @param mixed $object
      */
@@ -133,9 +129,8 @@ class CompositeCaller
         }
     }
 
-
     /**
-     * Remove all objects with a certain tag
+     * Remove all objects with a certain tag.
      *
      * @param string $tag
      */
@@ -155,15 +150,16 @@ class CompositeCaller
         $this->_tag_to_objects = array();
     }
 
-
     /**
-     * Call a method on all objects
+     * Call a method on all objects.
      *
-     * @param  string      $method
-     * @param  array       $args
-     * @param  string|null $for_tag
-     * @param  bool        $collect_exceptions True to collect exceptions to the return array rather than throwing
-     * @throws \Exception  Re-throws any exception that happens unless $collect_exceptions is true
+     * @param string      $method
+     * @param array       $args
+     * @param string|null $for_tag
+     * @param bool        $collect_exceptions True to collect exceptions to the return array rather than throwing
+     *
+     * @throws \Exception Re-throws any exception that happens unless $collect_exceptions is true
+     *
      * @return array
      */
     public function callMethod($method, $args, $for_tag = null, $collect_exceptions = false)
@@ -181,7 +177,7 @@ class CompositeCaller
                 }
 
                 $exception = $e;
-                $ret = null;
+                $ret       = null;
             }
             $ret_vals[] = array(
                 'object'    => $obj,

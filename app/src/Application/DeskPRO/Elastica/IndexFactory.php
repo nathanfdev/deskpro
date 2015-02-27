@@ -30,11 +30,8 @@ namespace Application\DeskPRO\Elastica;
 use Elastica\Client;
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
-
 class IndexFactory
 {
     /**
@@ -51,7 +48,8 @@ class IndexFactory
     }
 
     /**
-     * @param  string          $index_name
+     * @param string $index_name
+     *
      * @return \Elastica\Index
      */
     public function getIndex($index_name)

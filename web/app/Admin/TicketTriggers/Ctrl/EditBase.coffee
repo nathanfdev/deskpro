@@ -173,12 +173,15 @@ define [
 					postData.criteria_sets.push(set)
 
 			has_stop_triggers_action = false
+			has_delete_ticket_action = false
 			if @$scope.form.actions
 				for own _, act of @$scope.form.actions
 					if act.type
 						postData.actions.push(act)
 						if act.type == 'ModStopTriggers'
 							has_stop_triggers_action = true
+						if act.type == 'SetDeleted'
+							has_delete_ticket_action = true
 
 			@startSpinner('saving')
 			if @trigger.id
@@ -196,6 +199,7 @@ define [
 
 				@trigger.title = postData.title
 				@trigger.has_stop_triggers_action = has_stop_triggers_action
+				@trigger.has_delete_ticket_action = has_delete_ticket_action
 
 				@stopSpinner('saving', true).then(=>
 					@Growl.success("Saved")
@@ -206,6 +210,7 @@ define [
 					title: @trigger.title,
 					is_enabled: @trigger.is_enabled,
 					has_stop_triggers_action: has_stop_triggers_action
+					has_delete_ticket_action: has_delete_ticket_action
 				})
 
 				@skipDirtyState()

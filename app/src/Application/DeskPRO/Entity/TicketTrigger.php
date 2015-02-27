@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Tickets\Actions\ModStopTriggers;
+use Application\DeskPRO\Tickets\Actions\SetDeleted;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -137,11 +137,11 @@ class TicketTrigger extends DomainObject
     protected $by_user_mode = array();
 
     /**
-	 * @var array
-	 */
-	protected $by_app_mode = array();
+     * @var array
+     */
+    protected $by_app_mode = array();
 
-	/**
+    /**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
      */
     protected $terms;
@@ -150,6 +150,10 @@ class TicketTrigger extends DomainObject
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
     protected $actions;
+
+    protected $_has_stop_trigger_action;
+
+    protected $_has_delete_ticket_action;
 
     /**
      * @var int
@@ -162,7 +166,6 @@ class TicketTrigger extends DomainObject
         $this->actions = new TriggerActions();
     }
 
-
     /**
      * @return int
      */
@@ -170,7 +173,6 @@ class TicketTrigger extends DomainObject
     {
         return $this->id;
     }
-
 
     /**
      * @param array $modes
@@ -191,7 +193,6 @@ class TicketTrigger extends DomainObject
         }
     }
 
-
     /**
      * @param array $modes
      */
@@ -211,29 +212,28 @@ class TicketTrigger extends DomainObject
         }
     }
 
+    /**
+     * @param array $modes
+     */
+    public function setByAppMode($modes)
+    {
+        if (!$modes) {
+            $this->setModelField('by_app_mode', array());
+        } else {
+            if (!is_array($modes)) {
+                $modes = explode(',', $modes);
+            }
+
+            $modes = Arrays::func($modes, 'trim');
+            $modes = Arrays::func($modes, 'strtolower');
+            sort($modes, \SORT_STRING);
+            $this->setModelField('by_app_mode', $modes);
+        }
+    }
 
     /**
-	 * @param array $modes
-	 */
-	public function setByAppMode($modes)
-	{
-		if (!$modes) {
-			$this->setModelField('by_app_mode', array());
-		} else {
-			if (!is_array($modes)) {
-				$modes = explode(',', $modes);
-			}
-
-			$modes = Arrays::func($modes, 'trim');
-			$modes = Arrays::func($modes, 'strtolower');
-			sort($modes, \SORT_STRING);
-			$this->setModelField('by_app_mode', $modes);
-		}
-	}
-
-
-	/**
-     * @param  string $flag
+     * @param string $flag
+     *
      * @return bool
      */
     public function hasEventFlag($flag)
@@ -241,19 +241,17 @@ class TicketTrigger extends DomainObject
         return in_array($flag, $this->event_flags);
     }
 
-
     /**
      * @param string $flag
      */
     public function addEventFlag($flag)
     {
         if (!in_array($flag, $this->event_flags)) {
-            $flags = $this->event_flags;
+            $flags   = $this->event_flags;
             $flags[] = $flag;
             $this->setModelField('event_flags', $flags);
         }
     }
-
 
     /**
      * @param string $flag
@@ -267,42 +265,68 @@ class TicketTrigger extends DomainObject
         }
     }
 
+    protected function processActions()
+    {
+        if (!$this->actions) {
+            return;
+        }
+
+        if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) {
+            return;
+        }
+
+        foreach ($this->actions as $a) {
+            if ($a instanceof ModStopTriggers) {
+                $this->_has_stop_trigger_action = true;
+            }
+            if ($a instanceof SetDeleted) {
+                $this->_has_delete_ticket_action = true;
+            }
+
+            if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) {
+                break;
+            }
+        }
+
+        $this->_has_stop_trigger_action  = (bool) $this->_has_stop_trigger_action;
+        $this->_has_delete_ticket_action = (bool) $this->_has_delete_ticket_action;
+    }
 
     /**
      * @return bool
      */
     public function hasStopTriggersAction()
     {
-        if (!$this->actions) return false;
+        $this->processActions();
 
-        foreach ($this->actions as $a) {
-            if ($a instanceof ModStopTriggers) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->_has_stop_trigger_action;
     }
 
+    public function hasDeleteTicketAction()
+    {
+        $this->processActions();
+
+        return $this->_has_delete_ticket_action;
+    }
 
     /**
      * {@inheritDoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
-        $data['department']    = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
-        $data['email_account'] = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
-        $data['by_agent_mode'] = $this->by_agent_mode;
-        $data['by_user_mode']  = $this->by_user_mode;
-		$data['by_app_mode']   = $this->by_app_mode;
-        $data['terms']         = $this->terms->exportToArray();
-        $data['actions']       = $this->actions->exportToArray();
+        $data                             = parent::toApiData($primary, $deep, $visited);
+        $data['department']               = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
+        $data['email_account']            = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
+        $data['by_agent_mode']            = $this->by_agent_mode;
+        $data['by_user_mode']             = $this->by_user_mode;
+        $data['by_app_mode']              = $this->by_app_mode;
+        $data['terms']                    = $this->terms->exportToArray();
+        $data['actions']                  = $this->actions->exportToArray();
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
+        $data['has_delete_ticket_action'] = $this->hasDeleteTicketAction();
 
         return $data;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -316,7 +340,7 @@ class TicketTrigger extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_triggers'
+            'name' => 'ticket_triggers',
         ));
 
         $metadata->mapField(array(
@@ -359,12 +383,12 @@ class TicketTrigger extends DomainObject
             'nullable'   => true,
         ));
         $metadata->mapField(array(
-			'columnName' => 'by_app_mode',
-			'fieldName'  => 'by_app_mode',
-			'type'       => 'simple_array',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
+            'columnName' => 'by_app_mode',
+            'fieldName'  => 'by_app_mode',
+            'type'       => 'simple_array',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
@@ -416,7 +440,7 @@ class TicketTrigger extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-            ))
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'email_account',
@@ -426,7 +450,7 @@ class TicketTrigger extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-            ))
+            )),
         ));
     }
 }

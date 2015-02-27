@@ -6,18 +6,18 @@ use Elastica\Query;
 use Elastica\Util as ElasticaUtil;
 
 /**
- * Person Repository
+ * Person Repository.
  */
 class PersonRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
     protected $highlightFields = array(
         'name'   => array('fragment_size' => 100),
-        'emails' => array('fragment_size' => 100, 'number_of_fragments' => 1)
+        'emails'                          => array('fragment_size' => 100, 'number_of_fragments' => 1),
     );
 
     /**
@@ -30,6 +30,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
 
     /**
      * @param $q
+     *
      * @return Query\MultiMatch
      */
     protected function getQueryString($q)

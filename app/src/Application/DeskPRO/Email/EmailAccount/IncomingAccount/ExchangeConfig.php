@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,7 @@ class ExchangeConfig implements AccountConfigInterface
     public $host;
 
     /**
-     * 443 by default (because its over https)
+     * 443 by default (because its over https).
      *
      * @var int
      */
@@ -63,19 +62,22 @@ class ExchangeConfig implements AccountConfigInterface
     public $password;
 
     /**
-     * 'read', 'delete', 'archive'
+     * 'read', 'delete', 'archive'.
+     *
      * @var string
      */
     public $mode = 'read';
 
     /**
      * The mailbox to read from. Default blank means inbox.
+     *
      * @var string
      */
     public $read_mailbox = null;
 
     /**
      * If using the 'archive' method, this is the mailbox name.
+     *
      * @var string
      */
     public $archive_mailbox = null;

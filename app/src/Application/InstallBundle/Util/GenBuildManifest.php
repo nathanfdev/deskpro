@@ -50,7 +50,6 @@ class GenBuildManifest
         }
     }
 
-
     /**
      * @return array
      */
@@ -63,7 +62,7 @@ class GenBuildManifest
         $builds = array();
 
         foreach ($finder as $file) {
-            /** @var $file \SplFileInfo */
+            /* @var $file \SplFileInfo */
 
             $build_id = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
             if (!$build_id) {
@@ -71,25 +70,25 @@ class GenBuildManifest
             }
 
             $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
-            $classname = 'Application\\InstallBundle\\Upgrade\\Build\\' . str_replace('.php', '', $file->getFilename());
+            $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getFilename());
 
             $builds[$build_id] = array(
                 'file'      => $trim_path,
-                'classname' => $classname
+                'classname' => $classname,
             );
         }
 
         if ($this->add) {
-            foreach($this->add as $filepath) {
+            foreach ($this->add as $filepath) {
                 $filename = Strings::extractRegexMatch('#/(.*?)$#', $filepath, 1);
                 $build_id = Strings::extractRegexMatch('/Build(\\d+)\.php$/', $filename);
                 if ($build_id) {
                     $trim_path = str_replace(DP_ROOT, '', $filepath);
-                    $classname = 'Application\\InstallBundle\\Upgrade\\Build\\' . str_replace('.php', '', $filename);
+                    $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $filename);
 
                     $builds[$build_id] = array(
                         'file'      => $trim_path,
-                        'classname' => $classname
+                        'classname' => $classname,
                     );
                 }
             }
@@ -100,19 +99,18 @@ class GenBuildManifest
         return $builds;
     }
 
-
     /**
      * @return string
      */
     public function getContents()
     {
-        $file = array();
+        $file   = array();
         $file[] = '<?php return array(';
 
         foreach ($this->getBuildsArray() as $build_id => $build_info) {
-            $row = "\t" . $build_id . " => array(\n";
-            $row .= "\t\t'file'      => '" . $build_info['file'] . "',\n";
-            $row .= "\t\t'classname' => '" . $build_info['classname'] . "'\n";
+            $row = "\t".$build_id." => array(\n";
+            $row .= "\t\t'file'      => '".$build_info['file']."',\n";
+            $row .= "\t\t'classname' => '".$build_info['classname']."'\n";
             $row .= "\t),\n";
 
             $file[] = $row;

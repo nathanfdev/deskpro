@@ -26,18 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Util
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO;
+
 use Orb\Util\Strings;
 use Orb\Util\Util as OrbUtil;
 
 /**
- * Transform markdown-formatted text into html
+ * Transform markdown-formatted text into html.
  */
 class Markdown extends \Markdown_Parser
 {
@@ -45,10 +43,12 @@ class Markdown extends \Markdown_Parser
     protected $attach_tokens = array();
 
     /**
-     * Format the supplied markdown string to HTML
+     * Format the supplied markdown string to HTML.
      *
      * @static
+     *
      * @param  $string
+     *
      * @return string
      */
     public static function format($string)
@@ -68,7 +68,7 @@ class Markdown extends \Markdown_Parser
         $m = null;
         if (preg_match_all('#!\[attach(.*?)\]#', $text, $m)) {
             foreach ($m[0] as $match) {
-                $token = ":attach-token-" . md5(microtime() . OrbUtil::requestUniqueId()) . ":";
+                $token                       = ":attach-token-".md5(microtime().OrbUtil::requestUniqueId()).":";
                 $this->attach_tokens[$token] = $match;
             }
         }
@@ -88,7 +88,7 @@ class Markdown extends \Markdown_Parser
     {
         foreach ($attach_tokens as $token => $attach_code) {
             $attach_html = $this->getAttachHtml($attach_code);
-            $text = str_replace($token, $attach_html, $text);
+            $text        = str_replace($token, $attach_html, $text);
         }
 
         return $text;

@@ -26,16 +26,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 use Application\DeskPRO\Entity\SendmailQueue;
 
@@ -48,7 +47,7 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
  * We save the payload as-is, but parse out the 'data' (json encoded array) just
  * so we can save the proper subject/address data on the SendmailQueue record.
  */
-class FailedSendmailJob extends LoaderAbstract
+class failed_sendmail_job extends LoaderAbstract
 {
     public function runAction()
     {
@@ -70,7 +69,7 @@ class FailedSendmailJob extends LoaderAbstract
 
         $data = '';
         $mode = 0; // 0 = headers, 1 = data
-        $fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
+        $fp   = fopen($_FILES['mailfile']['tmp_name'], 'r');
 
         while (!feof($fp)) {
             $l = fgets($fp);
@@ -88,11 +87,11 @@ class FailedSendmailJob extends LoaderAbstract
 
         // $data may include a header of <DP_SMTP_DEBUG>...</DP_SMTP_DEBUG>
         $debug_data = '';
-        $m = null;
+        $m          = null;
 
         if (preg_match('#\s*<DP_SMTP_DEBUG>(.*?)</DP_SMTP_DEBUG>\s*#s', $data, $m)) {
             $debug_data = trim($m[1]);
-            $data = substr($data, strlen($m[0]));
+            $data       = substr($data, strlen($m[0]));
         }
 
         $data = @json_decode($data, true);
@@ -106,9 +105,9 @@ class FailedSendmailJob extends LoaderAbstract
         #------------------------------
 
         $container = $this->bootFullSystem();
-        $blob = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
+        $blob      = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
 
-        $email = new SendmailQueue();
+        $email               = new SendmailQueue();
         $email->blob         = $blob;
         $email->subject      = $data['subject'];
         $email->to_address   = array_merge($data['to_addresses'], $data['cc_addresses'], $data['bcc_addresses']);

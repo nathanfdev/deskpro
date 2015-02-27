@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -76,6 +75,10 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      */
     private $template;
 
+    /**
+     * @var int
+     */
+    private $sendmail_source_id;
 
     /**
      * @param string   $field_id
@@ -86,19 +89,20 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      * @param string   $from_name
      * @param string   $from_email
      * @param string   $template
+     * @param int      $sendmail_source_id
      */
-    public function __construct($field_id, $user_mode, $to_name, $to_email, $cc_emails, $from_name, $from_email, $template)
+    public function __construct($field_id, $user_mode, $to_name, $to_email, $cc_emails, $from_name, $from_email, $template, $sendmail_source_id = null)
     {
-        $this->field_id   = $field_id;
-        $this->user_mode  = $user_mode;
-        $this->to_name    = $to_name;
-        $this->to_email   = $to_email;
-        $this->cc_emails  = $cc_emails ?: array();
-        $this->from_name  = $from_name;
-        $this->from_email = $from_email;
-        $this->template   = $template;
+        $this->field_id           = $field_id;
+        $this->user_mode          = $user_mode;
+        $this->to_name            = $to_name;
+        $this->to_email           = $to_email;
+        $this->cc_emails          = $cc_emails ?: array();
+        $this->from_name          = $from_name;
+        $this->from_email         = $from_email;
+        $this->template           = $template;
+        $this->sendmail_source_id = $sendmail_source_id;
     }
-
 
     /**
      * @return string
@@ -108,15 +112,13 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         return $this->field_id;
     }
 
-
     /**
      * @return array
      */
     public function getOld()
     {
-        return null;
+        return;
     }
-
 
     /**
      * @return array
@@ -124,14 +126,16 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
     public function getNew()
     {
         return array(
-            'field_id'   => $this->field_id,
-            'user_mode'  => $this->user_mode,
-            'to_name'    => $this->to_name,
-            'to_email'   => $this->to_email,
-            'cc_emails'  => $this->cc_emails,
-            'from_name'  => $this->from_name,
-            'from_email' => $this->from_email,
-            'template'   => $this->template,
+            'field_id'           => $this->field_id,
+            'user_mode'          => $this->user_mode,
+            'to_name'            => $this->to_name,
+            'to_email'           => $this->to_email,
+            'cc_emails'          => $this->cc_emails,
+            'from_name'          => $this->from_name,
+            'from_email'         => $this->from_email,
+            'template'           => $this->template,
+            'sendmail_source_id' => $this->sendmail_source_id,
+            'id_after'           => $this->sendmail_source_id,
         );
     }
 
@@ -189,6 +193,14 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
     public function getCcEmails()
     {
         return $this->cc_emails;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSendmailSourceId()
+    {
+        return $this->sendmail_source_id;
     }
 
     /**

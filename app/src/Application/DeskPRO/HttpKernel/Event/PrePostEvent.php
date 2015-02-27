@@ -8,7 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 class PrePostEvent extends Event
 {
     /**
-     * The response object
+     * The response object.
+     *
      * @var \Symfony\Component\HttpFoundation\Response
      */
     private $response;

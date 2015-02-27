@@ -2,18 +2,18 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
-use Elastica\Document;
 use Application\DeskPRO\Entity\Organization;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 /**
- * Person To Elastica Transformer
+ * Person To Elastica Transformer.
  */
 class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param Organization $object
      * @param array        $fields

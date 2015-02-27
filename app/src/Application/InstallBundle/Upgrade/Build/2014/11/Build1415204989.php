@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -53,7 +50,7 @@ class Build1415204989 extends AbstractBuild
                     'article_categories',
                     'download_categories',
                     'feedback_categories',
-                    'news_categories'
+                    'news_categories',
                 );
 
                 foreach ($cat_tables as $cat_table) {
@@ -69,17 +66,16 @@ class Build1415204989 extends AbstractBuild
         );
     }
 
-
     public function generateAndUpdateSlugForCategory($cat_table, Connection $conn)
     {
-        $cat_rows = $conn->fetchAll('SELECT id,title FROM ' . $cat_table);
+        $cat_rows = $conn->fetchAll('SELECT id,title FROM '.$cat_table);
 
         $existing_slugs = array();
-        foreach($cat_rows as $cat) {
+        foreach ($cat_rows as $cat) {
             $slug = Strings::slugifyTitle($cat['title']);
             // if we have this slug in the table already, we need to de-dupe and prepend the id
             if (in_array($slug, $existing_slugs)) {
-                $slug = $cat['id'] . '-' . $slug;
+                $slug = $cat['id'].'-'.$slug;
             }
             $existing_slugs[] = $slug;
             $conn->update($cat_table, array('slug' => $slug), array('id' => $cat['id']));

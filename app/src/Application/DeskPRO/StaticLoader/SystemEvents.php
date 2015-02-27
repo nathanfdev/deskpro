@@ -26,11 +26,8 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\StaticLoader;
@@ -39,7 +36,7 @@ use Application\DeskPRO\EventDispatcher\CallbackListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * Attaches various events to the event dispatcher
+ * Attaches various events to the event dispatcher.
  */
 class SystemEvents
 {

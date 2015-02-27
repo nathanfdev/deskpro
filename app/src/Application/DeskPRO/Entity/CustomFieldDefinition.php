@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,8 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A custom field definition
- *
+ * A custom field definition.
  */
 class CustomFieldDefinition extends DomainObject implements HasPhraseName
 {
@@ -88,22 +86,21 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     protected $has_display_template = false;
 
     /**
-     * The title
+     * The title.
      *
      * @var string
      */
     protected $title;
 
     /**
-     * The description
+     * The description.
      *
      * @var string
      */
     protected $description;
 
     /**
-     * Options for the field
-     *
+     * Options for the field.
      */
     protected $options;
 
@@ -145,14 +142,14 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     protected $children;
 
     /**
-     * the class of Form Type
+     * the class of Form Type.
      *
      * @var string
      */
     protected $form_type;
 
     /**
-     * the classname of the owner of the custom field (Ticket, Person, etc)
+     * the classname of the owner of the custom field (Ticket, Person, etc).
      *
      * @var string
      */
@@ -190,8 +187,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @return \Application\DeskPRO\Form\Type\CustomFields\Definitions\CustomFieldDefinitionType
      * @throws \Exception
+     * @return \Application\DeskPRO\Form\Type\CustomFields\Definitions\CustomFieldDefinitionType
+     *
      */
     public function createDefinitionType()
     {
@@ -238,8 +236,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param  null      $property
-     * @param  Translate $translate
+     * @param null      $property
+     * @param Translate $translate
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -256,8 +255,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param  null      $property
-     * @param  Translate $translate
+     * @param null      $property
+     * @param Translate $translate
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)
@@ -311,7 +311,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $metadata->mapManyToOne(array(
             'fieldName'    => 'parent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
-            'mappedBy'     => NULL,
+            'mappedBy'     => null,
             'inversedBy'   => 'children',
             'joinColumns'  => array(
                 0 => array(
@@ -327,8 +327,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
             'fieldName'    => 'children',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
             'cascade'      => array('remove', 'persist', 'merge'),
-            'mappedBy' => 'parent',
-            'orderBy'  => array(
+            'mappedBy'     => 'parent',
+            'orderBy'      => array(
                 'display_order' => 'ASC',
             ),
         ));
@@ -336,8 +336,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $metadata->mapManyToOne(array(
             'fieldName'    => 'app',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
-            'mappedBy'     => NULL,
-            'inversedBy'   => NULL,
+            'mappedBy'     => null,
+            'inversedBy'   => null,
             'joinColumns'  => array(
                 0 => array(
                     'name'                 => 'app_id',
@@ -345,7 +345,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
                     'unique'               => false,
                     'nullable'             => true,
                     'onDelete'             => 'set null',
-                    'columnDefinition'     => NULL,
+                    'columnDefinition'     => null,
                 ),
             ),
         ));

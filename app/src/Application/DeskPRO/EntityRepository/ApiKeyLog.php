@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,7 @@ class ApiKeyLog extends AbstractEntityRepository
     const LIMIT = 50;
 
     /**
-     * clean old records
+     * clean old records.
      */
     public function cleanup()
     {
@@ -78,8 +77,9 @@ class ApiKeyLog extends AbstractEntityRepository
     }
 
     /**
-     * @param  Entity\ApiKey      $api_key
-     * @param  int                $limit
+     * @param Entity\ApiKey $api_key
+     * @param int           $limit
+     *
      * @return Entity\ApiKeyLog[]
      */
     public function getLogsForKey(Entity\ApiKey $api_key, $limit = 100)

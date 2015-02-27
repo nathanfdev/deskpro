@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AdminInterfaceBundle\Controller;
 
@@ -64,7 +62,7 @@ class IndexController extends AbstractController
 
         $rjs_apps = new AppsRequireJsConfigGenerator(
             $this->container->getAppManager(),
-            $this->generateUrl('serve_file_root') . '/apps',
+            $this->generateUrl('serve_file_root').'/apps',
             false
         );
         $rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();

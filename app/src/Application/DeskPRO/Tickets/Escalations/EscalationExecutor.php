@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -66,12 +65,11 @@ class EscalationExecutor
 
     public function __construct(Connection $db, TicketManager $ticket_manager, ActionApplicatorInterface $action_applicator)
     {
-        $this->db = $db;
-        $this->ticket_manager = $ticket_manager;
-        $this->logger = new NullLogger();
+        $this->db                = $db;
+        $this->ticket_manager    = $ticket_manager;
+        $this->logger            = new NullLogger();
         $this->action_applicator = $action_applicator;
     }
-
 
     /**
      * @param Logger $logger
@@ -81,7 +79,6 @@ class EscalationExecutor
         $this->logger = $logger;
     }
 
-
     /**
      * @param TicketEscalation $esc
      * @param Ticket           $ticket
@@ -90,7 +87,6 @@ class EscalationExecutor
     {
         $this->_doApplyEscalation($esc, $ticket);
     }
-
 
     /**
      * @param TicketEscalation $esc
@@ -104,13 +100,13 @@ class EscalationExecutor
             'ticket_id'     => $ticket->id,
             'escalation_id' => $esc->id,
             'date_ran'      => date('Y-m-d H:i:s'),
-            'date_criteria' => $d->format('Y-m-d H:i:s')
+            'date_criteria' => $d->format('Y-m-d H:i:s'),
         ));
 
         $this->ticket_manager->markAsManaged($ticket);
 
         $context = $this->ticket_manager->createSystemExecutorContext();
-        $state = $ticket->getStateChangeRecorder();
+        $state   = $ticket->getStateChangeRecorder();
         $state->setCurrentChangeMetadata(array('escalation' => $esc));
 
         $this->action_applicator->apply($esc->actions, $ticket, $context);

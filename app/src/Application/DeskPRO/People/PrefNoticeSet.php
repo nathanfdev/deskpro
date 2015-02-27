@@ -50,14 +50,14 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
 
     public function __construct(Connection $db, Person $person, $pref_id, $set_file)
     {
-        $this->person = $person;
+        $this->person  = $person;
         $this->pref_id = $pref_id;
 
         #------------------------------
         # Get pref
         #------------------------------
 
-        $this->db = $db;
+        $this->db        = $db;
         $this->pref_data = $this->db->fetchColumn("
             SELECT value_array
             FROM people_prefs
@@ -76,8 +76,8 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
         # Load set data
         #------------------------------
 
-        $this->set_file = $set_file;
-        $this->set_data = require($set_file);
+        $this->set_file     = $set_file;
+        $this->set_data     = require $set_file;
         $this->waiting_data = array();
 
         foreach ($this->set_data as $id => $item) {
@@ -150,7 +150,6 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return void
      */
     public function save()
     {
@@ -160,7 +159,7 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
             'person_id'   => $this->person->getId(),
             'value_array' => $data,
             'value_str'   => null,
-            'date_expire' => null
+            'date_expire' => null,
         ));
     }
 }

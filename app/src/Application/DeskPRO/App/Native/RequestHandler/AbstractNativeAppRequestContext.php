@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -91,8 +90,9 @@ abstract class AbstractNativeAppRequestContext extends AbstractRequestContext
     }
 
     /**
-     * @param  string $name
-     * @param  null   $default
+     * @param string $name
+     * @param null   $default
+     *
      * @return mixed
      */
     public function getAppSetting($name, $default = null)
@@ -112,7 +112,8 @@ abstract class AbstractNativeAppRequestContext extends AbstractRequestContext
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getAppService($name)

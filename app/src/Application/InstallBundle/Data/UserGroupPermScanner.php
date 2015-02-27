@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Data;
@@ -56,7 +53,7 @@ class UserGroupPermScanner
         foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
-                $set_perms[] = $real_name . '.' . $prop;
+                $set_perms[] = $real_name.'.'.$prop;
             }
         }
 
@@ -64,7 +61,7 @@ class UserGroupPermScanner
     }
 
     /**
-     * Get the names of all the permissions
+     * Get the names of all the permissions.
      *
      * @return array
      */

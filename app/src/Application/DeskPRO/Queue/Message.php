@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Queue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Queue;
 
 /**
- * Automatically load the body from a QI item
+ * Automatically load the body from a QI item.
  */
 class Message extends \ZendQueue\Message
 {
@@ -50,9 +47,9 @@ class Message extends \ZendQueue\Message
 
         if ($key == 'body') {
             $this->_has_init_qi = true;
-            $match = null;
+            $match              = null;
             if (preg_match('#^<QueueItem:([0-9]+)>$#', $this->_data['body'])) {
-                $db = $this->getAdapter()->getDb();
+                $db                  = $this->getAdapter()->getDb();
                 $this->_data['body'] = $db->fetchColumn("SELECT data FROM queue_item WHERE id = ?", array($match[1]));
             }
         }

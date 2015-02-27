@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -61,9 +60,9 @@ class MacroActions implements \Serializable, MacroActionInterface
         $this->actions = new MacroActionComposite();
     }
 
-
     /**
-     * @param  MacroActionInterface      $action
+     * @param MacroActionInterface $action
+     *
      * @throws \InvalidArgumentException
      */
     public function addAction(MacroActionInterface $action)
@@ -75,9 +74,9 @@ class MacroActions implements \Serializable, MacroActionInterface
         $this->actions->add($action);
     }
 
-
     /**
-     * @param  array                     $action_info
+     * @param array $action_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addActionFromArray(array $action_info)
@@ -95,9 +94,10 @@ class MacroActions implements \Serializable, MacroActionInterface
      * Return an array of macros that the user does not have permission to use.
      * An empty array means there are no permission errors.
      *
-     * @param  Person                   $person
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Person                   $person
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
@@ -105,18 +105,15 @@ class MacroActions implements \Serializable, MacroActionInterface
         return $this->actions->getMacroPermissionErrors($person, $ticket, $context);
     }
 
-
     /**
-     * @param  Person                   $person
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Person                   $person
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         $this->actions->applyMacro($person, $ticket, $context);
     }
-
 
     /**
      * @return array
@@ -126,7 +123,7 @@ class MacroActions implements \Serializable, MacroActionInterface
         $data = array();
 
         $data['version']  = 1;
-        $data['actions'] = array();
+        $data['actions']  = array();
         foreach ($this->actions->getAll() as $actions) {
             if (!($actions instanceof ActionDefinitionInterface)) {
                 continue;
@@ -134,13 +131,12 @@ class MacroActions implements \Serializable, MacroActionInterface
 
             $data['actions'][] = array(
                 'type'    => $actions->getActionType(),
-                'options' => $actions->getActionOptions()->all()
+                'options' => $actions->getActionOptions()->all(),
             );
         }
 
         return $data;
     }
-
 
     /**
      * @return string
@@ -149,7 +145,6 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         return json_encode($this->exportToArray());
     }
-
 
     /**
      * @param array $data
@@ -161,7 +156,6 @@ class MacroActions implements \Serializable, MacroActionInterface
         }
     }
 
-
     /**
      * @return string
      */
@@ -169,7 +163,6 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data
@@ -185,7 +178,7 @@ class MacroActions implements \Serializable, MacroActionInterface
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('macro_' . $action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
                 }
             }
         }

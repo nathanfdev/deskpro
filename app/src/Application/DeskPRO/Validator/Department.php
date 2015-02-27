@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Application\DeskPRO\Validator;
@@ -40,6 +37,7 @@ class Department extends AbstractPersonContextValidator
 {
     /**
      * Allow a non-selection?
+     *
      * @var bool
      */
     protected $allow_none = true;
@@ -61,7 +59,7 @@ class Department extends AbstractPersonContextValidator
         parent::init();
 
         $this->allow_none = $this->getOption('allow_none', true);
-        $this->whitelist  = (array)$this->getOption('whitelist', array());
+        $this->whitelist  = (array) $this->getOption('whitelist', array());
     }
 
     /**
@@ -71,7 +69,7 @@ class Department extends AbstractPersonContextValidator
      */
     protected function checkIsValid($value)
     {
-        $value = (int)$value;
+        $value = (int) $value;
         if (!$value && !$this->allow_none) {
             $this->addError('none');
 

@@ -26,22 +26,19 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace DeskPRO\Kernel;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Orb\Util\Env;
-
-use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
@@ -58,7 +55,7 @@ abstract class AbstractKernel extends BaseKernel
         $path = $request->getPathInfo();
 
         if (!deskpro_install_check_pdo_mysql()) {
-            $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+            $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
 
             return $response;
         }
@@ -71,7 +68,7 @@ abstract class AbstractKernel extends BaseKernel
                 // This will show an error page if already installed, so the redirect to install wont happen
                 deskpro_handle_boot_db_exception($e);
 
-                $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+                $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
 
                 return $response;
             } else {
@@ -83,7 +80,7 @@ abstract class AbstractKernel extends BaseKernel
         }
 
         if (!App::getSetting('core.install_build') && strpos($request->getRequestUri(), '/index.php/install/') === false) {
-            $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+            $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
 
             return $response;
         }
@@ -145,18 +142,18 @@ abstract class AbstractKernel extends BaseKernel
         }
 
         if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $this->isHelpdeskOffline()) {
-            $cache_dir = dp_get_tmp_dir() . '/page-cache';
-            $base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
-            $scheme_host = $request->getScheme().'://'.$request->getHttpHost();
-            $cache_base_filename = $base . '-' . md5($scheme_host . $request->getRequestUri()) . '.cache';
+            $cache_dir           = dp_get_tmp_dir().'/page-cache';
+            $base                = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
+            $scheme_host         = $request->getScheme().'://'.$request->getHttpHost();
+            $cache_base_filename = $base.'-'.md5($scheme_host.$request->getRequestUri()).'.cache';
             try {
-                $language = App::getLanguage();
+                $language    = App::getLanguage();
                 $language_id = $language->id;
             } catch (\Exception $e) {
                 $language_id = 1;
             }
-            $cache_filename = $language_id . '-' . $cache_base_filename;
-            $cache_file = $cache_dir . '/' . $cache_filename;
+            $cache_filename = $language_id.'-'.$cache_base_filename;
+            $cache_file     = $cache_dir.'/'.$cache_filename;
 
             if (file_exists($cache_file)) {
                 // helpdesk is offline - always serve this instead
@@ -166,7 +163,7 @@ abstract class AbstractKernel extends BaseKernel
                         $output['content'] = gzuncompress($output['content']);
                     }
 
-                    $message = HelpdeskOfflineMessage::getOfflineMessage();
+                    $message           = HelpdeskOfflineMessage::getOfflineMessage();
                     $output['content'] = KernelBooter::prepareCachedOutputForOffline($output['content'], $message);
 
                     return new Response($output['content'], 200, $output['headers']);
@@ -176,7 +173,7 @@ abstract class AbstractKernel extends BaseKernel
 
         // Make sure we arent banned ip
         if (!preg_match('#^/admin/?#', $path)) {
-            $ip = dp_get_user_ip_address();
+            $ip      = dp_get_user_ip_address();
             $ip_long = sprintf("%u", ip2long($ip));
 
             $banned = App::getDb()->fetchColumn("
@@ -216,7 +213,7 @@ abstract class AbstractKernel extends BaseKernel
                 } else {
                     $loc .= '&';
                 }
-                $loc .= 'parent_url=' . urlencode($_GET['parent_url']);
+                $loc .= 'parent_url='.urlencode($_GET['parent_url']);
                 $res->headers->set('Location', $loc);
             }
 
@@ -266,12 +263,10 @@ abstract class AbstractKernel extends BaseKernel
             // 2) /admin/start             Initial config
             $is_installed = App::getSetting('core.setup_initial');
             if (!License::getLicense()->hasLicense() || !$is_installed) {
-                $response = new RedirectResponse($request->getBaseUrl() . '/admin/start');
+                $response = new RedirectResponse($request->getBaseUrl().'/admin/start');
 
                 return $response;
-
             } else {
-
                 #------------------------------
                 # Max agent checks
                 #------------------------------
@@ -372,7 +367,7 @@ abstract class AbstractKernel extends BaseKernel
 
             if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
                 $website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
-                $content = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="' . htmlspecialchars($website_url) . '" />', $content);
+                $content     = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="'.htmlspecialchars($website_url).'" />', $content);
             }
 
             $response->setContent($content);
@@ -442,6 +437,7 @@ final class License
      * When non-null, then it means there was a problem with the license (ie bad format).
      * The License class goes into unlicensed mode in these cases, but if there was
      * a license code but it was just invalid, then you can always check this.
+     *
      * @var string
      */
     private $error_code = null;
@@ -456,9 +452,9 @@ final class License
      */
     private $user_copyright_done = false;
 
-
     /**
      * @static
+     *
      * @return string
      */
     public static function getLicServer()
@@ -469,7 +465,6 @@ final class License
 
         return DP_MA_SERVER;
     }
-
 
     /**
      * @return string
@@ -483,9 +478,9 @@ final class License
         return DP_MA_SERVER_SECURE;
     }
 
-
     /**
      * @static
+     *
      * @return string
      */
     public static function getSupportUrl()
@@ -497,10 +492,11 @@ final class License
         return DP_SUPPORT_URL;
     }
 
-
     /**
      * @static
+     *
      * @param $license_code
+     *
      * @return \DeskPRO\Kernel\License
      */
     public static function create($license_code, $install_key = '')
@@ -517,9 +513,9 @@ final class License
         return $inst;
     }
 
-
     /**
      * @static
+     *
      * @return \DeskPRO\Kernel\License
      */
     public static function getLicense()
@@ -531,7 +527,9 @@ final class License
                 $license_code = DP_LIC_STR;
             } else {
                 $license_code = App::getSetting('core.license');
-                if (!$license_code) $license_code = null;
+                if (!$license_code) {
+                    $license_code = null;
+                }
             }
 
             if (defined('DP_INSTALL_KEY')) {
@@ -544,30 +542,33 @@ final class License
             try {
                 $licopt = App::getSetting('core.licenseopt');
                 if ($licopt) {
-                    $license_code .= '#' . $licopt;
+                    $license_code .= '#'.$licopt;
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             self::create($license_code, $install_key);
 
             if (!self::$inst->isXlic() && isset(self::$sysdata['xlic'][self::$inst->getLicenseId()])) {
                 try {
-                    if ($licopt) $licopt .= ',';
-                    $licopt .= self::$inst->getLicenseId() . ':' . 'XLIC=' . (time() - 3600);
+                    if ($licopt) {
+                        $licopt .= ',';
+                    }
+                    $licopt .= self::$inst->getLicenseId().':'.'XLIC='.(time() - 3600);
                     App::getDb()->replace('settings', array(
                         'name'  => 'core.licenseopt',
-                        'value' => $licopt
+                        'value' => $licopt,
                     ), array('name' => 'core.licenseopt'));
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
         return self::$inst;
     }
 
-
     /**
-     * $license_code is a combined string in the form of:
+     * $license_code is a combined string in the form of:.
      *
      *     <license id><license salt><encrypted license code>
      *
@@ -588,31 +589,31 @@ final class License
 
         if ($license_code && strlen($license_code) < 300) {
             $this->error_code = 'invalid_license_code_1';
-            $this->data = array('no_license' => true);
+            $this->data       = array('no_license' => true);
 
             $fn = function () use ($license_code, $install_key) {
                 $__license_code = $license_code;
                 $__install_key  = $install_key;
                 $__fail_message = 'invalid_license_code_1';
-                include dirname(__FILE__) . '/Resources/system-fail-func.php';
+                include dirname(__FILE__).'/Resources/system-fail-func.php';
             };
             $fn();
 
             return;
         }
 
-        $license_code = trim($license_code);
+        $license_code   = trim($license_code);
         $this->raw_code = $license_code;
 
         $this->install_key  = $install_key;
         if (preg_match('#@([A-Z0-9\-_]+)$#', $license_code, $m)) {
             $this->install_key = $m[1];
-            $license_code = str_replace($m[0], '', $license_code);
+            $license_code      = str_replace($m[0], '', $license_code);
         }
 
         $opts = null;
         if (strpos($license_code, '#') !== false) {
-            $parts = explode('#', $license_code, 2);
+            $parts        = explode('#', $license_code, 2);
             $license_code = $parts[0];
 
             $opts = explode(',', $parts[1]);
@@ -624,16 +625,16 @@ final class License
         $this->license_id   = substr($license_code, 0, 14);
         $this->license_id   = rtrim($this->license_id, '-');
         $this->license_salt = substr($license_code, 14, 20);
-        $enc  = substr($license_code, 34);
-        $enc = strrev($enc);
+        $enc                = substr($license_code, 34);
+        $enc                = strrev($enc);
 
-        $key  = sha1($this->license_id . $this->license_salt . $this->install_key . '5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS') . '7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
-        $key .= sha1($this->license_id . $this->license_salt . $this->install_key . 'aPRfHzg1EHDXtQdXYOlRGrvKJmP7G0UPo4SmLIqt4') . 'djqhyJa40ucOWDGhQ3taSppI8D5Gpyeoc9BlcIlYv';
-        $key  = $key . strrev($key);
+        $key  = sha1($this->license_id.$this->license_salt.$this->install_key.'5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS').'7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
+        $key .= sha1($this->license_id.$this->license_salt.$this->install_key.'aPRfHzg1EHDXtQdXYOlRGrvKJmP7G0UPo4SmLIqt4').'djqhyJa40ucOWDGhQ3taSppI8D5Gpyeoc9BlcIlYv';
+        $key  = $key.strrev($key);
 
         $enc = $this->xorString($enc, $key);
 
-        $enc = base64_decode($enc);
+        $enc  = base64_decode($enc);
         $data = @unserialize($enc);
 
         $this->data = $data;
@@ -659,7 +660,7 @@ final class License
                         $this->options['xlic'] = $val;
                         break;
                     case 'MANAGED':
-                        $this->options['managed'] = (bool)$val;
+                        $this->options['managed'] = (bool) $val;
                         break;
                 }
             }
@@ -667,13 +668,13 @@ final class License
 
         if (!$data) {
             $this->error_code = 'invalid_license_code_2';
-            $this->data = array('no_license' => true);
+            $this->data       = array('no_license' => true);
 
             $fn = function () use ($license_code, $install_key) {
                 $__license_code = $license_code;
                 $__install_key  = $install_key;
                 $__fail_message = 'invalid_license_code_2';
-                include dirname(__FILE__) . '/Resources/system-fail-func.php';
+                include dirname(__FILE__).'/Resources/system-fail-func.php';
             };
             $fn();
 
@@ -683,10 +684,10 @@ final class License
         if ($this->isCloud()) {
             $this->data['agents'] = \DPC_AGENTS;
             if (defined('DPC_DEMO_EXPIRE') && \DPC_DEMO_EXPIRE) {
-                $this->data['demo'] = true;
+                $this->data['demo']   = true;
                 $this->data['expire'] = \DPC_DEMO_EXPIRE;
             } else {
-                $this->data['demo'] = false;
+                $this->data['demo']   = false;
                 $this->data['expire'] = null;
             }
 
@@ -698,7 +699,7 @@ final class License
         if (!empty($this->data['lic_flags'])) {
             $this->data['lic_flags'] = explode(',', $this->data['lic_flags']);
             foreach ($this->data['lic_flags'] as $flag) {
-                $flag = trim($flag);
+                $flag                 = trim($flag);
                 $this->options[$flag] = true;
             }
         }
@@ -772,25 +773,24 @@ final class License
 
         if ($d === null) {
             if (isset($this->data['expire'])) {
-                $d = $this->data['expire'] ? new \DateTime('@' . $this->data['expire']) : -1;
+                $d = $this->data['expire'] ? new \DateTime('@'.$this->data['expire']) : -1;
 
                 // License has been x'd
                 if (isset($this->options['xlic'])) {
-                    $d2 = new \DateTime('@' . $this->options['xlic']);
+                    $d2 = new \DateTime('@'.$this->options['xlic']);
                     $d2->modify('+1 day');
 
                     if ($d2 < $d) {
                         $d = $d2;
                     }
                 }
-
             } else {
                 $d = -1;
             }
         }
 
         if ($d === -1) {
-            return null;
+            return;
         }
 
         return $d;
@@ -805,7 +805,7 @@ final class License
     {
         $d = $this->getExpireDate();
         if (!$d) {
-            return null;
+            return;
         }
 
         switch ($unit) {
@@ -835,7 +835,6 @@ final class License
 
         $now = new \DateTime();
         if ($now > $date) {
-
             $diff = $now->diff($date);
             $days = max(1, $diff->d);
 
@@ -886,7 +885,8 @@ final class License
         if (class_exists('Application\\DeskPRO\\App')) {
             try {
                 $powered_by_deskpro = \Application\DeskPRO\App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => 'DeskPRO'));
-            } catch (\Exception $e) { }
+            } catch (\Exception $e) {
+            }
         }
 
         if (!$powered_by_deskpro || strpos($powered_by_deskpro, 'DeskPRO') === false) {
@@ -928,7 +928,9 @@ STR;
         $new_string  = array();
 
         for ($i = 0, $j = 0; $i < $string_len; $i++, $j++) {
-            if ($j >= $key_len) $j = 0;
+            if ($j >= $key_len) {
+                $j = 0;
+            }
 
             $new_string[] = chr(ord($string[$i]) ^ ord($key[$j]));
         }
@@ -942,6 +944,6 @@ STR;
         'xlic' => array(
             'KDQP-8287-VSWH' => true,
             'JPPJ-8339-DIFJ' => true,
-        )
+        ),
     );
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Set SLA status
+ * Set SLA status.
  */
 class SetSlaStatusAction extends AbstractAction
 {
@@ -50,12 +47,11 @@ class SetSlaStatusAction extends AbstractAction
     public function __construct($sla_status, $sla_id)
     {
         $this->sla_status = $sla_status;
-        $this->sla_id = $sla_id;
+        $this->sla_id     = $sla_id;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -77,24 +73,22 @@ class SetSlaStatusAction extends AbstractAction
             $ticket_slas = $ticket->ticket_slas;
         }
 
-        foreach ($ticket_slas AS $ticket_sla) {
+        foreach ($ticket_slas as $ticket_sla) {
             $ticket_sla->setSlaStatus($this->sla_status, false);
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'set_sla_status', 'sla_status' => $this->sla_status, 'sla_id' => $this->sla_id)
+            array('action' => 'set_sla_status', 'sla_status' => $this->sla_status, 'sla_id' => $this->sla_id),
         );
     }
-
 
     /**
      * @return integer
@@ -104,7 +98,6 @@ class SetSlaStatusAction extends AbstractAction
         return $this->sla_status;
     }
 
-
     /**
      * @return integer
      */
@@ -113,16 +106,15 @@ class SetSlaStatusAction extends AbstractAction
         return $this->sla_id;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string
@@ -150,11 +142,11 @@ class SetSlaStatusAction extends AbstractAction
 
             return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
                 'sla_status' => $value,
-                'sla' => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>')
+                'sla'        => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>'),
             ));
         } else {
             return $tr->phrase('agent.tickets.set_sla_status_action', array(
-                'sla_status' => $value
+                'sla_status' => $value,
             ));
         }
     }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,7 +42,6 @@ class Language extends AbstractEntityRepository
     protected $lang_titles = null;
     /** @var \Application\DeskPRO\Entity\Language|null */
     protected $default_lang = null;
-
 
     public function countPortalLanguages()
     {
@@ -66,7 +64,7 @@ class Language extends AbstractEntityRepository
     public function getTitles($for_ids = null)
     {
         if ($this->lang_titles === null) {
-            $db = $this->getEntityManager()->getConnection();
+            $db                = $this->getEntityManager()->getConnection();
             $this->lang_titles = $db->fetchAllKeyValue("
                 SELECT id, title
                 FROM languages
@@ -79,14 +77,12 @@ class Language extends AbstractEntityRepository
         }
 
         $ret = array();
-        foreach ((array)$for_ids as $id) {
+        foreach ((array) $for_ids as $id) {
             $ret[$id] = $this->lang_titles[$id];
         }
 
         return $ret;
     }
-
-
 
     /**
      * @return \Application\DeskPRO\Entity\Language
@@ -110,7 +106,8 @@ class Language extends AbstractEntityRepository
     /**
      * Install all lang packs form $langpacks that arent already installed.
      *
-     * @param  \Application\DeskPRO\Languages\LangPackInfo $langpacks
+     * @param \Application\DeskPRO\Languages\LangPackInfo $langpacks
+     *
      * @throws \Exception
      */
     public function installAll(LangPackInfo $langpacks)
@@ -144,6 +141,14 @@ class Language extends AbstractEntityRepository
         }
     }
 
+    public function getByTitle($title)
+    {
+        return $this->getEntityManager()->createQuery('
+				SELECT l FROM DeskPRO:Language l
+				WHERE l.sys_name = :title OR LOWER(l.title) = :title
+			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
+    }
+
     public function getForLangCode($lang_code)
     {
         if (!strlen($lang_code) == 2) {
@@ -159,7 +164,7 @@ class Language extends AbstractEntityRepository
         }
 
         $r = $this->findOneBy(array('locale' => $lang_code));
-//		var_dump($lang_code, $r);exit;
+
         return $r;
     }
 }

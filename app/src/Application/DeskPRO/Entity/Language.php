@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
     /**
  * A language groups phrases and defines a locale code.
- *
  */
 class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -54,26 +52,25 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
-     * The unique sys name assigned to the language
+     * The unique sys name assigned to the language.
      *
      * @var string
      */
     protected $sys_name;
 
     /**
-     * The three-letter ISO 639-2 code
+     * The three-letter ISO 639-2 code.
      *
      * @var string
      */
     protected $lang_code;
 
     /**
-     * Title of the language
+     * Title of the language.
      *
      * @var string
      */
@@ -87,7 +84,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
     protected $base_filepath;
 
     /**
-     * The locale code
+     * The locale code.
      *
      * @var string
      */
@@ -157,10 +154,11 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate The translate object requesting
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate The translate object requesting
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -169,10 +167,11 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
     }
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate The translate object requesting
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate The translate object requesting
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)

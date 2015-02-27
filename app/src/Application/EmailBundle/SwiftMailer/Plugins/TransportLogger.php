@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SwiftMailer\Plugins;
@@ -65,6 +62,11 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     private $logger;
 
     /**
+     * @var bool
+     */
+    private $disable_connection_log = false;
+
+    /**
      * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
@@ -73,12 +75,29 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     }
 
     /**
+     * Prevents the connection log (which might include auth info)
+     * from being saved.
+     */
+    public function disableConnectionLog()
+    {
+        $this->disable_connection_log = true;
+    }
+
+    /**
      * @param string $message
      */
     public function addConnectionLog($message)
     {
-        $this->logger->debug($message);
-        $this->connection_log[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
+        if ($this->disable_connection_log) {
+            if (!$this->connection_log) {
+                $message = '<< connection >>';
+                $this->logger->debug($message);
+                $this->connection_log[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
+            }
+        } else {
+            $this->logger->debug($message);
+            $this->connection_log[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
+        }
     }
 
     /**
@@ -87,11 +106,12 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     public function addMessageLog($message)
     {
         $this->logger->debug($message);
-        $this->message_logs[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
+        $this->message_logs[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
     }
 
     /**
      * @param bool $with_connection
+     *
      * @return string
      */
     public function getMessageLogs($with_connection = true)
@@ -99,7 +119,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         $l = implode("\n", $this->message_logs);
 
         if ($with_connection) {
-            $l = implode("\n", $this->connection_log) . "\n" . $l;
+            $l = implode("\n", $this->connection_log)."\n".$l;
         }
 
         return $l;
@@ -107,6 +127,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
 
     /**
      * @param bool $with_connection
+     *
      * @return array
      */
     public function getMessageLogsAsArray($with_connection = true)
@@ -118,16 +139,13 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         }
     }
 
-
     /**
-     * Clears message logs
+     * Clears message logs.
      */
     public function resetMessageLogs()
     {
         $this->message_logs = array();
     }
-
-
 
     /**
      * Invoked immediately following a command being sent.
@@ -221,7 +239,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         if ($this->connection_log) {
             $this->addMessageLog(sprintf("%d messages were sent before this. Here is the connection log from the initial connection:", $this->message_count-1));
             foreach ($this->connection_log as $l) {
-                $this->addMessageLog('<Connect History> ' . $l);
+                $this->addMessageLog('<Connect History> '.$l);
             }
         }
     }
@@ -233,7 +251,6 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
     {
-
     }
 
     /**
@@ -243,7 +260,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
      */
     public function exceptionThrown(\Swift_Events_TransportExceptionEvent $evt)
     {
-        $e = $evt->getException();
+        $e       = $evt->getException();
         $message = $e->getMessage();
 
         if ($this->is_connected) {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks email header value
+ * Checks email header value.
  *
  * @option string name
  * @option string value
@@ -58,7 +57,6 @@ class CheckEmailHeader extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -70,8 +68,8 @@ class CheckEmailHeader extends AbstractTriggerTerm
 
         $options = $this->getTermOptions();
 
-        $reader = $context->getEmailContext();
-        $header = $reader->getHeader($options['name']);
+        $reader  = $context->getEmailContext();
+        $header  = $reader->getHeader($options['name']);
         $strings = array();
 
         if ($header) {

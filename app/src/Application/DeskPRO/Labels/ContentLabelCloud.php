@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -44,19 +43,23 @@ class ContentLabelCloud
 
     public function getCloud()
     {
-        if ($this->cloud !== null) return $this->cloud;
+        if ($this->cloud !== null) {
+            return $this->cloud;
+        }
 
         $counts = array(
-            'articles'     => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
+            'articles'        => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
             'feedback'        => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('feedback', 25),
-            'downloads'    => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('downloads', 25),
-            'news'         => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('news', 25),
+            'downloads'       => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('downloads', 25),
+            'news'            => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('news', 25),
         );
 
         $label_counts = array();
         foreach ($counts as $type_counts) {
             foreach ($type_counts as $label => $count) {
-                if (!isset($label_counts[$label])) $label_counts[$label] = 0;
+                if (!isset($label_counts[$label])) {
+                    $label_counts[$label] = 0;
+                }
                 $label_counts[$label] += $count;
             }
         }
@@ -66,7 +69,7 @@ class ContentLabelCloud
             $label_counts = Arrays::spliceAssoc($label_counts, 0, 25);
         }
 
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $cloud_gen   = new \Application\DeskPRO\UI\TagCloud($label_counts);
         $this->cloud = $cloud_gen->getCloud();
 
         return $this->cloud;

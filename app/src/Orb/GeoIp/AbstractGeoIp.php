@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage GeoIp
+ * Orb.
  */
 
 namespace Orb\GeoIp;
@@ -44,14 +41,16 @@ abstract class AbstractGeoIp
     const LONGITUDE  = 'longitude';
 
     /**
-     * @param  array  $what
-     * @param  string $host
+     * @param array  $what
+     * @param string $host
+     *
      * @return array
      */
     abstract public function lookup($host, array $what = null);
 
     /**
-     * @param  string      $host
+     * @param string $host
+     *
      * @return string|null
      */
     public function lookupContinent($host)
@@ -62,7 +61,8 @@ abstract class AbstractGeoIp
     }
 
     /**
-     * @param  string      $host
+     * @param string $host
+     *
      * @return string|null
      */
     public function lookupCountry($host)
@@ -73,7 +73,8 @@ abstract class AbstractGeoIp
     }
 
     /**
-     * @param  string      $host
+     * @param string $host
+     *
      * @return string|null
      */
     public function lookupRegion($host)
@@ -84,7 +85,8 @@ abstract class AbstractGeoIp
     }
 
     /**
-     * @param  string      $host
+     * @param string $host
+     *
      * @return string|null
      */
     public function lookupCity($host)
@@ -95,7 +97,8 @@ abstract class AbstractGeoIp
     }
 
     /**
-     * @param  string      $host
+     * @param string $host
+     *
      * @return string|null
      */
     public function lookupLatitude($host)
@@ -106,7 +109,8 @@ abstract class AbstractGeoIp
     }
 
     /**
-     * @param  string      $host
+     * @param string $host
+     *
      * @return string|null
      */
     public function lookupLongitude($host)

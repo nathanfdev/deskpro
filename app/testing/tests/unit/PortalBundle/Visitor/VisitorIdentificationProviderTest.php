@@ -26,15 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\PortalBundle\Visitor;
 
-use Application\PortalBundle\Visitor\VisitorIdentificationProvider;
+use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Psr\Log\NullLogger;
 
 class VisitorIdentificationProviderTest extends \DpUnitTestCase
@@ -42,13 +39,12 @@ class VisitorIdentificationProviderTest extends \DpUnitTestCase
     public function testGetIdentifierEvenIfNoCookie()
     {
         $request_stack_mock = \Mockery::mock('Symfony\Component\HttpFoundation\RequestStack');
-        $request_mock = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
-        $cookies_mock = \Mockery::mock('Symfony\Component\HttpFoundation\ParameterBag');
+        $request_mock       = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
+        $cookies_mock       = \Mockery::mock('Symfony\Component\HttpFoundation\ParameterBag');
 
         $request_stack_mock->shouldReceive('getCurrentRequest')->andReturn($request_mock);
         $request_mock->cookies = $cookies_mock;
         $cookies_mock->shouldReceive('get')->with(VisitorIdentificationProvider::COOKIE_NAME)->andReturn(null);
-
 
         $provider = new VisitorIdentificationProvider($request_stack_mock, new NullLogger());
 
@@ -58,13 +54,12 @@ class VisitorIdentificationProviderTest extends \DpUnitTestCase
     public function testGetIdentifierWithSetCookie()
     {
         $request_stack_mock = \Mockery::mock('Symfony\Component\HttpFoundation\RequestStack');
-        $request_mock = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
-        $cookies_mock = \Mockery::mock('Symfony\Component\HttpFoundation\ParameterBag');
+        $request_mock       = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
+        $cookies_mock       = \Mockery::mock('Symfony\Component\HttpFoundation\ParameterBag');
 
         $request_stack_mock->shouldReceive('getCurrentRequest')->andReturn($request_mock);
         $request_mock->cookies = $cookies_mock;
         $cookies_mock->shouldReceive('get')->with(VisitorIdentificationProvider::COOKIE_NAME)->andReturn('CNCPCT_CODE');
-
 
         $provider = new VisitorIdentificationProvider($request_stack_mock, new NullLogger());
 

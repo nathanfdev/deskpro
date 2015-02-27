@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports;
@@ -41,7 +39,6 @@ class ReportEdit
     /**
      * @var \Application\DeskPRO\Entity\ReportBuilder
      */
-
     public $report;
 
     public function __construct(ReportBuilder $report)
@@ -52,7 +49,6 @@ class ReportEdit
     /**
      * @param EntityManager $em
      */
-
     public function save(EntityManager $em)
     {
         $em->persist($this->report);

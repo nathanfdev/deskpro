@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -58,9 +57,8 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
         $this->person = $person;
     }
 
-
     /**
-     * Get the person
+     * Get the person.
      *
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -69,10 +67,8 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
         return $this->person;
     }
 
-
-
     /**
-     * Was the person new (just created?)
+     * Was the person new (just created?).
      *
      * @return bool
      */
@@ -80,8 +76,6 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
     {
         return $this->person->isNewPerson();
     }
-
-
 
     public function propertyChanged($sender, $prop, $old_val, $new_val)
     {
@@ -103,12 +97,15 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
     }
 
     /**
-     * Notify all listeners that changes to the person have been committed
-     *
-     * @return void
+     * Notify all listeners that changes to the person have been committed.
      */
     public function done()
     {
+    }
 
+    public function clear()
+    {
+        $this->person = null;
+        $this->entity = null;
     }
 }

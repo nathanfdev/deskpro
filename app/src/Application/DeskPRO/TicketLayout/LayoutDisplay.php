@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category TicketLayout
  */
 
@@ -52,11 +51,11 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
      */
     private $ticket_context;
 
-
     /**
-     * @param  Layout        $layout
-     * @param                $mode
-     * @param  Ticket        $ticket_context
+     * @param Layout $layout
+     * @param        $mode
+     * @param Ticket $ticket_context
+     *
      * @return LayoutDisplay
      */
     public static function createFromLayout(Layout $layout, $mode, Ticket $ticket_context = null)
@@ -82,21 +81,20 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
         return $obj;
     }
 
-
     /**
      * @param        $mode
      * @param Ticket $ticket_context
      */
     public function __construct($mode, Ticket $ticket_context = null)
     {
-        $this->mode = $mode;
+        $this->mode           = $mode;
         $this->ticket_context = $ticket_context;
     }
 
-
     /**
-     * @param  LayoutField $field
-     * @param  null        $before_field
+     * @param LayoutField $field
+     * @param null        $before_field
+     *
      * @return bool|void
      */
     public function add(LayoutField $field, $before_field = null)
@@ -111,11 +109,15 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
             default:
                 switch ($this->mode) {
                     case self::NEW_TICKET:
-                        if (!$field->isVisibleOnNew()) return false;
+                        if (!$field->isVisibleOnNew()) {
+                            return false;
+                        }
                         break;
 
                     case self::VIEW_TICKET:
-                        if (!$field->isVisibleOnView()) return false;
+                        if (!$field->isVisibleOnView()) {
+                            return false;
+                        }
                         if (!$field->isVisibleOnViewAlways() && $this->ticket_context) {
                             if (!self::checkTicketHasField($field, $this->ticket_context)) {
                                 return false;
@@ -124,7 +126,9 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
                         break;
 
                     case self::EDIT_TICKET:
-                        if (!$field->isVisibleOnEdit()) return false;
+                        if (!$field->isVisibleOnEdit()) {
+                            return false;
+                        }
                         break;
                 }
         }
@@ -134,10 +138,10 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
         return true;
     }
 
-
     /**
-     * @param  LayoutField $field
-     * @param  Ticket      $ticket
+     * @param LayoutField $field
+     * @param Ticket      $ticket
+     *
      * @return bool
      */
     public static function checkTicketHasField(LayoutField $field, Ticket $ticket)

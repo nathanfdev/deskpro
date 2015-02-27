@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AdminInterfaceBundle\Controller;
 
@@ -40,6 +38,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
     /**
      * The currently logged in person.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
@@ -51,7 +50,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Check if the global request token check is required for the request
+     * Check if the global request token check is required for the request.
      */
     public function requireRequestToken($action, $arguments = null)
     {
@@ -70,7 +69,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Force a login
+     * Force a login.
      */
     public function preAction($action, $arguments = null)
     {
@@ -114,14 +113,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ));
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  string                                     $error_message
-     * @param  string                                     $error_title
-     * @param  int                                        $code
-     * @param  array                                      $vars
+     * @param string $error_message
+     * @param string $error_title
+     * @param int    $code
+     * @param array  $vars
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())

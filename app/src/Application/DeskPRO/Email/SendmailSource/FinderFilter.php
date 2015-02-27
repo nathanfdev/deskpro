@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\EmailBundle\Entity\SendmailSource;
 use Orb\Util\Arrays;
 
 /**
- * Simple wrapper around filter params
+ * Simple wrapper around filter params.
  */
 class FinderFilter
 {
@@ -89,28 +88,31 @@ class FinderFilter
 
     /**
      * @param $page
+     *
      * @return $this
      */
     public function setPage($page)
     {
-        $this->page = max(1, (int)$page);
+        $this->page = max(1, (int) $page);
 
         return $this;
     }
 
     /**
      * @param $per_page
+     *
      * @return $this
      */
     public function setPerPage($per_page)
     {
-        $this->per_page = max(1, (int)$per_page);
+        $this->per_page = max(1, (int) $per_page);
 
         return $this;
     }
 
     /**
-     * @param  array $statuses
+     * @param array $statuses
+     *
      * @return $this
      */
     public function setStatuses(array $statuses)
@@ -122,8 +124,10 @@ class FinderFilter
 
     /**
      * @param $status
-     * @return $this
+     *
      * @throws \InvalidArgumentException
+     * @return $this
+     *
      */
     public function addStatus($status)
     {
@@ -165,7 +169,8 @@ class FinderFilter
     }
 
     /**
-     * @param  \DateTime $date
+     * @param \DateTime $date
+     *
      * @return $this
      */
     public function setDateStart(\DateTime $date = null)
@@ -176,7 +181,8 @@ class FinderFilter
     }
 
     /**
-     * @param  \DateTime $date
+     * @param \DateTime $date
+     *
      * @return $this
      */
     public function setDateEnd(\DateTime $date = null)
@@ -188,6 +194,7 @@ class FinderFilter
 
     /**
      * @param $subject
+     *
      * @return $this
      */
     public function setSubject($subject)
@@ -199,6 +206,7 @@ class FinderFilter
 
     /**
      * @param $from
+     *
      * @return $this
      */
     public function setFrom($from)
@@ -210,6 +218,7 @@ class FinderFilter
 
     /**
      * @param $to
+     *
      * @return $this
      */
     public function setTo($to)
@@ -221,6 +230,7 @@ class FinderFilter
 
     /**
      * @param $error_code
+     *
      * @return $this
      */
     public function setErrorCode($error_code)

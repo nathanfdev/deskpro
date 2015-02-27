@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -63,9 +62,10 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  array                    $agent_ids
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param array                    $agent_ids
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
@@ -154,13 +154,12 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         return $agents;
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug("[SendAgentAlert] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
+        $context->getLogger()->debug("[SendAgentAlert] Begin :: agent_ids = ".implode(', ', $this->getActionOption('agent_ids')));
         $start_time = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
@@ -186,19 +185,19 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
         $alert_data = array(
             '@fetch_types'       => array('ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'),
-            'ticket'             => $ticket->getId(),
-            'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
-            'is_new_ticket'      => $vars['is_new_ticket'],
-            'is_new_agent_reply' => $vars['is_new_agent_reply'],
-            'is_new_agent_note'  => $vars['is_new_agent_note'],
-            'is_new_user_reply'  => $vars['is_new_user_reply'],
-            'log_items'          => $log_ids,
+            'ticket'                               => $ticket->getId(),
+            'performer'                            => $vars['performer'] ? $vars['performer']->id : 0,
+            'is_new_ticket'                        => $vars['is_new_ticket'],
+            'is_new_agent_reply'                   => $vars['is_new_agent_reply'],
+            'is_new_agent_note'                    => $vars['is_new_agent_note'],
+            'is_new_user_reply'                    => $vars['is_new_user_reply'],
+            'log_items'                            => $log_ids,
         );
 
         $sent_count = 0;
-        $em  = $this->getContainer()->getEm();
-        $tpl = $this->getContainer()->getTemplating();
-        $tr  = $this->getContainer()->getTranslator();
+        $em         = $this->getContainer()->getEm();
+        $tpl        = $this->getContainer()->getTemplating();
+        $tr         = $this->getContainer()->getTranslator();
 
         $alert_records = array();
 
@@ -231,7 +230,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         $em->flush();
 
         if ($alert_records) {
-            foreach ($alert_records	as $rec) {
+            foreach ($alert_records    as $rec) {
                 $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
                 if ($cm) {
                     $em->persist($cm);

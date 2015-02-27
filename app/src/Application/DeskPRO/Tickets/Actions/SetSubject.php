@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -58,7 +57,6 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}
@@ -91,7 +89,6 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -104,7 +101,6 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -114,7 +110,7 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
             return array('fields');
         }
 
-        return null;
+        return;
     }
 
     /**

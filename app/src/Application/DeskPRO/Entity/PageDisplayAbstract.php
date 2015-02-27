@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
-
 
 /**
  * Standard base for storing display information, such as fields or widgets on a page.
@@ -48,7 +46,7 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
     protected $id = null;
 
     /**
-     * The actual section within the page that this description applies (ex 'toptabs')
+     * The actual section within the page that this description applies (ex 'toptabs').
      *
      * @var string
      */

@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\ImportBundle;
 
@@ -44,9 +42,12 @@ class ImportBundle extends Bundle
         $this->name = 'Import';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
-        parent::build($container);
+        $container->registerExtension(new DependencyInjection\ImportExtension());
     }
 
     /**
@@ -55,15 +56,15 @@ class ImportBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $commands = array(
-            'Application\\ImportBundle\\Command\\CheckImportCommand',
             'Application\\ImportBundle\\Command\\CheckExportCommand',
             'Application\\ImportBundle\\Command\\ExportCommand',
             'Application\\ImportBundle\\Command\\ImportCommand',
+            'Application\\ImportBundle\\Command\\ImportBatchCommand',
             'Application\\ImportBundle\\Command\\ResetCommand',
         );
 
         foreach ($commands as $cmd) {
-            $application->add(new $cmd);
+            $application->add(new $cmd());
         }
     }
 

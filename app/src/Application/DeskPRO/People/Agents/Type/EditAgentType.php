@@ -26,13 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People\Agents\Type;
 
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,25 +48,25 @@ class EditAgentType extends AbstractType
         $builder->add('name', 'text', array('required' => true));
         $builder->add('override_name', 'text', array('required' => false));
 
-        $builder->add('primary_phone_number_text', 'text', array('required' => false));
+        $builder->add('primary_phone', new PhoneNumberType());
 
         $builder->add('emails', 'collection', array(
-            'type'         => 'email',
-            'allow_add'    => true,
-            'allow_delete' => true,
+            'type'            => 'email',
+            'allow_add'       => true,
+            'allow_delete'    => true,
             'invalid_message' => 'Invalid Email.',
         ));
 
         $builder->add('zones', 'choice', array(
             'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
-            'multiple' => true,
-            'required' => false,
+            'multiple'                  => true,
+            'required'                  => false,
         ));
 
         $builder->add('teams', 'entity', array(
-            'class'    => 'DeskPRO:AgentTeam',
-            'required' => false,
-            'multiple' => true,
+            'class'           => 'DeskPRO:AgentTeam',
+            'required'        => false,
+            'multiple'        => true,
             'invalid_message' => 'Invalid Team.',
         ));
 
@@ -82,14 +81,13 @@ class EditAgentType extends AbstractType
         ));
 
         $builder->add('primary_team', 'entity', array(
-            'class'         => 'DeskPRO:AgentTeam',
-            'required'      => false,
+            'class'           => 'DeskPRO:AgentTeam',
+            'required'        => false,
             'invalid_message' => 'Invalid Agent Team.',
         ));
 
         $builder->add('notification_settings', 'collection');
     }
-
 
     /**
      * @param OptionsResolverInterface $resolver
@@ -101,7 +99,6 @@ class EditAgentType extends AbstractType
             'cascade_validation' => true,
         ));
     }
-
 
     /**
      * @return string

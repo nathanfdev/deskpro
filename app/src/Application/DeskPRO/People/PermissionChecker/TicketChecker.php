@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -77,7 +76,8 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canView(Ticket $ticket)
@@ -131,9 +131,9 @@ class TicketChecker extends AbstractChecker
         return true;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canDelete(Ticket $ticket)
@@ -188,14 +188,12 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
-
         #------------------------------
         # Cant delete
         #------------------------------
 
         return false;
     }
-
 
     /**
      * @return bool
@@ -205,9 +203,9 @@ class TicketChecker extends AbstractChecker
         return ($this->person->hasPerm('agent_tickets.delete_own') || $this->person->hasPerm('agent_tickets.delete_unassigned') || $this->person->hasPerm('agent_tickets.delete_assigned') || $this->person->hasPerm('agent_tickets.delete_followed'));
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canReply(Ticket $ticket)
@@ -261,7 +259,6 @@ class TicketChecker extends AbstractChecker
         return false;
     }
 
-
     /**
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -269,9 +266,8 @@ class TicketChecker extends AbstractChecker
     {
         if (!$this->person->hasPerm('agent_tickets.modify_set_archived')) {
             return false;
-
         }
-        if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'set_awaiting_user') || $this->canModify($ticket, 'set_awaiting_agent'))) {
+        if ($ticket->status == 'resolved' and ($this->canModify($ticket, 'set_awaiting_user') || $this->canModify($ticket, 'set_awaiting_agent'))) {
             return true;
         } elseif ($this->canModify($ticket, 'set_resolved')) {
             return true;
@@ -280,9 +276,9 @@ class TicketChecker extends AbstractChecker
         return false;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canModify(Ticket $ticket, $op)
@@ -314,14 +310,14 @@ class TicketChecker extends AbstractChecker
             $set_suffix = 'unassigned';
 
         // Other
-        } else if($ticket->hasParticipantPerson($this->person)) {
+        } elseif ($ticket->hasParticipantPerson($this->person)) {
             $set_suffix = 'followed';
         } else {
             $set_suffix = 'others';
         }
 
-        $perm_global   = 'agent_tickets.modify_' . $set_suffix;
-        $perm_specific = 'agent_tickets.modify_' . $op . '_' . $set_suffix;
+        $perm_global   = 'agent_tickets.modify_'.$set_suffix;
+        $perm_specific = 'agent_tickets.modify_'.$op.'_'.$set_suffix;
 
         if ($this->person->hasPerm($perm_global) || $this->person->hasPerm($perm_specific)) {
             return true;
@@ -330,9 +326,8 @@ class TicketChecker extends AbstractChecker
         return false;
     }
 
-
     /**
-     * Check if the user can modify (or delete) a message
+     * Check if the user can modify (or delete) a message.
      *
      * @param Ticket $ticket
      */
@@ -388,7 +383,6 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
-
         #------------------------------
         # Cant delete
         #------------------------------
@@ -396,12 +390,12 @@ class TicketChecker extends AbstractChecker
         return false;
     }
 
-
     /**
      * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
      *
-     * @param  Ticket $ticket1
-     * @param  Ticket $ticket2
+     * @param Ticket $ticket1
+     * @param Ticket $ticket2
+     *
      * @return bool
      */
     public function canMerge(Ticket $ticket1, Ticket $ticket2)
@@ -411,7 +405,7 @@ class TicketChecker extends AbstractChecker
                 $set_suffix = 'own';
             } elseif (!$ticket->agent && !$ticket->agent_team) {
                 $set_suffix = 'unassigned';
-            } else if($ticket->hasParticipantPerson($this->person)) {
+            } elseif ($ticket->hasParticipantPerson($this->person)) {
                 $set_suffix = 'followed';
             } else {
                 $set_suffix = 'others';

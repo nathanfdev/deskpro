@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -78,7 +75,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
             $field_data = $fm->getStrucutredDataFromForm($_POST['custom_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
 
             $field_form_data = $fm->createFieldDataFromArray($field_data);
-            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+            $custom_fields   = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
         } else {
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
@@ -99,7 +96,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
         $from_ticket = false;
         if ($this->session->get('ticket_from_ptac_register')) {
-            $from_ticket = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
+            $from_ticket           = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
             $register->from_ticket = $from_ticket;
         }
 
@@ -111,7 +108,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
         }
 
         $error_fields = null;
-        $errors = null;
+        $errors       = null;
 
         if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
             $this->ensureRequestToken('user_register');
@@ -165,7 +162,6 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
                 // User not validating if they have an added email address already
                 if ($person->primary_email) {
-
                     $this->session->set('auth_person_id', $person->id);
                     $this->session->set('dp_interface', DP_INTERFACE);
 
@@ -192,19 +188,19 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
                 if ($validator->hasError('email.in_use')) {
                     $rateLimit->saveAction(RateLimit::ACT_REGISTRATION);
                 }
-                $errors = $validator->getErrors(true);
+                $errors       = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);
             }
         }
 
         return $this->render('UserBundle:Register:register.html.twig', array(
-            'form' => $form->createView(),
+            'form'          => $form->createView(),
             'custom_fields' => $custom_fields,
-            'errors' => $errors,
-            'error_fields' => $error_fields,
-            'from_ticket' => $from_ticket,
-            'this_page' => 'register',
-            'captcha' => $captcha,
+            'errors'        => $errors,
+            'error_fields'  => $error_fields,
+            'from_ticket'   => $from_ticket,
+            'this_page'     => 'register',
+            'captcha'       => $captcha,
         ));
     }
 }

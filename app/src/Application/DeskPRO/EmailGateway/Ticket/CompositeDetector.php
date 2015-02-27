@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -77,7 +75,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * Runs detectors against a reader
+     * Runs detectors against a reader.
      *
      * @param AbstractReader $reader
      */
@@ -107,7 +105,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * Reset the saved detector state
+     * Reset the saved detector state.
      */
     public function reset()
     {
@@ -117,7 +115,8 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * @param  AbstractReader                                                        $reader
+     * @param AbstractReader $reader
+     *
      * @return \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface|null
      */
     public function getMatchedDetector(AbstractReader $reader)
@@ -128,7 +127,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
         }
 
         if ($this->matched_detectors[$reader_id] === false) {
-            return null;
+            return;
         }
 
         return $this->matched_detectors[$reader_id];
@@ -151,7 +150,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
 
         $reader_id = spl_object_hash($reader);
         if ($this->matched_tickets[$reader_id] === false) {
-            return null;
+            return;
         }
 
         return $this->matched_tickets[$reader_id];
@@ -165,7 +164,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
         $detector = $this->getMatchedDetector($reader);
 
         if (!$detector) {
-            return null;
+            return;
         }
 
         return $detector->findExistingPerson($ticket, $reader);
@@ -191,14 +190,15 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     {
         $detector = $this->getMatchedDetector($reader);
         if (!$detector || !($detector instanceof TacPersonDetectorInterface)) {
-            return null;
+            return;
         }
 
         return $detector->findTacPerson($reader);
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

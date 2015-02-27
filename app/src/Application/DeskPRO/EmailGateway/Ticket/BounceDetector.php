@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -54,7 +52,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
     {
         if ($this->ptac_code !== null) {
             if ($this->ptac_code === false) {
-                return null;
+                return;
             }
 
             return $this->ptac_code;
@@ -121,7 +119,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
     }
 
     /**
-     * Try to guess the ticket this bounce belongs to
+     * Try to guess the ticket this bounce belongs to.
      *
      * @return \Application\DeskPRO\Entity\Ticket
      */
@@ -129,7 +127,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
     {
         if ($this->guessed_ticket !== null) {
             if ($this->guessed_ticket === false) {
-                return null;
+                return;
             }
 
             return $this->guessed_ticket;

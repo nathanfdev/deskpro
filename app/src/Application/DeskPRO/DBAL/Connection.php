@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -163,7 +162,7 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Modifies the wait_timeout and "pings" the MySQL server to keep the connection alive
+     * Modifies the wait_timeout and "pings" the MySQL server to keep the connection alive.
      */
     public function avoidTimeout()
     {
@@ -201,9 +200,10 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Execute a query and return all results indexed with the specified column.
      *
-     * @param  string $statement
-     * @param  array  $params
-     * @param  string $index
+     * @param string $statement
+     * @param array  $params
+     * @param string $index
+     *
      * @return array
      */
     public function fetchAllKeyed($statement, array $params = array(), $index = 'id', $types = array())
@@ -223,11 +223,12 @@ class Connection extends \Doctrine\DBAL\Connection
      * Optionally, the sub-array can be indexed by $index_key.
      *
      * @param $statement
-     * @param  array $params
+     * @param array $params
      * @param $group_key
-     * @param  null  $index_key
-     * @param  null  $col_key
-     * @param  array $types
+     * @param null  $index_key
+     * @param null  $col_key
+     * @param array $types
+     *
      * @return array
      */
     public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null, $types = array())
@@ -257,13 +258,15 @@ class Connection extends \Doctrine\DBAL\Connection
 
     /**
      * Execute a query and return a key=>value pair.
+     *
      * @param $statement
-     * @param  array $params
-     * @param  array $types
-     * @param  int   $key_index
-     * @param  int   $val_index
-     * @param  int   $mode      Change to PDO::FETCH_ASSOC if you want to specify a string indexes
-     * @param  int   $nullkey
+     * @param array $params
+     * @param array $types
+     * @param int   $key_index
+     * @param int   $val_index
+     * @param int   $mode      Change to PDO::FETCH_ASSOC if you want to specify a string indexes
+     * @param int   $nullkey
+     *
      * @return array
      */
     public function fetchAllKeyValue($statement, array $params = array(), $types = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
@@ -285,10 +288,11 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Execute a query and return an array of all values from one column.
      *
-     * @param  string $statement
-     * @param  array  $params
-     * @param  string $index
-     * @param  int    $mode      Change to PDO::FETCH_ASSOC if you want to specify a string $index
+     * @param string $statement
+     * @param array  $params
+     * @param string $index
+     * @param int    $mode      Change to PDO::FETCH_ASSOC if you want to specify a string $index
+     *
      * @return array
      */
     public function fetchAllCol($statement, array $params = array(), $types = array(), $index = 0, $mode = PDO::FETCH_NUM)
@@ -364,8 +368,9 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Quote an array of values suitable for IN() clause.
      *
-     * @param  array  $values
-     * @param  int    $type
+     * @param array $values
+     * @param int   $type
+     *
      * @return string
      */
     public function quoteIn(array $values, $type = null)
@@ -384,9 +389,10 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Just like insert() except uses INSERT IGNORE.
      *
-     * @param  string $tableName
-     * @param  array  $data
-     * @param  array  $types
+     * @param string $tableName
+     * @param array  $data
+     * @param array  $types
+     *
      * @return int
      */
     public function insertIgnore($tableName, array $data, array $types = array())
@@ -417,8 +423,9 @@ class Connection extends \Doctrine\DBAL\Connection
      * Just like insert() except executes a REPLACE INTO instead.
      *
      * @param $tableName
-     * @param  array $data
-     * @param  array $types
+     * @param array $data
+     * @param array $types
+     *
      * @return int
      */
     public function replace($tableName, array $data, array $types = array())
@@ -442,7 +449,7 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Fetch a COUNT(*) on $tableName with $where condition
+     * Fetch a COUNT(*) on $tableName with $where condition.
      *
      * @param string       $tableName
      * @param string|array $where     A string where or an array of field=>value
@@ -478,13 +485,15 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * @param  string                                                                                                        $query
-     * @param  array                                                                                                         $params
-     * @param  array                                                                                                         $types
-     * @param  \Doctrine\DBAL\Cache\QueryCacheProfile                                                                        $qcp
-     * @param  int                                                                                                           $is_retry
-     * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
+     * @param string                                 $query
+     * @param array                                  $params
+     * @param array                                  $types
+     * @param \Doctrine\DBAL\Cache\QueryCacheProfile $qcp
+     * @param int                                    $is_retry
+     *
      * @throws \Exception
+     * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
+     *
      */
     public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
     {
@@ -611,10 +620,11 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Delete all records from table with an $field id in $ids.
      *
-     * @param  string       $table
-     * @param  array        $ids
-     * @param  string       $field
-     * @param  array|string $other_wheres
+     * @param string       $table
+     * @param array        $ids
+     * @param string       $field
+     * @param array|string $other_wheres
+     *
      * @return int
      */
     public function deleteIn($table, array $ids, $field = 'id', $not = false, $other_wheres = '')
@@ -644,11 +654,12 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * Update all records with $data with a $field id in $ids.
      *
-     * @param  string $table
-     * @param  array  $data
-     * @param  array  $ids
-     * @param  string $field
-     * @param  array  $types
+     * @param string $table
+     * @param array  $data
+     * @param array  $ids
+     * @param string $field
+     * @param array  $types
+     *
      * @return int
      */
     public function updateIn($table, array $data, array $ids, $field = 'id', array $types = array())
@@ -670,7 +681,8 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * @param  string $statement
+     * @param string $statement
+     *
      * @return int
      */
     public function exec($statement)
@@ -689,7 +701,8 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * @param  string    $statement
+     * @param string $statement
+     *
      * @return Statement
      */
     public function prepare($statement)
@@ -820,7 +833,7 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Set isolation level to REPEATABLE READ
+     * Set isolation level to REPEATABLE READ.
      *
      * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
      */
@@ -833,7 +846,7 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Set isolation level to READ COMMITTED
+     * Set isolation level to READ COMMITTED.
      *
      * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
      */
@@ -846,7 +859,7 @@ class Connection extends \Doctrine\DBAL\Connection
     }
 
     /**
-     * Set isolation level back to default (REPEATABLE READ usually)
+     * Set isolation level back to default (REPEATABLE READ usually).
      */
     public function setIsolationDefault()
     {

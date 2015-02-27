@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Scraper
+ * Orb.
  */
 
 namespace Orb\Scraper;
@@ -40,18 +37,19 @@ namespace Orb\Scraper;
 class TwitterFeed
 {
     /**
-     * @param  int           $user_id The users ID
+     * @param int $user_id The users ID
+     *
      * @return ItemInterface
      */
     public function getData($user_id)
     {
-        $twitter_url = 'http://twitter.com/statuses/user_timeline/' . $user_id . '.json';
+        $twitter_url = 'http://twitter.com/statuses/user_timeline/'.$user_id.'.json';
 
         $data = file_get_contents($twitter_url);
         $data = json_decode($data, true);
 
         $userinfo = null;
-        $tweets = array();
+        $tweets   = array();
 
         foreach ($data as $item) {
             if ($userinfo === null) {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 /**
- * Sends article and category notifications to users with subscriptions
+ * Sends article and category notifications to users with subscriptions.
  */
 class NewsSubscriptions extends AbstractJob
 {
@@ -51,7 +48,7 @@ class NewsSubscriptions extends AbstractJob
 
         App::getDb()->replace('settings', array(
             'name'  => 'user.news_subscriptions_last',
-            'value' => time()
+            'value' => time(),
         ));
 
         if (!App::getSetting('user.news_subscriptions')) {
@@ -95,10 +92,10 @@ class NewsSubscriptions extends AbstractJob
         #------------------------------
 
         $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper = $structure->getNewsCategoryHelper();
+        $helper    = $structure->getNewsCategoryHelper();
 
         $category_ids = array();
-        $news_ids  = array();
+        $news_ids     = array();
 
         foreach ($published as $a) {
             $category_ids[] = $a->category->id;
@@ -108,13 +105,12 @@ class NewsSubscriptions extends AbstractJob
         }
 
         $category_ids = array_unique($category_ids);
-        $news_ids = array_unique($news_ids);
+        $news_ids     = array_unique($news_ids);
 
         $cat_subs     = array();
         $article_subs = array();
 
         if ($category_ids) {
-
             // Users can be subscribed to a category higher-up,
             // so for each article need to include subs for the whole path
             $add_ids = array();
@@ -151,12 +147,14 @@ class NewsSubscriptions extends AbstractJob
 
         foreach ($cat_subs as $person_id => $cids) {
             foreach ($published as $news) {
-                $cat = $news->category;
-                $path = $helper->getPathIds($cat);
+                $cat    = $news->category;
+                $path   = $helper->getPathIds($cat);
                 $path[] = $cat->getId();
 
                 if (Arrays::isIn($path, $cids)) {
-                    if (!isset($user_to_news[$person_id])) $user_to_news[$person_id] = array();
+                    if (!isset($user_to_news[$person_id])) {
+                        $user_to_news[$person_id] = array();
+                    }
                     $user_to_news[$person_id][$news->getId()] = $news;
                 }
             }
@@ -164,9 +162,13 @@ class NewsSubscriptions extends AbstractJob
 
         foreach ($article_subs as $person_id => $aids) {
             foreach ($aids as $aid) {
-                if (!isset($updated[$aid])) continue;
+                if (!isset($updated[$aid])) {
+                    continue;
+                }
 
-                if (!isset($user_to_news[$person_id])) $user_to_news[$person_id] = array();
+                if (!isset($user_to_news[$person_id])) {
+                    $user_to_news[$person_id] = array();
+                }
                 $user_to_news[$person_id][$aid] = $updated[$aid];
             }
         }
@@ -191,23 +193,24 @@ class NewsSubscriptions extends AbstractJob
         ", array(), 'category_id', null, 'usergroup_id');
 
         $all_user_to_articles = $user_to_news;
-        $user_to_news = array();
+        $user_to_news         = array();
 
         foreach ($all_user_to_articles as $person_id => $articles) {
-
-            $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
+            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
             $person_ugs[] = 1; // Everyone
 
             foreach ($articles as $news) {
-                $add = false;
-                $cat = $news->category;
+                $add     = false;
+                $cat     = $news->category;
                 $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
                 if (Arrays::isIn($person_ugs, $cat_ugs)) {
                     $add = true;
                 }
 
                 if ($add) {
-                    if (!isset($user_to_news[$person_id])) $user_to_news[$person_id] = array();
+                    if (!isset($user_to_news[$person_id])) {
+                        $user_to_news[$person_id] = array();
+                    }
                     $user_to_news[$person_id][$news->getId()] = $news;
                 }
             }
@@ -220,9 +223,10 @@ class NewsSubscriptions extends AbstractJob
         #------------------------------
 
         foreach ($user_to_news as $person_id => $articles) {
-
             $person = App::getOrm()->find('DeskPRO:Person', $person_id);
-            if (!$person) continue;
+            if (!$person) {
+                continue;
+            }
 
             $new_articles     = array();
             $updated_articles = array();
@@ -240,7 +244,7 @@ class NewsSubscriptions extends AbstractJob
             $message->setTemplate('DeskPRO:emails_user:news-subscription.html.twig', array(
                 'person'           => $person,
                 'new_articles'     => $new_articles,
-                'updated_articles' => $updated_articles)
+                'updated_articles' => $updated_articles, )
             );
             $message->enableQueueHint(1);
 
@@ -251,7 +255,7 @@ class NewsSubscriptions extends AbstractJob
         }
 
         if ($user_to_news) {
-            $this->logStatus("Send " . count($user_to_news) . " notifications");
+            $this->logStatus("Send ".count($user_to_news)." notifications");
         }
     }
 }

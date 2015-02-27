@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -49,7 +46,7 @@ use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class KbController extends AbstractController
 {
@@ -135,9 +132,9 @@ class KbController extends AbstractController
             $this->em->flush($article);
         }
 
-        $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
         $glossary_words = $glossary->findWords($article->content);
-        $word_defs = $glossary->getWordDefs($glossary_words);
+        $word_defs      = $glossary->getWordDefs($glossary_words);
 
         $vars = array(
             'article'              => $article,
@@ -654,7 +651,7 @@ class KbController extends AbstractController
     ############################################################################
 
     /**
-     * List the articles
+     * List the articles.
      */
     public function listPendingArticlesAction()
     {
@@ -691,7 +688,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * [AJAX] Adds a new pending article
+     * [AJAX] Adds a new pending article.
      */
     public function newPendingArticleAction()
     {
@@ -719,7 +716,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * [AJAX] remove a pending article
+     * [AJAX] remove a pending article.
      */
     public function removePendingArticleAction($pending_article_id)
     {
@@ -901,12 +898,12 @@ class KbController extends AbstractController
             'cur_page'      => $page,
             'showing_to'    => $showing_to,
 
-            'search_form'        => array('terms' => $result_cache['criteria']['terms']),
-            'cache'                               => $result_cache,
-            'terms_summary'                       => $result_cache['extra']['summary'],
-            'category'                            => $category,
-            'cat_usergroups'                      => $cat_usergroups,
-            'cat_structure_data'                  => $cat_structure_data,
+            'search_form'                         => array('terms' => $result_cache['criteria']['terms']),
+            'cache'                                                => $result_cache,
+            'terms_summary'                                        => $result_cache['extra']['summary'],
+            'category'                                             => $category,
+            'cat_usergroups'                                       => $cat_usergroups,
+            'cat_structure_data'                                   => $cat_structure_data,
 
             'article_categories' => $article_categories,
         ));

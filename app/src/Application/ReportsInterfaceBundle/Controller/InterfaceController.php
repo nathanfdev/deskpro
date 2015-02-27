@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\ReportsInterfaceBundle\Controller;
 
@@ -76,12 +74,11 @@ class InterfaceController extends AbstractController
         }
 
         if ($load_data) {
-            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
+            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">".$load_data."</script>$rendered";
         }
 
         return $this->createResponse($rendered);
     }
-
 
     ####################################################################################################################
     # multi-load-view
@@ -92,7 +89,7 @@ class InterfaceController extends AbstractController
         $views = array();
 
         foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
-            $id = $view_name;
+            $id        = $view_name;
             $view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
             $view_name = str_replace('/', ':', $view_name);
             $view_name = str_replace('.html', '.html.twig', $view_name);
@@ -105,13 +102,12 @@ class InterfaceController extends AbstractController
             $views[] = array(
                 'id'       => $id,
                 'template' => "ReportsInterfaceBundle:$view_name",
-                'source'   => $rendered
+                'source'   => $rendered,
             );
         }
 
         return $this->createJsonResponse($views);
     }
-
 
     ####################################################################################################################
     # load-lang
@@ -121,7 +117,7 @@ class InterfaceController extends AbstractController
     {
         $js_exporter = new JsExporter($this->container->getTranslator());
 
-        $get_phrases = include(DP_ROOT.'/languages/expose-js.php');
+        $get_phrases = include DP_ROOT.'/languages/expose-js.php';
         $get_phrases = $get_phrases['reports'];
 
         if ($_format == 'js') {

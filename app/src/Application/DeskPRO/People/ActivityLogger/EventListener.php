@@ -27,7 +27,6 @@
 
 namespace Application\DeskPRO\People\ActivityLogger;
 
-
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\CommentAbstract;
@@ -59,7 +58,7 @@ class EventListener implements EventSubscriber
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->queue = new \SplQueue();
+        $this->queue     = new \SplQueue();
     }
 
     public function getSubscribedEvents()
@@ -76,49 +75,49 @@ class EventListener implements EventSubscriber
         switch (true) {
 
             case ($entity instanceof Ticket):
-                /** @var $entity Ticket */
+                /* @var $entity Ticket */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewTicket($entity->person, $entity));
                 }
                 break;
 
             case ($entity instanceof TicketMessage && $entity->ticket['id']):
-                /** @var $entity TicketMessage */
+                /* @var $entity TicketMessage */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewTicketReply($entity->person, $entity));
                 }
                 break;
 
             case ($entity instanceof ArticleComment):
-                /** @var $entity CommentAbstract */
+                /* @var $entity CommentAbstract */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewCommentArticle($entity->person, $entity));
                 }
                 break;
 
             case ($entity instanceof DownloadComment):
-                /** @var $entity CommentAbstract */
+                /* @var $entity CommentAbstract */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewCommentDownload($entity->person, $entity));
                 }
                 break;
 
             case ($entity instanceof NewsComment):
-                /** @var $entity CommentAbstract */
+                /* @var $entity CommentAbstract */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewCommentNews($entity->person, $entity));
                 }
                 break;
 
             case ($entity instanceof FeedbackComment):
-                /** @var $entity CommentAbstract */
+                /* @var $entity CommentAbstract */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewCommentFeedback($entity->person, $entity));
                 }
                 break;
 
             case ($entity instanceof Person):
-                /** @var $entity Person */
+                /* @var $entity Person */
                 $this->queue->enqueue(new Registered($entity));
                 break;
         }

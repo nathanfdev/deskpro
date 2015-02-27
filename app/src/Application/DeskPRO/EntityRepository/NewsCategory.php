@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Orb\Util\Strings;
 
@@ -78,13 +77,15 @@ class NewsCategory extends AbstractCategoryRepository
     }
 
     /**
-     * Get an array of categories
+     * Get an array of categories.
      *
      * @return array
      */
     public function getCategoryOptions()
     {
-        if (!$this->all_cats === null) return $this->all_cats;
+        if (!$this->all_cats === null) {
+            return $this->all_cats;
+        }
 
         $this->all_cats = App::getDb()->fetchAllKeyed("
             SELECT id, title
@@ -98,7 +99,10 @@ class NewsCategory extends AbstractCategoryRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 
@@ -126,7 +130,7 @@ class NewsCategory extends AbstractCategoryRepository
             $counts['0_total'] += $counts[$c['id']];
         }
 
-        $repos = $this;
+        $repos    = $this;
         $fn_count = function ($node) use (&$counts, $repos, &$fn_count) {
             $total = 0;
             foreach ($repos->children($node, true) as $c) {
@@ -138,7 +142,7 @@ class NewsCategory extends AbstractCategoryRepository
             }
 
             if ($node) {
-                $counts[$node['id'] . '_total'] = $total;
+                $counts[$node['id'].'_total'] = $total;
             }
 
             return $total;

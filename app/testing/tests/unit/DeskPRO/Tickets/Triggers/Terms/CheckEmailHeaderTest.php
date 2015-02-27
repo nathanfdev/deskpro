@@ -11,21 +11,23 @@ require_once 'AbstractTicketStringCheckTest.php';
 class CheckEmailHeaderTest extends AbstractStringCheckTest
 {
     /**
-     * @param  int    $id
-     * @param  string $test_string
+     * @param int    $id
+     * @param string $test_string
+     *
      * @return Ticket
      */
     public function createTicket($id, $test_string)
     {
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket          = new Ticket();
+        $ticket->id      = $id;
         $ticket->subject = $test_string;
 
         return $ticket;
     }
 
     /**
-     * @param  Ticket          $ticket
+     * @param Ticket $ticket
+     *
      * @return ExecutorContext
      */
     public function createExecutorContext(Ticket $ticket)
@@ -33,7 +35,7 @@ class CheckEmailHeaderTest extends AbstractStringCheckTest
         $value_reader = new ValueReader();
 
         $value_reader->setValues(array(
-            'headers' => array('other-test' => array('xyz'), 'test-header' => array('abc', $ticket->subject))
+            'headers' => array('other-test' => array('xyz'), 'test-header' => array('abc', $ticket->subject)),
         ));
 
         $exec = new ExecutorContext();
@@ -59,20 +61,21 @@ class CheckEmailHeaderTest extends AbstractStringCheckTest
     }
 
     /**
-     * @param  string           $op
-     * @param  array            $options
+     * @param string $op
+     * @param array  $options
+     *
      * @return CheckEmailHeader
      */
     protected function createChecker($op, array $options)
     {
         if (isset($options['%OPT%'])) {
-            $opt_key = $this->getCheckClassOptionKey();
+            $opt_key           = $this->getCheckClassOptionKey();
             $options[$opt_key] = $options['%OPT%'];
             unset($options['%OPT%']);
         }
 
         $options['name'] = 'test-header';
-        $check = new CheckEmailHeader($op, $options);
+        $check           = new CheckEmailHeader($op, $options);
 
         return $check;
     }
@@ -80,7 +83,7 @@ class CheckEmailHeaderTest extends AbstractStringCheckTest
     public function testNoEmailContext()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));

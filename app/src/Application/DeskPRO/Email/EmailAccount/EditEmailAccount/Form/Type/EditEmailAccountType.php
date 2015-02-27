@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type;
@@ -48,14 +46,14 @@ class EditEmailAccountType extends AbstractType
 
         $builder->add('incoming_type', 'choice', array(
             'choices'  => array(
-                'gmail' => 'gmail',
-                'pop3' => 'pop3',
-                'imap' => 'imap',
-                'exchange' => 'exchange',
+                'gmail'     => 'gmail',
+                'pop3'      => 'pop3',
+                'imap'      => 'imap',
+                'exchange'  => 'exchange',
                 'office365' => 'office365',
-                'noop' => 'noop'
+                'noop'      => 'noop',
             ),
-            'required' => true
+            'required' => true,
         ));
         $builder->add('in_gmail_account',       new IncomingAccount\GmailAccountType());
         $builder->add('in_pop3_account',        new IncomingAccount\Pop3AccountType());
@@ -63,16 +61,15 @@ class EditEmailAccountType extends AbstractType
         $builder->add('in_exchange_account',    new IncomingAccount\ExchangeAccountType());
         $builder->add('in_office365_account',   new IncomingAccount\Office365AccountType());
 
-
         $builder->add('outgoing_type', 'choice', array(
             'choices'  => array(
-                'gmail' => 'gmail',
-                'smtp' => 'smtp',
-                'php_mail' => 'php_mail',
-                'exchange' => 'exchange',
+                'gmail'     => 'gmail',
+                'smtp'      => 'smtp',
+                'php_mail'  => 'php_mail',
+                'exchange'  => 'exchange',
                 'office365' => 'office365',
             ),
-            'required' => true
+            'required' => true,
         ));
         $builder->add('out_gmail_account',      new OutgoingAccount\GmailAccountType());
         $builder->add('out_smtp_account',       new OutgoingAccount\SmtpAccountType());

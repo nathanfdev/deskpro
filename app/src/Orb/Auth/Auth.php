@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
 namespace Orb\Auth;
 
-use \Symfony\Component\EventDispatcher\Event;
-use \Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Authenticates a user using one of any compatible adapters.
@@ -65,7 +64,8 @@ class Auth
      * Results that require redirects you should redirect using the URL you get from the object
      * Failures may be exceptions, check for the FAILURE_EXCEPTION code and the 'exception' message in the messages.
      *
-     * @param  \Orb\Auth\Adapter\AdapterInterface $adapter
+     * @param \Orb\Auth\Adapter\AdapterInterface $adapter
+     *
      * @return \Orb\Auth\Result
      */
     public function authenticate(\Orb\Auth\Adapter\AdapterInterface $adapter)
@@ -77,7 +77,7 @@ class Auth
         }
 
         if ($this->dispatcher) {
-            $event = $this->dispatcher->filter(new Event($this, 'orb.auth.result', array('adapter' => $adapter)), $result);
+            $event  = $this->dispatcher->filter(new Event($this, 'orb.auth.result', array('adapter' => $adapter)), $result);
             $result = $event->getReturnValue();
         }
 

@@ -27,61 +27,58 @@
 
 namespace Application\DeskPRO\JIRA;
 
-
 use Application\DeskPRO\Service\JIRA;
 use Guzzle\Http\Exception\ClientErrorResponseException;
-use Guzzle\Http\Message\EntityEnclosingRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Api
 {
-	const API_BASE_PATH = 'rest/api/2';
+    const API_BASE_PATH = 'rest/api/2';
 
-	protected $service;
-	protected $oauth;
+    protected $service;
+    protected $oauth;
 
-	public function __construct(JIRA $service)
-	{
-		$this->service = $service;
-	}
+    public function __construct(JIRA $service)
+    {
+        $this->service = $service;
+    }
 
-	/**
-	 * @return OAuthWrapper
-	 */
-	public function getOAuth()
-	{
-		if (!$this->oauth) {
-			$this->oauth = new OAuthWrapper($this->service);
-		}
+    /**
+     * @return OAuthWrapper
+     */
+    public function getOAuth()
+    {
+        if (!$this->oauth) {
+            $this->oauth = new OAuthWrapper($this->service);
+        }
 
-		return $this->oauth;
-	}
+        return $this->oauth;
+    }
 
-	/**
-	 * @param $endpoint
-	 * @param string $method
-	 * @param array $headers
-	 * @param array $params
-	 * @throws \Exception
-	 */
-	public function call($endpoint, $method = 'GET', array $headers = array(), $params = array())
-	{
-		try {
-
-			return $this->getOAuth()->getClient()
-				->{strtolower($method)}($endpoint, $headers, $params)
-				->send()
-				->json();
-
-		} catch (ClientErrorResponseException $e) {
-			$code = $e->getResponse()->getStatusCode();
+    /**
+     * @param $endpoint
+     * @param string $method
+     * @param array  $headers
+     * @param array  $params
+     *
+     * @throws \Exception
+     */
+    public function call($endpoint, $method = 'GET', array $headers = array(), $params = array())
+    {
+        try {
+            return $this->getOAuth()->getClient()
+                ->{strtolower($method)}($endpoint, $headers, $params)
+                ->send()
+                ->json();
+        } catch (ClientErrorResponseException $e) {
+            $code = $e->getResponse()->getStatusCode();
 
             if (404 === $code) {
                 throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
             }
 
-			// todo log error message
-			// $json['errorMessages']
+            // todo log error message
+            // $json['errorMessages']
             try {
                 $json = $e->getResponse()->json();
             } catch (\Exception $jsonParseException) {
@@ -89,82 +86,89 @@ class Api
                 throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
             }
 
-
-			if (!empty($json['errors'])) {
-				throw new ApiErrorsException($json['errors']);
-			}
+            if (!empty($json['errors'])) {
+                throw new ApiErrorsException($json['errors']);
+            }
 
             if (!empty($json['errorMessages'])) {
                 throw new ApiCoreException($json['errorMessages']);
             }
 
-			throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
-		}
-	}
+            throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
+        }
+    }
 
-	/**
-	 * @param $endpoint
-	 * @param array $params
-	 * @return mixed
-	 */
-	public function get($endpoint, array $params = array())
-	{
-		return $this->call(self::API_BASE_PATH . $endpoint, 'GET', array(), array('query' => $params));
-	}
+    /**
+     * @param $endpoint
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public function get($endpoint, array $params = array())
+    {
+        return $this->call(self::API_BASE_PATH.$endpoint, 'GET', array(), array('query' => $params));
+    }
 
-	/**
-	 * @param $endpoint
-	 * @param array $params
-	 * @return mixed
-	 */
-	public function post($endpoint, array $params = array())
-	{
-		return $this->call(self::API_BASE_PATH . $endpoint, 'POST', array('content-type' => 'application/json'), json_encode($params));
-	}
+    /**
+     * @param $endpoint
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public function post($endpoint, array $params = array())
+    {
+        return $this->call(self::API_BASE_PATH.$endpoint, 'POST', array('content-type' => 'application/json'), json_encode($params));
+    }
 
-	/**
-	 * @param $endpoint
-	 * @param array $params
-	 * @return mixed
-	 */
-	public function put($endpoint, array $params = array())
-	{
-		return $this->call(self::API_BASE_PATH . $endpoint, 'PUT', array('content-type' => 'application/json'), json_encode($params));
-	}
+    /**
+     * @param $endpoint
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public function put($endpoint, array $params = array())
+    {
+        return $this->call(self::API_BASE_PATH.$endpoint, 'PUT', array('content-type' => 'application/json'), json_encode($params));
+    }
 
-	/**
-	 * @param $endpoint
-	 * @param array $params
-	 * @return mixed
-	 */
-	public function delete($endpoint, array $params = array())
-	{
-		return $this->call(self::API_BASE_PATH . $endpoint, 'DELETE', array(), $params);
-	}
+    /**
+     * @param $endpoint
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public function delete($endpoint, array $params = array())
+    {
+        return $this->call(self::API_BASE_PATH.$endpoint, 'DELETE', array(), $params);
+    }
 
-	/**
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function createIssue(array $data)
-	{
-		return $this->post('/issue', $data);
-	}
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function createIssue(array $data)
+    {
+        return $this->post('/issue', $data);
+    }
 
     /**
      * @param $json
+     *
      * @throws ApiErrorsException
      * @throws \Exception
+     *
      * @return array
      */
-	public function createIssueJson($json)
-	{
-		return $this->call(self::API_BASE_PATH . '/issue', 'POST', array('content-type' => 'application/json'), $json);
-	}
+    public function createIssueJson($json)
+    {
+        return $this->call(self::API_BASE_PATH.'/issue', 'POST', array('content-type' => 'application/json'), $json);
+    }
 
     /**
      * @param $id
      * @param array $data
+     *
      * @return mixed
      */
     public function updateIssue($id, array $data)
@@ -175,6 +179,7 @@ class Api
     /**
      * @param $id
      * @param $json
+     *
      * @throws ApiCoreException
      * @throws ApiErrorsException
      * @throws \Exception
@@ -191,14 +196,16 @@ class Api
 
     /**
      * @param $jql
-     * @return array
+     *
      * @throws \Exception
+     * @return array
+     *
      */
     public function searchIssues($jql, array $fields)
     {
         try {
             return $this->post('/search', array(
-                'jql' => $jql,
+                'jql'    => $jql,
                 'fields' => $fields,
                 'expand' => array('renderedFields'),
             ));
@@ -207,4 +214,4 @@ class Api
             throw $e;
         }
     }
-} 
+}

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -45,7 +43,7 @@ use Orb\Util\OptionsArray;
 use Orb\Util\Util;
 
 /**
- * This runs collection and processsing in accounts
+ * This runs collection and processsing in accounts.
  */
 class Runner
 {
@@ -80,7 +78,7 @@ class Runner
     private $log_messages;
 
     /**
-     * When non-0, sets the PHP time limit per iteration
+     * When non-0, sets the PHP time limit per iteration.
      *
      * @var int
      */
@@ -96,7 +94,7 @@ class Runner
 
     /**
      * When non-0, sets when the email loop will break early
-     * when this many messages have been processed;
+     * when this many messages have been processed;.
      *
      * @var int
      */
@@ -166,7 +164,7 @@ class Runner
     }
 
     /**
-     * Set the accounts to process
+     * Set the accounts to process.
      *
      * @param EmailAccount[] $accounts
      */
@@ -176,7 +174,7 @@ class Runner
     }
 
     /**
-     * Load accounts from the database
+     * Load accounts from the database.
      *
      * @param bool $include_disabled True to also include disabled account
      */
@@ -224,8 +222,9 @@ class Runner
     }
 
     /**
-     * @param  OptionsArray $result
-     * @param  bool         $is_retry
+     * @param OptionsArray $result
+     * @param bool         $is_retry
+     *
      * @return bool
      */
     private function verifyCreatedObject(OptionsArray $result, $is_retry = false)
@@ -351,9 +350,11 @@ class Runner
     /**
      * Executes a single source. Good for re-processing.
      *
-     * @param  \Application\DeskPRO\Entity\EmailSource $source
-     * @param  AbstractReader                          $reader
+     * @param \Application\DeskPRO\Entity\EmailSource $source
+     * @param AbstractReader                          $reader
+     *
      * @throws \Exception
+     *
      * @return bool
      */
     public function executeSource(EmailSource $source, AbstractReader $reader = null)
@@ -599,15 +600,16 @@ class Runner
     }
 
     /**
-     * Execute an account
+     * Execute an account.
      *
      * $time_limit is the max time before the while loop breaks. The method will usually continue to process mail
      * until there is no email left. If you specify a time limit then the process will break after $time_limit seconds.
      * Note this check is done after processing of a message, it does not abort. This means that it's possible the time
      * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
      *
-     * @param  \Application\DeskPRO\Entity\EmailAccount $account
-     * @param  int                                      $time_limit The max time spent processing email before we break.
+     * @param \Application\DeskPRO\Entity\EmailAccount $account
+     * @param int                                      $time_limit The max time spent processing email before we break.
+     *
      * @throws \Exception
      */
     public function executeAccount(EmailAccount $account, $time_limit = 0)
@@ -815,9 +817,11 @@ class Runner
     }
 
     /**
-     * @param  EmailAccount                               $account
-     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
+     * @param EmailAccount $account
+     *
      * @throws \InvalidArgumentException
+     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
+     *
      */
     private function createFetcher(EmailAccount $account)
     {
@@ -834,6 +838,8 @@ class Runner
                 return new Fetcher\Imap($account, 20971520);
             case 'exchange':
                 return new Fetcher\Exchange($account, 20971520);
+            case 'office365':
+                return new Fetcher\Pop3($account, 20971520);
             case 'noop':
             case 'null':
                 return new Fetcher\Noop($account);

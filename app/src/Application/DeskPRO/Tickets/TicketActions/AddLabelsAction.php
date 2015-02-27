@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Orb\Util\Arrays;
 
 /**
- * Adds labels
+ * Adds labels.
  */
 class AddLabelsAction extends AbstractAction implements PermissionableAction
 {
@@ -62,9 +59,8 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
         $this->add_labels = $add_labels;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -76,7 +72,6 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
 
         $ticket->getLabelManager()->addLabels($this->add_labels);
     }
-
 
     /**
      * {@inheritDoc}
@@ -90,9 +85,8 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -110,13 +104,12 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'add_labels', 'label' => $added_labels)
+            array('action' => 'add_labels', 'label' => $added_labels),
         );
     }
 
-
     /**
-     * Get labels
+     * Get labels.
      *
      * @return array
      */
@@ -125,9 +118,9 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
         return $this->add_labels;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -137,7 +130,6 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
 
         return new self($labels);
     }
-
 
     /**
      * @return string

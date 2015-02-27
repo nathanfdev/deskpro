@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -37,7 +34,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class AgentChatController extends AbstractController
 {
@@ -54,7 +51,7 @@ class AgentChatController extends AbstractController
     }
 
     /**
-     * Accepts a POST of a new message to a conversation
+     * Accepts a POST of a new message to a conversation.
      */
     public function sendMessageAction($conversation_id)
     {
@@ -134,7 +131,7 @@ class AgentChatController extends AbstractController
     }
 
     /**
-     * Loads messages from the last conversation with agents
+     * Loads messages from the last conversation with agents.
      */
     public function loadConvoMessagesAction()
     {
@@ -180,7 +177,7 @@ class AgentChatController extends AbstractController
     ############################################################################
 
     /**
-     * List the articles
+     * List the articles.
      */
     public function getSectionDataAction()
     {

@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Templating
+ * Orb.
  */
 
 namespace Orb\Templating\Engine;
 
-use \Symfony\Component\Templating\Storage\Storage;
-use \Symfony\Component\Templating\Storage\FileStorage;
-use \Symfony\Component\Templating\Storage\StringStorage;
+use Symfony\Component\Templating\Storage\FileStorage;
+use Symfony\Component\Templating\Storage\Storage;
+use Symfony\Component\Templating\Storage\StringStorage;
 
 /**
  * This renderer is like a normal PHP renderer except that the value is taken from
@@ -47,7 +44,7 @@ class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
 {
     public function evaluate(Storage $template, array $parameters = array())
     {
-        $OUTPUT = $this->_preProcess($template, $parameters);
+        $OUTPUT       = $this->_preProcess($template, $parameters);
         $__template__ = $template;
 
         extract($parameters, EXTR_SKIP);
@@ -83,7 +80,7 @@ class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
             $OUTPUT = implode('', $OUTPUT);
         }
 
-        return (string)$OUTPUT;
+        return (string) $OUTPUT;
     }
 
     public function supports($name)

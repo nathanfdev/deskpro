@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue\Processor;
@@ -74,7 +71,7 @@ class OutgoingFacebookFeedProcessor extends AbstractJobProcessor
                 'app_id',
                 'app_secret',
                 'page_token',
-                'replying_to_id'
+                'replying_to_id',
             )
         );
 
@@ -83,13 +80,12 @@ class OutgoingFacebookFeedProcessor extends AbstractJobProcessor
         );
     }
 
-
     public function process(array $data, array $job)
     {
         $facebookApi = new FacebookApi(null, $data['app_id'], $data['app_secret']);
         try {
             $facebookApi->commentOnPost($data['replying_to_id'], $data['message'], $data['page_token']);
-        } catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             $this->markRejected($job, 'could not send facebook reply', '', Job::STATUS_CODE_INVALID_DATA);
 
             return false;
@@ -111,7 +107,6 @@ class OutgoingFacebookFeedProcessor extends AbstractJobProcessor
             $this->queue->retryByJobId($job['id'], new \DateTime('now + 2 minutes'));
         }
     }
-
 
     private function willRetry($job)
     {

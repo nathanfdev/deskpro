@@ -7,8 +7,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class TriggerData extends AbstractFixture
 {
-    const LABEL_STATUS = 'jira-test-status-change';
-    const LABEL_COMMENT = 'jira-test-new-comment';
+    const LABEL_STATUS      = 'jira-test-status-change';
+    const LABEL_COMMENT     = 'jira-test-new-comment';
     const NEW_ISSUE_COMMENT = 'jira-test-linked-issue';
 
     public function load(ObjectManager $manager)
@@ -16,10 +16,10 @@ class TriggerData extends AbstractFixture
         /** @var \Application\DeskPRO\DBAL\Connection $connection */
         $connection = $manager->getConnection();
 
-        $label_status = self::LABEL_STATUS;
+        $label_status  = self::LABEL_STATUS;
         $label_comment = self::LABEL_COMMENT;
         $issue_comment = self::NEW_ISSUE_COMMENT;
-        $sql =
+        $sql           =
 <<<SQL
 INSERT INTO `ticket_triggers` (`department_id`, `email_account_id`, `title`, `event_trigger`, `event_flags`, `by_agent_mode`, `by_user_mode`, `is_enabled`, `is_hidden`, `is_editable`, `sys_name`, `terms`, `actions`, `run_order`, `by_app_mode`)
 VALUES

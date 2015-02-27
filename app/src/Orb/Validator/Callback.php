@@ -26,38 +26,38 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
 
 /**
- * A validator that calls a callback function
+ * A validator that calls a callback function.
  */
 class Callback extends AbstractValidator
 {
     /**
-     * Special value to represent the argument we'll place the arg in
+     * Special value to represent the argument we'll place the arg in.
      */
     const ARG_PLACEHOLDER = '__ORB_VALIDATOR_CALLBACK_ARG_PLACEHOLDER__';
 
     /**
      * The callback to call.
+     *
      * @var mixed
      */
     protected $callback_fn;
 
     /**
-     * Arguments to pass to the callback
+     * Arguments to pass to the callback.
+     *
      * @var array
      */
     protected $callback_args = array();
 
     /**
-     * The position where the value in args should be set
+     * The position where the value in args should be set.
+     *
      * @var int
      */
     protected $callback_value_arg_pos = 0;
@@ -75,7 +75,7 @@ class Callback extends AbstractValidator
      */
     public function init()
     {
-        $callback_fn = $this->getOption('callback_function');
+        $callback_fn   = $this->getOption('callback_function');
         $callback_args = $this->getOption('callback_args', array());
 
         $this->callback_fn = $callback_fn;
@@ -88,7 +88,7 @@ class Callback extends AbstractValidator
             array_unshift($callback_args, self::ARG_PLACEHOLDER);
         }
 
-        $this->callback_args = $callback_args;
+        $this->callback_args          = $callback_args;
         $this->callback_value_arg_pos = $pos;
     }
 
@@ -99,13 +99,15 @@ class Callback extends AbstractValidator
      */
     protected function checkIsValid($value)
     {
-        $args = $this->callback_args;
+        $args                                = $this->callback_args;
         $args[$this->callback_value_arg_pos] = $value;
 
         $errors = call_user_func_array($this->callback_fn, $args);
 
         if ($errors) {
-            if (!is_array($errors)) $errors = array($errors);
+            if (!is_array($errors)) {
+                $errors = array($errors);
+            }
 
             foreach ($errors as $info) {
                 if (is_array($info)) {

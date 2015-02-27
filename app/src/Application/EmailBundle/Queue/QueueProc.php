@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Queue;
@@ -58,19 +55,21 @@ class QueueProc
 
     /**
      * Used by the logger context to mark which log lines are for which messages.
+     *
      * @var array
+     *
      * @internal
      */
     public static $__dp_current_sendmail = null;
 
     /**
      * @param SourceMapperInterface $source_mapper
-     * @param SourceSender $source_sender
-     * @param LoggerInterface $logger
+     * @param SourceSender          $source_sender
+     * @param LoggerInterface       $logger
      */
     public function __construct(SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->logger        = $logger;
         $this->source_mapper = $source_mapper;
         $this->source_sender = $source_sender;
     }
@@ -98,8 +97,12 @@ class QueueProc
         $this->logger->info(sprintf("Processing %d -- %s", $r['id'], substr($r['header_subject'], 0, 85)));
         $this->logger->debug(sprintf("From: %s", $r['from_email'] ?: '<none>'));
         $this->logger->debug(sprintf("To: %s", $r['to_emails'] ?: '<none>'));
-        if ($r['cc_emails']) $this->logger->debug(sprintf("CC: %s", $r['cc_emails']));
-        if ($r['bcc_emails']) $this->logger->debug(sprintf("BCC: %s", $r['bcc_emails']));
+        if ($r['cc_emails']) {
+            $this->logger->debug(sprintf("CC: %s", $r['cc_emails']));
+        }
+        if ($r['bcc_emails']) {
+            $this->logger->debug(sprintf("BCC: %s", $r['bcc_emails']));
+        }
 
         // Inc exec count
         $r['exec_count']++;
@@ -134,9 +137,9 @@ class QueueProc
         }
     }
 
-
     /**
      * @param array $sendmail
+     *
      * @return \DateTime|null
      */
     private function getNextRetry(array $sendmail)
@@ -164,7 +167,7 @@ class QueueProc
                 break;
 
             default:
-                return null;
+                return;
         }
 
         return new \DateTime("+$time_offset seconds");

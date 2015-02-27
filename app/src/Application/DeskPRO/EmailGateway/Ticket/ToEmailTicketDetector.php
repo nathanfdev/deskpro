@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -50,7 +48,8 @@ use Orb\Util\Strings;
 class ToEmailTicketDetector implements TicketDetectorInterface
 {
     /**
-     * The regex to match
+     * The regex to match.
+     *
      * @var string
      */
     protected $account_pattern;
@@ -101,7 +100,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 
         $match_ptac = Strings::extractRegexMatch($this->account_pattern, $search_addr, 'auth');
         if (!$match_ptac) {
-            return null;
+            return;
         }
 
         #------------------------------
@@ -116,7 +115,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
             return $ticket;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -128,7 +127,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
             return $this->_found_tac->person;
         }
 
-        return null;
+        return;
     }
 
     /**

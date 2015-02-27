@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -77,7 +74,7 @@ class News extends PortalItemAbstract
 
         $html = $this->renderView('UserBundle:Portal:news-sidebar.html.twig', array(
             'news_entries' => $news_entries,
-            'block_title' => $this->getOption('block_title'),
+            'block_title'  => $this->getOption('block_title'),
         ));
 
         return $html;

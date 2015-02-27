@@ -26,25 +26,23 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
-use Application\DeskPRO\Entity;
-
 
 class TicketMessageTranslated extends AbstractEntityRepository
 {
     /**
-     * Finds all translated messages on a message
+     * Finds all translated messages on a message.
      *
-     * @param  TicketMessageEntity            $ticket_message
-     * @param  string|string[]|null           $lang           Optionally only fetch these lang codes
+     * @param TicketMessageEntity  $ticket_message
+     * @param string|string[]|null $lang           Optionally only fetch these lang codes
+     *
      * @return array|TicketMessageEntity|Null
      */
     public function getForMessage(TicketMessageEntity $ticket_message, $lang_code = null)
@@ -57,7 +55,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
             // Also get generic ones. eg if we specified en_US but there might be ones as 'en'
             foreach (array_values($lang_code) as $c) {
                 if (strpos($c, '_')) {
-                    list ($x,) = explode('_', $c, 2);
+                    list($x,)    = explode('_', $c, 2);
                     $lang_code[] = $x;
                 }
             }
@@ -71,7 +69,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
             ")->setParameters(array($ticket_message, array_values($lang_code)))->execute();
 
             if (!$got) {
-                return null;
+                return;
             }
 
             foreach ($lang_code as $c) {
@@ -80,7 +78,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
                 }
             }
 
-            return null;
+            return;
         } else {
             return $this->_em->createQuery("
                 SELECT m
@@ -90,13 +88,13 @@ class TicketMessageTranslated extends AbstractEntityRepository
         }
     }
 
-
     /**
-     * Get all translated messages for a collection of messages
+     * Get all translated messages for a collection of messages.
      *
-     * @param  TicketMessageEntity[] $ticket_messages
-     * @param  string[]|string|null  $lang_code       Optionally only these lang codes (if using $single, then in order of importance)
-     * @param  single                $single          Only return a single translation per message
+     * @param TicketMessageEntity[] $ticket_messages
+     * @param string[]|string|null  $lang_code       Optionally only these lang codes (if using $single, then in order of importance)
+     * @param single                $single          Only return a single translation per message
+     *
      * @return array
      */
     public function getForMessages(array $ticket_messages, $lang_code = null, $single = true)
@@ -109,7 +107,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
             // Also get generic ones. eg if we specified en_US but there might be ones as 'en'
             foreach (array_values($lang_code) as $c) {
                 if (strpos($c, '_')) {
-                    list ($x,) = explode('_', $c, 2);
+                    list($x,)    = explode('_', $c, 2);
                     $lang_code[] = $x;
                 }
             }
@@ -130,7 +128,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
 
             foreach ($trans_messages as $msg) {
                 $message_id = $msg->ticket_message->getId();
-                $lang = $msg->lang_code;
+                $lang       = $msg->lang_code;
 
                 if (!isset($ret[$message_id])) {
                     $ret[$message_id] = array();
@@ -141,7 +139,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
 
             if ($lang_code && $single) {
                 $ret_all = $ret;
-                $ret = array();
+                $ret     = array();
 
                 foreach ($ret_all as $message_id => $langs) {
                     foreach ($lang_code as $c) {

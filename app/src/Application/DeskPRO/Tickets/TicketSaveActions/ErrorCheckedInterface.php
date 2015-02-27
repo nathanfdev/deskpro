@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -43,5 +42,4 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
  */
 interface ErrorCheckedInterface
 {
-
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Monolog\Processor;
@@ -45,13 +42,15 @@ use Monolog\Handler\AbstractProcessingHandler;
 class LogTrackerHandler extends AbstractProcessingHandler
 {
     /**
-     * Array of array(channel, message)
+     * Array of array(channel, message).
+     *
      * @var array
      */
     private $messages = array();
 
     /**
-     * Array of (channel => true)
+     * Array of (channel => true).
+     *
      * @var array
      */
     private $track_channels = array();
@@ -67,7 +66,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
     private $max_history;
 
     /**
-     * @param int $max_history   How many messages to keep in memory before they are popped off the end
+     * @param int $max_history How many messages to keep in memory before they are popped off the end
      */
     public function __construct($max_history = 5000)
     {
@@ -75,7 +74,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Clear old messages
+     * Clear old messages.
      */
     public function resetMessages()
     {
@@ -86,11 +85,11 @@ class LogTrackerHandler extends AbstractProcessingHandler
      * Start tracking channels.
      *
      * @param array $channels
-     * @param bool $clear_messages
+     * @param bool  $clear_messages
      */
     public function startTracking(array $channels, $clear_messages = true)
     {
-        $this->is_tracking = true;
+        $this->is_tracking    = true;
         $this->track_channels = array_fill_keys($channels, true);
 
         if ($clear_messages) {
@@ -99,16 +98,17 @@ class LogTrackerHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Stop tracking channels
+     * Stop tracking channels.
      */
     public function stopTracking()
     {
-        $this->is_tracking = false;
+        $this->is_tracking    = false;
         $this->track_channels = array();
     }
 
     /**
      * @param array $record
+     *
      * @return bool
      */
     public function isHandling(array $record)
@@ -143,11 +143,13 @@ class LogTrackerHandler extends AbstractProcessingHandler
         foreach ($this->messages as $x) {
             $ret[] = $x[1];
         }
+
         return implode("\n", $ret);
     }
 
     /**
      * @param array $channels
+     *
      * @return string
      */
     public function getMessagesForChannels(array $channels)
@@ -160,6 +162,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
                 $ret[] = $x[1];
             }
         }
+
         return implode("\n", $ret);
     }
 }

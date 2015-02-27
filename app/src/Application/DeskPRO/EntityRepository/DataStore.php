@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,20 +40,27 @@ class DataStore extends AbstractEntityRepository
     public function getByCode($code, $type = null)
     {
         $info = DataStoreEntity::getPartsFromCode($code);
-        if (!$info) return null;
+        if (!$info) {
+            return;
+        }
 
         $tmpdata = $this->find($info['id']);
-        if ($tmpdata['auth'] != $info['auth']) return null;
+        if ($tmpdata['auth'] != $info['auth']) {
+            return;
+        }
 
-        if ($type AND $tmpdata->getType() != $type) return null;
+        if ($type and $tmpdata->getType() != $type) {
+            return;
+        }
+
         return $tmpdata;
     }
 
-
     /**
-     * Get data by its unique name
+     * Get data by its unique name.
      *
-     * @param  string          $name
+     * @param string $name
+     *
      * @return DataStoreEntity
      */
     public function getByName($name, $create_unset = false)
@@ -62,7 +68,7 @@ class DataStore extends AbstractEntityRepository
         $ds = $this->findOneBy(array('name' => $name));
 
         if (!$ds && $create_unset) {
-            $ds = new DataStoreEntity();
+            $ds       = new DataStoreEntity();
             $ds->name = $name;
         }
 

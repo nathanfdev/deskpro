@@ -15,9 +15,9 @@ class SimpleLabelsData extends AbstractFixture
 {
     public function load(ObjectManager $manager)
     {
-        $feedback = new Feedback();
+        $feedback        = new Feedback();
         $feedback->title = 'x';
-        $feedback->slug = 'x';
+        $feedback->slug  = 'x';
         $manager->persist($feedback);
         $manager->flush();
 
@@ -25,14 +25,14 @@ class SimpleLabelsData extends AbstractFixture
         $manager->persist($chat);
         $manager->flush();
 
-        $ticket = new Ticket();
+        $ticket                           = new Ticket();
         $ticket->__dp_auto_ticket_process = false;
-        $ticket->ticket_hash = 'x';
-        $ticket->subject = 'x';
+        $ticket->ticket_hash              = 'x';
+        $ticket->subject                  = 'x';
         $manager->persist($ticket);
         $manager->flush();
 
-        $labels = array();
+        $labels             = array();
         $label1             = new LabelFeedback();
         $label1->label      = 'feedback_label1';
         $label1->feedback   = $feedback;
@@ -60,8 +60,8 @@ class SimpleLabelsData extends AbstractFixture
         foreach ($labels as $label) {
             $def = new LabelDef(array(
                 'label_type' => substr($label['label'], 0, strpos($label1['label'], '_')),
-                'label' => $label['label'],
-                'color' => '#cccccc',
+                'label'      => $label['label'],
+                'color'      => '#cccccc',
             ));
             $manager->persist($def);
         }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -48,7 +47,6 @@ class VerifyAgent implements TicketSaveActionInterface
      */
     private $agent_data;
 
-
     /**
      * @param AgentDataService $agent_data
      */
@@ -57,11 +55,9 @@ class VerifyAgent implements TicketSaveActionInterface
         $this->agent_data = $agent_data;
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {

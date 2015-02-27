@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter;
@@ -88,7 +86,7 @@ class TextMatcher
     }
 
     /**
-     * Given a tokenized pattern, process it against the body to find matching results
+     * Given a tokenized pattern, process it against the body to find matching results.
      */
     public function process()
     {
@@ -132,7 +130,8 @@ class TextMatcher
     }
 
     /**
-     * @param  string|int  $k The offset in the matches array
+     * @param string|int $k The offset in the matches array
+     *
      * @return string|null
      */
     public function getMatchedPattern($k)
@@ -141,7 +140,7 @@ class TextMatcher
     }
 
     /**
-     * Process the pattern and if it matches, mark the beginning of the cut areas with self::CUT_MARK
+     * Process the pattern and if it matches, mark the beginning of the cut areas with self::CUT_MARK.
      *
      * @return string
      */
@@ -153,9 +152,10 @@ class TextMatcher
     }
 
     /**
-     * Cut at the first cut mark
+     * Cut at the first cut mark.
      *
-     * @param  string $mark_string
+     * @param string $mark_string
+     *
      * @return string
      */
     public function getCutBody()

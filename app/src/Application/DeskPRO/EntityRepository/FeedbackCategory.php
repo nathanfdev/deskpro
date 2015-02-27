@@ -26,18 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -80,13 +79,15 @@ class FeedbackCategory extends AbstractCategoryRepository
     }
 
     /**
-     * Get an array of categories
+     * Get an array of categories.
      *
      * @return array
      */
     public function getCategoryOptions()
     {
-        if (!$this->all_cats === null) return $this->all_cats;
+        if (!$this->all_cats === null) {
+            return $this->all_cats;
+        }
 
         $this->all_cats = App::getDb()->fetchAllKeyed("
             SELECT id, parent_id title
@@ -99,7 +100,9 @@ class FeedbackCategory extends AbstractCategoryRepository
 
     public function getFullHierarchy()
     {
-        if ($this->hierarchy !== null) return $this->hierarchy;
+        if ($this->hierarchy !== null) {
+            return $this->hierarchy;
+        }
 
         $this->hierarchy = Arrays::intoHierarchy($this->getCategoryOptions());
 
@@ -109,7 +112,10 @@ class FeedbackCategory extends AbstractCategoryRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 
@@ -128,7 +134,6 @@ class FeedbackCategory extends AbstractCategoryRepository
      *
      * @return array
      */
-
     public function getUserGroups($id, $agent_only = false)
     {
         return
@@ -148,7 +153,6 @@ class FeedbackCategory extends AbstractCategoryRepository
     {
         $counts = array(0 => array('popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0));
         foreach ($this->children() as $c) {
-
             $cat_counts = array();
 
             $searcher = new FeedbackSearch();
@@ -170,7 +174,6 @@ class FeedbackCategory extends AbstractCategoryRepository
             $cat_counts['closed'] = $searcher->getCount();
 
             $cat_counts['all'] = array_sum($cat_counts);
-
 
             $counts[$c['id']] = $cat_counts;
 

@@ -86,7 +86,7 @@ define [
           }
           @perm_form = null
 
-        @primary_phone_number_region = result.data.default_country.value
+        @primary_phone_number_region = result.data.default_country.value || @primary_phone_number_region
 
         @teams  = result.data.teams.agent_teams
         @groups = result.data.groups.groups
@@ -653,7 +653,7 @@ define [
         if res?.data?.error_code == 'system_email_addresses'
           @email_sysaccount_error = res.data.error_info.emails.join(', ')
         if res?.data?.error_code == 'invalid_phone_number'
-          @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info.primary_phone_number_text
+          @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info?.primary_phone
 
         @stopSpinner('saving', true)
         @applyErrorResponseToView(res)

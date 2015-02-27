@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -88,7 +85,7 @@ class Build1400056732 extends AbstractBuild
         $copy_list = array(
             'DeskPRO:emails_user:ticket-autoclose-warn.html.twig' => array(
                 'file'     => DP_ROOT.'/src/Application/DeskPRO/Resources/views/emails_user/ticket-autoclose-warn.html.twig',
-                'new_name' => 'DeskPRO:emails_custom:user_autoclose_warn.html.twig'
+                'new_name' => 'DeskPRO:emails_custom:user_autoclose_warn.html.twig',
             ),
         );
 
@@ -116,8 +113,8 @@ class Build1400056732 extends AbstractBuild
 
         $this->out("Re-compiling custom templates");
 
-        $tids = $db->fetchAllCol("SELECT id FROM templates");
-        $failed = array();
+        $tids        = $db->fetchAllCol("SELECT id FROM templates");
+        $failed      = array();
         $failed_data = array();
 
         foreach ($tids as $id) {
@@ -134,7 +131,7 @@ class Build1400056732 extends AbstractBuild
                 $set->saveTemplate($template);
             } catch (\Exception $e) {
                 $this->out("... Failed: {$e->getMessage()}");
-                $failed[] = $id;
+                $failed[]      = $id;
                 $failed_data[] = $info;
             }
         }
@@ -150,7 +147,9 @@ class Build1400056732 extends AbstractBuild
 
         $proc_actions = function ($actions) use ($copy_list) {
             $actions = @json_decode($actions, true);
-            if (!$actions || empty($actions['@DATA']['actions'])) return null;
+            if (!$actions || empty($actions['@DATA']['actions'])) {
+                return;
+            }
 
             $did = false;
             foreach ($actions['@DATA']['actions'] as &$act) {
@@ -159,7 +158,7 @@ class Build1400056732 extends AbstractBuild
                     case 'SendUserEmail':
                         $tpl = @$act['options']['template'];
                         if ($tpl && isset($copy_list[$tpl])) {
-                            $did = true;
+                            $did                        = true;
                             $act['options']['template'] = $copy_list[$tpl]['new_name'];
                         }
                         break;
@@ -170,7 +169,7 @@ class Build1400056732 extends AbstractBuild
                 return json_encode($actions);
             }
 
-            return null;
+            return;
         };
 
         foreach ($db->fetchAll("SELECT id, actions FROM ticket_triggers") as $x) {

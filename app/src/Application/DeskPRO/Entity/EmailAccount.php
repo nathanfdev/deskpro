@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,17 +53,17 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class EmailAccount extends DomainObject
 {
     /**
-     * This is an outgoing account only (no incoming reading ability)
+     * This is an outgoing account only (no incoming reading ability).
      */
     const TYPE_OUT      = 'outgoing';
 
     /**
-     * This is a ticket gateway account
+     * This is a ticket gateway account.
      */
     const TYPE_TICKETS  = 'tickets';
 
     /**
-     * This is an article gateway account
+     * This is an article gateway account.
      */
     const TYPE_ARTICLES = 'artices';
 
@@ -105,6 +104,7 @@ class EmailAccount extends DomainObject
 
     /**
      * Misc options or flags that can be used by whatever uses this account.
+     *
      * @var array
      */
     protected $options;
@@ -135,7 +135,8 @@ class EmailAccount extends DomainObject
     }
 
     /**
-     * @param  string                    $account_type
+     * @param string $account_type
+     *
      * @throws \InvalidArgumentException
      */
     public function setAccountType($account_type)
@@ -157,7 +158,7 @@ class EmailAccount extends DomainObject
     public function getIncomingAccountType()
     {
         if (!$this->incoming_account) {
-            return null;
+            return;
         }
 
         return $this->incoming_account->getType();
@@ -169,14 +170,14 @@ class EmailAccount extends DomainObject
     public function getOutgoingAccountType()
     {
         if (!$this->outgoing_account) {
-            return null;
+            return;
         }
 
         return $this->outgoing_account->getType();
     }
 
     /**
-     * Get an array of all of the addresses for this account
+     * Get an array of all of the addresses for this account.
      *
      * @return array
      */
@@ -189,7 +190,8 @@ class EmailAccount extends DomainObject
     }
 
     /**
-     * @param  string $address
+     * @param string $address
+     *
      * @return bool
      */
     public function hasAddress($address)
@@ -217,7 +219,8 @@ class EmailAccount extends DomainObject
      * At the moment this method only handles exact matches, but theres a possibility it could be extended
      * to allow for patterns.
      *
-     * @param  string      $address
+     * @param string $address
+     *
      * @return null|string
      */
     public function getEmailAddressMatch($address)
@@ -234,13 +237,13 @@ class EmailAccount extends DomainObject
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Gets the real address to use for this account.
      * E.g., this account might have many addresses and aliases, this is the one to use
-     * by default for outgoing messages.s
+     * by default for outgoing messages.s.
      *
      * @return string
      */
@@ -254,8 +257,9 @@ class EmailAccount extends DomainObject
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)

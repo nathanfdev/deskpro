@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -85,7 +84,7 @@ class Draft extends AbstractEntityRepository
         ')->execute(array($content_type, $content_id, new \DateTime("-$update_offset seconds")));
 
         $output = array();
-        foreach ($drafts AS $draft) {
+        foreach ($drafts as $draft) {
             $output[$draft->content_id][$draft->person->getId()] = $draft;
         }
 
@@ -119,11 +118,11 @@ class Draft extends AbstractEntityRepository
 
         $draft->date_created = new \DateTime();
         $draft->content_type = $content_type;
-        $draft->content_id = $content_id;
-        $draft->message = $message;
+        $draft->content_id   = $content_id;
+        $draft->message      = $message;
         $draft->message_html = $message_html;
-        $draft->extras = $extras;
-        $draft->person = $person;
+        $draft->extras       = $extras;
+        $draft->person       = $person;
 
         try {
             if ($draft->id) {
@@ -134,7 +133,7 @@ class Draft extends AbstractEntityRepository
                     $content_type,
                     $content_id,
                     $person->getId(),
-                    $draft->id
+                    $draft->id,
                 ));
             } else {
                 $this->getEntityManager()->getConnection()->executeUpdate("
@@ -143,14 +142,14 @@ class Draft extends AbstractEntityRepository
                 ", array(
                     $content_type,
                     $content_id,
-                    $person->getId()
+                    $person->getId(),
                 ));
             }
 
             $this->getEntityManager()->persist($draft);
             $this->getEntityManager()->flush($draft);
         } catch (\PDOException $e) {
-            return null;
+            return;
         }
 
         return $draft;
@@ -169,14 +168,14 @@ class Draft extends AbstractEntityRepository
 
             if ($content_type == 'ticket') {
                 App::getDb()->insert('client_messages', array(
-                    'channel' => 'agent.ticket-draft-updated',
-                    'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                    'channel'      => 'agent.ticket-draft-updated',
+                    'auth'         => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                     'date_created' => date('Y-m-d H:i:s'),
-                    'data' => serialize(array(
+                    'data'         => serialize(array(
                         'ticket_id'      => $content_id,
                         'draft_html'     => false,
-                        'via_person'     => $person->getId()
-                    ))
+                        'via_person'     => $person->getId(),
+                    )),
                 ));
             }
         }
@@ -186,7 +185,7 @@ class Draft extends AbstractEntityRepository
     {
         App::getDb()->delete('drafts', array(
             'content_type' => $content_type,
-            'content_id' => $content_id
+            'content_id'   => $content_id,
         ));
     }
 }

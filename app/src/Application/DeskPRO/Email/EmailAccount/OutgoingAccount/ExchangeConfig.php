@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,7 @@ class ExchangeConfig implements AccountConfigInterface
     public $host;
 
     /**
-     * 443 by default (because its over https)
+     * 443 by default (because its over https).
      *
      * @var int
      */
@@ -63,19 +62,22 @@ class ExchangeConfig implements AccountConfigInterface
     public $password;
 
     /**
-     * 'read', 'delete', 'archive'
+     * 'read', 'delete', 'archive'.
+     *
      * @var string
      */
     public $mode = 'read';
 
     /**
      * The mailbox to read from. Default blank means inbox.
+     *
      * @var string
      */
     public $read_mailbox = null;
 
     /**
      * If using the 'archive' method, this is the mailbox name.
+     *
      * @var string
      */
     public $archive_mailbox = null;
@@ -92,10 +94,9 @@ class ExchangeConfig implements AccountConfigInterface
             'password'        => $this->password,
             'mode'            => $this->mode,
             'read_mailbox'    => $this->read_mailbox,
-            'archive_mailbox' => $this->archive_mailbox
+            'archive_mailbox' => $this->archive_mailbox,
         );
     }
-
 
     /**
      * {@inheritDoc}
@@ -110,7 +111,6 @@ class ExchangeConfig implements AccountConfigInterface
         return $obj;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -118,7 +118,6 @@ class ExchangeConfig implements AccountConfigInterface
     {
         return 'exchange';
     }
-
 
     ############################################################################
     # Validation Metadata
@@ -129,7 +128,7 @@ class ExchangeConfig implements AccountConfigInterface
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
         $metadata->addPropertyConstraint('mode', new Constraints\Choice(array(
-            'choices' => array('read', 'delete', 'archive')
+            'choices' => array('read', 'delete', 'archive'),
         )));
     }
 }

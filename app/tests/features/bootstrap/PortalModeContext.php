@@ -26,25 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
-use Application\PortalBundle\Mode\PortalModeFactory;
-use Application\PortalBundle\Mode\PortalModeStorage;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 
 class PortalModeContext implements Context
 {
@@ -60,8 +49,7 @@ class PortalModeContext implements Context
     public function __construct(
         PortalModeStorage $mode_storage,
         PortalModeFactory $mode_factory
-    )
-    {
+    ) {
         $this->mode_storage = $mode_storage;
         $this->mode_factory = $mode_factory;
     }
@@ -92,7 +80,7 @@ class PortalModeContext implements Context
     public function thePortalShouldBeInMode($mode)
     {
         $mode = $this->mode_storage->getMode();
-        switch($mode) {
+        switch ($mode) {
             case 'admin':
                 expect($mode->isAdmin())->toBe(true);
                 break;

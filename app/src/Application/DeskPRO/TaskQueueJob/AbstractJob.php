@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category TaskQueueJob
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Log\Logger;
 
 abstract class AbstractJob
 {
-    const TASK_COMPLETED = 1;
+    const TASK_COMPLETED  = 1;
     const TASK_CONTINUING = 2;
 
     /**
@@ -59,8 +58,8 @@ abstract class AbstractJob
 
     public function __construct(array $data = array(), TaskQueue $task, Logger $logger = null)
     {
-        $this->_data = array_merge($this->_getDefaultData(), $data);
-        $this->_task = $task;
+        $this->_data   = array_merge($this->_getDefaultData(), $data);
+        $this->_task   = $task;
         $this->_logger = $logger;
     }
 

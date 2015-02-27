@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -41,7 +40,7 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Adds a reply to the ticket
+ * Adds a reply to the ticket.
  *
  * @option string note_text
  * @option int    by_agent_id
@@ -83,9 +82,9 @@ class AddAgentNote extends AbstractContainerAwareAction implements ActionInterfa
 
         $em = $this->getContainer()->getEm();
 
-        $message = new TicketMessage();
-        $message->person = $agent;
-        $message->date_created = new \DateTime('+1 second');
+        $message                  = new TicketMessage();
+        $message->person          = $agent;
+        $message->date_created    = new \DateTime('+1 second');
         $message['is_agent_note'] = true;
 
         $note_text = $this->getActionOption('note_text');

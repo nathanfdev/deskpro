@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,8 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A conversation between one or more people
- *
+ * A conversation between one or more people.
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -86,35 +84,35 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $agent = null;
 
     /**
-     * If this is a team chat, the team it is
+     * If this is a team chat, the team it is.
      *
      * @var \Application\DeskPRO\Entity\AgentTeam
      */
     protected $agent_team = null;
 
     /**
-     * If this is a user conversation, this is the user who started the chat
+     * If this is a user conversation, this is the user who started the chat.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
 
     /**
-     * If this is a user convo, this is the users session
+     * If this is a user convo, this is the users session.
      *
      * @var \Application\DeskPRO\Entity\Session
      */
     protected $session = null;
 
     /**
-     * User chat: The users name, if they arent a person
+     * User chat: The users name, if they arent a person.
      *
      * @var string
      */
     protected $person_name = '';
 
     /**
-     * User chat: The users email, if they arent a person
+     * User chat: The users email, if they arent a person.
      *
      * @var string
      */
@@ -151,7 +149,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $rating_comment = '';
 
     /**
-     * Is this an agent chat
+     * Is this an agent chat.
      *
      * @var bool
      */
@@ -171,7 +169,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * Since when the user has started waiting (i.e., time the assignment was 0)
+     * Since when the user has started waiting (i.e., time the assignment was 0).
+     *
      * @var \DateTime
      */
     protected $date_user_waiting = null;
@@ -255,7 +254,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @static
-     * @param  \Application\DeskPRO\Entity\Session          $session
+     *
+     * @param \Application\DeskPRO\Entity\Session $session
+     *
      * @return \Application\DeskPRO\Entity\ChatConversation
      */
     public static function newForUserSession($session)
@@ -270,7 +271,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Setting the person copies their name and email address to the chat row for record keeping
+     * Setting the person copies their name and email address to the chat row for record keeping.
      *
      * @param Person $person
      */
@@ -292,7 +293,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Create a new message and then add it to this convo
+     * Create a new message and then add it to this convo.
      */
     public function addNewMessage($content, $author, $is_html = false)
     {
@@ -309,7 +310,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Create a new message for a user based on their session
+     * Create a new message for a user based on their session.
      *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
@@ -328,7 +329,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a system message
+     * Add a system message.
      *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
@@ -345,7 +346,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a message to this convo
+     * Add a message to this convo.
      *
      * @param
      */
@@ -365,7 +366,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get an array of only user participants
+     * Get an array of only user participants.
      *
      * @return array
      */
@@ -405,6 +406,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
      * Check if a person ID or a person object is current a participant.
      *
      * @param  $person_or_id
+     *
      * @return bool
      */
     public function hasParticipant($person_or_id)
@@ -424,9 +426,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a participant
+     * Add a participant.
      *
      * @param $person_or_id
+     *
      * @return Person
      */
     public function addParticipant($person_or_id, $suppress_sys_msg = false)
@@ -450,9 +453,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Remove a participant
+     * Remove a participant.
      *
      * @param  $person_or_id
+     *
      * @return Person
      */
     public function removeParticipant($person_or_id, $suppress_sys_msg = false)
@@ -470,14 +474,13 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Set the status (open or ended).
      *
      * @param  $status
-     * @return void
      */
     public function setStatus($status)
     {
@@ -500,10 +503,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set the agent
+     * Set the agent.
      *
      * @param  $agent
-     * @return void
      */
     public function setAgent($agent = null)
     {
@@ -656,7 +658,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a label
+     * Add a label.
+     *
      * @param \Application\DeskPRO\Entity\LabelChatConversation $label
      */
     public function addLabel(LabelChatConversation $label)
@@ -724,7 +727,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int           $field_id
+     * @param int $field_id
+     *
      * @return CustomDefChat
      */
     public function getCustomDataForField($field_id)
@@ -739,7 +743,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -767,7 +771,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a custom data item to this chat
+     * Add a custom data item to this chat.
      *
      * @param CustomDataChat $data
      */
@@ -775,12 +779,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->custom_data->add($data);
         $data['conversation'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     /**
      * Check if this ticket has a custom field.
      *
      * @param $field_id
+     *
      * @return bool
      */
     public function hasCustomField($field_id)
@@ -825,7 +831,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name'    => 'chat_conversations',
             'indexes' => array(
-                'status_idx' => array('columns' => array('status')),
+                'status_idx'                 => array('columns' => array('status')),
                 'should_send_transcript_idx' => array('columns' => array('should_send_transcript')),
             ),
         ));
@@ -849,12 +855,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'total_to_ended', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_ended'));
         $metadata->mapField(array( 'fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'session', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Session', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'session_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array( 'name' => 'chat_conversation_to_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))), 'indexBy' => 'id', 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'session', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Session', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'session_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array( 'name' => 'chat_conversation_to_person', 'schema' => null, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))), 'indexBy' => 'id', 'dpApi' => true ));
         $metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'conversation'));
         $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataChat', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'conversation', 'orphanRemoval' => true,  'dpApi' => true ));
         $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelChatConversation', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'chat', 'orphanRemoval' => true, 'dpApi' => true ));

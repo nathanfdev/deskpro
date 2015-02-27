@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -51,8 +50,9 @@ class AgentAppPermissions
     private $app_to_people;
 
     /**
-     * @param Connection $db
+     * @param Connection                                $db
      * @param \Application\DeskPRO\Entity\AppInstance[] $apps
+     *
      * @return AgentAppPermissions
      */
     public static function newFromDb(Connection $db, array $apps)
@@ -71,7 +71,7 @@ class AgentAppPermissions
         }
 
         $app_to_usergroups = array();
-        $app_to_people = array();
+        $app_to_people     = array();
 
         foreach ($perms as $p) {
             if ($p['usergroup_id']) {
@@ -80,7 +80,7 @@ class AgentAppPermissions
                 }
 
                 $app_to_usergroups[$p['app_instance_id']][$p['usergroup_id']] = true;
-            } else if ($p['person_id']) {
+            } elseif ($p['person_id']) {
                 if (!isset($app_to_people[$p['app_instance_id']])) {
                     $app_to_people[$p['app_instance_id']] = array();
                 }
@@ -104,7 +104,8 @@ class AgentAppPermissions
 
     /**
      * @param \Application\DeskPRO\Entity\AppInstance|int $app_or_id
-     * @param Person|int $person_or_id
+     * @param Person|int                                  $person_or_id
+     *
      * @return bool
      */
     public function isPersonSet($app_or_id, $person_or_id)
@@ -126,7 +127,8 @@ class AgentAppPermissions
 
     /**
      * @param \Application\DeskPRO\Entity\AppInstance|int $app_or_id
-     * @param \Application\DeskPRO\Entity\Usergroup|int $group_or_id
+     * @param \Application\DeskPRO\Entity\Usergroup|int   $group_or_id
+     *
      * @return bool
      */
     public function isUsergroupSet($app_or_id, $group_or_id)
@@ -148,7 +150,8 @@ class AgentAppPermissions
 
     /**
      * @param \Application\DeskPRO\Entity\AppInstance|int $app_or_id
-     * @param Person $person
+     * @param Person                                      $person
+     *
      * @return bool
      */
     public function checkPersonPermission($app_or_id, Person $person)
@@ -170,15 +173,18 @@ class AgentAppPermissions
      * Get a new function that can be used to filter on an array of apps.
      *
      * @param Person $person
+     *
      * @return callable
      */
     public function getAgentAppFilterCallable(Person $person)
     {
         $me = $this;
-        return function(AppInstance $app) use ($person, $me) {
+
+        return function (AppInstance $app) use ($person, $me) {
             if ($app->perm_type != 'set') {
                 return true;
             }
+
             return $me->checkPersonPermission($app, $person);
         };
     }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -64,12 +61,12 @@ class TimeTitles
         9676800                => '3 - 4 months',
         12096000               => '4 - 5 months',
         14515200               => '5 - 6 months',
-        self::LAST_TIME_MARKER => '> 6 months'
+        self::LAST_TIME_MARKER => '> 6 months',
     );
-
 
     /**
      * @param $values
+     *
      * @return array
      */
     public static function getValuesArray($values)
@@ -83,9 +80,9 @@ class TimeTitles
         return $new_values;
     }
 
-
     /**
      * @param $time
+     *
      * @return string
      */
     public static function selectTimeGroup($time)
@@ -101,9 +98,9 @@ class TimeTitles
         return 'bad time';
     }
 
-
     /**
      * @param $field
+     *
      * @return string
      */
     public static function makeTimeFieldSelect($field)
@@ -117,7 +114,7 @@ class TimeTitles
             $parts[] = " WHEN $field <= $t THEN $t ";
         }
 
-        $sql .= implode('', $parts) . " ELSE " . self::LAST_TIME_MARKER . " END AS time_group";
+        $sql .= implode('', $parts)." ELSE ".self::LAST_TIME_MARKER." END AS time_group";
 
         return $sql;
     }

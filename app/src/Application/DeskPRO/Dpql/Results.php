@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql;
@@ -42,14 +39,14 @@ class Results
     /**
      * List of result sets. Each element is another array with 2 elements:
      *  - 0: results set (multiple rows, with each row 0-base keyed)
-     *  - 1: split results row (0-based keyed array) or null for non-split results
+     *  - 1: split results row (0-based keyed array) or null for non-split results.
      *
      * @var array
      */
     protected $_results = array();
 
     /**
-     * Sets the results to a single result set
+     * Sets the results to a single result set.
      *
      * @param array $results
      */
@@ -59,7 +56,7 @@ class Results
     }
 
     /**
-     * Adds a split result set
+     * Adds a split result set.
      *
      * @param array $results
      * @param array $split   Row of data for the split header
@@ -87,7 +84,7 @@ class Results
     }
 
     /**
-     * Gets all split result sets
+     * Gets all split result sets.
      *
      * @return array
      */
@@ -99,8 +96,9 @@ class Results
     /**
      * Gets the single result set (errors if multiple result sets).
      *
-     * @return array
      * @throws \Exception
+     * @return array
+     *
      */
     public function getResults()
     {

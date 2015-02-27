@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Cache;
-
 
 use Application\DeskPRO\Cache\ConvenientCache;
 
@@ -46,7 +42,7 @@ class ConvenientCacheTest extends \DpUnitTestCase
         $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
         $cache = new ConvenientCache($adapter);
-        $val = $cache->get('key', 'some_val');
+        $val   = $cache->get('key', 'some_val');
 
         $this->assertEquals('some_val', $val);
     }
@@ -58,7 +54,7 @@ class ConvenientCacheTest extends \DpUnitTestCase
         $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
         $cache = new ConvenientCache($adapter);
-        $val = $cache->get('key', function () {
+        $val   = $cache->get('key', function () {
                 return 'some_val';
             }
         );
@@ -73,7 +69,7 @@ class ConvenientCacheTest extends \DpUnitTestCase
         $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
         $cache = new ConvenientCache($adapter);
-        $val = $cache->get('key', array($this, 'getReturnVal'));
+        $val   = $cache->get('key', array($this, 'getReturnVal'));
 
         $this->assertEquals('some_val', $val);
     }
@@ -93,7 +89,7 @@ class ConvenientCacheTest extends \DpUnitTestCase
         $adapter->shouldReceive('set')->with('key', $not_callable)->once();
 
         $cache = new ConvenientCache($adapter);
-        $val = $cache->get('key', $not_callable);
+        $val   = $cache->get('key', $not_callable);
 
         $this->assertEquals($not_callable, $val);
     }
@@ -108,7 +104,7 @@ class ConvenientCacheTest extends \DpUnitTestCase
         $adapter->shouldReceive('set')->with('key', $not_callable)->once();
 
         $cache = new ConvenientCache($adapter);
-        $val = $cache->get('key', $not_callable);
+        $val   = $cache->get('key', $not_callable);
 
         $this->assertEquals($not_callable, $val);
     }

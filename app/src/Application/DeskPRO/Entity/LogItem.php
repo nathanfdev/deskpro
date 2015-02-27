@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * General logs
+ * General logs.
  */
 class LogItem extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -81,21 +80,21 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
     protected $priority_name;
 
     /**
-     * The log message
+     * The log message.
      *
      * @var string
      */
     protected $message;
 
     /**
-     * Other data, such as backtrace or debug info
+     * Other data, such as backtrace or debug info.
      *
      * @var array
      */
     protected $data = null;
 
     /**
-     * The date the user was inserted into the system
+     * The date the user was inserted into the system.
      *
      * @var \DateTime
      */

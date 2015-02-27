@@ -26,13 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
 namespace Application\DeskPRO\Translate\Loader;
+
+use Application\DeskPRO\App;
 
 /**
  * Loads phrases from the database.
@@ -44,7 +45,8 @@ namespace Application\DeskPRO\Translate\Loader;
 class DbLoader implements LoaderInterface
 {
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $dbconn;
@@ -74,14 +76,23 @@ class DbLoader implements LoaderInterface
         // Langs to fetch in order of pri
         $langs = array();
         if ($language) {
-            $langs[] = $language->getId(); // the chosen lang
+            if (!$language->getId()) {
+                //todo default lang should be injected somehow,
+                //but theres a problem of cyclic depends so this is an ok solution for now
+                $language = App::$container->getLanguageData()->getDefault();
+            }
+            if ($language && $language->getId()) {
+                $langs[] = $language->getId(); // the chosen lang
+            }
         }
         $langs[] = $this->default_lang_id; // default deskpro lang
         $langs[] = 0; // system use
 
         foreach ($langs as $lid) {
             foreach ($groups as $g) {
-                if (empty($this->loaded[$lid][$g])) continue;
+                if (empty($this->loaded[$lid][$g])) {
+                    continue;
+                }
 
                 // obj_ translations only apply for specific language
                 // being reuqested (e.g., no english fallthrough)

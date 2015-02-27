@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
@@ -37,8 +34,9 @@ namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
 class SQLServerDriver extends AbstractDriver
 {
     /**
-     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
      * @throws \InvalidArgumentException
+     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
+     *
      */
     public function getDatabasePlatform()
     {
@@ -46,7 +44,8 @@ class SQLServerDriver extends AbstractDriver
     }
 
     /**
-     * @param  \Doctrine\DBAL\Connection                                                                $conn
+     * @param \Doctrine\DBAL\Connection $conn
+     *
      * @return \Doctrine\DBAL\Schema\AbstractSchemaManager|\Doctrine\DBAL\Schema\SQLServerSchemaManager
      */
     public function getSchemaManager(\Doctrine\DBAL\Connection $conn)

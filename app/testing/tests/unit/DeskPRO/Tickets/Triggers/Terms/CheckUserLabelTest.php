@@ -1,31 +1,37 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\LabelPerson;
 
 require_once 'AbstractEntityCheckTest.php';
 
 class CheckUserLabelTest extends AbstractEntityCheckTest
 {
     /**
-     * @param  int    $id
+     * @param int $id
      * @param $object
+     *
      * @return Ticket
      */
     public function createTicket($id, $object)
     {
+        if ($object === null) {
+            // no test for nulls
+            return;
+        }
+
         $person = new Person();
 
-        $bogus = new LabelPerson();
+        $bogus        = new LabelPerson();
         $bogus->label = "bogus";
 
         $person->labels->add($bogus);
         $person->labels->add($object);
 
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket         = new Ticket();
+        $ticket->id     = $id;
         $ticket->person = $person;
 
         return $ticket;
@@ -35,8 +41,8 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
     {
         $person = new Person();
 
-        $ticket = new Ticket();
-        $ticket->id = 5000;
+        $ticket         = new Ticket();
+        $ticket->id     = 5000;
         $ticket->person = $person;
 
         $checker = $this->createChecker('is', array('labels' => array('test')));
@@ -50,8 +56,8 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
     {
         $person = new Person();
 
-        $ticket = new Ticket();
-        $ticket->id = 5000;
+        $ticket         = new Ticket();
+        $ticket->id     = 5000;
         $ticket->person = $person;
 
         $checker = $this->createChecker('not', array('labels' => array('test')));
@@ -78,7 +84,8 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     public function getEntityClass()
@@ -87,12 +94,13 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * @param  int    $id
+     * @param int $id
+     *
      * @return object
      */
     public function createEntityObject($id)
     {
-        $object = new LabelPerson();
+        $object        = new LabelPerson();
         $object->label = $id;
 
         return $object;

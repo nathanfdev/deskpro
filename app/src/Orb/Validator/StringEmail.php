@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
@@ -40,6 +37,7 @@ class StringEmail extends AbstractValidator implements StaticValidator
 
     /**
      * @param $value
+     *
      * @return bool
      */
     public static function isValueValid($value)
@@ -48,7 +46,6 @@ class StringEmail extends AbstractValidator implements StaticValidator
 
         return $validator->isValid($value);
     }
-
 
     /**
      * Check $value to see if its valid.
@@ -68,8 +65,8 @@ class StringEmail extends AbstractValidator implements StaticValidator
         }
 
         list($name, $domain) = explode('@', $value, 2);
-        $name   = trim($name);
-        $domain = trim($domain);
+        $name                = trim($name);
+        $domain              = trim($domain);
 
         if ($name === "" || !$domain) {
             $this->addError('empty_email');
@@ -93,7 +90,7 @@ class StringEmail extends AbstractValidator implements StaticValidator
             return false;
         }
 
-        if (!preg_match($regex_domain, $domain) AND !preg_match($regex_ip, $domain)) {
+        if (!preg_match($regex_domain, $domain) and !preg_match($regex_ip, $domain)) {
             $this->addError('bad_email_domain');
 
             return false;

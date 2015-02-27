@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
- * Represents an order and direction (ASC, DESC)
+ * Represents an order and direction (ASC, DESC).
  */
 class OrderDir extends AbstractPart
 {
@@ -49,7 +46,7 @@ class OrderDir extends AbstractPart
     public $order;
 
     /**
-     * ASC or DESC
+     * ASC or DESC.
      *
      * @var string
      */

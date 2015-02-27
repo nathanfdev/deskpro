@@ -313,11 +313,11 @@ define [
 
 
     ###
-      # Compares two values to see if they are equal.
-      #
-      # If objects, every property of the object is compared with equals()
-      #
-      # @return {bool}
+    # Compares two values to see if they are equal.
+    #
+    # If objects, every property of the object is compared with equals()
+    #
+    # @return {bool}
     ###
     equals: (obj1, obj2, ignorePrivate = true) ->
       if obj1 == obj2
@@ -364,11 +364,11 @@ define [
       return false
 
     ###
-      # Dump a variable to a string repr
-      #
-      # @param {mixed} obj
-      # @param {Integer} maxLvl How deep down nested structures to recurse
-      # @return {String}
+    # Dump a variable to a string repr
+    #
+    # @param {mixed} obj
+    # @param {Integer} maxLvl How deep down nested structures to recurse
+    # @return {String}
     ###
     dump: (obj, maxLvl = 5, _rlvl = 0, _visited = null) ->
       out = ''

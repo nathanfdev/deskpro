@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Auth;
@@ -53,8 +50,6 @@ use Orb\Auth\Result;
  * interface we are on.
  *
  * Note: Not to be confused with the Symfony Security Component's AuthenticationManager. Quite different.
- *
- * @package Application\DeskPRO\Auth
  */
 class AuthenticationManager
 {
@@ -71,7 +66,7 @@ class AuthenticationManager
     private $usersourceManager;
 
     /**
-     * The usersources relevant for this request
+     * The usersources relevant for this request.
      *
      * @var \Application\DeskPRO\Usersource\UsersourceCollection collection of usersources for this interface
      */
@@ -83,7 +78,7 @@ class AuthenticationManager
     private $authSettings;
 
     /**
-     * The interface settings relevant for this request
+     * The interface settings relevant for this request.
      *
      * @var \Application\DeskPRO\Auth\AuthInterfaceSettings
      */
@@ -124,9 +119,10 @@ class AuthenticationManager
     }
 
     /**
-     * Tells us if we can use this usersource to log the user in
+     * Tells us if we can use this usersource to log the user in.
      *
-     * @param  Usersource $usersource
+     * @param Usersource $usersource
+     *
      * @return bool
      */
     public function isUsableUsersource(Usersource $usersource)
@@ -147,7 +143,7 @@ class AuthenticationManager
     }
 
     /**
-     * Settings relevant to THIS request (interface aware)
+     * Settings relevant to THIS request (interface aware).
      *
      * @return AuthInterfaceSettings
      */
@@ -165,7 +161,7 @@ class AuthenticationManager
     }
 
     /**
-     * All usersources for this interface
+     * All usersources for this interface.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection
      */
@@ -189,6 +185,7 @@ class AuthenticationManager
      *
      * @param $identifier
      * @param $password
+     *
      * @return Result
      */
     public function authenticateFormLogin($identifier, $password)
@@ -260,7 +257,7 @@ class AuthenticationManager
     }
 
     /**
-     * Usersources that have an icon to display to login
+     * Usersources that have an icon to display to login.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection
      */
@@ -280,7 +277,7 @@ class AuthenticationManager
     }
 
     /**
-     * Usersources that have a button to display to login
+     * Usersources that have a button to display to login.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection
      */
@@ -316,7 +313,7 @@ class AuthenticationManager
     }
 
     /**
-     * Has at least one usersource that can redirect to "lost password"
+     * Has at least one usersource that can redirect to "lost password".
      *
      * @return bool
      */
@@ -325,23 +322,23 @@ class AuthenticationManager
         return $this->isDeskPROEnabled();
     }
 
-	public function isDeskPROEnabled($interface = null)
+    public function isDeskPROEnabled($interface = null)
     {
-		if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
+        if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
         foreach ($this->usersourcesForInterface as $usersource) {
             if ($usersource->app === null) {
                 return true;
             }
         }
 
-        return false;
+            return false;
+        }
+
+        // clone the auth manager except make it for the specific interface, not the default
+        $authManager = $this->cloneForInterface($interface);
+
+        return $authManager->isDeskPROEnabled();
     }
-
-		// clone the auth manager except make it for the specific interface, not the default
-		$authManager = $this->cloneForInterface($interface);
-
-		return $authManager->isDeskPROEnabled();
-	}
 
     /*********************************************
     #------------------------------
@@ -354,6 +351,7 @@ class AuthenticationManager
      * Is there anything on the website to show the user when it comes to auth? (login sidebar, registration, reg page, etc)
      * For example, if redirect SSO is enabled, then this would be false. If for some reason only background SSO was
      * set, and no usersource displayed anything, then this is also false.
+     *
      * @return bool
      */
     public function isAuthVisible()
@@ -392,6 +390,7 @@ class AuthenticationManager
 
     /**
      * @param $interface
+     *
      * @return AuthenticationManager
      */
     public function cloneForInterface($interface)

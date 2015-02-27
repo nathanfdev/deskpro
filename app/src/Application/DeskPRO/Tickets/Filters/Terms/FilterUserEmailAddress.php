@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -57,7 +56,6 @@ class FilterUserEmailAddress extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -65,7 +63,7 @@ class FilterUserEmailAddress extends AbstractFilterTerm
     {
         $options = $this->getTermOptions();
 
-        $email = $options['email'];
+        $email     = $options['email'];
         $is_domain = $email[0] === '@';
 
         if ($is_domain) {

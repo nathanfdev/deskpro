@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -94,7 +91,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Loads data
+     * Loads data.
      */
     protected function preload()
     {
@@ -123,9 +120,10 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets a usergroup (either user or agent)
+     * Gets a usergroup (either user or agent).
      *
-     * @param  int                                        $ug_id
+     * @param int $ug_id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup|null
      */
     public function get($ug_id)
@@ -136,7 +134,8 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup|null
      */
     public function getAgentGroup($id)
@@ -147,7 +146,8 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup|null
      */
     public function getUserGroup($id)
@@ -158,7 +158,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets all groups
+     * Gets all groups.
      *
      * @return array
      */
@@ -170,7 +170,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets an array of user groups
+     * Gets an array of user groups.
      *
      * @return array
      */
@@ -182,7 +182,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets an array of agent groups
+     * Gets an array of agent groups.
      */
     public function getAgentUsergroups()
     {
@@ -192,7 +192,8 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  null  $for_ids
+     * @param null $for_ids
+     *
      * @return array
      */
     public function getNames($for_ids = null)
@@ -238,8 +239,9 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  array $ids
-     * @param  bool  $keep_order
+     * @param array $ids
+     * @param bool  $keep_order
+     *
      * @return array
      */
     public function getByIds(array $ids, $keep_order = false)
@@ -257,7 +259,7 @@ class UsergroupDataService extends BaseRepositoryService
     }
 
     /**
-     * Pass-through to repository
+     * Pass-through to repository.
      */
     public function __call($method, array $args = array())
     {

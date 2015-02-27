@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle;
@@ -50,7 +47,6 @@ class TestBundle extends Bundle
     {
         parent::build($container);
     }
-
 
     public function registerCommands(Application $application)
     {

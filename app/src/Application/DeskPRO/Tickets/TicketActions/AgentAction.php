@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -41,7 +38,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * Sets agent
+ * Sets agent.
  */
 class AgentAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
@@ -55,15 +52,13 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     public function __construct($agent, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)
     {
         $this->agent_id = $agent;
-        $this->tracker = $tracker;
+        $this->tracker  = $tracker;
     }
-
 
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
-
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -82,9 +77,8 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         return true;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -97,7 +91,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
                 $agent_id = $this->tracker->getExtra('fwd_via_agent')->getId();
             } else {
                 // Invalid context
-                if (!$this->person_context OR !$this->person_context['is_agent']) {
+                if (!$this->person_context or !$this->person_context['is_agent']) {
                     return;
                 }
 
@@ -119,9 +113,8 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         $ticket['agent'] = $agent;
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -131,7 +124,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 
         if ($agent_id == -1) {
             // Invalid context
-            if (!$this->person_context OR !$this->person_context['is_agent']) {
+            if (!$this->person_context or !$this->person_context['is_agent']) {
                 return array();
             }
 
@@ -143,13 +136,12 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         }
 
         return array(
-            array('action' => 'agent', 'agent_id' => $agent_id)
+            array('action' => 'agent', 'agent_id' => $agent_id),
         );
     }
 
-
     /**
-     * Get the agent id
+     * Get the agent id.
      *
      * @return int
      */
@@ -158,16 +150,15 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->agent_id;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string
@@ -185,7 +176,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
                 }
             }
 
-            return '<span class="with-agent" data-agent-id="' . $this->agent_id . '">' . $tr->phrase('agent.tickets.assign_current_action') . '</span>';
+            return '<span class="with-agent" data-agent-id="'.$this->agent_id.'">'.$tr->phrase('agent.tickets.assign_current_action').'</span>';
         } elseif ($this->agent_id == 0) {
             if ($this->trigger && $this->trigger->event_trigger == 'new.email.agent') {
                 return 'Do not assign ticket to anyone';
@@ -197,9 +188,11 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
             if ($name !== null && $as_html) {
                 $name = htmlspecialchars($name);
             }
-            if ($name === null) $name = "<error>Unknown #{$this->agent_id}</error>";
+            if ($name === null) {
+                $name = "<error>Unknown #{$this->agent_id}</error>";
+            }
 
-            $ret = '<span class="with-agent" data-agent-id="' . $this->agent_id . '">' . $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name)) . '</span>';
+            $ret = '<span class="with-agent" data-agent-id="'.$this->agent_id.'">'.$tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name)).'</span>';
 
             return $ret;
         }

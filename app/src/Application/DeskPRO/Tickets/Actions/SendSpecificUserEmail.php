@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
- * Send an email to the user
+ * Send an email to the user.
  *
  * @option bool     template          The template to send
  * @option bool     from_name         Who to send the email from

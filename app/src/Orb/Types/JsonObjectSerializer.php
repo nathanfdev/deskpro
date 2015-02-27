@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Types
  */
 
@@ -37,26 +36,28 @@ namespace Orb\Types;
 class JsonObjectSerializer
 {
     /**
-     * @param  JsonObjectSerializable $object
+     * @param JsonObjectSerializable $object
+     *
      * @return string
      */
     public static function serialize(JsonObjectSerializable $object)
     {
         $class_name = get_class($object);
         $obj_data   = $object->serializeJsonArray();
-        $data = array(
+        $data       = array(
             '@CLASS'   => $class_name,
-            '@DATA'    => $obj_data
+            '@DATA'    => $obj_data,
         );
 
         return json_encode($data);
     }
 
-
     /**
-     * @param  string                    $json_object
-     * @return mixed
+     * @param string $json_object
+     *
      * @throws \InvalidArgumentException
+     * @return mixed
+     *
      */
     public static function unserialize($json_object)
     {
@@ -67,7 +68,7 @@ class JsonObjectSerializer
         }
 
         $class_name = $data['@CLASS'];
-        $object = $class_name::unserializeJsonArray($data['@DATA']);
+        $object     = $class_name::unserializeJsonArray($data['@DATA']);
 
         return $object;
     }

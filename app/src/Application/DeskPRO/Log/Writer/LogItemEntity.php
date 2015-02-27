@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Log
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log\Writer;
@@ -42,16 +39,15 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
     public function _write(\Orb\Log\LogItem $log_item)
     {
         try {
-
-            $message = $log_item->getMessage();
+            $message     = $log_item->getMessage();
             $message_len = strlen($message);
 
-            $data = $log_item->getExtra() ? serialize($log_item->getExtra()) : null;
+            $data     = $log_item->getExtra() ? serialize($log_item->getExtra()) : null;
             $data_len = $data ? strlen($data) : 0;
 
             $max_size = App::getDb()->getMaxPacketSize();
             if (($message_len + $data_len) * 2 >= $max_size) {
-                $message = substr($message, 0, ($max_size - 50) /2);
+                $message     = substr($message, 0, ($max_size - 50) /2);
                 $message_len = strlen($message);
 
                 if (($message_len + $data_len) * 2 >= $max_size) {

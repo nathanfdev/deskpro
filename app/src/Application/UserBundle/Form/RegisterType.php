@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form;
@@ -45,10 +42,8 @@ class RegisterType extends AbstractType
         $this->buildPersonForm($builder);
     }
 
-
-
     /**
-     * Configures the person form
+     * Configures the person form.
      */
     protected function buildPersonForm(FormBuilderInterface $builder)
     {
@@ -60,7 +55,7 @@ class RegisterType extends AbstractType
         $langs = App::getDataService('Language')->getTitles();
         if (count($langs) != 1) {
             $builder->add('language_id', 'choice', array(
-                'choices' => $langs
+                'choices' => $langs,
             ));
         }
     }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Validator;
@@ -40,7 +37,8 @@ use Orb\Validator\AbstractValidator;
 class NewArticleValidator extends AbstractValidator
 {
     /**
-     * @param  \Application\AgentBundle\Form\Model\NewArticle $article
+     * @param \Application\AgentBundle\Form\Model\NewArticle $article
+     *
      * @return bool
      */
     protected function checkIsValid($article)

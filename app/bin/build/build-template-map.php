@@ -34,7 +34,7 @@ foreach ($paths as $bundle => $dir) {
     $finder->files()->name('*.twig')->in($dir);
 
     foreach ($finder as $file) {
-        /** @var \Symfony\Component\Finder\SplFileinfo $file */
+        /* @var \Symfony\Component\Finder\SplFileinfo $file */
 
         $filepath = $file->getRealPath();
 

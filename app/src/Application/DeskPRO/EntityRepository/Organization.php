@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,17 +43,24 @@ class Organization extends AbstractEntityRepository
     /** @var array|null */
     protected $_organization_names = null;
 
+    /**
+     * @param string $name
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return OrganizationEntity
+     *
+     */
     public function findOneByName($name)
     {
-            $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('o')
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('o')
             ->from('DeskPRO:Organization', 'o')
             ->where('o.name = :name')
             ->setParameter('name', $name);
 
-            $query = $qb->getQuery();
+        $query = $qb->getQuery();
 
-            return $query->getOneOrNullResult();
+        return $query->getOneOrNullResult();
     }
 
     /**
@@ -63,7 +69,7 @@ class Organization extends AbstractEntityRepository
     public function getOrganizationNames($for_ids = null)
     {
         if ($this->_organization_names == null) {
-            $db = $this->getEntityManager()->getConnection();
+            $db                        = $this->getEntityManager()->getConnection();
             $this->_organization_names = $db->fetchAllKeyValue("
                 SELECT id, name
                 FROM organizations
@@ -76,7 +82,7 @@ class Organization extends AbstractEntityRepository
         }
 
         $ret = array();
-        foreach ((array)$for_ids as $id) {
+        foreach ((array) $for_ids as $id) {
             if (isset($this->_organization_names[$id])) {
                 $ret[$id] = $this->_organization_names[$id];
             }
@@ -84,7 +90,6 @@ class Organization extends AbstractEntityRepository
 
         return $ret;
     }
-
 
     public function getOrganizationsFromIds(array $ids)
     {
@@ -99,7 +104,9 @@ class Organization extends AbstractEntityRepository
             return false;
         });
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $orgs = $this->getEntityManager()->createQuery("
             SELECT o
@@ -112,7 +119,7 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Get a count of how many orgs there are
+     * Get a count of how many orgs there are.
      *
      * @return int
      */
@@ -125,9 +132,10 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Count how many people there are in an organization
+     * Count how many people there are in an organization.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return int
      */
     public function countMembersFor(OrganizationEntity $org)
@@ -144,7 +152,7 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Gets the list of organization managers
+     * Gets the list of organization managers.
      *
      * @param \Application\DeskPRO\Entity\Organization $org
      *
@@ -163,7 +171,8 @@ class Organization extends AbstractEntityRepository
     /**
      * Fetch an organization by its name.
      *
-     * @param  string                                   $name
+     * @param string $name
+     *
      * @return \Application\DeskPRO\Entity\Organization
      */
     public function getByName($name)
@@ -180,13 +189,14 @@ class Organization extends AbstractEntityRepository
 
     /**
      * @param $q
-     * @param  null  $limit
+     * @param null $limit
+     *
      * @return mixed
      */
     public function search($q, $limit = null, $hydrate = true)
     {
-        $q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-        $q = strtolower($q);
+        $q    = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+        $q    = strtolower($q);
         $mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
         return $this->getEntityManager()->createQuery("
@@ -194,6 +204,6 @@ class Organization extends AbstractEntityRepository
             FROM DeskPRO:Organization o
             WHERE LOWER(o.name) LIKE ?1
             ORDER BY o.name ASC
-        ")->setMaxResults($limit)->execute(array(1=> $q), $mode);
+        ")->setMaxResults($limit)->execute(array(1 => $q), $mode);
     }
 }

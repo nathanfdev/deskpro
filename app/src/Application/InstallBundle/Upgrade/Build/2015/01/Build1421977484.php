@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -40,7 +37,7 @@ class Build1421977484 extends AbstractBuild
     {
         $this->out("Add default feedback status");
         // high display_order
-		$this->execMutateSql("
+        $this->execMutateSql("
           INSERT INTO feedback_status_categories (status_type, title, display_order) VALUES ('active','Gathering Feedback',2001)
         ");
 
@@ -49,7 +46,6 @@ class Build1421977484 extends AbstractBuild
         $this->execMutateSql("
           UPDATE feedback SET status_category_id = ".$default_status_category.", status = 'active' WHERE status = 'new'
         ");
-
 
         $this->execMutateSql("REPLACE INTO settings SET name = 'portal.default_feedback_status_category_id', value = ".$default_status_category);
     }

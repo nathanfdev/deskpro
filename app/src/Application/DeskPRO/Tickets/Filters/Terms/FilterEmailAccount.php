@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -52,7 +51,6 @@ class FilterEmailAccount extends AbstractFilterTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

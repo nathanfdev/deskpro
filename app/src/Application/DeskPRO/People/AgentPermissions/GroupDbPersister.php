@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -50,7 +49,6 @@ class GroupDbPersister
      */
     private $db;
 
-
     /**
      * @param EntityManager $em
      */
@@ -60,12 +58,13 @@ class GroupDbPersister
         $this->db        = $em->getConnection();
     }
 
-
     /**
-     * @param  Usergroup        $group
-     * @param  AgentPermissions $perms
-     * @return bool
+     * @param Usergroup        $group
+     * @param AgentPermissions $perms
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function savePerms(Usergroup $group, AgentPermissions $perms)
     {
@@ -76,7 +75,7 @@ class GroupDbPersister
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $set_perms[] = $real_name . '.' . $prop;
+                    $set_perms[] = $real_name.'.'.$prop;
                 }
             }
         }
@@ -89,7 +88,6 @@ class GroupDbPersister
             foreach ($new_perms as $p) {
                 $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
             }
-
         }
 
         $this->db->beginTransaction();
@@ -110,19 +108,20 @@ class GroupDbPersister
         return true;
     }
 
-
     /**
-     * @param  Person           $person
-     * @param  AgentPermissions $perms
-     * @return bool
+     * @param Person           $person
+     * @param AgentPermissions $perms
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function saveOverridePerms(Person $person, AgentPermissions $perms)
     {
         $current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
 
-        $group_perms = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
-        $via_groups = array();
+        $group_perms  = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
+        $via_groups   = array();
         $names_loader = new PermissionNamesLoader();
 
         foreach ($person->usergroups as $ug) {
@@ -149,7 +148,7 @@ class GroupDbPersister
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $n = $real_name . '.' . $prop;
+                    $n = $real_name.'.'.$prop;
 
                     if (!isset($via_groups[$n])) {
                         $set_perms[] = $n;
@@ -166,7 +165,6 @@ class GroupDbPersister
             foreach ($new_perms as $p) {
                 $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
             }
-
         }
 
         $this->db->beginTransaction();

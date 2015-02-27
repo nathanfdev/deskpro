@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Departments;
@@ -65,7 +63,7 @@ class TicketDepartmentEditor
     }
 
     /**
-     * Deletes the department
+     * Deletes the department.
      */
     public function removeDepartment(Department $dep, Department $move_to)
     {

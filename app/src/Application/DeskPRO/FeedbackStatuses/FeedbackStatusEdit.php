@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\FeedbackStatuses;
@@ -41,7 +39,6 @@ class FeedbackStatusEdit
     /**
      * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
      */
-
     public $feedback_status;
 
     public function __construct(FeedbackStatusCategory $feedback_status)
@@ -52,7 +49,6 @@ class FeedbackStatusEdit
     /**
      * @param EntityManager $em
      */
-
     public function save(EntityManager $em)
     {
         $em->persist($this->feedback_status);

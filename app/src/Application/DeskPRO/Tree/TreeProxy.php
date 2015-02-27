@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tree;
@@ -52,10 +49,11 @@ class TreeProxy implements \ArrayAccess
     protected $__child_cache;
 
     /**
-     * Go over each item in an array and wrap it with this tree proxy and $filter
+     * Go over each item in an array and wrap it with this tree proxy and $filter.
      *
-     * @param  array    $array
-     * @param  callback $filter
+     * @param array    $array
+     * @param callback $filter
+     *
      * @return array
      */
     public static function makeTreeProxyArray($array, $filter)
@@ -67,13 +65,12 @@ class TreeProxy implements \ArrayAccess
                 continue;
             }
 
-            $c_obj = new static($c, $filter);
+            $c_obj   = new static($c, $filter);
             $ret[$k] = $c_obj;
         }
 
         return $ret;
     }
-
 
     /**
      * @param mixed    $obj
@@ -81,10 +78,9 @@ class TreeProxy implements \ArrayAccess
      */
     public function __construct($obj, $filter)
     {
-        $this->__obj = $obj;
+        $this->__obj    = $obj;
         $this->__filter = $filter;
     }
-
 
     /**
      * @return mixed
@@ -93,7 +89,6 @@ class TreeProxy implements \ArrayAccess
     {
         return $this->__obj;
     }
-
 
     /**
      * Get the children that pas the filter, with each child itself being wrapped with the same filter.
@@ -130,7 +125,6 @@ class TreeProxy implements \ArrayAccess
 
         return $this->__child_cache;
     }
-
 
     ####################################################################################################################
     # Implementations of magic methods
@@ -177,7 +171,7 @@ class TreeProxy implements \ArrayAccess
         if (is_callable(array($this->__obj, $name))) {
             return call_user_func_array(array($this->__obj, $name), $arguments);
         } else {
-            return null;
+            return;
         }
     }
 

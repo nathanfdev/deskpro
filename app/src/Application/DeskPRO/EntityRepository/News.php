@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,10 @@ class News extends AbstractEntityRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 
@@ -54,10 +56,11 @@ class News extends AbstractEntityRepository
      */
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         if ($person_context) {
-
             $cat_ids = $person_context->getPermissionsManager()->NewsCategories->getAllowedCategories();
             if (!$cat_ids) {
                 return array();
@@ -83,7 +86,9 @@ class News extends AbstractEntityRepository
 
     public function getByResultIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $unsorted_news = $this->getEntityManager()->createQuery("
             SELECT n
@@ -123,11 +128,10 @@ class News extends AbstractEntityRepository
         return $news;
     }
 
-
     public function getNewest($num = 10, $node = false)
     {
         if ($node) {
-            $cat_ids = $node->getTreeIds(true);
+            $cat_ids  = $node->getTreeIds(true);
             $articles = $this->getEntityManager()->createQuery("
                 SELECT n
                 FROM DeskPRO:News n INDEX BY n.id
@@ -146,7 +150,6 @@ class News extends AbstractEntityRepository
         return $articles;
     }
 
-
     public function countPublished()
     {
         return $this->getEntityManager()->createQuery("
@@ -160,9 +163,9 @@ class News extends AbstractEntityRepository
     {
         return array(
             'views' => array(
-                'conditions' => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
-            )
+                'conditions'   => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+            ),
         );
     }
 }

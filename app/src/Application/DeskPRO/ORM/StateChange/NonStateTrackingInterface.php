@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,5 +39,4 @@ namespace Application\DeskPRO\ORM\StateChange;
  */
 interface NonStateTrackingInterface
 {
-
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -70,7 +69,6 @@ class NativeAppsSync
      */
     private $exception_handler = false;
 
-
     /**
      * @param DeskproContainer $container
      * @param AppManager       $manager
@@ -90,7 +88,6 @@ class NativeAppsSync
         $this->logger = $logger;
     }
 
-
     /**
      * Sets an exception handler to run on problems during sync or upgrades.
      */
@@ -99,9 +96,8 @@ class NativeAppsSync
         $this->exception_handler = $exception_handler;
     }
 
-
     /**
-     * Updates apps already installed
+     * Updates apps already installed.
      */
     public function runUpdates()
     {
@@ -112,9 +108,9 @@ class NativeAppsSync
         }
     }
 
-
     /**
-     * @param  AppPackage                                $package
+     * @param AppPackage $package
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @throws \Doctrine\ORM\ORMException
@@ -142,11 +138,11 @@ class NativeAppsSync
         // Updates any apps
         foreach ($this->manager->getPackageApps($package) as $app) {
             $native_app = $this->manager->getNativeApp($app);
-            $class = $native_app->getConfig()->getInstallerHandlerClass();
+            $class      = $native_app->getConfig()->getInstallerHandlerClass();
             if ($class) {
                 $this->logger->debug("... running update for app #{$app->id}");
                 $context = new InstallerContext($this->container, $native_app);
-                $obj = new $class($package['settings_def']);
+                $obj     = new $class($package['settings_def']);
 
                 try {
                     $obj->updatePackage($context);
@@ -163,9 +159,8 @@ class NativeAppsSync
         }
     }
 
-
     /**
-     * Syncs new apps from the filesystem
+     * Syncs new apps from the filesystem.
      */
     public function runSync()
     {
@@ -173,7 +168,6 @@ class NativeAppsSync
             $this->_syncAppsDir($path);
         }
     }
-
 
     /**
      * @param string $path
@@ -184,6 +178,7 @@ class NativeAppsSync
 
         if (!is_dir($path)) {
             $this->logger->debug("(no dir)");
+
             return;
         }
 

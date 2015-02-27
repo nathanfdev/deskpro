@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -115,7 +114,7 @@ class CategoryHierarchy
     }
 
     /**
-     * Get all root node ids
+     * Get all root node ids.
      *
      * @return array
      */
@@ -132,9 +131,8 @@ class CategoryHierarchy
         return $root_ids;
     }
 
-
     /**
-     * Get all root nodes
+     * Get all root nodes.
      *
      * @return array
      */
@@ -149,9 +147,8 @@ class CategoryHierarchy
         return $this->repos->getByIds($root_ids, true);
     }
 
-
     /**
-     * Get all category IDs that exists
+     * Get all category IDs that exists.
      *
      * @return array
      */
@@ -162,28 +159,27 @@ class CategoryHierarchy
         return $this->_cat_ids;
     }
 
-
     /**
-     * Get a plain hierarchy array
-     *
-     * @return null
+     * Get a plain hierarchy array.
      */
     public function getInHierarchy($reset = false)
     {
-        if (!$reset && $this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
+        if (!$reset && $this->_cat_hierarchy !== null) {
+            return $this->_cat_hierarchy;
+        }
 
         if (is_array($reset)) {
             $cats = $reset;
         } else {
             if ($this->em->getUnitOfWork()->isAddedPreloadedEntity($this->entity_name)) {
                 $this->em->getUnitOfWork()->preloadEntitySet($this->entity_name);
-                $cats = array();
+                $cats        = array();
                 $select_keys = array('id', 'parent_id', 'title', 'display_order');
                 if ($this->table_name == 'departments') {
                     $select_keys = array('id', 'parent_id', 'title', 'user_title', 'display_order');
                 }
                 foreach ($this->repos->getIdentityHelper()->findAll() as $c) {
-                    $id = $c->getId();
+                    $id        = $c->getId();
                     $cats[$id] = array();
                     foreach ($select_keys as $k) {
                         if ($k == 'id') {
@@ -219,13 +215,13 @@ class CategoryHierarchy
 
         $this->_cat_ids = array();
         foreach ($cats as &$c) {
-            $c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
+            $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
 
             if (!isset($c['user_title']) || !$c['user_title']) {
                 $c['user_title'] = $c['title'];
             }
 
-            $this->_cat_ids[] = $c['id'];
+            $this->_cat_ids[]      = $c['id'];
             $this->_cats[$c['id']] = $c;
         }
         unset($c);
@@ -236,13 +232,12 @@ class CategoryHierarchy
 
         $this->_cat_names = Arrays::flattenToIndex($cats, 'title');
 
-        $cats = Arrays::intoHierarchy($cats, null);
-        $this->_cat_hierarchy = $cats;
+        $cats                      = Arrays::intoHierarchy($cats, null);
+        $this->_cat_hierarchy      = $cats;
         $this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
 
         return $this->_cat_hierarchy;
     }
-
 
     /**
      * Get an array of child=>parent for all categories.
@@ -253,7 +248,6 @@ class CategoryHierarchy
     {
         return $this->_cat_parent_map;
     }
-
 
     /**
      * Gets the names for each cat, indexed by cat ID.
@@ -277,8 +271,6 @@ class CategoryHierarchy
         return $ret;
     }
 
-
-
     /**
      * Gets a flat array of cat names, indexed by cat ID. Children
      * names are separated by $sep.
@@ -299,10 +291,10 @@ class CategoryHierarchy
         $names = array();
 
         foreach ($cats as $k => $cat) {
-            $name = $basenames;
+            $name   = $basenames;
             $name[] = $cat['title'];
 
-            if (!$cat['children'] OR $include_tops) {
+            if (!$cat['children'] or $include_tops) {
                 $names[$k] = implode($sep, $name);
             }
             if ($cat['children']) {
@@ -313,9 +305,8 @@ class CategoryHierarchy
         return $names;
     }
 
-
     /**
-     * Get a flat hierarchy, where children are in the main array but have an increasing 'depth'
+     * Get a flat hierarchy, where children are in the main array but have an increasing 'depth'.
      *
      * @return array
      */
@@ -326,11 +317,11 @@ class CategoryHierarchy
         return $this->_cat_hierarchy_flat;
     }
 
-
     /**
-     * Get IDs of parents in order (left to right)
+     * Get IDs of parents in order (left to right).
      *
      * @param $category
+     *
      * @return array
      */
     public function getPathIds($category)
@@ -341,7 +332,7 @@ class CategoryHierarchy
 
         while (!empty($this->_cat_parent_map[$cat_id])) {
             $cat_id = $this->_cat_parent_map[$cat_id];
-            $ids[] = $cat_id;
+            $ids[]  = $cat_id;
         }
 
         $ids = array_reverse($ids);
@@ -349,11 +340,11 @@ class CategoryHierarchy
         return $ids;
     }
 
-
     /**
-     * Get category entities for all parents
+     * Get category entities for all parents.
      *
      * @param $category
+     *
      * @return array
      */
     public function getPath($category)
@@ -367,12 +358,12 @@ class CategoryHierarchy
         return $this->repos->getByIds($ids, true);
     }
 
-
     /**
-     * Get children IDs of a category
+     * Get children IDs of a category.
      *
-     * @param  int|\Application\DeskPRO\Entity\CategoryAbstract $category
-     * @param  bool                                             $direct   Only get the immediate children?
+     * @param int|\Application\DeskPRO\Entity\CategoryAbstract $category
+     * @param bool                                             $direct   Only get the immediate children?
+     *
      * @return int[]
      */
     public function getChildrenIds($category = null, $direct = true)
@@ -384,7 +375,7 @@ class CategoryHierarchy
             return $this->_cat_ids;
         }
 
-        $cat_id = is_object($category) ? $category->getId() : $category;
+        $cat_id    = is_object($category) ? $category->getId() : $category;
         $child_ids = array();
 
         if (!isset($this->_cat_hierarchy_flat[$cat_id])) {
@@ -417,12 +408,12 @@ class CategoryHierarchy
         return $child_ids;
     }
 
-
     /**
-     * Get children IDs of a category
+     * Get children IDs of a category.
      *
-     * @param  int|\Application\DeskPRO\Entity\CategoryAbstract $category
-     * @param  bool                                             $direct   Only get the immediate children?
+     * @param int|\Application\DeskPRO\Entity\CategoryAbstract $category
+     * @param bool                                             $direct   Only get the immediate children?
+     *
      * @return \Application\DeskPRO\Entity\CategoryAbstract[]
      */
     public function getChildren($category = null, $direct = true)
@@ -443,11 +434,11 @@ class CategoryHierarchy
         return $this->getChildren($category, $direct);
     }
 
-
     /**
      * Get an array of all cat IDs in a tree including the parent itself (optionally disabled).
      *
-     * @param  int   $parent_id
+     * @param int $parent_id
+     *
      * @return array
      */
     public function getIdsInTree($parent_id, $incude_top = true)
@@ -463,9 +454,8 @@ class CategoryHierarchy
         return $ids;
     }
 
-
     /**
-     * Get IDs of all categories that are leafs (dont have children)
+     * Get IDs of all categories that are leafs (dont have children).
      *
      * @retrun array
      */
@@ -478,10 +468,6 @@ class CategoryHierarchy
             WHERE c2.id IS NULL
         ");
     }
-
-
-
-
 
     public function getTotalCounts(array $counts)
     {
@@ -522,8 +508,8 @@ class CategoryHierarchy
             return array();
         }
 
-        $conn = App::getDb();
-        $tbl = $conn->quoteIdentifier($permission_table_name);
+        $conn    = App::getDb();
+        $tbl     = $conn->quoteIdentifier($permission_table_name);
         $cat_ids = $conn->fetchAllCol("
             SELECT category_id
             FROM {$tbl}

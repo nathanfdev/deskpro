@@ -26,25 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
-use Application\PortalBundle\Mode\PortalModeFactory;
-use Application\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
 
 class PageObjectContext extends BasePortalContext
 {

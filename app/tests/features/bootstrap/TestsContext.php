@@ -4,11 +4,7 @@ namespace DpBehat;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManager;
-use DpBehat\TestBundle\DataSetManager;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -37,9 +33,9 @@ class TestsContext implements Context, SnippetAcceptingContext
      */
     public function __construct(SessionInterface $session, EntityManager $em)
     {
-        $this->called = false;
+        $this->called  = false;
         $this->session = $session;
-        $this->em = $em;
+        $this->em      = $em;
     }
 
     /**

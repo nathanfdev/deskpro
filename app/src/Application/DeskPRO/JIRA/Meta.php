@@ -27,143 +27,147 @@
 
 namespace Application\DeskPRO\JIRA;
 
-
-
 class Meta
 {
-	/**
-	 * @var username authorized current oauth session
-	 */
-	protected $api_username;
+    /**
+     * @var username authorized current oauth session
+     */
+    protected $api_username;
 
-	/**
-	 * create meta-data
-	 * @var array
-	 */
-	protected $projects = array();
+    /**
+     * create meta-data.
+     *
+     * @var array
+     */
+    protected $projects = array();
 
-	/**
-	 * schema for fields
-	 * @var array
-	 */
-	protected $fields = array();
+    /**
+     * schema for fields.
+     *
+     * @var array
+     */
+    protected $fields = array();
 
-	/**
-	 * available statuses
-	 * @var array
-	 */
-	protected $statuses = array();
+    /**
+     * available statuses.
+     *
+     * @var array
+     */
+    protected $statuses = array();
 
-	/**
-	 * available issue types
-	 * @var array
-	 */
-	protected $issuetypes = array();
+    /**
+     * available issue types.
+     *
+     * @var array
+     */
+    protected $issuetypes = array();
 
-	protected $default_project;
-	protected $default_issuetype;
-	protected $default_fields_summary = array();
-	protected $default_fields_list = array();
-    protected $system_fields = array('project', 'issuetype', 'summary');
+    protected $default_project;
+    protected $default_issuetype;
+    protected $default_fields_summary = array();
+    protected $default_fields_list    = array();
+    protected $system_fields          = array('project', 'issuetype', 'summary');
 
-	/**
-	 * @return array
-	 */
-	public function toArray()
-	{
-		$ret = array();
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $ret = array();
 
-		$ref = new \ReflectionObject($this);
-		foreach ($ref->getProperties() as $prop) {
-			$name = $prop->getName();
-			$ret[$name] = $this->{$name};
-		}
+        $ref = new \ReflectionObject($this);
+        foreach ($ref->getProperties() as $prop) {
+            $name       = $prop->getName();
+            $ret[$name] = $this->{$name};
+        }
 
-		return $ret;
-	}
+        return $ret;
+    }
 
-	/**
-	 * @param array $data
-	 * @return Meta
-	 */
-	static public function fromArray(array $data)
-	{
-		$meta = new self;
-		unset($data['system_fields']);
-		foreach ($data as $k => $v) {
-			if (property_exists($meta, $k)) {
-				$meta->{$k} = $v;
-			}
-		}
-		return $meta;
-	}
+    /**
+     * @param array $data
+     *
+     * @return Meta
+     */
+    public static function fromArray(array $data)
+    {
+        $meta = new self();
+        unset($data['system_fields']);
+        foreach ($data as $k => $v) {
+            if (property_exists($meta, $k)) {
+                $meta->{$k} = $v;
+            }
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getAllFields()
-	{
-		return array_values(array_unique(array_merge($this->default_fields_summary, $this->default_fields_list)));
-	}
+        return $meta;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllFields()
+    {
+        return array_values(array_unique(array_merge($this->default_fields_summary, $this->default_fields_list)));
+    }
 
     public function getSystemFields()
     {
         return $this->system_fields;
     }
 
-	/**
-	 * @return string
-	 */
-	public function getApiUsername()
-	{
-		return $this->api_username;
-	}
+    /**
+     * @return string
+     */
+    public function getApiUsername()
+    {
+        return $this->api_username;
+    }
 
-	public function setProjects(array $projects = array())
-	{
-		$this->projects = array();
-		foreach ($projects as $project) {
-			$this->projects[] = array(
-				'id' => $project['id'],
-				'key' => $project['key'],
-				'name' => $project['name'],
-			);
-		}
-	}
+    public function setProjects(array $projects = array())
+    {
+        $this->projects = array();
+        foreach ($projects as $project) {
+            $this->projects[] = array(
+                'id'   => $project['id'],
+                'key'  => $project['key'],
+                'name' => $project['name'],
+            );
+        }
+    }
 
-	public function setIssuetypes(array $issuetypes = array())
-	{
-		$this->issuetypes = array();
-		foreach ($issuetypes as $issuetype) {
-			$this->issuetypes[] = array(
-				'id' => $issuetype['id'],
-				'name' => $issuetype['name'],
-				'subtask' => false,
-			);
-		}
-	}
+    public function setIssuetypes(array $issuetypes = array())
+    {
+        $this->issuetypes = array();
+        foreach ($issuetypes as $issuetype) {
+            $this->issuetypes[] = array(
+                'id'      => $issuetype['id'],
+                'name'    => $issuetype['name'],
+                'subtask' => false,
+            );
+        }
+    }
 
-	public function setStatuses(array $statuses = array())
-	{
-		$this->statuses = array();
-		foreach ($statuses as $status) {
-			$this->statuses[] = array(
-				'id' => $status['id'],
-				'name' => $status['name'],
-			);
-		}
-	}
+    public function setStatuses(array $statuses = array())
+    {
+        $this->statuses = array();
+        foreach ($statuses as $status) {
+            $this->statuses[] = array(
+                'id'   => $status['id'],
+                'name' => $status['name'],
+            );
+        }
+    }
 
-	public function setFields(array $fields = array())
-	{
-		$this->fields = array();
-		foreach ($fields as $field) {
-			$this->fields[] = array(
-				'id' => $field['id'],
-				'name' => $field['name'],
-				'custom' => $field['custom'],
-				'schema' => $field['schema'],
-			);
-		}
-	}
-} 
+    public function setFields(array $fields = array())
+    {
+        $this->fields = array();
+        foreach ($fields as $field) {
+            $this->fields[] = array(
+                'id'     => $field['id'],
+                'name'   => $field['name'],
+                'custom' => $field['custom'],
+                'schema' => $field['schema'],
+            );
+        }
+    }
+}

@@ -26,11 +26,8 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Command;
@@ -70,24 +67,25 @@ class GenTestEmailCommand extends ContainerAwareCommand
         $mailer = $this->getContainer()->getMailer();
 
         $date = date('D, jS M Y g:ia');
-        $to = $input->getOption('to');
+        $to   = $input->getOption('to');
         $from = $input->getOption('from');
 
         if (empty($to)) {
             $output->writeln("<error>You must specify the --to option");
+
             return 1;
         }
 
         if (empty($from)) {
             $email_accounts = $this->getContainer()->getEmailAccountManager();
-            $account = $email_accounts->getDefaultOutAccount();
+            $account        = $email_accounts->getDefaultOutAccount();
             if ($account) {
                 $from = $account->getUseEmailAddress();
             }
         }
 
         if (empty($from)) {
-            $from = 'deskpro@' . php_uname('n');
+            $from = 'deskpro@'.php_uname('n');
         }
 
         $message = $mailer->createMessage();
@@ -106,7 +104,7 @@ class GenTestEmailCommand extends ContainerAwareCommand
             $id = $mailer->insertMessage($message);
 
             $this->getContainer()->getDb()->update('sendmail_sources', array(
-                'status' => 'aborted'
+                'status' => 'aborted',
             ), array('id' => $id));
 
             $output->writeln("<info>Inserted email source: $id</info>\n");

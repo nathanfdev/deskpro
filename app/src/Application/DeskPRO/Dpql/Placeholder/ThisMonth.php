@@ -26,16 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Dpql;
 
 /**
  * Placeholder for the current month (first to last day), based on the current person's time zone.

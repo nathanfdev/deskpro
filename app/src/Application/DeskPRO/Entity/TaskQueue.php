@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,7 +42,6 @@ class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 

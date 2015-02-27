@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -73,7 +72,6 @@ class PersonDbLoader
         'agent_tasks'   => 'tasks',
     );
 
-
     /**
      * @param Person        $person
      * @param EntityManager $em
@@ -85,7 +83,6 @@ class PersonDbLoader
         $this->db     = $em->getConnection();
     }
 
-
     /**
      * @return array
      */
@@ -95,7 +92,7 @@ class PersonDbLoader
             return $this->perms;
         }
 
-        $has_all_perms = false;
+        $has_all_perms      = false;
         $has_all_safe_perms = false;
 
         $agent_group_ids = array();
@@ -128,10 +125,10 @@ class PersonDbLoader
             $names_loader = new PermissionNamesLoader();//TODO inject
 
             if ($has_all_perms) {
-                $add = $names_loader->getNames();
+                $add      = $names_loader->getNames();
                 $add_ugid = $has_all_perms;
             } else {
-                $add = $names_loader->getSafeNames();
+                $add      = $names_loader->getSafeNames();
                 $add_ugid = $has_all_safe_perms;
             }
 
@@ -139,7 +136,7 @@ class PersonDbLoader
                 $perm_recs[] = array(
                     'name'         => $n,
                     'usergroup_id' => $add_ugid,
-                    'person_id'    => null
+                    'person_id'    => null,
                 );
             }
         }
@@ -163,9 +160,8 @@ class PersonDbLoader
         return $this->perms;
     }
 
-
     /**
-     * Get effective permissions (group and overrides combined)
+     * Get effective permissions (group and overrides combined).
      *
      * @return AgentPermissions
      */
@@ -177,7 +173,7 @@ class PersonDbLoader
     }
 
     /**
-     * Get permissions defined just through overrides
+     * Get permissions defined just through overrides.
      *
      * @return AgentPermissions
      */
@@ -188,9 +184,8 @@ class PersonDbLoader
         return $this->createAgentPermissions($perms['person']);
     }
 
-
     /**
-     * Get just group permissions (no overrides)
+     * Get just group permissions (no overrides).
      *
      * @return AgentPermissions
      */
@@ -201,9 +196,9 @@ class PersonDbLoader
         return $this->createAgentPermissions($perms['group']);
     }
 
-
     /**
-     * @param  array            $perm_array
+     * @param array $perm_array
+     *
      * @return AgentPermissions
      */
     private function createAgentPermissions(array $perm_array)
@@ -211,15 +206,23 @@ class PersonDbLoader
         $agent_perms = new AgentPermissions();
 
         foreach ($perm_array as $k => $v) {
-            if (!$v) continue; // disabled
-            if (strpos($k, '.') === false) continue; // invalid
+            if (!$v) {
+                continue;
+            } // disabled
+            if (strpos($k, '.') === false) {
+                continue;
+            } // invalid
 
-            list ($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) continue; // unknown type
+            list($type, $name) = explode('.', $k, 2);
+            if (!isset(self::$prefix_map[$type])) {
+                continue;
+            } // unknown type
 
             $obj_name = self::$prefix_map[$type];
-            $obj = $agent_perms->$obj_name;
-            if (!isset($obj->$name)) continue; // invalid;
+            $obj      = $agent_perms->$obj_name;
+            if (!isset($obj->$name)) {
+                continue;
+            } // invalid;
 
             $obj->$name = true;
         }

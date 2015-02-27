@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,8 +40,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Products
- *
+ * Products.
  */
 class Product extends CategoryAbstract implements HasPhraseName
 {
@@ -83,9 +81,10 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -99,9 +98,10 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)
@@ -133,7 +133,8 @@ class Product extends CategoryAbstract implements HasPhraseName
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int               $field_id
+     * @param int $field_id
+     *
      * @return CustomDataProduct
      */
     public function getCustomDataForField($field_id)
@@ -148,14 +149,15 @@ class Product extends CategoryAbstract implements HasPhraseName
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Set custom field data for a particular field.
      *
-     * @param  int   $field_id
-     * @param  mixed $value
+     * @param int   $field_id
+     * @param mixed $value
+     *
      * @return mixed
      */
     public function setCustomData($field_id, $value_type, $value)
@@ -165,7 +167,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 
         if (!$custom_data) {
             if ($value === null) {
-                return null;
+                return;
             }
 
             $is_new = true;
@@ -194,7 +196,7 @@ class Product extends CategoryAbstract implements HasPhraseName
             $this->custom_data->removeElement($custom_data);
             $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
-            return null;
+            return;
         }
 
         if ($field->getTypeName() == 'choice') {
@@ -230,7 +232,7 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Add a custom data item to this product
+     * Add a custom data item to this product.
      *
      * @param CustomDataProduct $data
      */
@@ -238,12 +240,14 @@ class Product extends CategoryAbstract implements HasPhraseName
     {
         $this->custom_data->add($data);
         $data['product'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     /**
      * Check if this product has a custom field.
      *
      * @param $field_id
+     *
      * @return bool
      */
     public function hasCustomField($field_id)
@@ -274,9 +278,10 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * @param  bool  $primary
-     * @param  bool  $deep
-     * @param  array $visited
+     * @param bool  $primary
+     * @param bool  $deep
+     * @param array $visited
+     *
      * @return array
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -324,7 +329,7 @@ class Product extends CategoryAbstract implements HasPhraseName
         $metadata->mapField(array( 'fieldName' => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'depth'));
         $metadata->mapField(array( 'fieldName' => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'root'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id'))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => null, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id'))));
         $metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC')));
         $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'product', 'orphanRemoval' => true,  'dpApi' => false));
     }

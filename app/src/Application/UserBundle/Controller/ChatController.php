@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class ChatController extends AbstractController
 {
@@ -69,7 +66,7 @@ class ChatController extends AbstractController
         }
 
         $session = $chat_manager->getSession();
-        $convo = $chat_manager->getChat();
+        $convo   = $chat_manager->getChat();
 
         if (!$convo) {
             // It might've been closed, but we still want the events to tell about it being closed!
@@ -90,7 +87,9 @@ class ChatController extends AbstractController
             $this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 
             if ($user_typing = $this->in->getString('user_typing')) {
-                if ($user_typing == '__dpnone__') $user_typing = '';
+                if ($user_typing == '__dpnone__') {
+                    $user_typing = '';
+                }
                 $chat_manager->setUserTypingIndicator($convo, $user_typing);
             }
 
@@ -104,14 +103,13 @@ class ChatController extends AbstractController
 
         // if $since is 0, the client is new and asking for us to send it the last id
         if ($since == 0) {
-            $data = array('messages' => array(), 'last_id' => -1);
+            $data    = array('messages' => array(), 'last_id' => -1);
             $last_id = $this->db->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
             if ($last_id) {
                 $data['last_id'] = $last_id;
             }
-
         } else {
-            $channels = array();
+            $channels   = array();
             $channels[] = $convo->getChannelId();
 
             $data = array();
@@ -125,7 +123,7 @@ class ChatController extends AbstractController
                     if ($message['created_by_client'] != $session['id']) {
                         $data['messages'][] = array(
                             $message['channel'],
-                            $message['data']
+                            $message['data'],
                         );
                     }
 
@@ -155,9 +153,8 @@ class ChatController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-
     /**
-     * Handles a user sending a new message
+     * Handles a user sending a new message.
      *
      * @param  $session_code
      */
@@ -180,7 +177,7 @@ class ChatController extends AbstractController
                 }
                 $response = $this->createJsonResponse(array(
                     'conversation_id' => false,
-                    'error' => $error
+                    'error'           => $error,
                 ));
                 $response->setLastModified(date_create('-1 day'));
                 $response->setExpires(date_create("-1 day"));
@@ -212,6 +209,7 @@ class ChatController extends AbstractController
 
     /**
      * @param $conversation_id
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function sendFileAction($session_code)
@@ -232,16 +230,16 @@ class ChatController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
+        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename)."</a> (".$blob->getReadableFilesize().")";
         if ($blob->isImage()) {
-            $msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
+            $msg .= '<div class="file-thumb"><img src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
         }
 
-        /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
-        $sessionObj = $this->get('session');
-        $session = $sessionObj->getEntity();
+        /* @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+        $sessionObj   = $this->get('session');
+        $session      = $sessionObj->getEntity();
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
-        $msg = $chat_manager->addMessage(
+        $msg          = $chat_manager->addMessage(
             $convo,
             $sessionObj->getPerson(),
             $msg,
@@ -256,9 +254,8 @@ class ChatController extends AbstractController
         return $this->createJsonResponse($msg->getInfo());
     }
 
-
     /**
-     * Sends client messages to show typing indicator
+     * Sends client messages to show typing indicator.
      *
      * @param  $session_code
      */
@@ -281,7 +278,6 @@ class ChatController extends AbstractController
         return $this->createJsonResponse(array());
     }
 
-
     /**
      * This inits a session, and sets the various cookies. Then
      * calls the dpchat (from the view) to set it on the client.
@@ -302,7 +298,7 @@ class ChatController extends AbstractController
         // Then the session creates a new sess and visitor, and sets those
         // cookies
         $sessionObj = $this->get('session');
-        $session = $sessionObj->getEntity();
+        $session    = $sessionObj->getEntity();
 
         // User is blocked
         $blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked(dp_get_user_ip_address(), null);
@@ -368,7 +364,7 @@ class ChatController extends AbstractController
             return $this->createResponse('');
         }
 
-        $convo = $chat_manager->getChat();
+        $convo   = $chat_manager->getChat();
         $session = $chat_manager->getSession();
 
         if (!$convo) {
@@ -409,12 +405,12 @@ class ChatController extends AbstractController
         ")->setParameter(1, $convo)->execute();
 
         $vars = array(
-            'convo' => $convo,
-            'convo_messages' => $convo_messages
+            'convo'          => $convo,
+            'convo_messages' => $convo_messages,
         );
 
         $email_subject = 'Chat Transcript';
-        $email_body = $this->container->get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+        $email_body    = $this->container->get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
 
         $message = $this->container->getMailer()->createMessage();
         $message->setTo($email, $name);
@@ -431,7 +427,7 @@ class ChatController extends AbstractController
             return $this->createResponse('');
         }
 
-        $convo = $chat_manager->getChat();
+        $convo   = $chat_manager->getChat();
         $session = $chat_manager->getSession();
 
         if (!$convo) {
@@ -471,16 +467,16 @@ class ChatController extends AbstractController
         return $this->createJsonResponse(array('success' => true));
     }
 
-
     /**
      * @param $session_code
+     *
      * @return \Application\DeskPRO\Chat\UserChat\UserChatManager
      */
     public function getChatManager($session_code)
     {
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
         if (!$session) {
-            return null;
+            return;
         }
 
         return $this->container->getSystemObject('user_chat_manager', array('session' => $session));

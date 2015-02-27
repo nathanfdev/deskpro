@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -42,8 +41,6 @@ interface StateHandlerInterface extends \ArrayAccess
 {
     /**
      * Clears all state data, or resets back into its initial state.
-     *
-     * @return void
      */
     public function clearState();
 }

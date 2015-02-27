@@ -3,7 +3,7 @@
 // @codeCoverageIgnoreStart
 
 /**
- * C3 - Codeception Code Coverage
+ * C3 - Codeception Code Coverage.
  *
  * @author tiger
  */
@@ -25,18 +25,17 @@ if (!array_key_exists('HTTP_X_CODECEPTION_CODECOVERAGE', $_SERVER)) {
 }
 
 if (!defined('C3_CODECOVERAGE_MEDIATE_INIT')) {
-
     define('C3_CODECOVERAGE_MEDIATE_INIT', true);
 
     // workaround for 'zend_mm_heap corrupted' problem
     gc_disable();
 
-    if ((integer)ini_get('memory_limit') < 384) {
+    if ((integer) ini_get('memory_limit') < 384) {
         ini_set('memory_limit', '384M');
     }
 
     if (!defined('C3_CODECOVERAGE_MEDIATE_STORAGE')) {
-        define('C3_CODECOVERAGE_MEDIATE_STORAGE', __DIR__ . '/c3tmp');
+        define('C3_CODECOVERAGE_MEDIATE_STORAGE', __DIR__.'/c3tmp');
     }
     if (!defined('C3_CODECOVERAGE_PROJECT_ROOT')) {
         define('C3_CODECOVERAGE_PROJECT_ROOT', __DIR__);
@@ -47,20 +46,20 @@ if (!defined('C3_CODECOVERAGE_MEDIATE_INIT')) {
     function __c3_build_html_report(PHP_CodeCoverage $codeCoverage, $path)
     {
         $writer = new PHP_CodeCoverage_Report_HTML();
-        $writer->process($codeCoverage, $path . 'html');
+        $writer->process($codeCoverage, $path.'html');
 
-        if (file_exists($path . '.tar')) {
-            unlink($path . '.tar');
+        if (file_exists($path.'.tar')) {
+            unlink($path.'.tar');
         }
 
-        $phar = new PharData($path . '.tar');
+        $phar = new PharData($path.'.tar');
         $phar->setSignatureAlgorithm(Phar::SHA1);
-        $files = $phar->buildFromDirectory($path . 'html');
+        $files = $phar->buildFromDirectory($path.'html');
         array_map('unlink', $files);
 
         if (in_array('GZ', Phar::getSupportedCompression())) {
-            if (file_exists($path . '.tar.gz')) {
-                unlink($path . '.tar.gz');
+            if (file_exists($path.'.tar.gz')) {
+                unlink($path.'.tar.gz');
             }
 
             $phar->compress(\Phar::GZ);
@@ -68,19 +67,19 @@ if (!defined('C3_CODECOVERAGE_MEDIATE_INIT')) {
             // close the file so that we can rename it
             unset($phar);
 
-            unlink($path . '.tar');
-            rename($path . '.tar.gz', $path . '.tar');
+            unlink($path.'.tar');
+            rename($path.'.tar.gz', $path.'.tar');
         }
 
-        return $path . '.tar';
+        return $path.'.tar';
     }
 
     function __c3_build_clover_report(PHP_CodeCoverage $codeCoverage, $path)
     {
         $writer = new PHP_CodeCoverage_Report_Clover();
-        $writer->process($codeCoverage, $path . '.clover.xml');
+        $writer->process($codeCoverage, $path.'.clover.xml');
 
-        return $path . '.clover.xml';
+        return $path.'.clover.xml';
     }
 
     function __c3_send_file($filename)
@@ -94,6 +93,7 @@ if (!defined('C3_CODECOVERAGE_MEDIATE_INIT')) {
 
     /**
      * @param $filename
+     *
      * @return null|PHP_CodeCoverage
      */
     function __c3_factory($filename)
@@ -130,14 +130,14 @@ if (!defined('C3_CODECOVERAGE_MEDIATE_INIT')) {
             exit;
         }
 
-        return null;
+        return;
     }
 
     function __c3_error($message)
     {
-        file_put_contents(C3_CODECOVERAGE_MEDIATE_STORAGE . DIRECTORY_SEPARATOR . time() . '-error.txt', $message);
+        file_put_contents(C3_CODECOVERAGE_MEDIATE_STORAGE.DIRECTORY_SEPARATOR.time().'-error.txt', $message);
         if (!headers_sent()) {
-            header('X-Codeception-CodeCoverage-Error: ' . str_replace("\n", ' ', $message), true, 500);
+            header('X-Codeception-CodeCoverage-Error: '.str_replace("\n", ' ', $message), true, 500);
         }
         setcookie('CODECEPTION_CODECOVERAGE_ERROR', $message);
         __c3_exit();
@@ -151,7 +151,7 @@ if (!defined('C3_CODECOVERAGE_MEDIATE_INIT')) {
 
 if (!is_dir(C3_CODECOVERAGE_MEDIATE_STORAGE)) {
     if (mkdir(C3_CODECOVERAGE_MEDIATE_STORAGE, 0777, true) === false) {
-        __c3_error('Failed to create directory "' . C3_CODECOVERAGE_MEDIATE_STORAGE . '"');
+        __c3_error('Failed to create directory "'.C3_CODECOVERAGE_MEDIATE_STORAGE.'"');
     }
 }
 
@@ -171,12 +171,12 @@ try {
 }
 
 // evaluate base path for c3-related files
-$path = realpath(C3_CODECOVERAGE_MEDIATE_STORAGE) . DIRECTORY_SEPARATOR . 'codecoverage';
+$path = realpath(C3_CODECOVERAGE_MEDIATE_STORAGE).DIRECTORY_SEPARATOR.'codecoverage';
 
 $requested_c3_report = (strpos($_SERVER['REQUEST_URI'], 'c3/report') !== false);
 
-$current_report = $path;
-$complete_report = $path . '.serialized';
+$current_report  = $path;
+$complete_report = $path.'.serialized';
 if ($requested_c3_report) {
     set_time_limit(0);
     if (file_exists($current_report)) {
@@ -227,7 +227,6 @@ if ($requested_c3_report) {
 
             return;
     }
-
 } else {
     if (file_exists($complete_report)) {
         unlink($complete_report);

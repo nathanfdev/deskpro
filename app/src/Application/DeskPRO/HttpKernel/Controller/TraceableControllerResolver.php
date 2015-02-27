@@ -26,17 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage HttpKernel
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpKernel\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
 use Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
-
 
 /**
  * This controller resolver changes instantiation of controllers to pass in the container
@@ -49,9 +45,9 @@ class TraceableControllerResolver extends \Symfony\Component\HttpKernel\Controll
         if (false === strpos($controller, '::')) {
             $count = substr_count($controller, ':');
             if (2 == $count) {
-                                $controller = $this->parser->parse($controller);
+                $controller = $this->parser->parse($controller);
             } elseif (1 == $count) {
-                                list($service, $method) = explode(':', $controller);
+                list($service, $method) = explode(':', $controller);
 
                 return array($this->container->get($service), $method);
             } else {
@@ -70,7 +66,7 @@ class TraceableControllerResolver extends \Symfony\Component\HttpKernel\Controll
         } else {
             $controller = new $class();
             if (is_subclass_of($class, 'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface')) {
-            //if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
+                //if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
                 $controller->setContainer($this->container);
             } else {
                 die($class);

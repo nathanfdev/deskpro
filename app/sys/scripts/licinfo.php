@@ -1,9 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage SystemScripts
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  */
@@ -37,15 +37,15 @@ if (!$open) {
     }
 }
 
-$env = 'prod';
+$env   = 'prod';
 $debug = false;
 
 if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-    $env = 'dev';
+    $env   = 'dev';
     $debug = true;
 }
 
-require DP_ROOT . '/sys/KernelBooter.php';
+require DP_ROOT.'/sys/KernelBooter.php';
 \DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
 $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
@@ -64,9 +64,9 @@ $container = $kernel->getContainer();
 header('Content-Type: text/plain');
 $lic = \DeskPRO\Kernel\License::getLicense();
 
-echo "License ID  : " . $lic->getLicenseId();
+echo "License ID  : ".$lic->getLicenseId();
 echo "\n";
-echo "Expires     : " . $lic->getExpireDate()->format('Y-m-d H:i:s');
+echo "Expires     : ".$lic->getExpireDate()->format('Y-m-d H:i:s');
 echo "\n";
-echo "Expire Days : " . $lic->getExpireDays();
+echo "Expire Days : ".$lic->getExpireDays();
 echo "\n";

@@ -26,9 +26,8 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package  DeskPRO
  * @category Entities
  */
 
@@ -98,7 +97,8 @@ class InstallerHandler extends AbstractInstallerHandler
     }
 
     /**
-     * @param  InstallerContext $context
+     * @param InstallerContext $context
+     *
      * @return string
      */
     private function getActionName(InstallerContext $context)

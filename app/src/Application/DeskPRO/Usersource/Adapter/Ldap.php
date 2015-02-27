@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -54,7 +51,6 @@ class Ldap extends AbstractAdapter
         );
     }
 
-
     /**
      * @return \Orb\Auth\Adapter\ActiveDirectory
      */
@@ -68,11 +64,11 @@ class Ldap extends AbstractAdapter
         return new \Orb\Auth\Adapter\LdapRaw($this->usersource->options);
     }
 
-
     /**
      * Find a user identity just by an email address.
      *
-     * @param  string                  $id_input Username or email address
+     * @param string $id_input Username or email address
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -83,7 +79,9 @@ class Ldap extends AbstractAdapter
         /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
         $adapter = $usersource->getAdapter()->getAuthAdapter();
 
-        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
+        if ($adapter->getLogger()) {
+            $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
+        }
 
         $adapter->setFormData(array(
             'username' => $id_input,
@@ -98,14 +96,17 @@ class Ldap extends AbstractAdapter
                 $rec_arr = $adapter->findRecordViaUsername($id_input);
             }
         } catch (\Exception $e) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            }
             throw $e;
         }
 
         $raw_info = array();
         if ($rec_arr && isset($rec_arr['dn'])) {
-
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: " . print_r($rec_arr,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findRecordViaEmail result: ".print_r($rec_arr, 1));
+            }
 
             $raw_info = $rec_arr;
 
@@ -129,7 +130,8 @@ class Ldap extends AbstractAdapter
                 $auth->setUsername('__bogus__');
                 $auth->setPassword('__bogus__');
                 $auth->authenticate();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
@@ -137,9 +139,13 @@ class Ldap extends AbstractAdapter
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($rec_arr['dn']);
 
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("getNode result: " . print_r($rec,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("getNode result: ".print_r($rec, 1));
+            }
         } else {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: null");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findRecordViaEmail result: null");
+            }
         }
 
         if ($rec) {
@@ -153,7 +159,7 @@ class Ldap extends AbstractAdapter
             }
 
             if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
-                $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+                $raw_info['name'] = $raw_info['first_name'].' '.$raw_info['last_name'];
             } elseif ($rec->getAttribute('name')) {
                 $raw_info['name'] = $rec->getAttribute('name', 0);
             } elseif ($rec->getAttribute('cn')) {
@@ -169,7 +175,7 @@ class Ldap extends AbstractAdapter
             if ($rec->getAttribute('jpegPhoto')) {
                 $raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
             } elseif ($rec->getAttribute('thumbnailPhoto')) {
-                $raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
+                $raw_info['picture_data'] = $rec->getAttribute('thumbnailPhoto', 0);
             }
 
             if ($rec->getAttribute('telephoneNumber')) {
@@ -178,14 +184,16 @@ class Ldap extends AbstractAdapter
         }
 
         if ($raw_info) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("RESULT: " . print_r($raw_info,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("RESULT: ".print_r($raw_info, 1));
+            }
 
             $identity = new Identity($raw_info['identity'], $raw_info);
 
             return $identity;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -195,12 +203,13 @@ class Ldap extends AbstractAdapter
     {
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
         );
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

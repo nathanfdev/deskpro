@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 
 class TwitterUser extends AbstractEntityRepository
 {
@@ -62,5 +60,4 @@ class TwitterUser extends AbstractEntityRepository
 
         return $user;
     }
-
 }

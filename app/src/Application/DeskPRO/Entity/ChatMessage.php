@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,8 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Basic hierarchicial category entity. Hierarchy is maintained automatically
- * by a Doctrine NestedSet implementation
- *
+ * by a Doctrine NestedSet implementation.
  */
 class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -59,39 +57,42 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $origin = '';
 
     /**
-     * The type of message this is
+     * The type of message this is.
      *
      * @var string
      */
     protected $tag = null;
 
     /**
-     * The conversation the message belongs to
+     * The conversation the message belongs to.
+     *
      * @var \Application\DeskPRO\Entity\ChatConversation
      */
     protected $conversation;
 
     /**
-     * Person who created the message
+     * Person who created the message.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $author = null;
 
     /**
-     * The authors name at the point of this message
+     * The authors name at the point of this message.
      *
      * @var string
      */
     protected $person_name = '';
 
     /**
-     * The message
+     * The message.
+     *
      * @var string
      */
     protected $content;
 
     /**
-     * Is this a system message? (ended, joined, etc)
+     * Is this a system message? (ended, joined, etc).
      *
      * @var bool
      */
@@ -112,7 +113,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $is_html = false;
 
     /**
-     * Data
+     * Data.
      *
      * @var array
      */
@@ -265,7 +266,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get message as HTML
+     * Get message as HTML.
      *
      * @return string
      */
@@ -317,7 +318,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->mapField(array( 'fieldName' => 'date_received', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_received'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'conversation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'author_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'conversation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'author_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true ));
     }
 }

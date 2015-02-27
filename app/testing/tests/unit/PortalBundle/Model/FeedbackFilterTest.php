@@ -26,17 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\PortalBundle\Model;
 
-
-use Application\DeskPRO\Entity\Feedback;
-use Application\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 
 class FeedbackFilterTest extends \DpUnitTestCase
 {

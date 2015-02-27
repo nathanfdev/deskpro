@@ -20,7 +20,7 @@
   "jquery":                          "bower_components/jquery/dist/jquery.min",
   "jqueryUi":                        "bower_components/jquery-ui/ui/minified/jquery-ui.min",
   "jquery.ui.widget":                "bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
-  "jquery.ui.i18n":                  "bower_components/jquery-ui/ui/i18n/jquery-ui-i18n",
+  "jquery.ui.i18n":                  "bower_components/jquery-ui/ui/minified/i18n/jquery-ui-i18n.min",
   "jquery.fileupload":               "bower_components/blueimp-file-upload/js/jquery.fileupload",
   "jquery.fileupload-process":       "bower_components/blueimp-file-upload/js/jquery.fileupload-process",
   "jquery.fileupload-image":         "bower_components/blueimp-file-upload/js/jquery.fileupload-image",
@@ -46,6 +46,7 @@
   "intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
   "redactor":                        "vendor/redactor/redactor.min",
   "cutstring":                       "vendor/cuthtmlstring/cutstring",
+  "perfect-scrollbar":               "bower_components/perfect-scrollbar/src/perfect-scrollbar",
 
   "json3":                           "bower_components/json3/lib/json3.min",
 

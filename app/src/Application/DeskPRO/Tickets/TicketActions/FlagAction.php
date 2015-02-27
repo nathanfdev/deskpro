@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Sets flag
+ * Sets flag.
  */
 class FlagAction extends AbstractAction implements PersonContextInterface, ExecutionContextAware
 {
@@ -56,7 +53,6 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         $this->flag = $flag;
     }
 
-
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
@@ -67,9 +63,8 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         $this->execution_context = $context;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -87,7 +82,7 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         // Otherwise its a macro, flag for the performer
         } else {
             // Invalid context
-            if (!$this->person_context OR !$this->person_context['is_agent']) {
+            if (!$this->person_context or !$this->person_context['is_agent']) {
                 return;
             }
 
@@ -95,22 +90,20 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'flag', 'color' => $this->flag)
+            array('action' => 'flag', 'color' => $this->flag),
         );
     }
 
-
     /**
-     * Get the flag color
+     * Get the flag color.
      *
      * @return int
      */
@@ -119,16 +112,15 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         return $this->flag;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Type;
@@ -46,7 +43,7 @@ class NewDownload extends AbstractType
         #------------------------------
 
         $builder->add('title', 'text', array('required' => false));
-        $builder->add('content', 'textarea', array('required' => false));
+        $builder->add('content', 'textarea', array('required' => false, 'filter_clean' => false));
         $builder->add('status', 'text');
 
         $builder->add('fileurl', 'text', array('required' => false));

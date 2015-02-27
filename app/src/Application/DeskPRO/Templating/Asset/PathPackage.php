@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Templating
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Asset;

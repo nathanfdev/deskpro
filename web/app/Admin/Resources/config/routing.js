@@ -3,24 +3,6 @@ define(function() {
 	var routes = [];
 
 	//##################################################################################################################
-	// Dev Nav
-	//##################################################################################################################
-
-	routes.push({
-		id: 'dev_ui',
-		url: '/dev_ui',
-		templateName: 'Index/dev-ui.html',
-		controller: 'Admin_Main_Ctrl_Bare'
-	});
-
-	routes.push({
-		id: 'dev_ui_table',
-		url: '/dev_ui_table',
-		templateName: 'Index/dev-ui-table.html',
-		controller: 'Admin_Main_Ctrl_Bare'
-	});
-
-	//##################################################################################################################
 	// Home
 	//##################################################################################################################
 
@@ -81,7 +63,7 @@ define(function() {
 		id: 'portal',
 		url: '/portal',
 		templateName: 'Index/app-nav-portal.html',
-		controller: 'Admin_Main_Ctrl_Nav'
+		controller: 'Admin_Portal_Ctrl_Nav'
 	});
 
 	routes.push({
@@ -1493,12 +1475,22 @@ define(function() {
 	//##################################################################################################################
 
 	//###
+	//# Portal Setup
+	//###
+	routes.push({
+		id: 'portal.setup',
+		url: '/setup',
+		templateName: 'Portal/setup.html',
+		controller: 'Admin_Portal_Ctrl_Setup'
+	});
+
+	//###
 	//# Portal Editor
 	//###
 	routes.push({
 		id: 'portal.portal_editor',
 		url: '/portal_editor',
-		templateName: 'PortalEditor/frame.html',
+		templateName: 'Portal/portal-editor.html',
 		controller: 'Admin_Portal_Ctrl_PortalEditor'
 	});
 

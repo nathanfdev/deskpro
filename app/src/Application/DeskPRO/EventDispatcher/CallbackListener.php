@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EventDispatcher
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EventDispatcher;

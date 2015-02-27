@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -70,7 +67,6 @@ class PeopleFieldAction extends AbstractAction
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\CustomDefTicket
      */
@@ -78,7 +74,6 @@ class PeopleFieldAction extends AbstractAction
     {
         return $this->field_def;
     }
-
 
     /**
      * @return mixed
@@ -88,9 +83,8 @@ class PeopleFieldAction extends AbstractAction
         return $this->set_value;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -100,21 +94,21 @@ class PeopleFieldAction extends AbstractAction
         $this->field_manager->saveFormToObject($this->set_value['custom_fields'], $person);
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value)
+            array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value),
         );
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -127,15 +121,15 @@ class PeopleFieldAction extends AbstractAction
      */
     public function getDescription($as_html = true)
     {
-        $tr = App::getTranslator();
+        $tr    = App::getTranslator();
         $title = $this->field_def->title;
         $value = $this->set_value;
 
-        $value = isset($value['custom_fields']['field_' . $this->field_def->getId()]) ? $value['custom_fields']['field_' . $this->field_def->getId()] : '';
+        $value = isset($value['custom_fields']['field_'.$this->field_def->getId()]) ? $value['custom_fields']['field_'.$this->field_def->getId()] : '';
         if ($this->field_def->getTypeName() == 'choice') {
-            $value_ids = (array)$value;
-            $value = array();
-            $titles = $this->field_def->getAllChildTitles();
+            $value_ids = (array) $value;
+            $value     = array();
+            $titles    = $this->field_def->getAllChildTitles();
             foreach ($value_ids as $id) {
                 if (isset($titles[$id])) {
                     $value[] = $titles[$id];
@@ -152,6 +146,6 @@ class PeopleFieldAction extends AbstractAction
      */
     public function getActionName()
     {
-        return get_class($this) . '[' . $this->field_def->getId() . ']';
+        return get_class($this).'['.$this->field_def->getId().']';
     }
 }

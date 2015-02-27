@@ -26,16 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
 use DpBehat\TestBundle\DataSetManager;
 
 class DataSetContext extends BasePortalContext
@@ -80,23 +76,20 @@ class DataSetContext extends BasePortalContext
             // the same data set is already loaded
             if (!self::$reinstall) {
                 print 'data set already loaded';
+
                 return; // this scenario was not tagged as @reinstall, exiting
             }
         }
         $install_start = time();
         $this->dataset_manager->install($set);
         self::$last_installed_data_set = $set;
-        $this->ran_install = true;
+        $this->ran_install             = true;
         if (self::$reinstall) {
-            print 'successfully reinstalled data set (took ' . (time() - $install_start) . ' seconds)';
+            print 'successfully reinstalled data set (took '.(time() - $install_start).' seconds)';
         } else {
-            print 'successfully installed data set (took ' . (time() - $install_start) . ' seconds)';
+            print 'successfully installed data set (took '.(time() - $install_start).' seconds)';
         }
     }
-
-
-
-
 
     /**
      * @Given I have access to dataset_manager
@@ -153,5 +146,4 @@ class DataSetContext extends BasePortalContext
     {
         expect($this->ran_install)->toBe(true);
     }
-
 }

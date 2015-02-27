@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,6 @@ class LogItem extends AbstractEntityRepository
      *
      * @return array
      */
-
     public function getCronLogs($job_id, $priority, $from = 0, $limit = 100)
     {
         return $this->getEntityManager()->getConnection()->fetchAll(
@@ -69,7 +67,6 @@ class LogItem extends AbstractEntityRepository
      *
      * @return int
      */
-
     public function getCronPagesCount($job_id, $priority, $per_page = 100)
     {
         $q = $this
@@ -98,13 +95,12 @@ class LogItem extends AbstractEntityRepository
               ->setMaxResults(1)
               ->getSingleResult();
         } catch (\Doctrine\ORM\NoResultException $e) {
-            return null;
+            return;
         }
     }
 
-
     /**
-     * Count all error log items
+     * Count all error log items.
      *
      * @return int
      */
@@ -117,13 +113,12 @@ class LogItem extends AbstractEntityRepository
         ", array('error_log'));
     }
 
-
-
     /**
-     * Get an array of error logs
+     * Get an array of error logs.
      *
-     * @param  int   $page
-     * @param  int   $per_page
+     * @param int $page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getErrorLogs($page = 1, $per_page = 25)
@@ -141,10 +136,8 @@ class LogItem extends AbstractEntityRepository
           ->execute();
     }
 
-
-
     /**
-     * Deletes all error logs
+     * Deletes all error logs.
      *
      * @return bool
      */

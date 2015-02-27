@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -81,15 +80,15 @@ class AffectedFiltersCheck
     private $has_run = false;
 
     /**
-     * @param Ticket $ticket
+     * @param Ticket                                     $ticket
      * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
-     * @param Logger $logger
+     * @param Logger                                     $logger
      */
     public function __construct(Ticket $ticket, array $filters, Logger $logger)
     {
-        $this->ticket = $ticket;
+        $this->ticket  = $ticket;
         $this->filters = $filters;
-        $this->logger = $logger;
+        $this->logger  = $logger;
     }
 
     /**
@@ -110,13 +109,13 @@ class AffectedFiltersCheck
 
         $this->field_versions = array();
         foreach ($changed_fields as $f) {
-            $version = $state->getStateVersionForChange($state->getLastChangeForField($f));
+            $version                  = $state->getStateVersionForChange($state->getLastChangeForField($f));
             $this->field_versions[$f] = $version;
         }
 
         if ($this->prev_field_versions) {
             $new_changed_fields = array();
-            $with_new_check = true;
+            $with_new_check     = true;
 
             foreach ($this->field_versions as $f => $v) {
                 if (!isset($this->prev_field_versions[$f]) || $this->prev_field_versions[$f] < $v) {
@@ -125,7 +124,7 @@ class AffectedFiltersCheck
             }
         } else {
             $new_changed_fields = array();
-            $with_new_check = false;
+            $with_new_check     = false;
         }
 
         $this->logger->debug(sprintf("[AffectedFilters] Changed fields: %s", implode(', ', $changed_fields)));
@@ -166,7 +165,7 @@ class AffectedFiltersCheck
             $is_new_messages = true;
         }
 
-        $affected_filters = array();
+        $affected_filters          = array();
         $affected_filters_nochange = array();
 
         foreach ($this->filters as $f) {
@@ -187,7 +186,7 @@ class AffectedFiltersCheck
         }
 
         $this->affected_filters_nochange = $affected_filters_nochange;
-        $this->affected_filters = $affected_filters;
+        $this->affected_filters          = $affected_filters;
     }
 
     /**
@@ -217,6 +216,7 @@ class AffectedFiltersCheck
     public function getFieldVersions()
     {
         $this->_run();
+
         return $this->field_versions;
     }
 
@@ -228,6 +228,7 @@ class AffectedFiltersCheck
     public function getAffectedFilters()
     {
         $this->_run();
+
         return $this->affected_filters;
     }
 
@@ -242,6 +243,7 @@ class AffectedFiltersCheck
     public function getAffectedFiltersWithNoChanges()
     {
         $this->_run();
+
         return $this->affected_filters_nochange;
     }
 
@@ -256,7 +258,7 @@ class AffectedFiltersCheck
         $this->_run();
         if (!$this->affected_filters) {
             return array();
-        } else if (!$this->affected_filters_nochange) {
+        } elseif (!$this->affected_filters_nochange) {
             return $this->affected_filters;
         }
 

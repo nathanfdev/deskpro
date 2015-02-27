@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,7 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
- * Filters based on ticket user manager status
+ * Filters based on ticket user manager status.
  */
 class FilterUserIsManager extends AbstractFilterTerm
 {

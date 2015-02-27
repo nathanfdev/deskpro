@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -46,7 +44,7 @@ use Orb\Util\Strings;
 abstract class AbstractFetcher
 {
     /**
-     * \Application\DeskPRO\EmailAccount
+     * \Application\DeskPRO\EmailAccount.
      */
     protected $account;
 
@@ -61,7 +59,8 @@ abstract class AbstractFetcher
     protected $logger;
 
     /**
-     * The max size in byes to read
+     * The max size in byes to read.
+     *
      * @var int
      */
     protected $max_size = 0;
@@ -93,7 +92,7 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Closes the connection
+     * Closes the connection.
      */
     protected function _closeConnection()
     {
@@ -106,7 +105,7 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Set the max size to read
+     * Set the max size to read.
      *
      * @param int $max_size The max size in bytes
      */
@@ -119,7 +118,7 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Get the max size
+     * Get the max size.
      *
      * @return int
      */
@@ -129,7 +128,8 @@ abstract class AbstractFetcher
     }
 
     /**
-     * @param  bool  $reconnect
+     * @param bool $reconnect
+     *
      * @return mixed
      */
     public function getStorage($reconnect = false)
@@ -162,7 +162,8 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
+     *
      * @return \Zend\Mail\Storage\AbstractStorage
      */
     abstract protected function _initConnection();
@@ -191,9 +192,11 @@ abstract class AbstractFetcher
      *
      * Returns null if there are no more messages.
      *
-     * @param  string                                  $object_type
-     * @return \Application\DeskPRO\Entity\EmailSource
+     * @param string $object_type
+     *
      * @throws \Exception
+     * @return \Application\DeskPRO\Entity\EmailSource
+     *
      */
     public function readNext($object_type = 'ticket')
     {
@@ -211,7 +214,7 @@ abstract class AbstractFetcher
         }
 
         if (!$raw_message) {
-            return null;
+            return;
         }
 
         // Protection against nulls

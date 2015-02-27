@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -39,7 +38,6 @@ use Application\DeskPRO\Net\Dns\Rdns\CachedRdns;
 use Application\DeskPRO\Net\Dns\Rdns\RdnsNull;
 use Application\DeskPRO\Net\Dns\Rdns\RdnsSocket;
 use Application\DeskPRO\Tickets\MessageHostnameLookup;
-use Orb\Log\Logger;
 
 class TicketMessageHostnameLookupService
 {

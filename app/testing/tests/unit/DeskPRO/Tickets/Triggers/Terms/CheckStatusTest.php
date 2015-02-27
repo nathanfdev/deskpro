@@ -12,7 +12,7 @@ class CheckStatusTest extends \DpUnitTestCase
     public function testStatus()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $ticket->status = 'awaiting_agent';
 
@@ -26,7 +26,7 @@ class CheckStatusTest extends \DpUnitTestCase
     public function testStatusCode()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $ticket->status = 'hidden.deleted';
 

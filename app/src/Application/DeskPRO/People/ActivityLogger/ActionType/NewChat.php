@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -42,7 +41,6 @@ class NewChat extends ActionTypeAbstract
     /** @var \Application\DeskPRO\Entity\ChatConversation */
     protected $convo;
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person           $person
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
@@ -50,12 +48,12 @@ class NewChat extends ActionTypeAbstract
     public function __construct(Person $person, ChatConversation $convo)
     {
         $this->person = $person;
-        $this->convo = $convo;
+        $this->convo  = $convo;
     }
 
-
     /**
-     * Get a plain array of details that'll be stored in the databaes
+     * Get a plain array of details that'll be stored in the databaes.
+     *
      * @return array
      */
     public function getDetails()

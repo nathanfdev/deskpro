@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -73,28 +71,26 @@ class PortalSettings
         $this->resetSettings();
     }
 
-
     /**
      * Resets settings based on stored values.
      */
     public function resetSettings()
     {
-        $this->portal_enabled   = (bool)$this->settings->get('user.portal_enabled');
+        $this->portal_enabled   = (bool) $this->settings->get('user.portal_enabled');
 
-        $this->favicon_blob_id  = (int)$this->settings->get('core.favicon_blob_id');
+        $this->favicon_blob_id  = (int) $this->settings->get('core.favicon_blob_id');
         $this->favicon_blob_url = $this->settings->get('core.favicon_blob_url') ?: null;
 
-        $this->show_ratings     = (int)$this->settings->get('user.show_ratings');
-        $this->publish_comments = (bool)$this->settings->get('user.publish_comments');
+        $this->show_ratings     = (int) $this->settings->get('user.show_ratings');
+        $this->publish_comments = (bool) $this->settings->get('user.publish_comments');
 
-        $this->register_captcha    = (bool)$this->settings->get('user.register_captcha');
-        $this->publish_captcha     = (bool)$this->settings->get('user.publish_captcha');
-        $this->always_show_captcha = (bool)$this->settings->get('user.always_show_captcha');
+        $this->register_captcha    = (bool) $this->settings->get('user.register_captcha');
+        $this->publish_captcha     = (bool) $this->settings->get('user.publish_captcha');
+        $this->always_show_captcha = (bool) $this->settings->get('user.always_show_captcha');
 
-        $this->feedback_notify_comments = (bool)$this->settings->get('user.feedback_notify_comments');
-        $this->kb_subscriptions         = (bool)$this->settings->get('user.kb_subscriptions');
+        $this->feedback_notify_comments = (bool) $this->settings->get('user.feedback_notify_comments');
+        $this->kb_subscriptions         = (bool) $this->settings->get('user.kb_subscriptions');
     }
-
 
     /**
      * @return array
@@ -117,7 +113,6 @@ class PortalSettings
         return $export_settings;
     }
 
-
     /**
      * @param array $set_settings
      */
@@ -130,17 +125,16 @@ class PortalSettings
         }
     }
 
-
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {
-        $this->settings->setSetting("user.show_ratings", (int)$this->show_ratings);
+        $this->settings->setSetting("user.show_ratings", (int) $this->show_ratings);
 
         if ($this->favicon_blob_id && $this->favicon_blob_url) {
-            $this->settings->setSetting('core.favicon_blob_id', (int)$this->favicon_blob_id);
-            $this->settings->setSetting('core.favicon_blob_url', (int)$this->favicon_blob_url);
+            $this->settings->setSetting('core.favicon_blob_id', (int) $this->favicon_blob_id);
+            $this->settings->setSetting('core.favicon_blob_url', (int) $this->favicon_blob_url);
         } else {
             $this->settings->setSetting('core.favicon_blob_id', null);
             $this->settings->setSetting('core.favicon_blob_url', null);
@@ -148,9 +142,9 @@ class PortalSettings
 
         foreach (array(
             'publish_comments', 'register_captcha', 'publish_captcha',
-            'always_show_captcha', 'feedback_notify_comments', 'kb_subscriptions'
+            'always_show_captcha', 'feedback_notify_comments', 'kb_subscriptions',
         ) as $p) {
-            $this->settings->setSetting("user.$p", (bool)$this->$p);
+            $this->settings->setSetting("user.$p", (bool) $this->$p);
         }
     }
 }

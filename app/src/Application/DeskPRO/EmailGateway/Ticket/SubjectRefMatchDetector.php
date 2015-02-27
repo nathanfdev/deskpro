@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -38,7 +36,7 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Detects a ticket based off of REF codes in the subject
+ * Detects a ticket based off of REF codes in the subject.
  */
 class SubjectRefMatchDetector implements TicketDetectorInterface
 {
@@ -71,7 +69,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 
         $ticket_refs = App::getSystemService('RefGenerator')->extractRefs($subject);
         if (!$ticket_refs) {
-            return null;
+            return;
         }
 
         foreach ($ticket_refs as $ref) {
@@ -92,7 +90,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -104,7 +102,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
             return $this->_found_person;
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -40,7 +39,7 @@ namespace Orb\Auth\Adapter;
 interface FormLoginInterface extends AdapterInterface
 {
     /**
-     * Sets the data got from a form
+     * Sets the data got from a form.
      *
      * @param string $url The URL
      */

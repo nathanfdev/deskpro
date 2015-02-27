@@ -1,7 +1,0 @@
-services:
-
-  language_extension.twig:
-      class: Application\LanguageBundle\Twig\LanguageExtension
-      arguments: [@language_manager]
-      tags:
-        - { name: twig.extension }

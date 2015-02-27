@@ -26,17 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Filter;
 
 use Orb\Log\LogItem;
 use Orb\Log\Logger;
-
 
 /**
  * This wraps the message in console outputer formatting tags depending on its
@@ -46,7 +42,9 @@ class ConsoleOutputFormatter extends \Orb\Filter\AbstractFilter
 {
     public function filter($log_item)
     {
-        if (!$log_item) return null;
+        if (!$log_item) {
+            return;
+        }
 
         $message = isset($log_item[LogItem::MESSAGE_LINE]) ? $log_item[LogItem::MESSAGE_LINE] : $log_item[LogItem::MESSAGE];
 

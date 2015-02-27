@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -59,7 +58,6 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}
@@ -120,7 +118,6 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -130,7 +127,7 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
             return array('slas');
         }
 
-        return null;
+        return;
     }
 
     /**

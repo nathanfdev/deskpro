@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Orb\Service\Microsoft\Translate;
@@ -77,7 +75,6 @@ class Translate
      */
     protected $service_http_client;
 
-
     /**
      * @param string      $client_id
      * @param string      $client_secret
@@ -90,7 +87,6 @@ class Translate
         $this->access_token  = $access_token;
     }
 
-
     /**
      * Set an existing access token. Set null to clear the current
      * access token so a new one is fetched.
@@ -101,7 +97,6 @@ class Translate
     {
         $this->access_token = $access_token;
     }
-
 
     /**
      * Get the current access token. If no access token is set, a new one will
@@ -123,31 +118,30 @@ class Translate
         ));
 
         $response = $request->send();
-        $data = $response->json();
+        $data     = $response->json();
 
         $this->access_token = $data['access_token'];
 
         return $this->access_token;
     }
 
-
     /**
-     * Translates a text string from one language to another
+     * Translates a text string from one language to another.
      *
-     * @param  string|string[] $text         A string or array of strings
-     * @param  string|null     $from         Language to translate from, or null to auto-detect
-     * @param  string          $to           Language to translate to
-     * @param  string          $content_type Content type of the string. HTML must be well-formed
+     * @param string|string[] $text         A string or array of strings
+     * @param string|null     $from         Language to translate from, or null to auto-detect
+     * @param string          $to           Language to translate to
+     * @param string          $content_type Content type of the string. HTML must be well-formed
+     *
      * @return string|string[]
      */
     public function translate($text, $from, $to, $content_type = self::TYPE_TEXT, $category = self::CAT_GENERAL)
     {
         $from = $this->getNearestTranslateLocale($from);
-        $to = $this->getNearestTranslateLocale($to);
+        $to   = $this->getNearestTranslateLocale($to);
 
         if (is_array($text)) {
-
-            $post_body = array();
+            $post_body   = array();
             $post_body[] = '<TranslateArrayRequest>';
             $post_body[] = "\t<AppId/>";
             if ($from) {
@@ -170,7 +164,7 @@ class Translate
             $post_body[] = "\t</Texts>";
             $post_body[] = "\t<To>$to</To>";
             $post_body[] = '</TranslateArrayRequest>';
-            $post_body = implode("\n", $post_body);
+            $post_body   = implode("\n", $post_body);
 
             $request = $this->getServiceHttpClient()->post(
                 'TranslateArray',
@@ -181,46 +175,46 @@ class Translate
             $response = $request->send();
 
             $raw_data = $response->xml();
-            $data = array();
+            $data     = array();
             foreach ($raw_data as $l) {
-                $data[] = (string)$l->TranslatedText;
+                $data[] = (string) $l->TranslatedText;
             }
 
             return $data;
-
         } else {
             $request = $this->getServiceHttpClient()->get(array('Translate{?text,from,to,contentType,category}', array(
                 'text'        => $text,
                 'from'        => $from ?: '',
                 'to'          => $to,
                 'contentType' => $content_type,
-                'category'    => $category
+                'category'    => $category,
             )));
 
             $response = $request->send();
 
             $raw_data = $response->xml();
 
-            $lang = (string)$raw_data;
+            $lang = (string) $raw_data;
 
             return $lang;
         }
     }
-
 
     /**
      * Use the Detect Method to identify the language of a selected piece of text.
      *
      * @see http://msdn.microsoft.com/en-us/library/ff512411.aspx
      * @see http://msdn.microsoft.com/en-us/library/ff512412.aspx
-     * @param  string|string             $text A string or array of strings to detect
-     * @return string|array              The lang or array of lang IDs
+     *
+     * @param string|string $text A string or array of strings to detect
+     *
      * @throws \InvalidArgumentException
+     * @return string|array              The lang or array of lang IDs
+     *
      */
     public function detect($text)
     {
         if (is_array($text)) {
-
             $request = $this->getServiceHttpClient()->post(
                 'DetectArray',
                 null,
@@ -234,32 +228,32 @@ class Translate
             $langs = array();
 
             foreach ($raw_data->string as $l) {
-                $langs[] = (string)$l;
+                $langs[] = (string) $l;
             }
 
             return $langs;
-
         } else {
-            $request = $this->getServiceHttpClient()->get(array('Detect{?text}', array('text' => $text)));
+            $request  = $this->getServiceHttpClient()->get(array('Detect{?text}', array('text' => $text)));
             $response = $request->send();
 
             $raw_data = $response->xml();
 
-            $lang = (string)$raw_data;
+            $lang = (string) $raw_data;
 
             return $lang;
         }
     }
 
-
     /**
      * Returns a wave or mp3 stream of the passed-in text being spoken in the desired language.
      *
      * @see http://msdn.microsoft.com/en-us/library/ff512420.aspx
-     * @param  string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters.
-     * @param  string $lang   A string representing the supported language code to speak the text in.
-     * @param  string $format A string specifying the content-type ID
-     * @param  string $opt    A string specifying the quality of the audio signals
+     *
+     * @param string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters.
+     * @param string $lang   A string representing the supported language code to speak the text in.
+     * @param string $format A string specifying the content-type ID
+     * @param string $opt    A string specifying the quality of the audio signals
+     *
      * @return string
      */
     public function speak($text, $lang, $format = self::FORMAT_WAV, $opt = self::OPT_MINSIZE)
@@ -276,12 +270,13 @@ class Translate
         return $response->getBody(true);
     }
 
-
     /**
      * Obtain a list of language codes representing languages that are supported by the Translation Service.
      *
      * @see http://msdn.microsoft.com/en-us/library/ff512416.aspx
-     * @param  bool  $use_local True to use the local cache (dont do a service request)
+     *
+     * @param bool $use_local True to use the local cache (dont do a service request)
+     *
      * @return array
      */
     public function getLanguagesForTranslate($use_local = true)
@@ -289,29 +284,30 @@ class Translate
         if ($use_local) {
             $file = __DIR__.'/data/langs_for_translate.php';
             if (file_exists($file)) {
-                return require($file);
+                return require $file;
             }
         }
 
-        $request = $this->getServiceHttpClient()->get('GetLanguagesForTranslate');
+        $request  = $this->getServiceHttpClient()->get('GetLanguagesForTranslate');
         $response = $request->send();
 
         $raw_data = $response->xml();
 
         $data = array();
         foreach ($raw_data->string as $r) {
-            $data[] = (string)$r;
+            $data[] = (string) $r;
         }
 
         return $data;
     }
 
-
     /**
      * Retrieves the languages available for speech synthesis.
      *
      * @see http://msdn.microsoft.com/en-us/library/ff512415.aspx
-     * @param  bool  $use_local True to use the local cache (dont do a service request)
+     *
+     * @param bool $use_local True to use the local cache (dont do a service request)
+     *
      * @return array
      */
     public function getLanguagesForSpeak($use_local = true)
@@ -319,23 +315,22 @@ class Translate
         if ($use_local) {
             $file = __DIR__.'/data/langs_for_speak.php';
             if (file_exists($file)) {
-                return require($file);
+                return require $file;
             }
         }
 
-        $request = $this->getServiceHttpClient()->get('GetLanguagesForSpeak');
+        $request  = $this->getServiceHttpClient()->get('GetLanguagesForSpeak');
         $response = $request->send();
 
         $raw_data = $response->xml();
 
         $data = array();
         foreach ($raw_data->string as $r) {
-            $data[] = (string)$r;
+            $data[] = (string) $r;
         }
 
         return $data;
     }
-
 
     /**
      * Retrieves friendly names for the languages passed in as the parameter languageCodes, and localized using the passed locale language.
@@ -343,17 +338,19 @@ class Translate
      * This will use the local data cache unless a lang code could not be found, then a request against the service is made.
      *
      * @see http://msdn.microsoft.com/en-us/library/ff512414.aspx
-     * @param  string[] $lang_codes An array of lang codes
-     * @param  string   $locale     The locale to get names for
-     * @param  bool     $use_local  True to use the local cache of names (dont do a service request)
+     *
+     * @param string[] $lang_codes An array of lang codes
+     * @param string   $locale     The locale to get names for
+     * @param bool     $use_local  True to use the local cache of names (dont do a service request)
+     *
      * @return array
      */
     public function getLanguageNames(array $lang_codes, $locale = 'en', $use_local = true)
     {
         if ($use_local) {
-            $file = __DIR__.'/data/' . $locale . '.php';
+            $file = __DIR__.'/data/'.$locale.'.php';
             if (file_exists($file)) {
-                $all_names = require($file);
+                $all_names = require $file;
 
                 $names = array();
                 foreach ($lang_codes as $code) {
@@ -377,7 +374,7 @@ class Translate
 
         $data = array();
         foreach ($raw_data as $k => $r) {
-            $data[$lang_codes[$k]] = (string)$r;
+            $data[$lang_codes[$k]] = (string) $r;
         }
 
         return $data;
@@ -386,9 +383,10 @@ class Translate
     /**
      * Just like getLanguageNames except returns just a string for a single lang code.
      *
-     * @param  string[] $lang_codes An array of lang codes
-     * @param  string   $locale     The locale to get names for
-     * @param  bool     $use_local  True to use the local cache of names (dont do a service request)
+     * @param string[] $lang_codes An array of lang codes
+     * @param string   $locale     The locale to get names for
+     * @param bool     $use_local  True to use the local cache of names (dont do a service request)
+     *
      * @return array
      */
     public function getSingleLanguageName($lang_code, $locale = 'en', $use_local = true)
@@ -397,7 +395,6 @@ class Translate
 
         return array_pop($names);
     }
-
 
     /**
      * @return Client
@@ -409,12 +406,11 @@ class Translate
         }
 
         $this->oauth_http_client = new Client(self::OAUTH_AUTH, array(
-            'ssl.certificate_authority' => false
+            'ssl.certificate_authority' => false,
         ));
 
         return $this->oauth_http_client;
     }
-
 
     /**
      * @return Client
@@ -426,19 +422,19 @@ class Translate
         }
 
         $this->service_http_client = new Client(self::API_URL, array(
-            'ssl.certificate_authority' => false
+            'ssl.certificate_authority' => false,
         ));
         $this->service_http_client->setDefaultHeaders(array(
-            'Authorization' => 'Bearer ' . $this->getAccessToken(),
-            'Content-Type'  => 'text/xml'
+            'Authorization' => 'Bearer '.$this->getAccessToken(),
+            'Content-Type'  => 'text/xml',
         ));
 
         return $this->service_http_client;
     }
 
-
     /**
-     * @param  array  $strings
+     * @param array $strings
+     *
      * @return string
      */
     public function createArrayOfStringXmlBody(array $strings)
@@ -446,16 +442,16 @@ class Translate
         $body  = '<ArrayOfstring xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
         $body .= "\n";
         foreach ($strings as $s) {
-            $body .= "\t<string>" . $this->escapeXml($s) . "</string>\n";
+            $body .= "\t<string>".$this->escapeXml($s)."</string>\n";
         }
         $body .= '</ArrayOfstring>';
 
         return $body;
     }
 
-
     /**
-     * @param  string $str
+     * @param string $str
+     *
      * @return string
      */
     protected function escapeXml($str)
@@ -467,12 +463,12 @@ class Translate
         );
     }
 
-
     /**
      * Checks locale to see if its supported and gets the nearest if its not. For example, 'en_US' is not supported
      * specifically but 'en' is.
      *
-     * @param  string $locale The locale to check
+     * @param string $locale The locale to check
+     *
      * @return string The locale replaced
      */
     public function getNearestTranslateLocale($locale)
@@ -484,7 +480,7 @@ class Translate
         }
 
         if (strpos($locale, '_')) {
-            list ($top, ) = explode('_', $locale, 2);
+            list($top,) = explode('_', $locale, 2);
             // Try again with just the first part
             return $this->getNearestTranslateLocale($top);
         }

@@ -27,9 +27,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
@@ -66,7 +64,7 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         if (strpos($opt_files, '-') === false) {
             $col = Finder::create()->files()->name('*.php')->in(DP_ROOT.'/languages/default/'.$opt_files);
             foreach ($col as $f) {
-                /** @var \SplFileInfo $f */
+                /* @var \SplFileInfo $f */
                 $file_phrases  = include $f->getRealPath();
                 $file_phrases  = array_keys($file_phrases);
                 $check_phrases = array_merge($check_phrases, $file_phrases);
@@ -121,7 +119,7 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $found = false;
             foreach ($search_lists as $list) {
                 foreach ($list as $f) {
-                    /** @var \SplFileInfo $f */
+                    /* @var \SplFileInfo $f */
                     $content = file_get_contents($f->getRealPath());
 
                     if (strpos($content, $phrase) !== false) {

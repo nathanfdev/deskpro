@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 
 class CustomDataTicket extends AbstractEntityRepository
 {
@@ -46,11 +44,11 @@ class CustomDataTicket extends AbstractEntityRepository
         ")->setParameter(1, $ticket)->execute();
     }
 
-
     /**
      * Fetch data for a whole bunch of things.
      *
-     * @param  array $tickets
+     * @param array $tickets
+     *
      * @return array
      */
     public function getDataCollectionForTicketCollection(array $tickets)

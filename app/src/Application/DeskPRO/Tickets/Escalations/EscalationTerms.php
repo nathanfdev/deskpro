@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -51,9 +50,9 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         $this->criteria->setOperator(FilterTermComposite::OP_OR);
     }
 
-
     /**
-     * @param  FilterTermInterface       $term
+     * @param FilterTermInterface $term
+     *
      * @throws \InvalidArgumentException
      */
     public function addTerm(FilterTermInterface $term)
@@ -65,9 +64,9 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         $this->criteria->add($term);
     }
 
-
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addTermFromArray(array $term_info)
@@ -81,7 +80,6 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         $this->addTerm($term);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -89,7 +87,6 @@ class EscalationTerms implements \Serializable, FilterTermInterface
     {
         return $this->criteria->getFilterQuery();
     }
-
 
     /**
      * @return array
@@ -99,7 +96,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         $data = array();
 
         $data['version']  = 1;
-        $data['terms'] = array();
+        $data['terms']    = array();
         foreach ($this->criteria->getAll() as $criteria) {
             if (!($criteria instanceof CriteriaTermInterface)) {
                 continue;
@@ -108,13 +105,12 @@ class EscalationTerms implements \Serializable, FilterTermInterface
             $data['terms'][] = array(
                 'type'    => $criteria->getTermType(),
                 'op'      => $criteria->getTermOperator(),
-                'options' => $criteria->getTermOptions()
+                'options' => $criteria->getTermOptions(),
             );
         }
 
         return $data;
     }
-
 
     /**
      * @param array $data

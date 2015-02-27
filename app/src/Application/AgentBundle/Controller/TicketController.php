@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -61,6 +58,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
@@ -70,7 +68,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class TicketController extends AbstractController
 {
@@ -541,13 +539,38 @@ class TicketController extends AbstractController
             $ticket_logs = isset($all_ticket_logs[$page-1]) ? $all_ticket_logs[$page-1] : array();
         }
 
-        $info                = array();
-        $info['ticket']      = $ticket;
-        $info['num_pages']   = count($all_ticket_logs);
-        $info['cur_page']    = $page;
-        $info['ticket_logs'] = $ticket_logs;
-        $info['filter']      = $filter;
-        $info['counts']      = $counts;
+        // Get email status
+        $sendmail_source_ids = array();
+        foreach ($ticket_logs as $l) {
+            if (!empty($l['details']['sendmail_source_id'])) {
+                $sendmail_source_ids[] = $l['details']['sendmail_source_id'];
+            } elseif (!empty($l['grouped'])) {
+                foreach ($l['grouped'] as $l2) {
+                    if (!empty($l2['details']['sendmail_source_id'])) {
+                        $sendmail_source_ids[] = $l2['details']['sendmail_source_id'];
+                    }
+                }
+            }
+        }
+
+        if ($sendmail_source_ids) {
+            $sendmail_source_status = $this->db->fetchAllKeyed("
+                SELECT id, status
+                FROM sendmail_sources
+                WHERE id IN (?)
+            ", array($sendmail_source_ids), 'id', array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
+        } else {
+            $sendmail_source_status = array();
+        }
+
+        $info                           = array();
+        $info['ticket']                 = $ticket;
+        $info['num_pages']              = count($all_ticket_logs);
+        $info['cur_page']               = $page;
+        $info['ticket_logs']            = $ticket_logs;
+        $info['filter']                 = $filter;
+        $info['counts']                 = $counts;
+        $info['sendmail_source_status'] = $sendmail_source_status;
 
         $rendered         = $this->renderView('AgentBundle:Ticket:ticket-logs.html.twig', $info);
         $info['rendered'] = $rendered;
@@ -1296,7 +1319,6 @@ class TicketController extends AbstractController
         $changed_agent = false;
         $changed_team  = false;
         try {
-
             if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
                 $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
             }
@@ -1569,7 +1591,7 @@ class TicketController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'message_id' => $message->getId(),
+            'message_id'   => $message->getId(),
             'message_text' => $message->getMessageFullText() ?: $message->getMessageText(),
             'message_html' => $message->getMessageFull() ?: $message->getMessageHtml(),
         ));
@@ -1683,9 +1705,9 @@ class TicketController extends AbstractController
             $hidden_data = $this->_getHiddenBarData($ticket);
 
             return $this->createJsonResponse(array(
-                'success'        => true,
-                'ticket_deleted' => true,
-                'hidden_html'    => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+                'success'              => true,
+                'ticket_deleted'       => true,
+                'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                     'ticket'           => $ticket,
                     'ticket_perms'     => $this->_getTicketPerms($ticket),
                     'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -1815,8 +1837,8 @@ class TicketController extends AbstractController
         $this->container->getBlobStorage()->deleteBlobRecord($blob);
 
         return $this->createJsonResponse(array(
-            'success'      => true,
-            'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
+            'success'                        => true,
+            'message_html'                   => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
                 'message'                    => $message,
                 'ticket_message_attachments' => $ticket_message_attachments,
                 'ticket_attachments'         => $ticket_attachments,
@@ -2216,9 +2238,9 @@ class TicketController extends AbstractController
 
         return $this->createJsonResponse(array(
             'ticket_id' => $ticket->getId(),
-            'macro_id' => $macro->getId(),
+            'macro_id'  => $macro->getId(),
             'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']) || !$can_view,
-            'success' => true,
+            'success'   => true,
         ));
     }
 
@@ -2315,8 +2337,8 @@ class TicketController extends AbstractController
             $this->em->flush();
 
             return $this->createJsonResponse(array(
-                'inserted' => true,
-                'html'     => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+                'inserted'   => true,
+                'html'       => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
                     'ticket' => $ticket,
                     'charge' => $charge,
                 )),
@@ -2453,8 +2475,8 @@ class TicketController extends AbstractController
             $tm->saveTicket($ticket, $context);
 
             $data = array(
-                'inserted' => true,
-                'html'     => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
+                'inserted'         => true,
+                'html'             => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
                     'ticket'       => $ticket,
                     'ticket_sla'   => $ticket_sla,
                     'ticket_perms' => $this->_getTicketPerms($ticket),
@@ -2524,7 +2546,7 @@ class TicketController extends AbstractController
     ############################################################################
 
     /**
-     * Soft-deletes a ticket
+     * Soft-deletes a ticket.
      *
      * @param  $ticket_id
      */
@@ -2579,9 +2601,9 @@ class TicketController extends AbstractController
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         return $this->createJsonResponse(array(
-            'success'     => true,
-            'banned'      => $this->in->getBool('ban'),
-            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+            'success'              => true,
+            'banned'               => $this->in->getBool('ban'),
+            'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                 'ticket'           => $ticket,
                 'ticket_perms'     => $this->_getTicketPerms($ticket),
                 'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -2591,7 +2613,7 @@ class TicketController extends AbstractController
     }
 
     /**
-     * Spam a ticket
+     * Spam a ticket.
      *
      * @param  $ticket_id
      */
@@ -2624,8 +2646,8 @@ class TicketController extends AbstractController
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         return $this->createJsonResponse(array(
-            'success'     => true,
-            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+            'success'              => true,
+            'hidden_html'          => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
                 'ticket'           => $ticket,
                 'ticket_perms'     => $this->_getTicketPerms($ticket),
                 'ticket_deleted'   => $hidden_data['ticket_deleted'],
@@ -2806,7 +2828,7 @@ class TicketController extends AbstractController
     }
 
     /**
-     * Merge a ticket interface
+     * Merge a ticket interface.
      */
     public function mergeAction($ticket_id, $other_ticket_id)
     {
@@ -3092,8 +3114,10 @@ class TicketController extends AbstractController
         }
 
         if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
+            $use_from   = true;
             $from_email = $this->person->getEmailAddress();
         } else {
+            $use_from   = false;
             $from_email = $account->getUseEmailAddress();
         }
 
@@ -3107,8 +3131,14 @@ class TicketController extends AbstractController
         }
 
         $tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
-        if ($tr) {
-            $email->setForceTransport($tr);
+
+        if ($email instanceof MessageOptionsInterface) {
+            if ($tr) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
+            }
+            if ($use_from) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $from_email);
+            }
         }
 
         $ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $this->person);
@@ -3462,10 +3492,10 @@ class TicketController extends AbstractController
                 }
             }
 
-            if (!$this->in->getString('newticket.subject')) {
+            if (!$newticket->subject) {
                 $errors['subject'] = true;
             }
-            if (!$this->in->getString('newticket.message')) {
+            if (!$newticket->message) {
                 $errors['message'] = true;
             }
             if (!$this->in->getString('newticket.department_id')) {
@@ -3769,9 +3799,11 @@ class TicketController extends AbstractController
     }
 
     /**
-     * refresh custom fields for changed person context
+     * refresh custom fields for changed person context.
+     *
      * @param $person_id
      * @param $department_id
+     *
      * @return Response
      */
     public function newTicketGetCustomFieldsRowAction($person_id, $department_id)

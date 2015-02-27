@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Sms\Detector;
@@ -46,16 +43,16 @@ class PersonDetector
      */
     private $em;
 
-
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
     /**
-     *  use number to find a person that sent us an sms
+     *  use number to find a person that sent us an sms.
      *
-     * @param  string                                  $from_number
+     * @param string $from_number
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     public function detectWithFromNumber($from_number = null)
@@ -63,13 +60,14 @@ class PersonDetector
         return $this->em->getRepository('DeskPRO:Person')->findOneByPhoneNumber($from_number);
     }
 
-
     /**
-     * creates a person with the given phone number
+     * creates a person with the given phone number.
      *
-     * @param  string                             $from_number
-     * @return Person
+     * @param string $from_number
+     *
      * @throws \Doctrine\DBAL\ConnectionException
+     * @return Person
+     *
      */
     public function createPersonWithNumber($from_number)
     {
@@ -86,7 +84,7 @@ class PersonDetector
         $person                  = Person::newContactPerson();
         $person->creation_system = 'gateway.person';
         $person->is_confirmed    = true;
-        $from_number = new PhoneNumber($from_number);
+        $from_number             = new PhoneNumber($from_number);
         $person->setPrimaryPhoneNumber($from_number);
 
         if (App::getSetting('core.agent_validation')) {

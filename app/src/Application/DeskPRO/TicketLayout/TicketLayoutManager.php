@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category TicketLayout
  */
 
@@ -37,20 +36,22 @@ namespace Application\DeskPRO\TicketLayout;
 class TicketLayoutManager
 {
     /**
-     * Layouts keyed by department ID
+     * Layouts keyed by department ID.
+     *
      * @var LayoutCollection
      */
     private $user_layouts;
 
     /**
-     * Layouts keyed by deartmend ID
+     * Layouts keyed by deartmend ID.
+     *
      * @var LayoutCollection
      */
     private $agent_layouts;
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\TicketLayout[] $ticket_layouts
+     * @param \Application\DeskPRO\Entity\TicketLayout[] $ticket_layouts
+     *
      * @return TicketLayoutManager
      */
     public static function createWithLayoutRecords(array $ticket_layouts)
@@ -73,9 +74,9 @@ class TicketLayoutManager
         return new self($user_layouts, $agent_layouts);
     }
 
-
     /**
-     * @param  array               $ticket_layouts
+     * @param array $ticket_layouts
+     *
      * @return TicketLayoutManager
      */
     public static function createWithLayoutArrays(array $ticket_layouts)
@@ -100,7 +101,6 @@ class TicketLayoutManager
         return new self($user_layouts, $agent_layouts);
     }
 
-
     /**
      * @param LayoutCollection $user_layouts
      * @param LayoutCollection $agent_layouts
@@ -111,7 +111,6 @@ class TicketLayoutManager
         $this->agent_layouts = $agent_layouts;
     }
 
-
     /**
      * @return LayoutCollection
      */
@@ -119,7 +118,6 @@ class TicketLayoutManager
     {
         return $this->user_layouts;
     }
-
 
     /**
      * @return LayoutCollection
@@ -129,7 +127,6 @@ class TicketLayoutManager
         return $this->agent_layouts;
     }
 
-
     /**
      * @return array
      */
@@ -137,7 +134,6 @@ class TicketLayoutManager
     {
         return $this->_collectLayoutItems($this->user_layouts);
     }
-
 
     /**
      * @return array
@@ -147,9 +143,9 @@ class TicketLayoutManager
         return $this->_collectLayoutItems($this->user_layouts);
     }
 
-
     /**
-     * @param  LayoutCollection $coll
+     * @param LayoutCollection $coll
+     *
      * @return array
      */
     private function _collectLayoutItems(LayoutCollection $coll)

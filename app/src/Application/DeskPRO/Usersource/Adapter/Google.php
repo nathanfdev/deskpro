@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -49,7 +46,6 @@ class Google extends AbstractAdapter
         );
     }
 
-
     /**
      * @return \Orb\Auth\Adapter\Google
      */
@@ -67,12 +63,13 @@ class Google extends AbstractAdapter
     {
         return array(
             UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
-            UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN
+            UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
         );
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
@@ -44,7 +42,6 @@ class UserGroups extends GroupsRepos
     {
         return $this->getSysGroup('everyone');
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Usergroup

@@ -1,0 +1,5 @@
+services:
+
+  new_mailer:
+      class: DeskPRO\Bundle\AppBundle\Email\NewMailer
+      arguments: [@service_container]

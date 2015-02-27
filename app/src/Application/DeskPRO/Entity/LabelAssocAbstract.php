@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 /**
- * Base labels associations class
- *
+ * Base labels associations class.
  */
 abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -59,6 +57,16 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
         $label       = trim($label);
         $label       = str_replace(',', '', $label);
         $this->label = $label;
+    }
+
+    /**
+     * Returns label name.
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 
     public function __toString()

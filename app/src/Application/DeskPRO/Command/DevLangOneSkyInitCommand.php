@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Commands
  */
 
@@ -162,9 +161,11 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     private function _restGet($path, array $vars = array())
     {
@@ -184,9 +185,11 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     private function _restPost($path, array $post_vars = array(), $return = false)
     {

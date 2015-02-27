@@ -9,13 +9,11 @@ class FeedbackStatusTypeTest extends \DpIntegrationTestCase
     /**
      * @var \Symfony\Component\Form\Form
      */
-
     private $form;
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
      */
-
     private $feedback_status;
 
     public function runBefore()

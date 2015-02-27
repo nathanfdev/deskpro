@@ -10,14 +10,15 @@ require_once 'AbstractTicketStringCheckTest.php';
 class CheckUserVarTest extends AbstractStringCheckTest
 {
     /**
-     * @param  int    $id
-     * @param  string $test_string
+     * @param int    $id
+     * @param string $test_string
+     *
      * @return Ticket
      */
     public function createTicket($id, $test_string)
     {
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket          = new Ticket();
+        $ticket->id      = $id;
         $ticket->subject = $test_string;
 
         return $ticket;
@@ -37,7 +38,7 @@ class CheckUserVarTest extends AbstractStringCheckTest
     protected function createChecker($op, array $options)
     {
         if (isset($options['%OPT%'])) {
-            $opt_key = $this->getCheckClassOptionKey();
+            $opt_key           = $this->getCheckClassOptionKey();
             $options[$opt_key] = $options['%OPT%'];
             unset($options['%OPT%']);
         }

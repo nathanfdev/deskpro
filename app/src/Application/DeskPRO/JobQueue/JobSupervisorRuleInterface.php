@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -47,7 +44,6 @@ interface JobSupervisorRuleInterface
      * Checks the business logic behind this rule. Returns null if all is well. If a rule is violated, it
      * should throw the JobSupervisorException with a detailed message of the problem it found.
      *
-     * @return null
      * @throws JobSupervisorException
      */
     public function check();

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,7 +46,6 @@ use Orb\Util\Numbers;
  * @property Usergroup $usergroup
  * @property Person $person
  * @property boolean $value
- *
  */
 class Permission extends DomainObject
 {
@@ -56,15 +54,13 @@ class Permission extends DomainObject
      *
      * @var int
      */
-
     protected $id = null;
 
     /**
-     * The name of the permission
+     * The name of the permission.
      *
      * @var string
      */
-
     protected $name = null;
 
     /**
@@ -73,7 +69,6 @@ class Permission extends DomainObject
      *
      * @var \Application\DeskPRO\Entity\Usergroup
      */
-
     protected $usergroup;
 
     /**
@@ -82,21 +77,18 @@ class Permission extends DomainObject
      *
      * @var \Application\DeskPRO\Entity\Person
      */
-
     protected $person;
 
     /**
-     * Any numeric number (ex filesize, flag)
+     * Any numeric number (ex filesize, flag).
      *
      * @var bool
      */
-
     protected $value = null;
 
     /**
      * @return int
      */
-
     public function getId()
     {
         return $this->id;
@@ -120,10 +112,10 @@ class Permission extends DomainObject
     /**
      * Combine an array of permissions into a superduper array of effective permissions.
      *
-     * @param  \Application\DeskPRO\Entity\Permission[]|array $perms
+     * @param \Application\DeskPRO\Entity\Permission[]|array $perms
+     *
      * @return array
      */
-
     public static function getEffectivePermissions(array $perms)
     {
         $effective_perms = array();

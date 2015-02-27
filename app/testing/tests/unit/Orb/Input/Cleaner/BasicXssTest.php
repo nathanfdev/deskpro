@@ -26,16 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\Orb\Input\Cleaner;
-
-use Orb\Serializer\Serializer\ArraySerializer;
-use Orb\Serializer\SerializerRegistry;
 
 class BasicXssTest extends \DpUnitTestCase
 {
@@ -58,11 +52,12 @@ class BasicXssTest extends \DpUnitTestCase
      */
     public function fileProvider()
     {
-        return array_map(function($f) { return array($f); }, $this->_loadFileList());
+        return array_map(function ($f) { return array($f); }, $this->_loadFileList());
     }
 
     /**
      * @dataProvider fileProvider
+     *
      * @param string $f
      */
     public function testXss($f)
@@ -89,12 +84,12 @@ class BasicXssTest extends \DpUnitTestCase
      */
     private function _loadFileList()
     {
-        $dir = dir(__DIR__.'/xss_data');
+        $dir   = dir(__DIR__.'/xss_data');
         $files = array();
 
         while (false !== ($f = $dir->read())) {
             if (preg_match('#\.txt$#', $f)) {
-                $files[] = $dir->path . '/' .$f;
+                $files[] = $dir->path.'/'.$f;
             }
         }
 
@@ -103,8 +98,10 @@ class BasicXssTest extends \DpUnitTestCase
 
     /**
      * @param string $f
-     * @return array
+     *
      * @throws \Exception
+     * @return array
+     *
      */
     private function _readFile($f)
     {
@@ -117,7 +114,7 @@ class BasicXssTest extends \DpUnitTestCase
 
         return array(
             'source' => trim($parts[0]),
-            'result' => trim($parts[1])
+            'result' => trim($parts[1]),
         );
     }
 }

@@ -1,0 +1,766 @@
+hr.divider {
+  height: 1px;
+  border: 0px;
+  background: $divider-color;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.padded { padding-left: 10px; }
+
+.centered { text-align: center; }
+
+.glossary-link {
+  border-bottom: 1px dotted $text-color;
+  text-decoration: none;
+  color: $text-color;
+}
+
+header {
+  .category-jumper {
+    border: 1px solid $divider-color;
+    color: inherit;
+    margin-left: -10px;
+    &:hover { background: $surface-secondary; }
+    padding: 5px 10px;
+    border-radius: 2px;
+    font-size: 0.9em;
+    color: $text-color;
+    position: relative;
+    top: -1px;
+    margin-right: 5px;
+
+    i {
+      font-size: 14px;
+      opacity: 0.5;
+    }
+  }
+}
+
+
+.tag-list {
+  border: 1px solid $divider-color;
+  border-radius: 2px;
+  display: inline-block;
+  margin-top: 10px;
+
+  .tag-list-header {
+    i {
+      position: absolute;
+      left: -10px;
+      top: 2px;
+      background: $page-background;
+      padding: 3px;
+    }
+  }
+
+
+
+  ul {
+    @include blank-list;
+    li {
+      display: inline-block;
+      position: relative;
+      vertical-align: middle;
+      padding: 0px 10px;
+      border-right: 1px solid $divider-color;
+      color: $text-faded;
+      font-size: 0.9em;
+
+      &:last-child {
+        border-right: 0px;
+      }
+    }
+
+    a {
+      color: $text-color-lighter;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: $text-color;
+    }
+  }
+}
+
+
+
+
+
+// All sort of small popups for buttons/forms etc
+
+.popup-tiny {
+  display: block;
+  border: 1px solid $divider-color;
+  border-radius: 4px;
+  padding: 10px;
+  background: $world-background;
+  margin-bottom: 20px;
+  position: relative;
+  max-width: 300px;
+  color: $text-color;
+
+  input[type="text"], .select {
+    border: 1px solid $form-border-color;
+    width: 100%;
+    padding: 0.5em 0.75em;
+    border-radius: 2px;
+  }
+
+  .button {
+    display: block;
+    text-align: center;
+    padding: 0.75em 0.75em;
+  }
+
+
+
+  h1 {
+    font-size: 1.1em;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  ul {
+    @include blank-list;
+    margin-bottom: 10px;
+  }
+
+  a {
+    text-decoration: none;
+
+    &.not-selected {
+      color: $text-color-darker;
+    }
+
+    span {
+      color: $text-color-lighter;
+    }
+  }
+
+  .popup-controls {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    a {
+      color: $text-color;
+      font-size: 0.8em;
+    }
+  }
+
+  .select-dropdown {
+    border: 1px solid $form-border-color;
+
+    a {
+      border-radius: 2px;
+      line-height: 1em;
+      padding: 0.75em;
+      display: block;
+      color: $text-color;
+
+      &:hover {
+        color: $link-color;
+      }
+    }
+
+    i {
+      color: $text-color;
+      float: right;
+    }
+
+    ul {
+      border: 0px;
+      margin-bottom: 0px;
+      li {
+        border-top: 1px solid $form-border-color;
+        a {
+          border-radius: 0px;
+          border: 0px;
+        }
+      }
+    }
+  }
+
+
+  .select-dropdown.expanded {
+
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.active-button-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 4px;
+  background: #fff;
+  border: 1px solid $divider-color;
+  border-radius: 2px;
+  display: block;
+  position: absolute;
+  border-radius: 2px;
+  text-align: left;
+  min-width: 135px;
+  padding: 7px 14px;
+  padding-bottom: 14px;
+  border-top-right-radius: 0px;
+  z-index: 99;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  hr {
+    background: $divider-color;
+    border: 0px;
+    height: 1px;
+  }
+
+  @media screen and (max-width: 760px) {
+    position: relative;
+    top: -10px;
+    right: 0px;
+
+    hr {
+      display: none;
+    }
+  }
+}
+
+.cleared {
+  @include clearfix;
+}
+
+div.large-title {
+  display: block;
+  border-bottom: 1px solid $divider-color;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  text-align: left;
+
+  h1 {
+    font-weight: 100;
+    font-size: 1.4em;
+    padding-bottom: 0px;
+    display: inline-block;
+    color: $text-color-darker;
+    position: relative;
+    background: $page-background;
+    padding-left: 10px;
+    padding-right: 10px;
+    top: 11px;
+    left: 30px;
+
+  }
+}
+
+
+
+.header-buttons {
+  font-size: 0.9em;
+  float: right;
+  a {
+    display: inline-block;
+    background: $surface-secondary;
+    color: $text-color;
+    text-decoration: none;
+    border-radius: 2px;
+    border: 1px solid $divider-color;
+    padding: 0em 0.5em;
+
+    &:hover {
+      background: darken($surface-secondary, 10%);
+    }
+
+    &.unsubscribe {
+      background: darken($surface-secondary, 5%);
+    }
+
+    i {
+      font-size: 0.9em;
+      vertical-align: middle;
+      margin-left: 6px;
+      margin-right: 2px;
+      color: $text-color-lighter;
+      position: relative;
+      top: -1px;
+    }
+  }
+}
+
+
+// If we need them on their own line
+.header-button-container {
+  text-align: right;
+  display: block;
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  float: none;
+  border-bottom: 1px solid $divider-color;
+  position: relative;
+  height: 1px;
+
+  .header-buttons {
+    float: none;
+    position: relative;
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+    background: $page-background;
+    top: -12px;
+  }
+}
+
+
+// On their own line & centered
+.header-button-container.centered {
+  text-align: center;
+}
+
+
+
+//Simple input one liner next to random headers
+.simple-search {
+  float: right;
+
+  label {
+    margin-right: 5px;
+    font-size: 0.9em;
+  }
+
+  input[type="text"] {
+    border: 1px solid $divider-color;
+    max-width: 160px;
+    border-radius: 2px;
+    padding: 0.5em 0.75em;
+    position: relative;
+    top: 1px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+// Not using variables here, need to be consistent everywhere
+.admin-bar {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background: #383838;
+  z-index: 9999;
+  font-size: $font-mid;
+  padding: 1px 0px;
+  ul {
+    @include blank-list;
+
+    li { display: inline; }
+  }
+
+  a {
+    display: block;
+    float: right;
+    background: #4c4c4c;
+    color: #d2d2d2;
+    padding: 7px 10px;
+    text-decoration: none;
+    margin-left: 1px;
+
+    span {
+      color: #a2a2a2;
+      font-weight: 500;
+    }
+
+    &:hover {
+      background: #323232;
+      color: $grey;
+    }
+
+    i {
+      margin-left: 5px;
+      color: #838383;
+    }
+
+    .fa-edit {
+      font-size: 1.2em;
+      position: relative;
+      top: 2px;
+    }
+  }
+}
+
+.admin-bar-extended {
+  position: fixed;
+  top: 38px;
+  left: 0px;
+  width: 100%;
+  background: #3d3d3d;
+  color: #d2d2d2;
+  z-index: 9999;
+  font-size: $font-mid;
+  font-weight: 300;
+  text-align: right;
+
+  a {
+    text-align: right;
+    padding: 10px;
+    min-width: 360px;
+    position: relative;
+
+    img {
+      float: right;
+      margin-left: 10px;
+    }
+
+    .title {
+      display: inline-block;
+      font-size: 1.3em;
+      color: #fff;
+      margin-top: 10px;
+      margin-bottom: 2px;
+    }
+
+    p {
+      line-height: 1.6em;
+    }
+
+    display: inline-block;
+    background: #323232;
+    width: auto;
+    color: $text-color-lighter;
+    text-decoration: none;
+  }
+}
+
+
+.welcome-message {
+  h1 {
+    font-weight: 300;
+    font-size: $font-large;
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  padding: 20px;
+  border: 1px solid $divider-color;
+  background: darken($page-background, 3%);
+  border-radius: 4px;
+}
+
+.extra-margin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+// Inline tags for text
+
+.text-tag {
+  background: $button-color-secondary;
+  border-radius: 2px;
+  font-weight: 600;
+  color: #fff;
+  padding: 3px 6px;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  cursor: default;
+  line-height: 1em;
+  position: relative;
+
+  i {
+    position: relative;
+    top: 0px;
+    left: 2px;
+  }
+}
+
+// Adding tags to h1
+h1 {
+  .text-tag {
+    font-size: 10px;
+    background: $button-color-secondary;
+    color: #fff;
+    position: relative;
+    top: -2px;
+    left: 4px;
+
+    &:after {
+      content: " ";
+      width: 0px;
+      height: 0px;
+      display: block;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-right: 4px solid $button-color-secondary;
+      position: absolute;
+      left: -6px;
+      top: 5px;
+    }
+  }
+}
+
+// Tag with pointy thingy up
+.rating-tag {
+  @extend .text-tag;
+  background: $button-color-secondary;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+// Tag with comment icon
+.comment-tag {
+  @extend .text-tag;
+  background: $button-color;
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  i {
+    font-size: 0.9em;
+    top: -1px;
+  }
+}
+
+// View more button
+.list-meta {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  text-align: right;
+
+  a {
+    opacity: 0.5;
+    display: inline-block;
+    text-decoration: none;
+    color: $text-color-lighter;
+    position: relative;
+    left: -5px;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    img {
+      position: relative;
+      top: 4px;
+      left: 5px;
+      opacity: 0.3;
+    }
+
+    span {
+      font-weight: 500;
+      color: $text-color-lighter;
+    }
+  }
+}
+
+// All Tables
+table {
+  tr {
+    td {
+      vertical-align: top;
+      padding: 5px 10px;
+      color: $text-color-darker;
+
+      &:first-child {
+        text-align: right;
+        color: $text-color-lighter;
+      }
+    }
+  }
+}
+
+// Date tag for news list
+.date-tag {
+  @extend .text-tag;
+  background: darken($page-background, 3%);;
+  color: $text-color-lighter;
+  min-width: 40px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 10px;
+
+  span {
+    color: $text-color-lighter;
+    font-size: 0.7em;
+  }
+
+  &:after {
+    content: " ";
+    width: 0px;
+    height: 0px;
+    display: block;
+    border: 4px solid rgba(0, 0, 0, 0);
+    border-left: 4px solid darken($page-background, 3%);
+    position: absolute;
+    right: -8px;
+    top: 5px;
+  }
+}
+
+// Files & file icons
+.file-tag {
+  display: inline-block;
+  min-width: 40px;
+  font-size: 0.6em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 5px;
+}
+
+.file-pdf {
+  background-color: #f44e4e;
+  background-image: url(../img/icon-pdf.png);
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+.file-zip {
+  background-color: #b6b800;
+  background-image: url(../img/icon-zip.png);
+  background-repeat: no-repeat;
+  background-position: 30px center;
+}
+
+
+
+
+
+
+
+
+
+
+.ticket-related-articles {
+  border: 1px solid $divider-color;
+  padding-bottom: 10px;
+  margin-top: 20px;
+
+  header {
+    padding: 10px;
+    background: $button-color-secondary;
+    color: $page-background;
+    text-align: center;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+
+    h1 {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: $page-background;
+    }
+
+    h2 {
+      color: $page-background;
+    }
+  }
+
+  .container {
+    @include clearfix;
+  }
+
+  .bucket {
+    margin-top: 20px;
+    padding-right: 20px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+
+    a:hover { text-decoration: underline; }
+  }
+
+  .button {
+    margin-left: 10px;
+    border: 0px;
+    text-shadow: none;
+    font-weight: 400;
+  }
+
+  .button.positive {
+    background: $button-color-secondary;
+  }
+
+  .button.negative {
+    background: $grey;
+    color: $text-color;
+  }
+
+
+
+  ul {
+    @include blank-list;
+    margin-left: 10px;
+
+    li {
+      @include whitespace;
+      margin-bottom: 5px;
+    }
+
+    a {
+      color: $link-color;
+      text-decoration: none;
+    }
+
+    p {
+      font-size: 0.9em;
+      color: $text-color;
+        font-weight: 300;
+    }
+
+    i {
+      margin-right: 5px;
+      color: $text-color-lighter;
+      opacity: 0.5;
+      font-size: 1.2em;
+      float: left;
+      margin-top: 12px;
+      margin-right: 10px;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

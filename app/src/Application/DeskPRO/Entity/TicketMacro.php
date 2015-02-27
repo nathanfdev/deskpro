@@ -26,32 +26,27 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
-use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-
 /**
- * Ticket macros
- *
+ * Ticket macros.
  */
 class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -98,7 +93,9 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         $ret = array();
 
         foreach ($this->actions as $info) {
-            if (!isset($info['rule_type'])) continue;
+            if (!isset($info['rule_type'])) {
+                continue;
+            }
 
             $type = $info['rule_type'];
             unset($info['rule_type']);
@@ -113,21 +110,23 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         return $ret;
     }
 
-
     /**
      * Get a simple array of actions used to pass back to views to update
      * UI.
      *
      * $ticket may be null, in which case no conditions are assumed.
      *
-     * @param  Entity\Ticket                                                $ticket The context (used ex in replies for replacements)
+     * @param Entity\Ticket $ticket The context (used ex in replies for replacements)
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionsCollection
      */
     public function getActionsCollection(Entity\Ticket $ticket = null)
     {
-        if ($this->_actions_coll) return $this->_actions_coll;
+        if ($this->_actions_coll) {
+            return $this->_actions_coll;
+        }
 
-        $factory = new ActionsFactory();
+        $factory    = new ActionsFactory();
         $collection = new ActionsCollection();
 
         foreach ($this->actions as $action_info) {
@@ -142,8 +141,6 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         return $this->_actions_coll;
     }
 
-
-
     /**
      * @return array
      */
@@ -152,12 +149,11 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         return $this->getActionsCollection()->getDescriptions($ticket);
     }
 
-
-
     /**
      * Get actions for a collection of tickets.
      *
-     * @param  array                                                          $tickets
+     * @param array $tickets
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionsCollection[]
      */
     public function getActionsCollectionsForTickets($tickets = null)
@@ -172,8 +168,6 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
         return $actions;
     }
-
-
 
     public function performOnTicket(Ticket $ticket, Entity\Person $person_context = null)
     {
@@ -191,14 +185,13 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         $did_change = false;
 
         foreach ($this->actions as $action) {
-
-            $term = $action['type'];
+            $term    = $action['type'];
             $term_id = null;
 
             // $term of people_field[12] becomes $term=people_field, $term_id=12
             $m = null;
             if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
+                $term    = $m[1];
                 $term_id = $m[2];
             }
 
@@ -222,7 +215,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
                 case 'person_organization_id':
                     $person['organization_id'] = $action['person_organization_id'];
-                    $did_change = true;
+                    $did_change                = true;
                     break;
             }
         }
@@ -234,8 +227,6 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
         return $did_change;
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -244,14 +235,14 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMacro';
-        $metadata->setPrimaryTable(array( 'name' => 'ticket_macros', ));
+        $metadata->setPrimaryTable(array( 'name' => 'ticket_macros'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
-        $metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
-        $metadata->mapField(array( 'fieldName' => 'actions', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'actions', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled'));
+        $metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global'));
+        $metadata->mapField(array( 'fieldName' => 'actions', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'actions'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true, ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
     }
 }

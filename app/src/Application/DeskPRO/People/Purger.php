@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
@@ -54,7 +52,7 @@ class Purger implements PersonContextInterface
     protected $person;
 
     /**
-     * Who is performing the delete
+     * Who is performing the delete.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -67,9 +65,7 @@ class Purger implements PersonContextInterface
         $this->db     = $em->getConnection();
     }
 
-
     /**
-     * @return void
      */
     public function purge()
     {
@@ -85,11 +81,8 @@ class Purger implements PersonContextInterface
         }
     }
 
-
     /**
-     * Purge all the tickets belonging to a user
-     *
-     * @return void
+     * Purge all the tickets belonging to a user.
      */
     public function purgeTickets()
     {
@@ -101,7 +94,7 @@ class Purger implements PersonContextInterface
         // when the original account is deleted but the ticket remains
         // (e.g., the ticket would stay if it was reset to a new user)
 
-        $orig_author_line = "Originally written by: " . htmlspecialchars($this->person->getDisplayContact()) . "<br/><br/><br/>\n\n\n";
+        $orig_author_line = "Originally written by: ".htmlspecialchars($this->person->getDisplayContact())."<br/><br/><br/>\n\n\n";
 
         $this->db->executeUpdate("
             UPDATE tickets_messages
@@ -148,7 +141,7 @@ class Purger implements PersonContextInterface
     }
 
     /**
-     * Set the context (who is making these edits)
+     * Set the context (who is making these edits).
      *
      * @param Person $person
      */

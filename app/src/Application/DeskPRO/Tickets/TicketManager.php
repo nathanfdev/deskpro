@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Tickets;
 
-use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Person;
@@ -43,6 +41,7 @@ use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -87,15 +86,14 @@ class TicketManager
      */
     private $auto_vars = array();
 
-
     /**
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container = $container;
-        $this->em = $container->getEm();
-        $this->db = $container->getDb();
+        $this->container    = $container;
+        $this->em           = $container->getEm();
+        $this->db           = $container->getDb();
         $this->blob_storage = $container->getBlobStorage();
 
         $this->save_actions      = array();
@@ -125,18 +123,16 @@ class TicketManager
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
     }
 
-
     /**
-     * Clears auto context vars
+     * Clears auto context vars.
      */
     public function clearAutoContextVars()
     {
         $this->auto_vars = array();
     }
 
-
     /**
-     * Adds an array of vars to auto context vars
+     * Adds an array of vars to auto context vars.
      *
      * @param array $vars
      */
@@ -145,9 +141,8 @@ class TicketManager
         $this->auto_vars = array_merge($this->auto_vars, $vars);
     }
 
-
     /**
-     * Gets array of currently set context vars
+     * Gets array of currently set context vars.
      *
      * @return array
      */
@@ -156,9 +151,8 @@ class TicketManager
         return $this->auto_vars;
     }
 
-
     /**
-     * Set an auto context var
+     * Set an auto context var.
      *
      * @param string $k
      * @param mixed  $v
@@ -168,16 +162,15 @@ class TicketManager
         $this->auto_vars[$k] = $v;
     }
 
-
     /**
-     * Unset an auto context var
+     * Unset an auto context var.
+     *
      * @param string $k
      */
     public function unsetAutoContextVar($k)
     {
         unset($this->auto_vars[$k]);
     }
-
 
     /**
      * Create a new ticket object. When you are ready to persist it, call saveTicket().
@@ -196,7 +189,7 @@ class TicketManager
             $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e);
-            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+            $ref         = Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_NUM).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
             $ticket->ref = $ref;
         }
 
@@ -205,7 +198,6 @@ class TicketManager
         return $ticket;
     }
 
-
     /**
      * Finds a ticket and returns it.
      *
@@ -213,7 +205,8 @@ class TicketManager
      * which means if you make changes, you need to use the saveTicket() method to
      * have those changes run the other related systems (like triggers etc).
      *
-     * @param  int                                $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function getTicket($id)
@@ -225,7 +218,6 @@ class TicketManager
 
         return $ticket;
     }
-
 
     /**
      * Disables auto-ticket processing on the ticket. This means you should save the ticket
@@ -241,7 +233,6 @@ class TicketManager
         $ticket->disableAutoTicketProcess();
     }
 
-
     /**
      * Re-enables auto-ticket processing on the ticket.
      *
@@ -255,10 +246,10 @@ class TicketManager
         $ticket->enableAutoTicketProcess();
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \Exception
      */
     public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
@@ -281,7 +272,7 @@ class TicketManager
         // Noop is sometimes used when we need to save a ticket and have appropriate client-messages
         // sent to update agent filters, but we dont want the usual triggers etc to run.
         // This is usually done when the ticket is being deleted.
-        $is_noop = $context->getEventType() == 'noop';
+        $is_noop           = $context->getEventType() == 'noop';
         $is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
         $time_start = microtime(true);
@@ -318,7 +309,7 @@ class TicketManager
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
-                try{
+                try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
@@ -340,7 +331,7 @@ class TicketManager
         foreach ($this->post_save_actions as $action) {
             $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
-                try{
+                try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
@@ -358,7 +349,7 @@ class TicketManager
 
             $agent_alert_action = new SendAgentAlert(array(
                 'agent_ids'   => array('notify_list'),
-                'ticket_logs' => $logs
+                'ticket_logs' => $logs,
             ));
             $agent_alert_action->setContainer($this->container);
             $agent_alert_action->applyAction($ticket, $context);
@@ -369,11 +360,11 @@ class TicketManager
                 'channel'      => 'agent.ticket-updated',
                 'auth'         => Strings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(array(
+                'data'         => serialize(array(
                     'ticket_id'      => $ticket->getId(),
                     'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-                ))
+                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                )),
             ));
         }
 
@@ -382,12 +373,12 @@ class TicketManager
                 'channel'      => 'agent-notification.tickets.locked-status',
                 'auth'         => Strings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(array(
+                'data'         => serialize(array(
                     'ticket_id'       => $ticket->getId(),
                     'is_locked'       => $ticket->getIsLocked(),
                     'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
-                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-                ))
+                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                )),
             ));
         }
 
@@ -418,7 +409,7 @@ class TicketManager
                 try {
                     $blob = $this->blob_storage->createBlobRecordFromString(
                         $log_text,
-                        'ticket-manager.' . date('Y-m-d.H-i-s') . '.' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '.log',
+                        'ticket-manager.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
                         'plain/text',
                         array('tag' => 'logs.ticket_proc_log')
                     );
@@ -432,7 +423,7 @@ class TicketManager
                         $this->db->insert('ticket_proc_log', array(
                             'ticket_id'    => $ticket->id,
                             'blob_id'      => $blob->id,
-                            'date_created' => date('Y-m-d H:i:s')
+                            'date_created' => date('Y-m-d H:i:s'),
                         ));
                     } catch (\Exception $e) {
                         KernelErrorHandler::logException($e);
@@ -445,12 +436,12 @@ class TicketManager
         $ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
     }
 
-
     /**
-     * @param  Person                   $agent
+     * @param Person $agent
      * @param $event_type
      * @param $event_method
-     * @param  array                    $event_method_options
+     * @param array  $event_method_options
+     *
      * @return ExecutorContextInterface
      */
     public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = array())
@@ -466,7 +457,7 @@ class TicketManager
             $key = null;
 
             try {
-                /** @var $auth RequestAuth */
+                /* @var $auth RequestAuth */
                 if ($auth = $this->container->get('deskpro.api.request_auth')) {
                     $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
                 }
@@ -486,12 +477,12 @@ class TicketManager
         return $context;
     }
 
-
     /**
-     * @param  Person                   $user
+     * @param Person $user
      * @param $event_type
      * @param $event_method
-     * @param  array                    $event_method_options
+     * @param array  $event_method_options
+     *
      * @return ExecutorContextInterface
      */
     public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = array())
@@ -505,7 +496,7 @@ class TicketManager
 
         if ('api' === $event_method) {
             $key = null;
-            /** @var $auth RequestAuth */
+            /* @var $auth RequestAuth */
             if ($auth = $this->container->get('deskpro.api.request_auth')) {
                 $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
             }
@@ -520,11 +511,11 @@ class TicketManager
         return $context;
     }
 
-
     /**
-     * @param  string                   $event_type
-     * @param  string                   $event_method
-     * @param  array                    $event_method_options
+     * @param string $event_type
+     * @param string $event_method
+     * @param array  $event_method_options
+     *
      * @return ExecutorContextInterface
      */
     public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
@@ -537,24 +528,24 @@ class TicketManager
         return $context;
     }
 
+    /**
+     * @param AppInstance $app
+     * @param string      $event_method
+     * @param array       $event_method_options
+     *
+     * @return ExecutorContext
+     */
+    public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
+    {
+        $context = new ExecutorContext($this->createNewLogger());
+        $context->getVars()->setArray($this->auto_vars);
+        $context->setEventType('update');
+        $context->setEventMethod($app->package->name.'.'.$app->id.'.'.$event_method, $event_method_options);
+
+        return $context;
+    }
 
     /**
-	 * @param AppInstance $app
-	 * @param string $event_method
-	 * @param array $event_method_options
-	 * @return ExecutorContext
-	 */
-	public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
-	{
-		$context = new ExecutorContext($this->createNewLogger());
-		$context->getVars()->setArray($this->auto_vars);
-		$context->setEventType('update');
-		$context->setEventMethod($app->package->name . '.' . $app->id . '.' . $event_method, $event_method_options);
-		return $context;
-	}
-
-
-	/**
      * @return Logger
      */
     protected function createNewLogger()
@@ -564,7 +555,7 @@ class TicketManager
 
         if ($logfile = dp_get_config('debug.enable_ticket_log')) {
             if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === "true") {
-                $logfile = dp_get_log_dir() . '/ticket.log';
+                $logfile = dp_get_log_dir().'/ticket.log';
             }
             $stream = new StreamHandler($logfile);
             $logger->pushHandler($stream);

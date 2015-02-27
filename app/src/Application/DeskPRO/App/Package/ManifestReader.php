@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,8 @@ class ManifestReader
     private $error_details = array();
 
     /**
-     * @param  array          $data
+     * @param array $data
+     *
      * @return ManifestReader
      */
     public static function newFromArray(array $data)
@@ -73,7 +73,8 @@ class ManifestReader
     }
 
     /**
-     * @param  string         $path
+     * @param string $path
+     *
      * @return ManifestReader
      */
     public static function newFromFile($path)
@@ -88,7 +89,8 @@ class ManifestReader
     }
 
     /**
-     * @param  string         $json
+     * @param string $json
+     *
      * @return ManifestReader
      */
     public static function newFromJson($json)
@@ -130,7 +132,7 @@ class ManifestReader
                 'author.email',
                 'author.link',
                 'tags',
-				'trigger_events',
+                'trigger_events',
                 'settings_def',
             );
 
@@ -140,7 +142,7 @@ class ManifestReader
                 $setter = Strings::underscoreToCamelCase('set_'.str_replace('.', '_', $f));
                 $value  = Arrays::getValue($this->data, $f, '___dp_unset___');
                 if ($value === '___dp_unset___') {
-					if ($f == 'tags' || $f == 'is_native' || $f == 'trigger_events') {
+                    if ($f == 'tags' || $f == 'is_native' || $f == 'trigger_events') {
                         // allowed to be unset
                         continue;
                     }
@@ -151,12 +153,12 @@ class ManifestReader
                     } else {
                         $this->manifest->$setter($value);
                     }
-				} else if ($f == 'trigger_events') {
-					if (!is_array($value)) {
-						$this->error_details[] = array('invalid', $f);
-					} else {
-						$this->manifest->$setter($value);
-					}
+                } elseif ($f == 'trigger_events') {
+                    if (!is_array($value)) {
+                        $this->error_details[] = array('invalid', $f);
+                    } else {
+                        $this->manifest->$setter($value);
+                    }
                 } elseif ($f == 'tags') {
                     if (!is_array($value)) {
                         $this->error_details[] = array('invalid', $f);

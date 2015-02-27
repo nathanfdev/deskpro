@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -45,6 +44,6 @@ class PersonNote extends AbstractEntityRepository
             FROM DeskPRO:PersonNote n
             WHERE n.person = ?1
             ORDER BY n.id DESC
-        ")->execute(array(1=> $person));
+        ")->execute(array(1 => $person));
     }
 }

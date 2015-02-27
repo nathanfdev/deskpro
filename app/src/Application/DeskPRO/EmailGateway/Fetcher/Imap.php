@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -36,7 +34,7 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 use Application\DeskPRO\EmailGateway\Storage;
 
 /**
- * Fetches mail from a imap server
+ * Fetches mail from a imap server.
  */
 class Imap extends AbstractFetcher
 {
@@ -61,33 +59,35 @@ class Imap extends AbstractFetcher
     private $mode = self::MODE_READ;
 
     /**
-     * The IMAP Storage
+     * The IMAP Storage.
      *
      * @var \Application\DeskPRO\EmailGateway\Storage\Imap
      */
     protected $storage;
 
     /**
-     * Messages retrieved in the current fetch
+     * Messages retrieved in the current fetch.
      *
      * @var Array An array of message ids
      */
     private $message_uids;
 
     /**
-     * Mailbox name to move messages after processing
+     * Mailbox name to move messages after processing.
+     *
      * @var String Mailbox name
      */
     private $archive_mailbox;
 
     /**
-     * Mailbox name to read messages from
+     * Mailbox name to read messages from.
+     *
      * @var String Mailbox name
      */
     private $read_mailbox;
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -182,7 +182,7 @@ class Imap extends AbstractFetcher
 
     /**
      * Gets the next message
-     * Iterates over the fetched IDs and retrieves the next message in list
+     * Iterates over the fetched IDs and retrieves the next message in list.
      *
      * @return int
      */
@@ -195,6 +195,7 @@ class Imap extends AbstractFetcher
 
     /**
      * {@inheritdoc}
+     *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
@@ -206,7 +207,7 @@ class Imap extends AbstractFetcher
         $message_uid = $this->getNextMessageUid();
 
         if ($message_uid === null) {
-            return null;
+            return;
         }
 
         $raw_message       = new RawMessage();
@@ -247,7 +248,7 @@ class Imap extends AbstractFetcher
 
     /**
      * Processes the message after reading it.
-     * Moves it to the DP_Mailbox folder marking it "read"
+     * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param int $id ID of the message
      */

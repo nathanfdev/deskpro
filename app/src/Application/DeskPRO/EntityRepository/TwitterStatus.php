@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 
 class TwitterStatus extends AbstractEntityRepository
 {
@@ -47,12 +45,13 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer    $id
-     * @param  array|null $from_user_ids   If not null, only from these users
-     * @param  Boolean    $includeArchived (optional)
-     * @param  string     $sortByDate      (optional)
-     * @param  integer    $limit           (optional)
-     * @param  integer    $page            (optional)
+     * @param integer    $id
+     * @param array|null $from_user_ids   If not null, only from these users
+     * @param Boolean    $includeArchived (optional)
+     * @param string     $sortByDate      (optional)
+     * @param integer    $limit           (optional)
+     * @param integer    $page            (optional)
+     *
      * @return array
      */
     public function findMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
@@ -98,9 +97,10 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer    $id
-     * @param  array|null $from_user_ids   If not null, only from these users
-     * @param  Boolean    $includeArchived (optional)
+     * @param integer    $id
+     * @param array|null $from_user_ids   If not null, only from these users
+     * @param Boolean    $includeArchived (optional)
+     *
      * @return integer
      */
     public function countMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false)
@@ -141,11 +141,12 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer $id
-     * @param  Boolean $includeArchived (optional)
-     * @param  string  $sortByDate      (optional)
-     * @param  integer $limit           (optional)
-     * @param  integer $page            (optional)
+     * @param integer $id
+     * @param Boolean $includeArchived (optional)
+     * @param string  $sortByDate      (optional)
+     * @param integer $limit           (optional)
+     * @param integer $page            (optional)
+     *
      * @return array
      */
     public function findOutgoingForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
@@ -171,16 +172,17 @@ class TwitterStatus extends AbstractEntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($this->calculateOffset($limit, $page))
             ->execute(array(
-                'user_id' => $id
+                'user_id' => $id,
             ));
     }
 
     /**
-     * @param  integer $id
-     * @param  Boolean $includeArchived (optional)
-     * @param  string  $sortByDate      (optional)
-     * @param  integer $limit           (optional)
-     * @param  integer $page            (optional)
+     * @param integer $id
+     * @param Boolean $includeArchived (optional)
+     * @param string  $sortByDate      (optional)
+     * @param integer $limit           (optional)
+     * @param integer $page            (optional)
+     *
      * @return array
      */
     public function findRepliesForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
@@ -209,17 +211,18 @@ class TwitterStatus extends AbstractEntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($this->calculateOffset($limit, $page))
             ->execute(array(
-                'user_id' => $id
+                'user_id' => $id,
             ));
     }
 
     /**
-     * @param  integer    $id
-     * @param  array|null $from_user_ids   If not null, only from these users
-     * @param  boolean    $includeArchived (optional)
-     * @param  string     $sortByDate      (optional)
-     * @param  integer    $limit           (optional)
-     * @param  integer    $page            (optional)
+     * @param integer    $id
+     * @param array|null $from_user_ids   If not null, only from these users
+     * @param boolean    $includeArchived (optional)
+     * @param string     $sortByDate      (optional)
+     * @param integer    $limit           (optional)
+     * @param integer    $page            (optional)
+     *
      * @return array
      */
     public function findMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
@@ -235,7 +238,7 @@ class TwitterStatus extends AbstractEntityRepository
         ";
 
         $params = array(
-            'user_id' => $id
+            'user_id' => $id,
         );
 
         if ($from_user_ids) {
@@ -262,9 +265,10 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer    $id
-     * @param  array|null $from_user_ids   If not null, only from these users
-     * @param  boolean    $includeArchived (optional)
+     * @param integer    $id
+     * @param array|null $from_user_ids   If not null, only from these users
+     * @param boolean    $includeArchived (optional)
+     *
      * @return array
      */
     public function countMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false)
@@ -280,7 +284,7 @@ class TwitterStatus extends AbstractEntityRepository
         ";
 
         $params = array(
-            'user_id' => $id
+            'user_id' => $id,
         );
 
         if ($from_user_ids) {
@@ -302,7 +306,8 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  string $sortByDate (optional)
+     * @param string $sortByDate (optional)
+     *
      * @return string
      */
     protected function normalizeSortByDate($sortByDate = 'asc')
@@ -316,8 +321,9 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer $limit
-     * @param  integer $page
+     * @param integer $limit
+     * @param integer $page
+     *
      * @return integer
      */
     protected function calculateOffset($limit, $page)

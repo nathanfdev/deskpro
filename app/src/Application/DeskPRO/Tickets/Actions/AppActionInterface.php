@@ -26,15 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
 
 interface AppActionInterface
 {
-
 }

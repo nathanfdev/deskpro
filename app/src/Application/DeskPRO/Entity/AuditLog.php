@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
 /**
- * AuditLog
+ * AuditLog.
  */
 class AuditLog extends DomainObject
 {
@@ -51,7 +50,6 @@ class AuditLog extends DomainObject
 
     /**
      * @var int
-     *
      */
     protected $id;
 
@@ -126,7 +124,8 @@ class AuditLog extends DomainObject
     }
 
     /**
-     * @param  mixed                     $object
+     * @param mixed $object
+     *
      * @throws \InvalidArgumentException When type/id could not be detected from object
      */
     public function setObject($object)
@@ -164,7 +163,7 @@ class AuditLog extends DomainObject
     }
 
     /**
-     * Ge the object type/id in standard naming format
+     * Ge the object type/id in standard naming format.
      *
      * @return string
      */
@@ -176,9 +175,10 @@ class AuditLog extends DomainObject
     /**
      * Get an object type from an object param:
      * - A DomainObject with getTableName()
-     * - A string in form of type@id
+     * - A string in form of type@id.
      *
-     * @param  mixed  $object
+     * @param mixed $object
+     *
      * @return string
      */
     public static function getObjectTypeFromVar($object)
@@ -197,7 +197,7 @@ class AuditLog extends DomainObject
 
                 return (string) $object;
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -205,9 +205,10 @@ class AuditLog extends DomainObject
     /**
      * Get an object ID from an object param:
      * - A DomainObject with getId
-     * - A string in form of type@id
+     * - A string in form of type@id.
      *
-     * @param  mixed       $object
+     * @param mixed $object
+     *
      * @return string|null
      */
     public static function getObjectIdFromVar($object)
@@ -224,13 +225,14 @@ class AuditLog extends DomainObject
             return $id;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get standard object name for an object
+     * Get standard object name for an object.
      *
-     * @param  mixed       $object
+     * @param mixed $object
+     *
      * @return null|string
      */
     public static function getObjectNameFromVar($object)
@@ -239,7 +241,7 @@ class AuditLog extends DomainObject
         $object_id   = self::getObjectIdFromVar($object);
 
         if (!$object_type || !$object_id) {
-            return null;
+            return;
         }
 
         return "$object_type@$object_id";
@@ -266,6 +268,6 @@ class AuditLog extends DomainObject
         $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id'));
         $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'data'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)) ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)) ));
     }
 }

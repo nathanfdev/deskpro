@@ -3,15 +3,15 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\App;
-use Elastica\Document;
 use Application\DeskPRO\Entity\Article;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param Article $object
      * @param array   $fields

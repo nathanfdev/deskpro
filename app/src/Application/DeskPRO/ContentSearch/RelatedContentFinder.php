@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -152,6 +151,7 @@ class RelatedContentFinder
      * Get the fetcher class based on a typename.
      *
      * @param  $type
+     *
      * @return string
      */
     public function getFetcherClassFromType($type)
@@ -177,6 +177,6 @@ class RelatedContentFinder
                 break;
         }
 
-        return null;
+        return;
     }
 }

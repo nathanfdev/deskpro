@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -66,7 +63,6 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
         $this->date_end       = Dates::convertToUtcDateTime($date_end);
     }
 
-
     /**
      * @return string[]
      */
@@ -92,14 +88,13 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
         return $titles;
     }
 
-
     /**
      * @return string[]
      */
     public function getSubgroupTitles()
     {
         if (!$this->grouping_field) {
-            return null;
+            return;
         }
 
         $collect = array();
@@ -111,7 +106,6 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 
         return $this->grouping_field->getTitles($collect);
     }
-
 
     /**
      * @return int[]

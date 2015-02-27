@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DBAL
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DBAL\Logging;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Orb\Log\Logger;
 
 /**
- * Log various query information
+ * Log various query information.
  */
 class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 {
@@ -109,7 +106,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
     /**
      * True when logging a query to the log. We need this incase the logger
-     * itself is logging to the database, we dont want to log the log of the log log
+     * itself is logging to the database, we dont want to log the log of the log log.
+     *
      * @var bool
      */
     protected $_is_logging = false;
@@ -238,7 +236,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
     }
 
     /**
-     * Get all query info we've logged
+     * Get all query info we've logged.
      *
      * @return array
      */
@@ -258,7 +256,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
     }
 
     /**
-     * Enable this logger
+     * Enable this logger.
      */
     public function enable()
     {
@@ -266,7 +264,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
     }
 
     /**
-     * Disable this logger
+     * Disable this logger.
      */
     public function disable()
     {
@@ -274,7 +272,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
     }
 
     /**
-     * Add a slow logging rule
+     * Add a slow logging rule.
      *
      * @param <type> $query_type
      * @param <type> $max_time
@@ -304,6 +302,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
     /**
      * Set a specific array of slowlog rules. Rules must be an array of array(type, maxtime).
+     *
      * @param array $rules
      */
     public function setSlowLogRules(array $slowlog_rules)
@@ -312,7 +311,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
     }
 
     /**
-     * Set the logger
+     * Set the logger.
      *
      * @param Logger $logger
      */

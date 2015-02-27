@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\UI;
@@ -36,7 +34,7 @@ namespace Application\DeskPRO\UI;
 use Orb\Util\Arrays;
 
 /**
- * Generates information useful for a tag cloud
+ * Generates information useful for a tag cloud.
  */
 class TagCloud
 {
@@ -66,7 +64,7 @@ class TagCloud
         if ($tag_counts) {
             $this->_min_count = min($this->_tag_counts);
             $this->_max_count = max($this->_tag_counts);
-            $this->_spread = max(1, $this->_max_count - $this->_min_count);
+            $this->_spread    = max(1, $this->_max_count - $this->_min_count);
         }
     }
 
@@ -75,8 +73,8 @@ class TagCloud
         $cloud = array();
 
         foreach ($this->_tag_counts as $tag => $count) {
-            $size = round(1 + (($count - $this->_min_count) * (($this->_max_count - 1) / $this->_spread)));
-            $size_class = $this->_class_prefix . $size;
+            $size       = round(1 + (($count - $this->_min_count) * (($this->_max_count - 1) / $this->_spread)));
+            $size_class = $this->_class_prefix.$size;
 
             $cloud[$tag] = $size_class;
         }

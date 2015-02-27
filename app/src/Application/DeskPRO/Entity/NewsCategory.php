@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Feedback categories
+ * Feedback categories.
  *
  * @SWG\Model (id="NewsCategory")
  */
@@ -55,7 +54,7 @@ class NewsCategory extends CategoryAbstract
     protected $children;
 
     /**
-     * ArrayCollection
+     * ArrayCollection.
      */
     protected $articles;
 
@@ -116,7 +115,7 @@ class NewsCategory extends CategoryAbstract
             array(
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
             ), 'dpApi'      => true,
@@ -130,10 +129,10 @@ class NewsCategory extends CategoryAbstract
         );
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                'cascade'   => array('persist', 'merge'), 'joinTable' => array(
+                'fieldName'             => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'cascade'               => array('persist', 'merge'), 'joinTable' => array(
                 'name'                  => 'news_category2usergroup', 'schema' => null, 'joinColumns' => array(
-                    0 => array(
+                    0                   => array(
                         'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),

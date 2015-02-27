@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Banning;
@@ -41,37 +39,31 @@ class IpBans
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\BanIp[]
      */
-
     protected $ip_bans;
 
     /**
      * @var int
      */
-
     protected $per_page = 20;
 
     /**
      * @var int
      */
-
     protected $from;
 
     /**
      * @var string
      */
-
     protected $search_phrase;
 
     /**
      * @param EntityManager $em
      */
-
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -82,7 +74,6 @@ class IpBans
      *
      * @return $this
      */
-
     public function setPerPage($per_page)
     {
         $this->per_page = $per_page;
@@ -95,7 +86,6 @@ class IpBans
      *
      * @return $this
      */
-
     public function setPage($page)
     {
         if ($page == 0) {
@@ -110,16 +100,14 @@ class IpBans
     /**
      * @param string $search_phrase
      */
-
     public function setSearchPhrase($search_phrase)
     {
         $this->search_phrase = $search_phrase;
     }
 
     /**
-     * Loads ip bans data from the database
+     * Loads ip bans data from the database.
      */
-
     private function preload()
     {
         if ($this->ip_bans !== null) {
@@ -137,17 +125,16 @@ class IpBans
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->ip_bans = null;
     }
 
     /**
-     * @param  int                               $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\BanIp
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:BanIp')->get($id);
@@ -156,7 +143,6 @@ class IpBans
     /**
      * @return \Application\DeskPRO\Entity\BanIp[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -165,10 +151,8 @@ class IpBans
     }
 
     /**
-     *
      * @return array
      */
-
     public function getAllAsNestedArray()
     {
         $this->preload();
@@ -185,7 +169,6 @@ class IpBans
     /**
      * @return int
      */
-
     public function getPageCount()
     {
         return $this->em->getRepository('DeskPRO:BanIp')->getPageCount($this->per_page, $this->search_phrase);
@@ -194,7 +177,6 @@ class IpBans
     /**
      * @return int
      */
-
     public function getCount()
     {
         return $this->em->getRepository('DeskPRO:BanIp')->getCount($this->search_phrase);
@@ -203,7 +185,6 @@ class IpBans
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -214,7 +195,6 @@ class IpBans
     /**
      * @return BanIp
      */
-
     public function createNew()
     {
         return BanIp::createBanIp();

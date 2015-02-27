@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -44,28 +41,25 @@ class Twitter extends AbstractAdapter
         $info = $identity->getRawData();
 
         return array(
-            'name' => $info['fullname'] ?: $info['identity_friendly'],
+            'name'    => $info['fullname'] ?: $info['identity_friendly'],
             'twitter' => array(
-                'screen_name' => $info['identity_friendly'],
-                'user_id' => $info['identity'],
-                'oauth_token' => $info['access_token'],
-                'oauth_token_secret' => $info['access_token_secret']
-            )
+                'screen_name'        => $info['identity_friendly'],
+                'user_id'            => $info['identity'],
+                'oauth_token'        => $info['access_token'],
+                'oauth_token_secret' => $info['access_token_secret'],
+            ),
         );
     }
 
-
     public function getDisplayName(array $info)
     {
-        return '@' . $info['identity_friendly'];
+        return '@'.$info['identity_friendly'];
     }
-
 
     public function getDisplayLink(array $info)
     {
-        return 'htpt://twitter.com/' . $info['identity_friendly'];
+        return 'htpt://twitter.com/'.$info['identity_friendly'];
     }
-
 
     /**
      * @return \Orb\Auth\Adapter\Twitter
@@ -86,12 +80,13 @@ class Twitter extends AbstractAdapter
         return array(
             UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
             UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
-            UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB
+            UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
         );
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

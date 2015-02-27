@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\TwitterAccounts\Form\Type;
@@ -55,7 +53,7 @@ class TwitterAccountPropsType extends AbstractType
                      return $er->createQueryBuilder('p')->where(
                          'p.is_agent = true AND p.is_deleted = false'
                      );
-                 }
+                 },
             )
         );
     }

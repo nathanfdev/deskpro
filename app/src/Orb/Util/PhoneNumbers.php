@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package Orb
- * @subpackage Util
+ * DeskPRO.
  */
 
 namespace Orb\Util;
@@ -53,22 +50,21 @@ class PhoneNumbers
     # its unlikely the lib would ever change these values, but just in case they ever did,
     # we reference this class for numeric translation to text.
     #########################################################
-    const FIXED_LINE = 0;
-    const MOBILE = 1;
+    const FIXED_LINE           = 0;
+    const MOBILE               = 1;
     const FIXED_LINE_OR_MOBILE = 2;
-    const TOLL_FREE = 3;
-    const PREMIUM_RATE = 4;
-    const SHARED_COST = 5;
-    const VOIP = 6;
-    const PERSONAL_NUMBER = 7;
-    const PAGER = 8;
-    const UAN = 9;
-    const UNKNOWN = 10;
-    const EMERGENCY = 27;
-    const VOICEMAIL = 28;
-    const SHORT_CODE = 29;
-    const STANDARD_RATE = 30;
-
+    const TOLL_FREE            = 3;
+    const PREMIUM_RATE         = 4;
+    const SHARED_COST          = 5;
+    const VOIP                 = 6;
+    const PERSONAL_NUMBER      = 7;
+    const PAGER                = 8;
+    const UAN                  = 9;
+    const UNKNOWN              = 10;
+    const EMERGENCY            = 27;
+    const VOICEMAIL            = 28;
+    const SHORT_CODE           = 29;
+    const STANDARD_RATE        = 30;
 
     /**
      * Takes an int type (one of the constants of this class) returned via self::getTypeCode(numberString)
@@ -105,6 +101,7 @@ class PhoneNumbers
      * @param $phone_number
      *
      * @throws NumberParseException Make sure to validate the number string before using this.
+     *
      * @return string
      */
     public static function getType($phone_number)
@@ -116,12 +113,13 @@ class PhoneNumbers
      * @param $phone_number
      *
      * @throws NumberParseException Make sure to validate the number string before using this.
-     * @return int                  the number code that libphonenumber uses (one of the constants of this class)
+     *
+     * @return int the number code that libphonenumber uses (one of the constants of this class)
      */
     public static function getTypeCode($phone_number)
     {
         $phone_util = PhoneNumberUtil::getInstance();
-        $number = $phone_util->parse($phone_number, null);
+        $number     = $phone_util->parse($phone_number, null);
 
         return $phone_util->getNumberType($number) ?: self::UNKNOWN;
     }
@@ -139,7 +137,7 @@ class PhoneNumbers
 
         try {
             $phone_util = PhoneNumberUtil::getInstance();
-            $number = $phone_util->parse($phone_number, null);
+            $number     = $phone_util->parse($phone_number, null);
         } catch (\Exception $e) {
             return false;
         }
@@ -155,7 +153,7 @@ class PhoneNumbers
     public static function guessType($phone_number)
     {
         $phone_util = PhoneNumberUtil::getInstance();
-        $number = $phone_util->parse($phone_number, null);
+        $number     = $phone_util->parse($phone_number, null);
 
         return $phone_util->getNumberType($number);
     }
@@ -164,12 +162,13 @@ class PhoneNumbers
      * @param string $phone_number
      *
      * @throws NumberParseException Make sure to validate the number string before using this.
-     * @return string               The phone number in E.164 format
+     *
+     * @return string The phone number in E.164 format
      */
     public static function toE164Format($phone_number)
     {
         $phone_util = PhoneNumberUtil::getInstance();
-        $number = $phone_util->parse($phone_number, null);
+        $number     = $phone_util->parse($phone_number, null);
 
         return $phone_util->format($number, PhoneNumberFormat::E164);
     }
@@ -178,12 +177,13 @@ class PhoneNumbers
      * @param string $phone_number
      *
      * @throws NumberParseException Make sure to validate the number string before using this.
-     * @return string               The phone number in International format
+     *
+     * @return string The phone number in International format
      */
     public static function toInternationalFormat($phone_number)
     {
         $phone_util = PhoneNumberUtil::getInstance();
-        $number = $phone_util->parse($phone_number, null);
+        $number     = $phone_util->parse($phone_number, null);
 
         return $phone_util->format($number, PhoneNumberFormat::INTERNATIONAL);
     }
@@ -192,12 +192,13 @@ class PhoneNumbers
      * @param string $phone_number
      *
      * @throws NumberParseException Make sure to validate the number string before using this.
-     * @return string               The phone number in National format
+     *
+     * @return string The phone number in National format
      */
     public static function toNationalFormat($phone_number)
     {
         $phone_util = PhoneNumberUtil::getInstance();
-        $number = $phone_util->parse($phone_number, null);
+        $number     = $phone_util->parse($phone_number, null);
 
         return $phone_util->format($number, PhoneNumberFormat::NATIONAL);
     }
@@ -209,12 +210,13 @@ class PhoneNumbers
      * @param $phone_number
      *
      * @throws NumberParseException Make sure to validate the number string before using this.
+     *
      * @return null|string
      */
     public static function getRegionForNumber($phone_number)
     {
         $phone_util = PhoneNumberUtil::getInstance();
-        $number = $phone_util->parse($phone_number, null);
+        $number     = $phone_util->parse($phone_number, null);
 
         return $phone_util->getRegionCodeForNumber($number);
     }

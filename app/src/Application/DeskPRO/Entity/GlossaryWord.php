@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Glossary
- *
+ * Glossary.
  */
 class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -78,7 +76,7 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
         $metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 255, 'unique' => true, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'definition', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWordDefinition', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'definition_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'definition', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWordDefinition', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'definition_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

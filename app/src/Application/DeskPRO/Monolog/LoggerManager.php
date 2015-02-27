@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -51,10 +50,10 @@ class LoggerManager
         $this->factory = $factory;
     }
 
-
     /**
-     * @param  string       $id
-     * @param  string|array $config
+     * @param string       $id
+     * @param string|array $config
+     *
      * @return Logger
      */
     public function getLogger($id, $config = null)
@@ -78,10 +77,10 @@ class LoggerManager
         return $this->loggers[$id];
     }
 
-
     /**
-     * @param  string          $id
-     * @param  Logger          $logger
+     * @param string $id
+     * @param Logger $logger
+     *
      * @throws \LogicException
      */
     public function registerLogger($id, Logger $logger)
@@ -93,9 +92,9 @@ class LoggerManager
         $this->loggers[$id] = $logger;
     }
 
-
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function hasLogger($id)
@@ -103,12 +102,10 @@ class LoggerManager
         return isset($this->loggers[$id]);
     }
 
-
     /**
      * Unsets a registered logger.
      *
-     * @param  string $id
-     * @return void
+     * @param string $id
      */
     public function unsetLogger($id)
     {
@@ -117,15 +114,13 @@ class LoggerManager
         }
     }
 
-
     /**
      * Destroys a registered logger if it exists.
      *
      * Note that any classes have a reference to the logger will have a reference to
      * an empty logger without any handlers or processors etc.
      *
-     * @param  string $id
-     * @return void
+     * @param string $id
      */
     public function destroyLogger($id)
     {
@@ -138,7 +133,6 @@ class LoggerManager
 
         $this->destroyLoggerInstance($logger);
     }
-
 
     /**
      * Unsets all processors handlers on a logger instance. For handlers that have a 'close'
@@ -154,19 +148,22 @@ class LoggerManager
                     $h->close();
                 }
             }
-        } catch (\LogicException $e) {}
+        } catch (\LogicException $e) {
+        }
 
         try {
-            while ($h = $logger->popProcessor()) { }
-        } catch (\LogicException $e) {}
+            while ($h = $logger->popProcessor()) {
+            }
+        } catch (\LogicException $e) {
+        }
     }
-
 
     /**
      * Create a new logger.
      *
-     * @param  string       $channel
-     * @param  string|array $config  A preset name or an array of configuration
+     * @param string       $channel
+     * @param string|array $config  A preset name or an array of configuration
+     *
      * @return Logger
      */
     public function createLogger($channel, $config = null)

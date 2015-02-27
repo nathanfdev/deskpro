@@ -2,12 +2,13 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
- * Elasticsearch Search Manager
+ * Elasticsearch Search Manager.
  */
 class Elasticsearch extends ContainerAware implements SearchManagerInterface
 {
@@ -19,7 +20,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     protected $person;
 
     /**
-     * Objects to search
+     * Objects to search.
      *
      * @var array
      */
@@ -35,16 +36,16 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     );
 
     /**
-     * Permission requirement
+     * Permission requirement.
      *
      * @var array
      */
     protected $requiresPermission = array(
-        'ticket'
+        'ticket',
     );
 
     /**
-     * Search results
+     * Search results.
      *
      * @var array
      */
@@ -65,7 +66,6 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         foreach ($this->objects as $object => $model) {
-
             if ($limit_types !== null && !in_array($object, $limit_types)) {
                 continue;
             }
@@ -75,7 +75,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
 
             $repository = $repositoryManager->getRepository($model);
-            $ent_repos = $this->container->getEm()->getRepository($model);
+            $ent_repos  = $this->container->getEm()->getRepository($model);
 
             if ($this->requiresPermission($object)) {
                 $repository->setPersonContext($this->person);
@@ -114,16 +114,16 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
 
             $result = $repository->find($q, null, array(
-                'sort_type' => $sort
+                'sort_type' => $sort,
             ));
             if ($result) {
                 $this->handleResult($object, $result);
             }
         }
 
-        foreach ($this->results as &$group) {
-            $group = array_unique($group);
-        }
+        $this->results = array_map(function ($group) {
+            return Arrays::uniqueObjectArray($group);
+        }, $this->results);
 
         return array($this->results, $result_meta, $people_top);
     }

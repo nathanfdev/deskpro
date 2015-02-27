@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper\CommentsAdapter;
@@ -41,7 +38,7 @@ use Orb\Util\Util;
 class FacebookComments extends AbstractComments
 {
     /**
-     * Get the HTML block for disqus templates
+     * Get the HTML block for disqus templates.
      *
      * @return string
      */
@@ -54,7 +51,7 @@ class FacebookComments extends AbstractComments
 
             'facebook_num_posts' => App::getSetting('core.facebook_comments_num_posts'),
             'facebook_admins'    => App::getSetting('core.facebook_comments_admins'),
-            'page_permalink'     => $this->page_url
+            'page_permalink'     => $this->page_url,
         ));
 
         return $html;

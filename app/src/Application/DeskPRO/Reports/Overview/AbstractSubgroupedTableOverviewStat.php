@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -94,7 +91,6 @@ abstract class AbstractSubgroupedTableOverviewStat extends AbstractTableOverview
     }
 
     /**
-     * @return void
      */
     protected function _initGroupInfo()
     {

@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
 
 /**
- * Glossary listing and editing
+ * Glossary listing and editing.
  */
 class GlossaryController extends AbstractController
 {

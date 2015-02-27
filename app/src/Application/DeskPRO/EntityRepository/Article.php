@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,13 +43,15 @@ class Article extends AbstractEntityRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 
-
     /**
-     * Get articles waiting for validating
+     * Get articles waiting for validating.
      *
      * @return array
      */
@@ -66,11 +67,11 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
     /**
-     * Get drafts, optionally for a specific person
+     * Get drafts, optionally for a specific person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getDraftArticles(PersonEntity $person = null)
@@ -96,9 +97,9 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person|null $person
+     * @param \Application\DeskPRO\Entity\Person|null $person
+     *
      * @return int
      */
     public function getDraftArticlesCount(PersonEntity $person = null)
@@ -118,7 +119,6 @@ class Article extends AbstractEntityRepository
         }
     }
 
-
     /**
      * Get a collection of articles by ID. If $person_context
      * is supplied, only articles that this person is able to view will be returned.
@@ -127,10 +127,11 @@ class Article extends AbstractEntityRepository
      */
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         if ($person_context) {
-
             $cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
             if (!$cat_ids) {
                 return array();
@@ -143,7 +144,6 @@ class Article extends AbstractEntityRepository
                 WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
                 ORDER BY a.id DESC
             ")->execute(array($ids, $cat_ids));
-
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
@@ -157,10 +157,11 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
     public function getByResultIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $unsorted_articles = $this->getEntityManager()->createQuery("
             SELECT a
@@ -181,13 +182,12 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
-
     /**
      * Given an array of nodes (usually roots), get the top $num newest articles, and then
      * sort them into an array keyed by the node IDs.
      *
      * @param  $nodes
+     *
      * @return array
      */
     public function getNewestInNodes($nodes, $num = 5, PersonEntity $person_context = null)
@@ -205,17 +205,16 @@ class Article extends AbstractEntityRepository
         $done_articles = array(0);
 
         foreach ($nodes as $node) {
-
             $cat_ids = $node->getTreeIds(true);
 
-            $params = array();
+            $params            = array();
             $params['cat_ids'] = array_values($cat_ids);
 
             $perm_where = '';
             if ($person_context && !$person_context->is_agent) {
                 $dis_ids = $person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
                 if ($dis_ids) {
-                    $perm_where = ' AND cat.id NOT IN (:cat_not_ids) ';
+                    $perm_where            = ' AND cat.id NOT IN (:cat_not_ids) ';
                     $params['cat_not_ids'] = array_values($dis_ids);
                 }
             }
@@ -234,19 +233,17 @@ class Article extends AbstractEntityRepository
 
             if (count($articles)) {
                 $all_articles[$node['id']] = $articles;
-                $done_articles = array_merge($done_articles, array_keys($articles));
+                $done_articles             = array_merge($done_articles, array_keys($articles));
             }
         }
 
         return $all_articles;
     }
 
-
-
     public function getNewest($num = 10, $node = false)
     {
         if ($node) {
-            $cat_ids = $node->getTreeIds(true);
+            $cat_ids  = $node->getTreeIds(true);
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
@@ -265,12 +262,11 @@ class Article extends AbstractEntityRepository
 
         return $articles;
     }
-
 
     public function getTopRated($num = 10, $node = false)
     {
         if ($node) {
-            $cat_ids = $node->getTreeIds(true);
+            $cat_ids  = $node->getTreeIds(true);
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
@@ -289,8 +285,6 @@ class Article extends AbstractEntityRepository
 
         return $articles;
     }
-
-
 
     public function getInNode($node)
     {
@@ -302,7 +296,6 @@ class Article extends AbstractEntityRepository
             ORDER BY a.id DESC
         ")->setParameter(1, $node)->execute();
     }
-
 
     public function getSectionCounts(PersonEntity $person_context = null)
     {
@@ -327,7 +320,6 @@ class Article extends AbstractEntityRepository
         return $counts;
     }
 
-
     public function countNotClosedNotHidden()
     {
         return $this->getEntityManager()->createQuery(
@@ -343,13 +335,13 @@ class Article extends AbstractEntityRepository
     {
         return array(
             'views' => array(
-                'conditions' => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
+                'conditions'   => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
             ),
             'ratings' => array(
-                'conditions' => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating'
-            )
+                'conditions'   => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
+            ),
         );
     }
 
@@ -385,9 +377,9 @@ class Article extends AbstractEntityRepository
         $this->filterArticles($qb_count, $options);
 
         return array(
-            'articles' => $qb->getQuery()->execute(),
-            'cat' => $options['category'],
-            'total_count' => $qb_count->getQuery()->getSingleScalarResult()
+            'articles'    => $qb->getQuery()->execute(),
+            'cat'         => $options['category'],
+            'total_count' => $qb_count->getQuery()->getSingleScalarResult(),
         );
     }
 

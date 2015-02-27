@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -130,7 +129,7 @@ class TicketEscalationLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
         ));
         $metadata->mapManyToOne(array(
@@ -141,7 +140,7 @@ class TicketEscalationLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
         ));
     }

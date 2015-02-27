@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -53,18 +51,19 @@ class MessageHostnameLookup
 
     /**
      * @param TicketMessage $message
+     *
      * @return string|null
      */
     public function lookupForMessage(TicketMessage $message)
     {
         if (!$message->ip_address) {
-            return null;
+            return;
         }
 
         try {
             return $this->rdns->lookup($message->ip_address);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 

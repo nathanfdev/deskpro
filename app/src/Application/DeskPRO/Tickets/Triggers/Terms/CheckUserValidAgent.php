@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if a user is agent validated
+ * Checks if a user is agent validated.
  */
 class CheckUserValidAgent extends AbstractTriggerTerm
 {
@@ -53,7 +52,6 @@ class CheckUserValidAgent extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -64,11 +62,17 @@ class CheckUserValidAgent extends AbstractTriggerTerm
         $is_valid = $person->is_agent_confirmed;
 
         if ($is_valid) {
-            if ($this->getTermOperator() == 'is') return true;
-            else return false;
+            if ($this->getTermOperator() == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($this->getTermOperator() == 'is') return false;
-            else return true;
+            if ($this->getTermOperator() == 'is') {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

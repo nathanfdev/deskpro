@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Import
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People\PasswordScheme;
@@ -46,7 +43,7 @@ class Deskpro4Original implements PasswordSchemeInterface
 
     public function hashPassword(Person $person, $plain_password)
     {
-        return sha1($person->salt . $plain_password);
+        return sha1($person->salt.$plain_password);
     }
 
     public function checkPassword(Person $person, $hashed_password, $plain_password)

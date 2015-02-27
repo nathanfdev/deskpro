@@ -51,7 +51,7 @@ if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/co
         $finder->files()->name('*.php')->in($dir);
 
         foreach ($finder as $file) {
-            /** @var \Symfony\Component\Finder\SplFileinfo $file */
+            /* @var \Symfony\Component\Finder\SplFileinfo $file */
             $check_files[] = $file->getRealPath();
         }
     }

@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 class RateLimitLog extends DomainObject
 {
@@ -94,14 +91,13 @@ class RateLimitLog extends DomainObject
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RateLimitLog';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'rate_limit_log',
+            'name'    => 'rate_limit_log',
             'indexes' => array(
                 'search_idx' => array(
                     'columns' => array('action', 'date_created', 'ip'),
                 ),
             ),
         ));
-
 
         $metadata->mapField(array(
             'columnName' => 'id',

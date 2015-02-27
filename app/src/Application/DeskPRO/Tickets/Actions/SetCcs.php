@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -73,7 +72,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 
         if ($this->getActionOption('add_org_managers') && $ticket->organization) {
             $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
-            foreach ($managers AS $manager) {
+            foreach ($managers as $manager) {
                 if (!$ticket->hasParticipantPerson($manager)) {
                     $context->getLogger()->debug(sprintf("[SetCcs] Adding org manager %d %s %s", $manager->id, $manager->getDisplayName(), $manager->primary_email->email));
                     $ticket->addParticipantPerson($manager);
@@ -86,12 +85,14 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
         #------------------------------
 
         $account_manager = $this->getContainer()->getEmailAccountManager();
-        $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
+        $reg_closed      = !$this->getContainer()->getSetting('core.reg_enabled');
         if ($this->getActionOption('add_emails')) {
             foreach ($this->getActionOption('add_emails') as $email) {
                 $email = trim($email);
 
-                if (!$email) continue;
+                if (!$email) {
+                    continue;
+                }
                 if ($ticket->hasParticipantEmailAddress($email)) {
                     continue;
                 }
@@ -115,9 +116,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
                     }
                     $person_processor = new PersonFromEmailProcessor();
 
-                    $eml = new EmailAddress();
+                    $eml        = new EmailAddress();
                     $eml->email = $email;
-                    $person = $person_processor->createPerson($eml, true);
+                    $person     = $person_processor->createPerson($eml, true);
 
                     if ($person) {
                         $context->getLogger()->debug(sprintf("[SetCcs] Adding NEW user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));

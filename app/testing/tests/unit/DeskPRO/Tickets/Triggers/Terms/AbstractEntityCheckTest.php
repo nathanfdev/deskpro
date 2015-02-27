@@ -13,6 +13,11 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
     private $ticket;
 
     /**
+     * @var Ticket
+     */
+    private $ticket_null;
+
+    /**
      * @var ExecutorContext
      */
     private $exec_context;
@@ -34,7 +39,8 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
         $this->exec_context = new ExecutorContext();
 
-        $this->ticket = $this->createTicket(1, $this->object1);
+        $this->ticket      = $this->createTicket(1, $this->object1);
+        $this->ticket_null = $this->createTicket(1, null);
     }
 
     /**
@@ -51,29 +57,34 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
      * IMPORTANT:
      * 1) The first object should reset the state, then attempt to re-apply the object property (for checking 'touched' types).
      *
-     * @param  int    $id
+     * @param int $id
+     *
      * @return object
      */
     public function createEntityObject($id)
     {
         $ent_class = $this->getEntityClass();
 
-        $object = new $ent_class();
+        $object     = new $ent_class();
         $object->id = $id;
 
         return $object;
     }
 
     /**
-     * @param  int    $id
-     * @param $object $test_string
-     * @return Ticket
+     * Should return a ticket if ticket can be created with $object.
+     *
+     * @param int   $id
+     * @param mixed $object An object, may also be null for null tests
+     *
+     * @return Ticket|null
      */
     abstract public function createTicket($id, $object);
 
     /**
-     * @param  string               $op
-     * @param  array                $options
+     * @param string $op
+     * @param array  $options
+     *
      * @return TriggerTermInterface
      */
     protected function createChecker($op, array $options)
@@ -92,19 +103,22 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
     }
 
     /**
-     * The term checker class
+     * The term checker class.
+     *
      * @return string
      */
     abstract protected function getCheckClass();
 
     /**
-     * The option key to supply IDs in
+     * The option key to supply IDs in.
+     *
      * @return string
      */
     abstract protected function getCheckClassOptionKey();
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     abstract public function getEntityClass();
@@ -115,15 +129,34 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
+    public function testMatchingNullOption()
+    {
+        if (!$this->ticket_null) {
+            return;
+        }
+
+        $check = $this->createChecker('is', array('%OPT%' => array(0)));
+        $this->assertTrue($check->isTriggerMatch($this->ticket_null, $this->exec_context));
+
+        $check = $this->createChecker('not', array('%OPT%' => array(0)));
+        $this->assertFalse($check->isTriggerMatch($this->ticket_null, $this->exec_context));
+
+        $check = $this->createChecker('is', array('%OPT%' => array(0)));
+        $this->assertFalse($check->isTriggerMatch($this->ticket, $this->exec_context));
+
+        $check = $this->createChecker('not', array('%OPT%' => array(0)));
+        $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
+    }
+
     public function testIsMatchMultipleOptions()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array(1,2)));
+        $check = $this->createChecker('is', array('%OPT%' => array(1, 2)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testIsMatchInvalidOptions()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array('invalid',1,2,100)));
+        $check = $this->createChecker('is', array('%OPT%' => array('invalid', 1, 2, 100)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
@@ -135,13 +168,13 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
     public function testContainsMatchMultipleOptions()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array(1,2)));
+        $check = $this->createChecker('contains', array('%OPT%' => array(1, 2)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testContainsMatchInvalidOptions()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array('invalid',1,2,100)));
+        $check = $this->createChecker('contains', array('%OPT%' => array('invalid', 1, 2, 100)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
@@ -181,7 +214,7 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
     public function testNotContainsMultipleOptions()
     {
-        $check = $this->createChecker('notcontains', array('%OPT%' => array(500,600)));
+        $check = $this->createChecker('notcontains', array('%OPT%' => array(500, 600)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 

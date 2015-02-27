@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -80,8 +77,8 @@ class TwitterStream extends AbstractJob
             return;
         }
 
-        $this->db = App::getDb();
-        $this->em = App::getOrm();
+        $this->db              = App::getDb();
+        $this->em              = App::getOrm();
         $this->twitter_service = new \Application\DeskPRO\Service\Twitter();
 
         $events = $this->db->fetchAll(sprintf("
@@ -111,7 +108,7 @@ class TwitterStream extends AbstractJob
                             $data
                         );
                     } catch (\Exception $e) {
-                        $this->logStatus('exception caught: ' . $e->getMessage() . ' ' . $e->getFile() . ':' . $e->getLine());
+                        $this->logStatus('exception caught: '.$e->getMessage().' '.$e->getFile().':'.$e->getLine());
                         $success = false;
                         \DeskPRO\Kernel\KernelErrorHandler::logException($e);
                     }
@@ -126,7 +123,7 @@ class TwitterStream extends AbstractJob
 
             if ($success) {
                 $this->db->delete('twitter_stream', array(
-                    'id' => $event['id']
+                    'id' => $event['id'],
                 ));
 
                 $processed++;
@@ -135,7 +132,8 @@ class TwitterStream extends AbstractJob
     }
 
     /**
-     * @param  integer     $id
+     * @param integer $id
+     *
      * @return \EpiTwitter
      */
     protected function getTwitter($id)
@@ -153,7 +151,8 @@ class TwitterStream extends AbstractJob
     }
 
     /**
-     * @param  integer                                    $id
+     * @param integer $id
+     *
      * @return \Application\DeskPRO\Entity\TwitterAccount
      */
     protected function getAccount($id)
@@ -187,7 +186,8 @@ class TwitterStream extends AbstractJob
     }
 
     /**
-     * @param  integer                                 $id
+     * @param integer $id
+     *
      * @return \Application\DeskPRO\Entity\TwitterUser
      */
     protected function findUser($id)
@@ -196,8 +196,9 @@ class TwitterStream extends AbstractJob
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\TwitterAccount $account
-     * @param  object                                     $data
+     * @param \Application\DeskPRO\Entity\TwitterAccount $account
+     * @param object                                     $data
+     *
      * @return Boolean
      */
     protected function processStatus(TwitterAccount $account, $data)
@@ -213,8 +214,8 @@ class TwitterStream extends AbstractJob
         $this->em->persist($status);
 
         if (!$account_status) {
-            $account_status = new TwitterAccountStatus();
-            $account_status->status = $status;
+            $account_status          = new TwitterAccountStatus();
+            $account_status->status  = $status;
             $account_status->account = $account;
         }
 
@@ -283,8 +284,8 @@ class TwitterStream extends AbstractJob
         $this->em->persist($status);
 
         if (!$account_status) {
-            $account_status = new TwitterAccountStatus();
-            $account_status->status = $status;
+            $account_status          = new TwitterAccountStatus();
+            $account_status->status  = $status;
             $account_status->account = $account;
         }
 
@@ -331,7 +332,7 @@ class TwitterStream extends AbstractJob
         }
 
         $follower = null;
-        $friend = null;
+        $friend   = null;
 
         if (isset($data->target_object) && isset($data->target_object->text)) {
             $targetObject = $data->target_object;
@@ -368,16 +369,16 @@ class TwitterStream extends AbstractJob
                     if ($sourceUser->id == $account->getUserId()) {
                         // following someone
                         if (!$this->em->getRepository('DeskPRO:TwitterAccountFriend')->findOneByAccountIdAndUserId($account->id, $targetUser->id)) {
-                            $friend = new TwitterAccountFriend();
+                            $friend          = new TwitterAccountFriend();
                             $friend->account = $account;
-                            $friend->user = $targetUser;
+                            $friend->user    = $targetUser;
                             $this->em->persist($friend);
 
                             App::getDb()->insert('client_messages', array(
-                                'channel' => 'agent.twitter-friend',
-                                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                                'channel'      => 'agent.twitter-friend',
+                                'auth'         => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
-                                'data' => serialize(array('action' => 'new', 'account_id' => $account->id))
+                                'data'         => serialize(array('action' => 'new', 'account_id' => $account->id)),
                             ));
                         }
                     } elseif ($targetUser->id == $account->getUserId()) {
@@ -385,17 +386,17 @@ class TwitterStream extends AbstractJob
                         if (!$this->em->getRepository('DeskPRO:TwitterAccountFollower')->findOneByAccountIdAndUserId($account->id, $sourceUser->id)) {
                             $friend = $this->em->getRepository('DeskPRO:TwitterAccountFriend')->findOneByAccountIdAndUserId($account->id, $sourceUser->id);
 
-                            $follower = new TwitterAccountFollower();
-                            $follower->account = $account;
-                            $follower->user = $sourceUser;
+                            $follower              = new TwitterAccountFollower();
+                            $follower->account     = $account;
+                            $follower->user        = $sourceUser;
                             $follower->is_archived = $friend ? true : false;
                             $this->em->persist($follower);
 
                             App::getDb()->insert('client_messages', array(
-                                'channel' => 'agent.twitter-follower',
-                                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                                'channel'      => 'agent.twitter-follower',
+                                'auth'         => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
-                                'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id))
+                                'data'         => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id)),
                             ));
                         }
                     }
@@ -410,11 +411,11 @@ class TwitterStream extends AbstractJob
                             $friend = null;
 
                             App::getDb()->insert('client_messages', array(
-                                'channel' => 'agent.twitter-friend',
-                                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                                'date_created' => date('Y-m-d H:i:s'),
-                                'data' => serialize(array('action' => 'removed', 'account_id' => $account->id)),
-                                'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+                                'channel'       => 'agent.twitter-friend',
+                                'auth'          => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                                'date_created'  => date('Y-m-d H:i:s'),
+                                'data'          => serialize(array('action' => 'removed', 'account_id' => $account->id)),
+                                'handler_class'                             => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
                             ));
                         }
                     }
@@ -440,9 +441,9 @@ class TwitterStream extends AbstractJob
                 $this->em->persist($user);
             }
 
-            $friend = new TwitterAccountFriend();
+            $friend            = new TwitterAccountFriend();
             $friend['account'] = $account;
-            $friend['user'] = $user;
+            $friend['user']    = $user;
             $this->em->persist($friend);
         }
 

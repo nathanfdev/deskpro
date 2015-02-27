@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 /**
- * A download/file available from the protal
+ * A download/file available from the protal.
  */
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
@@ -79,7 +78,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     protected $filename;
 
     /**
-     * Total number of downloads
+     * Total number of downloads.
      *
      * @var string
      */
@@ -95,7 +94,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     protected $_label_manager = null;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
@@ -248,6 +247,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getLink()
@@ -259,6 +259,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getPermalink()
@@ -286,13 +287,40 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Add a label
+     * @param DownloadCategory $category
+     *
+     * @return $this
+     */
+    public function setCategory(DownloadCategory $category = null)
+    {
+        $this->setModelField('category', $category);
+
+        return $this;
+    }
+
+    /**
+     * Add a label.
+     *
      * @param \Application\DeskPRO\Entity\LabelDownload $label
      */
     public function addLabel(LabelDownload $label)
     {
         $label['download'] = $this;
         $this->labels->add($label);
+    }
+
+    /**
+     * Set downloads count.
+     *
+     * @param int $num_downloads
+     *
+     * @return $this
+     */
+    public function setNumDownloads($num_downloads)
+    {
+        $this->setModelField('num_downloads', $num_downloads);
+
+        return $this;
     }
 
     /**
@@ -352,9 +380,10 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -365,7 +394,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -398,8 +427,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'downloads',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                    'status_idx'                                       => array('columns' => array('status')),
+                    'date_published_idx'                               => array('columns' => array(0 => 'date_published')),
+                    'status_idx'                                                                     => array('columns' => array('status')),
                 ),
             )
         );
@@ -509,7 +538,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
                 'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'set null', 'columnDefinition' => null,
                 ),
@@ -526,7 +555,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName'  => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => null,
                 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0            => array(
                     'name'             => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => null, 'columnDefinition' => null,
                 ),
@@ -535,16 +564,16 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelDownload',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
-                'orphanRemoval'            => true,
+                'fieldName'                => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelDownload',
+                'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
+                'orphanRemoval'                       => true,
             )
         );
         $metadata->mapManyToOne(
             array(
                 'fieldName'  => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
                 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0            => array(
                     'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => 'set null', 'columnDefinition' => null,
                 ),
@@ -555,7 +584,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
                 'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),
@@ -564,7 +593,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\DownloadSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download'
+            'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
         ));
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');

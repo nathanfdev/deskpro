@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -37,7 +36,6 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 
 class EmailAccountManagerService
@@ -51,7 +49,7 @@ class EmailAccountManagerService
         $manager = new EmailAccountManager($repos, $tr_factory, $fetcher_factory);
 
         $default_addr = $container->getSetting('core.default_from_email');
-        $account = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
+        $account      = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
         if ($account) {
             $manager->setDefaultOutAccount($account);
         }

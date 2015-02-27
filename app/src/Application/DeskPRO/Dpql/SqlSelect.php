@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql;
@@ -173,7 +170,7 @@ class SqlSelect
     }
 
     /**
-     * Sets all joins
+     * Sets all joins.
      *
      * @param array $joins
      */
@@ -191,7 +188,7 @@ class SqlSelect
     }
 
     /**
-     * Sets all conditions
+     * Sets all conditions.
      *
      * @param array $conditions
      */

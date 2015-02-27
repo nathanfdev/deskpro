@@ -1,0 +1,39 @@
+{
+  "name": "DeskPRO_Pub",
+  "version": "1.0.0",
+  "dependencies": {
+    "node-bourbon": "1.2.3",
+    "node-neat": "1.4.2",
+    "font-awesome": "4.3.0"
+  },
+  "devDependencies": {
+    "react": "0.12.2",
+    "react-tools": "0.12.2",
+    "reflux": "0.2.5",
+    "lodash": "3.3.1",
+
+    "node-sass": "2.0.1",
+
+    "babel": "4.3.0",
+    "browserify": "9.0.3",
+    "watchify": "2.3.0",
+    "babelify": "5.0.3",
+    "uglify": "0.1.1",
+
+    "gulp": "3.8.11",
+    "gulp-util": "3.0.3",
+    "gulp-sass": "1.3.3",
+    "gulp-sourcemaps": "1.3.0",
+    "gulp-babel": "4.0.0",
+    "gulp-uglify": "1.1.0",
+    "gulp-notify": "2.2.0",
+    "gulp-watch": "4.1.1",
+    "gulp-cached": "1.0.2",
+
+    "del": "1.1.1",
+    "run-sequence": "1.0.2",
+    "vinyl-source-stream": "1.0.0",
+    "vinyl-buffer": "1.0.0",
+    "pretty-hrtime": "1.0.0"
+  }
+}

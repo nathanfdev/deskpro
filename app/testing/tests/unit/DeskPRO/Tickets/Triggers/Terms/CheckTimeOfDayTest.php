@@ -12,7 +12,7 @@ class CheckTimeOfDayTest extends \DpUnitTestCase
     public function testBefore()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
 
@@ -26,7 +26,7 @@ class CheckTimeOfDayTest extends \DpUnitTestCase
     public function testAfter()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
 
@@ -40,7 +40,7 @@ class CheckTimeOfDayTest extends \DpUnitTestCase
     public function testBetween()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
 

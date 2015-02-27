@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -66,16 +63,13 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         $this->person_id  = $person_id;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
-
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -87,7 +81,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -126,8 +120,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
             return;
         }
 
-        $message = new TicketMessage();
-        $message->person = $person;
+        $message               = new TicketMessage();
+        $message->person       = $person;
         $message->date_created = new \DateTime('+1 second');
 
         if ($this->is_html) {
@@ -135,7 +129,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         } else {
             $reply_text = $this->reply_text;
 
-            $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+            $formatter  = new SnippetFormatter(App::getContainer()->get('twig'));
             $reply_text = $formatter->formatText($reply_text, $ticket);
 
             $message->setMessageHtml($reply_text);
@@ -147,8 +141,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                 $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
                 if ($blob) {
-                    $attach = new TicketAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new TicketAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person_context;
 
                     $message->addAttachment($attach);
@@ -158,22 +152,20 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id)
+            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id),
         );
     }
 
-
     /**
-     * Get reply text
+     * Get reply text.
      *
      * @return int
      */
@@ -182,9 +174,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->reply_text;
     }
 
-
     /**
-     * Get attach ids
+     * Get attach ids.
      *
      * @return array
      */
@@ -192,7 +183,6 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     {
         return $this->attach_ids;
     }
-
 
     /**
      * @return string
@@ -202,9 +192,9 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->reply_pos;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -221,7 +211,9 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
         if ($as_html) {
             $flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
-            if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
+            if (strlen($flat) > 80) {
+                $flat = substr($flat, 0, 80).'...';
+            }
 
             $desc = '<span class="highlight-description">'.htmlspecialchars($flat).'</span>';
 
@@ -237,10 +229,10 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                 if ($this->is_html) {
                     $html = $this->reply_text;
                 } else {
-                    $html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)) . '</p>';
+                    $html = '<p>'.nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)).'</p>';
                 }
 
-                $ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
+                $ret = '<span class="with-reply" data-reply-pos="'.$this->reply_pos.'">'.$ret.'<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
 
                 return $ret;
             }

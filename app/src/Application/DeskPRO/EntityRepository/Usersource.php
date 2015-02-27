@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -45,10 +44,12 @@ class Usersource extends AbstractEntityRepository
     protected $usersources = null;
 
     /**
-     * Get all defined usersources
+     * Get all defined usersources.
      *
-     * @param  bool                                     $active
+     * @param bool $active
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getAllUsersources($active = true)
@@ -74,7 +75,8 @@ class Usersource extends AbstractEntityRepository
     }
 
     /**
-     * @param  bool                                     $active
+     * @param bool $active
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
      */
     public function getAll()
@@ -85,12 +87,12 @@ class Usersource extends AbstractEntityRepository
         ")->execute();
     }
 
-
     /**
      * Fetch all usersources that are capable of logging in using locally-accepted form input.
      * That is, they can handle a username/password combo and can process that in real-time.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getLocalInputUsersources()
@@ -112,6 +114,7 @@ class Usersource extends AbstractEntityRepository
      * This is generally only suitable for services on the same server (and domain).
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getCookieInputUsersources()
@@ -132,6 +135,7 @@ class Usersource extends AbstractEntityRepository
      * Fetch all usersources that are capable of logging via JS SSO checks.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getJsSsoUsersources()
@@ -154,6 +158,7 @@ class Usersource extends AbstractEntityRepository
      * raw data back.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getUserInfoFetchableUsersources()
@@ -171,11 +176,11 @@ class Usersource extends AbstractEntityRepository
         return $ret;
     }
 
-
     /**
-     * Get a usersource of a specific type
+     * Get a usersource of a specific type.
      *
-     * @param  string                                   $type
+     * @param string $type
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
      */
     public function getByType($type, $multiple = false)
@@ -189,32 +194,35 @@ class Usersource extends AbstractEntityRepository
         }
     }
 
-
-
     /**
-     * Get a usersource by its ID
+     * Get a usersource by its ID.
      *
-     * @param  int                                    $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usersource
      */
     public function getUsersource($id)
     {
-        if ($this->usersources === null) $this->getAllUsersources();
+        if ($this->usersources === null) {
+            $this->getAllUsersources();
+        }
+
         return $this->usersources[$id];
     }
 
-
     /**
-     * Get an array of all usersource IDs
+     * Get an array of all usersource IDs.
      *
      * @return int[]
      */
     public function getUsersourceIds()
     {
-        if ($this->usersources === null) $this->getAllUsersources();
+        if ($this->usersources === null) {
+            $this->getAllUsersources();
+        }
+
         return array_keys($this->usersources);
     }
-
 
     public function updateDisplayOrders(array $display_orders)
     {
@@ -232,4 +240,38 @@ class Usersource extends AbstractEntityRepository
         $db->commit();
     }
 
+    /**
+     * @param null|bool $enabled
+     *
+     * @return int
+     */
+    public function count($type = null, $enabled = null)
+    {
+        $qb = $this->createQueryBuilder('u')->select('COUNT(u.id)');
+
+        if (null !== $enabled) {
+            $qb->andWhere('u.is_enabled = :enabled')->setParameter('enabled', (bool) $enabled);
+        }
+
+        if (null !== $type) {
+            $qb->andWhere('u.type = :type')->setParameter('type', $type);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function checkAndEnableDeskpro()
+    {
+        $count = $this->count('agent', true);
+        if (!$count) {
+            $this->createQueryBuilder('u')
+                ->update()
+                ->set('u.is_enabled', true)
+                ->where('u.source_type = :stype AND u.type = :type')
+                ->setParameter('stype', 'Application\DeskPRO\Usersource\Adapter\DeskPRO')
+                ->setParameter('type', 'agent')
+                ->getQuery()
+                ->execute();
+        }
+    }
 }

@@ -11,6 +11,7 @@ define [
   'DeskPRO/Directive/DpHideSpinning',
   'DeskPRO/Directive/DpJsonData',
   'DeskPRO/Directive/DpNgTemplate',
+  'DeskPRO/Directive/DpScrollable',
   'DeskPRO/Directive/DpShowSpinning',
   'DeskPRO/Directive/DpSubmitForm',
   'DeskPRO/Directive/DpErrorClass',
@@ -25,6 +26,7 @@ define [
   'Admin/Main/Directive/DpLiGroupSection',
   'Admin/Main/Directive/DpListAutoload',
   'Admin/Main/Directive/DpMaxHeight',
+  'Admin/Main/Directive/DpOnOffSwitch',
   'Admin/Main/Directive/DpMatchMinHeight',
   'Admin/Main/Directive/DpOpenPhraseEditor',
   'Admin/Main/Directive/DpOrderMenu',
@@ -42,7 +44,6 @@ define [
   'Admin/Main/Directive/DpDate',
   'Admin/Main/Directive/DpReadFile',
 
-  'Admin/Portal/Directive/PortalEditor',
   'Admin/TicketDeps/Directive/LayoutEditor',
   'Admin/TicketDeps/Directive/LayoutEditorField',
 
@@ -60,6 +61,7 @@ define [
   DeskPRO_Directive_DpHideSpinning,
   DeskPRO_Directive_DpJsonData,
   DeskPRO_Directive_DpNgTemplate,
+  DeskPRO_Directive_DpScrollable,
   DeskPRO_Directive_DpShowSpinning,
   DeskPRO_Directive_DpSubmitForm,
   DeskPRO_Directive_DpErrorClass,
@@ -74,6 +76,7 @@ define [
   Admin_Main_Directive_DpLiGroupSection,
   Admin_Main_Directive_DpListAutoload,
   Admin_Main_Directive_DpMaxHeight,
+  Admin_Main_Directive_DpOnOffSwitch,
   Admin_Main_Directive_DpMatchMinHeight,
   Admin_Main_Directive_DpOpenPhraseEditor,
   Admin_Main_Directive_DpOrderMenu,
@@ -91,7 +94,6 @@ define [
   Admin_Main_Directive_DpDate,
   Admin_Main_Directive_DpReadFile,
 
-  Admin_Portal_Directive_PortalEditor,
   Admin_TicketDeps_Directive_LayoutEditor,
   Admin_TicketDeps_Directive_LayoutEditorField,
 
@@ -110,6 +112,7 @@ define [
     Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
     Module.directive('script',                         DeskPRO_Directive_DpJsonData)
     Module.directive('script',                         DeskPRO_Directive_DpNgTemplate)
+    Module.directive('dpScrollable',                   DeskPRO_Directive_DpScrollable)
     Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
     Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
     Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
@@ -124,6 +127,7 @@ define [
     Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
     Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)
     Module.directive('dpMaxHeight',                    Admin_Main_Directive_DpMaxHeight)
+    Module.directive('dpOnoffSwitch',                  Admin_Main_Directive_DpOnOffSwitch)
     Module.directive('dpMatchMinHeight',               Admin_Main_Directive_DpMatchMinHeight)
     Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
     Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
@@ -140,8 +144,6 @@ define [
     Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
     Module.directive('dpDate',                         Admin_Main_Directive_DpDate)
     Module.directive('dpReadFile',                     Admin_Main_Directive_DpReadFile)
-
-    Module.directive('dpPortalEditor',                 Admin_Portal_Directive_PortalEditor)
 
     Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
     Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)

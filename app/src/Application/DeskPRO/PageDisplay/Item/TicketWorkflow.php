@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item;
@@ -46,7 +43,7 @@ class TicketWorkflow extends TicketItemAbstract
     public function compileJsCheck()
     {
         $js_ids = Arrays::castToType($this->data['workflows'], 'int');
-        $js_ids = "[" . implode(',', $js_ids) . "]";
+        $js_ids = "[".implode(',', $js_ids)."]";
 
         $js = "if ($js_ids.indexOf(reader.getWorkflowId() !== -1) return true; else return false;";
 

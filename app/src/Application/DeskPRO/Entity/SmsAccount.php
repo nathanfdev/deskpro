@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\PhoneNumbers;
-use \Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * @property int $id
@@ -65,7 +62,7 @@ class SmsAccount extends DomainObject
     protected $type;
 
     /**
-     * @var array any parameters that the provider factory needs to create the provider of $type
+     * @var array any parameters that the provider factory needs to create the provider of
      */
     protected $params;
 

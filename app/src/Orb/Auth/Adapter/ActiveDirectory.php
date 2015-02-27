@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -87,10 +86,9 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
     public function __construct(array $options)
     {
-        $this->options = array_merge($this->options, $options);
+        $this->options                         = array_merge($this->options, $options);
         $this->options['accountCanonicalForm'] = 4;
     }
-
 
     /**
      * @param string $username
@@ -98,10 +96,9 @@ class ActiveDirectory implements FormLoginInterface, Loggable
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
-
 
     /**
      * @return \Zend\Authentication\Adapter\Ldap
@@ -119,13 +116,12 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         if (!empty($this->options['ldapClass'])) {
             $class = $this->options['ldapClass'];
-            $ldap = new $class();
+            $ldap  = new $class();
             $auth->setLdap($ldap);
         }
 
         return $auth;
     }
-
 
     /**
      * Authenticate a user.
@@ -148,7 +144,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                     $this->set_username = $record['distinguishedname'][0];
                 }
 
-                $res2 = $this->doAuthenticate();
+                $res2               = $this->doAuthenticate();
                 $this->set_username = $old;
                 if ($res2->isValid()) {
                     return $res2;
@@ -158,7 +154,6 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         return $res;
     }
-
 
     /**
      * Authenticate a user.
@@ -185,7 +180,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         $time_start = microtime(true);
         if ($this->logger) {
             $this->logger->log("START ActiveDirectory::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: " . trim(print_r($this->options,1)), Logger::DEBUG);
+            $this->logger->log("Options: ".trim(print_r($this->options, 1)), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
@@ -214,13 +209,13 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
         }
 
-        $raw_info = array();
+        $raw_info                      = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
-            $dn = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+            $dn   = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
 
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($dn);
@@ -256,7 +251,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                 }
 
                 if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
-                    $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+                    $raw_info['name'] = $raw_info['first_name'].' '.$raw_info['last_name'];
                 } elseif ($rec->getAttribute('name')) {
                     $raw_info['name'] = $rec->getAttribute('name', 0);
                 } elseif ($rec->getAttribute('cn')) {
@@ -277,7 +272,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                         unset($raw_info['picture_data'][15000000]);
                     }
                 } elseif ($rec->getAttribute('thumbnailPhoto')) {
-                    $raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
+                    $raw_info['picture_data'] = $rec->getAttribute('thumbnailPhoto', 0);
                 }
 
                 if ($rec->getAttribute('telephoneNumber')) {
@@ -299,14 +294,13 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         return new Result(Result::SUCCESS, $identity);
     }
 
-
     /**
-     * Search the AD for the user based on email address
+     * Search the AD for the user based on email address.
      */
     public function findRecordViaEmail()
     {
         if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
-            return null;
+            return;
         }
 
         if ($this->logger) {
@@ -315,7 +309,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         $set = false;
         if (!$this->options['accountDomainName']) {
-            $set = true;
+            $set                                = true;
             $this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
         }
 
@@ -327,7 +321,8 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -341,10 +336,10 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+                $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
             }
 
-            return null;
+            return;
         }
 
         if ($set) {
@@ -352,23 +347,22 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+            $this->logger->log("Filter results: ".print_r($r->toArray(), 1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
-            $arr = $r->getFirst();
-            $arr['domain'] = $this->options['accountDomainName'];
+            $arr                      = $r->getFirst();
+            $arr['domain']            = $this->options['accountDomainName'];
             $arr['accountDomainName'] = $this->options['accountDomainName'];
 
             return $arr;
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * Search the AD for the user based on username
+     * Search the AD for the user based on username.
      */
     public function findRecordViaUsername()
     {
@@ -378,7 +372,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         $set = false;
         if (!$this->options['accountDomainName']) {
-            $set = true;
+            $set                                = true;
             $this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
         }
 
@@ -390,7 +384,8 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -404,10 +399,10 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+                $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
             }
 
-            return null;
+            return;
         }
 
         if ($set) {
@@ -415,18 +410,18 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+            $this->logger->log("Filter results: ".print_r($r->toArray(), 1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
-            $arr = $r->getFirst();
-            $arr['domain'] = $this->options['accountDomainName'];
+            $arr                      = $r->getFirst();
+            $arr['domain']            = $this->options['accountDomainName'];
             $arr['accountDomainName'] = $this->options['accountDomainName'];
 
             return $arr;
         }
 
-        return null;
+        return;
     }
 
     /**

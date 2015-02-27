@@ -26,13 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
 namespace Application\DeskPRO\Search\Indexer;
+
 use Orb\Util\Strings;
 
 /**
@@ -51,7 +51,8 @@ class Document implements DocumentInterface
     protected $content_type;
 
     /**
-     * Data array of properties
+     * Data array of properties.
+     *
      * @var array
      */
     protected $data;
@@ -62,12 +63,13 @@ class Document implements DocumentInterface
     protected $mark_removed = false;
 
     /**
-     * @param  array                                        $info
+     * @param array $info
+     *
      * @return \Application\DeskPRO\Search\Indexer\Document
      */
     public static function newFromArray(array $info)
     {
-        $id = $info['id'];
+        $id           = $info['id'];
         $content_type = $info['content_type'];
 
         unset($info['id'], $info['content_type']);
@@ -106,7 +108,7 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Get the unique ID for this document in the index
+     * Get the unique ID for this document in the index.
      *
      * @return mixed
      */
@@ -116,7 +118,7 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Get the type of document
+     * Get the type of document.
      *
      * @return string
      */
@@ -126,7 +128,7 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Get the data to index
+     * Get the data to index.
      *
      * @return array
      */
@@ -136,7 +138,7 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Mark document for removal
+     * Mark document for removal.
      */
     public function markRemove()
     {

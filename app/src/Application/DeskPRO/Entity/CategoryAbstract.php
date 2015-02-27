@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,8 +41,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Basic hierarchicial category entity
- *
+ * Basic hierarchicial category entity.
  */
 class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -87,11 +85,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     protected $depth = 0;
 
     /**
-     */
+      */
     protected $root;
 
     /**
-     * Local cache of some structure info with this category
+     * Local cache of some structure info with this category.
+     *
      * @var array()
      */
     protected $_structure = array();
@@ -133,6 +132,18 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         }
 
         return 0;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setRealTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     public function getTitle()
@@ -182,9 +193,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
     /**
      * Get the full display title for the category with all parents parts, separated
-     * by $sep. Example: Category > Subcategory
+     * by $sep. Example: Category > Subcategory.
      *
-     * @param  string $sep
+     * @param string $sep
+     *
      * @return string
      */
     public function getFullTitle($sep = ' > ')
@@ -193,7 +205,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * Gets all parents in the tree, in order (left to right, aka, top to bottom)
+     * Gets all parents in the tree, in order (left to right, aka, top to bottom).
      *
      * @return array
      */
@@ -218,7 +230,8 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     /**
      * Get all IDs of this tree, from this node and downwards.
      *
-     * @param  bool  $including_this Include this nodes ID in the array of ids
+     * @param bool $including_this Include this nodes ID in the array of ids
+     *
      * @return array
      */
     public function getTreeIds($including_this = true)
@@ -268,9 +281,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -285,9 +299,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)

@@ -14,9 +14,9 @@ class UserMerged extends Base
     {
         $this->subject = $subject;
         $this->details = array(
-            'id' => $mergedPerson['id'],
+            'id'    => $mergedPerson['id'],
             'email' => $mergedPerson->primary_email['email'],
-            'name' => $mergedPerson['name'],
+            'name'  => $mergedPerson['name'],
         );
     }
 

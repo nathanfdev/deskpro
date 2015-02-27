@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -51,7 +48,7 @@ class Build1401186433 extends AbstractBuild
         ");
 
         if ($filters) {
-            $this->address_map = $this->_buildAddressMap();
+            $this->address_map       = $this->_buildAddressMap();
             $this->email_account_ids = $this->_buildAccountIds();
 
             foreach ($filters as $f) {
@@ -63,7 +60,7 @@ class Build1401186433 extends AbstractBuild
     private function _buildAddressMap()
     {
         $addresses = $this->getUpgradeData('201404', 'email_gateway_addresses');
-        $map = array();
+        $map       = array();
         foreach ($addresses as $a) {
             $map[$a['id']] = $a['email_gateway_id'];
         }
@@ -81,10 +78,12 @@ class Build1401186433 extends AbstractBuild
     private function _convertFilter(array $filter)
     {
         $terms = json_decode($filter['terms'], true);
-        if (!$terms) return;
+        if (!$terms) {
+            return;
+        }
 
         $new_terms = array();
-        $fail = false;
+        $fail      = false;
 
         foreach ($terms as $t) {
             switch ($t['type']) {
@@ -92,9 +91,9 @@ class Build1401186433 extends AbstractBuild
                     $address_id = @$t['options']['gateway_address'];
                     if ($address_id && isset($this->address_map[$address_id])) {
                         $new_t = array(
-                            'type' => 'email_account',
-                            'op' => $t['op'],
-                            'options' => array('email_account_ids' => array($this->address_map[$address_id]))
+                            'type'    => 'email_account',
+                            'op'      => $t['op'],
+                            'options' => array('email_account_ids' => array($this->address_map[$address_id])),
                         );
                         $new_terms[] = $new_t;
                     } else {
@@ -106,9 +105,9 @@ class Build1401186433 extends AbstractBuild
                     $acc_id = @$t['options']['gateway_account'];
                     if ($acc_id && isset($this->email_account_ids[$acc_id])) {
                         $new_t = array(
-                            'type' => 'email_account',
-                            'op' => $t['op'],
-                            'options' => array('email_account_ids' => array($acc_id))
+                            'type'    => 'email_account',
+                            'op'      => $t['op'],
+                            'options' => array('email_account_ids' => array($acc_id)),
                         );
                         $new_terms[] = $new_t;
                     } else {
@@ -126,7 +125,7 @@ class Build1401186433 extends AbstractBuild
             $this->container->getDb()->delete('ticket_filters', array('id' => $filter['id']));
         } else {
             $this->container->getDb()->update('ticket_filters', array(
-                'terms' => json_encode($new_terms)
+                'terms' => json_encode($new_terms),
             ), array('id' => $filter['id']));
         }
     }

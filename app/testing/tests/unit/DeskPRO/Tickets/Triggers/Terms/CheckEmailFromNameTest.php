@@ -10,21 +10,23 @@ require_once 'AbstractTicketStringCheckTest.php';
 class CheckEmailFromNameTest extends AbstractStringCheckTest
 {
     /**
-     * @param  int    $id
-     * @param  string $test_string
+     * @param int    $id
+     * @param string $test_string
+     *
      * @return Ticket
      */
     public function createTicket($id, $test_string)
     {
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket          = new Ticket();
+        $ticket->id      = $id;
         $ticket->subject = $test_string;
 
         return $ticket;
     }
 
     /**
-     * @param  Ticket          $ticket
+     * @param Ticket $ticket
+     *
      * @return ExecutorContext
      */
     public function createExecutorContext(Ticket $ticket)
@@ -33,7 +35,7 @@ class CheckEmailFromNameTest extends AbstractStringCheckTest
 
         $value_reader = new ValueReader();
         $value_reader->setValues(array(
-            'from' => array($name, 'test@example.com')
+            'from' => array($name, 'test@example.com'),
         ));
 
         $exec = new ExecutorContext();
@@ -61,7 +63,7 @@ class CheckEmailFromNameTest extends AbstractStringCheckTest
     public function testNoEmailContext()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));

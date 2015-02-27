@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
+use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepository;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepository;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -53,21 +52,20 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
      */
     private $action_applicator;
 
-
     /**
      * @param TicketTriggerRepository   $trigger_repos
      * @param ActionApplicatorInterface $action_applicator
      */
     public function __construct(TicketTriggerRepository $trigger_repos, ActionApplicatorInterface $action_applicator)
     {
-        $this->trigger_repos = $trigger_repos;
+        $this->trigger_repos     = $trigger_repos;
         $this->action_applicator = $action_applicator;
     }
 
-
     /**
-     * @param  Ticket                            $ticket
-     * @param  ExecutorContextInterface          $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \Psr\Log\InvalidArgumentException
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
@@ -88,14 +86,14 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
         $has_nonreply_actions = false;
         if ($context->getEventType() == 'newreply') {
             $exclude_types = array(
-                'message' => true,
-                'messages' => true,
-                'waiting_times' => true,
-                'total_user_waiting' => true,
+                'message'              => true,
+                'messages'             => true,
+                'waiting_times'        => true,
+                'total_user_waiting'   => true,
                 'total_to_first_reply' => true,
-                'locked_by_agent' => true,
-                'count_agent_replies' => true,
-                'count_user_replies' => true
+                'locked_by_agent'      => true,
+                'count_agent_replies'  => true,
+                'count_user_replies'   => true,
             );
             foreach ($ticket->getStateChangeRecorder()->getChangedFields() as $f) {
                 if (!isset($exclude_types[$f]) && strpos($f, 'date_') === false) {
@@ -155,7 +153,6 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
         }
     }
 
-
     /**
      * @param TicketTrigger            $trigger
      * @param Ticket                   $ticket
@@ -174,9 +171,9 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             case 'user':
                 $mode_var = $trigger->by_user_mode;
                 break;
-			case 'system':
-				$mode_var = $trigger->by_app_mode;
-				break;
+            case 'system':
+                $mode_var = $trigger->by_app_mode;
+                break;
         }
         if ($mode_var) {
             $is_method_match = in_array($context->getEventMethod(), $mode_var);

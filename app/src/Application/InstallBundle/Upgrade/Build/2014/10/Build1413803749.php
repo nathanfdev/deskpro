@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -73,18 +70,17 @@ class Build1413803749 extends AbstractBuild
         $this->setupDeskProUsersource($userType, $em);
     }
 
-
     private function setupDeskProUsersource($type, EntityManager $em)
     {
         $enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
 
-        $deskProUsers = new Usersource();
-        $deskProUsers->type = $type;
-        $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-        $deskProUsers->is_enabled = $enabled;
+        $deskProUsers                = new Usersource();
+        $deskProUsers->type          = $type;
+        $deskProUsers->source_type   = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+        $deskProUsers->is_enabled    = $enabled;
         $deskProUsers->display_order = -10; // ensure #1 order (initially!)
-        $deskProUsers->title = 'DeskPRO';
-        $deskProUsers->options = array();
+        $deskProUsers->title         = 'DeskPRO';
+        $deskProUsers->options       = array();
 
         $em->persist($deskProUsers);
         $em->flush($deskProUsers);
@@ -93,7 +89,6 @@ class Build1413803749 extends AbstractBuild
 
         return $deskProUsers;
     }
-
 
     public function runNext()
     {
@@ -106,7 +101,6 @@ class Build1413803749 extends AbstractBuild
 
         /** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
         foreach ($userUsersources as $userUsersource) {
-
             $agentApp = null;
             if ($userUsersource->app) {
                 $agentApp = $this->copyAppInstance($userUsersource->app);

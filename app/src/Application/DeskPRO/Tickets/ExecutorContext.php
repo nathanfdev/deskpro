@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,15 +41,15 @@ use Orb\Util\OptionsArray;
 
 class ExecutorContext implements ExecutorContextInterface
 {
-    const EVENT_NEW = 'newticket';
-    const EVENT_REPLY = 'newreply';
+    const EVENT_NEW    = 'newticket';
+    const EVENT_REPLY  = 'newreply';
     const EVENT_UPDATE = 'update';
-    const EVENT_NOOP = 'noop';
+    const EVENT_NOOP   = 'noop';
 
-    const METHOD_API = 'api';
-    const METHOD_WEB = 'web';
+    const METHOD_API   = 'api';
+    const METHOD_WEB   = 'web';
     const METHOD_EMAIL = 'email';
-    const METHOD_SMS = 'sms';
+    const METHOD_SMS   = 'sms';
 
     /**
      * @var \Orb\Util\OptionsArray
@@ -99,11 +98,10 @@ class ExecutorContext implements ExecutorContextInterface
             $logger = new Logger('ticket', array(new NullHandler()));
         }
 
-        $this->vars = new OptionsArray();
+        $this->vars      = new OptionsArray();
         $this->user_vars = new OptionsArray();
-        $this->logger = $logger;
+        $this->logger    = $logger;
     }
-
 
     /**
      * @return Logger
@@ -112,7 +110,6 @@ class ExecutorContext implements ExecutorContextInterface
     {
         return $this->logger;
     }
-
 
     /**
      * @param Person $person
@@ -131,7 +128,6 @@ class ExecutorContext implements ExecutorContextInterface
         }
     }
 
-
     /**
      * @return Person
      */
@@ -139,7 +135,6 @@ class ExecutorContext implements ExecutorContextInterface
     {
         return $this->person_context;
     }
-
 
     /**
      * @return OptionsArray
@@ -149,7 +144,6 @@ class ExecutorContext implements ExecutorContextInterface
         return $this->vars;
     }
 
-
     /**
      * @return OptionsArray
      */
@@ -157,7 +151,6 @@ class ExecutorContext implements ExecutorContextInterface
     {
         return $this->user_vars;
     }
-
 
     /**
      * @return bool
@@ -167,7 +160,6 @@ class ExecutorContext implements ExecutorContextInterface
         return $this->vars->has('email_reader');
     }
 
-
     /**
      * @param AbstractReader $reader
      */
@@ -176,10 +168,10 @@ class ExecutorContext implements ExecutorContextInterface
         $this->vars->set('email_reader', $reader);
     }
 
-
     /**
-     * @return AbstractReader
      * @throws \RuntimeException
+     * @return AbstractReader
+     *
      */
     public function getEmailContext()
     {
@@ -221,7 +213,7 @@ class ExecutorContext implements ExecutorContextInterface
      */
     public function setEventMethod($event_method, array $event_method_options = array())
     {
-        $this->event_method = $event_method;
+        $this->event_method         = $event_method;
         $this->event_method_options = $event_method_options;
     }
 
@@ -242,7 +234,8 @@ class ExecutorContext implements ExecutorContextInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getEventMethodOption($name)

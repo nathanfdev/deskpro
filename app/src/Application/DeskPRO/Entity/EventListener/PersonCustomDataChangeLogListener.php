@@ -118,7 +118,7 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
 
         unset($this->{'queued_'.$type}[$oid]);
 
-        /**
+        /*
          * we do only one single flush, and only when all queued actions added as child to $parentEntry
          */
         if (!count($this->queued_inserts) && !count($this->queued_updates) && !count($this->queued_deletions)) {

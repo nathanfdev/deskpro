@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -51,7 +50,6 @@ class ChangeTriggerLog implements ChangeInterface, NonStateTrackingInterface
      */
     private $trigger_title;
 
-
     /**
      * @param $field_id
      * @param $trigger_id
@@ -64,7 +62,6 @@ class ChangeTriggerLog implements ChangeInterface, NonStateTrackingInterface
         $this->trigger_title = $trigger_title;
     }
 
-
     /**
      * @return string
      */
@@ -73,15 +70,13 @@ class ChangeTriggerLog implements ChangeInterface, NonStateTrackingInterface
         return $this->field_id;
     }
 
-
     /**
      * @return array
      */
     public function getOld()
     {
-        return null;
+        return;
     }
-
 
     /**
      * @return array

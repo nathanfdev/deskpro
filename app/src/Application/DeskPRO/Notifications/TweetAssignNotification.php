@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Notifications;
@@ -89,12 +86,12 @@ class TweetAssignNotification extends AbstractAgentNotification
     {
         $this->sendBrowserNotifications('AgentBundle:TwitterStatus:notify-row-assigned.html.twig', array(
             'account_status' => $this->account_status,
-            'performer' => App::getCurrentPerson(),
-            'notify_data' => array('notify_type' => 'twitter')
+            'performer'      => App::getCurrentPerson(),
+            'notify_data'    => array('notify_type' => 'twitter'),
         ));
         $this->sendEmailNotifications('DeskPRO:emails_agent:tweet-assigned.html.twig', array(
             'account_status' => $this->account_status,
-            'performer' => App::getCurrentPerson(),
+            'performer'      => App::getCurrentPerson(),
         ));
     }
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -44,10 +43,10 @@ class Feedback extends AbstractContentType
 
     public function objectToDocument($feedback)
     {
-        $data = array();
-        $data['id'] = $feedback['id'];
+        $data                 = array();
+        $data['id']           = $feedback['id'];
         $data['content_type'] = 'feedback';
-        $data['content'] = $feedback['title'] . "\n" . $feedback['content'] . "\n";
+        $data['content']      = $feedback['title']."\n".$feedback['content']."\n";
 
         foreach ($feedback->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);

@@ -27,7 +27,7 @@
 
 namespace Application\DeskPRO\Elastica;
 
-/**
+/*
  * DeskPRO
  *
  * @package DeskPRO

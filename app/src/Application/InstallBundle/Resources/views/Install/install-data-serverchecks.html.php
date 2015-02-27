@@ -1,11 +1,13 @@
-<?php if (!defined('DP_ROOT')) exit('No access'); ?>
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+} ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Server Errors<?php $view['slots']->stop() ?>
-<?php $failed = false ?>
+<?php $failed        = false ?>
 <?php $failed_phpini = false ?>
 <?php $has_db_checks = false ?>
 
-<?php require(DP_ROOT.'/src/Application/InstallBundle/Resources/views/Install/server-checks-table.html.php') ?>
+<?php require (DP_ROOT.'/src/Application/InstallBundle/Resources/views/Install/server-checks-table.html.php') ?>
 
 <div class="alert-message block-message error">
     <strong>There were errors</strong>, as noted above, that must be fixed before you

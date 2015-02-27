@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -241,7 +239,7 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -253,7 +251,7 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             return $this->_found_person;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -273,7 +271,8 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage GeoIp
+ * Orb.
  */
 
 namespace Orb\GeoIp;
@@ -60,9 +57,8 @@ class GeoIpPhp extends AbstractGeoIp
         }
     }
 
-
     /**
-     * Add a database file
+     * Add a database file.
      *
      * @param string $type
      * @param string $path
@@ -72,9 +68,9 @@ class GeoIpPhp extends AbstractGeoIp
         $this->dbs[$type] = $path;
     }
 
-
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return \GeoIP
      */
     public function getDbHandle($type)
@@ -86,9 +82,9 @@ class GeoIpPhp extends AbstractGeoIp
         return $this->db_handles[$type];
     }
 
-
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     public function hasDb($type)
@@ -96,10 +92,10 @@ class GeoIpPhp extends AbstractGeoIp
         return isset($this->dbs[$type]);
     }
 
-
     /**
-     * @param  string $host
-     * @param  array  $what
+     * @param string $host
+     * @param array  $what
+     *
      * @return array
      */
     public function lookup($host, array $what = null)
@@ -115,8 +111,8 @@ class GeoIpPhp extends AbstractGeoIp
                 }
 
                 $rec_obj = \GeoIP_record_by_addr($db, $host);
-                $rec = array();
-                $map = array(
+                $rec     = array();
+                $map     = array(
                     'continent_code',
                     'country_code',
                     'region',
@@ -132,7 +128,6 @@ class GeoIpPhp extends AbstractGeoIp
                         $rec[$prop] = null;
                     }
                 }
-
             } elseif ($this->hasDb(\GEOIP_COUNTRY_EDITION)) {
                 $db = $this->getDbHandle(\GEOIP_COUNTRY_EDITION);
 
@@ -160,7 +155,7 @@ class GeoIpPhp extends AbstractGeoIp
 
         $this->last = array(
             $host,
-            $rec
+            $rec,
         );
 
         if ($what === null) {

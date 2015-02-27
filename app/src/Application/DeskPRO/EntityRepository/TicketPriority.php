@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -50,7 +49,7 @@ class TicketPriority extends AbstractEntityRepository
                 WHERE p.title LIKE ?1
             ")->setParameter(1, "%$title%")->getSingleResult();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
 
         return $priority;
@@ -94,7 +93,7 @@ class TicketPriority extends AbstractEntityRepository
     }
 
     /**
-     * Get all priority IDs in the order they are meant to go
+     * Get all priority IDs in the order they are meant to go.
      *
      * @return array
      */

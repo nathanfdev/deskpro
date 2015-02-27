@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Serializer
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Serializer;
@@ -38,7 +35,6 @@ use Orb\Serializer\SerializerInterface;
 
 class ToApiDataMethodSerializer implements SerializerInterface
 {
-
     /**
      * {@inheritdoc}
      */
@@ -49,7 +45,6 @@ class ToApiDataMethodSerializer implements SerializerInterface
         // OR you could use this one, but have this one manage different "views" that call toApiData differently.
         return $data->toApiData();
     }
-
 
     /**
      * {@inheritdoc}

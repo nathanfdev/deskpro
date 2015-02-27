@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Sms
+ * DeskPRO.
  */
 
 namespace DpUnitTests\Sms;
 
-use Orb\Sms\SmsSender;
 use DpTestingMocks\SmsNullProvider;
 use Orb\Sms\SmsMessage;
+use Orb\Sms\SmsSender;
 
 class SmsSenderTest extends \DpUnitTestCase
 {
@@ -54,7 +51,7 @@ class SmsSenderTest extends \DpUnitTestCase
     {
         $sms = new SmsSender();
         $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
+        $to   = '1029384765';
         $text = new SmsMessage('Some text message!');
 
         $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
@@ -68,10 +65,10 @@ class SmsSenderTest extends \DpUnitTestCase
     {
         $sms = new SmsSender();
         $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
+        $to   = '1029384765';
         $text = new SmsMessage('Some text message!');
 
-        $passed_from = '+11223344556';
+        $passed_from  = '+11223344556';
         $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
         $sms_provider->shouldReceive('sendMessage')->with($to, \Mockery::type('Orb\Sms\SmsMessageChunk'), $passed_from)->once();
         $sms->setDefaultProvider($sms_provider);
@@ -83,7 +80,7 @@ class SmsSenderTest extends \DpUnitTestCase
     {
         $sms = new SmsSender();
         $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
+        $to   = '1029384765';
         $text = new SmsMessage('Some text message!');
 
         $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');

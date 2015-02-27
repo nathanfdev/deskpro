@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Mail\RawTransport;
@@ -40,5 +37,4 @@ namespace Application\EmailBundle\Mail\RawTransport;
  */
 class UnrecoverableRawTransportException extends \RuntimeException
 {
-
 }

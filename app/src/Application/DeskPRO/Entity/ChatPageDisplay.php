@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,7 @@ class ChatPageDisplay extends PageDisplayAbstract
     /**
      * Where this element description applies. Examples:
      * - agent
-     * - user
+     * - user.
      *
      * @var string
      */
@@ -71,7 +70,7 @@ class ChatPageDisplay extends PageDisplayAbstract
     protected $options = array();
 
     /**
-     * Set the department id
+     * Set the department id.
      *
      * @param int $id
      */
@@ -85,7 +84,7 @@ class ChatPageDisplay extends PageDisplayAbstract
     }
 
     /**
-     * Get the department id
+     * Get the department id.
      *
      * @return int
      */
@@ -99,10 +98,11 @@ class ChatPageDisplay extends PageDisplayAbstract
     }
 
     /**
-     * Get an option
+     * Get an option.
      *
      * @param  $name
-     * @param  null       $default
+     * @param null $default
+     *
      * @return array|null
      */
     public function getOption($name, $default = null)
@@ -111,11 +111,10 @@ class ChatPageDisplay extends PageDisplayAbstract
     }
 
     /**
-     * Set an option
+     * Set an option.
      *
      * @param  $name
      * @param  $value
-     * @return void
      */
     public function setOption($name, $value)
     {
@@ -159,6 +158,6 @@ class ChatPageDisplay extends PageDisplayAbstract
         $metadata->mapField(array( 'fieldName' => 'section', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'section'));
         $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

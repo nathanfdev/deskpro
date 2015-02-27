@@ -26,11 +26,8 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
@@ -41,7 +38,9 @@ use Imagine\Image\Box;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 require_once DP_ROOT.'/src/Orb/Data/ContentTypes.php';
 require_once DP_ROOT.'/sys/serve_abstract.php';
@@ -84,7 +83,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
  */
-class FilestorageLoader extends LoaderAbstract
+class serve_file extends LoaderAbstract
 {
     /**
      * @var string
@@ -112,16 +111,16 @@ class FilestorageLoader extends LoaderAbstract
             // could cause same-origin policy errors
             if (preg_match('#^/local/#', $pathinfo)) {
                 $this->local_mode = true;
-                $pathinfo = preg_replace('#^/local/#', '/', $pathinfo);
+                $pathinfo         = preg_replace('#^/local/#', '/', $pathinfo);
             }
 
             if (preg_match('#^/size/([0-9]+)/#', $pathinfo, $m)) {
                 $_GET['s'] = $m[1];
-                $pathinfo = str_replace($m[0], '/', $pathinfo);
+                $pathinfo  = str_replace($m[0], '/', $pathinfo);
             }
             if (preg_match('#^/size-fit/#', $pathinfo, $m)) {
                 $_GET['size-fit'] = 1;
-                $pathinfo = str_replace($m[0], '/', $pathinfo);
+                $pathinfo         = str_replace($m[0], '/', $pathinfo);
             }
 
             // Default avatar: /avatar/50/default
@@ -184,20 +183,19 @@ class FilestorageLoader extends LoaderAbstract
             }
         } catch (\Exception $exception) {
             if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) || isset($GLOBALS['DP_CONFIG']['serve_file_debug']) && $GLOBALS['DP_CONFIG']['serve_file_debug']) {
-
                 if (!empty($GLOBALS['DP_LOG_MESSAGES'])) {
                     echo "\n\n\n";
-                    echo "LOG\n" . str_repeat('=', 72) . "\n";
+                    echo "LOG\n".str_repeat('=', 72)."\n";
                     foreach ($GLOBALS['DP_LOG_MESSAGES'] as $minfo) {
                         printf("[%s] %s\n", date('Y-m-d H:i:s', $minfo['time']), $minfo['message']);
                     }
                 }
 
-                echo "\n\n\nEXCEPTION\n" . str_repeat('=', 72) . "\n";
+                echo "\n\n\nEXCEPTION\n".str_repeat('=', 72)."\n";
                 echo "[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
                 $backtrace = $exception->getTrace();
-                $trace = self::formatBacktrace($backtrace);
+                $trace     = self::formatBacktrace($backtrace);
                 echo $trace;
             }
 
@@ -220,17 +218,17 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         $DP_LOG_MESSAGES[] = array(
-            'time' => time(),
-            'message' => $message
+            'time'    => time(),
+            'message' => $message,
         );
     }
 
     /**
-     * Serve user CSS blob
+     * Serve user CSS blob.
      */
     public function userCssAction()
     {
-        $is_rtl = !empty($_GET['rtl']);
+        $is_rtl      = !empty($_GET['rtl']);
         $blob_column = $is_rtl ? 'css_blob_rtl_id' : 'css_blob_id';
 
         $sth = $this->getPdoRead()->prepare("
@@ -240,7 +238,7 @@ class FilestorageLoader extends LoaderAbstract
             WHERE styles.id = 1
         ");
         $sth->execute();
-        $blob = $sth->fetch(\PDO::FETCH_ASSOC);
+        $blob       = $sth->fetch(\PDO::FETCH_ASSOC);
         $did_reload = false;
 
         if (
@@ -248,23 +246,23 @@ class FilestorageLoader extends LoaderAbstract
             (
                 isset($_GET['reload'])
                 && (
-                    filemtime(DP_ROOT . '/src/Application/UserBundle/Resources/views/Css/main.css.twig') > strtotime($blob['date_created'])
-                    || filemtime(DP_ROOT . '/src/Application/UserBundle/Resources/views/Css/custom.css.twig') > strtotime($blob['date_created'])
+                    filemtime(DP_ROOT.'/src/Application/UserBundle/Resources/views/Css/main.css.twig') > strtotime($blob['date_created'])
+                    || filemtime(DP_ROOT.'/src/Application/UserBundle/Resources/views/Css/custom.css.twig') > strtotime($blob['date_created'])
                 )
             )
         ) {
             $did_reload = true;
-            $container = $this->bootFullSystem();
-            $css = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
+            $container  = $this->bootFullSystem();
+            $css        = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
 
             if ($is_rtl) {
                 // filter CSS to change LTR ideas to RTL
                 preg_match_all('#/\*@no_rtl\*/(.*)/\*@/no_rtl\*/#sU', $css, $matches, PREG_SET_ORDER);
                 $replace = array();
 
-                foreach ($matches AS $key => $match) {
+                foreach ($matches as $key => $match) {
                     $replace[$key] = $match[1];
-                    $css = str_replace($match[0], "\x1a$key\x1a", $css);
+                    $css           = str_replace($match[0], "\x1a$key\x1a", $css);
                 }
 
                 // where the value is left/right
@@ -358,7 +356,7 @@ class FilestorageLoader extends LoaderAbstract
                     } elseif (strtolower($x) == 'left') {
                         return 'left';
                     } elseif (preg_match('/^([0-9.]+)%$/', $x, $percent)) {
-                        return (100 - $percent[1]) . '%'; // percentage left offset on right
+                        return (100 - $percent[1]).'%'; // percentage left offset on right
                     } elseif (preg_match('/^0[a-z]*$/i', $x)) {
                         return '100%'; // left to completely right
                     } else {
@@ -386,7 +384,7 @@ class FilestorageLoader extends LoaderAbstract
                     }, $css
                 );
 
-                foreach ($replace AS $key => $replace_css) {
+                foreach ($replace as $key => $replace_css) {
                     $css = str_replace("\x1a$key\x1a", $replace_css, $css);
                 }
 
@@ -437,9 +435,8 @@ class FilestorageLoader extends LoaderAbstract
         }
     }
 
-
     /**
-     * Generates a gradient image on the fly
+     * Generates a gradient image on the fly.
      */
     public function handleGradientRequest()
     {
@@ -453,11 +450,11 @@ class FilestorageLoader extends LoaderAbstract
             return;
         }
 
-        require DP_ROOT . '/src/Orb/Util/Colors.php';
-        require DP_ROOT . '/src/Orb/Images/Util.php';
+        require DP_ROOT.'/src/Orb/Util/Colors.php';
+        require DP_ROOT.'/src/Orb/Images/Util.php';
 
-        $start_color = isset($_REQUEST['start_color']) ? (string)$_REQUEST['start_color'] : '000000';
-        $end_color   = isset($_REQUEST['end_color'])   ? (string)$_REQUEST['end_color']   : '000000';
+        $start_color = isset($_REQUEST['start_color']) ? (string) $_REQUEST['start_color'] : '000000';
+        $end_color   = isset($_REQUEST['end_color'])   ? (string) $_REQUEST['end_color']   : '000000';
 
         $get_rgb = function ($color) {
             // Not rgb(
@@ -466,7 +463,7 @@ class FilestorageLoader extends LoaderAbstract
                 if (strlen($color) == 6 || strlen($color) == 3) {
                     $color = \Orb\Util\Colors::hex2rgb($color);
                     if ($color) {
-                        $color = 'rgb(' . implode(',', $color) . ')';
+                        $color = 'rgb('.implode(',', $color).')';
                     } else {
                         $color = 'rgb(0,0,0)';
                     }
@@ -477,9 +474,9 @@ class FilestorageLoader extends LoaderAbstract
 
             if (preg_match('#rgb\((.*?),(.*?),(.*?)\)#i', $color, $m)) {
                 $rgb = array(
-                    'red'   => (int)trim($m[1]),
-                    'green' => (int)trim($m[2]),
-                    'blue'  => (int)trim($m[3]),
+                    'red'   => (int) trim($m[1]),
+                    'green' => (int) trim($m[2]),
+                    'blue'  => (int) trim($m[3]),
                 );
 
                 return $rgb;
@@ -491,9 +488,13 @@ class FilestorageLoader extends LoaderAbstract
         $start_color = $get_rgb($start_color);
         $end_color   = $get_rgb($end_color);
 
-        $size = isset($_REQUEST['size']) ? (int)$_REQUEST['size'] : 20;
-        if ($size < 1) $size = 20;
-        if ($size > 1000) $size = 1000;
+        $size = isset($_REQUEST['size']) ? (int) $_REQUEST['size'] : 20;
+        if ($size < 1) {
+            $size = 20;
+        }
+        if ($size > 1000) {
+            $size = 1000;
+        }
 
         $direction = isset($_REQUEST['direction']) ? $_REQUEST['direction'] : 'vertical';
         if ($direction != 'vertical' && $direction != 'horizontal') {
@@ -502,12 +503,12 @@ class FilestorageLoader extends LoaderAbstract
 
         $im = \Orb\Images\Util::getGradientImage($size, $start_color, $end_color, $direction, 1, 1);
 
-        $desc = implode('-',$start_color) . '_' . implode('-', $end_color) . '_' . $direction . '_' . $size . '.png';
+        $desc = implode('-', $start_color).'_'.implode('-', $end_color).'_'.$direction.'_'.$size.'.png';
 
-        header('Last-Modified: ' . date('D, d M Y H:i:s', 1366187634).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', 1366187657).' GMT');
+        header('Last-Modified: '.date('D, d M Y H:i:s', 1366187634).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', 1366187657).' GMT');
         header('Cache-Control: max-age=31556926,public');
-        header('Content-Disposition: inline; filename=' . $desc);
+        header('Content-Disposition: inline; filename='.$desc);
         header("Content-type: image/png");
         header('X-Content-Type-Options: nosniff');
         header('X-Robots-Tag: noindex, nofollow');
@@ -516,9 +517,8 @@ class FilestorageLoader extends LoaderAbstract
         exit;
     }
 
-
     /**
-     * Serve the sitemap.xml file
+     * Serve the sitemap.xml file.
      */
     public function sitemapXmlAction()
     {
@@ -543,12 +543,13 @@ class FilestorageLoader extends LoaderAbstract
         $this->showBlob($blob);
     }
 
-
     /**
      * Render a persons avatar.
      *
      * @deprecated If you have a person record, then use picture_blob_id and directly link to the avatar
+     *
      * @param $person_id
+     *
      * @return mixed
      */
     public function personAvatarAction($person_id)
@@ -580,7 +581,9 @@ class FilestorageLoader extends LoaderAbstract
      * Render an org avatar.
      *
      * @deprecated If you have a org record, then use picture_blob_id and directly link to the avatar
+     *
      * @param $person_id
+     *
      * @return mixed
      */
     public function orgAvatarAction($org_id)
@@ -608,9 +611,8 @@ class FilestorageLoader extends LoaderAbstract
         $this->showBlob($blob, $size);
     }
 
-
     /**
-     * Serve the default avatar
+     * Serve the default avatar.
      */
     public function defaultAvatarAction($s = null)
     {
@@ -636,7 +638,7 @@ class FilestorageLoader extends LoaderAbstract
                 $mime = 'image/png';
             }
 
-            $container = $this->bootFullSystem();
+            $container   = $this->bootFullSystem();
             $blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
                 $file,
                 pathinfo($file, PATHINFO_BASENAME),
@@ -649,7 +651,7 @@ class FilestorageLoader extends LoaderAbstract
 
         $size = null;
         if ($s !== null) {
-            $size = (int)$s;
+            $size = (int) $s;
         } elseif (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
             $size = $_GET['s'];
         }
@@ -657,40 +659,40 @@ class FilestorageLoader extends LoaderAbstract
         $this->showBlob($blob, $size);
     }
 
-
     /**
-     * @param  string     $asset_name
+     * @param string $asset_name
+     *
      * @throws \Exception
      */
     public function dpAsset($asset_name)
     {
         switch ($asset_name) {
             case 'Getting-Started-with-DeskPRO.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf';
+                $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf';
                 $filename = 'Getting Started with DeskPRO.pdf';
                 $mimetype = 'application/pdf';
                 break;
 
             case 'Admin-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-manual/en_US.pdf';
+                $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-manual/en_US.pdf';
                 $filename = 'Admin Manual.pdf';
                 $mimetype = 'application/pdf';
                 break;
 
             case 'Reports-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
+                $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
                 $filename = 'Reports Manual.pdf';
                 $mimetype = 'application/pdf';
                 break;
 
             case 'Agent-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
+                $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
                 $filename = 'Agent Manual.pdf';
                 $mimetype = 'application/pdf';
                 break;
 
             case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
-                $path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
+                $path     = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $mimetype = 'application/zip';
                 break;
@@ -707,9 +709,9 @@ class FilestorageLoader extends LoaderAbstract
 
         $filesize = filesize($path);
 
-        header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
-        header('Content-Length: ' . $filesize);
-        header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
+        header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
+        header('Content-Length: '.$filesize);
+        header('Content-Disposition: attachment; filename="'.addslashes($filename).'"');
         header('X-Robots-Tag: noindex, nofollow');
 
         if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
@@ -719,9 +721,8 @@ class FilestorageLoader extends LoaderAbstract
         }
     }
 
-
     /**
-     * Serve the default org avatar
+     * Serve the default org avatar.
      */
     public function defaultOrgAvatarAction()
     {
@@ -733,10 +734,10 @@ class FilestorageLoader extends LoaderAbstract
 
         // The default avatar blob hasnt been inserted yet, default it from the resources dir now
         if (!$blob) {
-            $container = $this->bootFullSystem();
+            $container   = $this->bootFullSystem();
             $blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
                 DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
-                $name . '.jpeg',
+                $name.'.jpeg',
                 'image/jpeg',
                 array('sys_name' => $name)
             );
@@ -751,7 +752,6 @@ class FilestorageLoader extends LoaderAbstract
 
         $this->showBlob($blob, $size);
     }
-
 
     /**
      * @param int    $blob_id
@@ -769,15 +769,15 @@ class FilestorageLoader extends LoaderAbstract
 
         $base_path = dp_get_blob_dir();
 
-        $filepath_part = $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
-        $filepath = $base_path . DIRECTORY_SEPARATOR . $filepath_part;
+        $filepath_part = $batch.DIRECTORY_SEPARATOR.$batch.$authcode.$blob_id.$namehash;
+        $filepath      = $base_path.DIRECTORY_SEPARATOR.$filepath_part;
 
         $filename_safe = Strings::utf8_accents_to_ascii($filename);
         $filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
         $filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
 
-        $check_namehash = strtoupper(substr(sha1($filename_safe . $blob_id), 0, 3));
-        $check_namehash .= strtoupper(substr(md5($filename_safe . $blob_id), 0, 3));
+        $check_namehash = strtoupper(substr(sha1($filename_safe.$blob_id), 0, 3));
+        $check_namehash .= strtoupper(substr(md5($filename_safe.$blob_id), 0, 3));
 
         $this->addLogMessage("Expecting file path: %s", $filepath);
 
@@ -852,11 +852,11 @@ class FilestorageLoader extends LoaderAbstract
             $content_disposition = 'inline';
         }
 
-        header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
-        header('Content-Length: ' . filesize($filepath));
-        header('Content-Disposition: '.$content_disposition.'; filename="' . addslashes($filename) . '"');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
+        header('Content-Length: '.filesize($filepath));
+        header('Content-Disposition: '.$content_disposition.'; filename="'.addslashes($filename).'"');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
         header('X-Robots-Tag: noindex, nofollow');
 
@@ -876,7 +876,7 @@ class FilestorageLoader extends LoaderAbstract
 
     protected function handleDbBlobRequest($blob_id, $authseg, $filename)
     {
-        $authcode = $blob_id . $authseg;
+        $authcode = $blob_id.$authseg;
 
         $size = null;
         if (isset($_GET['s']) && ((is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) || preg_match('#^\d+x\d+$#', $_GET['s']))) {
@@ -886,9 +886,8 @@ class FilestorageLoader extends LoaderAbstract
         $this->showBlob($blob_id, $size, $authcode);
     }
 
-
     /**
-     * Renders a blob
+     * Renders a blob.
      *
      * @param $blob
      * @param null $size
@@ -900,7 +899,6 @@ class FilestorageLoader extends LoaderAbstract
         #------------------------------
 
         if (!is_array($blob)) {
-
             $blob_id = $blob;
 
             $this->addLogMessage("Loading blob %d", $blob_id);
@@ -924,7 +922,7 @@ class FilestorageLoader extends LoaderAbstract
                     $sth->execute();
                     $install_token = $sth->fetchColumn(0);
 
-                    if (\Orb\Util\Util::checkStaticSecurityToken($_GET['sc'], $install_token . $blob_auth)) {
+                    if (\Orb\Util\Util::checkStaticSecurityToken($_GET['sc'], $install_token.$blob_auth)) {
                         $okay = true;
                     }
                 }
@@ -948,9 +946,9 @@ class FilestorageLoader extends LoaderAbstract
         #------------------------------
 
         if (!isset($blob['filename_safe'])) {
-            $filename_safe = Strings::utf8_accents_to_ascii($blob['filename']);
-            $filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
-            $filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+            $filename_safe         = Strings::utf8_accents_to_ascii($blob['filename']);
+            $filename_safe         = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+            $filename_safe         = preg_replace('#\-{2,}#', '-', $filename_safe);
             $blob['filename_safe'] = $filename_safe;
         }
 
@@ -965,12 +963,12 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         if ($is_image && $size) {
-            $this->addLogMessage("Showing resized: " . $size);
+            $this->addLogMessage("Showing resized: ".$size);
 
             $is_fit = false;
 
             if (isset($_GET['size-fit'])) {
-                $is_fit = (boolean)$_GET['size-fit'];
+                $is_fit = (boolean) $_GET['size-fit'];
                 $this->addLogMessage("Is fit: %d", $is_fit);
             }
 
@@ -981,7 +979,7 @@ class FilestorageLoader extends LoaderAbstract
             // Already have the cached resized blob
             if ($sub_blob) {
                 $sub_blob['filename_safe'] = $blob['filename_safe'];
-                $blob = $sub_blob;
+                $blob                      = $sub_blob;
 
             // Generate the resized blob and save it now
             } else {
@@ -996,7 +994,6 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         if (!empty($blob['file_url']) && $blob['file_url']) {
-
             if (isset($DP_CONFIG['filestorage_use_xaccel_redirect_url']) && $DP_CONFIG['filestorage_use_xaccel_redirect_url'] && ($this->local_mode || @$DP_CONFIG['filestorage_proxy_through']) && ($pathinfo = @parse_url($blob['file_url']))) {
                 $redirect_path = str_replace(
                     array('{scheme}', '{domain}', '{path}'),
@@ -1012,13 +1009,13 @@ class FilestorageLoader extends LoaderAbstract
             // request and the file is usually stored with an inline disposition
             if ($this->local_mode || @$DP_CONFIG['filestorage_proxy_through']) {
                 $context = stream_context_create(array(
-                    'http'=> array('timeout' => 10.0) // read timeout. we do it in chunks, so this is rather low
+                    'http' => array('timeout' => 10.0), // read timeout. we do it in chunks, so this is rather low
                 ));
 
                 $time_start = time();
                 $max_time   = 30;
 
-                $buf = '';
+                $buf  = '';
                 $fail = false;
 
                 $fp = @fopen($blob['file_url'], 'r', false, $context);
@@ -1061,27 +1058,27 @@ class FilestorageLoader extends LoaderAbstract
      */
     protected function sendHeaders($blob)
     {
-        header('Content-Type: ' . $blob['content_type'] . '; filename="' . addslashes($blob['filename']) . '"');
-        header('Content-Length: ' . $blob['filesize']);
+        header('Content-Type: '.$blob['content_type'].'; filename="'.addslashes($blob['filename']).'"');
+        header('Content-Length: '.$blob['filesize']);
 
         if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
-            header('Content-Disposition: inline; filename="' . addslashes($blob['filename']) . '"');
+            header('Content-Disposition: inline; filename="'.addslashes($blob['filename']).'"');
         } else {
-            header('Content-Disposition: attachment; filename="' . addslashes($blob['filename_safe']) . '"');
+            header('Content-Disposition: attachment; filename="'.addslashes($blob['filename_safe']).'"');
         }
 
         $d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);
         if (!$d) {
             $d = new \DateTime();
         }
-        header('Last-Modified: ' . $d->format('D, d M Y H:i:s').' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('Last-Modified: '.$d->format('D, d M Y H:i:s').' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
         header('X-Robots-Tag: noindex, nofollow');
     }
 
     /**
-     * Send a file that is stored in the filesystem
+     * Send a file that is stored in the filesystem.
      *
      * @param $blob
      */
@@ -1095,7 +1092,7 @@ class FilestorageLoader extends LoaderAbstract
         $base_path = dp_get_blob_dir();
 
         $filepath_part = $blob['save_path'];
-        $filepath = $base_path . DIRECTORY_SEPARATOR . $blob['save_path'];
+        $filepath      = $base_path.DIRECTORY_SEPARATOR.$blob['save_path'];
 
         $this->addLogMessage("Expecting file path: %s", $filepath);
 
@@ -1124,7 +1121,7 @@ class FilestorageLoader extends LoaderAbstract
     }
 
     /**
-     * Send a file that is stored in the database
+     * Send a file that is stored in the database.
      *
      * @param $blob
      */
@@ -1145,9 +1142,9 @@ class FilestorageLoader extends LoaderAbstract
 
     protected function getSizedBlobSysName($blob_id, $size, $is_fit)
     {
-        $sys_name = 'blob-' . $blob_id . '-' . $size;
+        $sys_name = 'blob-'.$blob_id.'-'.$size;
 
-        if($is_fit) {
+        if ($is_fit) {
             $sys_name .= '-fit';
         }
 
@@ -1162,7 +1159,7 @@ class FilestorageLoader extends LoaderAbstract
     protected function createSizedBlob($blob_info, $size, $is_fit, $die_fail = true)
     {
         $container = $this->bootFullSystem();
-        $bs = $container->getBlobStorage();
+        $bs        = $container->getBlobStorage();
 
         $blob = $container->getEm()->find('DeskPRO:Blob', $blob_info['id']);
         $file = $bs->copyBlobRecordToString($blob);
@@ -1190,10 +1187,10 @@ class FilestorageLoader extends LoaderAbstract
                 exit;
             }
 
-            return null;
+            return;
         }
 
-        $width = $image->getSize()->getWidth();
+        $width  = $image->getSize()->getWidth();
         $height = $image->getSize()->getHeight();
 
         $m = null;
@@ -1205,14 +1202,22 @@ class FilestorageLoader extends LoaderAbstract
             $req_h = $size;
         }
 
-        $req_w = (int)$req_w;
-        $req_h = (int)$req_h;
+        $req_w = (int) $req_w;
+        $req_h = (int) $req_h;
 
-        if ($req_w < 1) $req_w = 1;
-        if ($req_h < 1) $req_h = 1;
+        if ($req_w < 1) {
+            $req_w = 1;
+        }
+        if ($req_h < 1) {
+            $req_h = 1;
+        }
 
-        if ($req_w > 1000) $req_w = 1000;
-        if ($req_h > 1000) $req_h = 1000;
+        if ($req_w > 1000) {
+            $req_w = 1000;
+        }
+        if ($req_h > 1000) {
+            $req_h = 1000;
+        }
 
         if ($req_h == $req_h) {
             $no_fit = max($width, $height) > $size;
@@ -1222,7 +1227,6 @@ class FilestorageLoader extends LoaderAbstract
 
         // Only shrink if it doesn't fit inside the box.
         if ($no_fit || $is_fit) {
-
             // If the image has a w/h of 1, then scaling with
             // fit will result in a dim of 0 when Imagine tries to scale
             if ($width < 2) {
@@ -1246,12 +1250,12 @@ class FilestorageLoader extends LoaderAbstract
                     $heightR   = $sizeR->getHeight();
 
                     $preserve  = $container->getImagine()->create($size_box);
-                    $startX = $startY = 0;
-                    if ( $widthR < $width ) {
-                        $startX = ( $width - $widthR ) / 2;
+                    $startX    = $startY    = 0;
+                    if ($widthR < $width) {
+                        $startX = ($width - $widthR) / 2;
                     }
-                    if ( $heightR < $height ) {
-                        $startY = ( $height - $heightR ) / 2;
+                    if ($heightR < $height) {
+                        $startY = ($height - $heightR) / 2;
                     }
                     $preserve->paste($resizeimg, new \Imagine\Image\Point($startX, $startY));
                     $image = $preserve;
@@ -1309,7 +1313,7 @@ class FilestorageLoader extends LoaderAbstract
         // where the GD handler tries to save a temp file and the default
         // temp dir is not writable.
         } catch (\Imagine\Exception\RuntimeException $e) {
-            $tmp = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('img', true) . '.' . Strings::getExtension($blob->filename);
+            $tmp = dp_get_tmp_dir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
             $image->save($tmp);
             $file = file_get_contents($tmp);
             @unlink($tmp);
@@ -1317,19 +1321,19 @@ class FilestorageLoader extends LoaderAbstract
 
         $new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, array(
             'sys_name'       => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
-            'original_blob'  => $blob
+            'original_blob'  => $blob,
         ));
 
         $this->addLogMessage("Cached resize as blob %d", $new_blob->getId());
 
-        $new_blob_info = $new_blob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
+        $new_blob_info                  = $new_blob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
         $new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
         return $new_blob_info;
     }
 
     /**
-     * Serve static content from native 'apps'
+     * Serve static content from native 'apps'.
      */
     public function handleAppsRequest($app_name, $type, $filename)
     {
@@ -1350,8 +1354,8 @@ class FilestorageLoader extends LoaderAbstract
             return;
         }
 
-        $filepath = $path_info['filepath'];
-        $basepath = $path_info['basepath'];
+        $filepath     = $path_info['filepath'];
+        $basepath     = $path_info['basepath'];
         $basepath_std = str_replace('\\', '/', $basepath);
 
         $mimetype = ContentTypes::getContentTypeFromFilename($filename);
@@ -1363,11 +1367,11 @@ class FilestorageLoader extends LoaderAbstract
         if ($type == 'html') {
             $content = file_get_contents($filepath);
             $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($basepath, $basepath_std) {
-                $path = @realpath($basepath . $m[1]);
+                $path = @realpath($basepath.$m[1]);
                 $path_std = str_replace('\\', '/', $path);
 
                 if (!$path || !is_file($path) || strpos($path_std, $basepath_std) !== 0) {
-                    return '<!-- Invalid include file: ' . $m[1] . ' -->';
+                    return '<!-- Invalid include file: '.$m[1].' -->';
                 }
 
                 $inc_content = @file_get_contents($path);
@@ -1378,14 +1382,14 @@ class FilestorageLoader extends LoaderAbstract
             $filesize = strlen($content);
         } else {
             $filesize = filesize($filepath);
-            $content = null;
+            $content  = null;
         }
 
-        header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
-        header('Content-Length: ' . $filesize);
-        header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
-        header('Cache-Control: ' . (@$GLOBALS['DP_CONFIG']['debug']['dev'] ? 'no-cache' : 'max-age=31556926,private'));
+        header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
+        header('Content-Length: '.$filesize);
+        header('Last-Modified: '.date('D, d M Y H:i:s', time()-3600).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', time() - 3600).' GMT');
+        header('Cache-Control: '.(@$GLOBALS['DP_CONFIG']['debug']['dev'] ? 'no-cache' : 'max-age=31556926,private'));
         header('X-Robots-Tag: noindex, nofollow');
 
         if ($content !== null) {
@@ -1411,11 +1415,11 @@ class FilestorageLoader extends LoaderAbstract
 
         foreach ($paths as $prefix => $base_path) {
             if ($prefix === 'default' || strpos($appname, $prefix) === 0) {
-                $path = $base_path . '/'. $appname . '/'. $type_f . $filename;
+                $path = $base_path.'/'.$appname.'/'.$type_f.$filename;
                 if (file_exists($path)) {
                     return array(
                         'filepath' => $path,
-                        'basepath' => $base_path . '/'. $appname . '/'. $type_f
+                        'basepath' => $base_path.'/'.$appname.'/'.$type_f,
                     );
                 }
             }
@@ -1423,16 +1427,16 @@ class FilestorageLoader extends LoaderAbstract
 
         // Second path is doing dumb-check on every path
         foreach ($paths as $prefix => $base_path) {
-            $path = $base_path . '/'. $appname . '/'. $type_f . $filename;
+            $path = $base_path.'/'.$appname.'/'.$type_f.$filename;
             if (file_exists($path)) {
                 return array(
                     'filepath' => $path,
-                    'basepath' => $base_path . '/'. $appname . '/'. $type_f
+                    'basepath' => $base_path.'/'.$appname.'/'.$type_f,
                 );
             }
         }
 
-        return null;
+        return;
     }
 }
 

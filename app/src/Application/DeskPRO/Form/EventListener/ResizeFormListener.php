@@ -63,13 +63,14 @@ class ResizeFormListener extends BaseListener
     }
 
     /**
-     * @param  FormEvent                                                 $event
+     * @param FormEvent $event
+     *
      * @throws \Symfony\Component\Form\Exception\UnexpectedTypeException
      */
     public function preSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form                = $event->getForm();
+        $data                = $event->getData();
         $this->newEntriesMap = array();
 
         if (null === $data || '' === $data) {
@@ -79,9 +80,6 @@ class ResizeFormListener extends BaseListener
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
         }
-
-
-
 
         $map = array();
         foreach ($form as $name => $child) {
@@ -102,9 +100,6 @@ class ResizeFormListener extends BaseListener
         $data = $newData;
         $event->setData($data);
 
-
-
-
         // Remove all empty rows
         if ($this->allowDelete) {
             foreach ($form as $name => $child) {
@@ -119,9 +114,10 @@ class ResizeFormListener extends BaseListener
         // Add all additional rows
         if ($this->allowAdd) {
             foreach ($data as $name => $value) {
-
                 // todo: very strange issue. might be php bug
-                if (!$name) continue;
+                if (!$name) {
+                    continue;
+                }
 
                 // todo $value['title'] is very rare! only for DpCategoryBuilderType
                 if (!$form->has($name) && !empty($value['title'])) {
@@ -137,7 +133,8 @@ class ResizeFormListener extends BaseListener
     }
 
     /**
-     * re-map
+     * re-map.
+     *
      * @param FormEvent $event
      */
     public function postSubmit(FormEvent $event)

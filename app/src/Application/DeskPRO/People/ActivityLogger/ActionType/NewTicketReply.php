@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -42,20 +41,19 @@ class NewTicketReply extends ActionTypeAbstract
     /** @var \Application\DeskPRO\Entity\TicketMessage */
     protected $ticket_message;
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person        $person
      * @param \Application\DeskPRO\Entity\TicketMessage $ticket_message
      */
     public function __construct(Person $person, TicketMessage $ticket_message)
     {
-        $this->person = $person;
+        $this->person         = $person;
         $this->ticket_message = $ticket_message;
     }
 
-
     /**
-     * Get a plain array of details that'll be stored in the databaes
+     * Get a plain array of details that'll be stored in the databaes.
+     *
      * @return array
      */
     public function getDetails()
@@ -63,8 +61,8 @@ class NewTicketReply extends ActionTypeAbstract
         return array(
             'ticket_id'  => $this->ticket_message->ticket['id'],
             'message_id' => $this->ticket_message['id'],
-            'subject' => $this->ticket_message->ticket['subject'],
-            'message'    => $this->ticket_message->getMessageText()
+            'subject'    => $this->ticket_message->ticket['subject'],
+            'message'    => $this->ticket_message->getMessageText(),
         );
     }
 }

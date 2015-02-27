@@ -32,9 +32,10 @@ use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 interface UserSearchInterface
 {
     /**
-     * @param  SearchContextInterface $context
-     * @param  string                 $query
-     * @param  array                  $options
+     * @param SearchContextInterface $context
+     * @param string                 $query
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function search(SearchContextInterface $context, $query, array $options = null);

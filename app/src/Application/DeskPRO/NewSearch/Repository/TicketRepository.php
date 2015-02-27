@@ -5,7 +5,7 @@ namespace Application\DeskPRO\NewSearch\Repository;
 use Elastica\Filter;
 
 /**
- * Ticket Repository
+ * Ticket Repository.
  */
 class TicketRepository extends AbstractRepository implements WithLabelsInterface
 {
@@ -17,17 +17,17 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     protected $person;
 
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
     protected $highlightFields = array(
         'subject'  => array('fragment_size' => 100),
-        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1)
+        'messages'                          => array('fragment_size' => 100, 'number_of_fragments' => 1),
     );
 
     /**
-     * Sets the person context
+     * Sets the person context.
      *
      * @param $person
      */
@@ -37,7 +37,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     }
 
     /**
-     * Constructs the filters array to handle agent permission
+     * Constructs the filters array to handle agent permission.
      *
      * @return array
      */
@@ -60,9 +60,8 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
             // cant see anything else
         } else {
-
             $sub_filter = new Filter\BoolAnd();
-            $any = false;
+            $any        = false;
 
             $dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
             if ($dis_dep_ids) {
@@ -83,7 +82,6 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
                 $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
                 $any = true;
             }
-
 
             // If user has all perms, then no filters are applied
             // and the BoolAnd filter will be empty

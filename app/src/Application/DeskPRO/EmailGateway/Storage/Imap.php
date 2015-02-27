@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailGateway
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Storage;
@@ -43,10 +40,11 @@ class Imap extends Server
      */
     public function __construct($options = array())
     {
+        $options['password'] = (string) @$options['password'];
+        $options['port']     = $options['port'] ?: 143;
+
         if (!isset($options['host']) ||
-            !isset($options['port']) ||
-            !isset($options['user']) ||
-            !isset($options['password'])) {
+            !isset($options['user'])) {
             throw new \Exception('Insufficient Parameters');
         }
 
@@ -84,7 +82,7 @@ class Imap extends Server
     }
 
     /**
-     * Searches the server for matching emails and retrieves only the IDs
+     * Searches the server for matching emails and retrieves only the IDs.
      *
      * @return array an array of matching IDs
      */
@@ -100,9 +98,10 @@ class Imap extends Server
     }
 
     /**
-     * Gets a raw RFC2822 compatible message
+     * Gets a raw RFC2822 compatible message.
      *
-     * @param  int    $uid Unique message id
+     * @param int $uid Unique message id
+     *
      * @return string Raw message
      */
     public function getRawMessage($uid)
@@ -117,14 +116,15 @@ class Imap extends Server
     }
 
     /**
-     * @param  int      $uid
+     * @param int $uid
+     *
      * @return null|int
      */
     public function getMessageSize($uid)
     {
         $results = imap_fetch_overview($this->imapStream, $uid, FT_UID);
         if (!$results) {
-            return null;
+            return;
         }
 
         $message_overview = array_shift($results);
@@ -133,10 +133,11 @@ class Imap extends Server
     }
 
     /**
-     * Creates a mailbox if it doesnt exist
+     * Creates a mailbox if it doesnt exist.
      *
-     * @param  string $mailbox
-     * @return bool   True if it was created, false otherwise
+     * @param string $mailbox
+     *
+     * @return bool True if it was created, false otherwise
      */
     public function ensureMailboxExists($mailbox)
     {
@@ -169,7 +170,8 @@ class Imap extends Server
     }
 
     /**
-     * @param  int    $uid
+     * @param int $uid
+     *
      * @return string
      */
     public function getRawHeaders($uid)
@@ -186,7 +188,7 @@ class Imap extends Server
     }
 
     /**
-     * Close the connection
+     * Close the connection.
      */
     public function close()
     {

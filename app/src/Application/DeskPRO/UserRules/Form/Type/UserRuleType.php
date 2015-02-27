@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\UserRules\Form\Type;
@@ -49,7 +47,7 @@ class UserRuleType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\UserRules\\UserRuleEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }

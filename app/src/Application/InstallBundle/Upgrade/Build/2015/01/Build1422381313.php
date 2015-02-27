@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -39,13 +36,13 @@ class Build1422381313 extends AbstractBuild
     public function run()
     {
         $this->out("content slug history");
-		$this->execMutateSql("CREATE TABLE articles_slug_history (id INT AUTO_INCREMENT NOT NULL, article_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_566C1983989D9B62 (slug), INDEX IDX_566C19837294869C (article_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("CREATE TABLE downloads_slug_history (id INT AUTO_INCREMENT NOT NULL, download_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_F670233A989D9B62 (slug), INDEX IDX_F670233AC667AEAB (download_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("CREATE TABLE feedback_slug_history (id INT AUTO_INCREMENT NOT NULL, feedback_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_F0FF9966989D9B62 (slug), INDEX IDX_F0FF9966D249A887 (feedback_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("CREATE TABLE news_slug_history (id INT AUTO_INCREMENT NOT NULL, news_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_8A3714CD989D9B62 (slug), INDEX IDX_8A3714CDB5A459A0 (news_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE articles_slug_history ADD CONSTRAINT FK_566C19837294869C FOREIGN KEY (article_id) REFERENCES articles (id)");
-		$this->execMutateSql("ALTER TABLE downloads_slug_history ADD CONSTRAINT FK_F670233AC667AEAB FOREIGN KEY (download_id) REFERENCES downloads (id)");
-		$this->execMutateSql("ALTER TABLE feedback_slug_history ADD CONSTRAINT FK_F0FF9966D249A887 FOREIGN KEY (feedback_id) REFERENCES feedback (id)");
-		$this->execMutateSql("ALTER TABLE news_slug_history ADD CONSTRAINT FK_8A3714CDB5A459A0 FOREIGN KEY (news_id) REFERENCES news (id)");
+        $this->execMutateSql("CREATE TABLE articles_slug_history (id INT AUTO_INCREMENT NOT NULL, article_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_566C1983989D9B62 (slug), INDEX IDX_566C19837294869C (article_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("CREATE TABLE downloads_slug_history (id INT AUTO_INCREMENT NOT NULL, download_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_F670233A989D9B62 (slug), INDEX IDX_F670233AC667AEAB (download_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("CREATE TABLE feedback_slug_history (id INT AUTO_INCREMENT NOT NULL, feedback_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_F0FF9966989D9B62 (slug), INDEX IDX_F0FF9966D249A887 (feedback_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("CREATE TABLE news_slug_history (id INT AUTO_INCREMENT NOT NULL, news_id INT DEFAULT NULL, date_created DATETIME NOT NULL, slug VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_8A3714CD989D9B62 (slug), INDEX IDX_8A3714CDB5A459A0 (news_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE articles_slug_history ADD CONSTRAINT FK_566C19837294869C FOREIGN KEY (article_id) REFERENCES articles (id)");
+        $this->execMutateSql("ALTER TABLE downloads_slug_history ADD CONSTRAINT FK_F670233AC667AEAB FOREIGN KEY (download_id) REFERENCES downloads (id)");
+        $this->execMutateSql("ALTER TABLE feedback_slug_history ADD CONSTRAINT FK_F0FF9966D249A887 FOREIGN KEY (feedback_id) REFERENCES feedback (id)");
+        $this->execMutateSql("ALTER TABLE news_slug_history ADD CONSTRAINT FK_8A3714CDB5A459A0 FOREIGN KEY (news_id) REFERENCES news (id)");
     }
 }

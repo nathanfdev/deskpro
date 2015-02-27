@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -118,7 +117,7 @@ class AgentPermissions
             }
             $arr[$prop] = array();
             foreach ($this->$prop->getNames() as $name) {
-                $arr[$prop][$name] = (bool)$this->$prop->$name;
+                $arr[$prop][$name] = (bool) $this->$prop->$name;
             }
         }
 
@@ -126,7 +125,7 @@ class AgentPermissions
     }
 
     /**
-     * Reads perms in from an array
+     * Reads perms in from an array.
      *
      * @param array $perms
      */
@@ -136,10 +135,12 @@ class AgentPermissions
             if (! $val instanceof PermissionValueInterface) {
                 continue;
             }
-            if (!isset($perms[$prop])) continue;
+            if (!isset($perms[$prop])) {
+                continue;
+            }
 
             foreach ($this->$prop->getNames() as $name) {
-                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
+                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool) $perms[$prop][$name]) : false;
             }
         }
     }

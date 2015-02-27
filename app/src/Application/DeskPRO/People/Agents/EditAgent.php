@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -75,11 +74,6 @@ class EditAgent
     public $emails;
 
     /**
-     * @var string
-     */
-    public $primary_phone_number_text;
-
-    /**
      * @var \Application\DeskPRO\Entity\AgentTeam[]
      */
     public $teams;
@@ -99,17 +93,15 @@ class EditAgent
      */
     public $notification_settings;
 
-
     /**
      * @param Person $person
      */
     public function __construct(Person $person)
     {
-        $this->agent = $person;
-        $this->name = $person->name;
+        $this->agent         = $person;
+        $this->name          = $person->name;
         $this->override_name = $person->override_display_name;
-        $this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
-        $this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
 
         $this->zones = array();
         if ($person->can_admin) {
@@ -138,18 +130,18 @@ class EditAgent
         $this->agent_groups = $person->usergroups->toArray();
 
         $this->notification_settings = array(
-            'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
+            'no_allow_set_email'   => (int) $person->getPref('agent_notif.no_allow_set_email'),
             'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
         );
 
         $this->primary_team = $person->primary_team;
     }
 
-
     /**
      * Saves the agent.
      *
-     * @param  EntityManager $em
+     * @param EntityManager $em
+     *
      * @return Person
      */
     public function save(EntityManager $em)
@@ -170,9 +162,8 @@ class EditAgent
         $agent->name                  = $this->name;
         $agent->override_display_name = $this->override_name ?: '';
 
-        if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
-            $this->primary_phone_number->number = $this->primary_phone_number_text;
-            $agent->setPrimaryPhoneNumber($this->primary_phone_number);
+        if (!PhoneNumbers::looksEmpty($this->primary_phone['number'])) {
+            $agent->setPrimaryPhoneNumber($this->primary_phone);
         } else {
             $agent->setPrimaryPhoneNumber(null);
         }
@@ -185,14 +176,14 @@ class EditAgent
         #------------------------------
 
         foreach ($agent->teams as $team) {
-            /** @var $team AgentTeam */
+            /* @var $team AgentTeam */
             $team->removePerson($agent); // unidirectional
         }
 
         $found_primary = false;
 
         foreach ($this->teams as $team) {
-            /** @var $team AgentTeam */
+            /* @var $team AgentTeam */
             $agent->addTeam($team); // bidirectional
 
             if ($team === $this->primary_team) {
@@ -212,7 +203,7 @@ class EditAgent
         # Groups
         #------------------------------
 
-        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function($item) {
+        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function ($item) {
             return !$item->is_agent_group;
         });
         if ($this->agent_groups instanceof ArrayCollection) {
@@ -231,7 +222,7 @@ class EditAgent
         $del_emails = array_diff($have_emails, $set_emails);
 
         foreach ($add_emails as $email_address) {
-            $email = new PersonEmail();
+            $email               = new PersonEmail();
             $email->person       = $agent;
             $email->email        = $email_address;
             $email->is_validated = true;
@@ -276,7 +267,6 @@ class EditAgent
         $em->flush();
     }
 
-
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -290,20 +280,20 @@ class EditAgent
             'constraints' => array(
                 new Constraints\NotBlank(),
                 new Constraints\Email(),
-            )
+            ),
         )));
 
         $metadata->addPropertyConstraint('emails', new Constraints\Count(array('min' => 1, 'minMessage' => '[emails_count] At least one email address is required')));
 
         $metadata->addPropertyConstraint('teams', new Constraints\All(array(
             'constraints' => array(
-                new DeskproConstraints\AgentTeamConstraint()
-            )
+                new DeskproConstraints\AgentTeamConstraint(),
+            ),
         )));
         $metadata->addPropertyConstraint('agent_groups', new Constraints\All(array(
             'constraints' => array(
-                new DeskproConstraints\AgentGroupConstraint()
-            )
+                new DeskproConstraints\AgentGroupConstraint(),
+            ),
         )));
     }
 }

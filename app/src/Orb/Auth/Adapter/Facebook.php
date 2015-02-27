@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -41,7 +40,7 @@ use Orb\Util\Arrays;
 
 /**
  * Requirements:
- * - Facebook SDK: https://github.com/facebook/php-sdk
+ * - Facebook SDK: https://github.com/facebook/php-sdk.
  */
 class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
@@ -53,7 +52,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     protected $display = 'page';
 
     /**
-     * The facebook object
+     * The facebook object.
+     *
      * @var Facebook
      */
     protected $fb;
@@ -64,15 +64,15 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
      */
     public function __construct($app_id, $app_secret)
     {
-        $this->app_id = $app_id;
+        $this->app_id     = $app_id;
         $this->app_secret = $app_secret;
     }
 
-
     /**
-     * Sets the display context: page or popup
+     * Sets the display context: page or popup.
      *
      * @param $context
+     *
      * @throws \InvalidArgumentException
      */
     public function setDisplayContext($context)
@@ -85,7 +85,6 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->display = $context;
     }
 
-
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
      *
@@ -96,7 +95,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->fb = new \Facebook(
             array(
                 'appId'  => $this->app_id,
-                'secret' => $this->app_secret
+                'secret' => $this->app_secret,
             ),
             $state
         );
@@ -119,10 +118,9 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         // Already a user
         if ($me) {
-
             if ($this->logger) {
                 $this->logger->log(
-                    "No need to redirect, user is already logged in: \n" . trim(
+                    "No need to redirect, user is already logged in: \n".trim(
                         Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")
                     ),
                     Logger::DEBUG
@@ -134,8 +132,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         $redirect_url = $this->fb->getLoginUrl(array(
             'redirect_uri' => $this->getCallbackUrl(),
-            'display' => $this->display,
-            'req_perms' => 'user_about_me,user_birthday,user_website,email',
+            'display'      => $this->display,
+            'req_perms'    => 'user_about_me,user_birthday,user_website,email',
         ));
 
         if ($this->logger) {
@@ -148,8 +146,6 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         return new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
     }
 
-
-
     /**
      * Process the callback and return a final result.
      *
@@ -160,7 +156,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->fb = new \Facebook(
             array(
                 'appId'  => $this->app_id,
-                'secret' => $this->app_secret
+                'secret' => $this->app_secret,
             ),
             $state
         );
@@ -195,7 +191,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         if ($this->logger) {
             $this->logger->log(
-                "Facebook Success: \n" . trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
+                "Facebook Success: \n".trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
@@ -208,7 +204,6 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         return $this->_meToResult($me);
     }
-
 
     protected function _meToResult($me)
     {

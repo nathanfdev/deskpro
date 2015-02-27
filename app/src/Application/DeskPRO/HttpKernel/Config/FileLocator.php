@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage HttpKernel
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpKernel\Config;
@@ -55,8 +52,8 @@ class FileLocator extends BaseFileLocator
     public function locate($file, $currentPath = null, $first = true)
     {
         if ('@' === $file[0]) {
-            if (!$currentPath AND strpos($file, '@TwigBundle') === 0) {
-                $currentPath = DP_ROOT . '/sys/Resources';
+            if (!$currentPath and strpos($file, '@TwigBundle') === 0) {
+                $currentPath = DP_ROOT.'/sys/Resources';
             }
 
             return $this->kernel->locateResource($file, $currentPath, $first);

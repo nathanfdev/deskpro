@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace DeskPRO\Kernel;
 
@@ -38,7 +36,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
-use Application\PortalBundle\HttpCache\PortalHttpCache;
+use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -50,7 +48,7 @@ class KernelBooter
     protected static $_cache_file = null;
 
     /**
-     * Builds the main $DP_CONFIG array from config.php
+     * Builds the main $DP_CONFIG array from config.php.
      *
      * @return mixed
      */
@@ -89,10 +87,10 @@ class KernelBooter
             $debug_dir = dp_get_debug_dir();
 
             if (!is_dir($debug_dir) || !is_writable($debug_dir)) {
-                exit('The debug output directory at ' . $debug_dir . ' does not exist or is not writable.');
+                exit('The debug output directory at '.$debug_dir.' does not exist or is not writable.');
             }
 
-            $file = $debug_dir . DIRECTORY_SEPARATOR . date('YmdHis') . '-' . mt_rand(10000,99999);
+            $file = $debug_dir.DIRECTORY_SEPARATOR.date('YmdHis').'-'.mt_rand(10000, 99999);
 
             ini_set('xdebug.collect_params', 3);
             if (isset($DP_CONFIG['debug']['enable_debug_trace_format'])) {
@@ -100,15 +98,15 @@ class KernelBooter
             }
 
             xdebug_start_trace($file);
-            define('DP_DEBUG_TRACE_FILE', $file . '.xt');
+            define('DP_DEBUG_TRACE_FILE', $file.'.xt');
         }
     }
 
-
     /**
-     * Includes the libraries and autoloading required for the system to boot
+     * Includes the libraries and autoloading required for the system to boot.
      *
      * @param $debug
+     *
      * @return mixed
      */
     public static function bootstrapLib($debug)
@@ -120,10 +118,10 @@ class KernelBooter
 
         $has_loaded = true;
 
-        if ( ($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT . '/sys/bootstrap.php')) && !defined('DP_USE_COMPILED_BOOTSTRAP')) {
-            require(DP_ROOT . '/sys/bootstrap-dev.php');
+        if (($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT.'/sys/bootstrap.php')) && !defined('DP_USE_COMPILED_BOOTSTRAP')) {
+            require DP_ROOT.'/sys/bootstrap-dev.php';
         } else {
-            require(DP_ROOT . '/sys/bootstrap.php');
+            require DP_ROOT.'/sys/bootstrap.php';
         }
 
         if (isset($GLOBALS['DP_AUTOLOADER']) && !dp_get_config('no_use_classmap_file') && file_exists(DP_ROOT.'/sys/cache/classmap.php')) {
@@ -133,20 +131,19 @@ class KernelBooter
             }
         }
 
-        require(DP_ROOT . '/sys/Kernel/compat.php');
-        require(DP_ROOT . '/sys/system.php');
+        require DP_ROOT.'/sys/Kernel/compat.php';
+        require DP_ROOT.'/sys/system.php';
 
         if (array_key_exists('HTTP_X_CODECEPTION_CODECOVERAGE', $_SERVER) && isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG']) {
             define('C3_CODECOVERAGE_MEDIATE_STORAGE', DP_ROOT.'/testing/logs/c3tmp');
             define('C3_CODECEPTION_CONFIG_PATH', DP_ROOT.'/testing/codeception.yml');
             define('C3_CODECOVERAGE_PROJECT_ROOT', DP_ROOT);
-            require(DP_ROOT.'/testing/src/c3.php');
+            require DP_ROOT.'/testing/src/c3.php';
         }
     }
 
-
     /**
-     * Gets the environment ready for execution
+     * Gets the environment ready for execution.
      */
     public static function bootstrapEnv()
     {
@@ -182,9 +179,8 @@ class KernelBooter
         }
     }
 
-
     /**
-     * Boots a web kernel
+     * Boots a web kernel.
      *
      * @param null $request
      */
@@ -194,11 +190,11 @@ class KernelBooter
 
         self::bootstrapConfig();
 
-        $env = 'prod';
+        $env   = 'prod';
         $debug = false;
 
         if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-            $env = 'dev';
+            $env   = 'dev';
             $debug = true;
         }
 
@@ -206,14 +202,14 @@ class KernelBooter
         // defer lib loading until we know we're not serving a cache
 
         if ($request) {
-            $path = $request->getPathInfo();
-            $base_path = $request->getBasePath();
-            $request_uri = $request->getRequestUri();
+            $path           = $request->getPathInfo();
+            $base_path      = $request->getBasePath();
+            $request_uri    = $request->getRequestUri();
             $request_method = $request->getMethod();
         } else {
-            $path = self::getPathInfo();
-            $base_path = self::getBasePath();
-            $request_uri = self::getRequestUri();
+            $path           = self::getPathInfo();
+            $base_path      = self::getBasePath();
+            $request_uri    = self::getRequestUri();
             $request_method = self::getMethod();
         }
 
@@ -272,19 +268,18 @@ class KernelBooter
 
             // Always force full URL with trailing slash
             if (strpos($request_uri, '/index.php/install/') === false) {
-                header('Location: ' . $base_path . '/index.php/install/');
+                header('Location: '.$base_path.'/index.php/install/');
                 exit;
             }
-
         } elseif (preg_match('#^/tech(/|\?|$)#i', $path)) {
-            header('Location: ' . $base_path . '/agent');
+            header('Location: '.$base_path.'/agent');
             exit;
         } elseif (preg_match('#^/admincp(/|\?|$)#i', $path)) {
-            header('Location: ' . $base_path . '/admin');
+            header('Location: '.$base_path.'/admin');
             exit;
         } elseif (preg_match('#^/file.php/?(.*?)$#i', $path, $m)) {
-            $url = $base_path . '/file.php/' . $m[1] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-            header('Location: ' . $url);
+            $url = $base_path.'/file.php/'.$m[1].(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '');
+            header('Location: '.$url);
             exit;
         } else {
             define('DP_INTERFACE', 'user');
@@ -297,87 +292,31 @@ class KernelBooter
             }
 
             try {
-
-                // debug code
-                $boot = $GLOBALS['index_start_time']; // delete this set from index.php!
-                // end debug code
-
-
-                //
-                // boot and run portal
-                //
                 self::bootstrapLib($debug);
                 self::bootstrapEnv();
-                require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
+                require_once DP_ROOT."/sys/Kernel/PortalKernel.php";
                 $kernel = new PortalKernel($env, $debug);
 
                 // add our reverse proxy
-                require_once DP_ROOT . "/src/Application/PortalBundle/HttpCache/PortalHttpCache.php";
+                require_once DP_ROOT."/src/DeskPRO/bundle/PortalBundle/HttpCache/PortalHttpCache.php";
                 $kernel = new PortalHttpCache($kernel);
-                //
 
                 if ('dev' === $env) {
                     Debug::enable();
                 }
 
-                // debug code
-                $start = round(microtime(true) * 1000);
-                // end debug code
-                $request = Request::createFromGlobals();
+                $request  = Request::createFromGlobals();
                 $response = $kernel->handle($request);
-
-
-                //
-                // debug code, erase comments to see (erase from $start variable above, as well)
-                // below: a log from the kernel of cache hits/misses and a simple profile of page load
-                //
-                if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
-                    $end = round(microtime(true) * 1000);
-                    $log = explode(';', $kernel->getLog());
-                    $print_log = "<br><br><br><br><hr><br><h1>Simple Profile</h1><pre>";
-                    $print_log .= "xdebug:             " . (function_exists('xdebug_enable') ? 'enabled' : 'disabled') . "<br>\n";
-                    $print_log .= "kernel env:         " . $env . "<br>\n";
-                    $print_log .= "kernel booter time: " . ((int)$start - (int)$boot) . " ms<br>\n";
-                    $print_log .= "portal kernel time: " . ((int)$end - (int)$start) . " ms<br>\n";
-                    $print_log .= "total time:         <strong>" . ((int)$end - (int)$boot) . ' ms</strong>';
-                    $print_log .= "</pre>";
-                    $print_log .= "<br><hr><br><h1>Master Response Headers</h1><table>";
-                    foreach ($response->headers as $name => $header) {
-                        $print_log .= "<tr><td style=\"min-width: 200px\"><strong>$name</strong></td><td>" . implode(',',$header) . "</td></tr>";
-                    }
-
-                    $print_log .= "</table><br><hr><br><h1>Http Cache Log</h1>";
-                    $print_log .= implode("\n<br>", $log);
-                    $print_log .= "<br><br><br>";
-
-
-                    $content = $response->getContent();
-                    $pos = strripos($content, '</body>');
-                    $content = substr($content, 0, $pos) . $print_log . substr($content, $pos);
-                    $response->setContent($content);
-                    if ($response->headers->has('Content-Length')) {
-                        $content_length = $response->headers->get('Content-Length');
-                        $response->headers->set('Content-Length', $content_length + strlen($print_log));
-                    }
-                }
-                //
-                // end debug code
-                //
 
                 $response->send();
                 $kernel->terminate($request, $response);
-
-
-
-
             } catch (DBALException $e) {
-
                 // note: this try catch block is directly copied from old portal code in this booter, but we added code=0
                 if ($e->getCode() == '0' || $e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
                     // This will show an error page if already installed, so the redirect to install wont happen
                     deskpro_handle_boot_db_exception($e);
 
-                    header('Location: ' . $request->getBasePath() . '/index.php/install/');
+                    header('Location: '.$request->getBasePath().'/index.php/install/');
                     exit;
                 }
                 throw $e;
@@ -414,7 +353,7 @@ class KernelBooter
         dp_pagelog_set('page_url', $request->getRequestUri());
 
         $trust_option = isset($GLOBALS['DP_CONFIG']['trust_proxy_data']) && $GLOBALS['DP_CONFIG']['trust_proxy_data'] ? $GLOBALS['DP_CONFIG']['trust_proxy_data'] : null;
-        $trust_list = array();
+        $trust_list   = array();
         if ($trust_option) {
             if (!is_array($trust_option)) {
                 $trust_option = array($trust_option);
@@ -424,11 +363,11 @@ class KernelBooter
                     $file = substr($opt, 1);
                     // A relative file starts with ~
                     if ($file[0] == '~') {
-                        $file = DP_ROOT . substr($file, 1);
+                        $file = DP_ROOT.substr($file, 1);
                     }
 
                     if (file_exists($file)) {
-                        $inc_opts = @include($file);
+                        $inc_opts = @include $file;
                         if ($inc_opts) {
                             $trust_list = array_merge($trust_list, $inc_opts);
                         }
@@ -467,7 +406,8 @@ class KernelBooter
             if (DP_INTERFACE == 'user') {
                 try {
                     self::_updateCachedFile($response);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
 
             if (defined('DP_REQUEST_ID')) {
@@ -485,7 +425,7 @@ class KernelBooter
                     // This will show an error page if already installed, so the redirect to install wont happen
                     deskpro_handle_boot_db_exception($e);
 
-                    header('Location: ' . $request->getBasePath() . '/index.php/install/');
+                    header('Location: '.$request->getBasePath().'/index.php/install/');
                     exit;
                 }
                 throw $e;
@@ -505,12 +445,12 @@ class KernelBooter
 
         if (!$DP_CONFIG['cache']['page_cache']['enable']) {
             // turned off, don't check anything else
-            return null;
+            return;
         }
 
-        $use_cache = false;
+        $use_cache   = false;
         $language_id = null;
-        $cache_time = 0;
+        $cache_time  = 0;
 
         if ($request_method == 'GET' && !isset($_GET['admin_portal_controls']) && !preg_match('#/widget/chat.html#', $path)) {
             if (!empty($_COOKIE['dp-guest-cache']) || (empty($_COOKIE['dpsid']) && empty($_COOKIE['dpreme']))) {
@@ -533,7 +473,7 @@ class KernelBooter
         }
 
         if (!$use_cache) {
-            return null;
+            return;
         }
 
         if (!$language_id && !empty($_COOKIE['dplid'])) {
@@ -541,8 +481,8 @@ class KernelBooter
         }
 
         if (!$language_id) {
-            $languages = null;
-            $lang_cache_file = dp_get_data_dir() . '/languages.cache';
+            $languages       = null;
+            $lang_cache_file = dp_get_data_dir().'/languages.cache';
             if (file_exists($lang_cache_file)) {
                 $languages = @unserialize(file_get_contents($lang_cache_file));
             }
@@ -551,7 +491,7 @@ class KernelBooter
                 try {
                     $kernel = $get_kernel();
                     $kernel->boot();
-                    $default = App::getSetting('core.default_language_id');
+                    $default   = App::getSetting('core.default_language_id');
                     $languages = App::getDb()->fetchAllKeyed("
                         SELECT *
                         FROM languages
@@ -563,10 +503,10 @@ class KernelBooter
                     }
                 } catch (\Exception $e) {
                     // errored - don't pull from the cache, probably not installed
-                    return null;
+                    return;
                 }
 
-                $cache_slam_file = $lang_cache_file . '.slam';
+                $cache_slam_file = $lang_cache_file.'.slam';
                 if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
                     $slam_fp = @fopen($cache_slam_file, 'w');
                     if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -581,7 +521,7 @@ class KernelBooter
             }
 
             $locales = array('');
-            foreach ($languages AS $language) {
+            foreach ($languages as $language) {
                 $locales[] = $language['locale'];
             }
 
@@ -591,7 +531,7 @@ class KernelBooter
 
             if ($locale) {
                 // we have an exact locale match
-                foreach ($languages AS $language) {
+                foreach ($languages as $language) {
                     if ($language['locale'] === $locale) {
                         $language_id = $language['id'];
                         break;
@@ -599,9 +539,9 @@ class KernelBooter
                 }
             } else {
                 // look for a language match (as there isn't an exact locale match)
-                foreach ($accept_languages AS $accept_language) {
+                foreach ($accept_languages as $accept_language) {
                     $accept_language = substr($accept_language, 0, 2);
-                    foreach ($languages AS $language) {
+                    foreach ($languages as $language) {
                         if (!empty($language['locale']) && substr($language['locale'], 0, 2) == $accept_language) {
                             $language_id = $language['id'];
                             break 2;
@@ -611,26 +551,26 @@ class KernelBooter
             }
 
             if (!$language_id) {
-                $lang = reset($languages);
+                $lang        = reset($languages);
                 $language_id = $lang ? $lang['id'] : 0;
             }
         }
 
         $ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
 
-        $cache_dir = dp_get_tmp_dir() . '/page-cache';
-        $base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request_uri), 0, 35);
-        $scheme_host = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme().'://'.self::getHttpHost());
-        $cache_base_filename = $base . '-' . md5($scheme_host . $request_uri) . '.cache';
-        $cache_filename = $language_id . '-' . $cache_base_filename;
-        $cache_file = $cache_dir . '/' . $cache_filename;
+        $cache_dir           = dp_get_tmp_dir().'/page-cache';
+        $base                = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request_uri), 0, 35);
+        $scheme_host         = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme().'://'.self::getHttpHost());
+        $cache_base_filename = $base.'-'.md5($scheme_host.$request_uri).'.cache';
+        $cache_filename      = $language_id.'-'.$cache_base_filename;
+        $cache_file          = $cache_dir.'/'.$cache_filename;
 
         if (file_exists($cache_file)) {
             $use_cache = false;
             if (time() - filemtime($cache_file) <= $ttl) {
                 $use_cache = true;
             } else {
-                $cache_slam_file = $cache_file . '.slam';
+                $cache_slam_file = $cache_file.'.slam';
                 if (file_exists($cache_slam_file) && time() - filemtime($cache_slam_file) <= 30) {
                     // someone else is going to write it, use the stale data for a bit
                     $use_cache = true;
@@ -651,13 +591,13 @@ class KernelBooter
 
         self::$_cache_file = $cache_base_filename;
 
-        return null;
+        return;
     }
 
     protected static function _updateCachedFile(\Symfony\Component\HttpFoundation\Response $response)
     {
-        $person = App::getCurrentPerson();
-        $logged_in = ($person && $person->getId());
+        $person     = App::getCurrentPerson();
+        $logged_in  = ($person && $person->getId());
         $skip_cache = true;
 
         if ($logged_in) {
@@ -667,7 +607,7 @@ class KernelBooter
         } else {
             if (isset($GLOBALS['DP_SET_SKIP_CACHE']) && $GLOBALS['DP_SET_SKIP_CACHE']) {
                 global $DP_CONFIG;
-                $ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
+                $ttl        = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
                 $cache_time = time() + $ttl;
             } else {
                 $cache_time = !empty($_COOKIE['dp-guest-cache']) ? intval($_COOKIE['dp-guest-cache']) : 0;
@@ -678,21 +618,21 @@ class KernelBooter
 
             $skip_cache = ($cache_time > 0);
 
-            $value = $cache_time . '-' . App::getLanguage()->getId();
+            $value = $cache_time.'-'.App::getLanguage()->getId();
             if (empty($_COOKIE['dp-guest-cache']) || $value !== $_COOKIE['dp-guest-cache']) {
                 \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dp-guest-cache', $value, 0)->send();
             }
         }
 
         if (!$logged_in && !$skip_cache && !$response->headers->has('X-DeskPRO-Private') && self::$_cache_file && strpos($response->headers->get('Content-Type'), 'text/html') === 0 && $response->getStatusCode() == 200) {
-            $cache_dir = dp_get_tmp_dir() . '/page-cache';
+            $cache_dir = dp_get_tmp_dir().'/page-cache';
             if (!is_dir($cache_dir)) {
                 @mkdir($cache_dir, 0777);
             }
 
-            $cache_filename = $cache_dir . '/' . App::getLanguage()->getId() . '-' . self::$_cache_file;
+            $cache_filename = $cache_dir.'/'.App::getLanguage()->getId().'-'.self::$_cache_file;
 
-            $cache_slam_file = $cache_filename . '.slam';
+            $cache_slam_file = $cache_filename.'.slam';
             if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
                 $slam_fp = @fopen($cache_slam_file, 'w');
                 if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -701,10 +641,10 @@ class KernelBooter
                         'app_secret'   => App::$container ? App::$container->getSetting('core.app_secret') : null,
                         'headers'      => $response->headers->all(),
                         'content'      => $response->getContent(),
-                        'compressed'   => false
+                        'compressed'   => false,
                     );
                     if (function_exists('gzcompress')) {
-                        $store['content'] = gzcompress($store['content']);
+                        $store['content']    = gzcompress($store['content']);
                         $store['compressed'] = true;
                     }
 
@@ -725,7 +665,7 @@ class KernelBooter
             $message = 'Our helpdesk is temporarily offline for maintenance.';
         }
 
-        $content = str_replace('<!--DP_OFFLINE_CACHE_PAGE_NOTE-->', "<div id=\"dp-offline-cache-note\">" . ($message ? "$message<br /><br />" : '') . "This is a cached page. Live pages will automatically return when the helpdesk comes back online.</div>", $content);
+        $content = str_replace('<!--DP_OFFLINE_CACHE_PAGE_NOTE-->', "<div id=\"dp-offline-cache-note\">".($message ? "$message<br /><br />" : '')."This is a cached page. Live pages will automatically return when the helpdesk comes back online.</div>", $content);
         $content = preg_replace(
             '/<!--DP_OFFLINE_CACHE_REMOVE_START-->.*<!--DP_OFFLINE_CACHE_REMOVE_END-->/siU',
             '',
@@ -734,7 +674,6 @@ class KernelBooter
 
         return $content;
     }
-
 
     public static function prepareCachedOutput(array $res)
     {
@@ -748,12 +687,12 @@ class KernelBooter
                 require_once DP_ROOT.'/src/Orb/Util/Strings.php';
             }
             $app_secret = $res['app_secret'];
-            $content = preg_replace_callback('#<!\-\-DP_FORM_TOKEN\((.*?), (.*?)\)\-\->.*?<!\-\-DP_FORM_TOKEN_END\-\->#s', function ($m) use ($app_secret) {
+            $content    = preg_replace_callback('#<!\-\-DP_FORM_TOKEN\((.*?), (.*?)\)\-\->.*?<!\-\-DP_FORM_TOKEN_END\-\->#s', function ($m) use ($app_secret) {
                 $name = $m[1];
                 $field_name = $m[2];
 
-                $html = '<input type="hidden" name="' . $field_name . '" value="STATIC_' . \Orb\Util\Util::generateStaticSecurityToken(md5($app_secret . $name), 43200) . '" />';
-                $html .= '<input type="hidden" name="_rt" value="STATIC_' . \Orb\Util\Util::generateStaticSecurityToken(md5($app_secret . 'request_token'), 43200) . '" class="dp_request_token" />';
+                $html = '<input type="hidden" name="'.$field_name.'" value="STATIC_'.\Orb\Util\Util::generateStaticSecurityToken(md5($app_secret.$name), 43200).'" />';
+                $html .= '<input type="hidden" name="_rt" value="STATIC_'.\Orb\Util\Util::generateStaticSecurityToken(md5($app_secret.'request_token'), 43200).'" class="dp_request_token" />';
 
                 return $html;
             }, $content);
@@ -762,9 +701,8 @@ class KernelBooter
         return $content;
     }
 
-
     /**
-     * Boots the CLI
+     * Boots the CLI.
      *
      * @param string $env
      * @param bool   $debug
@@ -792,7 +730,7 @@ class KernelBooter
                 self::bootstrapConfig();
 
                 if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                    $env = 'dev';
+                    $env   = 'dev';
                     $debug = true;
                 }
 
@@ -800,12 +738,12 @@ class KernelBooter
                 self::bootstrapEnv();
 
                 $input = new ArgvInput();
-                $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                $env   = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
                 $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
                         array('--no-debug', '')
                     ) && $env !== 'prod';
 
-                require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
+                require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
                 $kernel = new PortalKernel($env, $debug);
 
                 $app = new Application($kernel);
@@ -844,9 +782,8 @@ class KernelBooter
         }
     }
 
-
     /**
-     * Boots the CLI and runs the cron command
+     * Boots the CLI and runs the cron command.
      *
      * @param string $env
      * @param bool   $debug
@@ -866,15 +803,15 @@ class KernelBooter
             return;
         }
 
-        $lock_file = dp_get_tmp_dir() . '/cron.lock';
-        $lock_fp = null;
+        $lock_file = dp_get_tmp_dir().'/cron.lock';
+        $lock_fp   = null;
 
         // Use a file lock for better "cron is still running" detection
         if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
             if (!in_array('-f', $_SERVER['argv']) && !in_array('--force', $_SERVER['argv'])) {
                 $skip_lock_err = false;
                 if (file_exists($lock_file)) {
-                    $t = (int)file_get_contents($lock_file);
+                    $t = (int) file_get_contents($lock_file);
                     if ($t < time()-900) {
                         $skip_lock_err = true;
                         @unlink($lock_file);
@@ -907,7 +844,9 @@ class KernelBooter
             if (\Application\DeskPRO\App::getSetting('core.upgrade_time') && \Application\DeskPRO\App::getSetting('core.upgrade_time') <= time()) {
                 $do_upgrade = true;
             }
-        } catch (\Exception $e) {throw $e;}
+        } catch (\Exception $e) {
+            throw $e;
+        }
 
         $argv = $_SERVER['argv'];
         array_shift($argv); // remove cron.php
@@ -921,7 +860,9 @@ class KernelBooter
                 if (\Application\DeskPRO\App::getSetting('core.db_collation_change')) {
                     $do_collation_change = \Application\DeskPRO\App::getSetting('core.db_collation_change');
                 }
-            } catch (\Exception $e) {throw $e;}
+            } catch (\Exception $e) {
+                throw $e;
+            }
 
             if ($do_collation_change) {
                 \Application\DeskPRO\App::getDb()->executeQuery("
@@ -940,8 +881,8 @@ class KernelBooter
             $twitter_ping = \Application\DeskPRO\App::getSetting('core.twitter_ping');
             if (!$twitter_ping || $twitter_ping < time() - 60) {
                 if (\Application\DeskPRO\App::getDb()->fetchColumn("SELECT COUNT(*) FROM twitter_accounts")) {
-                    if (file_exists(dp_get_data_dir() . '/twitter.pid')) {
-                        $twitter_pid = intval(file_get_contents(dp_get_data_dir() . '/twitter.pid'));
+                    if (file_exists(dp_get_data_dir().'/twitter.pid')) {
+                        $twitter_pid = intval(file_get_contents(dp_get_data_dir().'/twitter.pid'));
                     } else {
                         $twitter_pid = null;
                     }
@@ -949,13 +890,13 @@ class KernelBooter
                     if ($twitter_pid !== 0) {
                         // need to restart the twitter runner in the background
 
-                        $file = escapeshellarg(DP_ROOT . '/bin/twitter.php');
+                        $file     = escapeshellarg(DP_ROOT.'/bin/twitter.php');
                         $php_path = dp_get_php_path(false);
 
                         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                             // this is needed as we need a fake window to hide the process
                             $php_path = str_replace('php-win.exe', 'php.exe', $php_path);
-                            $file = str_replace('/', '\\', $file);
+                            $file     = str_replace('/', '\\', $file);
 
                             if (class_exists('\COM', false)) {
                                 $shell = new \COM("WScript.Shell");
@@ -976,17 +917,17 @@ class KernelBooter
             $index_reset = \Application\DeskPRO\App::getSetting('elastica.requires_reset');
             if ($index_reset) {
                 try {
-                    $id = mt_rand(10000,99999);
+                    $id = mt_rand(10000, 99999);
                     \Application\DeskPRO\App::getDb()->insertIgnore('settings', array('name'  => 'elastica.requires_reset_started', 'value' => $id));
 
-                    $file = escapeshellarg(realpath(DP_ROOT . '/../cmd.php'));
-                    $args = 'dp:elastica:populate --auto-reset ' . $id;
+                    $file     = escapeshellarg(realpath(DP_ROOT.'/../cmd.php'));
+                    $args     = 'dp:elastica:populate --auto-reset '.$id;
                     $php_path = dp_get_php_path(false);
 
                     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                         // this is needed as we need a fake window to hide the process
                         $php_path = str_replace('php-win.exe', 'php.exe', $php_path);
-                        $file = str_replace('/', '\\', $file);
+                        $file     = str_replace('/', '\\', $file);
 
                         if (class_exists('\COM', false)) {
                             $shell = new \COM("WScript.Shell");
@@ -997,7 +938,8 @@ class KernelBooter
                     } else {
                         exec("nohup $php_path $file $args > /dev/null 2> /dev/null &");
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
@@ -1005,7 +947,7 @@ class KernelBooter
 
         $GLOBALS['DP_IS_IN_CLI'] = true;
         $app->setAutoExit(false);
-        $return = $app->run($input);
+        $return                  = $app->run($input);
         $GLOBALS['DP_IS_IN_CLI'] = false;
 
         if ($lock_fp) {
@@ -1017,9 +959,8 @@ class KernelBooter
         return $return;
     }
 
-
     /**
-     * Boot tests
+     * Boot tests.
      */
     public static function bootTests()
     {
@@ -1030,9 +971,8 @@ class KernelBooter
         KernelBooter::bootstrapEnv();
     }
 
-
     /**
-     * Boots the CLI runs the import CLI command
+     * Boots the CLI runs the import CLI command.
      *
      * @param string $env
      * @param bool   $debug
@@ -1057,16 +997,15 @@ class KernelBooter
         array_unshift($argv, 'import.php', 'dp:import', '--run'); // so we can add the command name in the right spot
         $input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
-        $GLOBALS['DP_IS_IN_CLI'] = true;
+        $GLOBALS['DP_IS_IN_CLI']  = true;
         $GLOBALS['DP_IS_INSTALL'] = true;
         $app->run($input);
-        $GLOBALS['DP_IS_IN_CLI'] = false;
+        $GLOBALS['DP_IS_IN_CLI']  = false;
         $GLOBALS['DP_IS_INSTALL'] = false;
     }
 
-
     /**
-     * Boots the CLI runs the upgrade CLI command
+     * Boots the CLI runs the upgrade CLI command.
      *
      * @param string $env
      * @param bool   $debug
@@ -1082,19 +1021,19 @@ class KernelBooter
         array_unshift($argv, 'upgrade.php', 'dp:upgrade'); // so we can add the command name in the right spot
         $input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
-        $GLOBALS['DP_IS_IN_CLI'] = true;
+        $GLOBALS['DP_IS_IN_CLI']  = true;
         $GLOBALS['DP_IS_INSTALL'] = true;
         $app->run($input);
-        $GLOBALS['DP_IS_IN_CLI'] = false;
+        $GLOBALS['DP_IS_IN_CLI']  = false;
         $GLOBALS['DP_IS_INSTALL'] = false;
     }
 
-
     /**
-     * Creates a CLI kernel, and create an console app
+     * Creates a CLI kernel, and create an console app.
      *
-     * @param  string                                              $env
-     * @param  bool                                                $debug
+     * @param string $env
+     * @param bool   $debug
+     *
      * @return \Symfony\Bundle\FrameworkBundle\Console\Application
      */
     public static function getCliApp($mode, $env = 'prod', $debug = false, $enforce_offline_mode = false)
@@ -1104,7 +1043,7 @@ class KernelBooter
         self::bootstrapConfig();
 
         if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-            $env = 'dev';
+            $env   = 'dev';
             $debug = true;
         }
 
@@ -1126,7 +1065,7 @@ class KernelBooter
                     echo "Upgrade pending\n";
                 }
 
-                return null;
+                return;
             }
             if ($enforce_offline_mode || ($mode == 'cron' && !\Application\DeskPRO\App::getSetting('core.setup_initial'))) {
                 if ($kernel->isHelpdeskOffline()) {
@@ -1134,7 +1073,7 @@ class KernelBooter
                         echo "Helpdesk offline\n";
                     }
 
-                    return null;
+                    return;
                 }
             }
         } catch (\Doctrine\DBAL\DBALException $e) {
@@ -1163,7 +1102,7 @@ class KernelBooter
     }
 
     /**
-     * Ensures the current invocation is via the command-line
+     * Ensures the current invocation is via the command-line.
      */
     public static function ensureCli()
     {
@@ -1182,10 +1121,10 @@ class KernelBooter
     {
         global $DP_CONFIG;
         $cache_dir = DP_ROOT.'/sys/cache';
-        $web_dir = realpath(DP_ROOT . '/../web');
+        $web_dir   = realpath(DP_ROOT.'/../web');
 
         $offline = false;
-        if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+        if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger')) {
             $offline = true;
         }
 
@@ -1193,7 +1132,7 @@ class KernelBooter
         # Prod mode: make sure built
         #------------------------------
 
-        if ($env == 'prod' && (!is_dir($cache_dir . '/prod'))) {
+        if ($env == 'prod' && (!is_dir($cache_dir.'/prod'))) {
             if (php_sapi_name() == 'cli') {
                 if ($offline) {
                     echo HelpdeskOfflineMessage::getOfflineMessage();
@@ -1244,7 +1183,6 @@ HTML;
         #------------------------------
         # Dev mode, make sure cache dir writable
         #------------------------------
-
         } elseif ($env == 'dev' && (!is_dir($cache_dir) || !is_writable($cache_dir))) {
             if ($offline) {
                 echo HelpdeskOfflineMessage::getOfflineMessage();
@@ -1280,7 +1218,6 @@ HTML;
         #------------------------------
         # Dev mode, not using raw assets, no build files
         #------------------------------
-
         } elseif ($env == 'dev' && (empty($DP_CONFIG['debug']['raw_assets']) && !is_file($web_dir.'/build/js/agent-all.js'))) {
             if (php_sapi_name() == 'cli') {
                 if ($offline) {
@@ -1390,7 +1327,7 @@ HTML;
             return $requestUri;
         }
 
-        self::$path_info = (string)$pathInfo;
+        self::$path_info = (string) $pathInfo;
 
         return self::$path_info;
     }
@@ -1423,15 +1360,15 @@ HTML;
         } else {
             // Backtrack up the script_filename to find the portion matching
             // php_self
-            $path	= (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '');
-            $file	= (isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '');
-            $segs	= explode('/', trim($file, '/'));
-            $segs	= array_reverse($segs);
+            $path    = (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '');
+            $file    = (isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '');
+            $segs    = explode('/', trim($file, '/'));
+            $segs    = array_reverse($segs);
             $index   = 0;
-            $last	= count($segs);
+            $last    = count($segs);
             $baseUrl = '';
             do {
-                $seg	 = $segs[$index];
+                $seg     = $segs[$index];
                 $baseUrl = '/'.$seg.$baseUrl;
                 ++$index;
             } while (($last > $index) && (false !== ($pos = $strpos($path, $baseUrl))) && (0 != $pos));
@@ -1483,7 +1420,7 @@ HTML;
         }
 
         $filename = isset($_SERVER['SCRIPT_FILENAME']) ? basename($_SERVER['SCRIPT_FILENAME']) : '';
-        $baseUrl = self::getBaseUrl();
+        $baseUrl  = self::getBaseUrl();
         if (empty($baseUrl)) {
             return '';
         }
@@ -1626,7 +1563,7 @@ HTML;
             return self::$languages;
         }
 
-        $languages = self::splitHttpAcceptHeader(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '');
+        $languages       = self::splitHttpAcceptHeader(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '');
         self::$languages = array();
         foreach ($languages as $lang => $q) {
             if (strstr($lang, '-')) {
@@ -1668,7 +1605,7 @@ HTML;
         foreach (array_filter(explode(',', $header)) as $value) {
             // Cut off any q-value that might come after a semi-colon
             if (preg_match('/;\s*(q=.*$)/', $value, $match)) {
-                $q	 = (float) substr(trim($match[1]), 2);
+                $q     = (float) substr(trim($match[1]), 2);
                 $value = trim(substr($value, 0, -strlen($match[0])));
             } else {
                 $q = 1;
@@ -1686,7 +1623,7 @@ HTML;
     }
 
     /**
-     * Modified to take 2 args
+     * Modified to take 2 args.
      *
      * @see \Symfony\Component\HttpFoundation\Request
      */
@@ -1710,7 +1647,7 @@ HTML;
         if (!isset($GLOBALS['DP_DB_CON']['db'])) {
             return;
         }
-        $db = $GLOBALS['DP_DB_CON']['db'];
+        $db  = $GLOBALS['DP_DB_CON']['db'];
         $row = array(
             'date_created'  => gmdate('Y-m-d H:i:s'),
             'request_id'    => dp_pagelog_get('request_id'),
@@ -1753,18 +1690,22 @@ HTML;
             $set_time,
             "$date_str:00:00",
             "$date_str:59:59",
-            $request_id
+            $request_id,
         ));
     }
 
     /**#@+
      * Handling of shutdown stack and xdebug traces
      */
-    private static function DeskPRO_Done_MarkerCheck() {}
+    private static function DeskPRO_Done_MarkerCheck()
+    {
+    }
     public static function DeskPRO_Done()
     {
         static $called = false;
-        if ($called) return;
+        if ($called) {
+            return;
+        }
         $called = true;
 
         \DpShutdown::run();
@@ -1775,7 +1716,8 @@ HTML;
             }
             try {
                 call_user_func(array($save_pagelog_info, 'pagelogSaveStat'));
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             $m = null;
             if (isset($_REQUEST['__dp_reqtime'])) {
@@ -1783,11 +1725,12 @@ HTML;
             }
             if (isset($_REQUEST['__dp_reqtime']) && preg_match('#^([a-zA-Z0-9_]+)_t([0-9_]+)$#', $_REQUEST['__dp_reqtime'], $m)) {
                 $request_id = $m[1];
-                $set_time = floatval(str_replace('_', '.', $m[2]));
+                $set_time   = floatval(str_replace('_', '.', $m[2]));
                 if ($request_id && $set_time > 0.000) {
                     try {
                         call_user_func(array($save_pagelog_info, 'pagelogUpdateUsertime'), $request_id, $set_time);
-                    } catch (\Exception $e) {}
+                    } catch (\Exception $e) {
+                    }
                 }
             }
         }
@@ -1795,7 +1738,9 @@ HTML;
         if (defined('DP_APC_STATS_KEY')) {
             if (isset($GLOBALS['DP_QUERY_COUNT'])) {
                 $val = @apc_fetch(DP_APC_STATS_KEY.'.query_count');
-                if (!$val) $val = array();
+                if (!$val) {
+                    $val = array();
+                }
 
                 $time = intval(date('YmdH'));
                 if (!isset($val[$time])) {
@@ -1820,7 +1765,7 @@ HTML;
         self::DeskPRO_Done_MarkerCheck();
         xdebug_stop_trace();
 
-        if (isset($GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) AND $GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) {
+        if (isset($GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) and $GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) {
             return;
         }
 
@@ -1845,6 +1790,7 @@ HTML;
      * @param $env
      * @param $debug
      * @param $DP_CONFIG
+     *
      * @return array
      */
     protected static function _oldUserInterfaceBootCode(
@@ -1876,13 +1822,13 @@ HTML;
 
         if ($res) {
             header('HTTP/1.1 200 OK');
-            foreach ($res['headers'] AS $key => $headers) {
-                foreach ($headers AS $val) {
+            foreach ($res['headers'] as $key => $headers) {
+                foreach ($headers as $val) {
                     header("$key: $val");
                 }
             }
 
-            if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+            if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger')) {
                 $content = KernelBooter::prepareCachedOutputForOffline($res['content']);
             } else {
                 $content = KernelBooter::prepareCachedOutput($res);
@@ -1892,18 +1838,18 @@ HTML;
             global $DP_CONFIG;
             if (!empty($DP_CONFIG['cache']['page_cache']['enable_hit_log'])) {
                 if (empty($DP_CONFIG['cache']['page_cache']['hit_log_file'])) {
-                    $hit_log = dp_get_log_dir() . '/user-page-cache-hit.log';
+                    $hit_log = dp_get_log_dir().'/user-page-cache-hit.log';
                 } else {
                     $hit_log = $DP_CONFIG['cache']['page_cache']['hit_log_file'];
                 }
 
                 $fp = @fopen($hit_log, 'a');
 
-                $scheme_host = ($request ? $request->getScheme() . '://' . $request->getHttpHost() : self::getScheme(
-                    ) . '://' . self::getHttpHost());
+                $scheme_host = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme(
+                    ).'://'.self::getHttpHost());
 
                 $time = sprintf('%.4f', microtime(true) - DP_START_TIME);
-                fwrite($fp, "[" . gmdate('Y-m-d H:i:s') . "] $scheme_host$request_uri (time: $time)\n");
+                fwrite($fp, "[".gmdate('Y-m-d H:i:s')."] $scheme_host$request_uri (time: $time)\n");
                 fclose($fp);
             }
 
@@ -1914,3 +1860,4 @@ HTML;
     }
     /**#@-*/
 }
+

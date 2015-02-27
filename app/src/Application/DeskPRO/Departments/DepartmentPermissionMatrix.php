@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Departments;
@@ -41,9 +39,10 @@ use Application\DeskPRO\People\PermissionMatrix;
 class DepartmentPermissionMatrix extends PermissionMatrix
 {
     /**
-     * Get an array of DepartmentPermission entities for the current permission set on the specified departmetn
+     * Get an array of DepartmentPermission entities for the current permission set on the specified departmetn.
      *
-     * @param  Department $department
+     * @param Department $department
+     *
      * @return array
      */
     public function getPermRecords(Department $department)
@@ -85,8 +84,9 @@ class DepartmentPermissionMatrix extends PermissionMatrix
      * array('create' => array(...), 'remove' => array(...))
      * </code>
      *
-     * @param  Department    $department
-     * @param  EntityManager $em
+     * @param Department    $department
+     * @param EntityManager $em
+     *
      * @return array
      */
     public function getDiff(Department $department, EntityManager $em)

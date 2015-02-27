@@ -26,20 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
-
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDefPerson;
 
 /**
- * Merges custom fields
+ * Merges custom fields.
  */
 class CustomField extends PropertyAbstract
 {
@@ -82,8 +80,8 @@ class CustomField extends PropertyAbstract
 
         // Children means we can potentially merge selections
         } else {
-            $multiple = $this->field->getOption('multiple');
-            $hasValue = false;
+            $multiple      = $this->field->getOption('multiple');
+            $hasValue      = false;
             $hasOtherValue = false;
             foreach ($this->field->children as $child) {
                 if ($this->person->getCustomDataForField($child)) {
@@ -97,7 +95,7 @@ class CustomField extends PropertyAbstract
             if ($this->strategy == self::STRATEGY_COMBINE) {
                 foreach ($this->field->children as $child) {
                     // Ignore if left already has a value
-                    $exist = $this->person->getCustomDataForField($child);
+                    $exist       = $this->person->getCustomDataForField($child);
                     $other_exist = $this->other_person->getCustomDataForField($child);
                     if ($exist) {
                         continue;
@@ -132,12 +130,12 @@ class CustomField extends PropertyAbstract
 
     protected function _addCustomData(CustomDataPerson $data)
     {
-        $new_data = new CustomDataPerson();
-        $new_data->value = $data->value;
-        $new_data->input = $data->input;
-        $new_data->field = $data->field;
+        $new_data             = new CustomDataPerson();
+        $new_data->value      = $data->value;
+        $new_data->input      = $data->input;
+        $new_data->field      = $data->field;
         $new_data->root_field = $data->root_field;
-        $new_data->person = $this->person;
+        $new_data->person     = $this->person;
 
         $this->person->addCustomData($new_data);
     }

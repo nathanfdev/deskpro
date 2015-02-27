@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Description of layout of the user portal
+ * Description of layout of the user portal.
  *
  * = $data format =
  * <pre>
@@ -55,17 +54,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * format which will be converted into camel case (some_type to SomeType).
  *
  * Keys in the data array are insignificant. They may be used to keep track of things in the designer.
- *
  */
 class PortalPageDisplay extends PageDisplayAbstract
 {
     /**
-     * Portal (main page)
+     * Portal (main page).
      */
     const SECTION_PORTAL = 'portal';
 
     /**
-     * Across the top (not columned)
+     * Across the top (not columned).
      */
     const SECTION_PAGETOP = 'pagetop';
 
@@ -85,7 +83,7 @@ class PortalPageDisplay extends PageDisplayAbstract
     const SECTION_FOOTER = 'footer';
 
     /**
-     * The class handler
+     * The class handler.
      *
      * @var string
      */
@@ -139,14 +137,15 @@ class PortalPageDisplay extends PageDisplayAbstract
     }
 
     /**
-     * @param  string|null      $k Specific key to fetch
+     * @param string|null $k Specific key to fetch
+     *
      * @return array|mixed|null
      */
     public function getData($k = null)
     {
         if ($k !== null) {
             if (!$this->data) {
-                return null;
+                return;
             }
 
             return isset($this->data[$k]) ? $this->data[$k] : null;

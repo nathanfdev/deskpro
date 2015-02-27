@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Loader;
@@ -78,13 +75,13 @@ class TemplateLocator extends BaseTemplateLocator
             $bundle = null;
         }
         if (!$bundle) {
-            $tpl = ltrim($key, ':');
+            $tpl   = ltrim($key, ':');
             $parts = explode(':', $tpl, 2);
             if (isset($parts[1])) {
                 $native_name = $parts[0];
-                $file_name = $parts[1];
+                $file_name   = $parts[1];
 
-                $path = DP_ROOT.'/apps/' . $native_name . '/native/Resources/views/' . ltrim($file_name, '/');
+                $path = DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/'.ltrim($file_name, '/');
                 if (file_exists($path)) {
                     $this->cache[$key] = array('path' => $path);
 
@@ -95,7 +92,7 @@ class TemplateLocator extends BaseTemplateLocator
 
         try {
             $this->cache[$key] = array(
-                'path' => $this->locator->locate($template->getPath(), $currentPath)
+                'path' => $this->locator->locate($template->getPath(), $currentPath),
             );
             $this->logUsedTemplate($key, $this->cache[$key]['path']);
 
@@ -110,7 +107,7 @@ class TemplateLocator extends BaseTemplateLocator
         $this->loaded_list[] = array(
             'key'    => $key,
             'path'   => $path,
-            'origin' => null
+            'origin' => null,
         );
     }
 

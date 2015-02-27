@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerMysqlStatus;
@@ -41,7 +39,6 @@ class ServerMysqlStatus
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     public function __construct(EntityManager $em)
@@ -52,7 +49,6 @@ class ServerMysqlStatus
     /**
      * @return array
      */
-
     public function getMysqlStatus()
     {
         return $this->_getInfo();
@@ -61,31 +57,23 @@ class ServerMysqlStatus
     /**
      * @return array
      */
-
     protected function _getInfo()
     {
         try {
-
             $mysql_processes = App::getDb()->fetchAll("SHOW PROCESSLIST");
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $mysql_processes = null;
         }
 
         try {
-
             $mysql_status = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $mysql_status = null;
         }
 
         return array(
             'mysql_processes' => $mysql_processes,
-            'mysql_status'    => $mysql_status
+            'mysql_status'    => $mysql_status,
         );
-
     }
 }

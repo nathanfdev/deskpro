@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\UserBundle\Controller;
 
 /**
  * This is just an interface used in AbstractController to
- * require a logged-in user in preAction
+ * require a logged-in user in preAction.
  */
 interface RequireUserInterface
 {
-
 }

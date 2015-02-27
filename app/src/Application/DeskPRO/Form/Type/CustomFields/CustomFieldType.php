@@ -33,11 +33,11 @@ use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 abstract class CustomFieldType extends AbstractType implements EventSubscriberInterface
@@ -70,10 +70,10 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
         $resolver
             ->setDefaults(array(
                 'data_class' => 'Application\DeskPRO\Entity\CustomFieldData',
-                'label' => $this->definition['title'],
-                'attr' => array(
+                'label'      => $this->definition['title'],
+                'attr'       => array(
                     'data-definition-type' => $this->getName(),
-                    'data-definition-id' => $this->definition['id'],
+                    'data-definition-id'   => $this->definition['id'],
                 ),
                 'allow_edit' => false,
             ))
@@ -84,9 +84,9 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
                 'context', 'allow_edit',
             ))
             ->setAllowedTypes(array(
-                'owner' => 'Application\DeskPRO\Domain\DomainObject',
+                'owner'     => 'Application\DeskPRO\Domain\DomainObject',
                 'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-                'context' => array('null', 'Application\DeskPRO\Domain\DomainObject'),
+                'context'   => array('null', 'Application\DeskPRO\Domain\DomainObject'),
             ));
     }
 
@@ -95,7 +95,7 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
      */
     protected function getValueOptions()
     {
-        $options = $this->definition['options'];
+        $options          = $this->definition['options'];
         $options['label'] = false;
         unset($options['allow_edit']);
 
@@ -109,7 +109,7 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['def'] = $this->definition;
+        $view->vars['def']           = $this->definition;
         $view->vars['rendered_data'] = null;
 
         if (!($data = $form->getData()) instanceof CustomFieldData) {
@@ -156,8 +156,8 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 
         if ($data->getData()) {
             $persister->add($data);
-            $data->owner = $owner;
-            $data->definition = $this->definition;
+            $data->owner           = $owner;
+            $data->definition      = $this->definition;
             $data->root_definition = $this->definition;
         } else {
             $persister->remove($data);
@@ -170,7 +170,7 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
     public static function getSubscribedEvents()
     {
         return array(
-            FormEvents::PRE_SUBMIT => 'onPreSubmit',
+            FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
         );
     }

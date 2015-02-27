@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -59,27 +56,26 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     protected function init()
     {
-
     }
-
 
     /**
      * Find a user identity just by an email address.
      *
-     * @param  string                  $input
+     * @param string $input
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($input)
     {
-        return null;
+        return;
     }
-
 
     /**
      * Given an identity returned from an auth adapter, get the mapped fields that we can apply
      * to a Person record. For example, email addresses or names.
      *
-     * @param  \Orb\Auth\Identity $identity
+     * @param \Orb\Auth\Identity $identity
+     *
      * @return array
      */
     public function getFieldsFromIdentity(Identity $identity)
@@ -87,9 +83,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
         return array();
     }
 
-
     /**
-     * @param  array  $info
+     * @param array $info
+     *
      * @return string
      */
     public function getDisplayName(array $info)
@@ -104,9 +100,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
         return '';
     }
 
-
     /**
-     * @param  array  $info
+     * @param array $info
+     *
      * @return string
      */
     public function getDisplayLink(array $info)
@@ -132,7 +128,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     public function applyResultToUser()
     {
-
     }
 
     /**
@@ -142,7 +137,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
      */
     public function getAgentLogoutRedirectUrl()
     {
-
     }
 
     /**
@@ -152,7 +146,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
      */
     public function getUserLogoutRedirectUrl()
     {
-
     }
 
     /**
@@ -169,7 +162,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)
@@ -179,6 +173,6 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     public function getCodeName()
     {
-        return join('', array_slice(explode('\\', get_called_class()), -1));
+        return implode('', array_slice(explode('\\', get_called_class()), -1));
     }
 }

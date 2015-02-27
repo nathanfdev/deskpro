@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
-use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -462,8 +459,9 @@ class MainController extends AbstractController
     }
 
     /**
-     * @param  string $type
-     * @param  array  $results
+     * @param string $type
+     * @param array  $results
+     *
      * @return array
      */
     private function renderSearchResults($type, array $results)
@@ -471,7 +469,7 @@ class MainController extends AbstractController
         $rows = array();
 
         $render_person = function (Person $person, array $counts = array()) {
-            $data = array();
+            $data                   = array();
             $data['picture_url']    = $person->getPictureUrl();
             $data['picture_url_80'] = $person->getPictureUrl(80);
             $data['picture_url_64'] = $person->getPictureUrl(64);
@@ -587,7 +585,7 @@ class MainController extends AbstractController
     public function getPersonTicketsAction(Request $request)
     {
         if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $sort = 'date_created';
@@ -596,8 +594,8 @@ class MainController extends AbstractController
         }
 
         /** @var TicketRepository $rep */
-        $rep = $this->em->getRepository('DeskPRO:Ticket');
-        $limit = $request->get('all') ? null : 15;
+        $rep     = $this->em->getRepository('DeskPRO:Ticket');
+        $limit   = $request->get('all') ? null : 15;
         $tickets = $rep->getPersonTickets($person, $limit, $sort);
 
         return $this->createJsonResponse(array(

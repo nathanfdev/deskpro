@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -91,7 +90,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     protected $original_blob;
 
     /**
-     * The storage adapter that knows how to load this file
+     * The storage adapter that knows how to load this file.
      *
      * @var string
      */
@@ -130,28 +129,28 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     protected $save_path = null;
 
     /**
-     * The HTTP link to download the file
+     * The HTTP link to download the file.
      *
      * @var string
      */
     protected $file_url = null;
 
     /**
-     * The original filename
+     * The original filename.
      *
      * @var string
      */
     protected $filename = null;
 
     /**
-     * The file size
+     * The file size.
      *
      * @var int
      */
     protected $filesize = 0;
 
     /**
-     * The files mimetype
+     * The files mimetype.
      *
      * @var string
      */
@@ -170,25 +169,23 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Is this a media upload (appears in the media browser etc). These are files that were
      * uploaded and are attached to things.
-     *
      */
     protected $is_media_upload = false;
 
     /**
-     * The title of this file used in interfaces if its a media upload
-     *
+     * The title of this file used in interfaces if its a media upload.
      */
     protected $title = '';
 
     /**
-     * If this type of file has dimentions, the width
+     * If this type of file has dimentions, the width.
      *
      * @var int
      */
     protected $dim_w = 0;
 
     /**
-     * If this type of file has dimentions, the height
+     * If this type of file has dimentions, the height.
      *
      * @var int
      */
@@ -248,7 +245,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the file extension
+     * Get the file extension.
      *
      * @return string
      */
@@ -299,7 +296,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
                 return 'png';
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -329,7 +326,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get the standard download URL for this blob.
      *
-     * @param  bool   $absolute
+     * @param bool $absolute
+     *
      * @return string
      */
     public function getDownloadUrl($absolute = false, $use_file_url = true)
@@ -359,16 +357,17 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get a thumbnail for this blob (if its an image)
+     * Get a thumbnail for this blob (if its an image).
      *
-     * @param  int    $size
-     * @param  bool   $absolute
+     * @param int  $size
+     * @param bool $absolute
+     *
      * @return string
      */
     public function getThumbnailUrl($size = 50, $absolute = false)
     {
         if (!$this->isImage()) {
-            return null;
+            return;
         }
 
         return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe(), 's' => $size), $absolute);
@@ -393,7 +392,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * The name hash is 6 chars long that represents the original filename
+     * The name hash is 6 chars long that represents the original filename.
      *
      * @return string
      */
@@ -495,24 +494,24 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function toDbArray()
     {
         return array(
-            'date_created'     => $this->date_created->format('Y-m-d H:i:s'),
-            'authcode'         => $this->authcode,
-            'sys_name'         => $this->sys_name,
-            'original_blob_id' => $this->original_blob ? $this->original_blob->id : null,
-            'storage_loc'      => $this->storage_loc,
-            'storage_loc_pref' => $this->storage_loc_pref,
+            'date_created'         => $this->date_created->format('Y-m-d H:i:s'),
+            'authcode'             => $this->authcode,
+            'sys_name'             => $this->sys_name,
+            'original_blob_id'     => $this->original_blob ? $this->original_blob->id : null,
+            'storage_loc'          => $this->storage_loc,
+            'storage_loc_pref'     => $this->storage_loc_pref,
             'storage_loc_specific' => $this->storage_loc_specific,
-            'save_path'        => $this->save_path,
-            'file_url'         => $this->file_url,
-            'filename'         => $this->filename,
-            'filesize'         => $this->filesize,
-            'content_type'     => $this->content_type,
-            'blob_hash'        => $this->blob_hash,
-            'is_media_upload'  => $this->is_media_upload,
-            'title'            => $this->title,
-            'dim_w'            => $this->dim_w,
-            'dim_h'            => $this->dim_h,
-            'is_temp'          => $this->is_temp ? 1 : 0,
+            'save_path'            => $this->save_path,
+            'file_url'             => $this->file_url,
+            'filename'             => $this->filename,
+            'filesize'             => $this->filesize,
+            'content_type'         => $this->content_type,
+            'blob_hash'            => $this->blob_hash,
+            'is_media_upload'      => $this->is_media_upload,
+            'title'                => $this->title,
+            'dim_w'                => $this->dim_w,
+            'dim_h'                => $this->dim_h,
+            'is_temp'              => $this->is_temp ? 1 : 0,
         );
     }
 
@@ -527,33 +526,33 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name'    => 'blobs',
             'indexes' => array(
-                'authcode_idx' => array('columns' => array('authcode')),
-                'storage_loc_idx' => array('columns' => array('storage_loc', 'storage_loc_pref')),
-                'date_created_idx' => array('columns' => array('date_created', 'is_temp'))
-            )
+                'authcode_idx'     => array('columns' => array('authcode')),
+                'storage_loc_idx'  => array('columns' => array('storage_loc', 'storage_loc_pref')),
+                'date_created_idx' => array('columns' => array('date_created', 'is_temp')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
-        $metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc', ));
-        $metadata->mapField(array( 'fieldName' => 'storage_loc_pref', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_pref', ));
-        $metadata->mapField(array( 'fieldName' => 'storage_loc_specific', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_specific', ));
-        $metadata->mapField(array( 'fieldName' => 'save_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'save_path', ));
-        $metadata->mapField(array( 'fieldName' => 'file_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'file_url', ));
-        $metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 120, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filename', ));
-        $metadata->mapField(array( 'fieldName' => 'filesize', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filesize', ));
-        $metadata->mapField(array( 'fieldName' => 'content_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content_type', ));
-        $metadata->mapField(array( 'fieldName' => 'authcode', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'authcode', ));
-        $metadata->mapField(array( 'fieldName' => 'blob_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_hash', ));
-        $metadata->mapField(array( 'fieldName' => 'is_media_upload', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_media_upload', ));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'dim_w', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_w', ));
-        $metadata->mapField(array( 'fieldName' => 'dim_h', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_h', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'is_temp', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_temp', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name'));
+        $metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc'));
+        $metadata->mapField(array( 'fieldName' => 'storage_loc_pref', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_pref'));
+        $metadata->mapField(array( 'fieldName' => 'storage_loc_specific', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_specific'));
+        $metadata->mapField(array( 'fieldName' => 'save_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'save_path'));
+        $metadata->mapField(array( 'fieldName' => 'file_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'file_url'));
+        $metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 120, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filename'));
+        $metadata->mapField(array( 'fieldName' => 'filesize', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filesize'));
+        $metadata->mapField(array( 'fieldName' => 'content_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content_type'));
+        $metadata->mapField(array( 'fieldName' => 'authcode', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'authcode'));
+        $metadata->mapField(array( 'fieldName' => 'blob_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_hash'));
+        $metadata->mapField(array( 'fieldName' => 'is_media_upload', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_media_upload'));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array( 'fieldName' => 'dim_w', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_w'));
+        $metadata->mapField(array( 'fieldName' => 'dim_h', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_h'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array( 'fieldName' => 'is_temp', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_temp'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'original_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'original_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelBlob', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'blob', 'orphanRemoval' => true, ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'original_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'original_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelBlob', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'blob', 'orphanRemoval' => true));
     }
 
     public function __getPropValue__($k)

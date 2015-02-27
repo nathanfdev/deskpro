@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
- * Delete the ticket
+ * Delete the ticket.
  */
 class SetDeleted extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
@@ -49,9 +48,8 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $ticket->setStatus('hidden.deleted');
-		$context->getVars()->set('stop_triggers', true);
+        $context->getVars()->set('stop_triggers', true);
     }
-
 
     /**
      * {@inheritDoc}
@@ -65,7 +63,6 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -75,7 +72,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
             return array('delete');
         }
 
-        return null;
+        return;
     }
 
     /**

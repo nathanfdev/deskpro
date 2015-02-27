@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,8 +35,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\TicketLayout\Layout;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\DBAL\Connection;
-use \Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldDefinition extends AbstractEntityRepository
 {
@@ -49,7 +48,6 @@ class CustomFieldDefinition extends AbstractEntityRepository
             ->andWhere('d.is_enabled = 1')
             ->setParameter('owner', ClassUtils::getClass($object));
 
-
         if ($layout) {
             if (!$in = $layout->getIdsOfFieldType('custom_field')) {
                 return array();
@@ -59,9 +57,7 @@ class CustomFieldDefinition extends AbstractEntityRepository
                 ->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);
         }
 
-
         if ($context) {
-
             if ($context['id']) {
                 // not contextual fields
                 // or contextual fields without children (single input)
@@ -80,7 +76,6 @@ class CustomFieldDefinition extends AbstractEntityRepository
                     ->andWhere('d.context_class is null or d.context_class = :context_class')
                     ->setParameter('context_class', ClassUtils::getClass($context));
             }
-
         } else {
             $qb->andWhere('d.context_class is null');
         }

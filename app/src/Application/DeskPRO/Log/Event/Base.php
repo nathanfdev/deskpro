@@ -7,19 +7,22 @@ use Application\DeskPRO\Domain\DomainObject;
 abstract class Base
 {
     /**
-     * event name
+     * event name.
+     *
      * @return string
      */
     abstract public function getName();
 
     /**
-     * details about this event
+     * details about this event.
+     *
      * @return array
      */
     abstract public function getDetails();
 
     /**
-     * affected subject
+     * affected subject.
+     *
      * @return DomainObject|null
      */
     abstract public function getSubject();

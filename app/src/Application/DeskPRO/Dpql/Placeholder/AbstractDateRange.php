@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Placeholder;
@@ -48,7 +45,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
      * Gets the date range that this covers. It must have 3 parts:
      *  - 0: printable version of range
      *  - 1: start of range
-     *  - 2: end of range
+     *  - 2: end of range.
      *
      * @return string[int]
      */

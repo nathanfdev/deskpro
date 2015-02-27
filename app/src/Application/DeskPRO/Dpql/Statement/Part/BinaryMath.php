@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -40,33 +37,33 @@ use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
- * Represents a mathematical operation with 2 elements
+ * Represents a mathematical operation with 2 elements.
  */
 class BinaryMath extends AbstractPart
 {
     /**
-     * Token ID of the operator
+     * Token ID of the operator.
      *
      * @var integer
      */
     public $operator;
 
     /**
-     * Left hand side of comparison
+     * Left hand side of comparison.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
      */
     public $lhs;
 
     /**
-     * Right hand side of comparison
+     * Right hand side of comparison.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
      */
     public $rhs;
 
     /**
-     * Maps from token IDs to printable/usable operators
+     * Maps from token IDs to printable/usable operators.
      *
      * @var array
      */

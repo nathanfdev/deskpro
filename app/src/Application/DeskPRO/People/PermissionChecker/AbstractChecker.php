@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -37,7 +36,7 @@ namespace Application\DeskPRO\People\PermissionChecker;
 use Application\DeskPRO\Entity\Person;
 
 /**
- * A permission checker knows how to check access to particular things
+ * A permission checker knows how to check access to particular things.
  */
 abstract class AbstractChecker
 {
@@ -55,5 +54,7 @@ abstract class AbstractChecker
         $this->init();
     }
 
-    protected function init() {}
+    protected function init()
+    {
+    }
 }

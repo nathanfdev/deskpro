@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpDbSets;
@@ -38,7 +36,7 @@ use Application\InstallBundle\Data\DefaultDataProcessor;
 class FreshDb extends AbstractDbSet
 {
     /**
-     * Install default/empty data
+     * Install default/empty data.
      *
      * @return int
      */
@@ -52,19 +50,19 @@ class FreshDb extends AbstractDbSet
         # Init data
         #------------------------------
 
-        $agent = new \Application\DeskPRO\Entity\Person();
+        $agent             = new \Application\DeskPRO\Entity\Person();
         $agent->first_name = 'Admin';
-        $agent->last_name = 'Admin';
+        $agent->last_name  = 'Admin';
         $agent->setEmail('admin@example.com', true);
         $agent->setPassword('pass');
-        $agent->is_user = true;
-        $agent->is_confirmed = true;
+        $agent->is_user            = true;
+        $agent->is_confirmed       = true;
         $agent->is_agent_confirmed = true;
-        $agent->is_agent = true;
-        $agent->can_agent = true;
-        $agent->can_admin = true;
-        $agent->can_billing = true;
-        $agent->can_reports = true;
+        $agent->is_agent           = true;
+        $agent->can_agent          = true;
+        $agent->can_admin          = true;
+        $agent->can_billing        = true;
+        $agent->can_reports        = true;
 
         $em->persist($agent);
         $em->flush();
@@ -72,14 +70,14 @@ class FreshDb extends AbstractDbSet
         $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 
         // Install data stuff
-        $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
         $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT = $agent; // can be used in data.php
-        $WEB_INSTALL = true;
-        $IMPORT_INSTALL = false;
+        $AGENT              = $agent; // can be used in data.php
+        $WEB_INSTALL        = true;
+        $IMPORT_INSTALL     = false;
 
         $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-        $translate = $this->getContainer()->get('deskpro.core.translate');
+        $translate    = $this->getContainer()->get('deskpro.core.translate');
 
         foreach ($install_data as $php) {
             eval($php);
@@ -103,16 +101,16 @@ class FreshDb extends AbstractDbSet
         if ($USERGROUP_EVERYONE) {
             $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
             foreach ($scanner->getNames() as $p_name) {
-                $p = new \Application\DeskPRO\Entity\Permission();
+                $p            = new \Application\DeskPRO\Entity\Permission();
                 $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name = $p_name;
-                $p->value = 1;
+                $p->name      = $p_name;
+                $p->value     = 1;
                 $em->persist($p);
             }
             $em->flush();
         }
 
-        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
         $data_init->admin_user = $agent;
         $data_init->run();
 

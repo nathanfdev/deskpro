@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -108,9 +107,9 @@ class HierarchyStructure
         foreach ($this->cats as $cat) {
             if (($cat->parent && $cat->parent->getId() == $parent_id) || (!$parent_id && !$cat->parent)) {
                 $array[$cat->getId()] = array(
-                    'id' => $cat->getId(),
+                    'id'        => $cat->getId(),
                     'parent_id' => $cat->parent ? $cat->parent->getId() : 0,
-                    'depth' => $depth,
+                    'depth'     => $depth,
                     //'category' => $cat
                 );
                 $this->_getFlatHierarchyArray($array, $cat->getId(), $depth+1);
@@ -119,9 +118,10 @@ class HierarchyStructure
     }
 
     /**
-     * Get an array of id=>parent
+     * Get an array of id=>parent.
      *
      * @param $cats
+     *
      * @return array
      */
     public function getParentMap()
@@ -140,9 +140,10 @@ class HierarchyStructure
     }
 
     /**
-     * Get an array of parent IDs for a category in order (left to right, aka top to bottom)
+     * Get an array of parent IDs for a category in order (left to right, aka top to bottom).
      *
      * @param $id
+     *
      * @return array
      */
     public function getPathIds($cat)
@@ -154,7 +155,7 @@ class HierarchyStructure
         $ids = array();
         while (!empty($this->parent_map[$cat_id])) {
             $cat_id = $this->parent_map[$cat_id];
-            $ids[] = $cat_id;
+            $ids[]  = $cat_id;
         }
 
         $that = $this;
@@ -169,9 +170,10 @@ class HierarchyStructure
     }
 
     /**
-     * Get an array of parents for a category in order (left to right, aka top to bottom)
+     * Get an array of parents for a category in order (left to right, aka top to bottom).
      *
      * @param $id
+     *
      * @return array
      */
     public function getPath($cat)
@@ -189,10 +191,11 @@ class HierarchyStructure
     }
 
     /**
-     * Get children IDs of a category
+     * Get children IDs of a category.
      *
-     * @param  int|\Application\DeskPRO\Entity\CategoryAbstract $category
-     * @param  bool                                             $direct   Only get the immediate children?
+     * @param int|\Application\DeskPRO\Entity\CategoryAbstract $category
+     * @param bool                                             $direct   Only get the immediate children?
+     *
      * @return int[]
      */
     public function getChildrenIds($category = null, $direct = true)
@@ -214,8 +217,9 @@ class HierarchyStructure
     }
 
     /**
-     * @param  null  $category
-     * @param  bool  $direct
+     * @param null $category
+     * @param bool $direct
+     *
      * @return array
      */
     public function getChildren($category = null, $direct = true)
@@ -230,6 +234,7 @@ class HierarchyStructure
 
     /**
      * @param $category
+     *
      * @return int
      */
     public function getParentId($category)
@@ -243,13 +248,14 @@ class HierarchyStructure
 
     /**
      * @param $category
+     *
      * @return mixed
      */
     public function getParent($category)
     {
         $pid = $this->getParentId($category);
         if (!$pid || !isset($this->cats[$pid])) {
-            return null;
+            return;
         }
 
         return $this->cats[$pid];

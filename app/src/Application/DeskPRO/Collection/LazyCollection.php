@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Collection;
@@ -53,14 +51,14 @@ abstract class LazyCollection
     }
 
     /**
-     * Loads records
+     * Loads records.
      *
      * @return array
      */
     abstract protected function loadRecords();
 
     /**
-     * Loads department data from the database
+     * Loads department data from the database.
      */
     private function preload()
     {
@@ -93,7 +91,7 @@ abstract class LazyCollection
     ####################################################################################################################
 
     /**
-     * Count number of records
+     * Count number of records.
      *
      * @return int
      */
@@ -105,7 +103,8 @@ abstract class LazyCollection
     }
 
     /**
-     * @param  int   $id
+     * @param int $id
+     *
      * @return mixed Returns null when not found
      */
     public function getById($id)
@@ -116,7 +115,8 @@ abstract class LazyCollection
     }
 
     /**
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getByIds(array $ids, $keyed = false)

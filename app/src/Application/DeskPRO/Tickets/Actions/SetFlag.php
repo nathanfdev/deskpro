@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -58,7 +57,6 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
 
         return $options;
     }
-
 
     /**
      * @param Connection $db
@@ -92,7 +90,6 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -100,7 +97,6 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
     {
         return false;
     }
-
 
     /**
      * {@inheritDoc}

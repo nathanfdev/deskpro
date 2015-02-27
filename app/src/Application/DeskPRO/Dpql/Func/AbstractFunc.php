@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Func;
@@ -88,7 +85,7 @@ abstract class AbstractFunc
     protected $_name;
 
     /**
-     * List of arguments for function
+     * List of arguments for function.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
@@ -148,9 +145,9 @@ abstract class AbstractFunc
      *
      * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
      *
+     * @throws \Application\DeskPRO\Dpql\Exception
      * @return mixed
      *
-     * @throws \Application\DeskPRO\Dpql\Exception
      */
     protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
     {

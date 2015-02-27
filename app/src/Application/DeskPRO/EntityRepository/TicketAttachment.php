@@ -26,21 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class TicketAttachment extends AbstractEntityRepository
 {
     /**
-     * Get attachments for a ticket
+     * Get attachments for a ticket.
      *
      * @param  $ticket
+     *
      * @return array
      */
     public function getTicketAttachments($ticket)

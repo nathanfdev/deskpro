@@ -25,12 +25,9 @@
         | ~ Thanks, Everyone at Team DeskPRO                                       |
         \**************************************************************************/
 
-        /**
-         * DeskPRO
-         *
-         * @package DeskPRO
-         * @subpackage
-         */
+/**
+ * DeskPRO.
+ */
 
 namespace Application\InstallBundle\Upgrade\Build;
 

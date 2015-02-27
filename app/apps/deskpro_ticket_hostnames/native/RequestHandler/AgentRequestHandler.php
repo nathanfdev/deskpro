@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,7 +55,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     private function refreshHostname(AgentRequestContext $context)
     {
         $ticket = $context->getContainer()->getTicketManager()->getTicket($context->getIn()->getUint('ticket_id'));
-        $ip = $context->getIn()->getString('ip');
+        $ip     = $context->getIn()->getString('ip');
 
         if (!$ticket || !$ip) {
             throw $context->createNotFoundException();
@@ -76,17 +75,18 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         $db->update('tickets_messages', array(
-            'hostname' => $hostname
+            'hostname' => $hostname,
         ), array(
-            'ticket_id' => $ticket->id,
-            'ip_address' => $ip
+            'ticket_id'  => $ticket->id,
+            'ip_address' => $ip,
         ));
 
         return $context->createJsonResponse(array('hostname' => $hostname));
     }
 
     /**
-     * @param  AgentRequestContext                        $context
+     * @param AgentRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function getHostnames(AgentRequestContext $context)
@@ -139,13 +139,13 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 if ($info['person_name']) {
                     $name = $info['person_name'];
                 } else {
-                    $name = trim($info['person_fname'] . ' ' . $info['person_lname']);
+                    $name = trim($info['person_fname'].' '.$info['person_lname']);
                 }
                 $user_list[$info['person_id']] = array(
                     'id'    => $info['person_id'],
                     'name'  => $name ?: $info['person_email'],
                     'email' => $info['person_email'],
-                    'recs'  => array()
+                    'recs'  => array(),
                 );
             }
 
@@ -170,7 +170,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
         $data = array(
             'ticket_id' => $ticket->id,
-            'user_list' => array_values($user_list)
+            'user_list' => array_values($user_list),
         );
 
         return $context->createJsonResponse($data);

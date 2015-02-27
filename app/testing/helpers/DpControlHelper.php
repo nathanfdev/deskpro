@@ -1,8 +1,8 @@
 <?php
 namespace Codeception\Module;
 
-use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
 
 class DpControlHelper extends \Codeception\Module
 {
@@ -66,7 +66,8 @@ class DpControlHelper extends \Codeception\Module
      * Loads fixtures into the current database.
      * Note that this will mark the database to be reset.
      *
-     * @param  array                     $f...
+     * @param array $f...
+     *
      * @throws \InvalidArgumentException
      */
     public function loadFixtures($f)
@@ -91,8 +92,8 @@ class DpControlHelper extends \Codeception\Module
 
         $paths = array();
         foreach ($fixtures as $f) {
-            $f = str_replace('\\', '/', $f);
-            $paths[] = DP_ROOT.'/testing/data/DpFixtures/' . $f;
+            $f       = str_replace('\\', '/', $f);
+            $paths[] = DP_ROOT.'/testing/data/DpFixtures/'.$f;
         }
 
         $loader = new DataFixturesLoader(\DpTestEnv::getContainer());
@@ -100,7 +101,7 @@ class DpControlHelper extends \Codeception\Module
             if (is_dir($path)) {
                 $loader->loadFromDirectory($path);
             } elseif (is_file($path.'.php')) {
-                require_once($path.'.php');
+                require_once $path.'.php';
                 $class = str_replace(DP_ROOT.'/testing/data/', '', $path);
                 $class = str_replace('/', '\\', $class);
                 $loader->addFixture(new $class());
@@ -114,7 +115,7 @@ class DpControlHelper extends \Codeception\Module
         }
 
         $executor = new ORMExecutor(\DpTestEnv::getContainer()->getEm(), null);
-        $me = $this;
+        $me       = $this;
         $executor->setLogger(function ($message) use ($me) {
             $me->_dp_debugSection('loadFixtures', $message);
         });
@@ -128,9 +129,9 @@ class DpControlHelper extends \Codeception\Module
 
     public function indexElasticsearch()
     {
-        $indexManager = $this->getSymfonyContainer()->get('fos_elastica.index_manager');
+        $indexManager     = $this->getSymfonyContainer()->get('fos_elastica.index_manager');
         $providerRegistry = $this->getSymfonyContainer()->get('fos_elastica.provider_registry');
-        $resetter = $this->getSymfonyContainer()->get('fos_elastica.resetter');
+        $resetter         = $this->getSymfonyContainer()->get('fos_elastica.resetter');
 
         $index = 'deskpro';
 

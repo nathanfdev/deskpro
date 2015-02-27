@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Banning;
@@ -42,19 +40,16 @@ class IpBanEdit
     /**
      * @var \Application\DeskPRO\Entity\BanIp
      */
-
     public $ip_ban;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
      */
-
     public $db;
 
     /**
      * @var string
      */
-
     protected $old_ip;
 
     public function __construct(BanIp $ip_ban)
@@ -70,7 +65,6 @@ class IpBanEdit
      *
      * @throws \Exception
      */
-
     public function save(EntityManager $em)
     {
         $new_ip = $this->ip_ban->banned_ip;

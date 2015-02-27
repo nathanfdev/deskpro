@@ -1,72 +1,41 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
 
 use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-
-
-
-
-
-
-
 // for email templates and the like in the DpKernel, we need a temporary place for the new routes. They are REPLICATED
 // here, from the new portal's .yml files.
 
 $collection->create('portal_index', array(
-    'path' => '/'
+    'path' => '/',
 ));
 $collection->create('portal_news_view', array(
-    'path' => '/news/posts/{slug}'
+    'path' => '/news/posts/{slug}',
 ));
 $collection->create('portal_news_unsubscribe_all', array(
-    'path' => '/news/posts/subscriptions/unsubscribe'
+    'path' => '/news/posts/subscriptions/unsubscribe',
 ));
 $collection->create('portal_downloads_view', array(
-    'path' => '/downloads/files/{slug}'
+    'path' => '/downloads/files/{slug}',
 ));
 $collection->create('portal_downloads_unsubscribe_all', array(
-    'path' => '/downloads/files/subscriptions/unsubscribe'
+    'path' => '/downloads/files/subscriptions/unsubscribe',
 ));
 $collection->create('portal_kb_view', array(
-    'path' => '/kb/articles/{slug}'
+    'path' => '/kb/articles/{slug}',
 ));
 $collection->create('portal_kb_unsubscribe_all', array(
-    'path' => '/kb/articles/subscriptions/unsubscribe'
+    'path' => '/kb/articles/subscriptions/unsubscribe',
 ));
 $collection->create('portal_agent_login', array(
-    'path' => ' /impersonate/agent-login/{code}'
+    'path' => ' /impersonate/agent-login/{code}',
 ));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 $collection->create('user', array(
     'path'        => '/',
@@ -131,9 +100,9 @@ $collection->create('user_login_inline', array(
 ));
 
 $collection->create('portal_login_usersource_sso', array(
-	'path'          => '/login/usersource-sso/{usersource_id}',
-	'controller'    => 'UserBundle:Login:usersourceSso',
-	'requirements'  => array('usersource_id' => '\\d+'),
+    'path'          => '/login/usersource-sso/{usersource_id}',
+    'controller'    => 'UserBundle:Login:usersourceSso',
+    'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('user_login_usersource_sso', array(
@@ -164,23 +133,23 @@ $collection->create('user_login_authenticate_local', array(
 ));
 
 $collection->create('portal_login_authenticate', array(
-	'path'          => '/login/authenticate/{usersource_id}',
-	'controller'    => 'UserBundle:Login:authenticate',
-	'defaults'      => array('usersource_id' => 0),
-	'requirements'  => array('usersource_id' => '\\d+'),
+    'path'          => '/login/authenticate/{usersource_id}',
+    'controller'    => 'UserBundle:Login:authenticate',
+    'defaults'      => array('usersource_id' => 0),
+    'requirements'                           => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('user_login_authenticate', array(
     'path'          => '/login/authenticate/{usersource_id}',
     'controller'    => 'UserBundle:Login:authenticate',
     'defaults'      => array('usersource_id' => 0),
-    'requirements'  => array('usersource_id' => '\\d+'),
+    'requirements'                           => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('portal_login_callback', array(
-	'path'          => '/login/authenticate-callback/{usersource_id}',
-	'controller'    => 'UserBundle:Login:authenticateCallback',
-	'requirements'  => array('usersource_id' => '\\d+'),
+    'path'          => '/login/authenticate-callback/{usersource_id}',
+    'controller'    => 'UserBundle:Login:authenticateCallback',
+    'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('user_login_callback', array(
@@ -278,7 +247,7 @@ $collection->create('user_search_labels', array(
     'path'          => '/search/labels/{type}/{label}',
     'controller'    => 'UserBundle:Search:labelSearch',
     'defaults'      => array('label' => '', 'type' => 'all'),
-    'requirements'  => array('label' => '.*'),
+    'requirements'                   => array('label' => '.*'),
 ));
 
 $collection->create('user_search_omnisearch', array(
@@ -407,7 +376,7 @@ $collection->create('user_articles', array(
     'path'          => '/kb/{slug}',
     'controller'    => 'UserBundle:Articles:browse',
     'defaults'      => array('slug' => ''),
-    'requirements'  => array('slug' => '(\\d+(\\-.*?)?)?'),
+    'requirements'                  => array('slug' => '(\\d+(\\-.*?)?)?'),
 ));
 
 $collection->create('user_articles_article', array(
@@ -446,7 +415,7 @@ $collection->create('user_downloads', array(
     'path'          => '/downloads/{slug}',
     'controller'    => 'UserBundle:Downloads:browse',
     'defaults'      => array('slug' => ''),
-    'requirements'  => array('slug' => '(\\d+(\\-.*?)?)?'),
+    'requirements'                  => array('slug' => '(\\d+(\\-.*?)?)?'),
 ));
 
 $collection->create('user_downloads_file', array(
@@ -468,15 +437,15 @@ $collection->create('user_downloads_newcomment', array(
 $collection->create('user_news_home', array(
     'path'          => '/news.{_format}',
     'controller'    => 'UserBundle:News:browse',
-    'defaults'      => array('slug' => '', 'page' => 1, 		'_format' => 'html'),
-    'requirements'  => array('_format' => '(html|rss)'),
+    'defaults'      => array('slug'    => '', 'page' => 1,        '_format' => 'html'),
+    'requirements'                     => array('_format' => '(html|rss)'),
 ));
 
 $collection->create('user_news', array(
     'path'          => '/news/{slug}.{_format}',
     'controller'    => 'UserBundle:News:browse',
-    'defaults'      => array('slug' => '', 'page' => 1, 		'_format' => 'html'),
-    'requirements'  => array(
+    'defaults'      => array('slug' => '', 'page' => 1,        '_format' => 'html'),
+    'requirements'                  => array(
         'slug'     => '(\\d+(\\-.*?)?)?',
         'page'     => '\\d+',
         '_format'  => '(html|rss)',

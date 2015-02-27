@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,13 +45,11 @@ class ViolationApiRenderer
      */
     private $aliases = array();
 
-
     public function __construct()
     {
         // Default aliases
         $this->addClassCodeName('Application\\DeskPRO\\Entity', 'Entity');
     }
-
 
     /**
      * Adds a codename for a class (or namespace).
@@ -65,18 +62,18 @@ class ViolationApiRenderer
         $this->aliases[$classname] = $codename;
     }
 
-
     /**
      * Gets the codename for a class.
      *
-     * @param  string $classname
+     * @param string $classname
+     *
      * @return string
      */
     public function getCodeName($classname)
     {
         $parts = explode('\\', $classname);
         $alias = null;
-        $ends = array();
+        $ends  = array();
         do {
             $part_string = implode('\\', $parts);
             if (isset($this->aliases[$part_string])) {
@@ -88,7 +85,7 @@ class ViolationApiRenderer
 
         if ($alias) {
             if ($ends) {
-                $alias .= '\\' . implode('\\', $ends);
+                $alias .= '\\'.implode('\\', $ends);
             }
         } else {
             $alias = $classname;
@@ -97,9 +94,9 @@ class ViolationApiRenderer
         return str_replace('\\', '.', $alias);
     }
 
-
     /**
-     * @param  ConstraintViolation $err
+     * @param ConstraintViolation $err
+     *
      * @return array
      */
     public function renderViolation(ConstraintViolation $err)
@@ -117,7 +114,7 @@ class ViolationApiRenderer
             $field_id = $err->getPropertyPath();
         }
 
-        $code = $err->getCode();
+        $code    = $err->getCode();
         $message = $err->getMessage();
 
         if (preg_match('#^\[([a-zA-Z0-9\-_\.]+)\](.*)$#', $message, $m)) {
@@ -141,41 +138,41 @@ class ViolationApiRenderer
         );
     }
 
-
     /**
-     * Renders a list of validation errors
+     * Renders a list of validation errors.
      *
-     * @param  ConstraintViolationList $list
+     * @param ConstraintViolationList $list
+     *
      * @return array
      */
     public function renderViolationList(ConstraintViolationList $list)
     {
         $info = array(
-            'errors' => array(),
+            'errors'      => array(),
             'error_codes' => array(),
         );
 
         foreach ($list as $err) {
-            $err_info = $this->renderViolation($err);
-            $info['errors'][] = $err_info;
-            $info['error_codes'][] = $err_info['prop'] . '.' . $err_info['code'];
+            $err_info              = $this->renderViolation($err);
+            $info['errors'][]      = $err_info;
+            $info['error_codes'][] = $err_info['prop'].'.'.$err_info['code'];
         }
 
         return $info;
     }
 
-
     /**
      * Renders multiple violations into a single list. Ideal if you have different components using different validators, but you need
      * to return a single validation error response.
      *
-     * @param  ConstraintViolationList[] $lists A key=>ConstraintViolationList map, where the key is used to prefix the paths of the errors in the list
+     * @param ConstraintViolationList[] $lists A key=>ConstraintViolationList map, where the key is used to prefix the paths of the errors in the list
+     *
      * @return array
      */
     public function renderCombinedViolationList(array $lists)
     {
         $mega_list = array(
-            'errors' => array(),
+            'errors'      => array(),
             'error_codes' => array(),
         );
 
@@ -183,29 +180,27 @@ class ViolationApiRenderer
             $info = $this->renderViolationList($list);
 
             foreach ($info['errors'] as $err) {
-                $err['prop'] = $prefix . '.' . $err['prop'];
+                $err['prop']           = $prefix.'.'.$err['prop'];
                 $mega_list['errors'][] = $err;
             }
 
             foreach ($info['error_codes'] as $err_code) {
-                $mega_list['error_codes'] = $prefix . '.' . $err_code;
+                $mega_list['error_codes'] = $prefix.'.'.$err_code;
             }
         }
 
         return $mega_list;
     }
 
-
     /**
-     * @param  FormError $err
+     * @param FormError $err
+     *
      * @return array
      */
     public function renderFormError(FormError $err)
     {
-
-        $code = null;
-        $message = $err->getMessage();;
-
+        $code    = null;
+        $message = $err->getMessage();
         if (preg_match('#^\[([a-zA-Z0-9\-_\.]+)\](.*)$#', $message, $m)) {
             $message = trim($m[2]);
 
@@ -224,9 +219,8 @@ class ViolationApiRenderer
         );
     }
 
-
     /**
-     * Renders a list of errors from a form
+     * Renders a list of errors from a form.
      *
      * Returns an array of:
      * - errors: A flat array of all errors in the form
@@ -237,15 +231,16 @@ class ViolationApiRenderer
      *   This is ideal for use in templates when you just want to know if some field is invalid without being too specific.
      *   Like if a form only has that single email field, then its easier to do if(error_codes_grouped.myform has email) rather than if(error_codes has myform.something.deep.email.email)
      *
-     * @param  Form        $form
-     * @param  string|null $parent_path (internal use)
+     * @param Form        $form
+     * @param string|null $parent_path (internal use)
+     *
      * @return array
      */
     public function renderFormErrorList(Form $form, $parent_path = null)
     {
         $info = array(
-            'errors' => array(),
-            'error_codes' => array(),
+            'errors'              => array(),
+            'error_codes'         => array(),
             'error_codes_grouped' => array(),
         );
 
@@ -262,7 +257,7 @@ class ViolationApiRenderer
             $err_info['prop_path'] = $path;
 
             $info['errors'][]      = $err_info;
-            $info['error_codes'][] = $err_info['prop'] . '.' . $err_info['code'];
+            $info['error_codes'][] = $err_info['prop'].'.'.$err_info['code'];
         }
 
         foreach ($form->all() as $sub_form) {

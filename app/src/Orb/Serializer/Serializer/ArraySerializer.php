@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Serializer\Serializer;
@@ -48,7 +45,6 @@ class ArraySerializer implements SerializerInterface
     {
         return $data;
     }
-
 
     /**
      * {@inheritdoc}

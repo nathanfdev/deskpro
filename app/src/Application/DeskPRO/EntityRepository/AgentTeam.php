@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,9 +55,10 @@ class AgentTeam extends AbstractEntityRepository
     }
 
     /**
-     * Get agent names
+     * Get agent names.
      *
-     * @param  null  $for_ids
+     * @param null $for_ids
+     *
      * @return mixed
      */
     public function getAgentNames($for_ids = null)
@@ -94,7 +94,7 @@ class AgentTeam extends AbstractEntityRepository
                 WHERE t.name LIKE ?1
             ")->setParameter(1, "%$name%")->getSingleResult();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
 
         return $team;
@@ -104,7 +104,7 @@ class AgentTeam extends AbstractEntityRepository
     {
         $all = $this->getTeamNames(array($id));
         if (!isset($all[$id])) {
-            return null;
+            return;
         }
 
         return $all[$id];
@@ -114,7 +114,7 @@ class AgentTeam extends AbstractEntityRepository
     {
         $ret = array();
         if ($for_ids) {
-            $for_ids = (array)$for_ids;
+            $for_ids = (array) $for_ids;
         }
         foreach ($this->getTeams() as $team) {
             if ($for_ids and !in_array($team->id, $for_ids)) {
@@ -165,7 +165,7 @@ class AgentTeam extends AbstractEntityRepository
 
     /**
      * Get all agents of all teams, and sort them into an array keyed
-     * by team: array('teamid' => array('agentid', 'agentid'))
+     * by team: array('teamid' => array('agentid', 'agentid')).
      *
      * @return array
      */
@@ -195,12 +195,12 @@ class AgentTeam extends AbstractEntityRepository
         return $agents;
     }
 
-
     /**
      * Get an array of all team IDs that the agents passed
      * belong to. This is an all inclusive list and unsorted.
      *
      * @param $agents
+     *
      * @return array
      */
     public function getAllTeamIdsForAgents($agents)
@@ -214,7 +214,9 @@ class AgentTeam extends AbstractEntityRepository
             }
         }
 
-        if (!$agent_ids) return array();
+        if (!$agent_ids) {
+            return array();
+        }
 
         $team_ids = App::getDb()->fetchAllCol('
             SELECT team_id
@@ -226,13 +228,13 @@ class AgentTeam extends AbstractEntityRepository
         return $team_ids;
     }
 
-
     /**
      * Gets an array of team ID's for each agent. Keyed
      * by agent_id. Like getAllTeamIdsForAgents() except this
-     * is sorted into agents
+     * is sorted into agents.
      *
      * @param $agents
+     *
      * @return array
      */
     public function getTeamIdsForAgents($agents)
@@ -246,7 +248,9 @@ class AgentTeam extends AbstractEntityRepository
             }
         }
 
-        if (!$agent_ids) return array();
+        if (!$agent_ids) {
+            return array();
+        }
         $agent_ids = implode(',', $agent_ids);
 
         $agent_teams = App::getDb()->fetchAllGrouped("
@@ -267,17 +271,16 @@ class AgentTeam extends AbstractEntityRepository
     }
 
     /**
-     * Invalidates caches associated with agent teams
+     * Invalidates caches associated with agent teams.
      */
     public function invalidateCaches()
     {
-
     }
 
     /**
      * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+     *
      * @param  $sql
-     * @return void
      */
     public function invalidateFromQuery($sql)
     {
@@ -294,10 +297,10 @@ class AgentTeam extends AbstractEntityRepository
         // todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
 
         foreach ($this->getTeams() as $team) {
-            /** @var $team \Application\DeskPRO\Entity\AgentTeam */
+            /* @var $team \Application\DeskPRO\Entity\AgentTeam */
             $ret[] = array(
-                'id' => $team['id'],
-                'name' => $team['name'],
+                'id'          => $team['id'],
+                'name'        => $team['name'],
                 'picture_url' => $team->getAvatarUrl(16),
             );
         }

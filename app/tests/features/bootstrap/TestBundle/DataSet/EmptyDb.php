@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle\DataSet;
-
 
 use Application\DeskPRO\Entity\Brand;
 

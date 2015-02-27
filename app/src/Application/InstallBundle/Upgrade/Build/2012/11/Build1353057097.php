@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -46,8 +43,8 @@ class Build1353057097 extends AbstractBuild
         if (!$count) {
             // Insert default department
             $this->container->getDb()->insert('departments', array(
-                'title' => 'Default',
-                'is_tickets_enabled' => 1
+                'title'              => 'Default',
+                'is_tickets_enabled' => 1,
             ));
 
             $default_department = $this->container->getDb()->lastInsertId();

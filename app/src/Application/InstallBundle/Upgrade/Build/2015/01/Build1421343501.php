@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -39,6 +36,6 @@ class Build1421343501 extends AbstractBuild
     public function run()
     {
         $this->out("password reset data");
-		$this->execMutateSql("ALTER TABLE people ADD password_reset_code VARCHAR(255) DEFAULT NULL, ADD date_password_reset_requested DATETIME DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE people ADD password_reset_code VARCHAR(255) DEFAULT NULL, ADD date_password_reset_requested DATETIME DEFAULT NULL");
     }
 }

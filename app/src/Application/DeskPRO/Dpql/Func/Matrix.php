@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Func;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
- * Helper used in group by to make an X-Y matrix table if 2 valid arguments are supplied
+ * Helper used in group by to make an X-Y matrix table if 2 valid arguments are supplied.
  */
 class Matrix extends AbstractFunc
 {

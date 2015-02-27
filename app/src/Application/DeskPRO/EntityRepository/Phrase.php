@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,18 +39,18 @@ class Phrase extends AbstractEntityRepository
 {
     public function getPhraseForLanguage($phrase_name, $language = null)
     {
-        if ($language === null OR $language === 0) {
+        if ($language === null or $language === 0) {
             return $this->getEntityManager()->createQuery("
                 SELECT p
                 FROM DeskPRO:Phrase p
                 WHERE p.language IS NULL AND p.name = ?1
-            ")->setParameters(array(1=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+            ")->setParameters(array(1 => $phrase_name))->setMaxResults(1)->getOneOrNullResult();
         } else {
             return $this->getEntityManager()->createQuery("
                 SELECT p
                 FROM DeskPRO:Phrase p
                 WHERE p.language = ?1 AND p.name = ?2
-            ")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+            ")->setParameters(array(1 => $language, 2 => $phrase_name))->setMaxResults(1)->getOneOrNullResult();
         }
     }
 
@@ -66,10 +65,10 @@ class Phrase extends AbstractEntityRepository
         return $names;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Language $language
-     * @param  string                               $group
+     * @param \Application\DeskPRO\Entity\Language $language
+     * @param string                               $group
+     *
      * @return array
      */
     public function getPhrasesInGroup($language, $group)
@@ -88,7 +87,6 @@ class Phrase extends AbstractEntityRepository
 
         return $phrases;
     }
-
 
     public function getLanguagePhrasesInGroup($language, $group)
     {

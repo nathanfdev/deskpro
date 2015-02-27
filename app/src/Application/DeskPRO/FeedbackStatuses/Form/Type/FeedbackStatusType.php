@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\FeedbackStatuses\Form\Type;
@@ -49,7 +47,7 @@ class FeedbackStatusType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\FeedbackStatuses\\FeedbackStatusEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }
@@ -58,5 +56,4 @@ class FeedbackStatusType extends AbstractType
     {
         return 'feedback_status';
     }
-
 }

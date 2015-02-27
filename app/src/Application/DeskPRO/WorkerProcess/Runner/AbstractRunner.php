@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
@@ -44,13 +41,15 @@ use Application\DeskPRO\Log\Logger;
 abstract class AbstractRunner
 {
     /**
-     * A callback function code can hook into to init loggers
+     * A callback function code can hook into to init loggers.
+     *
      * @var callback
      */
     protected $_init_logger_callback = null;
 
     /**
-     * Ana rray of already initialized jobs
+     * Ana rray of already initialized jobs.
+     *
      * @var array
      */
     protected $_job_cache = array();
@@ -75,7 +74,6 @@ abstract class AbstractRunner
      */
     protected $halt_job_loop = false;
 
-
     /**
      * @param $callback
      */
@@ -83,7 +81,6 @@ abstract class AbstractRunner
     {
         $this->post_job_callback = $callback;
     }
-
 
     /**
      * Signals that the job should break, even if there are still jobs to process.
@@ -93,9 +90,8 @@ abstract class AbstractRunner
         $this->halt_job_loop = true;
     }
 
-
     /**
-     * Sets the options array to pass to jobs when they are run
+     * Sets the options array to pass to jobs when they are run.
      *
      * @param array $options
      */
@@ -104,9 +100,8 @@ abstract class AbstractRunner
         $this->job_options = $options;
     }
 
-
     /**
-     * Run an array of jobs
+     * Run an array of jobs.
      *
      * @param array $jobs
      */
@@ -121,10 +116,7 @@ abstract class AbstractRunner
         }
     }
 
-
-
     /**
-     *
      * @param \Application\DeskPRO\Entity\WorkerJob $worker_job
      */
     public function runJob(Entity\WorkerJob $worker_job)
@@ -136,12 +128,12 @@ abstract class AbstractRunner
             @set_time_limit($this->job_time_limit);
         }
 
-        $job = $this->getJob($worker_job);
-        $logger = $job->getLogger();
+        $job                       = $this->getJob($worker_job);
+        $logger                    = $job->getLogger();
         $GLOBALS['DP_CRON_LOGGER'] = $logger;
 
         if ($worker_job->getIsCrashed()) {
-            $logger->log("ERROR: Job appears to have crashed during the last run! The last run was started at " . $worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
+            $logger->log("ERROR: Job appears to have crashed during the last run! The last run was started at ".$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
         }
 
         $mtime_start = microtime(true);
@@ -163,10 +155,11 @@ abstract class AbstractRunner
                     $logger->log("(Rolling back open transaction)", Logger::DEBUG);
                     App::getDb()->rollback();
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
-        $mtime_end = microtime(true);
+        $mtime_end   = microtime(true);
         $mtime_total = $mtime_end - $mtime_start;
         $mtime_total = sprintf("%.5f", $mtime_total);
 
@@ -191,12 +184,11 @@ abstract class AbstractRunner
         unset($GLOBALS['DP_CRON_LOGGER']);
     }
 
-
-
     /**
-     * Get the job
+     * Get the job.
      *
-     * @param  \Application\DeskPRO\Entity\WorkerJob              $job_worker
+     * @param \Application\DeskPRO\Entity\WorkerJob $job_worker
+     *
      * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
      */
     public function getJob(Entity\WorkerJob $job_worker)
@@ -205,25 +197,24 @@ abstract class AbstractRunner
             return $this->_job_cache[$job_worker['id']];
         }
 
-        $logger = $this->getLoggerForWorkerJob($job_worker);
-        $job = $job_worker->createJobObj($logger, $this->job_options);
+        $logger                              = $this->getLoggerForWorkerJob($job_worker);
+        $job                                 = $job_worker->createJobObj($logger, $this->job_options);
         $this->_job_cache[$job_worker['id']] = $job;
 
         return $job;
     }
 
-
-
     /**
-     * Get a logger for a specific job to log its status/debug messages
+     * Get a logger for a specific job to log its status/debug messages.
      *
-     * @param  \Application\DeskPRO\Entity\WorkerJob $worker_job
+     * @param \Application\DeskPRO\Entity\WorkerJob $worker_job
+     *
      * @return Logger
      */
     public function getLoggerForWorkerJob(Entity\WorkerJob $worker_job)
     {
-        $logger_session = $worker_job['id'] . '.' . microtime(true);
-        $logger = App::createNewLogger('worker_job.' . $worker_job->id, $logger_session);
+        $logger_session = $worker_job['id'].'.'.microtime(true);
+        $logger         = App::createNewLogger('worker_job.'.$worker_job->id, $logger_session);
 
         $this->_initLogger($logger, $worker_job);
         if ($this->_init_logger_callback) {
@@ -254,7 +245,7 @@ abstract class AbstractRunner
     }
 
     /**
-     * Init the logger with any custom stuff etc
+     * Init the logger with any custom stuff etc.
      */
     public function _initLogger(Logger $logger, Entity\WorkerJob $worker_job)
     {

@@ -9,13 +9,11 @@ class FeedbackTypeTypeTest extends \DpIntegrationTestCase
     /**
      * @var \Symfony\Component\Form\Form
      */
-
     private $form;
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackCategory
      */
-
     private $feedback_type;
 
     public function runBefore()

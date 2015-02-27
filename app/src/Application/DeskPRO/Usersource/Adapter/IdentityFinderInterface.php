@@ -26,11 +26,9 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 interface IdentityFinderInterface
@@ -40,7 +38,8 @@ interface IdentityFinderInterface
      *
      * Alternatively, this can also return a Person object directly.
      *
-     * @param  string                                                     $input
+     * @param string $input
+     *
      * @return \Orb\Auth\Identity|\Application\DeskPRO\Entity\Person|null
      */
     public function findIdentityByInput($input);

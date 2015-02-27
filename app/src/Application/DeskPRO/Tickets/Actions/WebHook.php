@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -43,7 +42,7 @@ use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
 
 /**
- * Execute a web hook
+ * Execute a web hook.
  *
  * @option string url
  * @option string username
@@ -67,7 +66,6 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,15 +74,15 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $timeout = intval($this->getActionOption('timeout')) ?: 20;
 
         /** @var TemplatingExtension $renderer */
-        $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
-        $url = $renderer->renderTicketTemplate($this->getActionOption('url'), $ticket, $context);
-        $headers = $renderer->renderTicketTemplate($this->getActionOption('headers'), $ticket, $context);
+        $renderer    = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+        $url         = $renderer->renderTicketTemplate($this->getActionOption('url'), $ticket, $context);
+        $headers     = $renderer->renderTicketTemplate($this->getActionOption('headers'), $ticket, $context);
         $custom_data = $renderer->renderTicketTemplate($this->getActionOption('custom_data') ?: '', $ticket, $context);
-        $username = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
-        $password = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
+        $username    = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
+        $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
         $http_client = new HttpClient($url, array(
-            'timeout' => $timeout
+            'timeout' => $timeout,
         ));
 
         if ($headers) {
@@ -93,7 +91,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $headers = array();
         }
 
-        $data = array();
+        $data                    = array();
         $data['ticket']          = $ticket->toApiData();
         $data['person_context']  = $context->getPersonContext()->toApiData();
         $data['event_performer'] = $context->getEventPerformer();
@@ -102,7 +100,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $data['custom_data']     = $custom_data;
 
         if ('json' === $this->getActionOption('payload_type')) {
-            $data = json_encode($data);
+            $data                    = json_encode($data);
             $headers['content-type'] = 'application/json';
         } else {
             $headers['content-type'] = 'application/x-www-form-urlencoded';
@@ -116,23 +114,20 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         }
 
         try {
-
             $response = $http_client->send($request);
-            $data = array(
-                'url' => $url,
-                'reason' => $response->getReasonPhrase(),
-                'status' => $response->getStatusCode(),
+            $data     = array(
+                'url'     => $url,
+                'reason'  => $response->getReasonPhrase(),
+                'status'  => $response->getStatusCode(),
                 'content' => $response->getBody(true),
             );
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
-
         } catch (\Exception $e) {
-
-            KernelErrorHandler::logException($e, false, 'webhook_' . md5($this->getActionOption('url')));
+            KernelErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
             $data = array(
-                'url' => $url,
-                'reason' => $e->getMessage(),
-                'status' => $e->getCode(),
+                'url'     => $url,
+                'reason'  => $e->getMessage(),
+                'status'  => $e->getCode(),
                 'content' => null,
             );
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
@@ -144,7 +139,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
-        return null;
+        return;
     }
 
     /**

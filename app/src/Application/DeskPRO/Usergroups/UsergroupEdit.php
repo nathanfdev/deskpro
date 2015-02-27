@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usergroups;
@@ -51,7 +49,6 @@ class UsergroupEdit
     /**
      * @param EntityManager $em
      */
-
     public function save(EntityManager $em)
     {
         $em->persist($this->group);

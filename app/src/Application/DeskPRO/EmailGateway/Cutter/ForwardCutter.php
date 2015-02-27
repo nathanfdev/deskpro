@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Cutter;
@@ -87,7 +85,8 @@ class ForwardCutter
     /**
      * Check if a subject matches the pattern for a forwarded message.
      *
-     * @param  string $subject
+     * @param string $subject
+     *
      * @return bool
      */
     public static function subjectIsForward($subject)
@@ -97,9 +96,10 @@ class ForwardCutter
     }
 
     /**
-     * Cut out the FWD prefix from subject
+     * Cut out the FWD prefix from subject.
      *
-     * @param  string $subject
+     * @param string $subject
+     *
      * @return string
      */
     public static function cutSubjectForwardPrefix($subject)
@@ -138,7 +138,7 @@ class ForwardCutter
     }
 
     /**
-     * Check if the forwarded message was read correctly and has all required information
+     * Check if the forwarded message was read correctly and has all required information.
      *
      * @return bool
      */
@@ -156,7 +156,7 @@ class ForwardCutter
     }
 
     /**
-     * Get the users message
+     * Get the users message.
      *
      * @return string
      */
@@ -166,7 +166,7 @@ class ForwardCutter
     }
 
     /**
-     * Get the reply above the forwarded message
+     * Get the reply above the forwarded message.
      *
      * @return string
      */
@@ -188,7 +188,7 @@ class ForwardCutter
     }
 
     /**
-     * Get the user email address from the forwarded message
+     * Get the user email address from the forwarded message.
      *
      * @return string
      */
@@ -198,7 +198,7 @@ class ForwardCutter
     }
 
     /**
-     * Get the users name from the forwarded message (based on their name in From:)
+     * Get the users name from the forwarded message (based on their name in From:).
      *
      * @return string
      */
@@ -208,6 +208,6 @@ class ForwardCutter
             return $this->forward_info['fwd_from_name'];
         }
 
-        return null;
+        return;
     }
 }

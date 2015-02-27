@@ -26,21 +26,19 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Data
+ * Orb.
  */
 
 namespace Orb\Data;
 
 /**
- * Source: https://gist.github.com/tbrianjones/5992856
+ * Source: https://gist.github.com/tbrianjones/5992856.
  */
 class FreeEmailProviders
 {
     /**
-     * @param  string $address
+     * @param string $address
+     *
      * @return bool
      */
     public static function isFreeEmailAddress($address)
@@ -49,11 +47,10 @@ class FreeEmailProviders
             return false;
         }
 
-        list (, $domain) = explode('@', $address, 2);
+        list(, $domain) = explode('@', $address, 2);
 
         return self::hasDomain($domain);
     }
-
 
     /**
      * @return array
@@ -63,9 +60,9 @@ class FreeEmailProviders
         return self::$domains;
     }
 
-
     /**
-     * @param  string $domain
+     * @param string $domain
+     *
      * @return bool
      */
     public static function isFreeEmailDomain($domain)
@@ -78,7 +75,6 @@ class FreeEmailProviders
 
         return isset(self::$domain_map[$domain]);
     }
-
 
     /**
      * @var array

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -59,10 +58,12 @@ class GroupDbPersister
     }
 
     /**
-     * @param  Usergroup       $group
-     * @param  UserPermissions $perms
-     * @return bool
+     * @param Usergroup       $group
+     * @param UserPermissions $perms
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function savePerms(Usergroup $group, UserPermissions $perms)
     {
@@ -73,7 +74,7 @@ class GroupDbPersister
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $set_perms[] = $real_name . '.' . $prop;
+                    $set_perms[] = $real_name.'.'.$prop;
                 }
             }
         }
@@ -86,7 +87,6 @@ class GroupDbPersister
             foreach ($new_perms as $p) {
                 $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
             }
-
         }
 
         $this->db->beginTransaction();

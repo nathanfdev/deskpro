@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -63,11 +60,11 @@ class Build1348573081 extends AbstractBuild
             }
 
             $this->container->getDb()->insert('people_emails', array(
-                'person_id' => $valid['person_id'],
-                'email' => $email_address,
-                'email_domain' => \Orb\Util\Strings::extractRegexMatch('#@(.*?)$#', $email_address),
-                'is_validated' => true,
-                'date_created' => date('Y-m-d H:i:s'),
+                'person_id'      => $valid['person_id'],
+                'email'          => $email_address,
+                'email_domain'   => \Orb\Util\Strings::extractRegexMatch('#@(.*?)$#', $email_address),
+                'is_validated'   => true,
+                'date_created'   => date('Y-m-d H:i:s'),
                 'date_validated' => date('Y-m-d H:i:s'),
             ));
 

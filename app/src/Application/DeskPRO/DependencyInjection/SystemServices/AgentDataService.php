@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -188,7 +185,8 @@ class AgentDataService
     }
 
     /**
-     * @param  array    $for_ids
+     * @param array $for_ids
+     *
      * @return string[]
      */
     public function getNames(array $for_ids = null)
@@ -225,7 +223,8 @@ class AgentDataService
     }
 
     /**
-     * @param  int                                     $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     public function get($id)
@@ -236,11 +235,12 @@ class AgentDataService
             return $this->agents[$id];
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function has($id)
@@ -251,9 +251,10 @@ class AgentDataService
     }
 
     /**
-     * Get an array of agents by ids
+     * Get an array of agents by ids.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getByIds($ids)
@@ -276,8 +277,9 @@ class AgentDataService
      * Returns an array of valid agent IDs in $ids. Optionally
      * specify $invalid and all invalid IDs will be put into it.
      *
-     * @param  array $ids
-     * @param  null  $invalid_ids
+     * @param array $ids
+     * @param null  $invalid_ids
+     *
      * @return array
      */
     public function confirmAgentIds(array $ids, &$invalid_ids = null)
@@ -301,7 +303,8 @@ class AgentDataService
     }
 
     /**
-     * @param  string                             $email
+     * @param string $email
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function getByEmail($email)
@@ -312,7 +315,7 @@ class AgentDataService
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -353,9 +356,10 @@ class AgentDataService
     }
 
     /**
-     * Check if an agent is online
+     * Check if an agent is online.
      *
-     * @param  int|Person $id_or_agent
+     * @param int|Person $id_or_agent
+     *
      * @return bool
      */
     public function isAgentOnline($id_or_agent)
@@ -367,7 +371,7 @@ class AgentDataService
     }
 
     /**
-     * Count how many agents are currently online
+     * Count how many agents are currently online.
      *
      * @return int
      */
@@ -377,7 +381,8 @@ class AgentDataService
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\AgentTeam|null
      */
     public function getTeam($id)
@@ -388,11 +393,12 @@ class AgentDataService
             return $this->agent_teams[$id];
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasTeam($id)
@@ -403,9 +409,10 @@ class AgentDataService
     }
 
     /**
-     * Get an array of agents by ids
+     * Get an array of agents by ids.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getTeamsByIds($ids)
@@ -425,9 +432,11 @@ class AgentDataService
     }
 
     /**
-     * @param  int|\Application\DeskPRO\Entity\Person  $agent
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     * @param int|\Application\DeskPRO\Entity\Person $agent
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     *
      */
     public function getTeamsForAgent($agent)
     {
@@ -457,8 +466,9 @@ class AgentDataService
     }
 
     /**
-     * @param  int|\Application\DeskPRO\Entity\Person    $agent
-     * @param  int|\Application\DeskPRO\Entity\AgentTeam $team
+     * @param int|\Application\DeskPRO\Entity\Person    $agent
+     * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+     *
      * @return bool
      */
     public function isAgentMemberOfTeam($agent, $team)
@@ -467,7 +477,11 @@ class AgentDataService
             $agent_id = $agent->id;
         } else {
             try {
-                $agent_id = $this->get($agent)->id;
+                $agent = $this->get($agent);
+                if (!$agent) {
+                    return false;
+                }
+                $agent_id = $agent->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
@@ -477,20 +491,27 @@ class AgentDataService
             $team_id = $team->id;
         } else {
             try {
-                $team_id = $this->getTeam($team)->id;
+                $team = $this->getTeam($team);
+                if ($team) {
+                    return false;
+                }
+                $team_id = $team->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
         $this->preloadTeamMap();
+
         return isset($this->agent_to_teams[$agent_id][$team_id]);
     }
 
     /**
-     * @param  int|\Application\DeskPRO\Entity\Person  $agent
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     * @param int|\Application\DeskPRO\Entity\Person $agent
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     *
      */
     public function getGroupIdsForAgent($agent)
     {
@@ -512,9 +533,11 @@ class AgentDataService
     }
 
     /**
-     * @param  int|\Application\DeskPRO\Entity\AgentTeam $team
-     * @return \Application\DeskPRO\Entity\Person[]
+     * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\Person[]
+     *
      */
     public function getAgentsForTeam($team)
     {
@@ -544,7 +567,7 @@ class AgentDataService
     }
 
     /**
-     * Selects agents based on some kind of selector:
+     * Selects agents based on some kind of selector:.
      *
      * - ticket_agent:          The assigned agent
      * - ticket_team:           Agents of the assigned team
@@ -557,9 +580,10 @@ class AgentDataService
      * - agent:10               A specific agent
      * - team:12                Agents of a specific team
      *
-     * @param  string $selector       Keyword or agent id
-     * @param  Person $person_context Current person performer
-     * @param  Ticket $ticket_context Current ticket context
+     * @param string $selector       Keyword or agent id
+     * @param Person $person_context Current person performer
+     * @param Ticket $ticket_context Current ticket context
+     *
      * @return array
      */
     public function selectAgents($selector, Person $person_context = null, Ticket $ticket_context = null)

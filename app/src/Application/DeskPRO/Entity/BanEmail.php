@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ban an email address
+ * Ban an email address.
  *
  * @property string $banned_email
  * @property boolean $is_pattern
@@ -47,25 +46,22 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class BanEmail extends DomainObject
 {
     /**
-     * The banned email address
+     * The banned email address.
      *
      * @var string
      */
-
     protected $banned_email;
 
     /**
-     * True if this is a pattern rather than a specific address
+     * True if this is a pattern rather than a specific address.
      *
      * @var bool
      */
-
     protected $is_pattern = false;
 
     /**
      * @return BanEmail
      */
-
     public static function createEmailBan()
     {
         return new self();
@@ -74,7 +70,6 @@ class BanEmail extends DomainObject
     /**
      * @param string $email
      */
-
     public function setBannedEmail($email)
     {
         if (strpos($email, '*') !== false) {

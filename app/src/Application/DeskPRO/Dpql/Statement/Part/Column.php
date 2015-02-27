@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -49,7 +46,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class Column extends AbstractPart
 {
     /**
-     * List of parts in the reference
+     * List of parts in the reference.
      *
      * @var array
      */
@@ -60,25 +57,25 @@ class Column extends AbstractPart
      * Maps a table name to 2 values:
      *  - 0: the unique ID field (usually a number)
      *  - 1: the printable field (name, subject, etc)
-     *  - 2: the type of link (if linkable)
+     *  - 2: the type of link (if linkable).
      *
      * @var array
      */
     protected static $_tableResolver = array(
-        'agent_teams' => array('id', 'name'),
-        'departments' => array('id', 'title'),
-        'feedback_categories' => array('id', 'title'),
+        'agent_teams'                => array('id', 'name'),
+        'departments'                => array('id', 'title'),
+        'feedback_categories'        => array('id', 'title'),
         'feedback_status_categories' => array('id', 'title'),
-        'labels_tickets' => array('label', 'label'),
-        'languages' => array('id', 'title'),
-        'organizations' => array('id', 'name', 'organization'),
-        'people' => array('id', 'name', 'person'),
-        'products' => array('id', 'title'),
-        'slas' => array('id', 'title'),
-        'tickets' => array('id', 'subject', 'ticket'),
-        'ticket_categories' => array('id', 'title'),
-        'ticket_priorities' => array('id', 'title'),
-        'ticket_workflows' => array('id', 'title'),
+        'labels_tickets'             => array('label', 'label'),
+        'languages'                  => array('id', 'title'),
+        'organizations'              => array('id', 'name', 'organization'),
+        'people'                     => array('id', 'name', 'person'),
+        'products'                   => array('id', 'title'),
+        'slas'                       => array('id', 'title'),
+        'tickets'                    => array('id', 'subject', 'ticket'),
+        'ticket_categories'          => array('id', 'title'),
+        'ticket_priorities'          => array('id', 'title'),
+        'ticket_workflows'           => array('id', 'title'),
     );
 
     /**

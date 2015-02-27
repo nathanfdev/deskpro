@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the user was created during this request
+ * Checks if the user was created during this request.
  */
 class CheckUserIsNew extends AbstractTriggerTerm
 {
@@ -53,7 +52,6 @@ class CheckUserIsNew extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -62,11 +60,17 @@ class CheckUserIsNew extends AbstractTriggerTerm
         $is_news = $ticket->person->isNewPerson();
 
         if ($is_news) {
-            if ($this->getTermOperator() == 'is') return true;
-            else return false;
+            if ($this->getTermOperator() == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($this->getTermOperator() == 'is') return false;
-            else return true;
+            if ($this->getTermOperator() == 'is') {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

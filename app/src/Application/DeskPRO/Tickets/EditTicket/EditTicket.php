@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\EditTicket;
@@ -50,12 +47,13 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
     public $person;
 
     /**
-     * The person who is running this (ex an agent?)
+     * The person who is running this (ex an agent?).
      */
     protected $person_context;
 
     /**
-     * The actual ticket
+     * The actual ticket.
+     *
      * @var \Application\DeskPRO\Entity\Ticket
      */
     protected $ticket_object;
@@ -85,7 +83,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
     public function __construct(Ticket $ticket_object)
     {
         $this->ticket_object = $ticket_object;
-        $this->ticket = new EditTicketProps($ticket_object);
+        $this->ticket        = new EditTicketProps($ticket_object);
 
         for ($i = 0; $i < 500; $i++) {
             $this->custom_ticket_fields["field_$i"] = null;
@@ -120,7 +118,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
                 $this->ticket_object->product    = $this->ticket->product_id ? App::findEntity('DeskPRO:Product', $this->ticket->product_id) : null;
             }
 
-            $field_manager = App::getSystemService('ticket_fields_manager');
+            $field_manager      = App::getSystemService('ticket_fields_manager');
             $post_custom_fields = App::getRequest()->request->get('custom_fields', array());
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $this->ticket_object);
@@ -136,7 +134,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
             }
 
             if ($this->ticket->remove_ccs) {
-                foreach ($this->ticket->remove_ccs AS $remove_person_id) {
+                foreach ($this->ticket->remove_ccs as $remove_person_id) {
                     $this->ticket_object->removeParticipantPerson($remove_person_id);
                 }
             }
@@ -176,26 +174,26 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
     public function handleCc(Ticket $ticket, $cc_email)
     {
         if (!\Orb\Validator\StringEmail::isValueValid($cc_email)) {
-            return null;
+            return;
         }
 
         $account_manager = App::$container->getEmailAccountManager();
         if ($account_manager->findAccountForEmailAddress($cc_email)) {
-            return null;
+            return;
         }
 
         $person_processor = new \Application\DeskPRO\EmailGateway\PersonFromEmailProcessor();
 
-        $cc = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
-        $cc->email = $cc_email;
-        $cc->name = '';
+        $cc            = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
+        $cc->email     = $cc_email;
+        $cc->name      = '';
         $cc->name_utf8 = '';
 
         $cc_person = $person_processor->findPerson($cc);
         if (!$cc_person) {
             // Closed helpdesk and an unknown CC means we drop it
             if (!App::getContainer()->getSetting('core.reg_enabled')) {
-                return null;
+                return;
             }
 
             $cc_person = Person::newContactPerson();
@@ -211,7 +209,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
         }
 
         if (!$cc_person) {
-            return null;
+            return;
         }
 
         if (!$ticket->hasParticipantPerson($cc_person)) {
@@ -224,8 +222,26 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
         return $cc_person;
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

@@ -26,25 +26,22 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
-use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcherTest;
+use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 
 /**
- * Executes escalations
+ * Executes escalations.
  */
 class TicketEscalations extends AbstractJob
 {
@@ -61,11 +58,11 @@ class TicketEscalations extends AbstractJob
         $time_limit = 200;
 
         $orb_adapter = new OrbLoggerAdapterHandler($this->getLogger());
-        $logger = new Logger('TicketTriggers');
+        $logger      = new Logger('TicketTriggers');
         $logger->pushHandler($orb_adapter);
 
         if ($this->options->has('testEscalation')) {
-            $find_id = $this->options->get('testEscalation');
+            $find_id     = $this->options->get('testEscalation');
             $escalations = App::$container->getEm()->getRepository('DeskPRO:TicketEscalation')->getByIds(array($find_id));
             if (!count($escalations)) {
                 $logger->warn("testEscalation: Escalation #$find_id does not exist");
@@ -96,11 +93,11 @@ class TicketEscalations extends AbstractJob
             $tickets = App::$container->getEm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
             if (!count($tickets)) {
-                $logger->warn("testTickets: No tickets found: " . implode(',', $ticket_ids));
+                $logger->warn("testTickets: No tickets found: ".implode(',', $ticket_ids));
 
                 return;
             } else {
-                $logger->info("testTickets: Found tickets: " . implode(',', $ticket_ids));
+                $logger->info("testTickets: Found tickets: ".implode(',', $ticket_ids));
             }
 
             $matcher = new EscalationTicketMatcherTest(App::$container->getEm(), App::$container->getDb());

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,7 +54,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     }
 
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
@@ -64,7 +64,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     }
 
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
@@ -91,7 +92,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
             $log[] = "SoapClient is ok";
 
-            return null;
+            return;
         };
 
         $tests[] = function () use (&$log) {
@@ -103,7 +104,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
             $log[] = "curl is ok";
 
-            return null;
+            return;
         };
 
         $get_client = function ($url) use (&$log, $user, $password, $token) {
@@ -115,7 +116,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             } catch (\Exception $e) {
                 $log[] = "Failed to create partner client";
 
-                return null;
+                return;
             }
 
             try {
@@ -126,7 +127,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                     $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
                 }
 
-                return null;
+                return;
             }
 
             return $sforce;

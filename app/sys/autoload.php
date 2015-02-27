@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 set_include_path(
     DP_ROOT.'/vendor-src/zend/library'
     .PATH_SEPARATOR.
@@ -16,6 +18,7 @@ require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
+    'DeskPRO'            => DP_ROOT.'/src',
     'Application'        => DP_ROOT.'/src',
     'Cloud'              => DP_ROOT.'/src',
     'Bundle'             => DP_ROOT.'/src',
@@ -28,17 +31,17 @@ $loader->registerNamespaces(array(
     'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
     'Leth'               => DP_ROOT.'/vendor-src/php-ipaddress/classes',
     'libphonenumber'     => DP_ROOT.'/vendor-src/libphonenumber/src',
-    'Bdt\\Clickatell'    => DP_ROOT.'/vendor-src/guzzle-clickatell/src'
+    'Bdt\\Clickatell'    => DP_ROOT.'/vendor-src/guzzle-clickatell/src',
 ));
 
-$loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
+$loader->registerNamespaceFallbacks(array(DP_WEB_ROOT.'/plugins'));
 
 $loader->registerPrefixes(array(
     'mPDF_'           => DP_ROOT.'/vendor-src/mpdf/lib',
     'File_'           => DP_ROOT.'/vendor-src/pear/lib',
     'PEAR_'           => DP_ROOT.'/vendor-src/pear/lib',
     'EWSType_'        => DP_ROOT.'/vendor-src/php-ews',
-    'Services_Twilio' => DP_ROOT.'/vendor-src/twilio-php'
+    'Services_Twilio' => DP_ROOT.'/vendor-src/twilio-php',
 ));
 
 $loader->registerClassNames(array(
@@ -83,28 +86,29 @@ $loader->registerClassNames(array(
 ));
 
 spl_autoload_register(function ($classname) {
-    if (strpos($classname, 'DeskproLanguages') !== 0) return false;
+    if (strpos($classname, 'DeskproLanguages') !== 0) {
+        return false;
+    }
 
     $classpath = str_replace('DeskproLanguages\\', '', $classname);
     $classpath = str_replace('\\', DIRECTORY_SEPARATOR, $classpath);
-    $path = DP_ROOT . '/languages/' . $classpath . '.php';
+    $path = DP_ROOT.'/languages/'.$classpath.'.php';
 
-    require($path);
+    require $path;
 
     return true;
 });
 
-
 // psr-4 style autoloading for DpBehat\ namespace
 spl_autoload_register(function ($class) {
     $prefix = 'DpBehat\\';
-    $base_dir = DP_ROOT . '/tests/features/bootstrap/';
+    $base_dir = DP_ROOT.'/tests/features/bootstrap/';
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
         return;
     }
     $relative_class = substr($class, $len);
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+    $file = $base_dir.str_replace('\\', '/', $relative_class).'.php';
     if (file_exists($file)) {
         require $file;
     }
@@ -133,9 +137,9 @@ spl_autoload_register(function ($classname) {
 
     foreach ($paths as $prefix => $base_path) {
         if ($prefix === 'default' || strpos($appname, $prefix) === 0) {
-            $path = $base_path . '/'. $appname . '/native/' . implode('/', $parts) . '.php';
+            $path = $base_path.'/'.$appname.'/native/'.implode('/', $parts).'.php';
             if (file_exists($path)) {
-                require_once($path);
+                require_once $path;
 
                 return true;
             }
@@ -154,7 +158,10 @@ $GLOBALS['DP_AUTOLOADER'] = $loader;
 // ezC autoloading
 require DP_ROOT.'/vendor-src/ezcomponents/Base/src/ezc_bootstrap.php';
 spl_autoload_register(function ($classname) {
-    if (strpos($classname, 'ezc') !== 0) return false;
+    if (strpos($classname, 'ezc') !== 0) {
+        return false;
+    }
+
     return ezcBase::autoload($classname);
 });
 
@@ -166,6 +173,7 @@ if (!defined('GEOIP_API_INC_PATH')) {
 class_exists('CssMin');
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+
 AnnotationRegistry::registerLoader(function ($class) use ($loader) {
     $loader->loadClass($class);
 
@@ -177,6 +185,6 @@ if (is_callable(array($composer_loader, 'loadClass'))) {
 }
 AnnotationRegistry::registerAutoloadNamespace('Sensio\Bundle\FrameworkExtraBundle', DP_ROOT.'/vendor/sensio/framework-extra-bundle');
 require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
-\Swift_DependencyContainer::getInstance()->register('cache.disk')-> asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
+\Swift_DependencyContainer::getInstance()->register('cache.disk')->asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
 
 require DP_ROOT.'/vendor-src/querypath/src/qp.php';

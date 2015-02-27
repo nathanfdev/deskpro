@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace deskpro_magento\Usersource\Auth;
@@ -140,9 +137,10 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
     }
 
     /**
-     * Get an Identity from a userinfo array
+     * Get an Identity from a userinfo array.
      *
-     * @param  array              $userinfo
+     * @param array $userinfo
+     *
      * @return \Orb\Auth\Identity
      */
     public function getIdentityFromUserInfo(array $userinfo)
@@ -272,8 +270,8 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         try {
             $error = error_reporting();
             error_reporting($error & ~E_WARNING);
-            $v = libxml_disable_entity_loader(false);
-            $client = new \Application\DeskPRO\SoapClient\SafeSoapClient($url . '/api?wsdl');
+            $v      = libxml_disable_entity_loader(false);
+            $client = new \Application\DeskPRO\SoapClient\SafeSoapClient($url.'/api?wsdl');
             libxml_disable_entity_loader($v);
             error_reporting($error);
         } catch (\SoapFault $e) {
@@ -304,7 +302,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
             );
         }
 
-        return null;
+        return;
     }
 
     public function getUserInfoForId($id)
@@ -320,7 +318,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
             );
         }
 
-        return null;
+        return;
     }
 
     public function authenticateCookie(array $cookies)
@@ -424,9 +422,9 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
     }
 
     /**
-     * We dont use auto refresh, instead we use return GET param (see LoginController::usersourceSsoAction)
+     * We dont use auto refresh, instead we use return GET param (see LoginController::usersourceSsoAction).
      *
-*@return bool
+     *@return bool
      */
     public function isBackgroundSsoSimpleRefresh()
     {

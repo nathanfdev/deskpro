@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Facebook
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Facebook;

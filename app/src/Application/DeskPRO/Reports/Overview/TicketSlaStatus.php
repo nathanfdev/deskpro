@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -66,11 +63,10 @@ class TicketSlaStatus extends AbstractTableOverviewStat
      */
     public function __construct($sla_id = null, \DateTime $date_start = null, \DateTime $date_end = null)
     {
-        $this->sla_id     = $sla_id ? (int)$sla_id : null;
+        $this->sla_id     = $sla_id ? (int) $sla_id : null;
         $this->date_start = $date_start;
         $this->date_end   = $date_end;
     }
-
 
     /**
      * @return string[]
@@ -83,7 +79,6 @@ class TicketSlaStatus extends AbstractTableOverviewStat
             'fail'     => 'Failed',
         );
     }
-
 
     /**
      * @return int[]
@@ -110,7 +105,7 @@ class TicketSlaStatus extends AbstractTableOverviewStat
         }
 
         if ($where) {
-            $where = " WHERE " . implode(' AND ', $where);
+            $where = " WHERE ".implode(' AND ', $where);
         } else {
             $where = '';
         }

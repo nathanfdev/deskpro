@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -47,16 +46,17 @@ use Orb\Util\Strings;
 abstract class AbstractEmailAction extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
     /**
-     * @param  Ticket                                   $ticket
-     * @param  ExecutorContextInterface                 $context
-     * @return \Application\DeskPRO\Entity\EmailAccount
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\EmailAccount
+     *
      */
     protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
     {
         $from_account = $this->getActionOption('from_account') ?: null;
         if ($from_account) {
-
             if (Numbers::isInteger($from_account)) {
                 $from_account_id = $from_account;
                 try {
@@ -83,20 +83,21 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $from_account;
     }
 
-
     /**
-     * @param  Ticket                    $ticket
-     * @param  ExecutorContextInterface  $context
-     * @param  bool                      $allow_blank
-     * @return string|null
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param bool                     $allow_blank
+     *
      * @throws \InvalidArgumentException
+     * @return string|null
+     *
      */
     protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
     {
         $template = $this->getActionOption('template');
         if (!$template) {
             if ($allow_blank) {
-                return null;
+                return;
             }
 
             $context->getLogger()->warn("[AbstractEmailAction] No template specified");
@@ -112,11 +113,11 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $template;
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $mode    'user' or 'agent'
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $mode    'user' or 'agent'
+     *
      * @return array
      */
     protected function getStandardEmailVars(Ticket $ticket, ExecutorContextInterface $context, $mode)
@@ -141,7 +142,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         # Set reply flags
         #------------------------------
 
-        $new_replies = $state->getNewReplies();
+        $new_replies        = $state->getNewReplies();
         $is_new_ticket      = $state->isNewTicket();
         $is_new_agent_reply = false;
         $is_new_agent_note  = false;
@@ -165,7 +166,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         // Agent mode - include ticket logs
         } else {
             $ticketlog_generator = new TicketLogGenerator($ticket, $context);
-            $ticket_logs = $ticketlog_generator->getLogEntries();
+            $ticket_logs         = $ticketlog_generator->getLogEntries();
         }
 
         #------------------------------
@@ -190,7 +191,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $vars;
     }
 
-
     /**
      * @param TicketEmail              $ticket_email
      * @param Ticket                   $ticket
@@ -208,18 +208,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $ticket_email->getSentWithCcs(),
             $ticket_email->getFromName(),
             $ticket_email->getFromEmailAccount()->getUseEmailAddress(),
-            $ticket_email->getTemplateName()
+            $ticket_email->getTemplateName(),
+            $ticket_email->getSendmailSourceId()
         );
 
         $state->recordChange($change);
     }
 
-
     /**
-     * @param  string                   $name
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $email_mode 'user' or 'agent'
+     * @param string                   $name
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $email_mode 'user' or 'agent'
+     *
      * @return string
      */
     protected function renderFromName($name, Ticket $ticket, ExecutorContextInterface $context, $email_mode)
@@ -250,19 +251,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
                     return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
                 } catch (\Exception $e) {
-                    $context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
+                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), array('exception' => $e));
 
                     return '';
                 }
         }
     }
 
-
     /**
-     * @param  string                   $string
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  array                    $extra_vars
+     * @param string                   $string
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param array                    $extra_vars
+     *
      * @return string
      */
     protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
@@ -273,11 +274,11 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars);
     }
 
-
     /**
-     * @param  array                    $raw_headers
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param array                    $raw_headers
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
@@ -286,7 +287,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         foreach ($raw_headers as $h) {
             $headers[] = array(
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
-                'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
+                'value' => $this->renderStringTemplate($h['value'], $ticket, $context),
             );
         }
 

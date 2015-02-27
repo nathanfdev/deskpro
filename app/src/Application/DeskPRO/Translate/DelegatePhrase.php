@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Translate
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Translate;
@@ -53,6 +50,7 @@ class DelegatePhrase implements DelegatePhraseInterface
      * Get the phrase text.
      *
      * @param  $translator
+     *
      * @return string
      */
     public function getPhrase(Translate $translator, Language $language = null)

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -52,7 +49,7 @@ class Build1375876072 extends AbstractBuild
                 'usergroup_id' => $r['usergroup_id'] ?: null,
                 'person_id'    => $r['person_id'] ?: null,
                 'value'        => 1,
-                'name'         => 'agent_chat.view_transcripts'
+                'name'         => 'agent_chat.view_transcripts',
             );
         }
 

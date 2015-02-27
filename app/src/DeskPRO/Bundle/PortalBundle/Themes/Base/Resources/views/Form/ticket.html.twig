@@ -1,0 +1,29 @@
+<style>
+    .form-error {
+        color: red;
+        border: 1px solid red;
+    }
+
+    .deskpro-form-widget {
+        margin-bottom: 15px;
+    }
+
+    .deskpro-date-form-widget select {
+        width: 30%;
+    }
+</style>
+
+
+{{ form_errors(form) }}
+{{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+{% for widget in form.children if widget.vars.name != '_token' %}
+    <div class="deskpro-form-widget {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}">
+        {{ form_label(widget) }}
+        {{ form_widget(widget) }}
+        {% if widget.vars.valid is defined %}
+        {{ form_errors(widget) }}
+        {% endif %}
+    </div>
+{% endfor %}
+{{ form_rest(form) }}
+{{ form_end(form) }}

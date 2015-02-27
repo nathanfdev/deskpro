@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AgentBundle\Controller;
 
@@ -355,7 +353,7 @@ class SettingsController extends AbstractController
     ############################################################################
 
     /**
-     * Just a list of filters
+     * Just a list of filters.
      */
     public function ticketFiltersAction()
     {
@@ -377,7 +375,7 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * Edit a filter
+     * Edit a filter.
      */
     public function ticketFilterEditAction($filter_id)
     {
@@ -553,7 +551,7 @@ class SettingsController extends AbstractController
     ############################################################################
 
     /**
-     * Just a list of filters
+     * Just a list of filters.
      */
     public function ticketSlasAction()
     {

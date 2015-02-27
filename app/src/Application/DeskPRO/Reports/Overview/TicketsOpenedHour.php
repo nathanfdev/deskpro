@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -79,7 +76,6 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
         $this->date_end   = $date_end;
     }
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      */
@@ -88,16 +84,16 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
         $this->person_context = $person;
     }
 
-
     /**
-     * @return array|mixed
      * @throws \InvalidArgumentException
+     * @return array|mixed
+     *
      */
     public function getTitles()
     {
         switch ($this->date_group) {
             case 'hour':
-                $titles = array_combine(range(1, 23), range(1,23));
+                $titles      = array_combine(range(1, 23), range(1, 23));
                 $titles['0'] = 0;
 
                 foreach ($titles as &$x) {
@@ -106,9 +102,9 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                     } elseif ($x == 12) {
                         $x = '12pm';
                     } elseif ($x < 12) {
-                        $x = $x . 'am';
+                        $x = $x.'am';
                     } else {
-                        $x = ($x-12) . 'pm';
+                        $x = ($x-12).'pm';
                     }
                 }
 
@@ -128,10 +124,10 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                 break;
 
             case 'day':
-                $days = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
+                $days   = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
                 $titles = array();
-                foreach (range(1,$days) as $d) {
-                    $titles[$d] = $d . Numbers::ordinalSuffix($d);
+                foreach (range(1, $days) as $d) {
+                    $titles[$d] = $d.Numbers::ordinalSuffix($d);
                 }
 
                 break;
@@ -160,10 +156,10 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
         return $titles;
     }
 
-
     /**
-     * @return array|\int[]|mixed|null
      * @throws \InvalidArgumentException
+     * @return array|\int[]|mixed|null
+     *
      */
     public function getValues()
     {

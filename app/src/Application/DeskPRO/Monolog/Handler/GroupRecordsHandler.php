@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Monolog\Processor;
@@ -66,10 +63,10 @@ class GroupRecordsHandler extends AbstractProcessingHandler
     private $max_history;
 
     /**
-     * The thing in each record that indicates the group
+     * The thing in each record that indicates the group.
      *
-     * @param string $group_key  The key in each record which indicates the group to put the messages in
-     * @param int $max_history   How many groups of records to keep. This helps prevent massive logs filling memory.
+     * @param string $group_key   The key in each record which indicates the group to put the messages in
+     * @param int    $max_history How many groups of records to keep. This helps prevent massive logs filling memory.
      */
     public function __construct($group_key, $max_history = 50)
     {
@@ -79,6 +76,7 @@ class GroupRecordsHandler extends AbstractProcessingHandler
 
     /**
      * @param array $record
+     *
      * @return bool
      */
     public function isHandling(array $record)
@@ -117,9 +115,9 @@ class GroupRecordsHandler extends AbstractProcessingHandler
         $this->records[$id][] = $record['formatted'];
     }
 
-
     /**
      * @param string $id
+     *
      * @return string
      */
     public function getMessages($id)

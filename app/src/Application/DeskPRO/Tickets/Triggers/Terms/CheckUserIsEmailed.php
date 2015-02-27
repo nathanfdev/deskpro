@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks to see if any user emails have been sent yet
+ * Checks to see if any user emails have been sent yet.
  *
  * @option string template Optionally the name of a specific template you want to check
  */
@@ -57,7 +56,6 @@ class CheckUserIsEmailed extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -65,7 +63,7 @@ class CheckUserIsEmailed extends AbstractTriggerTerm
     {
         $template_name = $this->getTermOptions()->get('template', null);
 
-        $state = $ticket->getStateChangeRecorder();
+        $state    = $ticket->getStateChangeRecorder();
         $did_send = false;
 
         foreach ($state->getChangesForField('ticket_email') as $log) {
@@ -90,11 +88,17 @@ class CheckUserIsEmailed extends AbstractTriggerTerm
 
         $op = $this->getTermOperator();
         if ($did_send) {
-            if ($op == 'is') return true;
-            else return false;
+            if ($op == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($op == 'not') return true;
-            else return false;
+            if ($op == 'not') {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People\PersonMerge;
@@ -38,7 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Handles merging of one person into the other
+ * Handles merging of one person into the other.
  */
 class PersonMerge implements PersonContextInterface
 {
@@ -63,16 +61,17 @@ class PersonMerge implements PersonContextInterface
     protected $em;
 
     /**
-     * @throws \InvalidArgumentException
+     *
      * @param  \Application\DeskPRO\Entity\Person   $person_performer
      * @param  \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
      * @param  \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
+     * @throws \InvalidArgumentException
      */
     public function __construct(Person $person_performer, Person $person, Person $other_person)
     {
         $this->em = App::getOrm();
 
-        $this->person = $person;
+        $this->person       = $person;
         $this->other_person = $other_person;
         $this->setPersonContext($person_performer);
 
@@ -91,7 +90,6 @@ class PersonMerge implements PersonContextInterface
         $this->em->beginTransaction();
 
         try {
-
             // todo: organizations cc?
             $standard_prop_names = array(
                 'gravatar_url',
@@ -99,7 +97,7 @@ class PersonMerge implements PersonContextInterface
                 'organization',
                 'organization_position',
                 'picture_blob',
-                'summary'
+                'summary',
             );
             foreach ($standard_prop_names as $prop_name) {
                 $prop_standard = new Property\StandardProperty($this->person, $this->other_person);
@@ -138,7 +136,6 @@ class PersonMerge implements PersonContextInterface
             $this->em->flush();
 
             $this->em->commit();
-
         } catch (\Exception $e) {
             $this->em->rollback();
 
@@ -154,10 +151,10 @@ class PersonMerge implements PersonContextInterface
             'people_contact_data',
             'people_emails',
             'people_emails_validating',
-            'people_twitter_users'
+            'people_twitter_users',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -181,10 +178,10 @@ class PersonMerge implements PersonContextInterface
             'people_prefs',
             'person2usergroups',
             'person_activity',
-            'person_usersource_assoc'
+            'person_usersource_assoc',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -196,10 +193,10 @@ class PersonMerge implements PersonContextInterface
             'article_attachments',
             'article_comments',
             'article_pending_create',
-            'article_revisions'
+            'article_revisions',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -208,10 +205,10 @@ class PersonMerge implements PersonContextInterface
     {
         $simple_tables = array(
             'chat_conversations',
-            'chat_conversation_to_person'
+            'chat_conversation_to_person',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
 
@@ -224,10 +221,10 @@ class PersonMerge implements PersonContextInterface
         $simple_tables = array(
             'downloads',
             'download_comments',
-            'download_revisions'
+            'download_revisions',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -238,10 +235,10 @@ class PersonMerge implements PersonContextInterface
             'feedback',
             'feedback_attachments',
             'feedback_comments',
-            'feedback_revisions'
+            'feedback_revisions',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -251,10 +248,10 @@ class PersonMerge implements PersonContextInterface
         $simple_tables = array(
             'news',
             'news_comments',
-            'news_revisions'
+            'news_revisions',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -264,10 +261,10 @@ class PersonMerge implements PersonContextInterface
         $simple_tables = array(
             'tasks',
             'task_associations',
-            'task_comments'
+            'task_comments',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }
@@ -287,14 +284,14 @@ class PersonMerge implements PersonContextInterface
             'ticket_feedback',
         );
         $complex_tables = array(
-            'tickets_deleted' => array('by_person_id')
+            'tickets_deleted' => array('by_person_id'),
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
-        foreach ($complex_tables AS $table => $columns) {
-            foreach ($columns AS $column) {
+        foreach ($complex_tables as $table => $columns) {
+            foreach ($columns as $column) {
                 $this->_updateTablePersonId($table, $column);
             }
         }
@@ -307,10 +304,10 @@ class PersonMerge implements PersonContextInterface
             'page_view_log',
             'ratings',
             'searchlog',
-            'visitors'
+            'visitors',
         );
 
-        foreach ($simple_tables AS $table) {
+        foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
     }

@@ -26,17 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage NewSettings
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings;
 
 /**
  * The SettingsBag acts like an immutable array, and also offers an API with methods like has('key') and get('key', 'default').
- *
  */
 class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
 {
@@ -45,12 +41,10 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      */
     private $settings;
 
-
     public function __construct(array $settings = array())
     {
         $this->setArray($settings);
     }
-
 
     public function toArray()
     {
@@ -80,7 +74,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         return new \ArrayIterator($this->settings);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -88,7 +81,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         return $this->has($offset);
     }
-
 
     /**
      * {@inheritdoc}
@@ -98,7 +90,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         return $this->get($offset);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -106,7 +97,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         throw new \LogicException('cannot set a setting in this way. instead, change the underlying source of the setting and get a fresh settings bag by forcing a reload of settings on the settings resolver');
     }
-
 
     /**
      * {@inheritdoc}
@@ -118,7 +108,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         );
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -126,7 +115,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         return serialize($this->settings);
     }
-
 
     /**
      * {@inheritdoc}
@@ -136,7 +124,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         return unserialize($serialized);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -144,7 +131,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         return count($this->settings);
     }
-
 
     /**
      * Seperating setting names by dots "." is popular. We can use grouping to subset a settings bag and get the
@@ -160,15 +146,16 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      *
      * array('core.register' => 1)
      *
-     * @param  string $group the group prefix
-     * @param  bool   $short true to cut the group name out of the result array keys
+     * @param string $group the group prefix
+     * @param bool   $short true to cut the group name out of the result array keys
+     *
      * @return array
      */
     public function getGroup($group, $short = true)
     {
         $ret = array();
 
-        $group_dot = $group . '.';
+        $group_dot = $group.'.';
         $len       = strlen($group_dot);
 
         foreach ($this->settings as $k => $v) {

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
@@ -61,7 +59,7 @@ class DetectInlineReply implements Loggable
     protected $threshold = 0.24;
 
     /**
-     * How many messages to go back to detect changes
+     * How many messages to go back to detect changes.
      *
      * @var int
      */
@@ -95,7 +93,7 @@ class DetectInlineReply implements Loggable
     }
 
     /**
-     * How much longer/shorter does a messag eneed to be before we think its an inline reply
+     * How much longer/shorter does a messag eneed to be before we think its an inline reply.
      *
      * E.g., 0.1 for 10%
      *
@@ -107,7 +105,7 @@ class DetectInlineReply implements Loggable
     }
 
     /**
-     * Check to see if we've detected an inline reply
+     * Check to see if we've detected an inline reply.
      *
      * @return bool
      */
@@ -117,7 +115,7 @@ class DetectInlineReply implements Loggable
     }
 
     /**
-     * Gets the first message that we detect has changed
+     * Gets the first message that we detect has changed.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage|null
      */
@@ -125,7 +123,7 @@ class DetectInlineReply implements Loggable
     {
         $message_texts = $this->getMessageTexts();
         if (!$message_texts) {
-            return null;
+            return;
         }
 
         if ($this->logger) {
@@ -158,14 +156,15 @@ class DetectInlineReply implements Loggable
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get difference as a float between two messages
+     * Get difference as a float between two messages.
      *
-     * @param  string $message1
-     * @param  string $message2
+     * @param string $message1
+     * @param string $message2
+     *
      * @return float
      */
     public function getMessageDifference($message1, $message2)
@@ -188,7 +187,7 @@ class DetectInlineReply implements Loggable
     }
 
     /**
-     * Read body and extract message texts from the source
+     * Read body and extract message texts from the source.
      *
      * @return array
      */
@@ -257,7 +256,8 @@ class DetectInlineReply implements Loggable
     /**
      * Normalize message text so our detection can be a bit more accurate.
      *
-     * @param  string $message_text
+     * @param string $message_text
+     *
      * @return string
      */
     public function normalizeMessage($message_text)

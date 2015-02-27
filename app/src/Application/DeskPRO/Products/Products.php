@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Products;
@@ -42,7 +40,6 @@ class Products extends LazyPreloadedHierarchy
      * @var int
      */
     private $default_id;
-
 
     /**
      * @return array
@@ -87,14 +84,15 @@ class Products extends LazyPreloadedHierarchy
      * Returns a settable object. That is an entity that is not a parent.
      * Returns null if the passed $id is invalid or is not a valid settable.
      *
-     * @param  int                                      $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Product|null
      */
     public function getSettableById($id)
     {
         $obj = $this->getById($id);
         if (!$obj || $this->getChildren($obj)) {
-            return null;
+            return;
         }
 
         return $obj;
@@ -104,7 +102,8 @@ class Products extends LazyPreloadedHierarchy
     // implementing these just for better auto-complete in the IDE (due to @return) :-)
 
     /**
-     * @param  int                                 $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Product
      */
     public function getById($id)
@@ -113,7 +112,8 @@ class Products extends LazyPreloadedHierarchy
     }
 
     /**
-     * @param  array                                 $ids
+     * @param array $ids
+     *
      * @return \Application\DeskPRO\Entity\Product[]
      */
     public function getByIds(array $ids)
@@ -123,6 +123,7 @@ class Products extends LazyPreloadedHierarchy
 
     /**
      * @param $obj_or_id
+     *
      * @return \Application\DeskPRO\Entity\Product[]
      */
     public function getParent($obj_or_id)

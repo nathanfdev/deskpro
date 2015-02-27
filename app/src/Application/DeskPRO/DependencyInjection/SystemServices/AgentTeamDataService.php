@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -136,7 +133,7 @@ class AgentTeamDataService
             return $this->agent_teams[$id];
         }
 
-        return null;
+        return;
     }
 
     public function __call($name, $args)

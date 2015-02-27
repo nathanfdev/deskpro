@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Sms\Detector;
@@ -44,27 +41,26 @@ class TicketDetector
      */
     private $em;
 
-
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
-
     /**
      * find a ticket based on who sent the sms
-     * finds a ticket to reply to using our logic
+     * finds a ticket to reply to using our logic.
      *
      * return a ticket if this person is probably replying to that ticket
      * or return null if this person is initiating a new ticket
      *
-     * @param  Person                                  $from_person
+     * @param Person $from_person
+     *
      * @return \Application\DeskPRO\Entity\Ticket|null
      */
     public function detectBySender(Person $from_person = null)
     {
         if (!$from_person) {
-            return null;
+            return;
         }
 
         $ticket = $this->em->getRepository('DeskPRO:Ticket')->findMostRecentSmsTicketFromPerson(

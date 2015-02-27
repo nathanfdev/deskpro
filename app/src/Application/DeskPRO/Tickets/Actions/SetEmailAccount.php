@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Set the email account
+ * Set the email account.
  *
  * @option int email_account_id
  */
@@ -56,7 +55,6 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}
@@ -77,7 +75,6 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
 
         $ticket->email_account = $account;
     }
-
 
     /**
      * {@inheritDoc}
@@ -100,7 +97,6 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -110,7 +106,7 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
             return array('fields');
         }
 
-        return null;
+        return;
     }
 
     /**

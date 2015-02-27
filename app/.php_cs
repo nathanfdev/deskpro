@@ -4,6 +4,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude('docs')
     ->exclude('vendor')
     ->exclude('vendor-src')
+    ->notName('StaticReflectionProperty_Real.php')
     ->in(__DIR__)
 ;
 
@@ -31,12 +32,25 @@ return Symfony\CS\Config\Config::create()
         'multiple_use',
         'namespace_no_leading_whitespace',
         'new_with_braces',
+        'no_blank_lines_after_class_opening',
+        'no_empty_lines_after_phpdocs',
         'object_operator',
         'operators_spaces',
         'ordered_use',
+        'phpdoc_order',
         'parenthesis',
         'php_closing_tag',
+        'single_line_after_imports',
         'phpdoc_params',
+        'phpdoc_indent',
+        'phpdoc_no_empty_return',
+        'phpdoc_no_package',
+        'phpdoc_separation',
+        'phpdoc_short_description',
+        'phpdoc_to_comment',
+        'phpdoc_trim',
+        'phpdoc_var_without_name',
+        'remove_leading_slash_use',
         'remove_lines_between_uses',
         'return',
         'short_tag',
