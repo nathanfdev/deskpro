@@ -31,13 +31,13 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiV2Bundle;
+namespace DeskPRO\Bundle\ApiBundle;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ApiV2Bundle extends Bundle
+class ApiBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

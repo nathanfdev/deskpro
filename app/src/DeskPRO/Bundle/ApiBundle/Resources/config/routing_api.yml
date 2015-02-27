@@ -1,0 +1,3 @@
+ticket_filters:
+    type: rest
+    resource: DeskPRO\Bundle\ApiBundle\Controller\FiltersController

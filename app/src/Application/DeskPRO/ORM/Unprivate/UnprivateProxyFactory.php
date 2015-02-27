@@ -1,18 +1,17 @@
 <?php
 /* This file has been auto-generated. See build-vendors-mutate.php */
-
 namespace Application\DeskPRO\ORM\Unprivate;
-
-use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
+use Doctrine\ORM\Proxy\ProxyException;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Proxy\AbstractProxyFactory;
-use Doctrine\Common\Proxy\Proxy as BaseProxy;
 use Doctrine\Common\Proxy\ProxyDefinition;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Proxy\Proxy as BaseProxy;
+use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\ORM\Persisters\BasicEntityPersister;
-
 class UnprivateProxyFactory extends AbstractProxyFactory
 {
     protected $em;
@@ -35,7 +34,6 @@ class UnprivateProxyFactory extends AbstractProxyFactory
     {
         $classMetadata   = $this->em->getClassMetadata($className);
         $entityPersister = $this->uow->getEntityPersister($className);
-
         return new ProxyDefinition(
             ClassUtils::generateProxyClassName($className, $this->proxyNs),
             $classMetadata->getIdentifierFieldNames(),
@@ -71,7 +69,6 @@ class UnprivateProxyFactory extends AbstractProxyFactory
                 }
             };
         }
-
         return function (BaseProxy $proxy) use ($entityPersister, $classMetadata) {
             $initializer = $proxy->__getInitializer();
             $cloner      = $proxy->__getCloner();
@@ -103,7 +100,7 @@ class UnprivateProxyFactory extends AbstractProxyFactory
             }
             $proxy->__setInitialized(true);
             $proxy->__setInitializer(null);
-            $class    = $entityPersister->getClassMetadata();
+            $class = $entityPersister->getClassMetadata();
             $original = $entityPersister->load($classMetadata->getIdentifierValues($proxy));
             if (null === $original) {
                 throw new EntityNotFoundException();

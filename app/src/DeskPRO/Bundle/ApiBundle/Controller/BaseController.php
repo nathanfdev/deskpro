@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiV2Bundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 
 use FOS\RestBundle\Controller\FOSRestController;

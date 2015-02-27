@@ -31,19 +31,20 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiV2Bundle\DependencyInjection;
+namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
 
 
+use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class ApiV2Extension extends Extension
+class ApiExtension extends Extension
 {
     public function load(array $config, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader = new YamlDirectoryLoader($container);
+        $loader->loadDir(__DIR__ . '/../Resources/config/services');
     }
 }

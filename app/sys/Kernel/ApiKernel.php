@@ -41,7 +41,7 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
-class ApiV2Kernel extends Kernel
+class ApiKernel extends Kernel
 {
     /**
      * Returns an array of bundles to register.
@@ -65,14 +65,9 @@ class ApiV2Kernel extends Kernel
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
-            new \Application\ApiV2Bundle\ApiV2Bundle(),
-            //new \Application\AgentBundle\AgentBundle(),
-            //new \Application\LanguageBundle\LanguageBundle(),
-            //new \Application\AuthBundle\AuthBundle(),
-            //new \Application\FormBundle\FormBundle(),
-            //new \Application\AppBundle\AppBundle(),
-            //new \Application\PersonBundle\PersonBundle(),
-            //new \Application\TicketBundle\TicketBundle()
+            new \Application\EmailBundle\EmailBundle(),
+            new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
         );
 
         if ('dev' === $this->getEnvironment()
@@ -106,7 +101,7 @@ class ApiV2Kernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT . '/sys/config/apiv2_config_' . $this->getEnvironment() . '.yml');
+        $loader->load(DP_ROOT . '/sys/config/api/api_config_' . $this->getEnvironment() . '.yml');
     }
 
 
@@ -128,9 +123,9 @@ class ApiV2Kernel extends Kernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir() . '/apiv2/' . $this->environment . '-cloud';
+                $cache_dir = dp_get_cache_dir() . '/api/' . $this->environment . '-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir() . '/apiv2/' . $this->environment . '';
+                $cache_dir = dp_get_cache_dir() . '/api/' . $this->environment . '';
             }
         }
 

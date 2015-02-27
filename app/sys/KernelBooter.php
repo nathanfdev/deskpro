@@ -241,8 +241,8 @@ class KernelBooter
 
             self::bootstrapLib($debug);
             self::bootstrapEnv();
-            require_once DP_ROOT . "/sys/Kernel/ApiV2Kernel.php";
-            $kernel = new ApiV2Kernel($env, $debug);
+            require_once DP_ROOT . "/sys/Kernel/ApiKernel.php";
+            $kernel = new ApiKernel($env, $debug);
 
             if ('dev' === $env) {
                 Debug::enable();
@@ -771,7 +771,7 @@ class KernelBooter
                     ) && $env !== 'prod';
 
                 require_once DP_ROOT . '/sys/Kernel/ApiV2Kernel.php';
-                $kernel = new ApiV2Kernel($env, $debug);
+                $kernel = new ApiKernel($env, $debug);
 
                 $app = new Application($kernel);
 

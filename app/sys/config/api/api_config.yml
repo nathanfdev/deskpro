@@ -1,5 +1,5 @@
 imports:
-    - { resource: config.shared.php }
+    - { resource: ../config.shared.php }
 
 # Keeping all parameter changes here rather than in various bundles
 parameters:
@@ -13,7 +13,7 @@ framework:
     #translator:      { fallback: "%locale%" }
     secret:          "irrelevant - compiler pass will override this"
     router:
-        resource: "%kernel.root_dir%/config/apiv2_routing.yml"
+        resource: "%kernel.root_dir%/config/api_routing.yml"
         strict_requirements: ~
     form:            ~
     csrf_protection: ~

@@ -1,10 +1,10 @@
 imports:
-  - { resource: apiv2_config.yml }
+  - { resource: api_config.yml }
 
 framework:
     profiler: { only_exceptions: false }
     router:
-        resource: "%kernel.root_dir%/config/apiv2_routing_dev.yml"
+        resource: "%kernel.root_dir%/config/api_routing_dev.yml"
         strict_requirements: true
 
 debug:
