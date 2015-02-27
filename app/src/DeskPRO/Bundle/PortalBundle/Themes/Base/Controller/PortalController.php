@@ -56,7 +56,7 @@ class PortalController extends AbstractController
      */
     public function topBarAction(TagRequest $tag_request)
     {
-        /** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
+        /** @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager $language_manager */
         $language_manager = $this->get('language_manager');
 
         return $this->renderThemeView(

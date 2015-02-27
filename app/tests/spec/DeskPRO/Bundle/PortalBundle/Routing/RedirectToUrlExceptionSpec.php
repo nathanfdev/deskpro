@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,30 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace DpBehat;
+namespace spec\DeskPRO\PortalBundle\Routing;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 
-class PageObjectContext extends BasePortalContext
+/**
+ * @mixin \DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException
+ */
+class RedirectToUrlExceptionSpec extends ObjectBehavior
 {
-    /**
-     * @Given I am on the :page page
-     */
-    public function iAmOnThePage($page)
+    function it_has_the_url_to_redirect_to()
     {
-        throw new PendingException();
+        $this->beConstructedWith('http://google.com');
+
+        $this->getUrl()->shouldBe('http://google.com');
     }
 }

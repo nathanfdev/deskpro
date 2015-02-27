@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,30 +29,57 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\PortalBundle\Routing;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 
-class PageObjectContext extends BasePortalContext
+class PortalUrlBuilder
 {
+    private $path;
     /**
-     * @Given I am on the :page page
+     * @var Language
      */
-    public function iAmOnThePage($page)
+    private $language;
+    /**
+     * @var PortalMode
+     */
+    private $mode;
+
+    public function __construct($path, Language $language = null, PortalMode $mode = null)
     {
-        throw new PendingException();
+        $this->path = trim($path);
+        $this->language = $language;
+        $this->mode = $mode;
+    }
+
+    public function __toString()
+    {
+        $parts = array();
+
+        if ($this->mode) {
+            $mode_path = trim($this->mode->getModePath(), '/');
+            if (strlen($mode_path) > 0) {
+                $parts[] = $mode_path;
+            }
+        }
+
+        if ($this->language) {
+            $lang_part = trim($this->language->getUrlCode(), '/');
+            if (strlen($lang_part) > 0) {
+                $parts[] = $lang_part;
+            }
+        }
+
+        if ((string) $this->path !== '/') {
+            $path_part = trim($this->path, '/');
+            if (strlen($path_part) > 0) {
+                $parts[] = $path_part;
+            }
+        }
+
+        return '/'.implode('/', $parts);
     }
 }

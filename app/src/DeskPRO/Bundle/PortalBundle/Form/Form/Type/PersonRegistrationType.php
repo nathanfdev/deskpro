@@ -37,7 +37,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
-use Application\LanguageBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;

@@ -32,27 +32,26 @@
  * @subpackage
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\PortalBundle\Routing;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
-
-class PageObjectContext extends BasePortalContext
+class RedirectToUrlException extends \InvalidArgumentException
 {
     /**
-     * @Given I am on the :page page
+     * @var string
      */
-    public function iAmOnThePage($page)
+    private $url;
+
+    public function __construct($url)
     {
-        throw new PendingException();
+        parent::__construct('301 - Found', 301);
+        $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 }

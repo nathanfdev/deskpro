@@ -48,7 +48,7 @@ use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
-use Application\LanguageBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -86,7 +86,7 @@ class TicketType extends AbstractType
     private $hierarchy_generator;
 
     /**
-     * @var LanguageManager
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     private $language_manager;
 

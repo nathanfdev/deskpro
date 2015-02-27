@@ -127,7 +127,7 @@ class NewMailer
     }
 
     /**
-     * @return \Application\LanguageBundle\Routing\Router
+     * @return \DeskPRO\Bundle\PortalBundle\Routing\PortalRouter
      */
     public function getRouter()
     {

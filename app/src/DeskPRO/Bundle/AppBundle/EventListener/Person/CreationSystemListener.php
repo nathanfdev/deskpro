@@ -32,27 +32,28 @@
  * @subpackage
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\AppBundle\EventListener\Person;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class PageObjectContext extends BasePortalContext
+/**
+ * Responsible for making sure the creation_system is set on a person correctly for every NEW person.
+ *
+ * Current implementation is that it is generated elsewhere and passed with the context
+ */
+class CreationSystemListener implements EventSubscriberInterface
 {
-    /**
-     * @Given I am on the :page page
-     */
-    public function iAmOnThePage($page)
+    public function onPreCreate(PersonCreateEvent $event)
     {
-        throw new PendingException();
+        $event->getPerson()->creation_system = $event->getContext()->getCreationSystem();
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            Person::EVENT_PRE_CREATE => 'onPreCreate',
+        );
     }
 }

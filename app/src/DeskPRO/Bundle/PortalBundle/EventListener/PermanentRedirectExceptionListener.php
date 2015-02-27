@@ -32,27 +32,62 @@
  * @subpackage
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class PageObjectContext extends BasePortalContext
+/**
+ * If anyone throws a PermanentRedirectException, we catch it here to return a redirect response to the kernel.
+ */
+class PermanentRedirectExceptionListener implements EventSubscriberInterface
 {
     /**
-     * @Given I am on the :page page
+     * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
      */
-    public function iAmOnThePage($page)
+    private $url_generator;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
     {
-        throw new PendingException();
+        $this->url_generator = $url_generator;
+        $this->logger = $logger;
+    }
+
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
+        $e = $event->getException();
+
+        // only interested in a particular exception here
+        if (!$e instanceof PermanentRedirectException) {
+            return;
+        }
+
+        $url = $this->url_generator->generate(
+            $e->getRouteName(),
+            $e->getRouteParams(),
+            $e->getUrlType()
+        );
+
+        $this->logger->info('PermanentRedirectException caught: 301 redirecting to "'.$url.'"');
+
+        $event->setResponse(new RedirectResponse($url, Response::HTTP_MOVED_PERMANENTLY));
+        $event->stopPropagation();
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::EXCEPTION => array('onKernelException', 129), // very high priority
+        );
     }
 }

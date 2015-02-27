@@ -2790,9 +2790,9 @@
         <metrics loc="77" ncloc="33" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="11" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\LanguageBundle\DependencyInjection">
+    <package name="DeskPRO\Bundle\AppBundle\Language\DependencyInjection">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/DependencyInjection/LanguageExtension.php">
-        <class name="LanguageExtension" namespace="Application\LanguageBundle\DependencyInjection">
+        <class name="LanguageExtension" namespace="DeskPRO\Bundle\AppBundle\Language\DependencyInjection">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="load" crap="2" count="0"/>
@@ -2806,9 +2806,9 @@
         <metrics loc="54" ncloc="23" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\LanguageBundle\EventListener">
+    <package name="DeskPRO\Bundle\AppBundle\Language\EventListener">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/EventListener/LastLanguageListener.php">
-        <class name="LastLanguageListener" namespace="Application\LanguageBundle\EventListener">
+        <class name="LastLanguageListener" namespace="DeskPRO\Bundle\AppBundle\Language\EventListener">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="0" elements="15" coveredelements="0"/>
         </class>
         <line num="63" type="method" name="__construct" crap="2" count="0"/>
@@ -2828,8 +2828,8 @@
         <line num="87" type="stmt" count="0"/>
         <metrics loc="89" ncloc="44" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="0" elements="15" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/EventListener/RedirectExceptionListener.php">
-        <class name="RedirectExceptionListener" namespace="Application\LanguageBundle\EventListener">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/EventListener/RedirectToUrlExceptionListener.php">
+        <class name="RedirectToUrlExceptionListener" namespace="DeskPRO\Bundle\AppBundle\Language\EventListener">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="0" elements="15" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="__construct" crap="2" count="0"/>
@@ -2850,9 +2850,9 @@
         <metrics loc="86" ncloc="43" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="0" elements="15" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\LanguageBundle\Language">
+    <package name="DeskPRO\Bundle\AppBundle\Language\Language">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Language/LanguageManager.php">
-        <class name="LanguageManager" namespace="Application\LanguageBundle\Language">
+        <class name="LanguageManager" namespace="DeskPRO\Bundle\AppBundle\Language\Language">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="32" coveredelements="0"/>
         </class>
         <line num="63" type="method" name="__construct" crap="2" count="0"/>
@@ -2890,7 +2890,7 @@
         <metrics loc="152" ncloc="80" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="32" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Language/LanguageStack.php">
-        <class name="LanguageStack" namespace="Application\LanguageBundle\Language">
+        <class name="LanguageStack" namespace="DeskPRO\Bundle\AppBundle\Language\Language">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="36" coveredelements="0"/>
         </class>
         <line num="92" type="method" name="__construct" crap="2" count="0"/>
@@ -2932,17 +2932,17 @@
         <metrics loc="186" ncloc="90" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="36" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\LanguageBundle">
+    <package name="DeskPRO\Bundle\AppBundle\Language">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/LanguageBundle.php">
-        <class name="LanguageBundle" namespace="Application\LanguageBundle">
+        <class name="LanguageBundle" namespace="DeskPRO\Bundle\AppBundle\Language">
           <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
         <metrics loc="41" ncloc="10" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\LanguageBundle\Routing">
+    <package name="DeskPRO\Bundle\PortalBundle\Routing">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Routing/RedirectToUrlException.php">
-        <class name="RedirectToUrlException" namespace="Application\LanguageBundle\Routing">
+        <class name="RedirectToUrlException" namespace="DeskPRO\Bundle\PortalBundle\Routing">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="6" coveredelements="0"/>
         </class>
         <line num="46" type="method" name="__construct" crap="2" count="0"/>
@@ -2953,8 +2953,8 @@
         <line num="57" type="stmt" count="0"/>
         <metrics loc="59" ncloc="22" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="6" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Routing/Router.php">
-        <class name="Router" namespace="Application\LanguageBundle\Routing">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Routing/PortalRouterRouter.php">
+        <class name="PortalRouter" namespace="DeskPRO\Bundle\PortalBundle\Routing">
           <metrics methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="110" coveredstatements="0" elements="127" coveredelements="0"/>
         </class>
         <line num="80" type="method" name="__construct" crap="2" count="0"/>
@@ -3087,7 +3087,7 @@
         <metrics loc="377" ncloc="254" classes="1" methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="110" coveredstatements="0" elements="127" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Routing/UrlMatcher.php">
-        <class name="UrlMatcher" namespace="Application\LanguageBundle\Routing">
+        <class name="UrlMatcher" namespace="DeskPRO\Bundle\PortalBundle\Routing">
           <metrics methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="13" elements="14" coveredelements="14"/>
         </class>
         <line num="41" type="method" name="extractLanguageCode" crap="5" count="1"/>
@@ -3107,9 +3107,9 @@
         <metrics loc="69" ncloc="32" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="13" elements="14" coveredelements="14"/>
       </file>
     </package>
-    <package name="Application\LanguageBundle\Twig">
+    <package name="DeskPRO\Bundle\AppBundle\Language\Twig">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/LanguageBundle/Twig/LanguageExtension.php">
-        <class name="LanguageExtension" namespace="Application\LanguageBundle\Twig">
+        <class name="LanguageExtension" namespace="DeskPRO\Bundle\AppBundle\Language\Twig">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="0" elements="25" coveredelements="0"/>
         </class>
         <line num="49" type="method" name="__construct" crap="2" count="0"/>
@@ -4493,8 +4493,8 @@
         <line num="73" type="stmt" count="0"/>
         <metrics loc="75" ncloc="59" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="28" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/RedirectExceptionListener.php">
-        <class name="RedirectExceptionListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/RedirectToUrlExceptionListener.php">
+        <class name="RedirectToUrlExceptionListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="__construct" crap="2" count="0"/>

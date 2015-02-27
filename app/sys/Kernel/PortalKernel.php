@@ -70,7 +70,6 @@ class PortalKernel extends Kernel
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
 
-            new \Application\LanguageBundle\LanguageBundle(),
             new \Application\AuthBundle\AuthBundle(),
         );
 

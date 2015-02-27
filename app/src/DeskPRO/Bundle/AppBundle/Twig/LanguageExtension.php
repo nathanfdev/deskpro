@@ -32,27 +32,74 @@
  * @subpackage
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\AppBundle\Twig;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
 
-class PageObjectContext extends BasePortalContext
+class LanguageExtension extends \Twig_Extension
 {
     /**
-     * @Given I am on the :page page
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
-    public function iAmOnThePage($page)
+    private $language_manager;
+
+    /**
+     * @param \DeskPRO\Bundle\AppBundle\Language\LanguageManager $language_manager
+     */
+    public function __construct(LanguageManager $language_manager)
     {
-        throw new PendingException();
+        $this->language_manager = $language_manager;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction(
+                'phrase',
+                array($this, 'getPhrase'),
+                array(
+                    'is_safe'           => array('html'),
+                    'needs_context'     => true,
+                    'needs_environment' => true,
+                )
+            ),
+        );
+    }
+
+    /**
+     * @param  \Twig_Environment   $env
+     * @param  array               $context
+     * @param  string              $phrase_name
+     * @param  array               $vars
+     * @param  bool                $raw
+     * @return mixed
+     * @throws \Twig_Error_Runtime
+     */
+    public function getPhrase(\Twig_Environment $env, $context, $phrase_name, $vars = null, $raw = false)
+    {
+        if ($vars === null || !is_array($vars)) {
+            $vars = array();
+        }
+
+        if (!$raw) {
+            foreach ($vars as &$v) {
+                $v = twig_escape_filter($env, $v, 'html');
+            }
+        }
+
+        $vars['_context'] = $context;
+
+        return $this->language_manager->getTranslator()->phrase($phrase_name, $vars);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'phrase_extension';
     }
 }

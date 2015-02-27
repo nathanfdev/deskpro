@@ -37,7 +37,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
-use Application\LanguageBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -53,7 +53,7 @@ class PersonEditProfileType extends AbstractType
     private $field_manager;
 
     /**
-     * @var LanguageManager
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     private $language_manager;
 

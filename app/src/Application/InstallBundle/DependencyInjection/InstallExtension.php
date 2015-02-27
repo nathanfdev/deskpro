@@ -63,7 +63,7 @@ class InstallExtension extends Extension
         // slug listener (sets slugs on content)
         // note this is a duplicate for install (canonical definition is in config.shared.php)
         $definition = new Definition();
-        $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\DoctrineContentSlugListener');
+        $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineContentSlugListener');
         $definition->setArguments(array(new Reference('content_slug_manager')));
         $definition->addTag('doctrine.event_subscriber');
         $container->setDefinition('doctrine_listener.content_slug', $definition);

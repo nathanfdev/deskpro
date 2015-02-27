@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,30 +29,44 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace DpBehat;
+namespace spec\DeskPRO\AppBundle\Twig;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\Twig\LanguageExtension;
 
-class PageObjectContext extends BasePortalContext
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
+ */
+class LanguageExtensionSpec extends ObjectBehavior
 {
-    /**
-     * @Given I am on the :page page
-     */
-    public function iAmOnThePage($page)
+    function let(LanguageManager $language_manager, Translate $translate)
     {
-        throw new PendingException();
+        $language_manager->getTranslator()->willReturn($translate);
+
+        $this->beConstructedWith($language_manager);
+    }
+
+    function it_is_a_twig_extension()
+    {
+        $this->shouldHaveType('\Twig_Extension');
+        $this->getName()->shouldBe('phrase_extension');
+    }
+
+    function it_uses_the_translator_from_language_stack_to_resolve_phrases(
+        \Twig_Environment $twig,
+        Translate $translate
+    )
+    {
+        $translate->phrase('portal.phrase.here', array('name' => 'Chris Tickner', '_context' => 'context'))
+            ->willReturn('hi Chris Tickner');
+
+        $this->getPhrase($twig, 'context', 'portal.phrase.here', array('name' => 'Chris Tickner'), true)
+            ->shouldReturn('hi Chris Tickner')
+        ;
     }
 }

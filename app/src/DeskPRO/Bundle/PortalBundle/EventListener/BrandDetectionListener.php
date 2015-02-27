@@ -71,6 +71,7 @@ class BrandDetectionListener implements EventSubscriberInterface
      * @var \Application\DeskPRO\Entity\Brand
      */
     private $default_brand;
+
     /**
      * @var \Psr\Log\LoggerInterface
      */

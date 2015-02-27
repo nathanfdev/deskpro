@@ -129,7 +129,7 @@ $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 // slug listener (sets slugs on content)
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
-$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\DoctrineContentSlugListener');
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineContentSlugListener');
 $definition->setArguments(array(new Reference('content_slug_manager')));
 $definition->addTag('doctrine.event_subscriber');
 $container->setDefinition('doctrine_listener.content_slug', $definition);

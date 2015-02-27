@@ -32,27 +32,34 @@
  * @subpackage
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\PortalBundle\Routing;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 
-class PageObjectContext extends BasePortalContext
+class UrlMatcher
 {
-    /**
-     * @Given I am on the :page page
-     */
-    public function iAmOnThePage($page)
+    public function extractLanguageCode($pathinfo)
     {
-        throw new PendingException();
+        $return = array(
+            'lang_url_code' => null,
+            'remaining_pathinfo' => $pathinfo,
+        );
+
+        $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+
+        if ($locale && 'kb' !== $locale) {
+            $return['lang_url_code']      = $locale;
+            $return['remaining_pathinfo'] = preg_replace('#^/(.*?)/#', '/', $pathinfo);
+
+            return $return;
+        }
+
+        $locale = Strings::extractRegexMatch('#^/([a-z]{2})$#', $pathinfo, 1);
+        if ($locale && 'kb' !== $locale) {
+            $return['lang_url_code']      = $locale;
+            $return['remaining_pathinfo'] = '/';
+        }
+
+        return $return;
     }
 }

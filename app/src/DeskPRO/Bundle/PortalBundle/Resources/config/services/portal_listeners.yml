@@ -26,9 +26,14 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  redirect_to_url_exception.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener
+    arguments: [@logger]
+    tags:
+      - { name: kernel.event_subscriber }
 
-  redirect_exception.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectExceptionListener
+  redirect_permanent_exception.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\PermanentRedirectExceptionListener
     arguments: [@router, @logger]
     tags:
       - { name: kernel.event_subscriber }
