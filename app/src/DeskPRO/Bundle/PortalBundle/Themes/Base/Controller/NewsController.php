@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

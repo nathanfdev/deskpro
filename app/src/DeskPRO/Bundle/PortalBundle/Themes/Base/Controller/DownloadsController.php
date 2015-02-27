@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;

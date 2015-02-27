@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\PortalBundle\EventListener;
+namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use PhpSpec\ObjectBehavior;

@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;

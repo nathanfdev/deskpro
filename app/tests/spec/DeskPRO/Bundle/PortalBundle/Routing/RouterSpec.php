@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\PortalBundle\Routing;
+namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;

@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;

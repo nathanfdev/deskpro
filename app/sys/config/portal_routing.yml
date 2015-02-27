@@ -2,8 +2,6 @@ user_context_hash:
     path: /_portal_user_hash
 portal_routes:
     resource: "@PortalBundle/Resources/config/routing_portal.yml"
-auth_routes:
-    resource: "@AuthBundle/Resources/config/routing_auth.yml"
 dp_routes:
     resource: "@DeskPRO/Resources/config/dp-routing.php"
 agent_routes:

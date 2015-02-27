@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\AppBundle\Twig;
+namespace spec\DeskPRO\Bundle\AppBundle\Twig;
 
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;

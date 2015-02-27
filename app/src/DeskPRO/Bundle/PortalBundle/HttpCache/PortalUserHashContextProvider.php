@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;
 use FOS\HttpCache\UserContext\ContextProviderInterface;
 use FOS\HttpCache\UserContext\UserContext;

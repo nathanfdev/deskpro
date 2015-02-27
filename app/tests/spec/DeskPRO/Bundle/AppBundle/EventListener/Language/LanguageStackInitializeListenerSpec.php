@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\AppBundle\EventListener\Language;
+namespace spec\DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\EventListener\Language\LastLanguageListener;

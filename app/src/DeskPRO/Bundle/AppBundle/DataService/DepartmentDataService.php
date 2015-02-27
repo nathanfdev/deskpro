@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
@@ -46,7 +46,7 @@ class DepartmentDataService extends AbstractDataService
     private $em;
 
     /**
-     * @var \Application\AuthBundle\Permissions\Portal\PortalPermissionsManager
+     * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
      */
     private $portal_permissions_manager;
 

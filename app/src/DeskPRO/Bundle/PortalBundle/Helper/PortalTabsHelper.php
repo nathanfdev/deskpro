@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
-use Application\AuthBundle\Voter\Portal\UseSectionVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 

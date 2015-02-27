@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;

@@ -1181,9 +1181,9 @@
         <metrics loc="187" ncloc="116" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="61" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle">
+    <package name="DeskPRO\Bundle\AppBundle\Security">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/AuthBundle.php">
-        <class name="AuthBundle" namespace="Application\AuthBundle">
+        <class name="AuthBundle" namespace="DeskPRO\Bundle\AppBundle\Security">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="12" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="build" crap="2" count="0"/>
@@ -1201,9 +1201,9 @@
         <metrics loc="67" ncloc="36" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="12" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\DependencyInjection">
+    <package name="DeskPRO\Bundle\AppBundle\Security\DependencyInjection">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/DependencyInjection/AuthExtension.php">
-        <class name="AuthExtension" namespace="Application\AuthBundle\DependencyInjection">
+        <class name="AuthExtension" namespace="DeskPRO\Bundle\AppBundle\Security\DependencyInjection">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="10" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="load" crap="2" count="0"/>
@@ -1219,9 +1219,9 @@
         <metrics loc="56" ncloc="25" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="10" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\EventListener">
+    <package name="DeskPRO\Bundle\AppBundle\Security\EventListener">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/EventListener/SsoListener.php">
-        <class name="SsoListener" namespace="Application\AuthBundle\EventListener">
+        <class name="SsoListener" namespace="DeskPRO\Bundle\AppBundle\Security\EventListener">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="0" elements="40" coveredelements="0"/>
         </class>
         <line num="66" type="method" name="__construct" crap="2" count="0"/>
@@ -1267,9 +1267,9 @@
         <metrics loc="142" ncloc="89" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="0" elements="40" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Handler">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Handler">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Handler/AuthenticationFailureHandler.php">
-        <class name="AuthenticationFailureHandler" namespace="Application\AuthBundle\Handler">
+        <class name="AuthenticationFailureHandler" namespace="DeskPRO\Bundle\AppBundle\Security\Handler">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="0" elements="24" coveredelements="0"/>
         </class>
         <line num="64" type="method" name="__construct" crap="2" count="0"/>
@@ -1299,7 +1299,7 @@
         <metrics loc="103" ncloc="53" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="0" elements="24" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Handler/AuthenticationSuccessHandler.php">
-        <class name="AuthenticationSuccessHandler" namespace="Application\AuthBundle\Handler">
+        <class name="AuthenticationSuccessHandler" namespace="DeskPRO\Bundle\AppBundle\Security\Handler">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
         </class>
         <line num="54" type="method" name="onAuthenticationSuccess" crap="12" count="0"/>
@@ -1315,7 +1315,7 @@
         <metrics loc="72" ncloc="35" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Handler/LogoutHandler.php">
-        <class name="LogoutHandler" namespace="Application\AuthBundle\Handler">
+        <class name="LogoutHandler" namespace="DeskPRO\Bundle\AppBundle\Security\Handler">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="3" coveredelements="0"/>
         </class>
         <line num="46" type="method" name="logout" crap="2" count="0"/>
@@ -1324,9 +1324,9 @@
         <metrics loc="50" ncloc="19" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="3" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Permissions">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Permissions">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Permissions/PermissionsBag.php">
-        <class name="PermissionsBag" namespace="Application\AuthBundle\Permissions">
+        <class name="PermissionsBag" namespace="DeskPRO\Bundle\AppBundle\Security\Permissions">
           <metrics methods="14" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="33" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="__construct" crap="2" count="0"/>
@@ -1365,9 +1365,9 @@
         <metrics loc="158" ncloc="95" classes="1" methods="14" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="33" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Permissions\Portal">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Permissions\Portal">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Permissions/Portal/PortalPermissionsLoader.php">
-        <class name="PortalPermissionsLoader" namespace="Application\AuthBundle\Permissions\Portal">
+        <class name="PortalPermissionsLoader" namespace="DeskPRO\Bundle\AppBundle\Security\Permissions\Portal">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="44" coveredstatements="0" elements="52" coveredelements="0"/>
         </class>
         <line num="61" type="method" name="__construct" crap="2" count="0"/>
@@ -1426,7 +1426,7 @@
         <metrics loc="178" ncloc="117" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="53" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Permissions/Portal/PortalPermissionsManager.php">
-        <class name="PortalPermissionsManager" namespace="Application\AuthBundle\Permissions\Portal">
+        <class name="PortalPermissionsManager" namespace="DeskPRO\Bundle\AppBundle\Security\Permissions\Portal">
           <metrics methods="14" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="50" coveredstatements="0" elements="64" coveredelements="0"/>
         </class>
         <line num="103" type="method" name="__construct" crap="2" count="0"/>
@@ -1501,7 +1501,7 @@
         <metrics loc="289" ncloc="161" classes="1" methods="14" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="55" coveredstatements="0" elements="69" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Permissions/Portal/PortalUsergroupDecider.php">
-        <class name="PortalUsergroupDecider" namespace="Application\AuthBundle\Permissions\Portal">
+        <class name="PortalUsergroupDecider" namespace="DeskPRO\Bundle\AppBundle\Security\Permissions\Portal">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="53" coveredstatements="0" elements="62" coveredelements="0"/>
         </class>
         <line num="66" type="method" name="__construct" crap="2" count="0"/>
@@ -1570,9 +1570,9 @@
         <metrics loc="218" ncloc="139" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="54" coveredstatements="0" elements="63" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Security">
+    <package name="DeskPRO\Bundle\AppBundle\Security">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/AgentImpersonateToken.php">
-        <class name="AgentImpersonateToken" namespace="Application\AuthBundle\Security">
+        <class name="AgentImpersonateToken" namespace="DeskPRO\Bundle\AppBundle\Security">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="15" coveredelements="0"/>
         </class>
         <line num="55" type="method" name="__construct" crap="2" count="0"/>
@@ -1593,7 +1593,7 @@
         <metrics loc="88" ncloc="41" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="15" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/DpFormLoginToken.php">
-        <class name="DpFormLoginToken" namespace="Application\AuthBundle\Security">
+        <class name="DpFormLoginToken" namespace="DeskPRO\Bundle\AppBundle\Security">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="__construct" crap="6" count="0"/>
@@ -1607,7 +1607,7 @@
         <metrics loc="58" ncloc="27" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/DpPersonUserProvider.php">
-        <class name="DpPersonUserProvider" namespace="Application\AuthBundle\Security">
+        <class name="DpPersonUserProvider" namespace="DeskPRO\Bundle\AppBundle\Security">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="0" elements="28" coveredelements="0"/>
         </class>
         <line num="57" type="method" name="__construct" crap="2" count="0"/>
@@ -1641,9 +1641,9 @@
         <metrics loc="148" ncloc="67" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="0" elements="28" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Security\Authentication\Provider">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Authentication\Provider">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/Authentication/Provider/AgentImpersonateProvider.php">
-        <class name="AgentImpersonateProvider" namespace="Application\AuthBundle\Security\Authentication\Provider">
+        <class name="AgentImpersonateProvider" namespace="DeskPRO\Bundle\AppBundle\Security\Authentication\Provider">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="0" elements="35" coveredelements="0"/>
         </class>
         <line num="78" type="method" name="__construct" crap="2" count="0"/>
@@ -1684,7 +1684,7 @@
         <metrics loc="161" ncloc="90" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="0" elements="35" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/Authentication/Provider/DpFormLoginProvider.php">
-        <class name="DpFormLoginProvider" namespace="Application\AuthBundle\Security\Authentication\Provider">
+        <class name="DpFormLoginProvider" namespace="DeskPRO\Bundle\AppBundle\Security\Authentication\Provider">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="0" elements="46" coveredelements="0"/>
         </class>
         <line num="69" type="method" name="__construct" crap="2" count="0"/>
@@ -1736,9 +1736,9 @@
         <metrics loc="173" ncloc="100" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="0" elements="46" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Security\Factory">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Factory">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/Factory/AgentImpersonateFactory.php">
-        <class name="AgentImpersonateFactory" namespace="Application\AuthBundle\Security\Factory">
+        <class name="AgentImpersonateFactory" namespace="DeskPRO\Bundle\AppBundle\Security\Factory">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="0" elements="18" coveredelements="0"/>
         </class>
         <line num="51" type="method" name="getPosition" crap="2" count="0"/>
@@ -1762,7 +1762,7 @@
         <metrics loc="99" ncloc="57" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="0" elements="18" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/Factory/DpFormLoginFactory.php">
-        <class name="DpFormLoginFactory" namespace="Application\AuthBundle\Security\Factory">
+        <class name="DpFormLoginFactory" namespace="DeskPRO\Bundle\AppBundle\Security\Factory">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="0" elements="18" coveredelements="0"/>
         </class>
         <line num="51" type="method" name="getPosition" crap="2" count="0"/>
@@ -1786,9 +1786,9 @@
         <metrics loc="113" ncloc="56" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="0" elements="18" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Security\Firewall">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Firewall">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Security/Firewall/DpAuthListener.php">
-        <class name="DpAuthListener" namespace="Application\AuthBundle\Security\Firewall">
+        <class name="DpAuthListener" namespace="DeskPRO\Bundle\AppBundle\Security\Firewall">
           <metrics methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="146" coveredstatements="0" elements="156" coveredelements="0"/>
         </class>
         <line num="66" type="method" name="requiresAuthentication" crap="2" count="0"/>
@@ -1950,9 +1950,9 @@
         <metrics loc="353" ncloc="275" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="146" coveredstatements="0" elements="156" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Twig">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Twig">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Twig/AuthTwigExtension.php">
-        <class name="AuthTwigExtension" namespace="Application\AuthBundle\Twig">
+        <class name="AuthTwigExtension" namespace="DeskPRO\Bundle\AppBundle\Security\Twig">
           <metrics methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="58" coveredelements="0"/>
         </class>
         <line num="51" type="method" name="__construct" crap="2" count="0"/>
@@ -2016,9 +2016,9 @@
         <metrics loc="165" ncloc="97" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="58" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Validator\Constraints">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Validator\Constraints">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Validator/Constraints/UserPasswordValidator.php">
-        <class name="UserPasswordValidator" namespace="Application\AuthBundle\Validator\Constraints">
+        <class name="UserPasswordValidator" namespace="DeskPRO\Bundle\AppBundle\Security\Validator\Constraints">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="0" elements="13" coveredelements="0"/>
         </class>
         <line num="53" type="method" name="__construct" crap="2" count="0"/>
@@ -2037,9 +2037,9 @@
         <metrics loc="78" ncloc="40" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="0" elements="13" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Voter">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Voter">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/AbstractVoter.php">
-        <class name="AbstractVoter" namespace="Application\AuthBundle\Voter">
+        <class name="AbstractVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="0" elements="23" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="vote" crap="20" count="0"/>
@@ -2068,9 +2068,9 @@
         <metrics loc="139" ncloc="56" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="0" elements="23" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AuthBundle\Voter\Portal">
+    <package name="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/ContentAccessVoter.php">
-        <class name="ContentAccessVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="ContentAccessVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="getSupportedAttributes" crap="2" count="0"/>
@@ -2098,7 +2098,7 @@
         <metrics loc="98" ncloc="55" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/ContentCommentVoter.php">
-        <class name="ContentCommentVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="ContentCommentVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
         </class>
         <line num="49" type="method" name="getSupportedAttributes" crap="2" count="0"/>
@@ -2126,7 +2126,7 @@
         <metrics loc="92" ncloc="49" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/ContentRatingsVoter.php">
-        <class name="ContentRatingsVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="ContentRatingsVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
         </class>
         <line num="49" type="method" name="getSupportedAttributes" crap="2" count="0"/>
@@ -2152,7 +2152,7 @@
         <metrics loc="88" ncloc="47" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/ContentSubscriptionsVoter.php">
-        <class name="ContentSubscriptionsVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="ContentSubscriptionsVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="0" elements="23" coveredelements="0"/>
         </class>
         <line num="53" type="method" name="getSupportedAttributes" crap="2" count="0"/>
@@ -2181,7 +2181,7 @@
         <metrics loc="97" ncloc="56" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="0" elements="23" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/ProfileVoter.php">
-        <class name="ProfileVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="ProfileVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
         </class>
         <line num="46" type="method" name="getSupportedClasses" crap="2" count="0"/>
@@ -2193,7 +2193,7 @@
         <metrics loc="61" ncloc="28" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/TicketsVoter.php">
-        <class name="TicketsVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="TicketsVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="0" elements="21" coveredelements="0"/>
         </class>
         <line num="47" type="method" name="getSupportedAttributes" crap="2" count="0"/>
@@ -2220,7 +2220,7 @@
         <metrics loc="98" ncloc="54" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="0" elements="21" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AuthBundle/Voter/Portal/UseSectionVoter.php">
-        <class name="UseSectionVoter" namespace="Application\AuthBundle\Voter\Portal">
+        <class name="UseSectionVoter" namespace="DeskPRO\Bundle\AppBundle\Security\Voter\Portal">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
         </class>
         <line num="53" type="method" name="getSupportedAttributes" crap="2" count="0"/>

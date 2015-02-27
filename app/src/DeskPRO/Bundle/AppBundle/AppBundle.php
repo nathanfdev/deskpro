@@ -34,8 +34,10 @@
 
 namespace DeskPRO\Bundle\AppBundle;
 
-use \DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
-use \DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
+use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
+use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -53,6 +55,11 @@ class AppBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
+
+        /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
+        $security = $container->getExtension('security');
+        $security->addSecurityListenerFactory(new DpFormLoginFactory());
+        $security->addSecurityListenerFactory(new AgentImpersonateFactory());
     }
 
     public function registerCommands(Application $application)

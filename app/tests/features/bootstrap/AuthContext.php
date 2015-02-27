@@ -34,7 +34,7 @@
 
 namespace DpBehat;
 
-use Application\AuthBundle\Security\DpFormLoginToken;
+use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
