@@ -780,7 +780,7 @@
 		%}
 		{% for field in app.getTicketFieldManager().getDisplayArray() %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
-			<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
+			<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]" {{ field.formViewCriteria.vars.rule_handler|raw }}>
 				<div class="builder-op">
 					<select name="op" class="op">
 						{% if search_context == 'filter' %}
