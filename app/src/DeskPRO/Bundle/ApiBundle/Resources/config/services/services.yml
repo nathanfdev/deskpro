@@ -1,1 +1,16 @@
 services:
+
+  jsonp_format_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
+      tags:
+          - { name: kernel.event_subscriber }
+
+
+  json_body_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\JsonBodyListener
+      tags:
+          - { name: kernel.event_subscriber }
+
+
+  api_url_inflector:
+      class: DeskPRO\Bundle\ApiBundle\Util\UrlInflector
