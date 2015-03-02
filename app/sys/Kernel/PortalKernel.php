@@ -79,7 +79,7 @@ class PortalKernel extends Kernel
         }
 
         if ('test' === $this->getEnvironment()) {
-            $bundles[] = new \DpBehat\TestBundle\TestBundle();
+            $bundles[] = new \DpTests\TestBundle\TestBundle();
         }
 
         return $bundles;

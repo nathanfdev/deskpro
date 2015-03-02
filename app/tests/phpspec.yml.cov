@@ -11,6 +11,7 @@ code_coverage:
     whitelist:
       - ../src/DeskPRO/Bundle/AppBundle
       - ../src/DeskPRO/Bundle/PortalBundle
+      - ../src/DeskPRO/Bundle/ApiBundle
     blacklist:
       - ../vendor
       - ../vendor-src

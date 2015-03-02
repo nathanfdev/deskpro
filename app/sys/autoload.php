@@ -99,19 +99,26 @@ spl_autoload_register(function ($classname) {
     return true;
 });
 
-// psr-4 style autoloading for DpBehat\ namespace
+// psr-4 style autoloading for DpBehat\ and DpTests\ namespace
 spl_autoload_register(function ($class) {
-    $prefix = 'DpBehat\\';
-    $base_dir = DP_ROOT.'/tests/features/bootstrap/';
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
-        return;
+    $namespaces = array(
+        'DpBehat\\' => DP_ROOT.'/tests/features/bootstrap/',
+        'DpTests\\' => DP_ROOT.'/tests/src/'
+    );
+
+    foreach ($namespaces as $prefix => $base_dir) {
+        $len = strlen($prefix);
+        if (strncmp($prefix, $class, $len) !== 0) {
+            continue;
+        }
+        $relative_class = substr($class, $len);
+        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+        if (file_exists($file)) {
+            require $file;
+        }
     }
-    $relative_class = substr($class, $len);
-    $file = $base_dir.str_replace('\\', '/', $relative_class).'.php';
-    if (file_exists($file)) {
-        require $file;
-    }
+
+    return;
 });
 
 require_once 'DpShutdown.php';
@@ -184,6 +191,7 @@ if (is_callable(array($composer_loader, 'loadClass'))) {
     AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
 }
 AnnotationRegistry::registerAutoloadNamespace('Sensio\Bundle\FrameworkExtraBundle', DP_ROOT.'/vendor/sensio/framework-extra-bundle');
+AnnotationRegistry::registerAutoloadNamespace('FOS\RestBundle', DP_ROOT.'/vendor/friendsofsymfony/rest-bundle');
 require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 \Swift_DependencyContainer::getInstance()->register('cache.disk')->asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
 

@@ -28,7 +28,7 @@ fi
 ##################################
 IS_PHPUNIT_ERROR=0
 if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/phpunit -c travis-ci/phpunit.travis.xml
+    bin/phpunit -c phpunit.xml.cov
 else
     bin/phpunit
 fi
@@ -47,7 +47,7 @@ fi
 ##################################
 IS_PHPSPEC_ERROR=0
 if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/phpspec run --format=dot --config travis-ci/phpspec.travis.yml
+    bin/phpspec run --format=dot --config=phpspec.yml.cov
 else
     bin/phpspec run
 fi
@@ -65,7 +65,14 @@ fi
 # BEHAT
 ##################################
 IS_BEHAT_ERROR=0
-bin/behat
+
+if [[ "$IS_COVERAGE" -eq "1" ]]; then
+    bin/behat --config=behat.yml.cov --profile=api
+    bin/behat --config=behat.yml.cov --profile=portal
+else
+    bin/behat --profile=api
+    bin/behat --profile=portal
+fi
 
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_ERROR=1
