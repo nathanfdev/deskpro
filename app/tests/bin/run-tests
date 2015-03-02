@@ -67,11 +67,19 @@ fi
 IS_BEHAT_ERROR=0
 
 if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/behat --config=behat.yml.cov --profile=api
     bin/behat --config=behat.yml.cov --profile=portal
 else
-    bin/behat --profile=api
     bin/behat --profile=portal
+fi
+
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_ERROR=1
+fi
+
+if [[ "$IS_COVERAGE" -eq "1" ]]; then
+    bin/behat --config=behat.yml.cov --profile=api
+else
+    bin/behat --profile=api
 fi
 
 if [[ $? -ne 0 ]] ; then

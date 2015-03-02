@@ -3,6 +3,9 @@ Feature: Basic API Response
   As a developer
   It needs to respond according to the spec
 
+  Background: Using a empty data set
+    Given I install the empty data set
+
   Scenario: I do a simple GET
     Given I send a GET request to "/api/v2/ticket_filters"
     Then the response should be in JSON

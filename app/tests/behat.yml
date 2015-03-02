@@ -4,6 +4,8 @@ api:
             paths:
                 - %paths.base%/features/api
             contexts:
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
                 - behatch:rest
