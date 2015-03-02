@@ -59,6 +59,7 @@ define [
     	# Constructs standard input from a custom field def
 		###
 		getStandardForFieldDef: (field, options = {}) ->
+			options.type_name = field.type_name
 			if not options.propName then options.propName = 'value'
 
 			if field.type_name == 'choice'
@@ -69,8 +70,11 @@ define [
 				options.single = true
 				return @getStandardSelect(options)
 			else
-				console.info(options)
-				if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
+				if !options.operators
+					if 'date' == options.type_name
+						options.operators = ['is', 'not', 'isset', 'not_isset', 'lte', 'gte']
+					else
+						options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
 				return @getStandardInput(options)
 
 		###
