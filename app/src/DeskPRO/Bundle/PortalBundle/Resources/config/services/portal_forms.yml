@@ -24,17 +24,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
     arguments: [@brand_stack, @security.authorization_checker]
 
-  form_field_manager:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager
-    arguments: [@doctrine.orm.default_entity_manager]
-
-  ticket_layout_factory:
-    class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
-    arguments: [@doctrine.orm.default_entity_manager]
-
-  ticket_layout_differ:
-    class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
-
   form_hierarchy_generator:
     class: DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback]

@@ -13,9 +13,6 @@ default:
                 em: @doctrine.orm.default_entity_manager
                 lang_repo: @language_repository
                 lang_stack: @language_stack
-            - DpBehat\PortalModeContext:
-                mode_storage: @portal_mode_storage
-                mode_factory: @portal_mode_factory
             - DpBehat\AuthContext:
                 user_details: @user_details
                 token_storage: @security.token_storage
@@ -27,17 +24,13 @@ default:
 
   extensions:
     Sanpi\Behatch\Extension: ~
-    SensioLabs\Behat\PageObjectExtension:
-      namespaces:
-          page: DpBehat\Page\Portal
-          element: DpBehat\Page\Portal\Element
     VIPSoft\CodeCoverageExtension\Extension:
         drivers:
             - local
         report:
             format: php
             options:
-                target: coverage/cov/behat.cov
+                target: coverage/cov/behat-api.cov
         filter:
             whitelist:
                 addUncoveredFilesFromWhitelist: true
@@ -60,7 +53,7 @@ default:
     Behat\Symfony2Extension:
         kernel:
             bootstrap: features/bootstrap/boot.php
-            path: ../sys/Kernel/PortalKernel.php
-            class: DeskPRO\Kernel\PortalKernel
+            path: ../sys/Kernel/ApiKernel.php
+            class: DeskPRO\Kernel\ApiKernel
             env: test
             debug: true

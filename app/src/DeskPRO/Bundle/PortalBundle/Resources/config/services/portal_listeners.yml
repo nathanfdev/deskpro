@@ -1,5 +1,11 @@
 services:
 
+  redirect_protection_listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener
+    arguments: [@brand_stack, @url_host_checker, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
   visitor_identification.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\VisitorIdentificationListener
     arguments: [@visitor_identification_provider, @logger]
