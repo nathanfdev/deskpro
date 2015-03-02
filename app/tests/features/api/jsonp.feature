@@ -1,0 +1,16 @@
+Feature: Basic API Response
+  In order to use the API responses in my javascript
+  As a developer
+  I need to be able to recieve a JSONP callback
+
+  Background: Using a empty data set
+    Given I install the empty data set
+
+  Scenario: I add "callback" to the query string and get JSONP
+    When I send a GET request to "/api/v2/sandbox?callback=my_function"
+    Then the response status code should be 200
+    And the response should contain "/**/my_function({"
+
+  Scenario: Invalid callbacks result in an error
+    When I send a GET request to "/api/v2/sandbox?callback=function"
+    Then the response status code should be 400
