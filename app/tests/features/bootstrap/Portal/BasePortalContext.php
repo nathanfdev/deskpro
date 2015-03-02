@@ -29,79 +29,74 @@
  * DeskPRO.
  */
 
-namespace DpBehat;
+namespace DpBehat\Portal;
 
-use Application\DeskPRO\Entity\Person;
-use DpBehat\TestBundle\UserDetailsRepo;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use DpBehat\BaseContext;
+use SensioLabs\Behat\PageObjectExtension\Context\PageObjectAware;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Factory as PageObjectFactory;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-class AuthContext extends BasePortalContext
+abstract class BasePortalContext extends BaseContext implements PageObjectAware
 {
     /**
-     * @var UserDetailsRepo
+     * @var PageObjectFactory
      */
-    private $user_details;
+    private $pageObjectFactory = null;
 
     /**
-     * @var TokenStorage
+     * @param string $name
+     *
+     * @throws \RuntimeException
+     * @return Page
+     *
      */
-    private $token_storage;
-
-    public function __construct(UserDetailsRepo $user_details, TokenStorage $token_storage)
+    public function getPage($name)
     {
-        $this->user_details  = $user_details;
-        $this->token_storage = $token_storage;
-    }
-
-    /**
-     * @When I login using the sidebar with :who credentials
-     */
-    public function iLoginUsingTheSidebarWithCredentials($who)
-    {
-        $this->getPage('Home')->sidebarLogin(
-            $this->user_details->getEmail($who),
-            $this->user_details->getPass($who)
-        );
-    }
-
-    /**
-     * @When I login with :who credentials
-     */
-    public function iLoginWithCredentials($who)
-    {
-        $this->getPage('Login')->login(
-            $this->user_details->getEmail($who),
-            $this->user_details->getPass($who)
-        );
-    }
-
-    /**
-     * @Then I should be authenticated as :who
-     */
-    public function iShouldBeAuthenticatedAs($who)
-    {
-        if (!$token = $this->getContainer()->get('security.token_storage')->getToken()) {
-            throw new \Exception('no token found');
+        if (null === $this->pageObjectFactory) {
+            throw new \RuntimeException('To create pages you need to pass a factory with setPageObjectFactory()');
         }
 
-        if (!$user = $token->getUser()) {
-            throw new \Exception('no user in token');
-        }
-
-        if (!$user instanceof Person) {
-            $user = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
-        }
-
-        print $this->user_details->getEmail($who);
-
-        expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->user_details->getEmail($who));
+        return $this->pageObjectFactory->createPage($name);
     }
 
     /**
-     * @Given I am authenticated as :who
+     * @param string $name
+     *
+     * @throws \RuntimeException
+     * @return Element
+     *
      */
-    public function iAmAuthenticatedAsUser($who)
+    public function getElement($name)
     {
-        $this->iLoginWithCredentials($who);
+        if (null === $this->pageObjectFactory) {
+            throw new \RuntimeException('To create elements you need to pass a factory with setPageObjectFactory()');
+        }
+
+        return $this->pageObjectFactory->createElement($name);
+    }
+
+    /**
+     * @param PageObjectFactory $pageObjectFactory
+     */
+    public function setPageObjectFactory(PageObjectFactory $pageObjectFactory)
+    {
+        $this->pageObjectFactory = $pageObjectFactory;
+    }
+
+    /**
+     * @return PageObjectFactory
+     */
+    public function getPageObjectFactory()
+    {
+        if (null === $this->pageObjectFactory) {
+            throw new \RuntimeException('To access the page factory you need to pass it first with setPageObjectFactory()');
+        }
+
+        return $this->pageObjectFactory;
     }
 }

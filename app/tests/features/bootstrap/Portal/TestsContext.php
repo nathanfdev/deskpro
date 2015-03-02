@@ -1,6 +1,6 @@
 <?php
 
-namespace DpBehat;
+namespace DpBehat\Portal;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * Defines application features from the specific context.
  */
-class TestsContext implements Context, SnippetAcceptingContext
+class TestsContext extends BasePortalContext
 {
     private $called;
 

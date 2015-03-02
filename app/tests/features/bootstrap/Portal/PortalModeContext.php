@@ -29,17 +29,67 @@
  * DeskPRO.
  */
 
-namespace DpBehat;
+namespace DpBehat\Portal;
 
-use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Behat\Context\Context;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 
-class PageObjectContext extends BasePortalContext
+class PortalModeContext extends BasePortalContext
 {
     /**
-     * @Given I am on the :page page
+     * @var PortalModeStorage
      */
-    public function iAmOnThePage($page)
+    private $mode_storage;
+    /**
+     * @var PortalModeFactory
+     */
+    private $mode_factory;
+
+    public function __construct(
+        PortalModeStorage $mode_storage,
+        PortalModeFactory $mode_factory
+    ) {
+        $this->mode_storage = $mode_storage;
+        $this->mode_factory = $mode_factory;
+    }
+
+    /**
+     * @Given the active mode is :set_mode
+     */
+    public function theActiveModeIsNormal($set_mode)
     {
-        throw new PendingException();
+        switch ($set_mode) {
+            case 'admin':
+                $mode = $this->mode_factory->createMode('/admin-mode');
+                break;
+            case 'brand':
+                $mode = $this->mode_factory->createMode('/brand-1');
+                break;
+            default:
+                $mode = $this->mode_factory->createMode('/');
+                break;
+        }
+
+        $this->mode_storage->setMode($mode);
+    }
+
+    /**
+     * @Then the portal should be in :mode mode
+     */
+    public function thePortalShouldBeInMode($mode)
+    {
+        $mode = $this->mode_storage->getMode();
+        switch ($mode) {
+            case 'admin':
+                expect($mode->isAdmin())->toBe(true);
+                break;
+            case 'normal':
+                expect($mode->isNormal())->toBe(true);
+                break;
+            case 'brand':
+                expect($mode->isBrand())->toBe(true);
+                break;
+        }
     }
 }

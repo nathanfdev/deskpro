@@ -29,67 +29,80 @@
  * DeskPRO.
  */
 
-namespace DpBehat;
+namespace DpBehat\Portal;
 
-use Behat\Behat\Context\Context;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use Application\DeskPRO\Entity\Person;
+use DpBehat\Portal\BasePortalContext;
+use DpTests\TestBundle\UserDetailsRepo;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class PortalModeContext implements Context
+class AuthContext extends BasePortalContext
 {
     /**
-     * @var PortalModeStorage
+     * @var UserDetailsRepo
      */
-    private $mode_storage;
-    /**
-     * @var PortalModeFactory
-     */
-    private $mode_factory;
+    private $user_details;
 
-    public function __construct(
-        PortalModeStorage $mode_storage,
-        PortalModeFactory $mode_factory
-    ) {
-        $this->mode_storage = $mode_storage;
-        $this->mode_factory = $mode_factory;
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    public function __construct(UserDetailsRepo $user_details, TokenStorage $token_storage)
+    {
+        $this->user_details  = $user_details;
+        $this->token_storage = $token_storage;
     }
 
     /**
-     * @Given the active mode is :set_mode
+     * @When I login using the sidebar with :who credentials
      */
-    public function theActiveModeIsNormal($set_mode)
+    public function iLoginUsingTheSidebarWithCredentials($who)
     {
-        switch ($set_mode) {
-            case 'admin':
-                $mode = $this->mode_factory->createMode('/admin-mode');
-                break;
-            case 'brand':
-                $mode = $this->mode_factory->createMode('/brand-1');
-                break;
-            default:
-                $mode = $this->mode_factory->createMode('/');
-                break;
-        }
-
-        $this->mode_storage->setMode($mode);
+        $this->getPage('Home')->sidebarLogin(
+            $this->user_details->getEmail($who),
+            $this->user_details->getPass($who)
+        );
     }
 
     /**
-     * @Then the portal should be in :mode mode
+     * @When I login with :who credentials
      */
-    public function thePortalShouldBeInMode($mode)
+    public function iLoginWithCredentials($who)
     {
-        $mode = $this->mode_storage->getMode();
-        switch ($mode) {
-            case 'admin':
-                expect($mode->isAdmin())->toBe(true);
-                break;
-            case 'normal':
-                expect($mode->isNormal())->toBe(true);
-                break;
-            case 'brand':
-                expect($mode->isBrand())->toBe(true);
-                break;
+        $this->getPage('Login')->login(
+            $this->user_details->getEmail($who),
+            $this->user_details->getPass($who)
+        );
+    }
+
+    /**
+     * @Then I should be authenticated as :who
+     */
+    public function iShouldBeAuthenticatedAs($who)
+    {
+        if (!$token = $this->getContainer()->get('security.token_storage')->getToken()) {
+            throw new \Exception('no token found');
         }
+
+        if (!$user = $token->getUser()) {
+            throw new \Exception('no user in token');
+        }
+
+        if (!$user instanceof Person) {
+            $user = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
+        }
+
+        print $this->user_details->getEmail($who);
+
+        expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->user_details->getEmail($who));
+    }
+
+    /**
+     * @Given I am authenticated as :who
+     */
+    public function iAmAuthenticatedAsUser($who)
+    {
+        $this->iLoginWithCredentials($who);
     }
 }

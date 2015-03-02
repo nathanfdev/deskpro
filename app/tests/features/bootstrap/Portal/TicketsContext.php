@@ -29,53 +29,71 @@
  * DeskPRO.
  */
 
-namespace DpBehat;
+namespace DpBehat\Portal;
 
-use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
-use Symfony\Component\Filesystem\Filesystem;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use DpBehat\Portal\BasePortalContext;
 
-class BehatHooksContext extends BasePortalContext
+class TicketsContext extends BasePortalContext
 {
-    private static $warmed_up_cache = false;
+    /**
+     * @var Ticket
+     */
+    private $last_ticket;
 
     /**
-     * @BeforeSuite
+     * @When I go to the tickets page
      */
-    // removed due to speed issues while developing
-    //public static function deleteCacheFolder(BeforeSuiteScope $scope)
-    //{
-    //    $cache = self::getCacheDir();
-    //
-    //    $fs = new Filesystem();
-    //    if (is_dir($cache)) {
-    //        $fs->remove($cache);
-    //    }
-    //    $fs->mkdir($cache, 0777);
-    //    $fs->mkdir($cache . '/annotations', 0777);
-    //    print "made new test folder " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
-    //}
-    ///**
-    // * @BeforeScenario
-    // */
-    //public function warmupCache()
-    //{
-    //    if (!self::$warmed_up_cache) {
-    //        $this->getContainer()->get('dataset_manager')->install('empty');
-    //
-    //        $warmer = $this->getContainer()->get('cache_warmer');
-    //        //$warmer->enableOptionalWarmers();
-    //        $warmer->warmUp(self::getCacheDir());
-    //        self::$warmed_up_cache = true;
-    //
-    //        print "finished warming cache " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
-    //    }
-    //}
-
-    /**
-     * @return string
-     */
-    private static function getCacheDir()
+    public function iGoToTheTicketsPage()
     {
-        return DP_ROOT.'/sys/cache/portal/test';
+        $this->getPage('View Tickets')->open();
+    }
+
+    /**
+     * @Then I should see my tickets
+     */
+    public function iShouldSeeMyTickets()
+    {
+    }
+
+    /**
+     * @Then I should see my ticket
+     */
+    public function iShouldSeeMyTicket()
+    {
+    }
+
+    /**
+     * @Given :who has/have a ticket
+     */
+    public function hasATicket($who)
+    {
+        if ($who === 'I') {
+            $who = 'user';
+        }
+
+        $ticket = $this->getContainer()->get('ticket_manager')->createTicket();
+        $person = $this->getContainer()->get('user_details')->getWho($who);
+
+        $ticket->setPerson($person);
+        $ticket->setSubject('subject');
+
+        $msg = new TicketMessage();
+        $msg->setPerson($person);
+        $msg->setMessageText('message');
+        $ticket->addMessage($msg);
+
+        $this->persistAndFlush($ticket);
+
+        $this->last_ticket = $ticket;
+    }
+
+    /**
+     * @Given I view my ticket
+     */
+    public function iTryToVisitThatTicket()
+    {
+        $this->getPage('Ticket')->open(array('id' => $this->last_ticket->getId()));
     }
 }
