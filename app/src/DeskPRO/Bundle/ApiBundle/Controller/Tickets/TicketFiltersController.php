@@ -31,19 +31,31 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 
+use FOS\RestBundle\Controller\FOSRestController as BaseController;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @RouteResource("Filters")
+ * @RouteResource("ticket_filters")
  */
-class FiltersController extends BaseController implements ClassResourceInterface
+class TicketFiltersController extends BaseController implements ClassResourceInterface
 {
     public function cgetAction()
     {
-        return $this->handleView($this->view(array('data' => 'success')));
+        return View::create(
+            array(
+                'links' => array(
+                    'self' => '/ticket_filters'
+                ),
+                'data' => array(
+                    'id' => 4
+                )
+            )
+        );
     }
 }
