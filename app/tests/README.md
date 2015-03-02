@@ -100,8 +100,7 @@ Assuming line 15 is the start of a Scenario: block:
 In the tests/TestBundle we define some data sets and useful data related services. The DataSetContext does some
 things for us:
 
-If you say "Given I install the fresh data set", then the "FreshDbSet" class is used to delete the database and
-reconstruct it.
+If you say `Given I install the fresh data set`, then the `DpTests\TestBundle\DataSet\FreshDb` class is used to delete the database and reconstruct it.
 
 However, many steps might want to ensure this is the data set they are using, and thus we would end up with the
 same database being reinstalled over and over.
@@ -115,7 +114,7 @@ really care about arbitrary changes to the data, but some of your scenarios will
 
 ### users and authentication
 
-The fresh data set uses the values from a class named "DpTests\UserDetailsRepo" to create users. So, if you
+The fresh data set uses the values from a class named `DpTests\TestBundle\UserDetailsRepo` to create users. So, if you
 installed the fresh data set you can use the "user_details" service to get information about the users in the static repo:
 
 - admin
