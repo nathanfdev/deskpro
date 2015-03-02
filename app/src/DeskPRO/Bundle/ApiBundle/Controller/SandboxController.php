@@ -31,21 +31,59 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-
-use FOS\RestBundle\Controller\FOSRestController as BaseController;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
- * @RouteResource("ticket_filters")
+ * This controller is simply used to verify that various features of the API work, and no application
+ * interaction actually occurs by using these endpoints. We can delete this later, or allow people to
+ * test their code with it to make sure they are authenticating properly, and using the various
+ * methods properly.
+ *
+ * @RouteResource("sandbox")
  */
-class TicketFiltersController extends BaseController implements ClassResourceInterface
+class SandboxController extends BaseController implements ClassResourceInterface
 {
+    static $data = array(
+        array(
+            'id' => 3,
+            'name' => 'Homer Simpson',
+            'email' => 'homer@simpson.com',
+        ),
+        array(
+            'id' => 6,
+            'name' => 'Bart Simpson',
+            'email' => 'bart@simpson.com',
+        ),
+        array(
+            'id' => 11,
+            'name' => 'Mr. Burns',
+            'email' => 'mr@burns.com',
+        ),
+    );
+
+    public function cgetAction()
+    {
+        return View::create(
+            array(
+                'links' => array(
+                    'self' => '/sandbox'
+                ),
+                'data' => self::$data
+            )
+        );
+    }
+
+    public function postAction()
+    {
+        // create a new object (using a form)
+
+        return View::create(
+            array(),
+            204
+        );
+    }
 }
