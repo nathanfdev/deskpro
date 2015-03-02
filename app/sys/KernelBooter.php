@@ -753,7 +753,7 @@ class KernelBooter
                 return $app->run($input);
             }
 
-            if ($other_kernel == 'apiv2') {
+            if ($other_kernel == 'api') {
                 self::bootstrapConfig();
 
                 if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
@@ -770,7 +770,7 @@ class KernelBooter
                         array('--no-debug', '')
                     ) && $env !== 'prod';
 
-                require_once DP_ROOT . '/sys/Kernel/ApiV2Kernel.php';
+                require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
                 $kernel = new ApiKernel($env, $debug);
 
                 $app = new Application($kernel);
