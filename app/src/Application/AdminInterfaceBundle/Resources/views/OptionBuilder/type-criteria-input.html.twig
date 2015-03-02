@@ -5,6 +5,7 @@
 			ui-select2="{dropdownAutoWidth:true}"
 			ng-model="model.op"
 			style="min-width: 50px;"
+		    ng-if="'date' !== options.type_name"
 		>
 			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
 			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
@@ -24,6 +25,42 @@
 			<option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
 			<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
 		</select>
-		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset' || model.op == 'touched' || model.op == 'nottouched'" />
+
+		<select
+				ui-select2="{dropdownAutoWidth:true}"
+				ng-model="model.op"
+				style="min-width: 50px;"
+				ng-if="'date' === options.type_name"
+				>
+			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
+			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
+			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
+			<option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+			<option ng-if="operators.indexOf('gte') !== -1" value="gte">after</option>
+			<option ng-if="operators.indexOf('lte') !== -1" value="lte">before</option>
+		</select>
+
+		<input type="text" class="form-control" ng-model="model.value"
+		       ng-if="'date' !== options.type_name"
+		       ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset' || model.op == 'touched' || model.op == 'nottouched'"
+				/>
+
+		<div ng-show="'date' === options.type_name">
+			<span ng-if="model.op == 'lte' || model.op == 'between'">
+				<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+				       datepicker-popup="dd MMMM yyyy"
+				       ng-model="model.date1"
+				       datepicker-options="{'show-weeks': false}"
+						/>
+			</span>
+			<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
+			<span ng-if="model.op == 'gte' || model.op == 'between'">
+				<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+				       datepicker-popup="dd MMMM yyyy"
+				       ng-model="model.date2"
+				       datepicker-options="{'show-weeks': false}"
+						/>
+			</span>
+		</div>
 	</div>
 </dp-optionbuilder-row>
