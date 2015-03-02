@@ -8,9 +8,20 @@ DeskPRO Test Suite
 
 # Running Tests
 
-We use 3 separate tools in the suite. Each can be run individually with their commands:
+We use 3 separate tools in the suite. Each can be run individually with their own commands:
+
+1. PHPSpec
+2. PHPUnit
+3. Behat
 
 ## PHPSpec
+
+PHPSpec (http://www.phpspec.net) is used to spec classes as you build them. It helps with OOP design and encourages
+best practice via the S.O.L.I.D principles (http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)). 
+
+You can see the config file: `app/tests/phpspec.yml`
+
+> please ignore `app/tests/phpspec.yml.cov` because it is just used to add coverage to the tests for CI
 
 ### Create a new spec (this will auto generate the files for you):
 
@@ -30,11 +41,39 @@ We use 3 separate tools in the suite. Each can be run individually with their co
 
 ## PHPUnit
 
+Sometimes we want to use PHPUnit instead of PHPSpec. You can do this by creating phpunit test cases in `app/tests/phpunit`
+
+You can see the config file: `app/tests/phpunit.xml`
+
+> please ignore `app/tests/phpunit.xml.cov` because it is just used to add coverage to the tests for CI
+
 ### Run the phpunit suite:
 
 `bin/phpunit`
 
 ## Behat
+
+Behat is a BDD (behaviour driven design) tool that we use for both integration and functional testing, useing the
+Gherkin language to write the tests.
+
+You can see the config file: `app/tests/behat.yml`
+
+> please ignore `app/tests/behat.yml.cov` because it is just used to add coverage to the tests for CI
+
+
+Our behat suite is made up of two distinct **profiles**. You will notice that if you run `bin/behat`, you get an error:
+
+This is because you need to specify which **profile** you want to run.
+
+### Running the Portal Profile
+
+`bin/behat --profile=portal`
+
+### Running the API Profile
+
+`bin/behat --profile=api`
+
+> Our Travis-CI is configured to also use the `--config=behat.cov.yml` config file, which simply tells it to also create code coverage files. You won't need to worry about this during development, just use the defaul `behat.yml` config file.
 
 ### Run the behat suite:
 
@@ -76,7 +115,7 @@ really care about arbitrary changes to the data, but some of your scenarios will
 
 ### users and authentication
 
-The fresh data set uses the values from a class named "DpBehat\TestBundle\UserDetailsRepo" to create users. So, if you
+The fresh data set uses the values from a class named "DpTests\UserDetailsRepo" to create users. So, if you
 installed the fresh data set you can use the "user_details" service to get information about the users in the static repo:
 
 - admin
@@ -120,6 +159,8 @@ This will do the same as the coverage command, but also submits the coverage fil
 
 `bin/run-tests coverage travis`
 
-Note: if for some reason you want to run the above and submit to coveralls locally, you must first setup an environment var:
+Note: if for some reason you want to run the coverage and submit to coveralls locally, you must first setup an environment var:
 
 `export COVERALLS_RUN_LOCALLY=1`
+
+and then run `bin/run-tests coverage travis`
