@@ -29,30 +29,19 @@
  * DeskPRO.
  */
 
-namespace DpBehat\TestBundle;
+namespace DpTests\TestBundle\DataSet;
 
-/**
- * AbstractDbSet does so much work that is is basically what this class *should* be, but this is just a service we
- * use in test code to just install a db set.
- */
-class DataSetManager
+interface DataSetInterface
 {
     /**
-     * @var DataSet\DataSetInterface[]
+     * The ID you call in code to install this dataset.
+     *
+     * @return string
      */
-    private $data_sets;
+    public function getId();
 
-    public function __construct(array $data_Sets)
-    {
-        $this->data_sets = $data_Sets;
-    }
-
-    public function install($db_set_id)
-    {
-        foreach ($this->data_sets as $dbset) {
-            if ($db_set_id === $dbset->getId()) {
-                $dbset->install();
-            }
-        }
-    }
+    /**
+     * Deletes current database and installs this set.
+     */
+    public function install();
 }

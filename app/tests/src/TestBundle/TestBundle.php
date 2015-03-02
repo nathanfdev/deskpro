@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,29 +29,36 @@
  * DeskPRO.
  */
 
-namespace DpBehat\TestBundle\DataSet;
+namespace DpTests\TestBundle;
 
-use Application\DeskPRO\Entity\Brand;
+use DpTests\TestBundle\DependencyInjection\TestExtension;
+use Symfony\Component\Console\Application;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class EmptyDb extends AbstractDbSet
+class TestBundle extends Bundle
 {
-    /**
-     * Nothing. The Fresh DB doesn't add any additional data.
-     *
-     * @return int
-     */
-    protected function installSet()
+    public function getContainerExtension()
     {
-        $em = $this->getEm();
-
-        // we need a brand
-        $brand = new Brand();
-        $em->persist($brand);
-        $em->flush();
+        return new TestExtension();
     }
 
-    public function getId()
+    public function build(ContainerBuilder $container)
     {
-        return 'empty';
+        parent::build($container);
+    }
+
+    public function registerCommands(Application $application)
+    {
+    }
+
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    public function getPath()
+    {
+        return __DIR__;
     }
 }

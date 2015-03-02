@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpBehat\TestBundle\DataSet;
+namespace DpTests\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;

@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpBehat\TestBundle\DependencyInjection;
+namespace DpTests\TestBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

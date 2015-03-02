@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpBehat\TestBundle;
+namespace DpTests\TestBundle;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
