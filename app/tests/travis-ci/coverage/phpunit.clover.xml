@@ -2248,9 +2248,9 @@
         <metrics loc="93" ncloc="52" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
     </package>
-    <package name="DeskPRO\Bundle\AppBundle\Brand">
+    <package name="DeskPRO\Bundle\PortalBundle\Brand">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/BrandContainer.php">
-        <class name="BrandContainer" namespace="DeskPRO\Bundle\AppBundle\Brand">
+        <class name="BrandContainer" namespace="DeskPRO\Bundle\PortalBundle\Brand">
           <metrics methods="8" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="7" elements="19" coveredelements="11"/>
         </class>
         <line num="69" type="method" name="__construct" crap="1" count="3"/>
@@ -2275,7 +2275,7 @@
         <metrics loc="132" ncloc="62" classes="1" methods="8" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="7" elements="19" coveredelements="11"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/BrandContainerFactory.php">
-        <class name="BrandContainerFactory" namespace="DeskPRO\Bundle\AppBundle\Brand">
+        <class name="BrandContainerFactory" namespace="DeskPRO\Bundle\PortalBundle\Brand">
           <metrics methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
         </class>
         <line num="56" type="method" name="__construct" crap="1" count="1"/>
@@ -2287,7 +2287,7 @@
         <metrics loc="66" ncloc="26" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/BrandStack.php">
-        <class name="BrandStack" namespace="DeskPRO\Bundle\AppBundle\Brand">
+        <class name="BrandStack" namespace="DeskPRO\Bundle\PortalBundle\Brand">
           <metrics methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="17" elements="25" coveredelements="21"/>
         </class>
         <line num="84" type="method" name="__construct" crap="1" count="1"/>
@@ -2318,7 +2318,7 @@
         <metrics loc="144" ncloc="64" classes="1" methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="17" elements="25" coveredelements="21"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/DefaultBrandFinder.php">
-        <class name="DefaultBrandFinder" namespace="DeskPRO\Bundle\AppBundle\Brand">
+        <class name="DefaultBrandFinder" namespace="DeskPRO\Bundle\PortalBundle\Brand">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
         </class>
         <line num="61" type="method" name="__construct" crap="2" count="0"/>
