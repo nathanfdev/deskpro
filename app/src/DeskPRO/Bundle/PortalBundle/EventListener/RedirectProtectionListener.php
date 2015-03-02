@@ -29,9 +29,9 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\EventListener;
+namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

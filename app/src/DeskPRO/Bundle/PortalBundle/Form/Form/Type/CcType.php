@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
-use DeskPRO\Bundle\AppBundle\Person\PersonFactory;
+use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\ArrayToStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,7 +45,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CcType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Person\PersonFactory
+     * @var \DeskPRO\Bundle\PortalBundle\Person\PersonFactory
      */
     private $person_factory;
 

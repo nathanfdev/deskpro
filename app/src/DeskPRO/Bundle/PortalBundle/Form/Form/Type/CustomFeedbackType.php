@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -39,7 +39,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CustomFeedbackType extends AbstractType
 {
     /**
-     * @var FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
      */
     private $field_manager;
 

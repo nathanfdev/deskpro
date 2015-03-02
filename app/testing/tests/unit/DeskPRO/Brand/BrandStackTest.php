@@ -31,21 +31,21 @@
 
 namespace DpUnitTests\DeskPRO\Brand;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
 class BrandStackTest extends \DpUnitTestCase
 {
     public function testTheStack()
     {
-        $mockFactory = \Mockery::mock('DeskPRO\Bundle\AppBundle\Brand\BrandContainerFactory');
+        $mockFactory = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory');
 
         $mockBrand1    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockBrand1->shouldReceive('getId')->andReturn(1);
-        $mockContainer1 = \Mockery::mock('DeskPRO\Bundle\AppBundle\Brand\BrandContainer');
+        $mockContainer1 = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Brand\BrandContainer');
 
         $mockBrand2    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockBrand2->shouldReceive('getId')->andReturn(2);
-        $mockContainer2 = \Mockery::mock('DeskPRO\Bundle\AppBundle\Brand\BrandContainer');
+        $mockContainer2 = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Brand\BrandContainer');
 
         $mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
         $mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);

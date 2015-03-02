@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;

@@ -41,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
-use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
@@ -59,7 +59,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class TicketType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
      */
     private $field_manager;
 

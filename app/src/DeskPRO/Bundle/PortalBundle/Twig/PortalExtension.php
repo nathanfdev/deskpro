@@ -34,12 +34,12 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
 class PortalExtension extends \Twig_Extension
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 

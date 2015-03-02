@@ -31,8 +31,8 @@
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;

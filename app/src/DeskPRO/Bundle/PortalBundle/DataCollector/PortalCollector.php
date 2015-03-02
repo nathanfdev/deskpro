@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\DataCollector;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 class PortalCollector extends DataCollector
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
     /**

@@ -36,7 +36,7 @@ use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
-use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 
 class TicketViewService extends AbstractDataService
 {

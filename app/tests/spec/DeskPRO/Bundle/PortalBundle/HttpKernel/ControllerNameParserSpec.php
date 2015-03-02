@@ -32,8 +32,8 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpKernel\KernelInterface;

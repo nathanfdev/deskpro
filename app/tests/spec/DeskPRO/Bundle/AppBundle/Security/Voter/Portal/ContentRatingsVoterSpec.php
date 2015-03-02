@@ -3,8 +3,8 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;

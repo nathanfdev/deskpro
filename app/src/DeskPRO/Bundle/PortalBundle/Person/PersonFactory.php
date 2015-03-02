@@ -29,13 +29,13 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Person;
+namespace DeskPRO\Bundle\PortalBundle\Person;
 
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
 use Doctrine\ORM\EntityManager;
@@ -54,7 +54,7 @@ class PersonFactory
     private $event_dispatcher;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 

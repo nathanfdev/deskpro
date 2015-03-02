@@ -31,7 +31,7 @@
 
 namespace DpUnitTests\DeskPRO\Application\Brand;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 
 class BrandContainerTest extends \PHPUnit_Framework_TestCase
 {

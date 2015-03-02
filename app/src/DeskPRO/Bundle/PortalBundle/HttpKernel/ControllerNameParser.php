@@ -33,8 +33,8 @@ namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -52,7 +52,7 @@ class ControllerNameParser extends BaseParser
     protected $cache;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 

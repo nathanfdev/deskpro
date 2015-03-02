@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class ContentSubscriptionsHelper

@@ -29,16 +29,17 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Brand;
+namespace DeskPRO\Bundle\PortalBundle\Brand;
 
-use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
 /**
- * The BrandContainerFactory creates BrandContainers for us.
+ * A serive that can quickly hand you the default brand (useful in cases here there is no request listener detecting
+ * the active brand on the stack (CLI).
  */
-class BrandContainerFactory
+class DefaultBrandFinder
 {
     /**
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
@@ -46,18 +47,31 @@ class BrandContainerFactory
     private $settings_resolver;
 
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver
+     * @var \Application\DeskPRO\EntityRepository\Brand
      */
-    private $theme_resolver;
+    private $brand_repo;
 
-    public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver)
+    /**
+     * @param SettingsResolver $settings_resolver
+     * @param Brand            $brand_repo
+     */
+    public function __construct(SettingsResolver $settings_resolver, Brand $brand_repo)
     {
         $this->settings_resolver = $settings_resolver;
-        $this->theme_resolver    = $theme_resolver;
+        $this->brand_repo        = $brand_repo;
     }
 
-    public function create(Brand $brand)
+    /**
+     * @return BrandEntity
+     */
+    public function getDefaultBrand()
     {
-        return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand), $this->theme_resolver);
+        try {
+            return $this->brand_repo->find(
+                $this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
+            );
+        } catch (\Exception $e) {
+            return new BrandEntity();
+        }
     }
 }

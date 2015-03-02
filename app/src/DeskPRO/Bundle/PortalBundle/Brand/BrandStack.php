@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Brand;
+namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 

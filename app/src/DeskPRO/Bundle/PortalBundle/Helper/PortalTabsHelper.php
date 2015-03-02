@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
