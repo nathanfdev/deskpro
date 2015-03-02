@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
+namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;

@@ -12,7 +12,7 @@
 		"doctrine/doctrine-fixtures-bundle": "2.2.*@dev",
 		"guzzle/guzzle": "3.9.*",
 		"imagine/imagine": "0.5.*",
-		"mockery/mockery": "0.9.*@dev",
+		"mockery/mockery": "0.9.3",
 		"monolog/monolog": "1.*",
 		"pda/pheanstalk": "2.1.*",
 		"leth/ip-address": "1.0.1",
