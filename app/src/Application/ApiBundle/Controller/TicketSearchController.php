@@ -158,6 +158,13 @@ class TicketSearchController extends AbstractController
      *				type="string"
      *			),
      *			@SWG\Parameter(
+     *				name="is_hold",
+     *				description="If specified, requires the ticke to be on hold (1) or not on hold (0)",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean"
+     *			),
+     *			@SWG\Parameter(
      *				name="sla_completed",
      *				description="If specified, requires the ticket to have the SLA requirement completed (1) or incomplete (0).",
      *				paramType="query",
@@ -315,6 +322,7 @@ class TicketSearchController extends AbstractController
             'sla_id'          => TicketSearch::TERM_SLA,
             'sla_status'      => TicketSearch::TERM_SLA_STATUS,
             'sla_completed'   => TicketSearch::TERM_SLA_COMPLETED,
+            'is_hold'         => TicketSearch::TERM_HOLD,
         );
 
         $date_search_map = array(
