@@ -37,7 +37,6 @@ namespace Application\EmailBundle\Queue;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
