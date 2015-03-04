@@ -202,7 +202,8 @@ $annotation_mappings = array(
     'FOS\RestBundle' => DP_ROOT . '/vendor/friendsofsymfony/rest-bundle',
     'JMS\Serializer\Annotation' => DP_ROOT . '/vendor/jms/serializer/src',
     'Nelmio\ApiDocBundle\Annotation' => DP_ROOT . '/vendor/nelmio/api-doc-bundle',
-    'Symfony\Component\Validator\Constraints' => DP_ROOT . '/vendor/symfony/symfony/src'
+    'Symfony\Component\Validator\Constraints' => DP_ROOT . '/vendor/symfony/symfony/src',
+    'Hateoas\Configuration\Annotation' => DP_ROOT . '/vendor/willdurand/hateoas/src',
 );
 
 foreach ($annotation_mappings as $namespace => $dir) {

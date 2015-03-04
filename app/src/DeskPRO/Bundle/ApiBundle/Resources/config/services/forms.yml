@@ -1,6 +1,0 @@
-services:
-
-  form.sandbox:
-      class: DeskPRO\Bundle\ApiBundle\Sandbox\Form\Type\SandboxWidgetType
-      tags:
-          - { name: form.type, alias: sandbox_widget }

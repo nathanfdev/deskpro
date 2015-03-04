@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Sandbox\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 
 use Symfony\Component\Form\AbstractType;
