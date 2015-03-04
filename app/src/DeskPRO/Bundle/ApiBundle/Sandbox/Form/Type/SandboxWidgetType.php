@@ -44,19 +44,13 @@ class SandboxWidgetType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array(
-            'description' => 'the widget name',
-            'constraints' => array(
-                new NotNull(array('message' => 'required')),
-                new Length(array('min' => 10, 'minMessage' => 'length_small'))
-            )
-        ));
-        $builder->add('inventory', 'integer', array(
-            'description' => 'the inventory',
-            'constraints' => array(
-                new NotNull(array('message' => 'required'))
-            )
-        ));
+        $builder
+            ->add('name', 'text', array(
+                'description' => 'the widget name'
+            ))->add('inventory', 'integer', array(
+                'description' => 'the inventory'
+            ))
+        ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

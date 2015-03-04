@@ -37,6 +37,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
@@ -61,12 +62,17 @@ class SandboxWidget implements NotifyPropertyChanged
     /**
      * @ORM\Column(type="string", length=100)
      * @Serializer\Expose()
+     * @Assert\NotNull(message="required")
+     * @Assert\Length(min=10, minMessage="length_small")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Serializer\Expose()
+     * @Assert\NotNull(message="required")
+     * @Assert\NotBlank(message="required")
+     * @Assert\Type("int", message="must_be_int")
      */
     private $inventory;
 
