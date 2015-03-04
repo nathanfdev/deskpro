@@ -44,7 +44,7 @@ class JsonBodyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onRequest', 256)
+            KernelEvents::REQUEST => array('onRequest', 512)
         );
     }
 
@@ -59,6 +59,11 @@ class JsonBodyListener implements EventSubscriberInterface
         if (!self::isJson($request->getContent())) {
             throw new BadRequestHttpException('Invalid JSON body');
         }
+
+        $request->setFormat('json', 'application/json');
+        $request->attributes->set('_format', 'json');
+        $request->attributes->set('media_type', 'json');
+        $request->headers->set('Content-Type', 'application/json');
     }
 
     public static function isJson($string)

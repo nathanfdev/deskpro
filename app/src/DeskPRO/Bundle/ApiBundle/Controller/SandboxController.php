@@ -33,7 +33,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use Aws\Sns\Exception\NotFoundException;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -41,6 +40,7 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -129,7 +129,7 @@ class SandboxController extends BaseController implements ClassResourceInterface
     {
         $widget = new SandboxWidget();
 
-        return $this->handleFormSubmission($widget);
+        return $this->handleFormSubmission($request, $widget);
     }
 
     /**
@@ -155,7 +155,7 @@ class SandboxController extends BaseController implements ClassResourceInterface
     {
         $widget = $this->getWidget($id);
 
-        return $this->handleFormSubmission($widget);
+        return $this->handleFormSubmission($request, $widget);
     }
 
     /**
@@ -189,13 +189,19 @@ class SandboxController extends BaseController implements ClassResourceInterface
         );
     }
 
-    protected function handleFormSubmission(SandboxWidget $widget)
+    protected function handleFormSubmission(Request $request, SandboxWidget $widget)
     {
         $status = $widget->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $form = $this->get('form.factory')->createNamedBuilder(null, 'sandbox_widget', $widget)->getForm();
 
-        $form->handleRequest($request);
+        $submitted = $request->request->all();
+
+        if (!count($submitted)) {
+            throw new BadRequestHttpException('no body input found');
+        }
+
+        $form->submit($submitted, false);
 
         if ($form->isValid()) {
 

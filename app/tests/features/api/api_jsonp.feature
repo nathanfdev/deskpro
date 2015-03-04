@@ -7,10 +7,10 @@ Feature: Basic API Response
     Given I install the empty data set
 
   Scenario: I add "callback" to the query string and get JSONP
-    When I send a GET request to "/api/v2/sandbox?callback=my_function"
+    When I send a GET request to "/api/v2/sandbox_widgets?callback=my_function"
     Then the response status code should be 200
     And the response should contain "/**/my_function({"
 
   Scenario: Invalid callbacks result in an error
-    When I send a GET request to "/api/v2/sandbox?callback=function"
+    When I send a GET request to "/api/v2/sandbox_widgets?callback=function"
     Then the response status code should be 400

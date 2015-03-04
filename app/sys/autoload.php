@@ -190,9 +190,21 @@ AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/
 if (is_callable(array($composer_loader, 'loadClass'))) {
     AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
 }
-AnnotationRegistry::registerAutoloadNamespace('Sensio\Bundle\FrameworkExtraBundle', DP_ROOT.'/vendor/sensio/framework-extra-bundle');
-AnnotationRegistry::registerAutoloadNamespace('FOS\RestBundle', DP_ROOT.'/vendor/friendsofsymfony/rest-bundle');
+
 require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 \Swift_DependencyContainer::getInstance()->register('cache.disk')->asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
 
 require DP_ROOT.'/vendor-src/querypath/src/qp.php';
+
+
+$annotation_mappings = array(
+    'Sensio\Bundle\FrameworkExtraBundle' => DP_ROOT . '/vendor/sensio/framework-extra-bundle',
+    'FOS\RestBundle' => DP_ROOT . '/vendor/friendsofsymfony/rest-bundle',
+    'JMS\Serializer\Annotation' => DP_ROOT . '/vendor/jms/serializer/src',
+    'Nelmio\ApiDocBundle\Annotation' => DP_ROOT . '/vendor/nelmio/api-doc-bundle',
+    'Symfony\Component\Validator\Constraints' => DP_ROOT . '/vendor/symfony/symfony/src'
+);
+
+foreach ($annotation_mappings as $namespace => $dir) {
+    AnnotationRegistry::registerAutoloadNamespace($namespace, $dir);
+}
