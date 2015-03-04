@@ -38,11 +38,13 @@ use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity()
  * @ORM\Table("api_sandbox_widgets")
  * @Serializer\ExclusionPolicy("all")
+ * @Hateoas\Relation("self", href=@Hateoas\Route("get_sandbox_widgets", parameters={"id" = "expr(object.getId())"}))
  */
 class SandboxWidget implements NotifyPropertyChanged
 {

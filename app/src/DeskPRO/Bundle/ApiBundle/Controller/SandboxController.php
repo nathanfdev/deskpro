@@ -71,9 +71,6 @@ class SandboxController extends BaseController implements ClassResourceInterface
 
         return View::create(
             array(
-                'links' => array(
-                    'self' => $this->generateUrl('cget_sandbox_widgets')
-                ),
                 'data' => $widgets
             ),
             Response::HTTP_OK
@@ -105,9 +102,6 @@ class SandboxController extends BaseController implements ClassResourceInterface
 
         return View::create(
             array(
-                'links' => array(
-                    'self' => $this->generateUrl('get_sandbox_widgets', array('id' => $widget->getId()))
-                ),
                 'data' => $widget
             ),
             Response::HTTP_OK
@@ -210,9 +204,6 @@ class SandboxController extends BaseController implements ClassResourceInterface
 
             return View::create(
                 array(
-                    'links' => array(
-                        'self' => $this->generateUrl('post_sandbox_widgets')
-                    ),
                     'data' => $widget
                 ),
                 $status,
