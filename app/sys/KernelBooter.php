@@ -721,7 +721,7 @@ class KernelBooter
             $app->setAutoExit(false);
 
             libxml_disable_entity_loader(false);
-            $return = $app->run();
+            $return = $app->run(new ArgvInput());
             unset($GLOBALS['DP_IS_IN_CLI']);
 
             return $return;
@@ -1055,7 +1055,9 @@ class KernelBooter
             $debug = false;
         }
 
-        define('DP_INTERFACE', 'cli');
+        if (!defined('DP_INTERFACE')) {
+            define('DP_INTERFACE', 'cli');
+        }
         $kernel = new \DeskPRO\Kernel\DpKernel($env, $debug, DP_INTERFACE);
         $kernel->boot($mode);
 
