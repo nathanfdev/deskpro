@@ -1,4 +1,4 @@
-Feature: Basic API Response
+Feature: JSONP
   In order to use the API responses in my javascript
   As a developer
   I need to be able to recieve a JSONP callback

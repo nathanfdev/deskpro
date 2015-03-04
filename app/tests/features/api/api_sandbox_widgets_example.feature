@@ -6,6 +6,7 @@ Feature: Sandbox Widgets Example
   Background: Using a empty data set
     Given I install the empty data set
 
+  @reinstall
   Scenario: I create a widget
     When I send a POST request to "/api/v2/sandbox_widgets" with body:
     """
@@ -34,7 +35,7 @@ Feature: Sandbox Widgets Example
       "inventory": 4
     }
     """
-    And the response status code should be 204
+    Then the response status code should be 204
     And the response should be empty
 
   Scenario: I GET all the widgets and see the widget 1 was updated
