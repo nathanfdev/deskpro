@@ -33,57 +33,203 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Aws\Sns\Exception\NotFoundException;
+use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * This controller is simply used to verify that various features of the API work, and no application
- * interaction actually occurs by using these endpoints. We can delete this later, or allow people to
- * test their code with it to make sure they are authenticating properly, and using the various
- * methods properly.
- *
- * @RouteResource("sandbox")
+ * @RouteResource("sandbox_widgets")
  */
 class SandboxController extends BaseController implements ClassResourceInterface
 {
-    static $data = array(
-        array(
-            'id' => 3,
-            'name' => 'Homer Simpson',
-            'email' => 'homer@simpson.com',
-        ),
-        array(
-            'id' => 6,
-            'name' => 'Bart Simpson',
-            'email' => 'bart@simpson.com',
-        ),
-        array(
-            'id' => 11,
-            'name' => 'Mr. Burns',
-            'email' => 'mr@burns.com',
-        ),
-    );
-
+    /**
+     * @ApiDoc(
+     *      description="get a collection of sandbox widgets",
+     *      filters={
+     *          {
+     *              "name"="count",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="how many objects to return"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          400="Invalid request"
+     *      }
+     * )
+     */
     public function cgetAction()
     {
+        $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findAll();
+
         return View::create(
             array(
                 'links' => array(
-                    'self' => '/sandbox'
+                    'self' => $this->generateUrl('cget_sandbox_widgets')
                 ),
-                'data' => self::$data
-            )
+                'data' => $widgets
+            ),
+            Response::HTTP_OK
         );
     }
 
-    public function postAction()
+
+    /**
+     * @ApiDoc(
+     *      description="get a sandbox widget",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the sandbox widget",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
+     * )
+     */
+    public function getAction($id)
     {
-        // create a new object (using a form)
+        $widget = $this->getWidget($id);
+
+        return View::create(
+            array(
+                'links' => array(
+                    'self' => $this->generateUrl('get_sandbox_widgets', array('id' => $widget->getId()))
+                ),
+                'data' => $widget
+            ),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="create a sandbox widget",
+     *      input={"class"="sandbox_widget","name"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
+     * )
+     */
+    public function postAction(Request $request)
+    {
+        $widget = new SandboxWidget();
+
+        return $this->handleFormSubmission($widget);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="modify a sandbox widget",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the sandbox widget",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      input={"class"="sandbox_widget","name"=""},
+     *      statusCodes={
+     *          204="Updated",
+     *          400="Bad Request"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
+     * )
+     */
+    public function putAction(Request $request, $id)
+    {
+        $widget = $this->getWidget($id);
+
+        return $this->handleFormSubmission($widget);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="delete a sandbox widget",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the sandbox widget",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Deleted",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
+     * )
+     */
+    public function deleteAction($id)
+    {
+        $widget = $this->getWidget($id);
+
+        $this->getDoctrine()->getManager()->remove($widget);
+        $this->getDoctrine()->getManager()->flush();
 
         return View::create(
             array(),
-            204
+            Response::HTTP_OK
         );
+    }
+
+    protected function handleFormSubmission(SandboxWidget $widget)
+    {
+        $status = $widget->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'sandbox_widget', $widget)->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+
+            $this->getDoctrine()->getManager()->persist($widget);
+            $this->getDoctrine()->getManager()->flush($widget);
+
+            return View::create(
+                array(
+                    'links' => array(
+                        'self' => $this->generateUrl('post_sandbox_widgets')
+                    ),
+                    'data' => $widget
+                ),
+                $status,
+                array(
+                    'Location' => $this->generateUrl('get_sandbox_widgets', array('id' => $widget->getId()))
+                )
+            );
+        }
+
+        return $form; // let our listeners generate the form error response
+    }
+
+    /**
+     * @param $id
+     * @return SandboxWidget
+     */
+    private function getWidget($id)
+    {
+        $widget = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->find($id);
+
+        if (!$widget) {
+            throw new NotFoundHttpException('widget does not exist');
+        }
+        return $widget;
     }
 }
