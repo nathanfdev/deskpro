@@ -65,7 +65,8 @@
 		"friendsofsymfony/rest-bundle": "~1.5",
 		"jms/serializer-bundle": "0.13.*",
 		"behatch/contexts": "*",
-		"nelmio/api-doc-bundle": "~2.7"
+		"nelmio/api-doc-bundle": "~2.7",
+		"willdurand/hateoas-bundle": "1.0.*@dev"
 	},
 	"preferred-install": "dist"
 }

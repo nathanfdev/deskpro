@@ -69,6 +69,7 @@ class ApiKernel extends Kernel
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle()
         );
 
         if ('dev' === $this->getEnvironment()
