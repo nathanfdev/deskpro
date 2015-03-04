@@ -166,8 +166,19 @@ $container->loadFromExtension(
             'entity_managers'             => array(
                 'default' => array(
                     'mappings' => array(
-                        'DeskPRO'     => array('type' => 'staticphp'),
-                        'EmailBundle'                 => array('type' => 'staticphp'),
+                        'DeskPRO'     => array(
+                            'type' => 'staticphp'
+                        ),
+                        'EmailBundle' => array(
+                            'type' => 'staticphp'
+                        ),
+                        'AppBundle' => array(
+                            'type' => 'annotation',
+                            'alias' => 'App',
+                            'is_bundle' => false,
+                            'dir' => '%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/Entity',
+                            'prefix' => 'DeskPRO\Bundle\AppBundle\Entity'
+                        )
                     ),
                     'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory',
                 ),
