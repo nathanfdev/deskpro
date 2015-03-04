@@ -196,7 +196,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             throw new BadRequestHttpException('no body input found');
         }
 
-        $form->submit($submitted, false);
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
 

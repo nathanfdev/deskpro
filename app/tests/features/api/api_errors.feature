@@ -40,4 +40,17 @@ Feature: API Errors
     And the response status code should be 400
     And the JSON node "code" should be equal to 400
     And the JSON node "message" should exist
-    And the JSON node "errors.children" should have 1 elements
+    And the JSON node "errors.children" should have 1 element
+
+  Scenario: Make a POST with a missing field
+    When I send a POST request to "/api/v2/sandbox_widgets" with body:
+    """
+    {
+      "inventory": 4
+    }
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should exist
+    And the JSON node "errors.children" should have 1 element
