@@ -64,7 +64,8 @@
 		"sensiolabs/behat-page-object-extension": "2.0.*@dev",
 		"friendsofsymfony/rest-bundle": "~1.5",
 		"jms/serializer-bundle": "0.13.*",
-		"behatch/contexts": "*"
+		"behatch/contexts": "*",
+		"nelmio/api-doc-bundle": "~2.7"
 	},
 	"preferred-install": "dist"
 }

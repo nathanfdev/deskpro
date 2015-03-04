@@ -68,6 +68,7 @@ class ApiKernel extends Kernel
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
         );
 
         if ('dev' === $this->getEnvironment()
