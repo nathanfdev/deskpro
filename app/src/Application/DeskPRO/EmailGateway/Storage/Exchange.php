@@ -56,6 +56,7 @@ use EWSType_ItemQueryTraversalType;
 use EWSType_ItemResponseShapeType;
 use EWSType_MoveItemType;
 use EWSType_NonEmptyArrayOfBaseFolderIdsType;
+use EWSType_NonEmptyArrayOfFoldersType;
 use EWSType_NonEmptyArrayOfBaseItemIdsType;
 use EWSType_NonEmptyArrayOfPathsToElementType;
 use EWSType_PathToUnindexedFieldType;
@@ -260,7 +261,7 @@ class Exchange
     private function createFolder($name)
     {
         $request                               = new EWSType_CreateFolderType();
-        $request->Folders                      = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+        $request->Folders                      = new EWSType_NonEmptyArrayOfFoldersType();
         $request->Folders->Folder              = new EWSType_FolderType();
         $request->Folders->Folder->DisplayName = $name;
         $request->ParentFolderId               = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
