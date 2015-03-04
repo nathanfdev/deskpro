@@ -1,6 +1,6 @@
 sandbox_widgets:
     type: rest
-    resource: DeskPRO\Bundle\ApiBundle\Controller\SandboxController
+    resource: DeskPRO\Bundle\ApiBundle\Controller\SandboxWidgetsController
 
 #ticket_filters:
 #    type: rest

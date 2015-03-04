@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @RouteResource("sandbox_widgets")
  */
-class SandboxController extends BaseController implements ClassResourceInterface
+class SandboxWidgetsController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
