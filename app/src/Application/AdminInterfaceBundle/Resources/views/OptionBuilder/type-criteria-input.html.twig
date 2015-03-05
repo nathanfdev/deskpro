@@ -51,6 +51,9 @@
 				       datepicker-popup="dd MMMM yyyy"
 				       ng-model="model.date1"
 				       datepicker-options="{'show-weeks': false}"
+				       is-open="opened"
+				       ng-click="opened = true"
+				       ng-focus="opened = true"
 						/>
 			</span>
 			<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
@@ -59,6 +62,9 @@
 				       datepicker-popup="dd MMMM yyyy"
 				       ng-model="model.date2"
 				       datepicker-options="{'show-weeks': false}"
+				       is-open="opened"
+				       ng-click="opened = true"
+				       ng-focus="opened = true"
 						/>
 			</span>
 		</div>
