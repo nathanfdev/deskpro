@@ -37,6 +37,7 @@ use Pagerfanta\Pagerfanta;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @mixin \DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
@@ -89,5 +90,18 @@ class ApiViewRepresentationFactorySpec extends ObjectBehavior
                 'total_pages' => 41
             )
         );
+    }
+
+    function it_can_generate_a_batch_representation_of_responses(
+        Response $response1,
+        Response $response2
+    )
+    {
+        $responses = array('r1' => $response1, 'r2' => $response2);
+
+        $view_representation = $this->createBatchRepresentation($responses);
+
+        $view_representation->shouldHaveType('DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation');
+        $view_representation->getResponses()->shouldBeLike($responses);
     }
 }

@@ -50,10 +50,6 @@ class JsonBodyListener implements EventSubscriberInterface
 
     public function onRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
         $request = $event->getRequest();
 
         if (!self::isJson($request->getContent())) {

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -31,32 +31,23 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\EventListener;
+namespace spec\DeskPRO\Bundle\ApiBundle\View\Representation;
 
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-
-class JsonpFormatListener implements EventSubscriberInterface
+/**
+ * @mixin \DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation
+ */
+class BatchRepresentationSpec extends ObjectBehavior
 {
-    const JSONP_CALLBACK_PARAM = 'callback';
-
-    public static function getSubscribedEvents()
+    function it_holds_responses()
     {
-        return array(
-            KernelEvents::REQUEST => array('onRequest', 256)
-        );
-    }
+        $responses = array('response1', 'response2', 'etc');
 
-    public function onRequest(GetResponseEvent $event)
-    {
-        $request = $event->getRequest();
+        $this->beConstructedWith($responses);
 
-        if ($request->query->has(self::JSONP_CALLBACK_PARAM)) {
-            $request->setFormat('jsonp', 'application/javascript');
-            $request->attributes->set('_format', 'jsonp');
-            $request->attributes->set('media_type', 'jsonp');
-        }
+        $this->getResponses()->shouldReturn($responses);
     }
 }

@@ -68,10 +68,6 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 
     public function onResponse(FilterResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
         $request = $event->getRequest();
         $response = $event->getResponse();
 

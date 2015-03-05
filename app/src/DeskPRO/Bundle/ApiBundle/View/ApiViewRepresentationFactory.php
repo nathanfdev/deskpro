@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\View;
 
+use DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use Pagerfanta\Pagerfanta;
 
@@ -60,5 +61,10 @@ class ApiViewRepresentationFactory
 
 
         return $representation;
+    }
+
+    public function createBatchRepresentation(array $responses = array())
+    {
+        return new BatchRepresentation($responses);
     }
 }
