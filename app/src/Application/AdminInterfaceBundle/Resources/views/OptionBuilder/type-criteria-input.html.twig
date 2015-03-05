@@ -32,12 +32,13 @@
 				style="min-width: 50px;"
 				ng-if="'date' === options.type_name"
 				>
-			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
-			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
-			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
-			<option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
-			<option ng-if="operators.indexOf('gte') !== -1" value="gte">after</option>
-			<option ng-if="operators.indexOf('lte') !== -1" value="lte">before</option>
+			<option value="isset">exists</option>
+			<option value="not_isset">does not exist</option>
+			<option value="is">is</option>
+			<option value="not">is not</option>
+			<option value="gte">after</option>
+			<option value="lte">before</option>
+			<option value="between">between</option>
 		</select>
 
 		<input type="text" class="form-control" ng-model="model.value"
@@ -45,8 +46,8 @@
 		       ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset' || model.op == 'touched' || model.op == 'nottouched'"
 				/>
 
-		<div ng-show="'date' === options.type_name">
-			<span ng-if="model.op == 'lte' || model.op == 'between'">
+		<span ng-if="'date' === options.type_name">
+			<span ng-if="['is', 'not', 'gte', 'between'].indexOf(model.op) > -1">
 				<input type="text" class="form-control" style="width: 140px; display: inline-block;"
 				       datepicker-popup="dd MMMM yyyy"
 				       ng-model="model.date1"
@@ -57,7 +58,7 @@
 						/>
 			</span>
 			<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
-			<span ng-if="model.op == 'gte' || model.op == 'between'">
+			<span ng-if="model.op == 'lte' || model.op == 'between'">
 				<input type="text" class="form-control" style="width: 140px; display: inline-block;"
 				       datepicker-popup="dd MMMM yyyy"
 				       ng-model="model.date2"
@@ -67,6 +68,6 @@
 				       ng-focus="opened = true"
 						/>
 			</span>
-		</div>
+		</span
 	</div>
 </dp-optionbuilder-row>
