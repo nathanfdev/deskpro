@@ -9,6 +9,8 @@ api:
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
                 - behatch:rest
+                - DpBehat\Api\SandboxWidgetsContext:
+                    em: @doctrine.orm.default_entity_manager
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -70,8 +72,8 @@ portal:
                 debug: true
         SensioLabs\Behat\PageObjectExtension:
             namespaces:
-                page: DpBehat\Page\Portal
-                element: DpBehat\Page\Portal\Element
+                page: DpBehat\Portal\Page
+                element: DpBehat\Portal\Page\Element
 
 
 
