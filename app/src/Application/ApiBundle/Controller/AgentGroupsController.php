@@ -43,6 +43,16 @@ use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Orb\Util\Arrays;
 
+/**
+ * Operations about agent groups
+ * Simple CRUD controller
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/agent_groups",
+ * 	description="Operations about agent groups",
+ * 	basePath="/api"
+ * )
+ */
 class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
 {
     /**

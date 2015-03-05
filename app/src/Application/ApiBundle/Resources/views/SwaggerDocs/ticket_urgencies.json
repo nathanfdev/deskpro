@@ -1,17 +1,17 @@
 {
-    "basePath":"/api",
-    "swaggerVersion":"1.2",
-    "resourcePath":"/ticket_urgencies",
-    "apis":[
+    "basePath": "/api",
+    "swaggerVersion": "1.2",
+    "resourcePath": "/ticket_urgencies",
+    "apis": [
         {
-            "path":"/ticket_urgencies",
-            "operations":[
+            "path": "/ticket_urgencies",
+            "operations": [
                 {
-                    "method":"GET",
-                    "summary":"Get list of ticket counted urgency",
-                    "nickname":"listAction",
-                    "type":"array",
-                    "notes":""
+                    "method": "GET",
+                    "summary": "Get list of ticket counted urgency",
+                    "nickname": "listAction",
+                    "type": "array",
+                    "notes": ""
                 }
             ]
         }
