@@ -29,18 +29,33 @@
  * DeskPRO.
  */
 
-namespace DpBehat\Page\Portal\Element;
+namespace DpBehat\Portal\Page;
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class SidebarLogin extends Element
+class BasePage extends Page
 {
-    protected $selector = 'form#login-sidebar';
-
-    public function login($username, $password)
+    protected function verifyUrl(array $urlParameters = array())
     {
-        $this->fillField('username', $username);
-        $this->fillField('password', $password);
-        $this->pressButton('Log In');
+        // we need to override this to allow for not using a hostname at all in the session (it uses localhost)
+
+        if ($this->removeHostAndScheme($this->getSession()->getCurrentUrl()) === $this->getUrl($urlParameters)) {
+            return;
+        }
+
+        parent::verifyUrl($urlParameters);
+    }
+
+    private function removeHostAndScheme($url)
+    {
+        $url_info = parse_url($url);
+
+        $uri = $url_info['path'];
+
+        if (isset($url_info['query'])) {
+            $uri .= '?'.$url_info['query'];
+        }
+
+        return $uri;
     }
 }

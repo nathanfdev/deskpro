@@ -29,15 +29,19 @@
  * DeskPRO.
  */
 
-namespace DpBehat\Page\Portal;
+namespace DpBehat\Portal\Page;
 
-use DpBehat\Page\BasePage;
+use DpBehat\Portal\Page\BasePage;
 
-class ViewTickets extends BasePage
+class Home extends BasePage
 {
-    protected $path = '/tickets';
+    protected $path       = '/';
+    protected $parameters = array('base_url' => '/');
 
-    public function clickTicket($id)
+    public function sidebarLogin($username, $password)
     {
+        $this->open();
+
+        return $this->getElement('SidebarLogin')->login($username, $password);
     }
 }

@@ -29,9 +29,9 @@
  * DeskPRO.
  */
 
-namespace DpBehat\Page\Portal;
+namespace DpBehat\Portal\Page;
 
-use DpBehat\Page\BasePage;
+use DpBehat\Portal\Page\BasePage;
 
 class Login extends BasePage
 {

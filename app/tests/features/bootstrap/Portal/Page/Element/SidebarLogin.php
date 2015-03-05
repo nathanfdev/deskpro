@@ -29,11 +29,18 @@
  * DeskPRO.
  */
 
-namespace DpBehat\Page\Portal;
+namespace DpBehat\Portal\Page\Element;
 
-use DpBehat\Page\BasePage;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
 
-class Profile extends BasePage
+class SidebarLogin extends Element
 {
-    protected $path = '/profile';
+    protected $selector = 'form#login-sidebar';
+
+    public function login($username, $password)
+    {
+        $this->fillField('username', $username);
+        $this->fillField('password', $password);
+        $this->pressButton('Log In');
+    }
 }

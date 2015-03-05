@@ -29,33 +29,11 @@
  * DeskPRO.
  */
 
-namespace DpBehat\Page;
+namespace DpBehat\Portal\Page;
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use DpBehat\Portal\Page\BasePage;
 
-class BasePage extends Page
+class Profile extends BasePage
 {
-    protected function verifyUrl(array $urlParameters = array())
-    {
-        // we need to override this to allow for not using a hostname at all in the session (it uses localhost)
-
-        if ($this->removeHostAndScheme($this->getSession()->getCurrentUrl()) === $this->getUrl($urlParameters)) {
-            return;
-        }
-
-        parent::verifyUrl($urlParameters);
-    }
-
-    private function removeHostAndScheme($url)
-    {
-        $url_info = parse_url($url);
-
-        $uri = $url_info['path'];
-
-        if (isset($url_info['query'])) {
-            $uri .= '?'.$url_info['query'];
-        }
-
-        return $uri;
-    }
+    protected $path = '/profile';
 }
