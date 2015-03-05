@@ -1,5 +1,8 @@
 services:
 
+  api_view_representation_factory:
+      class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
+
   jsonp_format_listener:
       class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
       tags:
@@ -11,6 +14,12 @@ services:
       tags:
           - { name: kernel.event_subscriber }
 
+  json_headers_response_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener
+      arguments:
+          - @serializer
+      tags:
+        - { name: 'kernel.event_subscriber' }
 
   api_url_inflector:
       class: DeskPRO\Bundle\ApiBundle\Util\UrlInflector

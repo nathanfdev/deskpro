@@ -65,7 +65,7 @@ class HateoasJsonApiSerializer implements JsonSerializerInterface
             }
         }
         $visitor->addData('links', $serializedLinks);
-        $visitor->setRoot(array('links' => $topLevelSerializedLinks));
+        //$visitor->setRoot(array('links' => $topLevelSerializedLinks));
     }
 
     /**

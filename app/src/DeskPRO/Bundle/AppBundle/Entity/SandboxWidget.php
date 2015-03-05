@@ -43,8 +43,12 @@ use Hateoas\Configuration\Annotation as Hateoas;
 /**
  * @ORM\Entity()
  * @ORM\Table("api_sandbox_widgets")
- * @Serializer\ExclusionPolicy("all")
- * @Hateoas\Relation("self", href=@Hateoas\Route("get_sandbox_widgets", parameters={"id" = "expr(object.getId())"}))
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("get_sandbox_widgets", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class SandboxWidget implements NotifyPropertyChanged
 {

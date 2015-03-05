@@ -35,10 +35,17 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Sandbox;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Hateoas\Configuration\Route;
+use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Representation\Factory\PagerfantaFactory;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -70,10 +77,10 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
     {
         $widgets = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->findAll();
 
+        $pager = new Pagerfanta(new ArrayAdapter($widgets));
+
         return View::create(
-            array(
-                'data' => $widgets
-            ),
+            $this->createRepresentation($pager),
             Response::HTTP_OK
         );
     }
@@ -102,11 +109,14 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $widget = $this->getWidget($id);
 
         return View::create(
-            array(
-                'data' => $widget
-            ),
+            $this->createRepresentation($widget),
             Response::HTTP_OK
         );
+    }
+
+    protected function createRepresentation($input)
+    {
+        return $this->get('api_view_representation_factory')->createRepresentation($input);
     }
 
     /**
@@ -184,6 +194,9 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         );
     }
 
+    /**
+     * we will be making this more abstract for general use by other controllers
+     */
     protected function handleFormSubmission(Request $request, SandboxWidget $widget)
     {
         $status = $widget->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
@@ -204,9 +217,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             $this->getDoctrine()->getManager()->flush($widget);
 
             return View::create(
-                array(
-                    'data' => $widget
-                ),
+                $this->createRepresentation($widget),
                 $status,
                 array(
                     'Location' => $this->generateUrl('get_sandbox_widgets', array('id' => $widget->getId()))
