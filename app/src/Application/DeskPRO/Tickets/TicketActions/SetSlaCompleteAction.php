@@ -42,133 +42,133 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class SetSlaCompleteAction extends AbstractAction
 {
-	/** @var array */
-	protected $actions = array();
+    /** @var array */
+    protected $actions = array();
 
-	public function __construct($sla_complete, $sla_id)
-	{
-		$this->actions = array($sla_complete => array($sla_id));
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		foreach ($this->actions AS $complete => $sla_ids) {
-			if (in_array('0', $sla_ids)) {
-				// take action for all
-				$sla_ids = array('0');
-			}
-			foreach ($sla_ids AS $sla_id) {
-				if ($sla_id) {
-					$sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
-					if (!$sla) {
-						continue;
-					}
-
-					$ticket_sla = $ticket->hasSla($sla);
-					if (!$ticket_sla) {
-						continue;
-					}
-
-					$ticket_slas = array($ticket_sla);
-				} else {
-					$ticket_slas = $ticket->ticket_slas;
-				}
-
-				foreach ($ticket_slas AS $ticket_sla) {
-					$ticket_sla->setIsCompletedSet($complete);
-				}
-			}
-		}
-	}
+    public function __construct($sla_complete, $sla_id)
+    {
+        $this->actions = array($sla_complete => array($sla_id));
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'set_sla_complete', 'actions' => $this->actions)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        foreach ($this->actions AS $complete => $sla_ids) {
+            if (in_array('0', $sla_ids)) {
+                // take action for all
+                $sla_ids = array('0');
+            }
+            foreach ($sla_ids AS $sla_id) {
+                if ($sla_id) {
+                    $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
+                    if (!$sla) {
+                        continue;
+                    }
+
+                    $ticket_sla = $ticket->hasSla($sla);
+                    if (!$ticket_sla) {
+                        continue;
+                    }
+
+                    $ticket_slas = array($ticket_sla);
+                } else {
+                    $ticket_slas = $ticket->ticket_slas;
+                }
+
+                foreach ($ticket_slas AS $ticket_sla) {
+                    $ticket_sla->setIsCompletedSet($complete);
+                }
+            }
+        }
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getSlaActions()
-	{
-		return $this->actions;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'set_sla_complete', 'actions' => $this->actions)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		$actions = $other_action->getSlaActions();
-		foreach ($actions AS $complete => $sla_ids) {
-			if (isset($this->actions[$complete])) {
-				$this->actions[$complete] = array_merge($this->actions[$complete], $sla_ids);
-				$this->actions[$complete] = array_unique($this->actions[$complete]);
-			} else {
-				$this->actions[$complete] = $sla_ids;
-			}
-		}
-
-		return $this;
-	}
+    /**
+     * @return array
+     */
+    public function getSlaActions()
+    {
+        return $this->actions;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$parts = array();
-		foreach ($this->actions AS $complete => $sla_ids) {
-			if (in_array('0', $sla_ids)) {
-				// take action for all
-				$titles = null;
-			} else {
-				$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
-				$titles = array();
-				foreach ($slas as $s) {
-					$titles[$s->id] = $as_html ? htmlspecialchars($s->title) : $s->title;
-				}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        $actions = $other_action->getSlaActions();
+        foreach ($actions AS $complete => $sla_ids) {
+            if (isset($this->actions[$complete])) {
+                $this->actions[$complete] = array_merge($this->actions[$complete], $sla_ids);
+                $this->actions[$complete] = array_unique($this->actions[$complete]);
+            } else {
+                $this->actions[$complete] = $sla_ids;
+            }
+        }
 
-				foreach ($sla_ids as $id) {
-					if (!isset($titles[$id])) {
-						$titles[$id] = "<error>Unknown #$id</error>";
-					}
-				}
-			}
+        return $this;
+    }
 
-			if ($complete) {
-				if ($titles !== null) {
-					$parts[] = 'Set SLA requirements to complete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
-				} else {
-					$parts[] = 'Set SLA requirements to complete';
-				}
-			} else {
-				if ($titles !== null) {
-					$parts[] = 'Set SLA requirements to incomplete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
-				} else {
-					$parts[] = 'Set SLA requirements to incomplete';
-				}
-			}
-		}
 
-		return implode('; ', $parts);
-	}
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $parts = array();
+        foreach ($this->actions AS $complete => $sla_ids) {
+            if (in_array('0', $sla_ids)) {
+                // take action for all
+                $titles = null;
+            } else {
+                $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
+                $titles = array();
+                foreach ($slas as $s) {
+                    $titles[$s->id] = $as_html ? htmlspecialchars($s->title) : $s->title;
+                }
+
+                foreach ($sla_ids as $id) {
+                    if (!isset($titles[$id])) {
+                        $titles[$id] = "<error>Unknown #$id</error>";
+                    }
+                }
+            }
+
+            if ($complete) {
+                if ($titles !== null) {
+                    $parts[] = 'Set SLA requirements to complete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
+                } else {
+                    $parts[] = 'Set SLA requirements to complete';
+                }
+            } else {
+                if ($titles !== null) {
+                    $parts[] = 'Set SLA requirements to incomplete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
+                } else {
+                    $parts[] = 'Set SLA requirements to incomplete';
+                }
+            }
+        }
+
+        return implode('; ', $parts);
+    }
 }

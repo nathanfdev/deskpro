@@ -4,7 +4,11 @@
 	{%- elseif status == 'fail' -%}{{ phrase('agent.general.failed') }}{%- endif -%}
 {%- endmacro -%}
 {% if log.action_type == 'free' %}
-	{{ log.details.message }}
+	{% if log.details.message_html %}
+		{{ log.details.message_html }}
+	{% else %}
+		{{ log.details.message }}
+	{% endif %}
 {% elseif log.action_type == 'app_message' %}
 	App #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
 {% elseif log.action_type == 'action_starter' %}
@@ -21,7 +25,7 @@
 	{% elseif log.details.event == 'new.web.agent.portal' %}
 		{{ phrase('agent.tickets.log_new_web_agent_portal') }}
 	{% elseif log.details.event == 'new.web.api' %}
-		{{ phrase('agent.tickets.log_new_email_api') }}
+		{{ phrase('agent.tickets.log_new_api_agent') }}
 	{% elseif log.details.event == 'update.agent' %}
 		{% if log.details.has_reply  %}
 			{{ phrase('agent.tickets.log_update_agent_reply') }}
@@ -76,7 +80,34 @@
 {% elseif log.action_type == 'participant_removed' %}
 	<span class="type">{{ phrase('agent.tickets.participant_removed') }}</span>: <span class="old-val">{{log.details.email}}</span>
 {% elseif log.action_type == 'ticket_created' %}
-	{{ phrase('agent.general.ticket') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span> {{ phrase('agent.tickets.lc_created') }}
+	{% if log.details.event_performer == 'agent' %}
+		{% if log.details.event_method == 'email' %}
+			{{ phrase('agent.tickets.log_new_email_agent') }}
+		{% elseif log.details.event_method == 'api' %}
+			{{ phrase('agent.tickets.log_new_api_agent') }}
+		{% elseif log.details.event_method == 'web' %}
+			{{ phrase('agent.tickets.log_new_web_agent_portal') }}
+		{% elseif log.details.event_method %}
+			{{ log.details.event_method }}
+		{% endif %}
+	{% elseif log.details.event_performer == 'user' %}
+		{% if log.details.event_method == 'email' %}
+			{{ phrase('agent.tickets.log_new_email_user') }}
+		{% elseif log.details.event_method == 'api' %}
+			{{ phrase('agent.tickets.log_new_api_user') }}
+		{% elseif log.details.event_method == 'portal' %}
+			{{ phrase('agent.tickets.log_new_web_user_portal') }}
+		{% elseif log.details.event_method == 'form' %}
+			{{ phrase('agent.tickets.log_new_web_user_embed') }}
+		{% elseif log.details.event_method == 'widget' %}
+			{{ phrase('agent.tickets.log_new_web_user_widget') }}
+		{% elseif log.details.event_method %}
+			{{ log.details.event_method }}
+		{% endif %}
+	{% else %}
+		{{ phrase('agent.tickets.lc_created') }}
+	{% endif %}
+	&mdash; Ticket <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span>
 	{% if log.details.via_comment %}
 		<div stye="font-size:11px;">
 			&bull;
@@ -275,8 +306,15 @@
 {% elseif log.action_type == 'changed_hold' %}
 	{% if log.details.is_hold %}{{ phrase('agent.tickets.ticket_put_on_hold') }}{% else %}{{ phrase('agent.tickets.ticket_removed_from_hold') }}{% endif %}
 {% elseif log.action_type == 'changed_custom_field' %}
-	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>
+	<span class="type">{{ log.details.field_name }}</span>
+	{% if log.details.is_choice %}
+		{% if log.details.value_after %}{{ phrase('agent.tickets.log_selected_option') }} {{ log.details.value_after }}
+		{% else %}{{ phrase('agent.tickets.log_unselected_option') }} {{ log.details.value_before }}
+		{% endif %}
+	{% else %}
+		{{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>
+	{% endif %}
 {% elseif log.action_type == 'changed_slas' %}
 	{% if log.details.added %}
 		<div>
@@ -430,7 +468,41 @@
 		<span class="new-val expand" data-set=".set-detail">Agent emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 	{% endif %}
 
+    {% set status = false %}
+    {% if sendmail_source_status[log.details.sendmail_source_id] %}
+        {% set status = sendmail_source_status[log.details.sendmail_source_id] %}
+        {% if app.user.can_admin %}
+            &mdash; <a href="{{ path('admin') }}#/tickets/ticket_accounts/outgoing-email/{{ status.id }}" target="_blank">Outgoing Email #{{ status.id }}</a>
+        {% else %}
+            &mdash; Outgoing Email #{{ status.id }}
+        {% endif %}
+        &mdash;
+        {% if status.status == 'error' %}
+            <span style="color: #BA0014">ERROR</span>
+        {% elseif status.status == 'aborted' %}
+            <span style="color: #BA0014">ABORTED</span>
+        {% elseif status.status == 'retry' %}
+            <span style="color: #000751">PROCESSING</span>
+        {% elseif status.status == 'complete' %}
+            <span style="color: #1AA100">COMPLETE</span>
+        {% else %}
+            {{ status.status }}
+        {% endif %}
+    {% endif %}
+
 	<div class="expand-set set-detail" style="display: none">
+        {% if status %}
+            {% if status.status == 'error' %}
+                Email was not sent because of an error
+            {% elseif status.status == 'aborted' %}
+                Email was not sent because it was aborted
+            {% elseif status.status == 'retry' %}
+                Email is being sent right now
+            {% elseif status.status == 'complete' %}
+                Email was sent successfully
+            {% endif %}
+            <br/>
+        {% endif %}
 		From: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
 		Template: {{ log.details.template }}<br/>
 		{% if log.details.cc_emails %}
@@ -495,6 +567,17 @@
 	{% else %}
 		has been reopened
 	{% endif %}
+{% elseif log.action_type == 'webhook' %}
+	WebHook <span class="new-val">{{ log.details.url }}</span>
+	<br />
+	Status: {{ log.details.reason }},
+	<span class="new-val expand" data-set=".webhook-details">Details</span>
+	<br />
+	<div class="expand-set webhook-details" style="display: none">
+		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">
+			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.content }}</textarea>
+		</div>
+	</div>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

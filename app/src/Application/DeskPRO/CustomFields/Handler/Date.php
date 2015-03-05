@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 
 /**
@@ -43,229 +42,231 @@ use Application\DeskPRO\Entity;
  */
 class Date extends HandlerAbstract
 {
-	public function renderHtml($data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
+    public function renderHtml($data = null, array $template_vars = array())
+    {
+        if ($data === null) return '';
 
-		if (!ctype_digit($data['value'])) {
-			$data['value'] = time();
-		}
+        if (!ctype_digit($data['value'])) {
+            $data['value'] = time();
+        }
 
-		$data['value'] = new \DateTime('@' . $data['value']);
-		return parent::renderText($data, $template_vars);
-	}
+        $data['value'] = new \DateTime('@' . $data['value']);
 
-	public function renderText($data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
+        return parent::renderText($data, $template_vars);
+    }
 
-		if (!ctype_digit($data['value'])) {
-			$data['value'] = time();
-		}
+    public function renderText($data = null, array $template_vars = array())
+    {
+        if ($data === null) return '';
 
-		$data['value'] = new \DateTime('@' . $data['value']);
-		return  parent::renderText($data, $template_vars);
-	}
+        if (!ctype_digit($data['value'])) {
+            $data['value'] = time();
+        }
 
-	function getDataFromForm(array $form_data)
-	{
-		$name = $this->getFormFieldName();
+        $data['value'] = new \DateTime('@' . $data['value']);
 
-		$value = null;
-		if (!empty($form_data[$name])) {
-			$value = $form_data[$name];
-		}
+        return  parent::renderText($data, $template_vars);
+    }
 
-		if (!$value) {
-			return array();
-		}
+    public function getDataFromForm(array $form_data)
+    {
+        $name = $this->getFormFieldName();
 
-		$date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
-		if (!$date) {
-			return array();
-		}
+        $value = null;
+        if (!empty($form_data[$name])) {
+            $value = $form_data[$name];
+        }
 
-		$date = \Orb\Util\Dates::convertToUtcDateTime($date);
+        if (!$value) {
+            return array();
+        }
 
-		return array(
-			array($this->field_def['id'], 'value', $date->getTimestamp())
-		);
-	}
+        $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
+        if (!$date) {
+            return array();
+        }
 
-	public function getFormField($data = null)
-	{
-		$setData = null;
-		if ($data AND !empty($data['value'])) {
-			try {
-				if (ctype_digit($data['value'])) {
-					$date = new \DateTime('@' . $data['value']);
-					if ($date) {
-						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-						$setData = $date->format('Y-m-d');
-					}
-				} else {
-					$date = \DateTime::createFromFormat('Y-m-d', $data['value']);
-					if ($date) {
-						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-						$setData = $date->format('Y-m-d');
-					}
-				}
-			} catch (\Exception $e) {
-				$setData = null;
-			}
-		}
+        $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
-		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-			'required' => false
-		));
+        return array(
+            array($this->field_def['id'], 'value', $date->getTimestamp())
+        );
+    }
 
-		return $field;
-	}
+    public function getFormField($data = null)
+    {
+        $setData = null;
+        if ($data AND !empty($data['value'])) {
+            try {
+                if (ctype_digit($data['value'])) {
+                    $date = new \DateTime('@' . $data['value']);
+                    if ($date) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        $setData = $date->format('Y-m-d');
+                    }
+                } else {
+                    $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+                    if ($date) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        $setData = $date->format('Y-m-d');
+                    }
+                }
+            } catch (\Exception $e) {
+                $setData = null;
+            }
+        }
 
-	public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
-	{
-		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
+            'required' => false
+        ));
 
-		if ($data && !is_scalar($data)) {
-			return $this->makeErrorArray(array('invalid_input'));
-		}
+        return $field;
+    }
 
-		// Timestamp value
-		if (strlen($data) == 10 && ctype_digit($data)) {
-			$data = date('Y-m-d', $data);
-		}
+    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    {
+        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
-		#------------------------------
-		# Validate options
-		#------------------------------
+        if ($data && !is_scalar($data)) {
+            return $this->makeErrorArray(array('invalid_input'));
+        }
 
-		$opt_prefix = '';
-		if ($context == self::CONTEXT_AGENT) {
-			$opt_prefix = 'agent_';
-		}
+        // Timestamp value
+        if (strlen($data) == 10 && ctype_digit($data)) {
+            $data = date('Y-m-d', $data);
+        }
 
-		$options = array();
-		foreach (array('required') as $k) {
-			$options[$k] = $this->field_def->getOption($opt_prefix . $k);
-		}
+        #------------------------------
+        # Validate options
+        #------------------------------
 
-		if ($options['required']) {
-			if (!$data) {
-				return $this->makeErrorArray(array('required'));
-			}
-		}
+        $opt_prefix = '';
+        if ($context == self::CONTEXT_AGENT) {
+            $opt_prefix = 'agent_';
+        }
 
-		if ($data) {
-			$date = \DateTime::createFromFormat('Y-m-d', $data);
-			if (!$date) {
-				return $this->makeErrorArray(array('invalid_input'));
-			}
-		}
+        $options = array();
+        foreach (array('required') as $k) {
+            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+        }
 
-		#------------------------------
-		# Validate ranges
-		#------------------------------
+        if ($options['required']) {
+            if (!$data) {
+                return $this->makeErrorArray(array('required'));
+            }
+        }
 
-		if ($data) {
-			try {
-				$admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
-			} catch (\Exception $e) {
-				$admin_tz = App::getCurrentPerson()->getDateTimezone();
-			}
-			$date = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
-			$date_admin = clone $date;
-			$date_admin->setTimezone($admin_tz);
+        if ($data) {
+            $date = \DateTime::createFromFormat('Y-m-d', $data);
+            if (!$date) {
+                return $this->makeErrorArray(array('invalid_input'));
+            }
+        }
 
-			$dow = intval($date_admin->format('N')) - 1;
+        #------------------------------
+        # Validate ranges
+        #------------------------------
 
-			// Days of week
-			if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
-				if (!in_array($dow, $valid_dow)) {
-					return $this->makeErrorArray(array('invalid_date_dow'));
-				}
-			}
+        if ($data) {
+            try {
+                $admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+            } catch (\Exception $e) {
+                $admin_tz = App::getCurrentPerson()->getDateTimezone();
+            }
+            $date = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
+            $date_admin = clone $date;
+            $date_admin->setTimezone($admin_tz);
 
-			// Specific date ranges
-			if ($this->field_def->getOption('date_valid_type') == 'date') {
-				$d1 = $this->field_def->getOption('date_valid_date1');
-				$d2 = $this->field_def->getOption('date_valid_date2');
+            $dow = intval($date_admin->format('N')) - 1;
 
-				if ($d1) {
-					$d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
-					$d1->setTime(0,0,0);
+            // Days of week
+            if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
+                if (!in_array($dow, $valid_dow)) {
+                    return $this->makeErrorArray(array('invalid_date_dow'));
+                }
+            }
 
-					if ($date_admin < $d1) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
-				if ($d2) {
-					$d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
-					$d2->setTime(23,59,59);
+            // Specific date ranges
+            if ($this->field_def->getOption('date_valid_type') == 'date') {
+                $d1 = $this->field_def->getOption('date_valid_date1');
+                $d2 = $this->field_def->getOption('date_valid_date2');
 
-					if ($date_admin > $d2) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
+                if ($d1) {
+                    $d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
+                    $d1->setTime(0,0,0);
 
-			// "Days from now"
-			} elseif ($this->field_def->getOption('date_valid_type') == 'range') {
-				if ($context_data && isset($context_data['exist_ticket'])) {
-					$now = clone $context_data['exist_ticket']->date_created;
-					$now->setTimezone($admin_tz);
-				} else {
-					$now = new \DateTime('now', $admin_tz);
-				}
+                    if ($date_admin < $d1) {
+                        return $this->makeErrorArray(array('invalid_date_range'));
+                    }
+                }
+                if ($d2) {
+                    $d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
+                    $d2->setTime(23,59,59);
 
-				$days1 = $this->field_def->getOption('date_valid_range1');
-				$days2 = $this->field_def->getOption('date_valid_range2');
+                    if ($date_admin > $d2) {
+                        return $this->makeErrorArray(array('invalid_date_range'));
+                    }
+                }
 
-				if ($days1) {
-					$d1 = clone $now;
-					$d1->modify("{$days1} days");
-					$d1->setTime(0,0,0);
+            // "Days from now"
+            } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
+                if ($context_data && isset($context_data['exist_ticket'])) {
+                    $now = clone $context_data['exist_ticket']->date_created;
+                    $now->setTimezone($admin_tz);
+                } else {
+                    $now = new \DateTime('now', $admin_tz);
+                }
 
-					// Go back if we hit on a unselectable date
-					if ($valid_dow) {
-						$x = 0;
-						while ($x++ < 5000) {
-							$check_dow = intval($d1->format('N')) - 1;
-							if (in_array($check_dow, $valid_dow)) {
-								break;
-							}
+                $days1 = $this->field_def->getOption('date_valid_range1');
+                $days2 = $this->field_def->getOption('date_valid_range2');
 
-							$d1->modify('-1 day');
-						}
-					}
+                if ($days1) {
+                    $d1 = clone $now;
+                    $d1->modify("{$days1} days");
+                    $d1->setTime(0,0,0);
 
-					if ($date_admin < $d1) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
-				if ($days2) {
-					$d2 = clone $now;
-					$d2->modify("{$days1} days");
-					$d2->setTime(23,59,59);
+                    // Go back if we hit on a unselectable date
+                    if ($valid_dow) {
+                        $x = 0;
+                        while ($x++ < 5000) {
+                            $check_dow = intval($d1->format('N')) - 1;
+                            if (in_array($check_dow, $valid_dow)) {
+                                break;
+                            }
 
-					// Go back if we hit on a unselectable date
-					if ($valid_dow) {
-						$x = 0;
-						while ($x++ < 5000) {
-							$check_dow = intval($d2->format('N')) - 1;
-							if (in_array($check_dow, $valid_dow)) {
-								break;
-							}
+                            $d1->modify('-1 day');
+                        }
+                    }
 
-							$d2->modify(\DateInterval::createFromDateString('1 day'));
-						}
-					}
+                    if ($date_admin < $d1) {
+                        return $this->makeErrorArray(array('invalid_date_range'));
+                    }
+                }
+                if ($days2) {
+                    $d2 = clone $now;
+                    $d2->modify("{$days1} days");
+                    $d2->setTime(23,59,59);
 
-					if ($date_admin > $d2) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
-			}
-		}
+                    // Go back if we hit on a unselectable date
+                    if ($valid_dow) {
+                        $x = 0;
+                        while ($x++ < 5000) {
+                            $check_dow = intval($d2->format('N')) - 1;
+                            if (in_array($check_dow, $valid_dow)) {
+                                break;
+                            }
 
-		return array();
-	}
+                            $d2->modify(\DateInterval::createFromDateString('1 day'));
+                        }
+                    }
+
+                    if ($date_admin > $d2) {
+                        return $this->makeErrorArray(array('invalid_date_range'));
+                    }
+                }
+            }
+        }
+
+        return array();
+    }
 }

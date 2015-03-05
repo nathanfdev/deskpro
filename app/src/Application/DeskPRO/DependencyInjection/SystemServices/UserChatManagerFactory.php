@@ -40,15 +40,15 @@ use Orb\Util\CheckedOptionsArray;
 
 class UserChatManagerFactory
 {
-	public static function create(DeskproContainer $container, CheckedOptionsArray $options)
-	{
-		$o = new UserChatManager(
-			$options->session,
-			$container->get('doctrine.orm.entity_manager'),
-			$container->get('deskpro.core.translate'),
-			$container->getPersonActivityLogger()
-		);
+    public static function create(DeskproContainer $container, CheckedOptionsArray $options)
+    {
+        $o = new UserChatManager(
+            $options->session,
+            $container->get('doctrine.orm.entity_manager'),
+            $container->get('deskpro.core.translate'),
+            $container->getPersonActivityLogger()
+        );
 
-		return $o;
-	}
+        return $o;
+    }
 }

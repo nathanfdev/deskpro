@@ -483,31 +483,38 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		var isClosing   = false;
 		var openTimeout = null;
 		var outTimeout  = null;
+		var initialUpdateDone = false;
 
 		var sizerCalcLeft = function() {
 			var l = parseInt(self.fragmentElement.width()) - parseInt(DeskPRO_Window.appsSidebar.width);
 			return l;
 		};
 
-		var open = function() {
+		var open = function(openNow) {
 			if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
 
 			self.fragmentElement.addClass('with-apps-sidebar-overlay');
-			sidebarEl.css('right', -DeskPRO_Window.appsSidebar.width).css('width', DeskPRO_Window.appsSidebar.width).show();
-			sidebarEl.stop().animate({right: 0}, {
-				duration: 350,
-				complete: function() {
-					sizer.css('left', sizerCalcLeft()).show();
-					if (!isOver && !isPlaceOver && !outTimeout && !isSizerOver && !isSizing) {
-						outTimeout = window.setTimeout(function() {
-							outTimeout = null;
-							if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
-								close();
-							}
-						}, 380);
+
+			if (openNow) {
+				sidebarEl.stop().css('right', 0).show();
+				sizer.css('left', sizerCalcLeft()).show();
+			} else {
+				sidebarEl.css('right', -DeskPRO_Window.appsSidebar.width).css('width', DeskPRO_Window.appsSidebar.width).show();
+				sidebarEl.stop().animate({right: 0}, {
+					duration: 350,
+					complete: function () {
+						sizer.css('left', sizerCalcLeft()).show();
+						if (!isOver && !isPlaceOver && !outTimeout && !isSizerOver && !isSizing) {
+							outTimeout = window.setTimeout(function () {
+								outTimeout = null;
+								if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
+									close();
+								}
+							}, 380);
+						}
 					}
-				}
-			})
+				});
+			}
 		};
 
 		var close = function() {
@@ -570,6 +577,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			layoutEl.css('right', DeskPRO_Window.appsSidebar.width);
 			self.fragmentElement.removeClass('with-apps-sidebar-overlay');
 			self.fragmentElement.addClass('with-docked-apps-sidebar');
+
+			if (Modernizr.localstorage) {
+				localStorage['apps_sidebar_state'] = 'open';
+			}
 		};
 
 		var closePin = function() {
@@ -586,6 +597,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			layoutEl.css('right', 0);
 			self.fragmentElement.removeClass('with-apps-sidebar-overlay');
 			self.fragmentElement.removeClass('with-docked-apps-sidebar');
+
+			if (Modernizr.localstorage) {
+				localStorage['apps_sidebar_state'] = 'closed';
+			}
 		};
 
 		var updateUi = function() {
@@ -621,7 +636,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			ev.stopPropagation();
 			ev.stopImmediatePropagation();
 			ev.preventDefault();
-			togglePin();
+			open(true);
 		});
 		sidebarEl.find('.pin-btn').on('click', function(ev) {
 			ev.stopPropagation();
@@ -664,6 +679,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			sidebarEl.css('width', w);
 			if (DeskPRO_Window.appsSidebar.visible) {
 				layoutEl.css('right', w);
+			}
+
+			if (Modernizr.localstorage) {
+				localStorage['apps_sidebar_width'] = w;
 			}
 		});
 	},

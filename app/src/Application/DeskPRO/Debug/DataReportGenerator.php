@@ -37,50 +37,50 @@ use Application\DeskPRO\Debug\Data\DataInterface;
 
 class DataReportGenerator
 {
-	/**
-	 * @var \Application\DeskPRO\Debug\Data\DataInterface[]
-	 */
-	public $datas = array();
+    /**
+     * @var \Application\DeskPRO\Debug\Data\DataInterface[]
+     */
+    public $datas = array();
 
-	/**
-	 * @var bool
-	 */
-	public $enable_gzip = true;
+    /**
+     * @var bool
+     */
+    public $enable_gzip = true;
 
-	public function addData(DataInterface $data)
-	{
-		$this->datas[] = $data;
-	}
+    public function addData(DataInterface $data)
+    {
+        $this->datas[] = $data;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function generateReport()
-	{
-		$data = array();
+    /**
+     * @return string
+     */
+    public function generateReport()
+    {
+        $data = array();
 
-		foreach ($this->datas as $d) {
-			$name = get_class($d);
-			$data[$name] = $d->getData();
-		}
+        foreach ($this->datas as $d) {
+            $name = get_class($d);
+            $data[$name] = $d->getData();
+        }
 
-		$type = 'json';
-		if (defined('JSON_PRETTY_PRINT')) {
-			$data = json_encode($data, constant('JSON_PRETTY_PRINT'));
-		} else {
-			$data = json_encode($data);
-		}
+        $type = 'json';
+        if (defined('JSON_PRETTY_PRINT')) {
+            $data = json_encode($data, constant('JSON_PRETTY_PRINT'));
+        } else {
+            $data = json_encode($data);
+        }
 
-		$encode = 'plain';
-		if ($this->enable_gzip && function_exists('gzencode')) {
-			$encode = 'gzip';
-			$data = gzencode($data);
-		}
+        $encode = 'plain';
+        if ($this->enable_gzip && function_exists('gzencode')) {
+            $encode = 'gzip';
+            $data = gzencode($data);
+        }
 
-		return array(
-			'data'        => $data,
-			'data_encode' => $type,
-			'file_encode' => $encode
-		);
-	}
+        return array(
+            'data'        => $data,
+            'data_encode' => $type,
+            'file_encode' => $encode
+        );
+    }
 }

@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1359366516 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Remove bad custom ticket data");
-		$this->execMutateSql("
-			DELETE FROM `custom_data_ticket`
-			WHERE field_id NOT IN (SELECT id FROM `custom_def_ticket`)
-		");
-	}
+    public function run()
+    {
+        $this->out("Remove bad custom ticket data");
+        $this->execMutateSql("
+            DELETE FROM `custom_data_ticket`
+            WHERE field_id NOT IN (SELECT id FROM `custom_def_ticket`)
+        ");
+    }
 }

@@ -42,17 +42,17 @@ namespace Application\ApiBundle\Controller;
  */
 class ResourcePingController extends AbstractController
 {
-	/**
-	 * A remote site will ping us when one of their objects has been updated.
-	 *
-	 * @param int $resource_id
-	 * @param mixed $record_id
-	 */
-	public function postObjectUpdated($resource_id, $record_id)
-	{
-		$filter = $this['deskpro.core.filter_factory']->createForFilter('object_updated');
-		$filter->send("$resource_id:$record_id");
+    /**
+     * A remote site will ping us when one of their objects has been updated.
+     *
+     * @param int   $resource_id
+     * @param mixed $record_id
+     */
+    public function postObjectUpdated($resource_id, $record_id)
+    {
+        $filter = $this['deskpro.core.filter_factory']->createForFilter('object_updated');
+        $filter->send("$resource_id:$record_id");
 
-		return $this->createApiResponse(array('success' => true));
-	}
+        return $this->createApiResponse(array('success' => true));
+    }
 }

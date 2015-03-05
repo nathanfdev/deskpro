@@ -45,35 +45,36 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
  */
 class Percent extends AbstractFunc
 {
-	/**
-	 * Prepares the function for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
-			throw new Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
-		}
+    /**
+     * Prepares the function for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        if (!in_array($section, array('select', 'split', 'group', 'order'))) {
+            throw new Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
+        }
 
-		if (!in_array(count($this->_arguments), array(1, 2))) {
-			throw new Exception('PERCENT() can only accept 1 or 2 arguments');
-		}
+        if (!in_array(count($this->_arguments), array(1, 2))) {
+            throw new Exception('PERCENT() can only accept 1 or 2 arguments');
+        }
 
-		$condition = reset($this->_arguments);
-		$prepped = $condition->prepare($statement, $section, $stack, $select, $result);
+        $condition = reset($this->_arguments);
+        $prepped = $condition->prepare($statement, $section, $stack, $select, $result);
 
-		$sql = 'IF(COUNT(*) > 0, (SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*)) * 100, 0)';
-		return new Prepared($sql, 'PERCENT(' . $prepped->name() . ')', false, 'percent');
-	}
+        $sql = 'IF(COUNT(*) > 0, (SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*)) * 100, 0)';
+
+        return new Prepared($sql, 'PERCENT(' . $prepped->name() . ')', false, 'percent');
+    }
 }

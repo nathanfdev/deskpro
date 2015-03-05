@@ -39,23 +39,23 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UserRuleType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('user_rule', new UserRulePropsType());
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('user_rule', new UserRulePropsType());
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\UserRules\\UserRuleEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\UserRules\\UserRuleEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'user_rule_edit';
-	}
+    public function getName()
+    {
+        return 'user_rule_edit';
+    }
 }

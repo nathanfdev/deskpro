@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1362064994 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Reset people.disable_autoresponses");
-		$this->execMutateSql("UPDATE people SET disable_autoresponses = 0");
-	}
+    public function run()
+    {
+        $this->out("Reset people.disable_autoresponses");
+        $this->execMutateSql("UPDATE people SET disable_autoresponses = 0");
+    }
 }

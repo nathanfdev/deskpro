@@ -46,51 +46,53 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckAgentNote extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('message');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('message');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		$state = $ticket->getStateChangeRecorder();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+        $state = $ticket->getStateChangeRecorder();
 
-		if (!$state->hasNewAgentNote()) {
-			if ($this->getTermOperator() == 'not_isset') {
-				return true;
-			}
-			return false;
-		}
-		if ($this->getTermOperator() == 'isset') {
-			return true;
-		}
+        if (!$state->hasNewAgentNote()) {
+            if ($this->getTermOperator() == 'not_isset') {
+                return true;
+            }
 
-		$no_full = $options->get('disable_full');
+            return false;
+        }
+        if ($this->getTermOperator() == 'isset') {
+            return true;
+        }
 
-		$strings = array();
+        $no_full = $options->get('disable_full');
 
-		foreach ($state->getNewAgentNotes() as $reply) {
-			$strings[] = $reply->message;
-			$strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message)));
+        $strings = array();
 
-			if (!$no_full && $reply->message_raw) {
-				$strings[] = $reply->message_raw;
-				$strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message_raw)));
-			}
-		}
+        foreach ($state->getNewAgentNotes() as $reply) {
+            $strings[] = $reply->message;
+            $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message)));
 
-		$value = TermValue::createWithValue($strings);
+            if (!$no_full && $reply->message_raw) {
+                $strings[] = $reply->message_raw;
+                $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message_raw)));
+            }
+        }
 
-		return $this->isStringMatch($ticket, $context, $value, $options['message']);
-	}
+        $value = TermValue::createWithValue($strings);
+
+        return $this->isStringMatch($ticket, $context, $value, $options['message']);
+    }
 }

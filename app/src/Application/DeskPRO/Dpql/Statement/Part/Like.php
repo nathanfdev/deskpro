@@ -42,77 +42,78 @@ use Application\DeskPRO\Dpql\Statement\Display;
  */
 class Like extends AbstractPart
 {
-	/**
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $lhs;
+    /**
+     * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+     */
+    public $lhs;
 
-	/**
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $rhs;
+    /**
+     * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+     */
+    public $rhs;
 
-	/**
-	 * True = LIKE, false = NOT LIKE
-	 *
-	 * @var bool
-	 */
-	public $positive;
+    /**
+     * True = LIKE, false = NOT LIKE
+     *
+     * @var bool
+     */
+    public $positive;
 
-	/**
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
-	 * @param bool $positive
-	 */
-	public function __construct(AbstractPart $lhs, AbstractPart $rhs, $positive = true)
-	{
-		$this->lhs = $lhs;
-		$this->rhs = $rhs;
-		$this->positive = $positive;
-	}
+    /**
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
+     * @param bool                                                  $positive
+     */
+    public function __construct(AbstractPart $lhs, AbstractPart $rhs, $positive = true)
+    {
+        $this->lhs = $lhs;
+        $this->rhs = $rhs;
+        $this->positive = $positive;
+    }
 
-	/**
-	 * Prepares a part for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		$childStack = $this->getChildStack($stack);
+    /**
+     * Prepares a part for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        $childStack = $this->getChildStack($stack);
 
-		$lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
-		$rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
-		$not = ($this->positive ? '' : ' NOT');
+        $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
+        $rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
+        $not = ($this->positive ? '' : ' NOT');
 
-		$sql = "{$lhs->sql()}$not LIKE {$rhs->sql()}";
-		return new Prepared($sql, "{$lhs->name()}$not LIKE {$rhs->name()}", false, 'boolean');
-	}
+        $sql = "{$lhs->sql()}$not LIKE {$rhs->sql()}";
 
-	/**
-	 * Renders a part back to DPQL.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
-	 *
-	 * @return string
-	 */
-	public function toDpql(Display $statement, $section, array $stack)
-	{
-		$not = ($this->positive ? '' : ' NOT');
+        return new Prepared($sql, "{$lhs->name()}$not LIKE {$rhs->name()}", false, 'boolean');
+    }
 
-		return $this->lhs->toDpql($statement, $section, $stack)
-			. $not . ' LIKE '
-			. $this->rhs->toDpql($statement, $section, $stack);
-	}
+    /**
+     * Renders a part back to DPQL.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
+     *
+     * @return string
+     */
+    public function toDpql(Display $statement, $section, array $stack)
+    {
+        $not = ($this->positive ? '' : ' NOT');
+
+        return $this->lhs->toDpql($statement, $section, $stack)
+            . $not . ' LIKE '
+            . $this->rhs->toDpql($statement, $section, $stack);
+    }
 }

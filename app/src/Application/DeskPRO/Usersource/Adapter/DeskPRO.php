@@ -46,51 +46,48 @@ use Orb\Auth\Identity;
  */
 class DeskPRO extends AbstractAdapter implements IdentityFinderInterface
 {
-	public function getFieldsFromIdentity(Identity $identity)
-	{
-		return $identity->getRawData();
-	}
+    public function getFieldsFromIdentity(Identity $identity)
+    {
+        return $identity->getRawData();
+    }
 
 
-	public function findIdentityByInput($input)
-	{
-		/** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-		$personRepo = App::getOrm()->getRepository('DeskPRO:Person');
-		if ($person = $personRepo->findOneByEmail($input)) {
-			return $person;
-		}
+    public function findIdentityByInput($input)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = App::getOrm()->getRepository('DeskPRO:Person');
+        if ($person = $personRepo->findOneByEmail($input)) {
+            return $person;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
+    /**
+     * @return \Orb\Auth\Adapter\Google
+     */
+    protected function _createAuthAdapterObject()
+    {
+        return new Local(App::getContainer()->getEm());
+    }
 
-	/**
-	 * @return \Orb\Auth\Adapter\Google
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		return new Local(App::getContainer()->getEm());
-	}
+    /**
+     * @return array
+     */
+    public function getCapabilities()
+    {
+        return array(
+            UsersourceInfo::CAPABILITY_FORM_LOGIN,
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+        );
+    }
 
-
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		return array(
-			UsersourceInfo::CAPABILITY_FORM_LOGIN,
-			UsersourceInfo::CAPABILITY_FIND_IDENTITY
-		);
-	}
-
-
-	/**
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability)
-	{
-		return in_array($capability, $this->getCapabilities());
-	}
+    /**
+     * @param  mixed $capability
+     * @return bool
+     */
+    public function isCapable($capability)
+    {
+        return in_array($capability, $this->getCapabilities());
+    }
 }

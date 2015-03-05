@@ -1,0 +1,30 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+				<td ng-show="rowOpts.rowEnabled" width="100%">
+                    <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.all" style="min-width: 50px;">
+                        <option value="">Any</option>
+                        <option value="1">All</option>
+                    </select>
+                    Linked Issue<span ng-if="!model.all"> status</span><span ng-if="model.all">s statuses</span>
+                    <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;" ng-if="model.all">
+                        <option value="is">are</option>
+                        <option value="not">are not</option>
+                    </select>
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;" ng-if="!model.all">
+						<option value="is">is</option>
+						<option value="not">is not</option>
+						<option value="changed">changed</option>
+						<option value="changed_to">changed to</option>
+						<option value="changed_from">changed from</option>
+					</select>
+					<select ng-if="model.op != 'changed'" ui-select2 ng-model="model.status" style="min-width: 260px">
+						<option value="{{ ng_var('status.id') }}" ng-repeat="status in model.statuses">{{ ng_var('status.name') }}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

@@ -4,7 +4,7 @@
  */
 
 /**
- * Definition of the TaskType type
+ * Represents a task in the Exchange store.
  *
  * @package php-ews\Types
  */

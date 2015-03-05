@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346170436 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update widget schema");
-		$this->execMutateSql("ALTER TABLE widgets ADD title VARCHAR(100) NOT NULL, ADD html LONGTEXT NOT NULL, ADD js LONGTEXT NOT NULL, ADD css LONGTEXT NOT NULL, ADD page VARCHAR(50) NOT NULL, ADD page_location VARCHAR(50) NOT NULL, ADD insert_position VARCHAR(50) NOT NULL, ADD enabled TINYINT(1) NOT NULL, DROP name_id, DROP assets_css, DROP assets_js, DROP data, DROP section, DROP js_widget_class, DROP php_widget_class, DROP template_name, CHANGE note description VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Update widget schema");
+        $this->execMutateSql("ALTER TABLE widgets ADD title VARCHAR(100) NOT NULL, ADD html LONGTEXT NOT NULL, ADD js LONGTEXT NOT NULL, ADD css LONGTEXT NOT NULL, ADD page VARCHAR(50) NOT NULL, ADD page_location VARCHAR(50) NOT NULL, ADD insert_position VARCHAR(50) NOT NULL, ADD enabled TINYINT(1) NOT NULL, DROP name_id, DROP assets_css, DROP assets_js, DROP data, DROP section, DROP js_widget_class, DROP php_widget_class, DROP template_name, CHANGE note description VARCHAR(255) NOT NULL");
+    }
 }

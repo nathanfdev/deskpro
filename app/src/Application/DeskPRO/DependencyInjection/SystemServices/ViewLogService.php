@@ -38,13 +38,13 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class ViewLogService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$view_log = new \Application\DeskPRO\Log\ViewLog(
-			$container->getDb(),
-			$container->getSession()
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $view_log = new \Application\DeskPRO\Log\ViewLog(
+            $container->getDb(),
+            $container->getSession()
+        );
 
-		return $view_log;
-	}
+        return $view_log;
+    }
 }

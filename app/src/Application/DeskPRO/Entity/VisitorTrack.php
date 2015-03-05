@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,161 +42,161 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Visitor
-	 */
-	protected $visitor;
+    /**
+     * @var \Application\DeskPRO\Entity\Visitor
+     */
+    protected $visitor;
 
-	/**
-	 * @var bool
-	 */
-	protected $is_new_visit = false;
+    /**
+     * @var bool
+     */
+    protected $is_new_visit = false;
 
-	/**
-	 * @var string
-	 */
-	protected $page_title = '';
+    /**
+     * @var string
+     */
+    protected $page_title = '';
 
-	/**
-	 * @var string
-	 */
-	protected $page_url = '';
+    /**
+     * @var string
+     */
+    protected $page_url = '';
 
-	/**
-	 * @var string
-	 */
-	protected $ref_page_url = '';
+    /**
+     * @var string
+     */
+    protected $ref_page_url = '';
 
-	/**
-	 * The users user agent string
-	 *
-	 * @var string
-	 */
-	protected $user_agent = '';
+    /**
+     * The users user agent string
+     *
+     * @var string
+     */
+    protected $user_agent = '';
 
-	/**
-	 * The users user agent string
-	 *
-	 * @var string
-	 */
-	protected $user_browser = '';
+    /**
+     * The users user agent string
+     *
+     * @var string
+     */
+    protected $user_browser = '';
 
-	/**
-	 * The users user agent string
-	 *
-	 * @var string
-	 */
-	protected $user_os = '';
+    /**
+     * The users user agent string
+     *
+     * @var string
+     */
+    protected $user_os = '';
 
-	/**
-	 * The users IP address
-	 *
-	 * @var string
-	 */
-	protected $ip_address;
+    /**
+     * The users IP address
+     *
+     * @var string
+     */
+    protected $ip_address;
 
-	/**
-	 * @var string
-	 */
-	protected $geo_continent = null;
+    /**
+     * @var string
+     */
+    protected $geo_continent = null;
 
-	/**
-	 * @var string
-	 */
-	protected $geo_country = null;
+    /**
+     * @var string
+     */
+    protected $geo_country = null;
 
-	/**
-	 * @var string
-	 */
-	protected $geo_region = null;
+    /**
+     * @var string
+     */
+    protected $geo_region = null;
 
-	/**
-	 * @var string
-	 */
-	protected $geo_city = null;
+    /**
+     * @var string
+     */
+    protected $geo_city = null;
 
-	/**
-	 * @var string
-	 */
-	protected $geo_long = null;
+    /**
+     * @var string
+     */
+    protected $geo_long = null;
 
-	/**
-	 * @var string
-	 */
-	protected $geo_lat = null;
+    /**
+     * @var string
+     */
+    protected $geo_lat = null;
 
-	/**
-	 * @var boolean
-	 */
-	protected $is_soft_track = false;
+    /**
+     * @var boolean
+     */
+    protected $is_soft_track = false;
 
-	/**
-	 * @var array
-	 */
-	protected $data = null;
+    /**
+     * @var array
+     */
+    protected $data = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function __construct()
-	{
-		$this->setModelField('date_created', new \DateTime());
-	}
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\VisitorTrack';
-		$metadata->setPrimaryTable(array(
-			'name' => 'visitor_tracks',
-			'indexes' => array(
-				'idx1' => array(
-					'columns' => array('date_created', 'is_new_visit')
-				),
-			)
-		));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'is_new_visit', 'type' => 'boolean',  'nullable' => false, 'columnName' => 'is_new_visit', ));
-		$metadata->mapField(array( 'fieldName' => 'page_title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_title', ));
-		$metadata->mapField(array( 'fieldName' => 'page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_url', ));
-		$metadata->mapField(array( 'fieldName' => 'ref_page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_page_url', ));
-		$metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent', ));
-		$metadata->mapField(array( 'fieldName' => 'user_browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_browser', ));
-		$metadata->mapField(array( 'fieldName' => 'user_os', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_os', ));
-		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
-		$metadata->mapField(array( 'fieldName' => 'geo_continent', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_continent', ));
-		$metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
-		$metadata->mapField(array( 'fieldName' => 'geo_region', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_region', ));
-		$metadata->mapField(array( 'fieldName' => 'geo_city', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_city', ));
-		$metadata->mapField(array( 'fieldName' => 'geo_long', 'type' => 'decimal','precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_long', ));
-		$metadata->mapField(array( 'fieldName' => 'geo_lat', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_lat', ));
-		$metadata->mapField(array( 'fieldName' => 'is_soft_track', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_soft_track', ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'nullable' => true, 'columnName' => 'data', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\VisitorTrack';
+        $metadata->setPrimaryTable(array(
+            'name' => 'visitor_tracks',
+            'indexes' => array(
+                'idx1' => array(
+                    'columns' => array('date_created', 'is_new_visit')
+                ),
+            )
+        ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'is_new_visit', 'type' => 'boolean',  'nullable' => false, 'columnName' => 'is_new_visit', ));
+        $metadata->mapField(array( 'fieldName' => 'page_title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_title', ));
+        $metadata->mapField(array( 'fieldName' => 'page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_url', ));
+        $metadata->mapField(array( 'fieldName' => 'ref_page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_page_url', ));
+        $metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent', ));
+        $metadata->mapField(array( 'fieldName' => 'user_browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_browser', ));
+        $metadata->mapField(array( 'fieldName' => 'user_os', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_os', ));
+        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_continent', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_continent', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_region', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_region', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_city', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_city', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_long', 'type' => 'decimal','precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_long', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_lat', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_lat', ));
+        $metadata->mapField(array( 'fieldName' => 'is_soft_track', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_soft_track', ));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'nullable' => true, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

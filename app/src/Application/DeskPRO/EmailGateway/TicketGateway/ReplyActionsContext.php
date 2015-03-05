@@ -33,19 +33,15 @@
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
 class ReplyActionsContext
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	public $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    public $ticket;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 */
-	public $message;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketMessage
+     */
+    public $message;
 }

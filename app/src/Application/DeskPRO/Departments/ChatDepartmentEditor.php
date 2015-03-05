@@ -39,100 +39,100 @@ use Doctrine\ORM\EntityManager;
 
 class ChatDepartmentEditor
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
 
-	protected $db;
+    protected $db;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\Department
+     */
 
-	protected $dep;
+    protected $dep;
 
-	/**
-	 * @param $em
-	 */
+    /**
+     * @param $em
+     */
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em       = $em;
-		$this->db       = $em->getConnection();
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em       = $em;
+        $this->db       = $em->getConnection();
+    }
 
-	/**
-	 * @param array $orders
-	 */
+    /**
+     * @param array $orders
+     */
 
-	public function updateDisplayOrders($orders)
-	{
-		$x    = 10;
-		$deps = $this->em->getRepository('DeskPRO:Department')->getByIds($orders);
+    public function updateDisplayOrders($orders)
+    {
+        $x    = 10;
+        $deps = $this->em->getRepository('DeskPRO:Department')->getByIds($orders);
 
-		foreach ($orders as $dep_id) {
+        foreach ($orders as $dep_id) {
 
-			if (!isset($deps[$dep_id])) {
+            if (!isset($deps[$dep_id])) {
 
-				continue;
-			}
+                continue;
+            }
 
-			$dep = $deps[$dep_id];
+            $dep = $deps[$dep_id];
 
-			$dep->display_order = $x;
-			$this->em->persist($dep);
+            $dep->display_order = $x;
+            $this->em->persist($dep);
 
-			$x += 10;
-		}
+            $x += 10;
+        }
 
-		$this->em->flush();
-	}
+        $this->em->flush();
+    }
 
-	/**
-	 * Deletes the department
-	 */
+    /**
+     * Deletes the department
+     */
 
-	public function removeDepartment(Department $dep, Department $move_to_dep)
-	{
-		if ($move_to_dep->id == $dep->id) {
+    public function removeDepartment(Department $dep, Department $move_to_dep)
+    {
+        if ($move_to_dep->id == $dep->id) {
 
-			throw ValidationException::create("department.move_chat.deps_are_same");
-		}
+            throw ValidationException::create("department.move_chat.deps_are_same");
+        }
 
-		if (count($move_to_dep->getChildren())) {
+        if (count($move_to_dep->getChildren())) {
 
-			throw ValidationException::create("department.move_chat.dep_is_parent");
-		}
+            throw ValidationException::create("department.move_chat.dep_is_parent");
+        }
 
-		$old_id = $dep->id;
-		$new_id = $move_to_dep->id;
+        $old_id = $dep->id;
+        $new_id = $move_to_dep->id;
 
-		$this->db->beginTransaction();
+        $this->db->beginTransaction();
 
-		try {
+        try {
 
-			$this->db->executeUpdate(
-				"UPDATE chat_conversations SET department_id = ? WHERE department_id = ?",
-				array($new_id, $old_id)
-			);
+            $this->db->executeUpdate(
+                "UPDATE chat_conversations SET department_id = ? WHERE department_id = ?",
+                array($new_id, $old_id)
+            );
 
-			$this->em->remove($dep);
-			$this->em->flush();
+            $this->em->remove($dep);
+            $this->em->flush();
 
-			$this->db->commit();
+            $this->db->commit();
 
-		} catch(\Exception $e) {
+        } catch(\Exception $e) {
 
-			$this->db->rollback();
-			throw $e;
-		}
+            $this->db->rollback();
+            throw $e;
+        }
 
-		return $old_id;
-	}
+        return $old_id;
+    }
 }

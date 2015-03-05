@@ -36,19 +36,19 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349276089 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix mis-assigned organizations on tickets");
+    public function run()
+    {
+        $this->out("Fix mis-assigned organizations on tickets");
 
-		$this->execMutateSql("
-			UPDATE tickets
-			LEFT JOIN people ON (people.id = tickets.person_id)
-			SET tickets.organization_id = people.organization_id
-		");
-		$this->execMutateSql("
-			UPDATE tickets_search_active
-			LEFT JOIN people ON (people.id = tickets_search_active.person_id)
-			SET tickets_search_active.organization_id = people.organization_id
-		");
-	}
+        $this->execMutateSql("
+            UPDATE tickets
+            LEFT JOIN people ON (people.id = tickets.person_id)
+            SET tickets.organization_id = people.organization_id
+        ");
+        $this->execMutateSql("
+            UPDATE tickets_search_active
+            LEFT JOIN people ON (people.id = tickets_search_active.person_id)
+            SET tickets_search_active.organization_id = people.organization_id
+        ");
+    }
 }

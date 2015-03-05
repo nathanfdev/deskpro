@@ -43,13 +43,13 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class TwigExtension extends \Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension
 {
-	public function load(array $config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-		parent::load($config, $container);
+        parent::load($config, $container);
 
-		// And our loader class also needs the service container, because we
-		// fetch a database connection from it
-		$def = $container->getDefinition('twig.loader');
-		$def->addMethodCall('setDb', array(new Reference('database_connection')));
+        // And our loader class also needs the service container, because we
+        // fetch a database connection from it
+        $def = $container->getDefinition('twig.loader');
+        $def->addMethodCall('setDb', array(new Reference('database_connection')));
     }
 }

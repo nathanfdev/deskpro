@@ -1,93 +1,93 @@
 define [
-	'Admin/Main/Ctrl/Base'
+  'Admin/Main/Ctrl/Base'
 ], (
-	Admin_Ctrl_Base
+  Admin_Ctrl_Base
 ) ->
-	class Admin_FeedbackTypes_Ctrl_Edit extends Admin_Ctrl_Base
-		@CTRL_ID = 'Admin_FeedbackTypes_Ctrl_Edit'
-		@CTRL_AS = 'FeedbackTypesEdit'
-		@DEPS    = ['Api', 'Growl', 'FeedbackTypesData', '$stateParams', '$modal']
+  class Admin_FeedbackTypes_Ctrl_Edit extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_FeedbackTypes_Ctrl_Edit'
+    @CTRL_AS = 'FeedbackTypesEdit'
+    @DEPS    = ['Api', 'Growl', 'FeedbackTypesData', '$stateParams', '$modal']
 
-		init: ->
+    init: ->
 
-			@feedback_type = {}
-			@usergroups = []
-			@selected_usergroups = {}
+      @feedback_type = {}
+      @usergroups = []
+      @selected_usergroups = {}
 
-			return
+      return
 
-		initialLoad: ->
+    initialLoad: ->
 
-			if not @$stateParams.id
+      if not @$stateParams.id
 
-				return
+        return
 
-			else
+      else
 
-				data_promise = @Api.sendDataGet({
-					feedback_type: '/feedback_types/' + @$stateParams.id,
-					usergroups: '/user_groups'
-				}).then((result) =>
+        data_promise = @Api.sendDataGet({
+          feedback_type: '/feedback_types/' + @$stateParams.id,
+          usergroups: '/user_groups'
+        }).then((result) =>
 
-					@feedback_type = result.data.feedback_type.feedback_type
-					@usergroups = result.data.usergroups.groups
+          @feedback_type = result.data.feedback_type.feedback_type
+          @usergroups = result.data.usergroups.groups
 
-					ids =	_.pluck(@feedback_type.usergroups, 'id')
+          ids = _.pluck(@feedback_type.usergroups, 'id')
 
-					for id in ids
-						@selected_usergroups[id] = true
-				)
+          for id in ids
+            @selected_usergroups[id] = true
+        )
 
-				return @$q.all([data_promise])
+        return @$q.all([data_promise])
 
-		###
-			# Saves the current form
-			#
-			# @return {promise}
-		###
-		saveFeedbackType: ->
+    ###
+      # Saves the current form
+      #
+      # @return {promise}
+    ###
+    saveFeedbackType: ->
 
-			@feedback_type.usergroups = []
+      @feedback_type.usergroups = []
 
-			for own key, value of @selected_usergroups
-				if value
-					usergroup = _.findWhere(@usergroups, {id: parseInt(key)})
-					@feedback_type.usergroups.push(usergroup.id) if usergroup
+      for own key, value of @selected_usergroups
+        if value
+          usergroup = _.findWhere(@usergroups, {id: parseInt(key)})
+          @feedback_type.usergroups.push(usergroup.id) if usergroup
 
-			if not @$scope.form_props.$valid
-				return
+      if not @$scope.form_props.$valid
+        return
 
-			@startSpinner('saving_feedback_type')
+      @startSpinner('saving_feedback_type')
 
-			if @feedback_type.id
-				is_new = false
-				promise = @Api.sendPostJson('/feedback_types/' + @feedback_type.id, {feedback_type: @feedback_type})
-			else
-				is_new = true
-				promise = @Api.sendPutJson('/feedback_types', {feedback_type: @feedback_type})
+      if @feedback_type.id
+        is_new = false
+        promise = @Api.sendPostJson('/feedback_types/' + @feedback_type.id, {feedback_type: @feedback_type})
+      else
+        is_new = true
+        promise = @Api.sendPutJson('/feedback_types', {feedback_type: @feedback_type})
 
-			promise.success((result) =>
+      promise.success((result) =>
 
-				@feedback_type.id = result.id
+        @feedback_type.id = result.id
 
-				@stopSpinner('saving_feedback_type', true).then(=>
-					@Growl.success(@getRegisteredMessage('saved_feedback_type'))
-				)
+        @stopSpinner('saving_feedback_type', true).then(=>
+          @Growl.success(@getRegisteredMessage('saved_feedback_type'))
+        )
 
-				@FeedbackTypesData.updateModel(@feedback_type)
+        @FeedbackTypesData.updateModel(@feedback_type)
 
-				@skipDirtyState()
+        @skipDirtyState()
 
-				if is_new
-					@$state.go('portal.feedback_types.gocreate')
-				else
-					@$state.go('portal.feedback_types')
-			)
-			promise.error((info, code) =>
-				@stopSpinner('saving_feedback_type', true)
-				@applyErrorResponseToView(info)
-			)
+        if is_new
+          @$state.go('portal.feedback_types.gocreate')
+        else
+          @$state.go('portal.feedback_types')
+      )
+      promise.error((info, code) =>
+        @stopSpinner('saving_feedback_type', true)
+        @applyErrorResponseToView(info)
+      )
 
-			return promise
+      return promise
 
-	Admin_FeedbackTypes_Ctrl_Edit.EXPORT_CTRL()
+  Admin_FeedbackTypes_Ctrl_Edit.EXPORT_CTRL()

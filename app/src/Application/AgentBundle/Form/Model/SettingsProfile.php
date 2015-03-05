@@ -42,222 +42,222 @@ use Orb\Util\PhoneNumbers;
 
 class SettingsProfile
 {
-	/** @var string */
-	public $name;
-	/** @var \Application\DeskPRO\Entity\PhoneNumber */
-	public $primary_phone_number;
-	/** @var string */
-	public $primary_phone_number_text;
-	/** @var string */
-	public $override_display_name;
-	/** @var string */
-	public $email;
-	/** @var string */
-	public $timezone = 'UTC';
-	/** @var int|null */
-	public $language_id = 0;
-	/** @var string */
-	public $password = '';
-	/** @var string */
-	public $password2 = '';
-	/** @var bool */
-	public $new_picture_blob_id = false;
+    /** @var string */
+    public $name;
+    /** @var string */
+    public $override_display_name;
+    /** @var string */
+    public $email;
+    /** @var string */
+    public $timezone = 'UTC';
+    /** @var int|null */
+    public $language_id = 0;
+    /** @var string */
+    public $password = '';
+    /** @var string */
+    public $password2 = '';
+    /** @var bool */
+    public $new_picture_blob_id = false;
 
-	/** @var bool */
-	public $ticket_close_reply = false;
-	/** @var bool */
-	public $ticket_close_note = false;
-	/** @var bool */
-	public $hide_claimed_chat = false;
-	/** @var bool */
-	public $ticket_go_next_reply = false;
-	/** @var bool */
-	public $ticket_reverse_order = false;
-	/** @var int */
-	public $default_team_id = 0;
-	/** @var bool */
-	public $reset_api_token = false;
+    /** @var bool */
+    public $ticket_close_reply = false;
+    /** @var bool */
+    public $ticket_close_note = false;
+    /** @var bool */
+    public $hide_claimed_chat = false;
+    /** @var bool */
+    public $ticket_go_next_reply = false;
+    /** @var bool */
+    public $ticket_reverse_order = false;
+    /** @var int */
+    public $default_team_id = 0;
+    /** @var bool */
+    public $reset_api_token = false;
 
-	/** @var int|mixed */
-	public $auto_dismiss_notifications = 60;
+    /** @var int|mixed */
+    public $auto_dismiss_notifications = 60;
 
-	/** @var array */
-	public $new_emails;
-	/** @var array */
-	public $remove_emails;
+    /** @var array */
+    public $new_emails;
+    /** @var array */
+    public $remove_emails;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+	public $primary_phone;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	public function __construct(Person $person, $defaultCountryCode = 'US')
-	{
-		$this->em = App::getOrm();
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-		$this->person = $person;
+    public function __construct(Person $person, $defaultCountryCode = 'US')
+    {
+        $this->em = App::getOrm();
 
-		$this->name = $person->name;
+        $this->person = $person;
 
-		// store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
-		// this is acting like a DataTransformer.
-		$this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
-		$this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
-		$this->primary_phone_number_region = $person->primary_phone_number_region ?: $defaultCountryCode;
-		//
+        $this->name = $person->name;
 
-		$this->override_display_name = $person->override_display_name;
-		$this->email = $person->getPrimaryEmailAddress();
-		$this->timezone = $person->timezone;
-		$this->language_id = $person->getLanguage()->getId();
+        // store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
+        // this is acting like a DataTransformer.
+	    $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+	    if (!$this->primary_phone['region']) {
+		    $this->primary_phone['region'] = $defaultCountryCode;
+	    }
 
-		$this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
-		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', false);
-		$this->ticket_go_next_reply = (bool)$person->getPref('agent.ticket_go_next_reply', false);
-		$this->hide_claimed_chat = (bool)$person->getPref('agent.hide_claimed_chat', false);
-		$this->default_team_id = $person->getPref('agent.ticket_default_team_id');
-		$this->ticket_reverse_order = (bool)$person->getPref('agent.ticket_reverse_order');
-		if ($this->default_team_id === null) {
-			$teams = $person->getAgent()->getTeams();
-			$last_team = end($teams);
-			$this->default_team_id = $last_team ? $last_team->id : 0;
-		}
-		$this->auto_dismiss_notifications = $person->getPref('agent.ui.auto_dismiss_notification', 60);
-	}
+        $this->override_display_name = $person->override_display_name;
+        $this->email = $person->getPrimaryEmailAddress();
+        $this->timezone = $person->timezone;
+        $this->language_id = $person->getLanguage()->getId();
 
-	public function getPerson()
-	{
-		return $this->person;
-	}
+        $this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
+        $this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', false);
+        $this->ticket_go_next_reply = (bool)$person->getPref('agent.ticket_go_next_reply', false);
+        $this->hide_claimed_chat = (bool)$person->getPref('agent.hide_claimed_chat', false);
+        $this->default_team_id = $person->getPref('agent.ticket_default_team_id');
+        $this->ticket_reverse_order = (bool)$person->getPref('agent.ticket_reverse_order');
+        if ($this->default_team_id === null) {
+            $teams = $person->getAgent()->getTeams();
+            $last_team = end($teams);
+            $this->default_team_id = $last_team ? $last_team->id : 0;
+        }
+        $this->auto_dismiss_notifications = $person->getPref('agent.ui.auto_dismiss_notification', 60);
+    }
 
-	public function requiresAuth()
-	{
-		if ($this->password || $this->email != $this->person->getPrimaryEmailAddress()) {
-			return true;
-		}
+    public function getPerson()
+    {
+        return $this->person;
+    }
 
-		return false;
-	}
+    public function requiresAuth()
+    {
+        if ($this->password || $this->email != $this->person->getPrimaryEmailAddress()) {
+            return true;
+        }
 
-	public function save()
-	{
-		$person = $this->person;
+        return false;
+    }
 
-		$person->name = $this->name;
+    public function save()
+    {
+        $person = $this->person;
 
-		if (PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
-			$person->setPrimaryPhoneNumber(null);
-		} else {
-			// just update the $primary->number text of the existing primary PhoneNumber object
-			$this->primary_phone_number->number = $this->primary_phone_number_text;
-			$person->setPrimaryPhoneNumber($this->primary_phone_number);
-		}
+        $person->name = $this->name;
 
-		$person->override_display_name = $this->override_display_name;
-		$person->timezone = $this->timezone;
+        if (PhoneNumbers::looksEmpty($this->primary_phone['number'])) {
+            $person->setPrimaryPhoneNumber(null);
+        } else {
+            // just update the $primary->number text of the existing primary PhoneNumber object
+            $person->setPrimaryPhoneNumber($this->primary_phone);
+        }
 
-		if ($this->new_picture_blob_id) {
-			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
-			if ($blob) {
-				$person->picture_blob = $blob;
-			}
-		}
+        $person->override_display_name = $this->override_display_name;
+        $person->timezone = $this->timezone;
 
-		$primary_email = $person->getPrimaryEmail();
-		if ($primary_email->email != $this->email) {
+        if ($this->new_picture_blob_id) {
+            $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
+            if ($blob) {
+                $person->picture_blob = $blob;
+            }
+        }
 
-			$found_email = $person->findEmailAddress($this->email);
-			if ($found_email) {
-				$new_primary_email = $found_email;
-			} else {
-				$new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
-				$new_primary_email->email = $this->email;
-				$new_primary_email->is_validated = true;
-				$person->addEmailAddress($new_primary_email);
-				$this->em->persist($new_primary_email);
-			}
+        $primary_email = $person->getPrimaryEmail();
+        if ($primary_email->email != $this->email) {
 
-			$person->primary_email = $new_primary_email;
+            $found_email = $person->findEmailAddress($this->email);
+            if ($found_email) {
+                $new_primary_email = $found_email;
+            } else {
+                $new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
+                $new_primary_email->email = $this->email;
+                $new_primary_email->is_validated = true;
+                $person->addEmailAddress($new_primary_email);
+                $this->em->persist($new_primary_email);
+            }
 
-			$person->removeEmailAddressId($primary_email->id);
-			$this->em->remove($primary_email);
-		}
+            $person->primary_email = $new_primary_email;
 
-		if ($this->password) {
-			$person->setPassword($this->password);
+            $person->removeEmailAddressId($primary_email->id);
+            $this->em->remove($primary_email);
+        }
 
-			if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
-				$history = new PasswordHistory();
-				$history->person = $this->person;
-				$history->password_scheme = $this->person->password_scheme;
-				$history->password = $this->person->password;
-				$this->em->persist($history);
-			}
-		}
+        if ($this->password) {
+            $person->setPassword($this->password);
 
-		if ($this->language_id) {
-			$person->setLanguageId($this->language_id);
-		}
+            if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
+                $history = new PasswordHistory();
+                $history->person = $this->person;
+                $history->password_scheme = $this->person->password_scheme;
+                $history->password = $this->person->password;
+                $this->em->persist($history);
+            }
 
-		$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);
-		$person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
-		$person->setPreference('agent.ticket_go_next_reply', $this->ticket_go_next_reply ? 1 : 0);
-		$person->setPreference('agent.hide_claimed_chat', $this->hide_claimed_chat ? 1 : 0);
-		$person->setPreference('agent.ticket_reverse_order', $this->ticket_reverse_order ? 1 : 0);
+            // Delete old sessions for this user
+            $this->em->getConnection()->delete('sessions', array('person_id' => $this->person->getId()));
+        }
 
-		$assign_team_setting = (
-			App::getSetting('core_tickets.new_assignteam') == 'assign'
-			|| App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
-			|| App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
-		);
-		$primaryTeam = $person->getPrimaryTeam();
-		if ($primaryTeam && $assign_team_setting) {
-			$person->setPreference('agent.ticket_default_team_id', (int) $primaryTeam['id']);
-		}
+        if ($this->language_id) {
+            $person->setLanguageId($this->language_id);
+        }
 
-		$person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
+        $person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);
+        $person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
+        $person->setPreference('agent.ticket_go_next_reply', $this->ticket_go_next_reply ? 1 : 0);
+        $person->setPreference('agent.hide_claimed_chat', $this->hide_claimed_chat ? 1 : 0);
+        $person->setPreference('agent.ticket_reverse_order', $this->ticket_reverse_order ? 1 : 0);
 
-		if ($this->reset_api_token) {
-			$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
-			if ($token) {
-				$token->regenerateToken();
-				$this->em->persist($token);
-			}
-		}
+        $assign_team_setting = (
+            App::getSetting('core_tickets.new_assignteam') == 'assign'
+            || App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
+            || App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
+        );
+        $primaryTeam = $person->getPrimaryTeam();
+        if ($primaryTeam && $assign_team_setting) {
+            $person->setPreference('agent.ticket_default_team_id', (int) $primaryTeam['id']);
+        }
 
-		$this->em->persist($person);
+        $person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
 
-		$this->em->beginTransaction();
+        if ($this->reset_api_token) {
+            $token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+            if ($token) {
+                $token->regenerateToken();
+                $this->em->persist($token);
+            }
+        }
 
-		try {
-			$this->em->flush();
-			$this->em->commit();
+        $this->em->persist($person);
 
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
-		}
+        $this->em->beginTransaction();
 
-		// Additional email addresses
-		foreach ($this->new_emails as $new_email) {
-			if ($person->hasEmailAddress($new_email)) {
-				continue;
-			}
+        try {
+            $this->em->flush();
+            $this->em->commit();
 
-			$email_address = $person->addEmailAddressString($new_email);
-			$this->em->persist($email_address);
-			$this->em->flush();
-		}
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw $e;
+        }
 
-		// Removing email addresses
-		foreach ($this->remove_emails as $remove_email_id) {
-			$person->removeEmailAddressId($remove_email_id);
-			$this->em->flush();
-		}
-	}
+        // Additional email addresses
+        foreach ($this->new_emails as $new_email) {
+            if ($person->hasEmailAddress($new_email)) {
+                continue;
+            }
+
+            $email_address = $person->addEmailAddressString($new_email);
+            $this->em->persist($email_address);
+            $this->em->flush();
+        }
+
+        // Removing email addresses
+        foreach ($this->remove_emails as $remove_email_id) {
+            $person->removeEmailAddressId($remove_email_id);
+            $this->em->flush();
+        }
+    }
 }

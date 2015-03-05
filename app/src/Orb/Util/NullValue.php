@@ -34,7 +34,6 @@
 
 namespace Orb\Util;
 
-use Orb\Util\Numbers;
 
 /**
  * A special object representing no value.
@@ -44,31 +43,30 @@ use Orb\Util\Numbers;
  */
 class NullValue
 {
-	private function __construct() {}
+    private function __construct() {}
 
-	/**
-	 * @return NullValue
-	 */
-	public static function get()
-	{
-		static $inst = null;
+    /**
+     * @return NullValue
+     */
+    public static function get()
+    {
+        static $inst = null;
 
-		if ($inst === null) {
-			$inst = new self();
-		}
+        if ($inst === null) {
+            $inst = new self();
+        }
 
-		return $inst;
-	}
+        return $inst;
+    }
 
-
-	/**
-	 * Check if a variable is a NullValue
-	 *
-	 * @param mixed $var
-	 * @return bool
-	 */
-	public static function is($var)
-	{
-		return $var === self::get();
-	}
+    /**
+     * Check if a variable is a NullValue
+     *
+     * @param  mixed $var
+     * @return bool
+     */
+    public static function is($var)
+    {
+        return $var === self::get();
+    }
 }

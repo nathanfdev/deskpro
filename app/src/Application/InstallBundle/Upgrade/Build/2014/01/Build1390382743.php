@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1390382743 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Clean up superfluous search records");
-		$this->execMutateSql("
-			DELETE FROM content_search
-			WHERE object_type IN ('ticket', 'chat_conversation')
-		");
-		$this->execMutateSql("
-			DELETE FROM content_search_attribute
-			WHERE object_type IN ('ticket', 'chat_conversation')
-		");
-	}
+    public function run()
+    {
+        $this->out("Clean up superfluous search records");
+        $this->execMutateSql("
+            DELETE FROM content_search
+            WHERE object_type IN ('ticket', 'chat_conversation')
+        ");
+        $this->execMutateSql("
+            DELETE FROM content_search_attribute
+            WHERE object_type IN ('ticket', 'chat_conversation')
+        ");
+    }
 }

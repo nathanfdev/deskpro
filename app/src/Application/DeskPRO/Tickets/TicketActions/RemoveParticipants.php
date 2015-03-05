@@ -42,94 +42,94 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class RemoveParticipants extends AbstractAction
 {
-	/** @var array */
-	protected $remove_people_ids;
+    /** @var array */
+    protected $remove_people_ids;
 
-	public function __construct(array $remove_participants)
-	{
-		$this->remove_people_ids = $remove_participants;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
-		foreach ($people as $person) {
-			$ticket->removeParticipantPerson($person);
-		}
-	}
+    public function __construct(array $remove_participants)
+    {
+        $this->remove_people_ids = $remove_participants;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		$actions = array();
-
-		foreach ($this->remove_people_ids as $pid) {
-			$actions[] = array(
-				'action' => 'remove_participant',
-				'person_id' => $pid
-			);
-		}
-
-		return $actions;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
+        foreach ($people as $person) {
+            $ticket->removeParticipantPerson($person);
+        }
+    }
 
 
-	/**
-	 * Get the agent id
-	 *
-	 * @return int
-	 */
-	public function getPersonIds()
-	{
-		return $this->remove_people_ids;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        $actions = array();
+
+        foreach ($this->remove_people_ids as $pid) {
+            $actions[] = array(
+                'action' => 'remove_participant',
+                'person_id' => $pid
+            );
+        }
+
+        return $actions;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		$ids = $this->getPersonIds();
-		$ids = array_merge($ids, $other_action->getPersonIds());
-		$ids = array_unique($ids);
-
-		return new self($ids);
-	}
+    /**
+     * Get the agent id
+     *
+     * @return int
+     */
+    public function getPersonIds()
+    {
+        return $this->remove_people_ids;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
-		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
-		if (!$people) return '';
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        $ids = $this->getPersonIds();
+        $ids = array_merge($ids, $other_action->getPersonIds());
+        $ids = array_unique($ids);
 
-		$names = array();
-		foreach ($people as $p) {
-			$names[$p->id] = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
-		}
+        return new self($ids);
+    }
 
-		foreach ($this->remove_people_ids as $id) {
-			if (!isset($names[$id])) {
-				$names[$id] = "<error>Unknown #$id</error>";
-			}
-		}
 
-		return $tr->phrase('agent.tickets.remove_participants_action', array('parts' => implode(', ', $names)));
-	}
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+        $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
+        if (!$people) return '';
+
+        $names = array();
+        foreach ($people as $p) {
+            $names[$p->id] = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
+        }
+
+        foreach ($this->remove_people_ids as $id) {
+            if (!isset($names[$id])) {
+                $names[$id] = "<error>Unknown #$id</error>";
+            }
+        }
+
+        return $tr->phrase('agent.tickets.remove_participants_action', array('parts' => implode(', ', $names)));
+    }
 }

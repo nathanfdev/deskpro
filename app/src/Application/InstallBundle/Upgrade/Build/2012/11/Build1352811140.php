@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352811140 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("people.picture_blob_id is not unique");
-		$this->execMutateSql("ALTER TABLE people DROP INDEX UNIQ_28166A26F0187A77, ADD INDEX IDX_28166A26F0187A77 (picture_blob_id)");
-	}
+    public function run()
+    {
+        $this->out("people.picture_blob_id is not unique");
+        $this->execMutateSql("ALTER TABLE people DROP INDEX UNIQ_28166A26F0187A77, ADD INDEX IDX_28166A26F0187A77 (picture_blob_id)");
+    }
 }

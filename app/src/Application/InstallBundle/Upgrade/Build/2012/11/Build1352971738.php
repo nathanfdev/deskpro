@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352971738 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add support for indicating that ticket changes are from an SLA");
-		$this->execMutateSql("ALTER TABLE tickets_logs ADD sla_id INT DEFAULT NULL, ADD sla_status VARCHAR(20) DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F410817A2CC8C4 FOREIGN KEY (sla_id) REFERENCES slas (id) ON DELETE SET NULL");
-		$this->execMutateSql("CREATE INDEX IDX_F5F410817A2CC8C4 ON tickets_logs (sla_id)");
-	}
+    public function run()
+    {
+        $this->out("Add support for indicating that ticket changes are from an SLA");
+        $this->execMutateSql("ALTER TABLE tickets_logs ADD sla_id INT DEFAULT NULL, ADD sla_status VARCHAR(20) DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F410817A2CC8C4 FOREIGN KEY (sla_id) REFERENCES slas (id) ON DELETE SET NULL");
+        $this->execMutateSql("CREATE INDEX IDX_F5F410817A2CC8C4 ON tickets_logs (sla_id)");
+    }
 }

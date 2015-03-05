@@ -1,56 +1,56 @@
 define [
-	'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util'
 ], (
-	Util
+  Util
 ) ->
-	class Admin_TicketEscalations_EscalationEditFormMapper
-		getFormFromModel: (escModel) ->
-			form = {}
-			form.title              = escModel.title || ''
-			form.event_trigger      = escModel.event_trigger || 'time.open'
-			form.event_trigger_time = escModel.event_trigger_time || 3600
-			form.actions            = escModel.actions?.actions || {}
+  class Admin_TicketEscalations_EscalationEditFormMapper
+    getFormFromModel: (escModel) ->
+      form = {}
+      form.title              = escModel.title || ''
+      form.event_trigger      = escModel.event_trigger || 'time.open'
+      form.event_trigger_time = escModel.event_trigger_time || 3600
+      form.actions            = escModel.actions?.actions || {}
 
-			form.terms = {}
-			form.terms_any = {}
-			form.actions = {}
+      form.terms = {}
+      form.terms_any = {}
+      form.actions = {}
 
-			if escModel.terms?.terms?.length
-				for term in escModel.terms.terms
-					rowId = _.uniqueId('term')
-					form.terms[rowId] = term
+      if escModel.terms?.terms?.length
+        for term in escModel.terms.terms
+          rowId = _.uniqueId('term')
+          form.terms[rowId] = term
 
-			if escModel.terms_any?.terms?.length
-				for term in escModel.terms_any.terms
-					rowId = _.uniqueId('term_any')
-					form.terms_any[rowId] = term
+      if escModel.terms_any?.terms?.length
+        for term in escModel.terms_any.terms
+          rowId = _.uniqueId('term_any')
+          form.terms_any[rowId] = term
 
-			if escModel.actions?.actions?.length
-				for action in escModel.actions.actions
-					rowId = _.uniqueId('action')
-					form.actions[rowId] = action
+      if escModel.actions?.actions?.length
+        for action in escModel.actions.actions
+          rowId = _.uniqueId('action')
+          form.actions[rowId] = action
 
-			return form
+      return form
 
-		applyFormToModel: (escModel, formModel) ->
-			escModel.title = formModel.title
+    applyFormToModel: (escModel, formModel) ->
+      escModel.title = formModel.title
 
-		getPostDataFromForm: (formModel) ->
-			postData = {}
-			postData.title = formModel.title
-			postData.event_trigger = formModel.event_trigger
-			postData.event_trigger_time = formModel.event_trigger_time
+    getPostDataFromForm: (formModel) ->
+      postData = {}
+      postData.title = formModel.title
+      postData.event_trigger = formModel.event_trigger
+      postData.event_trigger_time = formModel.event_trigger_time
 
-			postData.actions = []
-			for own id, row of formModel.actions
-				postData.actions.push(row)
+      postData.actions = []
+      for own id, row of formModel.actions
+        postData.actions.push(row)
 
-			postData.terms = []
-			for own id, row of formModel.terms
-				postData.terms.push(row)
+      postData.terms = []
+      for own id, row of formModel.terms
+        postData.terms.push(row)
 
-			postData.terms_any = []
-			for own id, row of formModel.terms_any
-				postData.terms_any.push(row)
+      postData.terms_any = []
+      for own id, row of formModel.terms_any
+        postData.terms_any.push(row)
 
-			return postData
+      return postData

@@ -38,29 +38,29 @@ use Application\DeskPRO\App;
 
 class Userinfo extends Template
 {
-	protected function init()
-	{
-		$this->setOption('tpl', 'UserBundle:Portal:userinfo-' . $this->section . '.html.twig');
-	}
+    protected function init()
+    {
+        $this->setOption('tpl', 'UserBundle:Portal:userinfo-' . $this->section . '.html.twig');
+    }
 
-	public function getVars()
-	{
-		$ticket_count     = 0;
-		$org_ticket_count = 0;
-		$chat_count       = 0;
+    public function getVars()
+    {
+        $ticket_count     = 0;
+        $org_ticket_count = 0;
+        $chat_count       = 0;
 
-		if (!$this->person_context->isGuest()) {
-			$counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
-			$ticket_count     = $counts['person'];
-			$org_ticket_count = $counts['org'];
+        if (!$this->person_context->isGuest()) {
+            $counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
+            $ticket_count     = $counts['person'];
+            $org_ticket_count = $counts['org'];
 
-			$chat_count = App::getEntityRepository('DeskPRO:ChatConversation')->getCountForPerson($this->person_context);
-		}
+            $chat_count = App::getEntityRepository('DeskPRO:ChatConversation')->getCountForPerson($this->person_context);
+        }
 
-		return array(
-			'ticket_count'     => $ticket_count,
-			'org_ticket_count' => $org_ticket_count,
-			'chat_count'       => $chat_count,
-		);
-	}
+        return array(
+            'ticket_count'     => $ticket_count,
+            'org_ticket_count' => $org_ticket_count,
+            'chat_count'       => $chat_count,
+        );
+    }
 }

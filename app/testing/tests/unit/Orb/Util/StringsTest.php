@@ -31,53 +31,53 @@ use Orb\Util\Strings;
 
 class StringsTest extends \DpUnitTestCase
 {
-	public function testNullClase()
-	{
-		$this->assertEquals(
-			array(),
-			Strings::splitStringIntoArray(
-				null,
-				12
-			)
-		);
+    public function testNullClase()
+    {
+        $this->assertEquals(
+            array(),
+            Strings::splitStringIntoArray(
+                null,
+                12
+            )
+        );
 
-		$this->assertEquals(
-			array(),
-			Strings::splitStringIntoArray(
-				'',
-				12
-			)
-		);
-	}
+        $this->assertEquals(
+            array(),
+            Strings::splitStringIntoArray(
+                '',
+                12
+            )
+        );
+    }
 
-	public function testStringSplitMaxLength()
-	{
-		$this->assertEquals(
-			array(
-				'hello there',
-				'how are you',
-				'doing today?'
-			),
-			Strings::splitStringIntoArray(
-				'hello there how are you doing today?',
-				12
-			)
-		);
-	}
+    public function testStringSplitMaxLength()
+    {
+        $this->assertEquals(
+            array(
+                'hello there',
+                'how are you',
+                'doing today?'
+            ),
+            Strings::splitStringIntoArray(
+                'hello there how are you doing today?',
+                12
+            )
+        );
+    }
 
-	public function testCaseWhereLineStartsOrEndsWithWhitespace()
-	{
-		$this->assertEquals(
-			array(
-				'hello there',
-				'how are you',
-				'doing today',
-				'?'
-			),
-			Strings::splitStringIntoArray(
-				' hello there how are you doing today ? ',
-				12
-			)
-		);
-	}
+    public function testCaseWhereLineStartsOrEndsWithWhitespace()
+    {
+        $this->assertEquals(
+            array(
+                'hello there',
+                'how are you',
+                'doing today',
+                '?'
+            ),
+            Strings::splitStringIntoArray(
+                ' hello there how are you doing today ? ',
+                12
+            )
+        );
+    }
 }

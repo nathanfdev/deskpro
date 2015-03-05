@@ -45,31 +45,32 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckEmailFromAddress extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('email');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$context->hasEmailContext()) {
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$context->hasEmailContext()) {
+            return false;
+        }
 
-		$reader = $context->getEmailContext();
+        $reader = $context->getEmailContext();
 
-		$options = $this->getTermOptions();
-		$value   = TermValue::createWithValue($reader->getFromAddress()->getEmail());
+        $options = $this->getTermOptions();
+        $value   = TermValue::createWithValue($reader->getFromAddress()->getEmail());
 
-		return $this->isStringMatch($ticket, $context, $value, $options['email']);
-	}
+        return $this->isStringMatch($ticket, $context, $value, $options['email']);
+    }
 }

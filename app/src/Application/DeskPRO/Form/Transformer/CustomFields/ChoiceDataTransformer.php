@@ -42,135 +42,139 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  */
 class ChoiceDataTransformer  implements DataTransformerInterface
 {
-	/**
-	 * @var CustomDataPersister
-	 */
-	protected $persister;
+    /**
+     * @var CustomDataPersister
+     */
+    protected $persister;
 
-	/**
-	 * @var DomainObject
-	 */
-	protected $owner;
+    /**
+     * @var DomainObject
+     */
+    protected $owner;
 
-	/**
-	 * @var CustomFieldDefinition[]
-	 */
-	protected $previous;
+    /**
+     * @var CustomFieldDefinition[]
+     */
+    protected $previous;
 
-	public function __construct(CustomDataPersister $persister, DomainObject $owner)
-	{
-		$this->persister = $persister;
-		$this->owner = $owner;
-	}
+    public function __construct(CustomDataPersister $persister, DomainObject $owner)
+    {
+        $this->persister = $persister;
+        $this->owner = $owner;
+    }
 
-	/**
-	 * CustomFieldData to CustomFieldDefinition, CustomFieldData[] to CustomFieldDefinition[]
-	 *
-	 * @param mixed $value
-	 * @return array|mixed
-	 * @throws \Symfony\Component\Form\Exception\TransformationFailedException
-	 */
-	public function transform($value)
-	{
-		$this->previous = array();
+    /**
+     * CustomFieldData to CustomFieldDefinition, CustomFieldData[] to CustomFieldDefinition[]
+     *
+     * @param  mixed                                                           $value
+     * @return array|mixed
+     * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     */
+    public function transform($value)
+    {
+        $this->previous = array();
 
-		if (!$value) {
-			return array('value' => null);
-		}
-
-
-		// single choice
-		if ($value instanceof CustomFieldData) {
-			$this->previous[$value->definition['id']] = $value;
-			return array('value' => $value->definition);
-		}
+        if (!$value) {
+            return array('value' => null);
+        }
 
 
-		// multiple choices
-		if (is_array($value)) {
-			$coll = new ArrayCollection();
-			foreach ($value as $data) {
-				$this->previous[$data->definition['id']] = $data;
-				$coll->add($data->definition);
-			}
-			return array('value' => $coll);
-		}
+        // single choice
+        if ($value instanceof CustomFieldData) {
+            $this->previous[$value->definition['id']] = $value;
 
-		throw new TransformationFailedException;
-	}
-
-	/**
-	 * CustomFieldDefinition to CustomFieldData, CustomFieldDefinition[] to CustomFieldData[]
-	 * persisting/removing entities with EntityManager (flush is required somewhere outside)
-	 *
-	 * @param mixed $value
-	 * @return CustomFieldData|ArrayCollection|mixed|null
-	 * @throws \Symfony\Component\Form\Exception\TransformationFailedException
-	 */
-	public function reverseTransform($value)
-	{
-		$value = $value['value'];
-		if (!$value) {
-			$this->persister->removeArray($this->previous);
-			return null;
-		}
+            return array('value' => $value->definition);
+        }
 
 
-		// single choice
-		if ($value instanceof CustomFieldDefinition) {
-			$data = null;
-			foreach ($this->previous as $previous) {
-				/** @var $previous CustomFieldData */
-				// mark to delete
-				if ($previous->definition['id'] != $value['id']) {
-					$this->persister->remove($previous);
-				} else {
-					$data = $previous;
-				}
-			}
+        // multiple choices
+        if (is_array($value)) {
+            $coll = new ArrayCollection();
+            foreach ($value as $data) {
+                $this->previous[$data->definition['id']] = $data;
+                $coll->add($data->definition);
+            }
 
-			if (null === $data) {
-				$data = $this->createNewData($value);
-			}
+            return array('value' => $coll);
+        }
 
-			return $data;
-		}
+        throw new TransformationFailedException;
+    }
+
+    /**
+     * CustomFieldDefinition to CustomFieldData, CustomFieldDefinition[] to CustomFieldData[]
+     * persisting/removing entities with EntityManager (flush is required somewhere outside)
+     *
+     * @param  mixed                                                           $value
+     * @return CustomFieldData|ArrayCollection|mixed|null
+     * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     */
+    public function reverseTransform($value)
+    {
+        $value = $value['value'];
+        if (!$value) {
+            $this->persister->removeArray($this->previous);
+
+            return null;
+        }
 
 
-		// multiple choices
-		if ($value instanceof ArrayCollection || is_array($value)) {
-			$ret = array();
+        // single choice
+        if ($value instanceof CustomFieldDefinition) {
+            $data = null;
+            foreach ($this->previous as $previous) {
+                /** @var $previous CustomFieldData */
+                // mark to delete
+                if ($previous->definition['id'] != $value['id']) {
+                    $this->persister->remove($previous);
+                } else {
+                    $data = $previous;
+                }
+            }
 
-			foreach ($value as $definition) {
-				/** @var $definition CustomFieldDefinition */
-				if (!isset($this->previous[$definition['id']])) {
-					$ret[] = $this->createNewData($definition);
-				} else {
-					$ret[] = $this->previous[$definition['id']];
-				}
-				unset($this->previous[$definition['id']]);
-			}
+            if (null === $data) {
+                $data = $this->createNewData($value);
+            }
 
-			$this->persister->removeArray($this->previous);
-			return $ret;
-		}
+            return $data;
+        }
 
-		throw new TransformationFailedException;
-	}
 
-	/**
-	 * @param CustomFieldDefinition $definition
-	 * @return CustomFieldData
-	 */
-	protected function createNewData(CustomFieldDefinition $definition)
-	{
-		$data = new CustomFieldData();
-		$data['value'] = 1;
-		$data->definition = $definition;
-		$data->root_definition = $definition->parent ?: $definition;
-		$data->owner = $this->owner;
-		$this->persister->add($data);
+        // multiple choices
+        if ($value instanceof ArrayCollection || is_array($value)) {
+            $ret = array();
 
-		return $data;
-	}
+            foreach ($value as $definition) {
+                /** @var $definition CustomFieldDefinition */
+                if (!isset($this->previous[$definition['id']])) {
+                    $ret[] = $this->createNewData($definition);
+                } else {
+                    $ret[] = $this->previous[$definition['id']];
+                }
+                unset($this->previous[$definition['id']]);
+            }
+
+            $this->persister->removeArray($this->previous);
+
+            return $ret;
+        }
+
+        throw new TransformationFailedException;
+    }
+
+    /**
+     * @param  CustomFieldDefinition $definition
+     * @return CustomFieldData
+     */
+    protected function createNewData(CustomFieldDefinition $definition)
+    {
+        $data = new CustomFieldData();
+        $data['value'] = 1;
+        $data->definition = $definition;
+        $data->root_definition = $definition->parent ?: $definition;
+        $data->owner = $this->owner;
+        $this->persister->add($data);
+
+        return $data;
+    }
 }

@@ -43,32 +43,32 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The name of the setting
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * The name of the setting
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * The value of a setting
-	 *
-	 * @var string
-	 */
-	protected $value;
+    /**
+     * The value of a setting
+     *
+     * @var string
+     */
+    protected $value;
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Setting';
-		$metadata->setPrimaryTable(array('name' => 'settings'));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
-		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Setting';
+        $metadata->setPrimaryTable(array('name' => 'settings'));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
+    }
 }

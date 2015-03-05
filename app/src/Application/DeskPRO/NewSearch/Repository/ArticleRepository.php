@@ -2,8 +2,6 @@
 
 namespace Application\DeskPRO\NewSearch\Repository;
 
-use Elastica\Query;
-
 /**
  * Article Repository
  */
@@ -17,4 +15,9 @@ class ArticleRepository extends AbstractRepository
     protected $highlightFields = array(
         'title' => array('fragment_size' => 100)
     );
+
+    protected function getQueryFields()
+    {
+        return array('title', 'labels', 'content');
+    }
 }

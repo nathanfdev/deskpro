@@ -36,18 +36,18 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class GeneralPermissions implements PermissionValueInterface
 {
-	/** @var bool  */
-	public $picture       = false;
-	/** @var bool  */
-	public $signature     = false;
+    /** @var bool  */
+    public $picture       = false;
+    /** @var bool  */
+    public $signature     = false;
 
-	public function getNames()
-	{
-		return array('picture', 'signature');
-	}
+    public function getNames()
+    {
+        return array('picture', 'signature');
+    }
 
-	public function getDestructiveNames()
-	{
-		return array();
-	}
+    public function getDestructiveNames()
+    {
+        return array();
+    }
 }

@@ -45,41 +45,43 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckSatisfaction extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('rating');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('rating');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$op = $this->getTermOperator();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $op = $this->getTermOperator();
 
-		if (!$ticket->date_feedback_rating) {
-			if ($op == 'not_isset') {
-				return true;
-			}
-			return false;
-		}
-		if ($op == 'isset') {
-			return true;
-		}
+        if (!$ticket->date_feedback_rating) {
+            if ($op == 'not_isset') {
+                return true;
+            }
 
-		$rating = (int)$this->getTermOptions()->get('rating', 0);
-		if ($rating < 0) {
-			$rating = -1;
-		} else if ($rating > 0) {
-			$rating = 1;
-		}
+            return false;
+        }
+        if ($op == 'isset') {
+            return true;
+        }
 
-		return $this->isIntMatch($ticket, $context, 'feedback_rating', $rating);
-	}
+        $rating = (int)$this->getTermOptions()->get('rating', 0);
+        if ($rating < 0) {
+            $rating = -1;
+        } elseif ($rating > 0) {
+            $rating = 1;
+        }
+
+        return $this->isIntMatch($ticket, $context, 'feedback_rating', $rating);
+    }
 }

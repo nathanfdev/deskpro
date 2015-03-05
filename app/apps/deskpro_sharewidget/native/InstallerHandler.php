@@ -39,59 +39,59 @@ use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    null);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function uninstall(InstallerContext $context)
+    {
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    null);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updateSettings(InstallerContext $context)
+    {
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updatePackage(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * @param InstallerContext $context
-	 */
-	private function _doInstall(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
-	}
+    /**
+     * @param InstallerContext $context
+     */
+    private function _doInstall(InstallerContext $context)
+    {
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
+    }
 }

@@ -39,9 +39,10 @@ use Application\DeskPRO\ServerCron\ServerCron;
 
 class ServerCronService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ServerCron($container->getEm());
+
         return $x;
-	}
+    }
 }

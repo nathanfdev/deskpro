@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1376039005 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add index to tickets.status");
-		$create_table = $this->container->getDb()->fetchColumn("SHOW CREATE TABLE tickets", array(), 1);
-		if (strpos($create_table, 'status_idx') === false) {
-			$this->execMutateSql("CREATE INDEX status_idx ON tickets (status)", true);
-		}
-	}
+    public function run()
+    {
+        $this->out("Add index to tickets.status");
+        $create_table = $this->container->getDb()->fetchColumn("SHOW CREATE TABLE tickets", array(), 1);
+        if (strpos($create_table, 'status_idx') === false) {
+            $this->execMutateSql("CREATE INDEX status_idx ON tickets (status)", true);
+        }
+    }
 }

@@ -6,7 +6,7 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 {
     public function runBefore()
     {
-		if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
+        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
 
         $this->helper->enableFreshDatabaseSet('FreshDb');
         $this->helper->loadFixtures('General/SimpleDepartmentData');
@@ -17,7 +17,7 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 
     public function testQuickSearchReturnsResult()
     {
-		if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
+        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
 
         $elasticManager = $this->helper->getSymfonyContainer()->get('deskpro.search_manager.elasticsearch');
         $entityManager = $this->helper->getSymfonyContainer()->getEm();
@@ -40,7 +40,7 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 
     public function testAgentCanViewOthersTicketsIfPermitted()
     {
-		if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
+        if (!isset($GLOBALS['DP_TEST_ELASTIC'])) return;
 
         $elasticManager = $this->helper->getSymfonyContainer()->get('deskpro.search_manager.elasticsearch');
         $entityManager = $this->helper->getSymfonyContainer()->getEm();
@@ -57,4 +57,4 @@ class ElasticsearchTest extends \DpIntegrationTestCase
 
         $this->assertEquals(5, count($result['ticket']));
     }
-} 
+}

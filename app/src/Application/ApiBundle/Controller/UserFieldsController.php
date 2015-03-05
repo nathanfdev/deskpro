@@ -41,130 +41,132 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 
 class UserFieldsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
-		$data = array();
+    public function listAction()
+    {
+        $data = array();
 
-		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getPersonFieldManager();
+        /** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
+        $field_manager = $this->container->getPersonFieldManager();
 
-		$custom_fields = $field_manager->getDefinedFields();
-		$data['custom_fields'] = $this->getApiData($custom_fields, false);
+        $custom_fields = $field_manager->getDefinedFields();
+        $data['custom_fields'] = $this->getApiData($custom_fields, false);
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
-	####################################################################################################################
-	# get-custom-field
-	####################################################################################################################
+    ####################################################################################################################
+    # get-custom-field
+    ####################################################################################################################
 
-	public function getCustomFieldAction($id)
-	{
-		$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
-		if (!$field || $field->parent) {
-			throw $this->createNotFoundException();
-		}
+    public function getCustomFieldAction($id)
+    {
+        $field = $this->em->find('DeskPRO:CustomDefPerson', $id);
+        if (!$field || $field->parent) {
+            throw $this->createNotFoundException();
+        }
 
-		$data = array();
-		$data['field'] = $field->toApiData();
+        $data = array();
+        $data['field'] = $field->toApiData();
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
-	####################################################################################################################
-	# save-custom-field
-	####################################################################################################################
+    ####################################################################################################################
+    # save-custom-field
+    ####################################################################################################################
 
-	public function saveCustomFieldAction($id)
-	{
-		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getPersonFieldManager();
+    public function saveCustomFieldAction($id)
+    {
+        /** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
+        $field_manager = $this->container->getPersonFieldManager();
 
-		if ($id) {
-			$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
-			if (!$field || $field->parent) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$field                = $field_manager->createNewDefEntity();
-			$field->handler_class = $this->in->getString('handler_class');
-		}
+        if ($id) {
+            $field = $this->em->find('DeskPRO:CustomDefPerson', $id);
+            if (!$field || $field->parent) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $field                = $field_manager->createNewDefEntity();
+            $field->handler_class = $this->in->getString('handler_class');
+        }
 
-		$post = $this->in->getAll('req');
+        $post = $this->in->getAll('req');
 
-		$helper = new CustomFieldHelper($this);
-		$helper->saveFormToField($field, $post);
+        $helper = new CustomFieldHelper($this);
+        $helper->saveFormToField($field, $post);
 
-		if ($id) {
-			return $this->createSuccessResponse(
-				array(
-					 'field_id' => $field->id
-				)
-			);
-		} else {
-			return $this->createSuccessResponse(
-				array(
-					 'field_id' => $field->id,
-					 $this->generateUrl('api_user_fields_get', array('id' => $field->id))
-				)
-			);
-		}
-	}
+        if ($id) {
+            return $this->createSuccessResponse(
+                array(
+                     'field_id' => $field->id
+                )
+            );
+        } else {
+            return $this->createSuccessResponse(
+                array(
+                     'field_id' => $field->id,
+                     $this->generateUrl('api_user_fields_get', array('id' => $field->id))
+                )
+            );
+        }
+    }
 
-	####################################################################################################################
-	# delete-custom-field
-	####################################################################################################################
+    ####################################################################################################################
+    # delete-custom-field
+    ####################################################################################################################
 
-	public function deleteCustomFieldAction($id)
-	{
-		$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
-		if (!$field || $field->parent) {
-			throw $this->createNotFoundException();
-		}
+    public function deleteCustomFieldAction($id)
+    {
+        $field = $this->em->find('DeskPRO:CustomDefPerson', $id);
+        if (!$field || $field->parent) {
+            throw $this->createNotFoundException();
+        }
 
-		$this->em->remove($field);
-		$this->em->flush();
+        $this->em->remove($field);
+        $this->em->flush();
 
-		return $this->createApiDeleteResponse();
-	}
+        return $this->createApiDeleteResponse();
+    }
 
-	####################################################################################################################
-	# toggleField
-	####################################################################################################################
+    ####################################################################################################################
+    # toggleField
+    ####################################################################################################################
 
-	public function toggleFieldAction($field_id, $is_enabled)
-	{
-		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getPersonFieldManager();
-		$field_manager->setFieldEnabledById($field_id, $is_enabled);
+    public function toggleFieldAction($field_id, $is_enabled)
+    {
+        /** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
+        $field_manager = $this->container->getPersonFieldManager();
+        $field_manager->setFieldEnabledById($field_id, $is_enabled);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	public function saveDisplayOrderAction()
-	{
-		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:CustomDefPerson')->updateDisplayOrders($display_orders);
-		return $this->createSuccessResponse();
-	}
+    public function saveDisplayOrderAction()
+    {
+        $display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+        $this->em->getRepository('DeskPRO:CustomDefPerson')->updateDisplayOrders($display_orders);
+
+        return $this->createSuccessResponse();
+    }
 }

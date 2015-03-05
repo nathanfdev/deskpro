@@ -45,32 +45,33 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckAgent extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('agent_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('agent_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		$agent_ids = $options['agent_ids'];
-		if ($agent_ids && $context->getPersonContext() && in_array(-1, $agent_ids)) {
-			$person = $context->getPersonContext();
-			if ($person->is_agent) {
-				$agent_ids[] = $person;
-			}
-		}
+        $agent_ids = $options['agent_ids'];
+        if ($agent_ids && $context->getPersonContext() && in_array(-1, $agent_ids)) {
+            $person = $context->getPersonContext();
+            if ($person->is_agent) {
+                $agent_ids[] = $person;
+            }
+        }
 
-		return $this->isEntityMatch($ticket, $context, 'agent', 'id', $agent_ids);
-	}
+        return $this->isEntityMatch($ticket, $context, 'agent', 'id', $agent_ids);
+    }
 }

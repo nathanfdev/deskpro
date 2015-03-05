@@ -38,42 +38,42 @@ use Application\DeskPRO\Entity\Person;
 
 class NewRegistrationNotification extends AbstractAgentNotification
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	public function __construct(Person $person)
-	{
-		parent::__construct();
-		$this->person = $person;
-	}
+    public function __construct(Person $person)
+    {
+        parent::__construct();
+        $this->person = $person;
+    }
 
-	public function shouldSendBrowserNotification(Person $agent)
-	{
-		if ($this->person->is_confirmed && !$this->person->is_agent_confirmed && $agent->getPref('agent_notif.new_user_validate.alert')) {
-			return true;
-		} elseif ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.alert')) {
-			return true;
-		}
+    public function shouldSendBrowserNotification(Person $agent)
+    {
+        if ($this->person->is_confirmed && !$this->person->is_agent_confirmed && $agent->getPref('agent_notif.new_user_validate.alert')) {
+            return true;
+        } elseif ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.alert')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function shouldSendEmailNotification(Person $agent)
-	{
-		if ($this->person->is_confirmed && !$this->person->is_agent_confirmed && $agent->getPref('agent_notif.new_user_validate.email')) {
-			return true;
-		} elseif ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.email')) {
-			return true;
-		}
+    public function shouldSendEmailNotification(Person $agent)
+    {
+        if ($this->person->is_confirmed && !$this->person->is_agent_confirmed && $agent->getPref('agent_notif.new_user_validate.email')) {
+            return true;
+        } elseif ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.email')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function send()
-	{
-		$this->sendBrowserNotifications('AgentBundle:Person:alert-new-registration.html.twig', array('person' => $this->person, 'notify_data' => array('notify_type' => 'new_registration')));
-		$this->sendEmailNotifications('DeskPRO:emails_agent:new-registration.html.twig', array('person' => $this->person));
-	}
+    public function send()
+    {
+        $this->sendBrowserNotifications('AgentBundle:Person:alert-new-registration.html.twig', array('person' => $this->person, 'notify_data' => array('notify_type' => 'new_registration')));
+        $this->sendEmailNotifications('DeskPRO:emails_agent:new-registration.html.twig', array('person' => $this->person));
+    }
 }

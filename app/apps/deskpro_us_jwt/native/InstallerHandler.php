@@ -41,47 +41,47 @@ use Application\DeskPRO\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function disableSsoSettings(AppInstance $app, EntityManager $em)
-	{
-		$settings               = $app->getSettings();
-		$settings['sso_type']   = 'none';
-		$app->setSettings($settings);
+    /**
+     * {@inheritDoc}
+     */
+    public function disableSsoSettings(AppInstance $app, EntityManager $em)
+    {
+        $settings               = $app->getSettings();
+        $settings['sso_type']   = 'none';
+        $app->setSettings($settings);
 
-		$em->flush($app);
-	}
+        $em->flush($app);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
-	{
-		$us->title = $app->title;
-		$us->options = array(
-			'url'               => $app->getSetting('url'),
-			'secret'            => $app->getSetting('secret'),
-			'login_custom_text' => $app->getSetting('login_custom_text'),
-			'logout_agent_url'  => $app->getSetting('logout_agent_url'),
-			'logout_user_url'   => $app->getSetting('logout_user_url'),
-		);
-		$us->is_enabled = $app->getSetting('enable_usersource') ? 1 : 0;
-		$us->lost_password_url = $app->getSetting('url') ?: '';
-		$us->source_type = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
+    /**
+     * {@inheritDoc}
+     */
+    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    {
+        $us->title = $app->title;
+        $us->options = array(
+            'url'               => $app->getSetting('url'),
+            'secret'            => $app->getSetting('secret'),
+            'login_custom_text' => $app->getSetting('login_custom_text'),
+            'logout_agent_url'  => $app->getSetting('logout_agent_url'),
+            'logout_user_url'   => $app->getSetting('logout_user_url'),
+        );
+        $us->is_enabled = $app->getSetting('enable_usersource') ? 1 : 0;
+        $us->lost_password_url = $app->getSetting('url') ?: '';
+        $us->source_type = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
 
-		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
-		if ('auto' == $app->getSetting('sso_type')) {
-			$us->makeSsoAutoOnly();
-		} elseif ('background' == $app->getSetting('sso_type')) {
-			$us->makeSsoBackgroundOnly();
-		} else {
-			$us->disableSso();
-		}
+        if ('auto' == $app->getSetting('sso_type')) {
+            $us->makeSsoAutoOnly();
+        } elseif ('background' == $app->getSetting('sso_type')) {
+            $us->makeSsoBackgroundOnly();
+        } else {
+            $us->disableSso();
+        }
 
-		$em->persist($us);
-		$em->persist($app);
-		$em->flush();
-	}
+        $em->persist($us);
+        $em->persist($app);
+        $em->flush();
+    }
 }

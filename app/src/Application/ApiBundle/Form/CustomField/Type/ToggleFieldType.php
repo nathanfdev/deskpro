@@ -38,16 +38,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ToggleFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('default_value', 'checkbox', array('required' => false));
-		$builder->add('label_text', 'text', array('required' => false));
-	}
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('default_value', 'checkbox', array('required' => false));
+        $builder->add('label_text', 'text', array('required' => false));
+    }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ToggleField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ToggleField',
+        );
+    }
 }

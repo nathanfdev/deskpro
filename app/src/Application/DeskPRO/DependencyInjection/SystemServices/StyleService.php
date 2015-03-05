@@ -38,11 +38,11 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class StyleService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$style_id = $container->get('deskpro.core.settings')->get('core.default_style_id');
-		$style = $container->get('doctrine.orm.entity_manager')->find('DeskPRO:Style', array('id' => $style_id));
+    public static function create(DeskproContainer $container)
+    {
+        $style_id = $container->get('deskpro.core.settings')->get('core.default_style_id');
+        $style = $container->get('doctrine.orm.entity_manager')->find('DeskPRO:Style', array('id' => $style_id));
 
-		return $style;
-	}
+        return $style;
+    }
 }

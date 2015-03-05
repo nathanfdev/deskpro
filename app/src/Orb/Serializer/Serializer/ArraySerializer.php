@@ -41,20 +41,20 @@ use Orb\Serializer\SerializerInterface;
  */
 class ArraySerializer implements SerializerInterface
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function serialize($data, $view = 'default', $format = 'array')
-	{
-		return $data;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize($data, $view = 'default', $format = 'array')
+    {
+        return $data;
+    }
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function supports($data, $view = 'default', $format = 'array')
-	{
-		return is_array($data) && $format === 'array';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function supports($data, $view = 'default', $format = 'array')
+    {
+        return is_array($data) && $format === 'array';
+    }
 }

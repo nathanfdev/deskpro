@@ -37,8 +37,6 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
 
-use \Symfony\Component\HttpFoundation\Response;
-
 /**
  * Simple ticket macros CRUD
  *
@@ -50,13 +48,18 @@ use \Symfony\Component\HttpFoundation\Response;
  */
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
+
+
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
     /**
      * @return Response;
@@ -71,33 +74,35 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function listAction()
-	{
-        /** @var \Application\DeskPRO\EntityRepository\TicketMacro $repo */
-        $repo = $this->em->getRepository('DeskPRO:TicketMacro');
-        $macros = $repo->getMacros();
+    public function listAction()
+    {
+        $macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
 
-		$data = array();
+        $data = array();
 
-		foreach ($macros as $macro) {
-			$row = array(
-				'id'                => $macro->id,
-				'title'             => $macro->title,
-				'is_enabled'        => $macro->is_enabled,
-				'is_global'         => $macro->is_global,
-				'person_id'         => $macro->person ? $macro->person->id : null,
-				'person'            => $macro->person ? $macro->person->toApiData(true) : null,
-			);
+        foreach ($macros as $macro) {
+            $row = array(
+                'id'                => $macro->id,
+                'title'             => $macro->title,
+                'is_enabled'        => $macro->is_enabled,
+                'is_global'         => $macro->is_global,
+                'person_id'         => $macro->person ? $macro->person->id : null,
+                'person'            => $macro->person ? $macro->person->toApiData(true) : null,
+            );
 
-			$data[] = $row;
-		}
+            $data[] = $row;
+        }
 
-		return $this->createApiResponse(array(
-			'macros' => $data
-		));
-	}
+        return $this->createApiResponse(array(
+            'macros' => $data
+        ));
+    }
 
-    /**
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
+
+	/**
      * @param $id
      * @return Response
      * @throws \Doctrine\ORM\ORMException
@@ -123,19 +128,23 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function getAction($id)
-	{
-		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
-		if (!$macro) {
-			throw $this->createNotFoundException();
-		}
+    public function getAction($id)
+    {
+        $macro = $this->em->find('DeskPRO:TicketMacro', $id);
+        if (!$macro) {
+            throw $this->createNotFoundException();
+        }
 
-		$data = $this->getApiData($macro);
+        $data = $this->getApiData($macro);
 
-		return $this->createApiResponse(array(
-			'macro' => $data
-		));
-	}
+        return $this->createApiResponse(array(
+            'macro' => $data
+        ));
+    }
+
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
     /**
      * @param $id
@@ -177,44 +186,48 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function saveAction($id)
-	{
-		if ($id) {
-			$macro = $this->em->find('DeskPRO:TicketMacro', $id);
-			if (!$macro) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$macro = new TicketMacro();
-		}
+    public function saveAction($id)
+    {
+        if ($id) {
+            $macro = $this->em->find('DeskPRO:TicketMacro', $id);
+            if (!$macro) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $macro = new TicketMacro();
+        }
 
-		$macro->title = $this->in->getString('title');
+        $macro->title = $this->in->getString('title');
 
-		if ($this->in->getBool('is_global')) {
-			$macro->is_global = true;
-		} else {
-			$macro->is_global = false;
-			$macro->person = $this->container->getAgentData()->get($this->in->getUint('person_id'));
-		}
+        if ($this->in->getBool('is_global')) {
+            $macro->is_global = true;
+        } else {
+            $macro->is_global = false;
+            $macro->person = $this->container->getAgentData()->get($this->in->getUint('person_id'));
+        }
 
-		if (!$macro->person) {
-			$macro->is_global = true;
-		}
+        if (!$macro->person) {
+            $macro->is_global = true;
+        }
 
-		//TODO
-		//$actions = new MacroActions();
-		//$actions->importFromArray(array('actions' => $this->in->getArrayValue('actions')));
-		//$macro->actions = $actions;
+        //TODO
+        //$actions = new MacroActions();
+        //$actions->importFromArray(array('actions' => $this->in->getArrayValue('actions')));
+        //$macro->actions = $actions;
 
-		$this->em->persist($macro);
-		$this->em->flush();
+        $this->em->persist($macro);
+        $this->em->flush();
 
-		return $this->createSuccessResponse(array(
-			'macro_id' => $macro->id
-		));
-	}
+        return $this->createSuccessResponse(array(
+            'macro_id' => $macro->id
+        ));
+    }
 
-    /**
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
+
+	/**
      * @param $id
      * @return Response
      * @throws \Doctrine\ORM\ORMException
@@ -240,18 +253,18 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function removeAction($id)
-	{
-		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
-		if (!$macro) {
-			throw $this->createNotFoundException();
-		}
+    public function removeAction($id)
+    {
+        $macro = $this->em->find('DeskPRO:TicketMacro', $id);
+        if (!$macro) {
+            throw $this->createNotFoundException();
+        }
 
-		$old_id = $macro->id;
+        $old_id = $macro->id;
 
-		$this->em->remove($macro);
-		$this->em->flush();
+        $this->em->remove($macro);
+        $this->em->flush();
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 }

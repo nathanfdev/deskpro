@@ -56,7 +56,7 @@ use Application\DeskPRO\Entity\PageDisplayAbstract;
  * Usually `data` items map to Item classes to do certain work. But again, that is an implementation detail
  * up to the Page. The PortalPage for example maps items to classes that actual generate the HTML used on
  * the page.
- * 
+ *
  * = Data Structure =
  *
  * The data in a PageDisplay structure is as follows:
@@ -73,73 +73,69 @@ use Application\DeskPRO\Entity\PageDisplayAbstract;
  */
 class BasicPage
 {
-	const SECTION_DEFAULT = 'default';
+    const SECTION_DEFAULT = 'default';
 
-	/**
-	 * array[section] = page_display
-	 * @var \Application\DeskPRO\Entity\PageDisplayAbstract[]
-	 */
-	protected $page_displays = array();
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
-	 * @return void
-	 */
-	public function addPageDisplay(PageDisplayAbstract $page_display)
-	{
-		$section = $page_display['section'];
-		$this->page_displays[$section] = $page_display;
-	}
+    /**
+     * array[section] = page_display
+     * @var \Application\DeskPRO\Entity\PageDisplayAbstract[]
+     */
+    protected $page_displays = array();
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\PageDisplayAbstract[] $page_displays
-	 * @return void
-	 */
-	public function addPageDisplays(array $page_displays)
-	{
-		foreach ($page_displays as $page_display) {
-			$this->addPageDisplay($page_display);
-		}
-	}
+    /**
+     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
+     * @return void
+     */
+    public function addPageDisplay(PageDisplayAbstract $page_display)
+    {
+        $section = $page_display['section'];
+        $this->page_displays[$section] = $page_display;
+    }
 
+    /**
+     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract[] $page_displays
+     * @return void
+     */
+    public function addPageDisplays(array $page_displays)
+    {
+        foreach ($page_displays as $page_display) {
+            $this->addPageDisplay($page_display);
+        }
+    }
 
-	/**
-	 * Check to see if a section has been set
-	 *
-	 * @param string $section
-	 * @return bool
-	 */
-	public function hasPageDisplay($section)
-	{
-		return isset($this->page_displays[$section]);
-	}
+    /**
+     * Check to see if a section has been set
+     *
+     * @param  string $section
+     * @return bool
+     */
+    public function hasPageDisplay($section)
+    {
+        return isset($this->page_displays[$section]);
+    }
 
-	
-	/**
-	 * Returns a section
-	 *
-	 * @param  $section
-	 * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]|null
-	 */
-	public function getPageDisplay($section)
-	{
-		if (!isset($this->page_displays[$section])) {
-			return null;
-		}
+    /**
+     * Returns a section
+     *
+     * @param  $section
+     * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]|null
+     */
+    public function getPageDisplay($section)
+    {
+        if (!isset($this->page_displays[$section])) {
+            return null;
+        }
 
-		return $this->page_displays[$section];
-	}
+        return $this->page_displays[$section];
+    }
 
-	
-	/**
-	 * Get all page displays
-	 * 
-	 * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]
-	 */
-	public function getPageDisplays()
-	{
-		return $this->page_displays;
-	}
+    /**
+     * Get all page displays
+     *
+     * @return \Application\DeskPRO\Entity\PageDisplayAbstract[]
+     */
+    public function getPageDisplays()
+    {
+        return $this->page_displays;
+    }
 }

@@ -36,68 +36,68 @@ namespace Application\DeskPRO\PageDisplay\Item;
 
 abstract class ItemAbstract implements ItemInterface
 {
-	/**
-	 * @var array
-	 */
-	protected $data = array();
+    /**
+     * @var array
+     */
+    protected $data = array();
 
-	/**
-	 * Get the item ID
-	 * 
-	 * @return int
-	 */
-	public function getId()
-	{
-		if (isset($this->data['item_id'])) {
-			return $this->data['item_id'];
-		}
+    /**
+     * Get the item ID
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        if (isset($this->data['item_id'])) {
+            return $this->data['item_id'];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Sets item data
-	 *
-	 * @return void
-	 */
-	public function setData(array $data)
-	{
-		$this->setData = $data;
-	}
+    /**
+     * Sets item data
+     *
+     * @return void
+     */
+    public function setData(array $data)
+    {
+        $this->setData = $data;
+    }
 
-	/**
-	 * Set a speciifc value
-	 *
-	 * @param string $k
-	 * @param mixed $v
-	 */
-	public function setDataValue($k, $v)
-	{
-		$this->data[$k] = $v;
-	}
+    /**
+     * Set a speciifc value
+     *
+     * @param string $k
+     * @param mixed  $v
+     */
+    public function setDataValue($k, $v)
+    {
+        $this->data[$k] = $v;
+    }
 
-	public function getType()
-	{
-		return get_class($this);
-	}
+    public function getType()
+    {
+        return get_class($this);
+    }
 
-	/**
-	 * Returns item data
-	 *
-	 * @return array
-	 */
-	public function getData()
-	{
-		return $this->data;
-	}
+    /**
+     * Returns item data
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 
-	public function __isset($prop)
-	{
-		return isset($this->data[$prop]);
-	}
+    public function __isset($prop)
+    {
+        return isset($this->data[$prop]);
+    }
 
-	public function __get($prop)
-	{
-		return $this->data[$prop];
-	}
+    public function __get($prop)
+    {
+        return $this->data[$prop];
+    }
 }

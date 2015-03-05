@@ -37,212 +37,214 @@ namespace Application\DeskPRO\Command;
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:internal-upgrade-runner');
-	}
+    protected function configure()
+    {
+        $this->setName('dp:internal-upgrade-runner');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$output->setVerbosity(0);
-		if ($input->getOption('verbose')) {
-			$output->setVerbosity(2);
-		}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(0);
+        if ($input->getOption('verbose')) {
+            $output->setVerbosity(2);
+        }
 
-		$check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.dp-cron'));
-		if ($check) {
-			$date = new \DateTime('@'.$check);
-			$date_cut = new \DateTime('-15 minutes');
+        $check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.dp-cron'));
+        if ($check) {
+            $date = new \DateTime('@'.$check);
+            $date_cut = new \DateTime('-15 minutes');
 
-			if ($date_cut < $date) {
-				// Giving it more time to run
-				return 0;
-			}
-			// Otherwise assume crashed and continue
-		}
+            if ($date_cut < $date) {
+                // Giving it more time to run
+                return 0;
+            }
+            // Otherwise assume crashed and continue
+        }
 
-		@file_put_contents(dp_get_tmp_dir() . '/auto-upgrade-started', time());
+        @file_put_contents(dp_get_tmp_dir() . '/auto-upgrade-started', time());
 
-		if (file_exists(DP_WEB_ROOT . '/auto-update-status.php')) {
-			@unlink(DP_WEB_ROOT . '/auto-update-status.php');
-		}
-		$write_status = function($code, $message = '') {
-			$fp = @fopen(DP_WEB_ROOT . '/auto-update-status.php', 'a');
-			if (!$fp) {
-				return false;
-			}
-			$time = time();
+        if (file_exists(DP_WEB_ROOT . '/auto-update-status.php')) {
+            @unlink(DP_WEB_ROOT . '/auto-update-status.php');
+        }
+        $write_status = function ($code, $message = '') {
+            $fp = @fopen(DP_WEB_ROOT . '/auto-update-status.php', 'a');
+            if (!$fp) {
+                return false;
+            }
+            $time = time();
 
-			if (is_array($message)) {
-				$message = json_encode($message);
-			}
+            if (is_array($message)) {
+                $message = json_encode($message);
+            }
 
-			// Wont ever happen, but best be sure
-			$message = str_replace('<?', '< ?', $message);
+            // Wont ever happen, but best be sure
+            $message = str_replace('<?', '< ?', $message);
 
-			if (!@fwrite($fp, "STATUS(" . $code . ")@$time#$message\n")) {
-				return false;
-			}
-			@fclose($fp);
+            if (!@fwrite($fp, "STATUS(" . $code . ")@$time#$message\n")) {
+                return false;
+            }
+            @fclose($fp);
 
-			@file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
+            @file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
 
-			return true;
-		};
+            return true;
+        };
 
-		$skip_seg = '';
-		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
-			$skip_seg .= ' --skip-backup-file';
-		}
-		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
-			$skip_seg .= ' --skip-backup-db ';
-		}
+        $skip_seg = '';
+        if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
+            $skip_seg .= ' --skip-backup-file';
+        }
+        if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
+            $skip_seg .= ' --skip-backup-db ';
+        }
 
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
 
-		if (!$write_status('runner_start')) {
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', 1);
-			$output->write('<error>Could not write upgrade status file to root dir: ' . DP_WEB_ROOT . '</error>');
-			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
-			return 1;
-		}
+        if (!$write_status('runner_start')) {
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', 1);
+            $output->write('<error>Could not write upgrade status file to root dir: ' . DP_WEB_ROOT . '</error>');
+            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
-		@chmod(DP_WEB_ROOT . '/auto-update-status.php', 0777);
+            return 1;
+        }
 
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', 1);
+        @chmod(DP_WEB_ROOT . '/auto-update-status.php', 0777);
 
-		if (!dp_get_php_path(true)) {
-			$write_status('error_php_path');
-			$write_status("error_unknown_binary", array('php'));
-			$write_status("error_basic_checks_fail");
-			$output->write('<error>Could not find path to PHP</error>');
-			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
-			return 1;
-		}
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', 1);
 
-		#-------------------------
-		# Check PHP infos
-		#-------------------------
+        if (!dp_get_php_path(true)) {
+            $write_status('error_php_path');
+            $write_status("error_unknown_binary", array('php'));
+            $write_status("error_basic_checks_fail");
+            $output->write('<error>Could not find path to PHP</error>');
+            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
-		if (dp_is_php_path_guessed()) {
-			$cmd = sprintf(
-				"%s %s",
-				dp_get_php_path(),
-				escapeshellarg(DP_ROOT.'/bin/phpinfo.php')
-			);
+            return 1;
+        }
 
-			$ret = null;
-			$out = null;
-			exec($cmd, $out, $ret);
+        #-------------------------
+        # Check PHP infos
+        #-------------------------
 
-			$fail = true;
-			if ($out) {
-				$check_phpinfo = implode("\n", $out);
-				$fail = !\Orb\Util\Env::isSamePhpInfo(
-					\Orb\Util\Env::getPhpInfo(),
-					$check_phpinfo
-				);
-			}
+        if (dp_is_php_path_guessed()) {
+            $cmd = sprintf(
+                "%s %s",
+                dp_get_php_path(),
+                escapeshellarg(DP_ROOT.'/bin/phpinfo.php')
+            );
 
-			if ($fail) {
-				$write_status('error_php_path');
-				$write_status("error_unknown_binary", array('php'));
-				$write_status("error_basic_checks_fail");
-				$output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
-				@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-				@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
-				return 1;
-			}
-		}
+            $ret = null;
+            $out = null;
+            exec($cmd, $out, $ret);
 
-		#-------------------------
-		# Make sure PHP we have passes requirements
-		#-------------------------
+            $fail = true;
+            if ($out) {
+                $check_phpinfo = implode("\n", $out);
+                $fail = !\Orb\Util\Env::isSamePhpInfo(
+                    \Orb\Util\Env::getPhpInfo(),
+                    $check_phpinfo
+                );
+            }
 
-		$cmd = sprintf(
-			"%s %s",
-			dp_get_php_path(),
-			escapeshellarg(DP_ROOT.'/bin/check-req.php')
-		);
+            if ($fail) {
+                $write_status('error_php_path');
+                $write_status("error_unknown_binary", array('php'));
+                $write_status("error_basic_checks_fail");
+                $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
+                @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+                @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
-		$ret = null;
-		$out = null;
-		exec($cmd, $out, $ret);
+                return 1;
+            }
+        }
 
-		if (!$out) $out = array();
+        #-------------------------
+        # Make sure PHP we have passes requirements
+        #-------------------------
 
-		$out = implode("\n", $out);
+        $cmd = sprintf(
+            "%s %s",
+            dp_get_php_path(),
+            escapeshellarg(DP_ROOT.'/bin/check-req.php')
+        );
 
-		if ($ret || strpos($out, 'OKAY') === false) {
-			$write_status("error_php_binary_failcheck");
-			$write_status("error_basic_checks_fail", str_replace("\n", ' ', trim($out)));
-			$output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
-			$output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
+        $ret = null;
+        $out = null;
+        exec($cmd, $out, $ret);
 
-			// Failed before we could actually do anything, dont keep helpdesk offline
-			$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
-			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+        if (!$out) $out = array();
 
-			return 1;
-		}
+        $out = implode("\n", $out);
 
-		#-------------------------
-		# Exec upgrade command
-		#-------------------------
+        if ($ret || strpos($out, 'OKAY') === false) {
+            $write_status("error_php_binary_failcheck");
+            $write_status("error_basic_checks_fail", str_replace("\n", ' ', trim($out)));
+            $output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
+            $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 
-		$cmd = sprintf(
-			"%s %s --auto --quiet --write-status-file %s",
-			dp_get_php_path(),
-			escapeshellarg(DP_ROOT.'/bin/upgrade-util.php'),
-			$skip_seg
-		);
+            // Failed before we could actually do anything, dont keep helpdesk offline
+            $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
-		$write_status('exec_cmd', $cmd);
+            return 1;
+        }
 
-		set_time_limit(0);
-		$ret = null;
-		$out = null;
-		exec($cmd, $out, $ret);
+        #-------------------------
+        # Exec upgrade command
+        #-------------------------
 
-		if (!$out) {
-			$out = array();
-		}
+        $cmd = sprintf(
+            "%s %s --auto --quiet --write-status-file %s",
+            dp_get_php_path(),
+            escapeshellarg(DP_ROOT.'/bin/upgrade-util.php'),
+            $skip_seg
+        );
 
-		$write_status('exec_result', $ret);
-		$str_collapsed = implode(' ', $out);
-		$write_status('exec_output', $str_collapsed);
+        $write_status('exec_cmd', $cmd);
 
-		$str = implode("\n", $out);
-		if ($str) {
-			echo $str;
-		}
+        set_time_limit(0);
+        $ret = null;
+        $out = null;
+        exec($cmd, $out, $ret);
 
-		// Report a error status
-		if ($ret) {
-			$write_status('error_command', $str_collapsed);
-		}
+        if (!$out) {
+            $out = array();
+        }
 
-		$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+        $write_status('exec_result', $ret);
+        $str_collapsed = implode(' ', $out);
+        $write_status('exec_output', $str_collapsed);
 
-		@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-		@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+        $str = implode("\n", $out);
+        if ($str) {
+            echo $str;
+        }
 
-		return $ret;
-	}
+        // Report a error status
+        if ($ret) {
+            $write_status('error_command', $str_collapsed);
+        }
+
+        $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
+        $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+
+        @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+        @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+
+        return $ret;
+    }
 }

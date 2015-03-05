@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1368692429 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Switch status to awaiting_agent for is_hold tickets");
-		$this->execMutateSql("
-			UPDATE tickets
-			SET status = 'awaiting_agent'
-			WHERE status != 'awaiting_agent' AND is_hold = 1
-		");
-		$this->execMutateSql("
-			UPDATE tickets_search_active
-			SET status = 'awaiting_agent'
-			WHERE status != 'awaiting_agent' AND is_hold = 1
-		");
-	}
+    public function run()
+    {
+        $this->out("Switch status to awaiting_agent for is_hold tickets");
+        $this->execMutateSql("
+            UPDATE tickets
+            SET status = 'awaiting_agent'
+            WHERE status != 'awaiting_agent' AND is_hold = 1
+        ");
+        $this->execMutateSql("
+            UPDATE tickets_search_active
+            SET status = 'awaiting_agent'
+            WHERE status != 'awaiting_agent' AND is_hold = 1
+        ");
+    }
 }

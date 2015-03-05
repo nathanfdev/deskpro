@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350383706 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets.notify_email_agent and tickets.notify_email_name_agent");
-		$this->execMutateSql("ALTER TABLE tickets ADD notify_email_agent VARCHAR(200) NOT NULL, ADD notify_email_name_agent VARCHAR(200) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add tickets.notify_email_agent and tickets.notify_email_name_agent");
+        $this->execMutateSql("ALTER TABLE tickets ADD notify_email_agent VARCHAR(200) NOT NULL, ADD notify_email_name_agent VARCHAR(200) NOT NULL");
+    }
 }

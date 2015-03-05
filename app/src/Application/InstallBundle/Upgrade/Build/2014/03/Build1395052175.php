@@ -36,8 +36,8 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1395052175 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->execMutateSql("CREATE INDEX date_created_idx ON tickets_messages (date_created)");
-	}
+    public function run()
+    {
+        $this->execMutateSql("CREATE INDEX date_created_idx ON tickets_messages (date_created)");
+    }
 }

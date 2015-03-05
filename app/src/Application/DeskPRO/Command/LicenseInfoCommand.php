@@ -33,53 +33,53 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use DeskPRO\Kernel\License;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class LicenseInfoCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:license-info');
-	}
+    protected function configure()
+    {
+        $this->setName('dp:license-info');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$lic = License::getLicense();
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $lic = License::getLicense();
 
-		if ($lic->isLicenseCodeError()) {
-			echo "License Error: " . $lic->getLicenseCodeError();
-			return 1;
-		}
+        if ($lic->isLicenseCodeError()) {
+            echo "License Error: " . $lic->getLicenseCodeError();
 
-		echo "License ID: " . $lic->getLicenseId();
-		echo "\n";
+            return 1;
+        }
 
-		echo "Expires: ";
-		if ($lic->getExpireDate()) {
-			echo $lic->getExpireDate()->format('Y-m-d H:i:s');
+        echo "License ID: " . $lic->getLicenseId();
+        echo "\n";
 
-			$diff = $lic->getExpireDate()->getTimestamp() - time();
-			if ($diff < 1) {
-				echo " (EXPIRED)";
-			} else {
-				echo " (" . \Orb\Util\Dates::secsToReadable($diff, 3) . ")";
-			}
-		} else {
-			echo "Never";
-		}
-		echo "\n";
+        echo "Expires: ";
+        if ($lic->getExpireDate()) {
+            echo $lic->getExpireDate()->format('Y-m-d H:i:s');
 
-		echo "Agents: ";
-		if ($lic->getMaxAgents()) {
-			echo $lic->getMaxAgents();
-		} else {
-			echo "Unlimited";
-		}
-		echo "\n";
+            $diff = $lic->getExpireDate()->getTimestamp() - time();
+            if ($diff < 1) {
+                echo " (EXPIRED)";
+            } else {
+                echo " (" . \Orb\Util\Dates::secsToReadable($diff, 3) . ")";
+            }
+        } else {
+            echo "Never";
+        }
+        echo "\n";
 
-		return 0;
-	}
+        echo "Agents: ";
+        if ($lic->getMaxAgents()) {
+            echo $lic->getMaxAgents();
+        } else {
+            echo "Unlimited";
+        }
+        echo "\n";
+
+        return 0;
+    }
 }

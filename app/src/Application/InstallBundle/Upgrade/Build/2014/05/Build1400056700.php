@@ -36,32 +36,32 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056700 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
-		$me = $this;
-		$this->out("Saving table data for future steps");
+    public function run()
+    {
+        $db = $this->container->getDb();
+        $me = $this;
+        $this->out("Saving table data for future steps");
 
-		$fn_save_table = function($table) use ($db, $me) {
-			$recs = $db->fetchAll("SELECT * FROM $table");
-			if (!$recs) $recs = array();
-			$me->saveUpgradeData('201404', $table, $recs);
-		};
+        $fn_save_table = function ($table) use ($db, $me) {
+            $recs = $db->fetchAll("SELECT * FROM $table");
+            if (!$recs) $recs = array();
+            $me->saveUpgradeData('201404', $table, $recs);
+        };
 
-		$fn_save_table('web_hooks');
-		$fn_save_table('email_gateway_addresses');
-		$fn_save_table('email_gateways');
-		$fn_save_table('email_transports');
-		$fn_save_table('ticket_page_display');
-		$fn_save_table('ticket_filters');
-		$fn_save_table('ticket_triggers');
-		$fn_save_table('slas');
-		$fn_save_table('sla_people');
-		$fn_save_table('sla_organizations');
-		$fn_save_table('departments');
-		$fn_save_table('widgets');
-		$fn_save_table('plugins');
-		$fn_save_table('usersources');
-		$fn_save_table('templates');
-	}
+        $fn_save_table('web_hooks');
+        $fn_save_table('email_gateway_addresses');
+        $fn_save_table('email_gateways');
+        $fn_save_table('email_transports');
+        $fn_save_table('ticket_page_display');
+        $fn_save_table('ticket_filters');
+        $fn_save_table('ticket_triggers');
+        $fn_save_table('slas');
+        $fn_save_table('sla_people');
+        $fn_save_table('sla_organizations');
+        $fn_save_table('departments');
+        $fn_save_table('widgets');
+        $fn_save_table('plugins');
+        $fn_save_table('usersources');
+        $fn_save_table('templates');
+    }
 }

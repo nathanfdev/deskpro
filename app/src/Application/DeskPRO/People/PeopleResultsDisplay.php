@@ -38,302 +38,308 @@ use Application\DeskPRO\Entity\Person;
 
 class PeopleResultsDisplay
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person[]
-	 */
-	protected $people;
+    /**
+     * @var \Application\DeskPRO\Entity\Person[]
+     */
+    protected $people;
 
-	/**
-	 * @var array
-	 */
-	protected $people_ids;
+    /**
+     * @var array
+     */
+    protected $people_ids;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var \Application\DeskPRO\CustomFields\FieldManager
-	 */
-	protected $field_manager;
+    /**
+     * @var \Application\DeskPRO\CustomFields\FieldManager
+     */
+    protected $field_manager;
 
-	/**
-	 * @var int
-	 */
-	protected $people_count;
+    /**
+     * @var int
+     */
+    protected $people_count;
 
-	/**
-	 * @var array
-	 */
-	protected $all_labels;
+    /**
+     * @var array
+     */
+    protected $all_labels;
 
-	/**
-	 * @var array
-	 */
-	protected $people_ticket_counts;
+    /**
+     * @var array
+     */
+    protected $people_ticket_counts;
 
-	/**
-	 * @var array
-	 */
-	protected $primary_emails;
+    /**
+     * @var array
+     */
+    protected $primary_emails;
 
-	/**
-	 * @var array
-	 */
-	protected $people_fields;
+    /**
+     * @var array
+     */
+    protected $people_fields;
 
-	/**
-	 * @var array
-	 */
-	protected $people_usernames;
+    /**
+     * @var array
+     */
+    protected $people_usernames;
 
-	/**
-	 * @var array
-	 */
-	protected $all_fields_data;
+    /**
+     * @var array
+     */
+    protected $all_fields_data;
 
-	/**
-	 * @param \Application\DeskPRO\Entity\People[] $people
-	 */
-	public function __construct(array $people)
-	{
-		$this->people = $people;
-		$this->people_count = count($people);
-		$this->people_ids = array();
-		foreach ($this->people as $p) {
-			$this->people_ids[] = $p->id;
-		}
+    /**
+     * @param \Application\DeskPRO\Entity\People[] $people
+     */
+    public function __construct(array $people)
+    {
+        $this->people = $people;
+        $this->people_count = count($people);
+        $this->people_ids = array();
+        foreach ($this->people as $p) {
+            $this->people_ids[] = $p->id;
+        }
 
-		$this->em = App::getOrm();
-		$this->db = $this->em->getConnection();
-		$this->field_manager = App::getSystemService('person_fields_manager');
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getCount()
-	{
-		return $this->people_count;
-	}
+        $this->em = App::getOrm();
+        $this->db = $this->em->getConnection();
+        $this->field_manager = App::getSystemService('person_fields_manager');
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Person[]
-	 */
-	public function getPeople()
-	{
-		return $this->people;
-	}
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+        return $this->people_count;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getAllLabels()
-	{
-		if ($this->all_labels !== null) return $this->all_labels;
-
-		if (!$this->people_count) {
-			$this->all_labels = array();
-			return $this->all_labels;
-		}
-
-		$people_ids = implode(',', $this->people_ids);
-
-		$this->all_labels = $this->db->fetchAllGrouped("
-			SELECT person_id, label
-			FROM labels_people
-			WHERE person_id IN ($people_ids)
-		", array(), 'person_id', null, 'label');
-
-		return $this->all_labels;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getAllUsernames()
-	{
-		if ($this->people_usernames !== null) return $this->people_usernames;
-
-		if (!$this->people_count) {
-			$this->people_usernames = array();
-			return $this->people_usernames;
-		}
-
-		$people_ids = implode(',', $this->people_ids);
-
-		$this->people_usernames = $this->db->fetchAllGrouped("
-			SELECT person_id, identity_friendly
-			FROM person_usersource_assoc
-			WHERE person_id IN ($people_ids) AND identity_friendly != ''
-		", array(), 'person_id', null, 'identity_friendly');
-
-		return $this->people_usernames;
-	}
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function getEmail(Person $person)
-	{
-		if (!$person->primary_email) {
-			return null;
-		}
-
-		if ($this->primary_emails === null) {
-			$primary_email_ids = array();
-			foreach ($this->people as $p) {
-				if ($p->primary_email) {
-					$primary_email_ids[] = $p->primary_email->getId();
-				}
-			}
-
-			$this->primary_emails = $this->em->getRepository('DeskPRO:PersonEmail')->getByIds($primary_email_ids);
-		}
-
-		return $this->primary_emails[$person->primary_email->getId()];
-	}
-
-	public function getAllFieldsData()
-	{
-		if ($this->all_fields_data !== null) return $this->all_fields_data;
-		$data = $this->em->createQuery("
-			SELECT d, def, root_def
-			FROM DeskPRO:CustomDataPerson AS d
-			LEFT JOIN d.field def
-			LEFT JOIN d.root_field root_def
-			WHERE d.person IN (?0)
-		")->execute(array(array_values($this->people_ids)));
-
-		$this->all_fields_data = array();
-		foreach ($data as $d) {
-			$tid = $d->person->getId();
-			if (!isset($this->all_fields_data[$tid])) {
-				$this->all_fields_data[$tid] = array();
-			}
-
-			$this->all_fields_data[$tid][] = $d;
-		}
-
-		return $this->all_fields_data;
-	}
-
-	/**
-	 * @param Person $person
-	 * @return array
-	 */
-	public function getUserFieldData(Person $person)
-	{
-		$this->getAllFieldsData();
-		return isset($this->all_fields_data[$person->getId()]) ? $this->all_fields_data[$person->getId()] : array();
-	}
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function getCustomFields(Person $person)
-	{
-		if ($this->people_fields === null) {
-			$field_data = $this->em->createQuery("
-				SELECT cp FROM DeskPRO:CustomDataPerson cp
-				WHERE cp.person IN (?0)
-			")->execute(array($this->people_ids));
-
-			$person_data = array();
-
-			foreach ($field_data as $data) {
-				$pid = $data->person->getId();
-				if (!isset($person_data[$pid])) {
-					$person_data[$pid] = array();
-				}
-
-				$person_data[$pid][] = $data;
-			}
-
-			$this->people_fields = array();
-			foreach ($person_data as $pid => $custom_data) {
-				$this->people_fields[$pid] = $this->field_manager->getDisplayArray($this->field_manager->createFieldDataFromArray($custom_data), null);
-			}
-		}
-
-		if (isset($this->people_fields[$person->id])) {
-			return $this->people_fields[$person->id];
-		} else {
-			return array();
-		}
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
+    public function getPeople()
+    {
+        return $this->people;
+    }
 
 
-	/**
-	 * Get an array of labels applied to a person
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return array
-	 */
-	public function getPersonLabels(Person $person)
-	{
-		$this->getAllLabels();
-		return empty($this->all_labels[$person->id]) ? array() : $this->all_labels[$person->id];
-	}
+    /**
+     * @return array
+     */
+    public function getAllLabels()
+    {
+        if ($this->all_labels !== null) return $this->all_labels;
+
+        if (!$this->people_count) {
+            $this->all_labels = array();
+
+            return $this->all_labels;
+        }
+
+        $people_ids = implode(',', $this->people_ids);
+
+        $this->all_labels = $this->db->fetchAllGrouped("
+            SELECT person_id, label
+            FROM labels_people
+            WHERE person_id IN ($people_ids)
+        ", array(), 'person_id', null, 'label');
+
+        return $this->all_labels;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllUsernames()
+    {
+        if ($this->people_usernames !== null) return $this->people_usernames;
+
+        if (!$this->people_count) {
+            $this->people_usernames = array();
+
+            return $this->people_usernames;
+        }
+
+        $people_ids = implode(',', $this->people_ids);
+
+        $this->people_usernames = $this->db->fetchAllGrouped("
+            SELECT person_id, identity_friendly
+            FROM person_usersource_assoc
+            WHERE person_id IN ($people_ids) AND identity_friendly != ''
+        ", array(), 'person_id', null, 'identity_friendly');
+
+        return $this->people_usernames;
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function getEmail(Person $person)
+    {
+        if (!$person->primary_email) {
+            return null;
+        }
+
+        if ($this->primary_emails === null) {
+            $primary_email_ids = array();
+            foreach ($this->people as $p) {
+                if ($p->primary_email) {
+                    $primary_email_ids[] = $p->primary_email->getId();
+                }
+            }
+
+            $this->primary_emails = $this->em->getRepository('DeskPRO:PersonEmail')->getByIds($primary_email_ids);
+        }
+
+        return $this->primary_emails[$person->primary_email->getId()];
+    }
+
+    public function getAllFieldsData()
+    {
+        if ($this->all_fields_data !== null) return $this->all_fields_data;
+        $data = $this->em->createQuery("
+            SELECT d, def, root_def
+            FROM DeskPRO:CustomDataPerson AS d
+            LEFT JOIN d.field def
+            LEFT JOIN d.root_field root_def
+            WHERE d.person IN (?0)
+        ")->execute(array(array_values($this->people_ids)));
+
+        $this->all_fields_data = array();
+        foreach ($data as $d) {
+            $tid = $d->person->getId();
+            if (!isset($this->all_fields_data[$tid])) {
+                $this->all_fields_data[$tid] = array();
+            }
+
+            $this->all_fields_data[$tid][] = $d;
+        }
+
+        return $this->all_fields_data;
+    }
+
+    /**
+     * @param  Person $person
+     * @return array
+     */
+    public function getUserFieldData(Person $person)
+    {
+        $this->getAllFieldsData();
+
+        return isset($this->all_fields_data[$person->getId()]) ? $this->all_fields_data[$person->getId()] : array();
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function getCustomFields(Person $person)
+    {
+        if ($this->people_fields === null) {
+            $field_data = $this->em->createQuery("
+                SELECT cp FROM DeskPRO:CustomDataPerson cp
+                WHERE cp.person IN (?0)
+            ")->execute(array($this->people_ids));
+
+            $person_data = array();
+
+            foreach ($field_data as $data) {
+                $pid = $data->person->getId();
+                if (!isset($person_data[$pid])) {
+                    $person_data[$pid] = array();
+                }
+
+                $person_data[$pid][] = $data;
+            }
+
+            $this->people_fields = array();
+            foreach ($person_data as $pid => $custom_data) {
+                $this->people_fields[$pid] = $this->field_manager->getDisplayArray($this->field_manager->createFieldDataFromArray($custom_data), null);
+            }
+        }
+
+        if (isset($this->people_fields[$person->id])) {
+            return $this->people_fields[$person->id];
+        } else {
+            return array();
+        }
+    }
 
 
-	/**
-	 * Get an array of usernames from usersources applied to a person
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return array
-	 */
-	public function getPersonUsernames(Person $person)
-	{
-		$this->getAllUsernames();
-		return empty($this->people_usernames[$person->id]) ? array() : $this->people_usernames[$person->id];
-	}
+    /**
+     * Get an array of labels applied to a person
+     *
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @return array
+     */
+    public function getPersonLabels(Person $person)
+    {
+        $this->getAllLabels();
+
+        return empty($this->all_labels[$person->id]) ? array() : $this->all_labels[$person->id];
+    }
 
 
-	/**
-	 * Check if a person has labels
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return bool
-	 */
-	public function hasPersonLabels(Person $person)
-	{
-		$this->getAllLabels();
-		return !empty($this->all_labels[$person->id]);
-	}
+    /**
+     * Get an array of usernames from usersources applied to a person
+     *
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @return array
+     */
+    public function getPersonUsernames(Person $person)
+    {
+        $this->getAllUsernames();
+
+        return empty($this->people_usernames[$person->id]) ? array() : $this->people_usernames[$person->id];
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getAllPeopleTicketCounts()
-	{
-		if ($this->people_ticket_counts !== null) return $this->people_ticket_counts;
+    /**
+     * Check if a person has labels
+     *
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @return bool
+     */
+    public function hasPersonLabels(Person $person)
+    {
+        $this->getAllLabels();
 
-		$this->people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($this->people);
-
-		return $this->people_ticket_counts;
-	}
+        return !empty($this->all_labels[$person->id]);
+    }
 
 
-	/**
-	 * Get the number of tickets submitted by a user.
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return int
-	 */
-	public function getPersonTicketCount(Person $person)
-	{
-		$this->getAllPeopleTicketCounts();
-		return isset($this->people_ticket_counts[$person->id]) ? $this->people_ticket_counts[$person->id] : 0;
-	}
+    /**
+     * @return array
+     */
+    public function getAllPeopleTicketCounts()
+    {
+        if ($this->people_ticket_counts !== null) return $this->people_ticket_counts;
+
+        $this->people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($this->people);
+
+        return $this->people_ticket_counts;
+    }
+
+    /**
+     * Get the number of tickets submitted by a user.
+     *
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @return int
+     */
+    public function getPersonTicketCount(Person $person)
+    {
+        $this->getAllPeopleTicketCounts();
+
+        return isset($this->people_ticket_counts[$person->id]) ? $this->people_ticket_counts[$person->id] : 0;
+    }
 }

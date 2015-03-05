@@ -46,31 +46,32 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserLabel extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('labels');
-		$options->addCallbackCheckedOption('labels', function($v) {
-			return !empty($v);
-		});
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('labels');
+        $options->addCallbackCheckedOption('labels', function ($v) {
+            return !empty($v);
+        });
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$labels = DeskPROUtil::labelsArrayFromString($this->getTermOptions()->get('labels', ''));
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $labels = DeskPROUtil::labelsArrayFromString($this->getTermOptions()->get('labels', ''));
 
-		if (!$labels) {
-			return false;
-		}
+        if (!$labels) {
+            return false;
+        }
 
-		return $this->isEntityMatch($ticket, $context, 'person.labels[]', 'label', $labels);
-	}
+        return $this->isEntityMatch($ticket, $context, 'person.labels[]', 'label', $labels);
+    }
 }

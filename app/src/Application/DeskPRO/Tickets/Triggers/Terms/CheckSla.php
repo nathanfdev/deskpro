@@ -45,49 +45,50 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckSla extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('sla_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('sla_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		$map = array();
-		foreach ($ticket->ticket_slas as $ticket_sla) {
-			$map[$ticket_sla->sla->id] = $ticket_sla;
-		}
+        $map = array();
+        foreach ($ticket->ticket_slas as $ticket_sla) {
+            $map[$ticket_sla->sla->id] = $ticket_sla;
+        }
 
-		$passing = true;
-		foreach ($options->get('sla_ids') as $sla_id) {
-			if (!isset($map[$sla_id])) {
-				$passing = false;
-				break;
-			}
-		}
+        $passing = true;
+        foreach ($options->get('sla_ids') as $sla_id) {
+            if (!isset($map[$sla_id])) {
+                $passing = false;
+                break;
+            }
+        }
 
-		switch ($this->getTermOperator()) {
-			case 'is':
-			case 'contains':
-				return $passing;
-				break;
+        switch ($this->getTermOperator()) {
+            case 'is':
+            case 'contains':
+                return $passing;
+                break;
 
-			case 'not':
-			case 'notcontains':
-				return !$passing;
-				break;
-		}
+            case 'not':
+            case 'notcontains':
+                return !$passing;
+                break;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

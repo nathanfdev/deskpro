@@ -39,61 +39,61 @@ use Application\DeskPRO\Entity;
 
 class TicketAccessCode extends AbstractEntityRepository
 {
-	public function findByAccessCode($access_code)
-	{
-		$info = Entity\TicketAccessCode::decodeAccessCode($access_code);
-		if (!$info) {
-			return null;
-		}
+    public function findByAccessCode($access_code)
+    {
+        $info = Entity\TicketAccessCode::decodeAccessCode($access_code);
+        if (!$info) {
+            return null;
+        }
 
-		try {
-			$rec = $this->getEntityManager()->createQuery("
-				SELECT tac
-				FROM DeskPRO:TicketAccessCode tac
-				WHERE tac.id = :access_code_id AND tac.auth = :auth
-			")->setParameters($info)->setMaxResults(1)->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
-		}
+        try {
+            $rec = $this->getEntityManager()->createQuery("
+                SELECT tac
+                FROM DeskPRO:TicketAccessCode tac
+                WHERE tac.id = :access_code_id AND tac.auth = :auth
+            ")->setParameters($info)->setMaxResults(1)->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
 
-		return $rec;
-	}
+        return $rec;
+    }
 
-	public function getTacArrayFromAccessCode($access_code)
-	{
-		$info = Entity\TicketAccessCode::decodeAccessCode($access_code);
-		if (!$info) {
-			return null;
-		}
+    public function getTacArrayFromAccessCode($access_code)
+    {
+        $info = Entity\TicketAccessCode::decodeAccessCode($access_code);
+        if (!$info) {
+            return null;
+        }
 
-		$tac = App::getDb()->fetchAssoc("
-			SELECT *
-			FROM ticket_access_codes
-			WHERE id = ? AND auth = ?
-		", array($info['access_code_id'], $info['auth']));
+        $tac = App::getDb()->fetchAssoc("
+            SELECT *
+            FROM ticket_access_codes
+            WHERE id = ? AND auth = ?
+        ", array($info['access_code_id'], $info['auth']));
 
-		if (!$tac) {
-			return null;
-		}
+        if (!$tac) {
+            return null;
+        }
 
-		return $tac;
-	}
+        return $tac;
+    }
 
-	public function findByTicketAndPerson($ticket, $person)
-	{
-		if (!$person->id || !$ticket->id) {
-			return null;
-		}
-		try {
-			$rec = $this->getEntityManager()->createQuery("
-				SELECT tac
-				FROM DeskPRO:TicketAccessCode tac
-				WHERE tac.ticket = ?1 AND tac.person = ?2
-			")->setParameters(array(1=>$ticket, 2=>$person))->setMaxResults(1)->getSingleResult();
+    public function findByTicketAndPerson($ticket, $person)
+    {
+        if (!$person->id || !$ticket->id) {
+            return null;
+        }
+        try {
+            $rec = $this->getEntityManager()->createQuery("
+                SELECT tac
+                FROM DeskPRO:TicketAccessCode tac
+                WHERE tac.ticket = ?1 AND tac.person = ?2
+            ")->setParameters(array(1=>$ticket, 2=>$person))->setMaxResults(1)->getSingleResult();
 
-			return $rec;
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
-		}
-	}
+            return $rec;
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
 }

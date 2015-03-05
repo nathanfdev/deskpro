@@ -36,27 +36,26 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 /**
  * Similar to Content except this just takes a template name and renders it.
- * 
+ *
  * @option string  tpl   The template name
  */
 class Template extends PortalItemAbstract
 {
-	public function getHtml()
-	{
-		$vars = $this->getVars();
-		$vars = array_merge($vars, array(
-			'section' => $this->section,
-			'options' => $this->options
-		));
-		
-		$html = $this->renderView($this->getOption('tpl'), $vars);
+    public function getHtml()
+    {
+        $vars = $this->getVars();
+        $vars = array_merge($vars, array(
+            'section' => $this->section,
+            'options' => $this->options
+        ));
 
-		return $html;
-	}
+        $html = $this->renderView($this->getOption('tpl'), $vars);
 
+        return $html;
+    }
 
-	public function getVars()
-	{
-		return array();
-	}
+    public function getVars()
+    {
+        return array();
+    }
 }

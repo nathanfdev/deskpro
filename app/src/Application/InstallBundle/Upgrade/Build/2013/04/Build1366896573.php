@@ -34,23 +34,21 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
 class Build1366896573 extends AbstractBuild
 {
-	public function run()
-	{
-		// Delete all success logs
-		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
-		$this->execMutateSql("TRUNCATE TABLE sendmail_queue");
-		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
+    public function run()
+    {
+        // Delete all success logs
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+        $this->execMutateSql("TRUNCATE TABLE sendmail_queue");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
 
-		// Drop old sendmail_queue_part table
-		$this->execMutateSql("DROP TABLE sendmail_queue_part");
+        // Drop old sendmail_queue_part table
+        $this->execMutateSql("DROP TABLE sendmail_queue_part");
 
-		$this->out("Add sendmail_queue.blob_id field");
-		$this->execMutateSql("ALTER TABLE sendmail_queue ADD blob_id INT DEFAULT NULL, ADD from_address LONGTEXT NOT NULL, CHANGE to_address to_address LONGTEXT NOT NULL");
-		$this->execMutateSql("ALTER TABLE sendmail_queue ADD CONSTRAINT FK_DDB369C2ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_DDB369C2ED3E8EA5 ON sendmail_queue (blob_id)");
-	}
+        $this->out("Add sendmail_queue.blob_id field");
+        $this->execMutateSql("ALTER TABLE sendmail_queue ADD blob_id INT DEFAULT NULL, ADD from_address LONGTEXT NOT NULL, CHANGE to_address to_address LONGTEXT NOT NULL");
+        $this->execMutateSql("ALTER TABLE sendmail_queue ADD CONSTRAINT FK_DDB369C2ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_DDB369C2ED3E8EA5 ON sendmail_queue (blob_id)");
+    }
 }

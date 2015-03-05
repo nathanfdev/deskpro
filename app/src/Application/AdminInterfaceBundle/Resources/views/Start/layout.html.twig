@@ -10,8 +10,8 @@
 	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';</script>
 	<![endif]-->
 
-	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/build/Admin/css/admin-style.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
 </head>
 <body>
 
@@ -56,7 +56,10 @@ window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_
 window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 </script>
 
-<script type="text/javascript">window.DP_INTERFACE_LOADER = 'AdminStartLoad';</script>
-<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+<script type="text/javascript">
+	window.name = "NG_DEFER_BOOTSTRAP!";
+	window.DP_INTERFACE_LOADER = 'AdminStartLoad';
+</script>
+<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 </body>
 </html>

@@ -14,6 +14,13 @@ DeskPRO.User.Window = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		// All target=blanks need to null out window.opener
+		$(document).on('click', 'a[target="_blank"]', function(ev) {
+			ev.preventDefault();
+			var o = window.open($(this).attr('href'));
+			o.opener = null;
+		});
+
 		var isIE = (navigator.appVersion.toLowerCase().indexOf("msie")!=-1);
 		if (isIE) {
 			$('html').addClass('browser-ie');
@@ -166,6 +173,14 @@ DeskPRO.User.Window = new Orb.Class({
 		$('input.datepicker, .datepicker input').datepicker({
 			dateFormat: 'yy-mm-dd'
 		});
+		$('.DateTime.customfield input').each(function(){
+			$(this).datetimepicker({
+				format: 'yyyy-mm-dd hh:mm',
+				container: $(this).parent().css('position', 'relative'),
+				autoclose: true
+			});
+		});
+
 
 		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
@@ -239,8 +254,7 @@ DeskPRO.User.Window = new Orb.Class({
 						&& boundLeft < elementPosition.left
 						&& boundRight > (elementPosition.left + actualWidth)
 						&& boundBottom > (elementPosition.top + actualHeight)
-					};
-
+					}
 					var position;
 					if (above) {
 						position = 'top';

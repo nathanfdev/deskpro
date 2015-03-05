@@ -42,43 +42,43 @@ use Orb\Util\Strings;
 
 class VerifyRef implements TicketSaveActionInterface
 {
-	/**
-	 * @var RefGeneratorInterface
-	 */
-	private $ref_generator;
+    /**
+     * @var RefGeneratorInterface
+     */
+    private $ref_generator;
 
 
-	/**
-	 * @param RefGeneratorInterface $ref_generator
-	 */
-	public function __construct(RefGeneratorInterface $ref_generator)
-	{
-		$this->ref_generator = $ref_generator;
-	}
-	
+    /**
+     * @param RefGeneratorInterface $ref_generator
+     */
+    public function __construct(RefGeneratorInterface $ref_generator)
+    {
+        $this->ref_generator = $ref_generator;
+    }
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
 
-		if (!$ticket->ref || (isset($ticket->__dp_is_autogen_ref) && $ticket->__dp_is_autogen_ref)) {
-			$ticket->__dp_is_autogen_ref = false;
-			try {
-				$ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e);
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($context->getEventType() == 'noop') {
+            return;
+        }
 
-				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
-				$ticket->ref = $ref;
-			}
-		}
-	}
+        if (!$ticket->ref || (isset($ticket->__dp_is_autogen_ref) && $ticket->__dp_is_autogen_ref)) {
+            $ticket->__dp_is_autogen_ref = false;
+            try {
+                $ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
+            } catch (\Exception $e) {
+                KernelErrorHandler::logException($e);
+
+                $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+                $ticket->ref = $ref;
+            }
+        }
+    }
 
 }

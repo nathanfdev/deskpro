@@ -1,41 +1,41 @@
 define [
-	'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util'
 ], (
-	Util
+  Util
 ) ->
-	class IpBanEditFormMapper
+  class IpBanEditFormMapper
 
-		###
-			#
- 		#
-		###
+    ###
+      #
+    #
+    ###
 
-		getFormFromModel: (model) ->
+    getFormFromModel: (model) ->
 
-			form = {}
+      form = {}
 
-			form.banned_ip = model.ip_ban.banned_ip
+      form.banned_ip = model.ip_ban.banned_ip
 
-			return form
+      return form
 
-		###
-			#
-			#
-		###
+    ###
+      #
+      #
+    ###
 
-		applyFormToModel: (model, formModel) ->
+    applyFormToModel: (model, formModel) ->
 
-			# we use data from backend, so no need in applying of form data to list model
+      # we use data from backend, so no need in applying of form data to list model
 
-		###
-			#
-			#
-		###
+    ###
+      #
+      #
+    ###
 
-		getPostDataFromForm: (formModel) ->
+    getPostDataFromForm: (formModel) ->
 
-			postData = {}
+      postData = {}
 
-			postData.banned_ip = formModel.banned_ip
+      postData.banned_ip = formModel.banned_ip
 
-			return postData
+      return postData

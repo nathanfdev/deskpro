@@ -44,109 +44,111 @@ use Doctrine\ORM\EntityManager;
  */
 class BaseRepositoryService
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var \Doctrine\ORM\EntityRepository
-	 */
-	protected $repos;
+    /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
+    protected $repos;
 
-	/**
-	 * @var string
-	 */
-	protected $entity_name = null;
+    /**
+     * @var string
+     */
+    protected $entity_name = null;
 
-	/**
-	 * @var array
-	 */
-	protected $call_result = array();
+    /**
+     * @var array
+     */
+    protected $call_result = array();
 
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	protected $options;
+    /**
+     * @var \Orb\Util\OptionsArray
+     */
+    protected $options;
 
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		$em = $container->getEm();
-		$o = new static($em, $options);
-		return $o;
-	}
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        $em = $container->getEm();
+        $o = new static($em, $options);
 
-
-	/**
-	 * @param \Doctrine\ORM\EntityManager $em
-	 */
-	public function __construct(EntityManager $em, array $options = null)
-	{
-		$this->options = new \Orb\Util\OptionsArray($options);
-
-		if ($this->options->get('entity')) {
-			$this->entity_name = $this->options->get('entity');
-		}
-
-		$this->em = $em;
-		$this->db = $em->getConnection();
-
-		$this->repos = $this->em->getRepository($this->getEntityName());
-		$this->init();
-	}
-
-	protected function init()
-	{
-
-	}
+        return $o;
+    }
 
 
-	/**
-	 * The entity class
-	 *
-	 * @return string
-	 */
-	public function getEntityName()
-	{
-		return $this->entity_name;
-	}
+    /**
+     * @param \Doctrine\ORM\EntityManager $em
+     */
+    public function __construct(EntityManager $em, array $options = null)
+    {
+        $this->options = new \Orb\Util\OptionsArray($options);
+
+        if ($this->options->get('entity')) {
+            $this->entity_name = $this->options->get('entity');
+        }
+
+        $this->em = $em;
+        $this->db = $em->getConnection();
+
+        $this->repos = $this->em->getRepository($this->getEntityName());
+        $this->init();
+    }
+
+    protected function init()
+    {
+
+    }
 
 
-	/**
-	 * Reset the saved state
-	 */
-	public function reset()
-	{
-		$this->call_result = array();
-	}
+    /**
+     * The entity class
+     *
+     * @return string
+     */
+    public function getEntityName()
+    {
+        return $this->entity_name;
+    }
 
 
-	public function __call($method, array $args = array())
-	{
-		$hash_seg = array($method);
+    /**
+     * Reset the saved state
+     */
+    public function reset()
+    {
+        $this->call_result = array();
+    }
 
-		if ($args) {
-			foreach ($args as $k => $a) {
-				if (is_scalar($a)) {
-					$hash_seg[] = $k.':';
-					$hash_seg[] = (string)$a;
-				} else {
-					return call_user_func_array(array($this->repos, $method), $args);
-				}
-			}
-		}
 
-		$hash = md5(implode('', $hash_seg));
-		if (isset($this->call_result[$hash])) {
-			return $this->call_result[$hash];
-		}
+    public function __call($method, array $args = array())
+    {
+        $hash_seg = array($method);
 
-		$this->call_result[$hash] = call_user_func_array(array($this->repos, $method), $args);
-		return $this->call_result[$hash];
-	}
+        if ($args) {
+            foreach ($args as $k => $a) {
+                if (is_scalar($a)) {
+                    $hash_seg[] = $k.':';
+                    $hash_seg[] = (string)$a;
+                } else {
+                    return call_user_func_array(array($this->repos, $method), $args);
+                }
+            }
+        }
+
+        $hash = md5(implode('', $hash_seg));
+        if (isset($this->call_result[$hash])) {
+            return $this->call_result[$hash];
+        }
+
+        $this->call_result[$hash] = call_user_func_array(array($this->repos, $method), $args);
+
+        return $this->call_result[$hash];
+    }
 }

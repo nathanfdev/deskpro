@@ -36,78 +36,79 @@ namespace Cloud\ApiBundle\Controller;
 
 use DeskPRO\Kernel\License;
 use Application\DeskPRO\Entity\TmpData;
-use Application\DeskPRO\App;
 
 use Application\ApiBundle\Controller\AbstractController;
 
 class CloudCallController extends AbstractController
 {
-	public function preAction($action, $arguments = null)
-	{
-		if (!isset($_REQUEST['DPC_CALL_KEY']) || !isset($GLOBALS['DP_CONFIG']['DPC_CALL_KEY']) || $GLOBALS['DP_CONFIG']['DPC_CALL_KEY'] != $_REQUEST['DPC_CALL_KEY']) {
-			return $this->createApiErrorResponse('invalid_call_key', 'Invalid call key', 403);
-		}
-		return null;
-	}
+    public function preAction($action, $arguments = null)
+    {
+        if (!isset($_REQUEST['DPC_CALL_KEY']) || !isset($GLOBALS['DP_CONFIG']['DPC_CALL_KEY']) || $GLOBALS['DP_CONFIG']['DPC_CALL_KEY'] != $_REQUEST['DPC_CALL_KEY']) {
+            return $this->createApiErrorResponse('invalid_call_key', 'Invalid call key', 403);
+        }
 
-	public function pingAction()
-	{
-		return $this->createJsonResponse(array('time' => time()));
-	}
+        return null;
+    }
 
-	public function resetPasswordAction($person_id)
-	{
-		/** @var $person \Application\DeskPRO\Entity\Person */
-		$person = $this->em->find('DeskPRO:Person', $person_id);
+    public function pingAction()
+    {
+        return $this->createJsonResponse(array('time' => time()));
+    }
 
-		if (!$person) {
-			throw $this->createNotFoundException();
-		}
+    public function resetPasswordAction($person_id)
+    {
+        /** @var $person \Application\DeskPRO\Entity\Person */
+        $person = $this->em->find('DeskPRO:Person', $person_id);
 
-		$email = $person->getPrimaryEmailAddress();
+        if (!$person) {
+            throw $this->createNotFoundException();
+        }
 
-		#------------------------------
-		# Send reset as a link
-		#------------------------------
+        $email = $person->getPrimaryEmailAddress();
 
-		if ($this->in->getBool('link')) {
-			$interface = 'agent';
-			if (License::getLicense()->isPastExpireDate() || DPC_BILL_FAILED) {
-				$interface = 'billing';
-			}
+        #------------------------------
+        # Send reset as a link
+        #------------------------------
 
-			$code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => $interface), '+3 days');
-			$this->em->persist($code_data);
-			$this->em->flush();
+        if ($this->in->getBool('link')) {
+            $interface = 'agent';
+            if (License::getLicense()->isPastExpireDate() || DPC_BILL_FAILED) {
+                $interface = 'billing';
+            }
 
-			$vars = array(
-				'code'      => $code_data->getCode(),
-				'person'    => $person,
-				'email'     => $email,
-				'interface' => $interface
-			);
+            $code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => $interface), '+3 days');
+            $this->em->persist($code_data);
+            $this->em->flush();
 
-			$message = $this->container->getMailer()->createMessage();
-			$message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
-			$message->setTo($email, $person->getDisplayName());
+            $vars = array(
+                'code'      => $code_data->getCode(),
+                'person'    => $person,
+                'email'     => $email,
+                'interface' => $interface
+            );
 
-			$this->container->getMailer()->send($message);
+            $message = $this->container->getMailer()->createMessage();
+            $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
+            $message->setTo($email, $person->getDisplayName());
 
-			return $this->createJsonResponse(array('sent_reset_link' => $email));
+            $this->container->getMailer()->send($message);
 
-		#------------------------------
-		# Reset password
-		#------------------------------
+            return $this->createJsonResponse(array('sent_reset_link' => $email));
 
-		} else {
-			$new_pass = $this->in->getString('password');
+        #------------------------------
+        # Reset password
+        #------------------------------
 
-			if (!$new_pass) {
-				return $this->createJsonResponse(array('error' => 'no_pass'));
-			}
+        } else {
+            $new_pass = $this->in->getString('password');
 
-			$person->setPassword($new_pass);
-			return $this->createJsonResponse(array('reset_password' => $email));
-		}
-	}
+            if (!$new_pass) {
+                return $this->createJsonResponse(array('error' => 'no_pass'));
+            }
+
+            $person->setPassword($new_pass);
+
+            return $this->createJsonResponse(array('reset_password' => $email));
+        }
+    }
 }

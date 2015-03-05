@@ -1,41 +1,41 @@
 define [
-	'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util'
 ], (
-	Util
+  Util
 ) ->
-	class EmailBanEditFormMapper
+  class EmailBanEditFormMapper
 
-		###
-			#
- 		#
-		###
+    ###
+      #
+    #
+    ###
 
-		getFormFromModel: (model) ->
+    getFormFromModel: (model) ->
 
-			form = {}
+      form = {}
 
-			form.banned_email = model.email_ban.banned_email
+      form.banned_email = model.email_ban.banned_email
 
-			return form
+      return form
 
-		###
-			#
-			#
-		###
+    ###
+      #
+      #
+    ###
 
-		applyFormToModel: (model, formModel) ->
+    applyFormToModel: (model, formModel) ->
 
-			# we use data from backend, so no need in applying of form data to list model
+      # we use data from backend, so no need in applying of form data to list model
 
-		###
-			#
-			#
-		###
+    ###
+      #
+      #
+    ###
 
-		getPostDataFromForm: (formModel) ->
+    getPostDataFromForm: (formModel) ->
 
-			postData = {}
+      postData = {}
 
-			postData.banned_email = formModel.banned_email
+      postData.banned_email = formModel.banned_email
 
-			return postData
+      return postData

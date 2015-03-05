@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1345043112 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Create report builder tables");
+    public function run()
+    {
+        $this->out("Create report builder tables");
 
-		$this->execMutateSql("CREATE TABLE report_builder (id INT AUTO_INCREMENT NOT NULL, parent_id INT DEFAULT NULL, unique_key VARCHAR(50) DEFAULT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, query LONGTEXT NOT NULL, is_custom TINYINT(1) NOT NULL, category VARCHAR(25) DEFAULT NULL, INDEX IDX_B6BED249727ACA70 (parent_id), UNIQUE INDEX unique_key_idx (unique_key), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE report_builder ADD CONSTRAINT FK_B6BED249727ACA70 FOREIGN KEY (parent_id) REFERENCES report_builder (id) ON DELETE SET NULL");
-	}
+        $this->execMutateSql("CREATE TABLE report_builder (id INT AUTO_INCREMENT NOT NULL, parent_id INT DEFAULT NULL, unique_key VARCHAR(50) DEFAULT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, query LONGTEXT NOT NULL, is_custom TINYINT(1) NOT NULL, category VARCHAR(25) DEFAULT NULL, INDEX IDX_B6BED249727ACA70 (parent_id), UNIQUE INDEX unique_key_idx (unique_key), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE report_builder ADD CONSTRAINT FK_B6BED249727ACA70 FOREIGN KEY (parent_id) REFERENCES report_builder (id) ON DELETE SET NULL");
+    }
 }

@@ -39,23 +39,23 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UsergroupType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('group', new UsergroupPropsType());
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('group', new UsergroupPropsType());
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\Usergroups\\UsergroupEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\Usergroups\\UsergroupEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'usergroup_edit';
-	}
+    public function getName()
+    {
+        return 'usergroup_edit';
+    }
 }

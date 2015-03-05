@@ -39,21 +39,22 @@ use Doctrine\Common\Persistence\Mapping\ReflectionService;
 
 class StaticClassMetadataFactory extends ClassMetadataFactory
 {
-	/**
-	 * @var \Doctrine\Common\Persistence\Mapping\ReflectionService
-	 */
-	private $myReflectionService;
+    /**
+     * @var \Doctrine\Common\Persistence\Mapping\ReflectionService
+     */
+    private $myReflectionService;
 
-	public function getReflectionService()
-	{
-		if ($this->myReflectionService === null) {
-			$this->myReflectionService = new StaticRuntimeReflectionService();
-		}
-		return $this->myReflectionService;
-	}
+    public function getReflectionService()
+    {
+        if ($this->myReflectionService === null) {
+            $this->myReflectionService = new StaticRuntimeReflectionService();
+        }
 
-	public function setReflectionService(ReflectionService $reflectionService)
-	{
-		$this->myReflectionService = $reflectionService;
-	}
+        return $this->myReflectionService;
+    }
+
+    public function setReflectionService(ReflectionService $reflectionService)
+    {
+        $this->myReflectionService = $reflectionService;
+    }
 }

@@ -1,5 +1,9 @@
 <?php
 /**
+ * Contains NTLMSoapClient.
+ */
+
+/**
  * Soap Client using Microsoft's NTLM Authentication.
  *
  * Copyright (c) 2008 Invest-In-France Agency http://www.invest-in-france.org
@@ -21,12 +25,7 @@
  * @link http://rabaix.net/en/articles/2008/03/13/using-soap-php-with-ntlm-authentication
  * @author Thomas Rabaix
  *
- * @package php-ews
- * @subpackage NTLM
- */
-
-/**
- * Soap Client using Microsoft's NTLM Authentication.
+ * @package php-ews\Auth
  */
 class NTLMSoapClient extends SoapClient
 {
@@ -68,44 +67,44 @@ class NTLMSoapClient extends SoapClient
 
         $this->__last_request_headers = $headers;
 
-		// DESKPRO EDIT : Some versions of curl fail with some
-		// values of CURLOPT_HTTPAUTH, so we try multiple times
-		$user      = $this->user;
-		$pass      = $this->password;
-		$validate  = $this->validate;
-		$make_curl = function($httpauth) use ($location, $validate, $request, $headers, $user, $pass) {
-			$ch = curl_init($location);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $validate);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $validate);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($ch, CURLOPT_POST, true );
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-			curl_setopt($ch, CURLOPT_HTTPAUTH, $httpauth);
-			curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
-			return $ch;
-		};
+        // DESKPRO EDIT : Some versions of curl fail with some
+        // values of CURLOPT_HTTPAUTH, so we try multiple times
+        $user      = $this->user;
+        $pass      = $this->password;
+        $validate  = $this->validate;
+        $make_curl = function($httpauth) use ($location, $validate, $request, $headers, $user, $pass) {
+            $ch = curl_init($location);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $validate);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $validate);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POST, true );
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, $httpauth);
+            curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
+            return $ch;
+        };
 
-		foreach (array(CURLAUTH_NTLM, CURLAUTH_BASIC) as $httpauth) {
-			$this->ch = $make_curl($httpauth);
-			$response = curl_exec($this->ch);
+        foreach (array(CURLAUTH_NTLM, CURLAUTH_BASIC) as $httpauth) {
+            $this->ch = $make_curl($httpauth);
+            $response = curl_exec($this->ch);
 
-			// A 401 would happen if auth is wrong or if the
-			// NTLM/BASIC was wrong/not accepted, so
-			// any other return code means we dont need to retry
-			if (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) != 401) {
-				break;
-			}
-		}
+            // A 401 would happen if auth is wrong or if the
+            // NTLM/BASIC was wrong/not accepted, so
+            // any other return code means we dont need to retry
+            if (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) != 401) {
+                break;
+            }
+        }
 
         // TODO: Add some real error handling.
         // If the response if false than there was an error and we should throw
         // an exception.
         if ($response === false) {
             throw new EWS_Exception(
-              'Curl error: ' . curl_error($this->ch),
-              curl_errno($this->ch)
+                'Curl error: ' . curl_error($this->ch),
+                curl_errno($this->ch)
             );
         }
 

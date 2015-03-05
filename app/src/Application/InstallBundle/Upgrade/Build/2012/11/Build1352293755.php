@@ -36,19 +36,19 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352293755 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Change department permissions to support multiple");
-		$this->execMutateSql("ALTER TABLE department_permissions ADD name VARCHAR(50) NOT NULL, ADD value LONGTEXT DEFAULT NULL");
+    public function run()
+    {
+        $this->out("Change department permissions to support multiple");
+        $this->execMutateSql("ALTER TABLE department_permissions ADD name VARCHAR(50) NOT NULL, ADD value LONGTEXT DEFAULT NULL");
 
-		// existing rows indicate viewing permissions
-		$this->execMutateSql("UPDATE department_permissions SET name = 'full', value = 1");
-		$this->execMutateSql("
-			INSERT IGNORE INTO department_permissions
-				(department_id, usergroup_id, person_id, app, name, value)
-			SELECT department_id, null, person_id, app, 'assign', 1
-			FROM department_permissions
-			WHERE person_id IS NOT NULL AND app = 'tickets' AND name = 'full' AND value = 1
-		");
-	}
+        // existing rows indicate viewing permissions
+        $this->execMutateSql("UPDATE department_permissions SET name = 'full', value = 1");
+        $this->execMutateSql("
+            INSERT IGNORE INTO department_permissions
+                (department_id, usergroup_id, person_id, app, name, value)
+            SELECT department_id, null, person_id, app, 'assign', 1
+            FROM department_permissions
+            WHERE person_id IS NOT NULL AND app = 'tickets' AND name = 'full' AND value = 1
+        ");
+    }
 }

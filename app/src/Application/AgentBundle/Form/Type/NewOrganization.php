@@ -39,30 +39,30 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NewOrganization extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('name', 'text', array('required' => false));
+        $builder->add('name', 'text', array('required' => false));
 
-		$builder->add('labels', 'collection', array(
-			'type' => 'text',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
-		$builder->add('usergroup_ids', 'collection', array(
-			'type' => 'text',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('labels', 'collection', array(
+            'type' => 'text',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
+        $builder->add('usergroup_ids', 'collection', array(
+            'type' => 'text',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
     }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
+        );
+    }
 
     public function getName()
     {

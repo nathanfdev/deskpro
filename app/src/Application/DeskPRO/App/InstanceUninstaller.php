@@ -44,99 +44,99 @@ use Doctrine\ORM\EntityManager;
 
 class InstanceUninstaller
 {
-	/**
-	 * @var AppManager
-	 */
-	private $manager;
+    /**
+     * @var AppManager
+     */
+    private $manager;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\AppInstance
-	 */
-	private $app;
+    /**
+     * @var \Application\DeskPRO\Entity\AppInstance
+     */
+    private $app;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @param AppManager $manager
-	 * @param AppPackage $package
-	 * @param EntityManager $em
-	 */
-	public function __construct(AppManager $manager, AppInstance $app, EntityManager $em)
-	{
-		$this->manager = $manager;
-		$this->app     = $app;
-		$this->em      = $em;
-	}
-
-
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function uninstall(DeskproContainer $container)
-	{
-		$handler = $this->createInstallHandler();
-		$context = $this->createInstallContext($this->app->package, $this->app, array(), $container);
-
-		$handler->uninstall($context);
-
-		$this->em->remove($this->app);
-		$this->em->flush();
-
-	}
+    /**
+     * @param AppManager    $manager
+     * @param AppPackage    $package
+     * @param EntityManager $em
+     */
+    public function __construct(AppManager $manager, AppInstance $app, EntityManager $em)
+    {
+        $this->manager = $manager;
+        $this->app     = $app;
+        $this->em      = $em;
+    }
 
 
-	/**
-	 * @param AppPackage       $package
-	 * @param AppInstance      $app
-	 * @param array            $settings
-	 * @param DeskproContainer $container
-	 * @return InstallerContext
-	 * @throws \UnexpectedValueException
-	 */
-	protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container)
-	{
-		if ($package->native_name) {
-			$native_app = $this->manager->getNativeApp($app);
-			$usersource = null;
+    /**
+     * @param DeskproContainer $container
+     */
+    public function uninstall(DeskproContainer $container)
+    {
+        $handler = $this->createInstallHandler();
+        $context = $this->createInstallContext($this->app->package, $this->app, array(), $container);
 
-			if ($package->isUsersource()) {
-				$q = $this->em->createQuery('
-				SELECT us
-				FROM DeskPRO:Usersource us
-				WHERE us.app = :app
-				');
-				$q->setParameter('app', $app);
-				$usersource = $q->getOneOrNullResult();
+        $handler->uninstall($context);
 
-				if (!$usersource) {
-					throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id=' . $app->id . ' does not!');
-				}
-			}
+        $this->em->remove($this->app);
+        $this->em->flush();
 
-			return new InstallerContext($container, $native_app, $settings, $usersource);
-		}
-
-		return new InstallerContext($container, null, $settings);
-	}
+    }
 
 
-	/**
-	 * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
-	 *
-	 * @return Native\InstallerHandler\InstallerHandlerInterface
-	 */
-	protected function createInstallHandler()
-	{
-		if ($this->app->package->native_name) {
-			$native_app = $this->manager->getNativeApp($this->app);
-			if ($class = $native_app->getConfig()->getInstallerHandlerClass()) {
-				return new $class($this->app->package['settings_def']);
-			}
-		}
+    /**
+     * @param  AppPackage                $package
+     * @param  AppInstance               $app
+     * @param  array                     $settings
+     * @param  DeskproContainer          $container
+     * @return InstallerContext
+     * @throws \UnexpectedValueException
+     */
+    protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container)
+    {
+        if ($package->native_name) {
+            $native_app = $this->manager->getNativeApp($app);
+            $usersource = null;
 
-		return new NoopInstallerHandler();
-	}
+            if ($package->isUsersource()) {
+                $q = $this->em->createQuery('
+                SELECT us
+                FROM DeskPRO:Usersource us
+                WHERE us.app = :app
+                ');
+                $q->setParameter('app', $app);
+                $usersource = $q->getOneOrNullResult();
+
+                if (!$usersource) {
+                    throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id=' . $app->id . ' does not!');
+                }
+            }
+
+            return new InstallerContext($container, $native_app, $settings, $usersource);
+        }
+
+        return new InstallerContext($container, null, $settings);
+    }
+
+
+    /**
+     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
+     *
+     * @return Native\InstallerHandler\InstallerHandlerInterface
+     */
+    protected function createInstallHandler()
+    {
+        if ($this->app->package->native_name) {
+            $native_app = $this->manager->getNativeApp($this->app);
+            if ($class = $native_app->getConfig()->getInstallerHandlerClass()) {
+                return new $class($this->app->package['settings_def']);
+            }
+        }
+
+        return new NoopInstallerHandler();
+    }
 }

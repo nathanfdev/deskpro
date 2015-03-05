@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366220458 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update page_view_log");
-		$this->execMutateSql("ALTER TABLE page_view_log ADD view_action INT NOT NULL");
-		$this->execMutateSql("UPDATE page_view_log SET view_action = 1");
-	}
+    public function run()
+    {
+        $this->out("Update page_view_log");
+        $this->execMutateSql("ALTER TABLE page_view_log ADD view_action INT NOT NULL");
+        $this->execMutateSql("UPDATE page_view_log SET view_action = 1");
+    }
 }

@@ -38,115 +38,115 @@ use Application\DeskPRO\Settings\Settings as SettingsHandler;
 
 class TicketDepartment
 {
-	/**
-	 * @var \Application\DeskPRO\Settings\Settings
-	 */
-	protected $settings;
+    /**
+     * @var \Application\DeskPRO\Settings\Settings
+     */
+    protected $settings;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	public function __construct(SettingsHandler $settings, Connection $db)
-	{
-		$this->settings = $settings;
-		$this->db = $db;
-	}
+    public function __construct(SettingsHandler $settings, Connection $db)
+    {
+        $this->settings = $settings;
+        $this->db = $db;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getSettings()
-	{
-		$settings = array(
-			'core.default_ticket_dep'         => $this->settings->get('core.default_ticket_dep'),
-			'core.phrase_department_singular' => $this->settings->get('core.phrase_department_singular'),
-			'core.phrase_department_plural'   => $this->settings->get('core.phrase_department_plural'),
-		);
+    /**
+     * @return array
+     */
+    public function getSettings()
+    {
+        $settings = array(
+            'core.default_ticket_dep'         => $this->settings->get('core.default_ticket_dep'),
+            'core.phrase_department_singular' => $this->settings->get('core.phrase_department_singular'),
+            'core.phrase_department_plural'   => $this->settings->get('core.phrase_department_plural'),
+        );
 
-		return $settings;
-	}
+        return $settings;
+    }
 
-	/**
-	 * @param array $set_settings
-	 * @throws \Exception
-	 */
-	public function setSettings(array $set_settings)
-	{
-		if (isset($set_settings['core.default_ticket_dep']) && $set_settings['core.default_ticket_dep'] != $this->settings->get('core.default_ticket_dep')) {
-			$this->settings->setSetting('core.default_ticket_dep', $set_settings['core.default_ticket_dep']);
-		}
+    /**
+     * @param  array      $set_settings
+     * @throws \Exception
+     */
+    public function setSettings(array $set_settings)
+    {
+        if (isset($set_settings['core.default_ticket_dep']) && $set_settings['core.default_ticket_dep'] != $this->settings->get('core.default_ticket_dep')) {
+            $this->settings->setSetting('core.default_ticket_dep', $set_settings['core.default_ticket_dep']);
+        }
 
-		$change_phrase = array();
-		if (isset($set_settings['core.phrase_department_singular']) && $set_settings['core.phrase_department_singular'] != $this->settings->get('core.phrase_department_singular')) {
-			$change_phrase['singular'] = $set_settings['core.phrase_department_singular'];
-		}
-		if (isset($set_settings['core.phrase_department_plural']) && $set_settings['core.phrase_department_plural'] != $this->settings->get('core.phrase_department_plural')) {
-			$change_phrase['plural'] = $set_settings['core.phrase_department_singular'];
-		}
+        $change_phrase = array();
+        if (isset($set_settings['core.phrase_department_singular']) && $set_settings['core.phrase_department_singular'] != $this->settings->get('core.phrase_department_singular')) {
+            $change_phrase['singular'] = $set_settings['core.phrase_department_singular'];
+        }
+        if (isset($set_settings['core.phrase_department_plural']) && $set_settings['core.phrase_department_plural'] != $this->settings->get('core.phrase_department_plural')) {
+            $change_phrase['plural'] = $set_settings['core.phrase_department_singular'];
+        }
 
-		if ($change_phrase) {
-			if (!isset($change_phrase['singular'])) {
-				$change_phrase['singular'] = $this->settings->get('core.phrase_department_singular');
-			}
-			if (!isset($change_phrase['plural'])) {
-				$change_phrase['plural'] = $this->settings->get('core.phrase_department_plural');
-			}
+        if ($change_phrase) {
+            if (!isset($change_phrase['singular'])) {
+                $change_phrase['singular'] = $this->settings->get('core.phrase_department_singular');
+            }
+            if (!isset($change_phrase['plural'])) {
+                $change_phrase['plural'] = $this->settings->get('core.phrase_department_plural');
+            }
 
-			$this->settings->setSetting('core.phrase_department_singular', $change_phrase['singular']);
-			$this->settings->setSetting('core.phrase_department_plural', $change_phrase['plural']);
+            $this->settings->setSetting('core.phrase_department_singular', $change_phrase['singular']);
+            $this->settings->setSetting('core.phrase_department_plural', $change_phrase['plural']);
 
-			$phrase_singular   = strtolower($change_phrase['singular']);
-			$phrase_plural     = strtolower($change_phrase['plural']);
-			$phrase_singular_c = ucwords($phrase_singular);
-			$phrase_plural_c   = ucwords($phrase_plural);
+            $phrase_singular   = strtolower($change_phrase['singular']);
+            $phrase_plural     = strtolower($change_phrase['plural']);
+            $phrase_singular_c = ucwords($phrase_singular);
+            $phrase_plural_c   = ucwords($phrase_plural);
 
-			$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
-			$phrases = $groups_reader->getAllUserPhrases();
+            $groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+            $phrases = $groups_reader->getAllUserPhrases();
 
-			$batch = array();
-			$ids = array();
+            $batch = array();
+            $ids = array();
 
-			$d = date('Y-m-d H:i:s');
+            $d = date('Y-m-d H:i:s');
 
-			foreach ($phrases as $phrase_id => $phrase_text) {
-				$new_phrase = str_replace(
-					array('departments', 'Departments', 'department', 'Department'),
-					array($phrase_plural, $phrase_plural_c, $phrase_singular, $phrase_singular_c),
-					$phrase_text
-				);
+            foreach ($phrases as $phrase_id => $phrase_text) {
+                $new_phrase = str_replace(
+                    array('departments', 'Departments', 'department', 'Department'),
+                    array($phrase_plural, $phrase_plural_c, $phrase_singular, $phrase_singular_c),
+                    $phrase_text
+                );
 
-				if ($new_phrase != $phrase_text) {
-					$group = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
-					$batch[] = array(
-						'language_id' => 1,
-						'name'        => $phrase_id,
-						'groupname'   => $group,
-						'phrase'      => $new_phrase,
-						'created_at'  => $d,
-						'updated_at'  => $d
-					);
+                if ($new_phrase != $phrase_text) {
+                    $group = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
+                    $batch[] = array(
+                        'language_id' => 1,
+                        'name'        => $phrase_id,
+                        'groupname'   => $group,
+                        'phrase'      => $new_phrase,
+                        'created_at'  => $d,
+                        'updated_at'  => $d
+                    );
 
-					$ids[] = $phrase_id;
-				}
-			}
+                    $ids[] = $phrase_id;
+                }
+            }
 
-			if ($ids) {
-				$this->db->beginTransaction();
-				try {
-					$this->db->executeQuery("
-						DELETE FROM phrases
-						WHERE name IN (?) AND language_id = 1
-					", array($ids), array(Connection::PARAM_INT_ARRAY));
+            if ($ids) {
+                $this->db->beginTransaction();
+                try {
+                    $this->db->executeQuery("
+                        DELETE FROM phrases
+                        WHERE name IN (?) AND language_id = 1
+                    ", array($ids), array(Connection::PARAM_INT_ARRAY));
 
-					$this->db->batchInsert('phrases', $batch);
-					$this->db->commit();
-				} catch (\Exception $e) {
-					$this->db->rollback();
-					throw $e;
-				}
-			}
-		}
-	}
+                    $this->db->batchInsert('phrases', $batch);
+                    $this->db->commit();
+                } catch (\Exception $e) {
+                    $this->db->rollback();
+                    throw $e;
+                }
+            }
+        }
+    }
 }

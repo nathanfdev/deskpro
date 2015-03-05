@@ -56,6 +56,5 @@ class AgentData extends AbstractFixture
             $connection->insert('department_permissions', $dep);
         }
 
-
     }
-} 
+}

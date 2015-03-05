@@ -39,127 +39,127 @@ use Application\DeskPRO\Entity\PersonEmail;
 
 class AccountValidator
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 */
-	protected $email;
+    /**
+     * @var \Application\DeskPRO\Entity\PersonEmail
+     */
+    protected $email;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var array
-	 */
-	protected $ticket_ids = array();
+    /**
+     * @var array
+     */
+    protected $ticket_ids = array();
 
-	public function __construct(Person $person, PersonEmail $email)
-	{
-		$this->person = $person;
-		$this->email  = $email;
+    public function __construct(Person $person, PersonEmail $email)
+    {
+        $this->person = $person;
+        $this->email  = $email;
 
-		$this->em = App::getOrm();
-		$this->db = $this->em->getConnection();
-	}
+        $this->em = App::getOrm();
+        $this->db = $this->em->getConnection();
+    }
 
-	public function getPerson()
-	{
-		return $this->person;
-	}
+    public function getPerson()
+    {
+        return $this->person;
+    }
 
-	/**
-	 * Validate the email address and return the newly created PersonEmail
-	 *
-	 * @throws \Exception|\OutOfBoundsException
-	 * @return \Application\DeskPRO\Entity\PersonEmail
-	 */
-	public function validate()
-	{
-		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithEmail($this->email, true);
+    /**
+     * Validate the email address and return the newly created PersonEmail
+     *
+     * @throws \Exception|\OutOfBoundsException
+     * @return \Application\DeskPRO\Entity\PersonEmail
+     */
+    public function validate()
+    {
+        $this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithEmail($this->email, true);
 
-		$this->em->getConnection()->beginTransaction();
+        $this->em->getConnection()->beginTransaction();
 
-		try {
-			$this->email->is_validated = true;
-			$this->email->is_own_validated = true;
-			$this->em->persist($this->email);
-			$this->em->flush();
+        try {
+            $this->email->is_validated = true;
+            $this->email->is_own_validated = true;
+            $this->em->persist($this->email);
+            $this->em->flush();
 
-			if (!$this->person->primary_email) {
-				$this->person->primary_email = $this->email;
-			}
+            if (!$this->person->primary_email) {
+                $this->person->primary_email = $this->email;
+            }
 
-			$is_newly_confirmed = false;
-			if (!$this->person->is_confirmed) {
-				$is_newly_confirmed = true;
-			}
+            $is_newly_confirmed = false;
+            if (!$this->person->is_confirmed) {
+                $is_newly_confirmed = true;
+            }
 
-			$this->person->is_confirmed = true;
+            $this->person->is_confirmed = true;
 
-			$this->db->update('people', array(
-				'is_confirmed' => 1,
-				'primary_email_id' => $this->email->getId()
-			), array('id' => $this->person->getId()));
+            $this->db->update('people', array(
+                'is_confirmed' => 1,
+                'primary_email_id' => $this->email->getId()
+            ), array('id' => $this->person->getId()));
 
-			$this->db->update('people_emails', array(
-				'is_validated' => 1,
-				'date_validated' => $this->email->date_validated->format('Y-m-d H:i:s')
-			), array('id' => $this->email->getId()));
+            $this->db->update('people_emails', array(
+                'is_validated' => 1,
+                'date_validated' => $this->email->date_validated->format('Y-m-d H:i:s')
+            ), array('id' => $this->email->getId()));
 
-			$ticket_manager = App::$container->getTicketManager();
+            $ticket_manager = App::$container->getTicketManager();
 
-			// Find tickets with this email awaiting validation
-			if ($this->ticket_ids) {
-				foreach ($this->ticket_ids as $ticket_id) {
-					$ticket = $ticket_manager->getTicket($ticket_id);
-					$context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
+            // Find tickets with this email awaiting validation
+            if ($this->ticket_ids) {
+                foreach ($this->ticket_ids as $ticket_id) {
+                    $ticket = $ticket_manager->getTicket($ticket_id);
+                    $context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
 
-					$ticket->person_email_validating = null;
-					$ticket->person_email = $this->email;
+                    $ticket->person_email_validating = null;
+                    $ticket->person_email = $this->email;
 
-					if ($this->person->is_agent_confirmed) {
-						$ticket->setStatus('awaiting_agent');
-					}
+                    if ($this->person->is_agent_confirmed) {
+                        $ticket->setStatus('awaiting_agent');
+                    }
 
-					$ticket_manager->saveTicket($ticket, $context);
-					$this->em->persist($ticket);
-					$this->em->flush();
-				}
-			}
+                    $ticket_manager->saveTicket($ticket, $context);
+                    $this->em->persist($ticket);
+                    $this->em->flush();
+                }
+            }
 
-			if ($is_newly_confirmed) {
-				$send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($this->person);
-				$send_notify->send();
-			}
+            if ($is_newly_confirmed) {
+                $send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($this->person);
+                $send_notify->send();
+            }
 
-			$this->em->getConnection()->commit();
+            $this->em->getConnection()->commit();
 
-			return $this->email;
+            return $this->email;
 
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-	}
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
+    }
 
-	public function getTicketIds()
-	{
-		return $this->ticket_ids;
-	}
+    public function getTicketIds()
+    {
+        return $this->ticket_ids;
+    }
 
-	public function getEmail()
-	{
-		return $this->email;
-	}
+    public function getEmail()
+    {
+        return $this->email;
+    }
 }

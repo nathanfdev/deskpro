@@ -39,141 +39,145 @@ namespace Orb\File;
  */
 class CompressFile
 {
-	/**
-	 * @var string
-	 */
-	protected $file_contents = '';
+    /**
+     * @var string
+     */
+    protected $file_contents = '';
 
-	/**
-	 * @var string
-	 */
-	protected $tmpfile;
+    /**
+     * @var string
+     */
+    protected $tmpfile;
 
-	/**
-	 * The type of file created
-	 * @var string
-	 */
-	protected $type;
+    /**
+     * The type of file created
+     * @var string
+     */
+    protected $type;
 
-	public function __construct($file_contents = '')
-	{
-		$this->file_contents = $file_contents;
-	}
+    public function __construct($file_contents = '')
+    {
+        $this->file_contents = $file_contents;
+    }
 
-	/**
-	 * Get the temp file that the contents were saved into
-	 *
-	 * @return string
-	 */
-	public function getTmpFile()
-	{
-		return $this->tmpfile;
-	}
+    /**
+     * Get the temp file that the contents were saved into
+     *
+     * @return string
+     */
+    public function getTmpFile()
+    {
+        return $this->tmpfile;
+    }
 
-	/**
-	 * get the type of compression algo used
-	 *
-	 * @return string
-	 */
-	public function getCompressedType()
-	{
-		return $this->type;
-	}
-
-
-	/**
-	 * Check to see which methods of compression we can use, and choose one.
-	 *
-	 * @return bool
-	 */
-	public function compress()
-	{
-		if (function_exists('gzcompress')) {
-			$this->compressGz();
-			return true;
-		} elseif (function_exists('bzcompress')) {
-			$this->compressBzip();
-			return true;
-		} elseif (class_exists('ZipArchive')) {
-			$this->compressZip();
-			return true;
-		} elseif (false && function_exists('shell_exec')) {
-			$path = @shell_exec('whereis gzip');
-			if (strpos($path, '/gzip') !== false) {
-				$this->compressGzCommand(\Orb\Util\Strings::getFirstLine($path));
-				return true;
-			}
-		}
-
-		return false;
-	}
+    /**
+     * get the type of compression algo used
+     *
+     * @return string
+     */
+    public function getCompressedType()
+    {
+        return $this->type;
+    }
 
 
-	/**
-	 * Compress using the GZ extension
-	 */
-	public function compressGz()
-	{
-		$this->type = 'gz';
-		$this->tmpfile = tempnam(sys_get_temp_dir(), 'gzfile' . mt_rand(1000,9999));
-		$fp = @fopen($this->tmpfile, 'w');
+    /**
+     * Check to see which methods of compression we can use, and choose one.
+     *
+     * @return bool
+     */
+    public function compress()
+    {
+        if (function_exists('gzcompress')) {
+            $this->compressGz();
 
-		if (!$fp) {
-			throw new \RuntimeException("Could not create temp file", 1);
-		}
+            return true;
+        } elseif (function_exists('bzcompress')) {
+            $this->compressBzip();
 
-		fwrite($fp, gzencode($this->file_contents));
-		fclose($fp);
-	}
+            return true;
+        } elseif (class_exists('ZipArchive')) {
+            $this->compressZip();
 
+            return true;
+        } elseif (false && function_exists('shell_exec')) {
+            $path = @shell_exec('whereis gzip');
+            if (strpos($path, '/gzip') !== false) {
+                $this->compressGzCommand(\Orb\Util\Strings::getFirstLine($path));
 
-	/**
-	 * Compress using the Bzip extension
-	 */
-	public function compressBzip()
-	{
-		$this->type = 'bzip2';
-		$this->tmpfile = tempnam(sys_get_temp_dir(), 'bzipfile' . mt_rand(1000,9999));
-		$fp = @fopen($this->tmpfile, 'w');
+                return true;
+            }
+        }
 
-		if (!$fp) {
-			throw new \RuntimeException("Could not create temp file", 1);
-		}
-
-		fwrite($fp, bzcompress($this->file_contents));
-		fclose($fp);
-	}
+        return false;
+    }
 
 
-	/**
-	 * Compress using the Zip extension
-	 */
-	public function compressZip()
-	{
-		$this->type = 'zip';
-		$this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile' . mt_rand(1000,9999));
+    /**
+     * Compress using the GZ extension
+     */
+    public function compressGz()
+    {
+        $this->type = 'gz';
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'gzfile' . mt_rand(1000,9999));
+        $fp = @fopen($this->tmpfile, 'w');
 
-		$zip = new \ZipArchive();
-		$zip->open($this->tmpfile, \ZipArchive::CREATE);
-		$zip->addFromString('file', $this->file_contents);
-		$zip->close();
-	}
+        if (!$fp) {
+            throw new \RuntimeException("Could not create temp file", 1);
+        }
+
+        fwrite($fp, gzencode($this->file_contents));
+        fclose($fp);
+    }
 
 
-	/**
-	 * Compress using the command-line by executing $gzip_path as the gzip binary
-	 *
-	 * @param string $gzip_path
-	 */
-	public function compressGzCommand($gzip_path)
-	{
-		$this->type = 'gz';
-		$this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile' . mt_rand(1000,9999));
-		file_put_contents($this->tmpfile, $this->file_contents);
+    /**
+     * Compress using the Bzip extension
+     */
+    public function compressBzip()
+    {
+        $this->type = 'bzip2';
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'bzipfile' . mt_rand(1000,9999));
+        $fp = @fopen($this->tmpfile, 'w');
 
-		$cmd = $gzip_path . ' ' . $this->tmpfile;
-		shell_exec($cmd);
+        if (!$fp) {
+            throw new \RuntimeException("Could not create temp file", 1);
+        }
 
-		$this->tmpfile .= '.gz';
-	}
+        fwrite($fp, bzcompress($this->file_contents));
+        fclose($fp);
+    }
+
+
+    /**
+     * Compress using the Zip extension
+     */
+    public function compressZip()
+    {
+        $this->type = 'zip';
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile' . mt_rand(1000,9999));
+
+        $zip = new \ZipArchive();
+        $zip->open($this->tmpfile, \ZipArchive::CREATE);
+        $zip->addFromString('file', $this->file_contents);
+        $zip->close();
+    }
+
+
+    /**
+     * Compress using the command-line by executing $gzip_path as the gzip binary
+     *
+     * @param string $gzip_path
+     */
+    public function compressGzCommand($gzip_path)
+    {
+        $this->type = 'gz';
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile' . mt_rand(1000,9999));
+        file_put_contents($this->tmpfile, $this->file_contents);
+
+        $cmd = $gzip_path . ' ' . $this->tmpfile;
+        shell_exec($cmd);
+
+        $this->tmpfile .= '.gz';
+    }
 }

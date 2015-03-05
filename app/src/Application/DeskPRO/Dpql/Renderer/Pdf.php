@@ -41,72 +41,72 @@ use Application\DeskPRO\App;
  */
 class Pdf extends Html
 {
-	/**
-	 * Gets the MIME content type for this type of output.
-	 *
-	 * @return string
-	 */
-	public function getContentType()
-	{
-		return 'application/pdf';
-	}
+    /**
+     * Gets the MIME content type for this type of output.
+     *
+     * @return string
+     */
+    public function getContentType()
+    {
+        return 'application/pdf';
+    }
 
-	/**
-	 * Gets the file extension for this type of output.
-	 *
-	 * @return string
-	 */
-	public function getExtension()
-	{
-		return 'pdf';
-	}
+    /**
+     * Gets the file extension for this type of output.
+     *
+     * @return string
+     */
+    public function getExtension()
+    {
+        return 'pdf';
+    }
 
-	/**
-	 * Render to the specified format and type
-	 *
-	 * @return string
-	 */
-	public function render()
-	{
-		$html = parent::render();
+    /**
+     * Render to the specified format and type
+     *
+     * @return string
+     */
+    public function render()
+    {
+        $html = parent::render();
 
-		$content_html = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', array(
-			'html' => $html,
-			'title' => $this->_title
-		));
+        $content_html = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', array(
+            'html' => $html,
+            'title' => $this->_title
+        ));
 
-		$mpdf = new \mPDF_mPDF
-		(
-			'utf-8', // Language/Character set
-			'A4', // Size
-			'8', // Default Font Size
-			'', // Default Font
-			20, // Margin Left
-			20, // Margin Right
-			20, // Margin Top
-			20, // Margin Bottom
-			10, // Margin Header
-			10, // Margin Footer
-			'P' // Orientation
-		);
+        $mpdf = new \mPDF_mPDF
+        (
+            'utf-8', // Language/Character set
+            'A4', // Size
+            '8', // Default Font Size
+            '', // Default Font
+            20, // Margin Left
+            20, // Margin Right
+            20, // Margin Top
+            20, // Margin Bottom
+            10, // Margin Header
+            10, // Margin Footer
+            'P' // Orientation
+        );
 
-		$mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
+        $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
 
-		$mpdf->WriteHTML($content_html);
+        $mpdf->WriteHTML($content_html);
 
-		return $mpdf->Output('', 'S');
-	}
+        return $mpdf->Output('', 'S');
+    }
 
-	/**
-	 * Charts not supported in CSV. Returns false.
-	 *
-	 * @param string $type
-	 * @param array $rows
-	 *
-	 * @return string|bool
-	 */
-	protected function _renderChart($type, array $rows)
-	{
-		return false;
-	}
+    /**
+     * Charts not supported in CSV. Returns false.
+     *
+     * @param string $type
+     * @param array  $rows
+     *
+     * @return string|bool
+     */
+    protected function _renderChart($type, array $rows)
+    {
+        return false;
+    }
 }

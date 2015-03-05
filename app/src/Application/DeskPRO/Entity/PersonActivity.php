@@ -43,78 +43,78 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 * @var string
-	 */
-	protected $action_type;
+    /**
+     * @var string
+     */
+    protected $action_type;
 
-	/**
-	 * @var string
-	 */
-	protected $details = array();
+    /**
+     * @var string
+     */
+    protected $details = array();
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct()
-	{
-		$this->setModelField('date_created', new \DateTime());
-	}
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function getPersonId()
-	{
-		return $this->person['id'];
-	}
+    public function getPersonId()
+    {
+        return $this->person['id'];
+    }
 
-	public function setPersonId($id)
-	{
-		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-		$this['person'] = $person;
-	}
+    public function setPersonId($id)
+    {
+        $person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
+        $this['person'] = $person;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonActivity';
-		$metadata->setPrimaryTable(array(
-			'name' => 'person_activity',
-			'indexes' => array(
-				'date_created_idx' => array('columns' => array('date_created'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'action_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'action_type', ));
-		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'details', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonActivity';
+        $metadata->setPrimaryTable(array(
+            'name' => 'person_activity',
+            'indexes' => array(
+                'date_created_idx' => array('columns' => array('date_created'))
+            )
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'action_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'action_type', ));
+        $metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'details', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+    }
 }

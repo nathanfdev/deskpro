@@ -1,0 +1,11 @@
+<dp:subject>{{ phrase('user.email_subjects.register-welcome-byagent') }}</dp:subject>
+{{ phrase('user.emails.greeting') }}
+
+<br /><br />
+
+{{ phrase('user.emails.register-welcome-byagent') }}<br/>
+<a href="{{ url_full('user') }}">{{ url_full('user') }}</a><br/>
+
+<br/>
+
+{{ phrase('user.emails.register-password', {password: person.getPlaintextPassword()}) }}<br/>

@@ -3,10 +3,8 @@
 // You should not change it manually as it will be overwritten on next build
 // @codingStandardsIgnoreFile
 
-
 use \Codeception\Maybe;
 use Codeception\Module\DpControlHelper;
-use Codeception\Module\CodeHelper;
 
 /**
  * Inherited methods
@@ -26,7 +24,7 @@ use Codeception\Module\CodeHelper;
 
 class CodeGuy extends \Codeception\AbstractGuy
 {
-    
+
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -36,81 +34,89 @@ class CodeGuy extends \Codeception\AbstractGuy
      * @see Codeception\Module\DpControlHelper::getSymfonyContainer()
      * @return \Codeception\Maybe
      */
-    public function getSymfonyContainer() {
+    public function getSymfonyContainer()
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('getSymfonyContainer', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
      * Sets the database set to a version of the set. If it already exists,
-	 * it will be re-used (not recreated).
-	 *
-	 * @param string $set_name
+     * it will be re-used (not recreated).
+     *
+     * @param  string             $set_name
      * @see Codeception\Module\DpControlHelper::enableDatabaseSet()
      * @return \Codeception\Maybe
      */
-    public function enableDatabaseSet($set_name) {
+    public function enableDatabaseSet($set_name)
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('enableDatabaseSet', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
      * Like enableDatabaseSet but will always use a freshly built db.
-	 *
-	 * @param string $set_name
+     *
+     * @param  string             $set_name
      * @see Codeception\Module\DpControlHelper::enableFreshDatabaseSet()
      * @return \Codeception\Maybe
      */
-    public function enableFreshDatabaseSet($set_name) {
+    public function enableFreshDatabaseSet($set_name)
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('enableFreshDatabaseSet', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
      * Like enableDatabaseSet except this will reset the database set afterwards.
-	 *
-	 * @param string $set_name
-	 * @param bool $reset True to mark the db for reset
+     *
+     * @param  string             $set_name
+     * @param  bool               $reset    True to mark the db for reset
      * @see Codeception\Module\DpControlHelper::enableDestructiveDatabaseSet()
      * @return \Codeception\Maybe
      */
-    public function enableDestructiveDatabaseSet($set_name, $reset = null) {
+    public function enableDestructiveDatabaseSet($set_name, $reset = null)
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('enableDestructiveDatabaseSet', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -120,16 +126,18 @@ class CodeGuy extends \Codeception\AbstractGuy
      * @see Codeception\Module\DpControlHelper::useDefaultDatabase()
      * @return \Codeception\Maybe
      */
-    public function useDefaultDatabase() {
+    public function useDefaultDatabase()
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('useDefaultDatabase', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -139,39 +147,43 @@ class CodeGuy extends \Codeception\AbstractGuy
      * @see Codeception\Module\DpControlHelper::getContainerCounter()
      * @return \Codeception\Maybe
      */
-    public function getContainerCounter() {
+    public function getContainerCounter()
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('getContainerCounter', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
      * Loads fixtures into the current database.
-	 * Note that this will mark the database to be reset.
-	 *
-	 * @param array $f...
-	 * @throws \InvalidArgumentException
+     * Note that this will mark the database to be reset.
+     *
+     * @param  array                     $f...
+     * @throws \InvalidArgumentException
      * @see Codeception\Module\DpControlHelper::loadFixtures()
      * @return \Codeception\Maybe
      */
-    public function loadFixtures($f) {
+    public function loadFixtures($f)
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('loadFixtures', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 
- 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -181,13 +193,15 @@ class CodeGuy extends \Codeception\AbstractGuy
      * @see Codeception\Module::getName()
      * @return \Codeception\Maybe
      */
-    public function getName() {
+    public function getName()
+    {
         $this->scenario->addStep(new \Codeception\Step\Action('getName', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
+
             return new Maybe($result);
         }
+
         return new Maybe();
     }
 }
-

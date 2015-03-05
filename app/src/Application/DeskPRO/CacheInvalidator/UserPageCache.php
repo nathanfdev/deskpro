@@ -34,110 +34,109 @@
 
 namespace Application\DeskPRO\CacheInvalidator;
 
-use Application\DeskPRO\App;
 
 class UserPageCache
 {
-	/** @var string */
-	protected $_cache_dir = '';
+    /** @var string */
+    protected $_cache_dir = '';
 
-	public function __construct($cache_dir = null)
-	{
-		if (!$cache_dir) {
-			$cache_dir = dp_get_tmp_dir() . '/page-cache';
-		}
+    public function __construct($cache_dir = null)
+    {
+        if (!$cache_dir) {
+            $cache_dir = dp_get_tmp_dir() . '/page-cache';
+        }
 
-		$this->_cache_dir = $cache_dir;
-	}
+        $this->_cache_dir = $cache_dir;
+    }
 
-	public function invalidateAll()
-	{
-		$cache_dir = $this->_cache_dir;
-		if (is_dir($cache_dir)) {
-			$dir = opendir($cache_dir);
-			while (($file = readdir($dir)) !== false) {
-				if ($file == 'index.html') {
-					continue;
-				}
+    public function invalidateAll()
+    {
+        $cache_dir = $this->_cache_dir;
+        if (is_dir($cache_dir)) {
+            $dir = opendir($cache_dir);
+            while (($file = readdir($dir)) !== false) {
+                if ($file == 'index.html') {
+                    continue;
+                }
 
-				$path = "$cache_dir/$file";
-				if (is_file($path) && is_readable($path)) {
-					@unlink($path);
-				}
-			}
-			closedir($dir);
-		}
-	}
+                $path = "$cache_dir/$file";
+                if (is_file($path) && is_readable($path)) {
+                    @unlink($path);
+                }
+            }
+            closedir($dir);
+        }
+    }
 
-	public function invalidateRegex($regex)
-	{
-		$cache_dir = $this->_cache_dir;
-		if (is_dir($cache_dir) && is_readable($cache_dir)) {
-			$dir = opendir($cache_dir);
-			while (($file = readdir($dir)) !== false) {
-				if ($file == 'index.html') {
-					continue;
-				}
+    public function invalidateRegex($regex)
+    {
+        $cache_dir = $this->_cache_dir;
+        if (is_dir($cache_dir) && is_readable($cache_dir)) {
+            $dir = opendir($cache_dir);
+            while (($file = readdir($dir)) !== false) {
+                if ($file == 'index.html') {
+                    continue;
+                }
 
-				$path = "$cache_dir/$file";
-				if (preg_match($regex, $file) && is_file($path) && is_readable($path)) {
-					@unlink($path);
-				}
-			}
-			closedir($dir);
-		}
-	}
+                $path = "$cache_dir/$file";
+                if (preg_match($regex, $file) && is_file($path) && is_readable($path)) {
+                    @unlink($path);
+                }
+            }
+            closedir($dir);
+        }
+    }
 
-	public function cleanup($ttl = null, $max_size = null)
-	{
-		global $DP_CONFIG;
-		if ($ttl === null) {
-			$ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
-		}
-		if ($max_size === null) {
-			$max_size = isset($DP_CONFIG['cache']['page_cache']['max_size']) ? $DP_CONFIG['cache']['page_cache']['max_size'] : 10000000;
-		}
+    public function cleanup($ttl = null, $max_size = null)
+    {
+        global $DP_CONFIG;
+        if ($ttl === null) {
+            $ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
+        }
+        if ($max_size === null) {
+            $max_size = isset($DP_CONFIG['cache']['page_cache']['max_size']) ? $DP_CONFIG['cache']['page_cache']['max_size'] : 10000000;
+        }
 
-		$cache_dir = $this->_cache_dir;
-		if (is_dir($cache_dir)) {
-			$files = array();
-			$sizes = array();
-			$total_size = 0;
-			$dir = opendir($cache_dir);
-			while (($file = readdir($dir)) !== false) {
-				if ($file == 'index.html') {
-					continue;
-				}
+        $cache_dir = $this->_cache_dir;
+        if (is_dir($cache_dir)) {
+            $files = array();
+            $sizes = array();
+            $total_size = 0;
+            $dir = opendir($cache_dir);
+            while (($file = readdir($dir)) !== false) {
+                if ($file == 'index.html') {
+                    continue;
+                }
 
-				$path = "$cache_dir/$file";
-				if (is_file($path) && is_readable($path)) {
-					$files[$path] = filemtime($path);
-					$sizes[$path] = filesize($path);
-					$total_size += $sizes[$path];
-				}
-			}
-			closedir($dir);
+                $path = "$cache_dir/$file";
+                if (is_file($path) && is_readable($path)) {
+                    $files[$path] = filemtime($path);
+                    $sizes[$path] = filesize($path);
+                    $total_size += $sizes[$path];
+                }
+            }
+            closedir($dir);
 
-			$cutoff = time() - $ttl;
+            $cutoff = time() - $ttl;
 
-			asort($files);
+            asort($files);
 
-			foreach ($files AS $path => $mtime) {
-				if ($mtime < $cutoff || $total_size >= $max_size) {
-					@unlink($path);
-					$size = $sizes[$path];
-					$total_size -= $size;
-				}
+            foreach ($files AS $path => $mtime) {
+                if ($mtime < $cutoff || $total_size >= $max_size) {
+                    @unlink($path);
+                    $size = $sizes[$path];
+                    $total_size -= $size;
+                }
 
-				if ($mtime >= $cutoff && $total_size < $max_size) {
-					break;
-				}
-			}
-		}
-	}
+                if ($mtime >= $cutoff && $total_size < $max_size) {
+                    break;
+                }
+            }
+        }
+    }
 
-	public function invalidateLanguageCache()
-	{
-		@unlink(dp_get_data_dir() . '/languages.cache');
-	}
+    public function invalidateLanguageCache()
+    {
+        @unlink(dp_get_data_dir() . '/languages.cache');
+    }
 }

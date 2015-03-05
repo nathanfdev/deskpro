@@ -7,6 +7,8 @@
  * Identifies a single recipient or sender department.
  *
  * @package php-ews\Types
+ *
+ * @todo Determine if we need this.
  */
 class EWSType_ProtectionRuleValueType extends EWSType
 {

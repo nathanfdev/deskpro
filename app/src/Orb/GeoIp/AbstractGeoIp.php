@@ -36,98 +36,98 @@ namespace Orb\GeoIp;
 
 abstract class AbstractGeoIp
 {
-	const CONTINENT  = 'continent';
-	const COUNTRY    = 'country';
-	const REGION     = 'region';
-	const CITY       = 'city';
-	const LATITUDE   = 'latitude';
-	const LONGITUDE  = 'longitude';
+    const CONTINENT  = 'continent';
+    const COUNTRY    = 'country';
+    const REGION     = 'region';
+    const CITY       = 'city';
+    const LATITUDE   = 'latitude';
+    const LONGITUDE  = 'longitude';
 
-	/**
-	 * @param array $what
-	 * @param string $host
-	 * @return array
-	 */
-	abstract public function lookup($host, array $what = null);
+    /**
+     * @param  array  $what
+     * @param  string $host
+     * @return array
+     */
+    abstract public function lookup($host, array $what = null);
 
+    /**
+     * @param  string      $host
+     * @return string|null
+     */
+    public function lookupContinent($host)
+    {
+        $ret = $this->lookup(array(self::CONTINENT), $host);
 
-	/**
-	 * @param string $host
-	 * @return string|null
-	 */
-	public function lookupContinent($host)
-	{
-		$ret = $this->lookup(array(self::CONTINENT), $host);
-		return !empty($ret[self::CONTINENT]) ? $ret[self::CONTINENT] : null;
-	}
+        return !empty($ret[self::CONTINENT]) ? $ret[self::CONTINENT] : null;
+    }
 
+    /**
+     * @param  string      $host
+     * @return string|null
+     */
+    public function lookupCountry($host)
+    {
+        $ret = $this->lookup(array(self::COUNTRY), $host);
 
-	/**
-	 * @param string $host
-	 * @return string|null
-	 */
-	public function lookupCountry($host)
-	{
-		$ret = $this->lookup(array(self::COUNTRY), $host);
-		return !empty($ret[self::COUNTRY]) ? $ret[self::COUNTRY] : null;
-	}
+        return !empty($ret[self::COUNTRY]) ? $ret[self::COUNTRY] : null;
+    }
 
+    /**
+     * @param  string      $host
+     * @return string|null
+     */
+    public function lookupRegion($host)
+    {
+        $ret = $this->lookup(array(self::REGION), $host);
 
-	/**
-	 * @param string $host
-	 * @return string|null
-	 */
-	public function lookupRegion($host)
-	{
-		$ret = $this->lookup(array(self::REGION), $host);
-		return !empty($ret[self::REGION]) ? $ret[self::REGION] : null;
-	}
+        return !empty($ret[self::REGION]) ? $ret[self::REGION] : null;
+    }
 
+    /**
+     * @param  string      $host
+     * @return string|null
+     */
+    public function lookupCity($host)
+    {
+        $ret = $this->lookup(array(self::CITY), $host);
 
-	/**
-	 * @param string $host
-	 * @return string|null
-	 */
-	public function lookupCity($host)
-	{
-		$ret = $this->lookup(array(self::CITY), $host);
-		return !empty($ret[self::CITY]) ? $ret[self::CITY] : null;
-	}
+        return !empty($ret[self::CITY]) ? $ret[self::CITY] : null;
+    }
 
-	/**
-	 * @param string $host
-	 * @return string|null
-	 */
-	public function lookupLatitude($host)
-	{
-		$ret = $this->lookup(array(self::LATITUDE), $host);
-		return !empty($ret[self::LATITUDE]) ? $ret[self::LATITUDE] : null;
-	}
+    /**
+     * @param  string      $host
+     * @return string|null
+     */
+    public function lookupLatitude($host)
+    {
+        $ret = $this->lookup(array(self::LATITUDE), $host);
 
+        return !empty($ret[self::LATITUDE]) ? $ret[self::LATITUDE] : null;
+    }
 
-	/**
-	 * @param string $host
-	 * @return string|null
-	 */
-	public function lookupLongitude($host)
-	{
-		$ret = $this->lookup(array(self::LONGITUDE), $host);
-		return !empty($ret[self::LONGITUDE]) ? $ret[self::LONGITUDE] : null;
-	}
+    /**
+     * @param  string      $host
+     * @return string|null
+     */
+    public function lookupLongitude($host)
+    {
+        $ret = $this->lookup(array(self::LONGITUDE), $host);
 
+        return !empty($ret[self::LONGITUDE]) ? $ret[self::LONGITUDE] : null;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getEmptyRecord()
-	{
-		return array(
-			self::CONTINENT  => null,
-			self::COUNTRY    => null,
-			self::REGION     => null,
-			self::CITY       => null,
-			self::LATITUDE   => null,
-			self::LONGITUDE  => null,
-		);
-	}
+    /**
+     * @return array
+     */
+    public function getEmptyRecord()
+    {
+        return array(
+            self::CONTINENT  => null,
+            self::COUNTRY    => null,
+            self::REGION     => null,
+            self::CITY       => null,
+            self::LATITUDE   => null,
+            self::LONGITUDE  => null,
+        );
+    }
 }

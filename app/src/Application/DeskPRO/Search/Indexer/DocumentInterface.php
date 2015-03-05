@@ -39,24 +39,24 @@ namespace Application\DeskPRO\Search\Indexer;
  */
 interface DocumentInterface
 {
-	/**
-	 * Get the unique ID for this document in the index
-	 *
-	 * @return mixed
-	 */
-	public function getId();
+    /**
+     * Get the unique ID for this document in the index
+     *
+     * @return mixed
+     */
+    public function getId();
 
-	/**
-	 * Get the type of document
-	 *
-	 * @return string
-	 */
-	public function getContentTypeName();
+    /**
+     * Get the type of document
+     *
+     * @return string
+     */
+    public function getContentTypeName();
 
-	/**
-	 * Get the data to index
-	 *
-	 * @return array
-	 */
-	public function getData();
+    /**
+     * Get the data to index
+     *
+     * @return array
+     */
+    public function getData();
 }

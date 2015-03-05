@@ -47,224 +47,223 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
 
-		return $multi;
-	}
-
-
-	####################################################################################################################
-	# list sms accounts
-	####################################################################################################################
-
-	public function listAction()
-	{
-		$accounts = $this->getSmsAccountRepo()->findAll();
-
-		$data = $this->getContainer()->getSerializer()->serializeArray($accounts);
-
-		return $this->createApiResponse(array('sms_accounts' => $data));
-	}
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# get sms account
-	####################################################################################################################
+    ####################################################################################################################
+    # list sms accounts
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		$account = $this->getSmsAccountRepo()->find($id);
+    public function listAction()
+    {
+        $accounts = $this->getSmsAccountRepo()->findAll();
 
-		if (!$account) {
-			return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
-		}
+        $data = $this->getContainer()->getSerializer()->serializeArray($accounts);
 
-		$data = $this->getContainer()->getSerializer()->serialize($account);
-
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse(array('sms_accounts' => $data));
+    }
 
 
-	####################################################################################################################
-	# save sms account
-	####################################################################################################################
+    ####################################################################################################################
+    # get sms account
+    ####################################################################################################################
 
-	public function saveAction($id = null)
-	{
-		if ($id) {
-			$account = $this->getContainer()->getEm()->getRepository('DeskPRO:SmsAccount')->find($id);
+    public function getAction($id)
+    {
+        $account = $this->getSmsAccountRepo()->find($id);
 
-			if (!$account) {
-				return $this->createApiErrorResponse('sms.account_not_found', 'sms account not found', 404);
-			}
-		} else {
-			$account = new SmsAccount();
-		}
+        if (!$account) {
+            return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
+        }
 
+        $data = $this->getContainer()->getSerializer()->serialize($account);
 
-		/**
-		 * If anything needs to be done with the data here in the future, a Form should be made
-		 * on an EditSmsAccount object
-		 */
-		if (!$account->phone_number) {
-			$account->phone_number = new PhoneNumber();
-		}
-		$account->type                 = $this->in->getValue('account.type');
-		$account->params               = $this->in->getValue('account.params');
-		$account->identifier           = $this->in->getValue('account.identifier');
-		$account->phone_number->number = $this->in->getValue('account.phone_number');
-		$account->is_enabled           = $this->in->getValue('account.is_enabled');
-		$account->is_tested            = $this->in->getValue('account.is_tested');
-		$account->is_connected         = $this->in->getValue('account.is_connected');
-
-		$this->saveSmsAccount($account);
-
-		$serializedAccount = $this->getContainer()->getSerializer()->serialize($account);
-
-		if ($id) {
-			return $this->createApiSuccessResponse(
-				array(
-					'account' => $serializedAccount
-				));
-		} else {
-			return $this->createApiCreateResponse(
-				array(
-					'account' => $serializedAccount
-				), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
-			);
-		}
-	}
+        return $this->createApiResponse($data);
+    }
 
 
-	####################################################################################################################
-	# connect to a provider and return provider specific info
-	####################################################################################################################
+    ####################################################################################################################
+    # save sms account
+    ####################################################################################################################
 
-	public function connectProviderAction()
-	{
-		$accountData = $this->in->getValue('account');
-		$id = $this->in->getValue('account.id');
+    public function saveAction($id = null)
+    {
+        if ($id) {
+            $account = $this->getContainer()->getEm()->getRepository('DeskPRO:SmsAccount')->find($id);
 
-		$account = null;
-		if ($id) {
-			$account = $this->getSmsAccountRepo()->find($id);
-		}
-
-		try {
-			$provider = SmsProviderFactory::create(
-				$this->in->getValue('account.type'), $this->in->getValue('account.params')
-			);
-		} catch (\InvalidArgumentException $e) {
-			return $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
-		}
+            if (!$account) {
+                return $this->createApiErrorResponse('sms.account_not_found', 'sms account not found', 404);
+            }
+        } else {
+            $account = new SmsAccount();
+        }
 
 
-		try {
-			$data = $provider->getIncomingNumbers();
-			$name = $provider->getAccountName();
-			if (!isset($accountData['params'])) {
-				$accountData['params'] = array();
-			}
-			$accountData['params']['numbers'] = $data;
-			$accountData['identifier']        = $name;
-			$accountData['is_connected']      = true;
+        /**
+         * If anything needs to be done with the data here in the future, a Form should be made
+         * on an EditSmsAccount object
+         */
+        if (!$account->phone_number) {
+            $account->phone_number = new PhoneNumber();
+        }
+        $account->type                 = $this->in->getValue('account.type');
+        $account->params               = $this->in->getValue('account.params');
+        $account->identifier           = $this->in->getValue('account.identifier');
+        $account->phone_number->number = $this->in->getValue('account.phone_number');
+        $account->is_enabled           = $this->in->getValue('account.is_enabled');
+        $account->is_tested            = $this->in->getValue('account.is_tested');
+        $account->is_connected         = $this->in->getValue('account.is_connected');
 
-			// update the SmsAccount with new "synced" data
-			if ($account) {
-				$account->params       = $accountData['params'];
-				$account->identifier   = $accountData['identifier'];
-				$account->is_connected = $accountData['is_connected'];
-				$this->getContainer()->getEm()->persist($account);
-				$this->getContainer()->getEm()->flush();
-			}
+        $this->saveSmsAccount($account);
 
-			return $this->createApiSuccessResponse(array('account' => $accountData));
-		} catch (\Exception $e) {
-			return $this->createApiErrorResponse(
-				'sms.connection_error', 'Could not connect. Please check your credentials'
-			);
-		}
+        $serializedAccount = $this->getContainer()->getSerializer()->serialize($account);
 
-	}
-
-
-	public function setupAndTestTwilioAction()
-	{
-		$request = $this->request;
-
-		$accountData = $this->in->getValue('account');
-		$id          = $this->in->getValue('account.id');
-
-		$account = null;
-		if ($id) {
-			$account = $this->getSmsAccountRepo()->find($id);
-		}
-
-		if (!$account) {
-			$this->createApiErrorResponse('invalid', 'no sms account found');
-		}
-
-		$account->is_tested = false;
-		$account->is_enabled = false;
-		$account->test_code = Strings::random(8);
-
-		$this->saveSmsAccount($account);
-
-		// setup twilio endpoint
-		$twilio_endpoint = $this->generateUrl('api_channel_incoming_sms_twilio', array(), UrlGeneratorInterface::ABSOLUTE_URL);
-		$provider = SmsProviderFactory::create($account->type, $account->params);
-		$provider->setUrlForNumber($twilio_endpoint, $account->phone_number->number);
-
-		// send a text
-		$sender = new SmsSender($provider, $account->phone_number->number);
-		$sender->send($account->phone_number->number, $msg = new SmsMessage($account->test_code));
-
-		return $this->createApiSuccessResponse();
-	}
+        if ($id) {
+            return $this->createApiSuccessResponse(
+                array(
+                    'account' => $serializedAccount
+                ));
+        } else {
+            return $this->createApiCreateResponse(
+                array(
+                    'account' => $serializedAccount
+                ), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
+            );
+        }
+    }
 
 
-	####################################################################################################################
-	# delete sms accounts
-	####################################################################################################################
+    ####################################################################################################################
+    # connect to a provider and return provider specific info
+    ####################################################################################################################
 
-	public function deleteAction($id)
-	{
-		$account = $this->getSmsAccountRepo()->find($id);
+    public function connectProviderAction()
+    {
+        $accountData = $this->in->getValue('account');
+        $id = $this->in->getValue('account.id');
 
-		if (!$account) {
-			return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
-		}
+        $account = null;
+        if ($id) {
+            $account = $this->getSmsAccountRepo()->find($id);
+        }
 
-		$em = $this->getContainer()->getEm();
-		$em->remove($account);
-		$em->flush();
-
-		return $this->createApiSuccessResponse();
-	}
-
-
-	/**
-	 * @return \Doctrine\ORM\EntityRepository
-	 */
-	private function getSmsAccountRepo()
-	{
-		return $this->getContainer()->getEm()->getRepository('DeskPRO:SmsAccount');
-	}
+        try {
+            $provider = SmsProviderFactory::create(
+                $this->in->getValue('account.type'), $this->in->getValue('account.params')
+            );
+        } catch (\InvalidArgumentException $e) {
+            return $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
+        }
 
 
-	/**
-	 * @param $account
-	 */
-	protected function saveSmsAccount(SmsAccount $account)
-	{
-		$this->getContainer()->getEm()->persist($account);
-		$this->getContainer()->getEm()->flush();
-	}
+        try {
+            $data = $provider->getIncomingNumbers();
+            $name = $provider->getAccountName();
+            if (!isset($accountData['params'])) {
+                $accountData['params'] = array();
+            }
+            $accountData['params']['numbers'] = $data;
+            $accountData['identifier']        = $name;
+            $accountData['is_connected']      = true;
+
+            // update the SmsAccount with new "synced" data
+            if ($account) {
+                $account->params       = $accountData['params'];
+                $account->identifier   = $accountData['identifier'];
+                $account->is_connected = $accountData['is_connected'];
+                $this->getContainer()->getEm()->persist($account);
+                $this->getContainer()->getEm()->flush();
+            }
+
+            return $this->createApiSuccessResponse(array('account' => $accountData));
+        } catch (\Exception $e) {
+            return $this->createApiErrorResponse(
+                'sms.connection_error', 'Could not connect. Please check your credentials'
+            );
+        }
+
+    }
+
+
+    public function setupAndTestTwilioAction()
+    {
+        $request = $this->request;
+
+        $accountData = $this->in->getValue('account');
+        $id          = $this->in->getValue('account.id');
+
+        $account = null;
+        if ($id) {
+            $account = $this->getSmsAccountRepo()->find($id);
+        }
+
+        if (!$account) {
+            $this->createApiErrorResponse('invalid', 'no sms account found');
+        }
+
+        $account->is_tested = false;
+        $account->is_enabled = false;
+        $account->test_code = Strings::random(8);
+
+        $this->saveSmsAccount($account);
+
+        // setup twilio endpoint
+        $twilio_endpoint = $this->generateUrl('api_channel_incoming_sms_twilio', array(), UrlGeneratorInterface::ABSOLUTE_URL);
+        $provider = SmsProviderFactory::create($account->type, $account->params);
+        $provider->setUrlForNumber($twilio_endpoint, $account->phone_number->number);
+
+        // send a text
+        $sender = new SmsSender($provider, $account->phone_number->number);
+        $sender->send($account->phone_number->number, $msg = new SmsMessage($account->test_code));
+
+        return $this->createApiSuccessResponse();
+    }
+
+
+    ####################################################################################################################
+    # delete sms accounts
+    ####################################################################################################################
+
+    public function deleteAction($id)
+    {
+        $account = $this->getSmsAccountRepo()->find($id);
+
+        if (!$account) {
+            return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
+        }
+
+        $em = $this->getContainer()->getEm();
+        $em->remove($account);
+        $em->flush();
+
+        return $this->createApiSuccessResponse();
+    }
+
+
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    private function getSmsAccountRepo()
+    {
+        return $this->getContainer()->getEm()->getRepository('DeskPRO:SmsAccount');
+    }
+
+    /**
+     * @param $account
+     */
+    protected function saveSmsAccount(SmsAccount $account)
+    {
+        $this->getContainer()->getEm()->persist($account);
+        $this->getContainer()->getEm()->flush();
+    }
 }

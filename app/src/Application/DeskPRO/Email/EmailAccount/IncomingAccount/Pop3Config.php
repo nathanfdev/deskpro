@@ -40,82 +40,82 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class Pop3Config implements AccountConfigInterface
 {
-	/**
-	 * @var string
-	 */
-	public $host;
+    /**
+     * @var string
+     */
+    public $host;
 
-	/**
-	 * Pop3 default is 110, secure 995
-	 * @var int
-	 */
-	public $port = 110;
+    /**
+     * Pop3 default is 110, secure 995
+     * @var int
+     */
+    public $port = 110;
 
-	/**
-	 * @var string
-	 */
-	public $user;
+    /**
+     * @var string
+     */
+    public $user;
 
-	/**
-	 * @var string
-	 */
-	public $password;
+    /**
+     * @var string
+     */
+    public $password;
 
-	/**
-	 * 'ssl' or 'tls'
-	 * @var null|string
-	 */
-	public $secure_mode = null;
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array(
-			'host'        => $this->host,
-			'port'        => $this->port,
-			'user'        => $this->user,
-			'password'    => $this->password,
-			'secure_mode' => $this->secure_mode
-		);
-	}
+    /**
+     * 'ssl' or 'tls'
+     * @var null|string
+     */
+    public $secure_mode = null;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data as $k => $v) {
-			$obj->$k = $v;
-		}
-
-		return $obj;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'pop3';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array(
+            'host'        => $this->host,
+            'port'        => $this->port,
+            'user'        => $this->user,
+            'password'    => $this->password,
+            'secure_mode' => $this->secure_mode
+        );
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $k => $v) {
+            $obj->$k = $v;
+        }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('host', new Constraints\NotBlank());
-		$metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
-		$metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-			'choices' => array('none', 'ssl', 'tls')
-		)));
-	}
+        return $obj;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'pop3';
+    }
+
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
+        $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
+            'choices' => array('none', 'ssl', 'tls')
+        )));
+    }
 }

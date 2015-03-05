@@ -34,28 +34,24 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 
 class AgentCheckerService
 {
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		return new static();
-	}
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        return new static();
+    }
 
+    public function __construct()
+    {
 
-	public function __construct()
-	{
+    }
 
-	}
-
-
-	public function addAgentSeat(Person $person)
-	{
-		// some logic here, return true if we can make this person an agent
-		return true;
-	}
+    public function addAgentSeat(Person $person)
+    {
+        // some logic here, return true if we can make this person an agent
+        return true;
+    }
 }
- 

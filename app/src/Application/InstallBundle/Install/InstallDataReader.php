@@ -35,161 +35,165 @@ namespace Application\InstallBundle\Install;
 
 class InstallDataReader implements \IteratorAggregate, \Countable
 {
-	/** @var  string */
-	protected $filename;
-	/** @var  string */
-	protected $filepath;
-	/** @var string */
-	protected $filetype;
+    /** @var  string */
+    protected $filename;
+    /** @var  string */
+    protected $filepath;
+    /** @var string */
+    protected $filetype;
 
-	/** @var array  */
-	protected $tags = array();
-	/** @var array|null */
-	protected $data = null;
+    /** @var array  */
+    protected $tags = array();
+    /** @var array|null */
+    protected $data = null;
 
-	public function __construct($filepath)
-	{
-		$this->filepath = $filepath;
-		$this->filetype = pathinfo($this->filepath, \PATHINFO_EXTENSION);
+    public function __construct($filepath)
+    {
+        $this->filepath = $filepath;
+        $this->filetype = pathinfo($this->filepath, \PATHINFO_EXTENSION);
 
-		if (!is_file($this->filepath)) {
-			throw new \InvalidArgumentException("Invalid file `{$this->filepath}`");
-		}
-	}
+        if (!is_file($this->filepath)) {
+            throw new \InvalidArgumentException("Invalid file `{$this->filepath}`");
+        }
+    }
 
-	public function _read()
-	{
-		// Already read
-		if ($this->data !== null) return;
+    public function _read()
+    {
+        // Already read
+        if ($this->data !== null) return;
 
-		$this->tags = array();
-		$this->data = array();
+        $this->tags = array();
+        $this->data = array();
 
-		// prefix here so the array_shift below gets rid of junk,
-		// but doesnt bug out if theres a BEGIN right on the first line
-		$file = "\n\nxxx\n\n" . file_get_contents($this->filepath);
+        // prefix here so the array_shift below gets rid of junk,
+        // but doesnt bug out if theres a BEGIN right on the first line
+        $file = "\n\nxxx\n\n" . file_get_contents($this->filepath);
 
-		$parts = preg_split('/^##BEGIN:(.*?)##\s*$/m', $file, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-		if (!$parts) {
-			return;
-		}
+        $parts = preg_split('/^##BEGIN:(.*?)##\s*$/m', $file, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        if (!$parts) {
+            return;
+        }
 
-		// remove first part of the file because its not part of any section
-		array_shift($parts);
+        // remove first part of the file because its not part of any section
+        array_shift($parts);
 
-		$_desc_str = null;
-		foreach ($parts as $part) {
+        $_desc_str = null;
+        foreach ($parts as $part) {
 
-			$part = trim($part);
-			if (!$part) continue;
+            $part = trim($part);
+            if (!$part) continue;
 
-			// The name of the part is before each part itself,
-			// so we read it first and next time around we have the real content
-			if ($_desc_str === null) {
-				$_desc_str = $part;
-				continue;
-			}
+            // The name of the part is before each part itself,
+            // so we read it first and next time around we have the real content
+            if ($_desc_str === null) {
+                $_desc_str = $part;
+                continue;
+            }
 
-			$desc_str = $_desc_str;
-			$_desc_str = null;
+            $desc_str = $_desc_str;
+            $_desc_str = null;
 
-			// something.some_name
-			// Tag: something, name: some_name
-			$desc_parts = explode('.', $desc_str, 2);
-			if (count($desc_parts) == 1) {
-				$tag = 'default';
-				$name = $desc_parts;
-			} else {
-				list ($tag, $name) = $desc_parts;
-			}
+            // something.some_name
+            // Tag: something, name: some_name
+            $desc_parts = explode('.', $desc_str, 2);
+            if (count($desc_parts) == 1) {
+                $tag = 'default';
+                $name = $desc_parts;
+            } else {
+                list ($tag, $name) = $desc_parts;
+            }
 
-			if (!isset($this->tags[$tag])) $this->tags[$tag] = array();
-			$this->tags[$tag][] = "$tag.$name";
+            if (!isset($this->tags[$tag])) $this->tags[$tag] = array();
+            $this->tags[$tag][] = "$tag.$name";
 
-			$part = trim($part);
-			if ($this->filetype == 'sql') {
-				$part = rtrim($part, ';'); // trailing ;'s
-			}
+            $part = trim($part);
+            if ($this->filetype == 'sql') {
+                $part = rtrim($part, ';'); // trailing ;'s
+            }
 
-			$this->data[$tag . '.' . $name] = $part;
-		}
-	}
+            $this->data[$tag . '.' . $name] = $part;
+        }
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getAllForTag($tag)
-	{
-		$ret = array();
+    /**
+     * @return array
+     */
+    public function getAllForTag($tag)
+    {
+        $ret = array();
 
-		$this->_read();
-		if (!isset($this->tags[$tag])) {
-			throw new \InvalidArgumentException("No such tag `$tag`");
-		}
+        $this->_read();
+        if (!isset($this->tags[$tag])) {
+            throw new \InvalidArgumentException("No such tag `$tag`");
+        }
 
-		foreach ($this->tags[$tag] as $name) {
-			$ret[$name] = $this->get($name);
-		}
+        foreach ($this->tags[$tag] as $name) {
+            $ret[$name] = $this->get($name);
+        }
 
-		return $ret;
-	}
+        return $ret;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function get($name)
-	{
-		$this->_read();
-		if (!isset($this->data[$name])) {
-			throw new \InvalidArgumentException("No such name `$name`");
-		}
+    /**
+     * @return string
+     */
+    public function get($name)
+    {
+        $this->_read();
+        if (!isset($this->data[$name])) {
+            throw new \InvalidArgumentException("No such name `$name`");
+        }
 
-		return $this->data[$name];
-	}
+        return $this->data[$name];
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getAll()
-	{
-		$this->_read();
-		return $this->data;
-	}
+    /**
+     * @return array
+     */
+    public function getAll()
+    {
+        $this->_read();
 
-	/**
-	 * @return bool
-	 */
-	public function has($name)
-	{
-		$this->_read();
-		return isset($this->data[$name]);
-	}
+        return $this->data;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getTags()
-	{
-		$this->_read();
-		return array_keys($this->tags);
-	}
+    /**
+     * @return bool
+     */
+    public function has($name)
+    {
+        $this->_read();
 
-	/**
-	 * @return \ArrayObject
-	 */
-	public function getIterator()
-	{
-		$this->_read();
-		return new \ArrayObject($this->data);
-	}
+        return isset($this->data[$name]);
+    }
 
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        $this->_read();
 
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		$this->_read();
-		return count($this->data);
-	}
+        return array_keys($this->tags);
+    }
+
+    /**
+     * @return \ArrayObject
+     */
+    public function getIterator()
+    {
+        $this->_read();
+
+        return new \ArrayObject($this->data);
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        $this->_read();
+
+        return count($this->data);
+    }
 }

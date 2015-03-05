@@ -41,220 +41,219 @@ use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
  */
 class Session implements SessionInterface
 {
-	/**
-	 * @var SessionStorageInterface
-	 */
-	protected $storage;
+    /**
+     * @var SessionStorageInterface
+     */
+    protected $storage;
 
-	/**
-	 * Has the session been started yet?
-	 * @var bool
-	 */
-	protected $has_started = false;
+    /**
+     * Has the session been started yet?
+     * @var bool
+     */
+    protected $has_started = false;
 
-	/**
-	 * Created namespaces. Namespaces are always using this objects data directly,
-	 * but more efficient if we use the same namespace objects instead of creating new ones.
-	 * @var array
-	 */
-	protected $namespaces = array();
+    /**
+     * Created namespaces. Namespaces are always using this objects data directly,
+     * but more efficient if we use the same namespace objects instead of creating new ones.
+     * @var array
+     */
+    protected $namespaces = array();
 
-	/**
-	 * The raw data we'll save to storage. This is public for efficiencies sake in
-	 * SessionNamespace -- you shouldn't use this yourself though.
-	 * @var array
-	 */
-	public $data = array();
+    /**
+     * The raw data we'll save to storage. This is public for efficiencies sake in
+     * SessionNamespace -- you shouldn't use this yourself though.
+     * @var array
+     */
+    public $data = array();
 
-	/**
-	 * Various metadata
-	 * @var array
-	 */
-	public $metadata = array();
-
-
-	/**
-	 * @param SessionStorageInterface $storage
-	 */
-	public function __construct(SessionStorageInterface $storage)
-	{
-		$this->storage = $storage;
-	}
+    /**
+     * Various metadata
+     * @var array
+     */
+    public $metadata = array();
 
 
-
-	/**
-	 * Gets a session object who is sandboxed to a specific sub-key (namespace)
-	 *
-	 * @param string $namespace The namespace to fetch
-	 * @return SessionNamespace
-	 */
-	public function createNamespace($namespace)
-	{
-		if (isset($this->namespaces[$namespace])) {
-			return $this->namespaces[$namespace];
-		}
-
-		$this->namespaces[$namespace] = new SessionNamespace($this, $namespace);
-		return $this->namespaces[$namespace];
-	}
+    /**
+     * @param SessionStorageInterface $storage
+     */
+    public function __construct(SessionStorageInterface $storage)
+    {
+        $this->storage = $storage;
+    }
 
 
 
-	/**
-	 * Starts the session storage.
-	 */
-	public function start()
-	{
-		if ($this->has_started === true) {
-			return;
-		}
+    /**
+     * Gets a session object who is sandboxed to a specific sub-key (namespace)
+     *
+     * @param  string           $namespace The namespace to fetch
+     * @return SessionNamespace
+     */
+    public function createNamespace($namespace)
+    {
+        if (isset($this->namespaces[$namespace])) {
+            return $this->namespaces[$namespace];
+        }
 
-		$this->storage->start();
-		$this->data = $this->storage->read('orb_sess');
-		$this->metadata = array();
-		if (isset($this->data['__metadata'])) {
-			$this->metadata = $this->data['__metadata'];
-			unset($this->data['__metadata']);
-		}
-		$this->has_started = true;
-	}
+        $this->namespaces[$namespace] = new SessionNamespace($this, $namespace);
+
+        return $this->namespaces[$namespace];
+    }
 
 
 
-	/**
-	 * Checks if a data item is defined.
-	 *
-	 * @param string $name The data item name
-	 * @return boolean
-	 */
-	public function has($name)
-	{
-		$this->start();
+    /**
+     * Starts the session storage.
+     */
+    public function start()
+    {
+        if ($this->has_started === true) {
+            return;
+        }
 
-		return isset($this->data[$name]);
-	}
-
-
-
-	/**
-	 * Returns a data item.
-	 *
-	 * @param string $name    The attribute name
-	 * @param mixed  $default The default value
-	 * @return mixed
-	 */
-	public function get($name, $default = null)
-	{
-		$this->start();
-
-		return isset($this->data[$name]) ? $this->data[$name] : $default;
-	}
+        $this->storage->start();
+        $this->data = $this->storage->read('orb_sess');
+        $this->metadata = array();
+        if (isset($this->data['__metadata'])) {
+            $this->metadata = $this->data['__metadata'];
+            unset($this->data['__metadata']);
+        }
+        $this->has_started = true;
+    }
 
 
 
-	/**
-	 * Sets a data item.
-	 *
-	 * @param string $name
-	 * @param mixed  $value
-	 */
-	public function set($name, $value)
-	{
-		$this->start();
+    /**
+     * Checks if a data item is defined.
+     *
+     * @param  string  $name The data item name
+     * @return boolean
+     */
+    public function has($name)
+    {
+        $this->start();
 
-		$this->data[$name] = $value;
-	}
-
-
-
-	/**
-	 * Returns data.
-	 *
-	 * @return array
-	 */
-	public function getAllData()
-	{
-		$this->start();
-
-		return $this->data;
-	}
+        return isset($this->data[$name]);
+    }
 
 
 
-	/**
-	 * Sets data.
-	 *
-	 * @param array $data Attributes
-	 */
-	public function setAllData($data)
-	{
-		$this->start();
-		$this->data = $data;
-	}
+    /**
+     * Returns a data item.
+     *
+     * @param  string $name    The attribute name
+     * @param  mixed  $default The default value
+     * @return mixed
+     */
+    public function get($name, $default = null)
+    {
+        $this->start();
+
+        return isset($this->data[$name]) ? $this->data[$name] : $default;
+    }
 
 
 
-	/**
-	 * Clear all set data
-	 */
-	public function removeAllData()
-	{
-		$this->data = array();
-	}
+    /**
+     * Sets a data item.
+     *
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function set($name, $value)
+    {
+        $this->start();
+
+        $this->data[$name] = $value;
+    }
 
 
 
-	/**
-	 * Removes a data item.
-	 *
-	 * @param string $name
-	 */
-	public function remove($name)
-	{
-		$this->start();
-		unset($this->data[$name]);
-	}
+    /**
+     * Returns data.
+     *
+     * @return array
+     */
+    public function getAllData()
+    {
+        $this->start();
+
+        return $this->data;
+    }
 
 
 
-	public function __destruct()
-	{
-		if ($this->has_started === true) {
-			if ($this->metadata) {
-				$data = array_merge($this->data, array('__metadata' => $this->metadata));
-			} else {
-				$data = $this->data;
-			}
-
-			$this->storage->write('orb_sess', $data);
-		}
-	}
+    /**
+     * Sets data.
+     *
+     * @param array $data Attributes
+     */
+    public function setAllData($data)
+    {
+        $this->start();
+        $this->data = $data;
+    }
 
 
 
-	public function getIterator()
-	{
-		return \ArrayIterator($this->data);
-	}
+    /**
+     * Clear all set data
+     */
+    public function removeAllData()
+    {
+        $this->data = array();
+    }
 
-	public function offsetUnset($offset)
-	{
-		$this->remove($offset);
-	}
 
-	public function offsetSet($offset, $value)
-	{
-		$this->set($offset, $value);
-	}
 
-	public function offsetGet($offset)
-	{
-		return $this->get($offset);
-	}
+    /**
+     * Removes a data item.
+     *
+     * @param string $name
+     */
+    public function remove($name)
+    {
+        $this->start();
+        unset($this->data[$name]);
+    }
 
-	public function offsetExists($offset)
-	{
-		return $this->has($offset);
-	}
+
+
+    public function __destruct()
+    {
+        if ($this->has_started === true) {
+            if ($this->metadata) {
+                $data = array_merge($this->data, array('__metadata' => $this->metadata));
+            } else {
+                $data = $this->data;
+            }
+
+            $this->storage->write('orb_sess', $data);
+        }
+    }
+
+    public function getIterator()
+    {
+        return \ArrayIterator($this->data);
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->remove($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->set($offset, $value);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetExists($offset)
+    {
+        return $this->has($offset);
+    }
 }

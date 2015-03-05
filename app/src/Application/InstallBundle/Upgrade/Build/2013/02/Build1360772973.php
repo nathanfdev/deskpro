@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1360772973 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add index on date_created on email_sources and ticket_changetracker_logs");
-		$this->execMutateSql("CREATE INDEX date_created ON email_sources (date_created)");
-		$this->execMutateSql("CREATE INDEX date_created ON ticket_changetracker_logs (date_created)");
-		$this->execMutateSql("DROP INDEX date_next_attempt_idx ON sendmail_queue");
-		$this->execMutateSql("CREATE INDEX has_sent_idx ON sendmail_queue (has_sent, date_next_attempt)");
-	}
+    public function run()
+    {
+        $this->out("Add index on date_created on email_sources and ticket_changetracker_logs");
+        $this->execMutateSql("CREATE INDEX date_created ON email_sources (date_created)");
+        $this->execMutateSql("CREATE INDEX date_created ON ticket_changetracker_logs (date_created)");
+        $this->execMutateSql("DROP INDEX date_next_attempt_idx ON sendmail_queue");
+        $this->execMutateSql("CREATE INDEX has_sent_idx ON sendmail_queue (has_sent, date_next_attempt)");
+    }
 }

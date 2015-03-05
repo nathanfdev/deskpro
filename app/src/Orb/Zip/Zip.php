@@ -38,38 +38,37 @@ use Orb\Zip\Adapter\ZipAdapterInterface;
 
 class Zip
 {
-	/**
-	 * @var ZipAdapterInterface
-	 */
-	private $adapter;
+    /**
+     * @var ZipAdapterInterface
+     */
+    private $adapter;
 
-	public function __construct(ZipAdapterInterface $adapter)
-	{
-		$this->adapter = $adapter;
-	}
+    public function __construct(ZipAdapterInterface $adapter)
+    {
+        $this->adapter = $adapter;
+    }
 
-	/**
-	 * Compress a file or directory of files
-	 *
-	 * @param string $path   The file or directory to ZIP
-	 * @param string $to     Where to write the zip file to
-	 * @return void
-	 */
-	public function compressPath($path, $to)
-	{
-		$this->adapter->compressPath($path, $to);
-	}
+    /**
+     * Compress a file or directory of files
+     *
+     * @param  string $path The file or directory to ZIP
+     * @param  string $to   Where to write the zip file to
+     * @return void
+     */
+    public function compressPath($path, $to)
+    {
+        $this->adapter->compressPath($path, $to);
+    }
 
-
-	/**
-	 * Decompress a ZIP.
-	 *
-	 * @param string $path  The ZIP file to unzip
-	 * @param string $to    The path to unzip to
-	 * @return void
-	 */
-	public function decompressZip($path, $to)
-	{
-		$this->adapter->decompressZip($path, $to);
-	}
+    /**
+     * Decompress a ZIP.
+     *
+     * @param  string $path The ZIP file to unzip
+     * @param  string $to   The path to unzip to
+     * @return void
+     */
+    public function decompressZip($path, $to)
+    {
+        $this->adapter->decompressZip($path, $to);
+    }
 }

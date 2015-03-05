@@ -45,49 +45,48 @@ use Application\DeskPRO\Sms\Detector\TicketDetector;
 
 class JobRouterService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-		$queue = $container->getJobQueue();
+    public static function create(DeskproContainer $container)
+    {
+        $conn = $container->get('doctrine.dbal.default_connection');
+        $em = $container->getEm();
+        $queue = $container->getJobQueue();
 
-		$router = new JobRouter($conn);
+        $router = new JobRouter($conn);
 
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(
-			new OutgoingSmsProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
+        /*************************************
+         * outgoing_sms
+         */
+        $router->addProcessor(
+            new OutgoingSmsProcessor(
+                $conn,
+                $queue
+            )
+        );
 
 
-		/*************************************
-		 * outgoing_facebook_feed
-		 */
-		$router->addProcessor(
-			new OutgoingFacebookFeedProcessor(
-				$conn,
-				$queue
-			)
-		);
+        /*************************************
+         * incoming_sms
+         */
+        $router->addProcessor(
+            new IncomingSmsProcessor(
+                $conn,
+                new SmsAccountDetector($em),
+                new PersonDetector($em),
+                new TicketDetector($em),
+                $container->getSystemService('ticket_manager')
+            )
+        );
 
-		return $router;
-	}
+        /*************************************
+         * outgoing_facebook_feed
+         */
+        $router->addProcessor(
+            new OutgoingFacebookFeedProcessor(
+                $conn,
+                $queue
+            )
+        );
+
+        return $router;
+    }
 }

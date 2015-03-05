@@ -36,20 +36,20 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354098581 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add default triggers for assignment by email");
+    public function run()
+    {
+        $this->out("Add default triggers for assignment by email");
 
-		$this->execMutateSql("
-			INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `event_trigger_options`, `is_enabled`, `terms`, `terms_any`, `actions`, `sys_name`, `run_order`, `date_created`)
-			VALUES
-				(NULL, '', 'new.email.agent', 'a:0:{}', 1, 'a:0:{}', 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:5:\"agent\";s:7:\"options\";a:1:{s:5:\"agent\";s:1:\"0\";}}}', 'agent_email_fwd_assignment', 120, '2012-11-28 10:26:06')
-		");
+        $this->execMutateSql("
+            INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `event_trigger_options`, `is_enabled`, `terms`, `terms_any`, `actions`, `sys_name`, `run_order`, `date_created`)
+            VALUES
+                (NULL, '', 'new.email.agent', 'a:0:{}', 1, 'a:0:{}', 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:5:\"agent\";s:7:\"options\";a:1:{s:5:\"agent\";s:1:\"0\";}}}', 'agent_email_fwd_assignment', 120, '2012-11-28 10:26:06')
+        ");
 
-		$this->execMutateSql("
-			INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `event_trigger_options`, `is_enabled`, `terms`, `terms_any`, `actions`, `sys_name`, `run_order`, `date_created`)
-			VALUES
-				(NULL, '', 'update.agent', 'a:0:{}', 1, 'a:2:{i:0;a:3:{s:4:\"type\";s:12:\"is_via_email\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:2:\"do\";s:1:\"1\";}}i:1;a:3:{s:4:\"type\";s:5:\"agent\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:5:\"agent\";s:1:\"0\";}}}', 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:5:\"agent\";s:7:\"options\";a:1:{s:5:\"agent\";s:2:\"-1\";}}}', 'agent_email_reply_assignment', 30, '2012-11-28 10:44:17')
-		");
-	}
+        $this->execMutateSql("
+            INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `event_trigger_options`, `is_enabled`, `terms`, `terms_any`, `actions`, `sys_name`, `run_order`, `date_created`)
+            VALUES
+                (NULL, '', 'update.agent', 'a:0:{}', 1, 'a:2:{i:0;a:3:{s:4:\"type\";s:12:\"is_via_email\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:2:\"do\";s:1:\"1\";}}i:1;a:3:{s:4:\"type\";s:5:\"agent\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:5:\"agent\";s:1:\"0\";}}}', 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:5:\"agent\";s:7:\"options\";a:1:{s:5:\"agent\";s:2:\"-1\";}}}', 'agent_email_reply_assignment', 30, '2012-11-28 10:44:17')
+        ");
+    }
 }

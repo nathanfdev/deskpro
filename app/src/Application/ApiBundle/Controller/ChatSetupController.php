@@ -37,46 +37,46 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 
 class ChatSetupController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
-	####################################################################################################################
-	# chat-setup
-	####################################################################################################################
+    ####################################################################################################################
+    # chat-setup
+    ####################################################################################################################
 
-	public function chatSetupAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
-		 */
+    public function chatSetupAction()
+    {
+        /**
+         * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
+         */
 
-		$chat_setup = $this->container->getSystemService('chat_setup');
+        $chat_setup = $this->container->getSystemService('chat_setup');
 
-		return $this->createApiResponse(
-			array(
-				 'chat_setup' => $chat_setup->getChatInfo()
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'chat_setup' => $chat_setup->getChatInfo()
+            )
+        );
+    }
 
-	####################################################################################################################
-	# toggleChat
-	####################################################################################################################
+    ####################################################################################################################
+    # toggleChat
+    ####################################################################################################################
 
-	public function toggleChatAction($is_enabled)
-	{
-		/**
-		 * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
-		 */
+    public function toggleChatAction($is_enabled)
+    {
+        /**
+         * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
+         */
 
-		$chat_setup = $this->container->getSystemService('chat_setup');
-		$chat_setup->setChatEnabled($is_enabled);
+        $chat_setup = $this->container->getSystemService('chat_setup');
+        $chat_setup->setChatEnabled($is_enabled);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

@@ -8,58 +8,63 @@ require_once 'AbstractEntityCheckTest.php';
 
 class CheckLabelTest extends AbstractEntityCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param $object
-	 * @return Ticket
-	 */
-	public function createTicket($id, $object)
-	{
-		$bogus = new LabelTicket();
-		$bogus->label = "bogus";
+    /**
+     * @param  int    $id
+     * @param $object
+     * @return Ticket
+     */
+    public function createTicket($id, $object)
+    {
+        if ($object === null) {
+            // no test for nulls
+            return null;
+        }
 
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->labels->add($bogus);
-		$ticket->labels->add($object);
+        $bogus = new LabelTicket();
+        $bogus->label = "bogus";
 
-		return $ticket;
-	}
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->labels->add($bogus);
+        $ticket->labels->add($object);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckLabel';
-	}
+        return $ticket;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'labels';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckLabel';
+    }
 
-	/**
-	 * The entity class we are checking
-	 * @return string
-	 */
-	public function getEntityClass()
-	{
-		return 'Application\DeskPRO\Entity\LabelTicket';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'labels';
+    }
 
-	/**
-	 * @param int $id
-	 * @return object
-	 */
-	public function createEntityObject($id)
-	{
-		$object = new LabelTicket();
-		$object->label = $id;
+    /**
+     * The entity class we are checking
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'Application\DeskPRO\Entity\LabelTicket';
+    }
 
-		return $object;
-	}
+    /**
+     * @param  int    $id
+     * @return object
+     */
+    public function createEntityObject($id)
+    {
+        $object = new LabelTicket();
+        $object->label = $id;
+
+        return $object;
+    }
 }

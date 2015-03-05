@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1344844407 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set proper FK on tickets_attachments");
-		$this->execMutateSql("ALTER TABLE tickets_attachments DROP FOREIGN KEY FK_F06B468D537A1329");
-		$this->execMutateSql("ALTER TABLE tickets_attachments ADD CONSTRAINT FK_F06B468D537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Set proper FK on tickets_attachments");
+        $this->execMutateSql("ALTER TABLE tickets_attachments DROP FOREIGN KEY FK_F06B468D537A1329");
+        $this->execMutateSql("ALTER TABLE tickets_attachments ADD CONSTRAINT FK_F06B468D537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
+    }
 }

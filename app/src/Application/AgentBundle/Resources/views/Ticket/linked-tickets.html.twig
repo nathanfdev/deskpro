@@ -1,23 +1,35 @@
-<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table">
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table linked-tickets-table">
 	<tbody>
 		{% if linked_tickets.parent %}
-			<tr>
+			<tr class="linked-title">
 				<th colspan="6" style="background: #eee;">Parent Ticket</th>
 			</tr>
-			<tr>
+			<tr class="linked-head-title">
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.subject') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.department') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.person') }}</th>
-				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.agent') }}</th>
+				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.assignment') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
 				<th width="10">&nbsp;</th>
 			</tr>
-			<tr>
+			<tr class="linked-row">
 				{% set t = linked_tickets.parent %}
 				<td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.subject }}</a></td>
 				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.department.full_title }}</td>
-				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContact() }}</a></td>
-				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.agent.display_name|default(phrase('agent.general.unassigned')) }}</td>
+				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContactHtml()|raw }}</a></td>
+				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+					{% if t.agent and t.agent_team %}
+						&middot; {{ t.agent.display_name }}
+						<br/>
+						&middot; {{ t.agent_team.name }}
+					{% elseif t.agent %}
+						{{ t.agent.display_name }}
+					{% elseif t.agent_team %}
+						{{ t.agent_team.name }}
+					{% else %}
+						{{ phrase('agent.general.unassigned') }}
+					{% endif %}
+				</td>
 				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
 					<div class="status-pill status {% if t.status == 'awaiting_agent' %}urgency-{{ t.urgency }}{% endif %} {{ t.status }}" style="float: none; top: 0; text-shadow: none !important;">
 						{{ phrase('agent.tickets.status_' ~ t.status_code) }}
@@ -30,23 +42,35 @@
 			</tr>
 		{% endif %}
 		{% if linked_tickets.children|length %}
-			<tr>
+			<tr class="linked-title">
 				<th colspan="6" style="background: #eee;">Sub-Tickets</th>
 			</tr>
-			<tr>
+			<tr class="linked-head-title">
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.subject') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.department') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.person') }}</th>
-				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.agent') }}</th>
+				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.assignment') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
 				<th width="10">&nbsp;</th>
 			</tr>
 			{% for t in linked_tickets.children %}
-				<tr>
+				<tr class="linked-row">
 					<td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.subject }}</a></td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.department.full_title }}</td>
-					<td><div style="white-space: nowrap; text-wrap: none; overflow: hidden; text-overflow: ellipsis; min-width: 60px;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContact() }}</a></div></td>
-					<td nowrap="nowrap">{{ t.agent.display_name|default(phrase('agent.general.unassigned')) }}</td>
+					<td><div style="white-space: nowrap; text-wrap: none; overflow: hidden; text-overflow: ellipsis; min-width: 60px;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContactHtml()|raw }}</a></div></td>
+					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+						{% if t.agent and t.agent_team %}
+							&middot; {{ t.agent.display_name }}
+							<br/>
+							&middot; {{ t.agent_team.name }}
+						{% elseif t.agent %}
+							{{ t.agent.display_name }}
+						{% elseif t.agent_team %}
+							{{ t.agent_team.name }}
+						{% else %}
+							{{ phrase('agent.general.unassigned') }}
+						{% endif %}
+					</td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
 						<div class="status-pill status {% if t.status == 'awaiting_agent' %}urgency-{{ t.urgency }}{% endif %} {{ t.status }}" style="float: none; top: 0; text-shadow: none !important;">
 							{{ phrase('agent.tickets.status_' ~ t.status_code) }}
@@ -60,23 +84,35 @@
 			{% endfor %}
 		{% endif %}
 		{% if linked_tickets.siblings|length %}
-			<tr>
+			<tr class="linked-title">
 				<th colspan="6" style="background: #eee;">Other tickets with the same parent</th>
 			</tr>
-			<tr>
+			<tr class="linked-head-title">
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.subject') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.department') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.person') }}</th>
-				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.agent') }}</th>
+				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.assignment') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
 				<th width="10">&nbsp;</th>
 			</tr>
 			{% for t in linked_tickets.siblings %}
-				<tr>
+				<tr class="linked-row">
 					<td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.subject }}</a></td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.department.full_title }}</td>
-					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContact() }}</a></td>
-					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.agent.display_name|default(phrase('agent.general.unassigned')) }}</td>
+					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContactHtml()|raw }}</a></td>
+					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+						{% if t.agent and t.agent_team %}
+							&middot; {{ t.agent.display_name }}
+							<br/>
+							&middot; {{ t.agent_team.name }}
+						{% elseif t.agent %}
+							{{ t.agent.display_name }}
+						{% elseif t.agent_team %}
+							{{ t.agent_team.name }}
+						{% else %}
+							{{ phrase('agent.general.unassigned') }}
+						{% endif %}
+					</td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
 						<div class="status-pill status {% if t.status == 'awaiting_agent' %}urgency-{{ t.urgency }}{% endif %} {{ t.status }}" style="float: none; top: 0; text-shadow: none !important;">
 							{{ phrase('agent.tickets.status_' ~ t.status_code) }}

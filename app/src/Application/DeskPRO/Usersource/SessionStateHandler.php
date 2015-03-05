@@ -39,14 +39,14 @@ use Orb\Auth\StateHandler\ArrayAccessWrapper;
 
 class SessionStateHandler extends ArrayAccessWrapper
 {
-	/**
-	 * @var \Application\DeskPRO\HttpFoundation\Session
-	 */
-	protected $session;
+    /**
+     * @var \Application\DeskPRO\HttpFoundation\Session
+     */
+    protected $session;
 
-	public function __construct(Session $session)
-	{
-		$this->session = $session;
-		$this->setPrefix('authstate_');
-	}
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+        $this->setPrefix('authstate_');
+    }
 }

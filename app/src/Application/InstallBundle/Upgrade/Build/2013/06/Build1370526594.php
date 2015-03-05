@@ -36,25 +36,25 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1370526594 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Reset 'is_via_email' criteria to 'is_via_email_reply'");
+    public function run()
+    {
+        $this->out("Reset 'is_via_email' criteria to 'is_via_email_reply'");
 
-		$triggers = $this->container->getDb()->fetchAll("SELECT id, terms FROM ticket_triggers WHERE terms LIKE '%is_via_email%'");
-		foreach ($triggers as $tr) {
-			$tr['terms'] = unserialize($tr['terms']);
-			foreach ($tr['terms'] as &$t) {
-				if ($t['type'] == 'is_via_email') {
-					$t['type'] = 'is_via_email_reply';
-				}
-			}
+        $triggers = $this->container->getDb()->fetchAll("SELECT id, terms FROM ticket_triggers WHERE terms LIKE '%is_via_email%'");
+        foreach ($triggers as $tr) {
+            $tr['terms'] = unserialize($tr['terms']);
+            foreach ($tr['terms'] as &$t) {
+                if ($t['type'] == 'is_via_email') {
+                    $t['type'] = 'is_via_email_reply';
+                }
+            }
 
-			$new_terms = serialize($tr['terms']);
-			$this->container->getDb()->update(
-				'ticket_triggers',
-				array('terms' => $new_terms),
-				array('id' => $tr['id'])
-			);
-		}
-	}
+            $new_terms = serialize($tr['terms']);
+            $this->container->getDb()->update(
+                'ticket_triggers',
+                array('terms' => $new_terms),
+                array('id' => $tr['id'])
+            );
+        }
+    }
 }

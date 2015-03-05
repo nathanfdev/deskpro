@@ -38,19 +38,19 @@ use Orb\Util\Strings;
 
 class Build1375958085 extends AbstractBuild
 {
-	public function run()
-	{
-		// A previous build has object_lang created with bad charset
-		// This was fixed on the table, but its possible the fields need updating too
-		$show = $this->container->getDb()->fetchColumn("SHOW CREATE TABLE `object_lang`", array(), 1);
-		$show = str_replace('`', '', $show);
-		$show = strtolower($show);
+    public function run()
+    {
+        // A previous build has object_lang created with bad charset
+        // This was fixed on the table, but its possible the fields need updating too
+        $show = $this->container->getDb()->fetchColumn("SHOW CREATE TABLE `object_lang`", array(), 1);
+        $show = str_replace('`', '', $show);
+        $show = strtolower($show);
 
-		// Check if the value part has 'character set' bit which will override the table
-		$value_middle = Strings::extractRegexMatch('#value\s+longtext(.*?)not null#', $show);
-		if (strpos($value_middle, 'character set') !== false) {
-			$this->out("Correct charset on object_lang");
-			$this->execMutateSql("ALTER TABLE `object_lang` CHANGE `value` `value` LONGTEXT NOT NULL");
-		}
-	}
+        // Check if the value part has 'character set' bit which will override the table
+        $value_middle = Strings::extractRegexMatch('#value\s+longtext(.*?)not null#', $show);
+        if (strpos($value_middle, 'character set') !== false) {
+            $this->out("Correct charset on object_lang");
+            $this->execMutateSql("ALTER TABLE `object_lang` CHANGE `value` `value` LONGTEXT NOT NULL");
+        }
+    }
 }

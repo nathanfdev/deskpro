@@ -37,301 +37,302 @@ use Guzzle\Http\Client as HttpClient;
 
 class OneSkyBuild extends AbstractBuild
 {
-	const API_URL = 'http://api.oneskyapp.com/2';
-	const API_SECURE_URL = 'https://api.oneskyapp.com/2';
+    const API_URL = 'http://api.oneskyapp.com/2';
+    const API_SECURE_URL = 'https://api.oneskyapp.com/2';
 
-	/**
-	 * @var string
-	 */
-	private $api_url;
+    /**
+     * @var string
+     */
+    private $api_url;
 
-	/**
-	 * @var string
-	 */
-	private $api_key;
+    /**
+     * @var string
+     */
+    private $api_key;
 
-	/**
-	 * @var string
-	 */
-	private $secret_key;
+    /**
+     * @var string
+     */
+    private $secret_key;
 
-	/**
-	 * @var \Guzzle\Http\Client
-	 */
-	private $http_client;
+    /**
+     * @var \Guzzle\Http\Client
+     */
+    private $http_client;
 
-	/**
-	 * @param string $api_key     The API key (called "public key" in settings)
-	 * @param string $secret_key  The secret key
-	 */
-	public function __construct($api_key, $secret_key)
-	{
-		$this->api_url = self::API_URL;
-		$this->api_key = $api_key;
-		$this->secret_key = $secret_key;
-	}
-
-
-	/**
-	 * Enable secure API usage over HTTPS
-	 */
-	public function enableSecureApiUrl()
-	{
-		$this->api_url = self::API_SECURE_URL;
-	}
+    /**
+     * @param string $api_key    The API key (called "public key" in settings)
+     * @param string $secret_key The secret key
+     */
+    public function __construct($api_key, $secret_key)
+    {
+        $this->api_url = self::API_URL;
+        $this->api_key = $api_key;
+        $this->secret_key = $secret_key;
+    }
 
 
-	/**
-	 * Set a specific API url
-	 *
-	 * @param string $url
-	 */
-	public function setApiUrl($url)
-	{
-		$this->api_url = $url;
-	}
+    /**
+     * Enable secure API usage over HTTPS
+     */
+    public function enableSecureApiUrl()
+    {
+        $this->api_url = self::API_SECURE_URL;
+    }
 
 
-	/**
-	 * Get the API url
-	 *
-	 * @return string
-	 */
-	public function getApiUrl()
-	{
-		return $this->api_url;
-	}
+    /**
+     * Set a specific API url
+     *
+     * @param string $url
+     */
+    public function setApiUrl($url)
+    {
+        $this->api_url = $url;
+    }
 
 
-	/**
-	 * @param string $id
-	 * @param $section
-	 * @param $category
-	 * @return array
-	 * @throws \Exception|\RuntimeException
-	 */
-	public function getCategoryWords($id, $section, $category)
-	{
-		$locale = $this->getLangPackInfo()->getLangInfo($id, 'locale');
-
-		$platform_id = $this->getPlatformId($section);
-		$tag = $category . '.php';
-
-		try {
-			$words = $this->restGet('string/download', array(
-				'locale'      => $locale,
-				'platform-id' => $platform_id,
-				'format'      => 'RESJSON',
-				'tag'         => $tag,
-			));
-
-			if (isset($words['response']) && isset($words['error'])) {
-				throw new \Exception("Error: " . $words['error'], strpos($words['error'], 'does not exist') !== false ? 404 : 200);
-			}
-
-			if ($words && is_array($words)) {
-				foreach ($words as &$v) {
-					$v = str_replace(
-						array('&lt;' ,'&gt;', '&quot;', '&amp;'),
-						array('<' ,'>', '"', '&'),
-						$v
-					);
-				}
-				unset($v);
-			}
-
-		} catch (\Exception $e) {
-			if ($e->getCode() == 404) {
-				$this->getLogger()->logInfo("$id is missing $section.$category");
-				return array();
-			}
-
-			throw $e;
-		}
-
-		return $words;
-	}
+    /**
+     * Get the API url
+     *
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        return $this->api_url;
+    }
 
 
-	/**
-	 * Update the tracked project on OneSky with the phrases from the source file
-	 *
-	 * @param string $section
-	 * @param string $category
-	 * @param string $source_file  If not specified, the default file is the default lang file for the category
-	 * @return array
-	 * @throws \InvalidArgumentException
-	 */
-	public function updateSourcePhrases($section, $category, $source_file = null)
-	{
-		$tag = "$category.php";
-		$platform_id  = $this->getPlatformId($section);
+    /**
+     * @param  string                       $id
+     * @param $section
+     * @param $category
+     * @return array
+     * @throws \Exception|\RuntimeException
+     */
+    public function getCategoryWords($id, $section, $category)
+    {
+        $locale = $this->getLangPackInfo()->getLangInfo($id, 'locale');
 
-		if (!$source_file) {
-			$source_file = $this->getLangPackInfo()->getLangDir() . '/default/'.$section.'/'.$category.'.php';
-		}
+        $platform_id = $this->getPlatformId($section);
+        $tag = $category . '.php';
 
-		if (!file_exists($source_file)) {
-			$this->getLogger()->logDebug("$section.$category invalid source file: " . $source_file);
-			throw new \InvalidArgumentException("Source file does not exist: " . $source_file);
-		}
+        try {
+            $words = $this->restGet('string/download', array(
+                'locale'      => $locale,
+                'platform-id' => $platform_id,
+                'format'      => 'RESJSON',
+                'tag'         => $tag,
+            ));
 
-		$this->getLogger()->logDebug("$section.$category source file: $source_file");
-		$this->getLogger()->logDebug("$section.$category platform id: $platform_id");
-		$this->getLogger()->logDebug("$section.$category tag: $tag");
+            if (isset($words['response']) && isset($words['error'])) {
+                throw new \Exception("Error: " . $words['error'], strpos($words['error'], 'does not exist') !== false ? 404 : 200);
+            }
 
-		#-------------------------
-		# Generate post data for source phrases
-		#-------------------------
+            if ($words && is_array($words)) {
+                foreach ($words as &$v) {
+                    $v = str_replace(
+                        array('&lt;' ,'&gt;', '&quot;', '&amp;'),
+                        array('<' ,'>', '"', '&'),
+                        $v
+                    );
+                }
+                unset($v);
+            }
 
-		$phrases = include($source_file);
-		$source_phrases = array();
+        } catch (\Exception $e) {
+            if ($e->getCode() == 404) {
+                $this->getLogger()->logInfo("$id is missing $section.$category");
 
-		foreach ($phrases as $phrase_id => $phrasetext) {
-			$source_phrases[] = array(
-				'string' => $phrasetext,
-				'string-key' => $phrase_id
-			);
-		}
+                return array();
+            }
 
-		#-------------------------
-		# Update it
-		#-------------------------
+            throw $e;
+        }
 
-		// First send along the full file of strings
-		$post_data = array();
-		$post_data['platform-id'] = $platform_id;
-		$post_data['tag'] = $tag;
-		$post_data['is-allow-update'] = 1;
-		$post_data['input'] = $source_phrases;
-
-		$input_result = $this->restPost('string/input', $post_data);
-
-		#-------------------------
-		# Need to also delete old phrases that are no longer used
-		#-------------------------
-
-		$got_phrases = $this->getCategoryWords('default', $section, $category);
-		if ($got_phrases) {
-			$delete_phrase_ids = array();
-
-			foreach ($got_phrases as $phrase_id => $phrasetext) {
-				if (!isset($phrases[$phrase_id])) {
-					$delete_phrase_ids[] = $phrase_id;
-				}
-			}
-
-			if ($delete_phrase_ids) {
-				$this->getLogger()->logDebug("$section.$category removing old phrases: " . implode(', ', $delete_phrase_ids));
-
-				$post_data = array();
-				$post_data['platform-id'] = $platform_id;
-				$post_data['to-delete'] = array();
-
-				foreach ($delete_phrase_ids as $phrase_id) {
-					$post_data['to-delete'][] = array(
-						'string-key' => $phrase_id
-					);
-				}
-
-				$this->restPost('string/delete', $post_data);
-			}
-		}
-
-		return $input_result;
-	}
+        return $words;
+    }
 
 
-	/**
-	 * @param string $path
-	 * @return array
-	 * @throws \RuntimeException
-	 */
-	public function restGet($path, array $vars = array())
-	{
-		$vars['api-key']   = $this->api_key;
-		$vars['timestamp'] = time();
-		$vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+    /**
+     * Update the tracked project on OneSky with the phrases from the source file
+     *
+     * @param  string                    $section
+     * @param  string                    $category
+     * @param  string                    $source_file If not specified, the default file is the default lang file for the category
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    public function updateSourcePhrases($section, $category, $source_file = null)
+    {
+        $tag = "$category.php";
+        $platform_id  = $this->getPlatformId($section);
 
-		$request = $this->getHttpClient()->get($path);
-		$request->getQuery()->merge($vars);
+        if (!$source_file) {
+            $source_file = $this->getLangPackInfo()->getLangDir() . '/default/'.$section.'/'.$category.'.php';
+        }
 
-		$response = $request->send();
+        if (!file_exists($source_file)) {
+            $this->getLogger()->logDebug("$section.$category invalid source file: " . $source_file);
+            throw new \InvalidArgumentException("Source file does not exist: " . $source_file);
+        }
 
-		$body = $response->getBody(true);
-		$data = json_decode($body, true);
+        $this->getLogger()->logDebug("$section.$category source file: $source_file");
+        $this->getLogger()->logDebug("$section.$category platform id: $platform_id");
+        $this->getLogger()->logDebug("$section.$category tag: $tag");
 
-		return $data;
-	}
+        #-------------------------
+        # Generate post data for source phrases
+        #-------------------------
 
-	/**
-	 * @param string $path
-	 * @return array
-	 * @throws \RuntimeException
-	 */
-	public function restPost($path, array $post_vars = array())
-	{
-		$vars = array();
-		$vars['api-key']   = $this->api_key;
-		$vars['timestamp'] = time();
-		$vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+        $phrases = include($source_file);
+        $source_phrases = array();
 
-		$request = $this->getHttpClient()->post($path);
-		$request->getQuery()->merge($vars);
+        foreach ($phrases as $phrase_id => $phrasetext) {
+            $source_phrases[] = array(
+                'string' => $phrasetext,
+                'string-key' => $phrase_id
+            );
+        }
 
-		if ($post_vars) {
+        #-------------------------
+        # Update it
+        #-------------------------
 
-			if ($path == 'string/input') {
-				$post_vars['input'] = json_encode($post_vars['input']);
-			}
+        // First send along the full file of strings
+        $post_data = array();
+        $post_data['platform-id'] = $platform_id;
+        $post_data['tag'] = $tag;
+        $post_data['is-allow-update'] = 1;
+        $post_data['input'] = $source_phrases;
 
-			if ($path == 'string/delete') {
-				$post_vars['to-delete'] = json_encode($post_vars['to-delete']);
-			}
+        $input_result = $this->restPost('string/input', $post_data);
 
-			$request->addPostFields($post_vars);
-		}
+        #-------------------------
+        # Need to also delete old phrases that are no longer used
+        #-------------------------
 
-		$response = $request->send();
+        $got_phrases = $this->getCategoryWords('default', $section, $category);
+        if ($got_phrases) {
+            $delete_phrase_ids = array();
 
-		$body = $response->getBody(true);
-		$data = json_decode($body, true);
+            foreach ($got_phrases as $phrase_id => $phrasetext) {
+                if (!isset($phrases[$phrase_id])) {
+                    $delete_phrase_ids[] = $phrase_id;
+                }
+            }
 
-		return $data;
-	}
+            if ($delete_phrase_ids) {
+                $this->getLogger()->logDebug("$section.$category removing old phrases: " . implode(', ', $delete_phrase_ids));
+
+                $post_data = array();
+                $post_data['platform-id'] = $platform_id;
+                $post_data['to-delete'] = array();
+
+                foreach ($delete_phrase_ids as $phrase_id) {
+                    $post_data['to-delete'][] = array(
+                        'string-key' => $phrase_id
+                    );
+                }
+
+                $this->restPost('string/delete', $post_data);
+            }
+        }
+
+        return $input_result;
+    }
 
 
-	/**
-	 * Get the OneSky platform ID for the section.
-	 *
-	 * @param string $section
-	 * @return string
-	 * @throws \InvalidArgumentException
-	 */
-	public function getPlatformId($section)
-	{
-		switch ($section) {
-			case 'user':  return '11467';
-			case 'agent': return '11470';
-			case 'admin': return '0';
-		}
+    /**
+     * @param  string            $path
+     * @return array
+     * @throws \RuntimeException
+     */
+    public function restGet($path, array $vars = array())
+    {
+        $vars['api-key']   = $this->api_key;
+        $vars['timestamp'] = time();
+        $vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
 
-		throw new \InvalidArgumentException("Invalid platform $section");
-	}
+        $request = $this->getHttpClient()->get($path);
+        $request->getQuery()->merge($vars);
+
+        $response = $request->send();
+
+        $body = $response->getBody(true);
+        $data = json_decode($body, true);
+
+        return $data;
+    }
+
+    /**
+     * @param  string            $path
+     * @return array
+     * @throws \RuntimeException
+     */
+    public function restPost($path, array $post_vars = array())
+    {
+        $vars = array();
+        $vars['api-key']   = $this->api_key;
+        $vars['timestamp'] = time();
+        $vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+
+        $request = $this->getHttpClient()->post($path);
+        $request->getQuery()->merge($vars);
+
+        if ($post_vars) {
+
+            if ($path == 'string/input') {
+                $post_vars['input'] = json_encode($post_vars['input']);
+            }
+
+            if ($path == 'string/delete') {
+                $post_vars['to-delete'] = json_encode($post_vars['to-delete']);
+            }
+
+            $request->addPostFields($post_vars);
+        }
+
+        $response = $request->send();
+
+        $body = $response->getBody(true);
+        $data = json_decode($body, true);
+
+        return $data;
+    }
 
 
-	/**
-	 * @return \Guzzle\Http\Client
-	 */
-	protected function getHttpClient()
-	{
-		if ($this->http_client !== null) {
-			return $this->http_client;
-		}
+    /**
+     * Get the OneSky platform ID for the section.
+     *
+     * @param  string                    $section
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public function getPlatformId($section)
+    {
+        switch ($section) {
+            case 'user':  return '11467';
+            case 'agent': return '11470';
+            case 'admin': return '0';
+        }
 
-		$this->http_client = new HttpClient($this->api_url, array(
-			'ssl.certificate_authority' => false
-		));
-		return $this->http_client;
-	}
+        throw new \InvalidArgumentException("Invalid platform $section");
+    }
+
+    /**
+     * @return \Guzzle\Http\Client
+     */
+    protected function getHttpClient()
+    {
+        if ($this->http_client !== null) {
+            return $this->http_client;
+        }
+
+        $this->http_client = new HttpClient($this->api_url, array(
+            'ssl.certificate_authority' => false
+        ));
+
+        return $this->http_client;
+    }
 }

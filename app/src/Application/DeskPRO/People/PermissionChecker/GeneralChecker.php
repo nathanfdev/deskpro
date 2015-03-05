@@ -34,30 +34,29 @@
 
 namespace Application\DeskPRO\People\PermissionChecker;
 
-use Application\DeskPRO\App;
 
 class GeneralChecker extends AbstractChecker
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	public function canSetSignature()
-	{
-		if (!$this->person->is_agent) {
-			return false;
-		}
+    public function canSetSignature()
+    {
+        if (!$this->person->is_agent) {
+            return false;
+        }
 
-		return $this->person->hasPerm('agent_general.signature');
-	}
+        return $this->person->hasPerm('agent_general.signature');
+    }
 
-	public function canSetPicture()
-	{
-		if (!$this->person->is_agent) {
-			return true;
-		}
+    public function canSetPicture()
+    {
+        if (!$this->person->is_agent) {
+            return true;
+        }
 
-		return $this->person->hasPerm('agent_general.picture');
-	}
+        return $this->person->hasPerm('agent_general.picture');
+    }
 }

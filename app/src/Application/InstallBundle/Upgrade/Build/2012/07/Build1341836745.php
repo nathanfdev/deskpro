@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1341836745 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add is_helpdesk to sessions");
-		$this->execMutateSql("ALTER TABLE sessions ADD is_helpdesk TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add is_helpdesk to sessions");
+        $this->execMutateSql("ALTER TABLE sessions ADD is_helpdesk TINYINT(1) NOT NULL");
+    }
 }

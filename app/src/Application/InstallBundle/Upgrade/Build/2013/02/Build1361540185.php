@@ -36,30 +36,30 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361540185 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Changes to chat_conversations");
-		$this->execMutateSql("ALTER TABLE chat_conversations ADD should_send_transcript TINYINT(1) NOT NULL, ADD date_transcript_sent DATETIME DEFAULT NULL");
-		$this->execMutateSql("CREATE INDEX should_send_transcript_idx ON chat_conversations (should_send_transcript)");
+    public function run()
+    {
+        $this->out("Changes to chat_conversations");
+        $this->execMutateSql("ALTER TABLE chat_conversations ADD should_send_transcript TINYINT(1) NOT NULL, ADD date_transcript_sent DATETIME DEFAULT NULL");
+        $this->execMutateSql("CREATE INDEX should_send_transcript_idx ON chat_conversations (should_send_transcript)");
 
-		// Set chat abandonded flag now
-		// so transcripts dont send on these when next cron
-		// decides timeouts were abandonded
-		$this->execMutateSql("
-			UPDATE chat_conversations
-			SET ended_by = 'abandoned'
-			WHERE status = 'ended' AND ended_by = 'timeout'
-		");
+        // Set chat abandonded flag now
+        // so transcripts dont send on these when next cron
+        // decides timeouts were abandonded
+        $this->execMutateSql("
+            UPDATE chat_conversations
+            SET ended_by = 'abandoned'
+            WHERE status = 'ended' AND ended_by = 'timeout'
+        ");
 
-		// Insert new worker job
-		$j = new \Application\DeskPRO\Entity\WorkerJob();
-		$j['id'] = 'chat_transcripts';
-		$j['worker_group'] = 'chat';
-		$j['title'] = 'Send Chat Transcripts';
-		$j['description'] = 'Send chat transcripts';
-		$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatTranscripts';
-		$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ChatTranscripts::DEFAULT_INTERVAL;
-		$this->container->getEm()->persist($j);
-		$this->container->getEm()->flush();
-	}
+        // Insert new worker job
+        $j = new \Application\DeskPRO\Entity\WorkerJob();
+        $j['id'] = 'chat_transcripts';
+        $j['worker_group'] = 'chat';
+        $j['title'] = 'Send Chat Transcripts';
+        $j['description'] = 'Send chat transcripts';
+        $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatTranscripts';
+        $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ChatTranscripts::DEFAULT_INTERVAL;
+        $this->container->getEm()->persist($j);
+        $this->container->getEm()->flush();
+    }
 }

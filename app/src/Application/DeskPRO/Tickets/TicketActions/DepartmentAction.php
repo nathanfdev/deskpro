@@ -40,101 +40,101 @@ use Application\DeskPRO\Entity\Ticket;
 
 class DepartmentAction extends AbstractAction implements PermissionableAction
 {
-	/** @var int */
-	protected $department_id;
+    /** @var int */
+    protected $department_id;
 
-	public function __construct($department)
-	{
-		$this->department_id = $department;
-	}
+    public function __construct($department)
+    {
+        $this->department_id = $department;
+    }
 
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		if ($ticket->getDepartmentId() == $this->department_id) {
-			return true;
-		}
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        if ($ticket->getDepartmentId() == $this->department_id) {
+            return true;
+        }
 
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
-			return false;
-		}
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$dep_id = $this->department_id;
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $dep_id = $this->department_id;
 
-		// legacy option is noop
-		if ($dep_id == 'email_account') {
-			return;
-		}
+        // legacy option is noop
+        if ($dep_id == 'email_account') {
+            return;
+        }
 
-		$ticket['department_id'] = $dep_id;
-	}
-
-
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket['department_id'] == $this->department_id) {
-			return array();
-		}
-
-		return array(
-			array('action' => 'department', 'department_id' => $this->department_id)
-		);
-	}
+        $ticket['department_id'] = $dep_id;
+    }
 
 
-	/**
-	 * Get the department id
-	 *
-	 * @return int
-	 */
-	public function getDepartmentId()
-	{
-		return $this->department_id;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket['department_id'] == $this->department_id) {
+            return array();
+        }
+
+        return array(
+            array('action' => 'department', 'department_id' => $this->department_id)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get the department id
+     *
+     * @return int
+     */
+    public function getDepartmentId()
+    {
+        return $this->department_id;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		if ($this->department_id == 'email_account') {
-			return 'Set department as the linked department for the email account';
-		}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
 
-		$tr = App::getTranslator();
 
-		$names = App::getDataService('Department')->getFullNames();
-		if (!isset($names[$this->department_id])) {
-			$name = "<error>Unknown #{$this->department_id}</error>";
-		} else {
-			$name = $names[$this->department_id];
-		}
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        if ($this->department_id == 'email_account') {
+            return 'Set department as the linked department for the email account';
+        }
 
-		return $tr->phrase('agent.tickets.set_department_action', array('department' => $name));
-	}
+        $tr = App::getTranslator();
+
+        $names = App::getDataService('Department')->getFullNames();
+        if (!isset($names[$this->department_id])) {
+            $name = "<error>Unknown #{$this->department_id}</error>";
+        } else {
+            $name = $names[$this->department_id];
+        }
+
+        return $tr->phrase('agent.tickets.set_department_action', array('department' => $name));
+    }
 }

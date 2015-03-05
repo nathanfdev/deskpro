@@ -39,24 +39,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FeedbackTypeType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('feedback_type', new FeedbackTypePropsType());
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('feedback_type', new FeedbackTypePropsType());
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\FeedbackTypes\\FeedbackTypeEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\FeedbackTypes\\FeedbackTypeEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'feedback_type_edit';
-	}
+    public function getName()
+    {
+        return 'feedback_type_edit';
+    }
 
 }

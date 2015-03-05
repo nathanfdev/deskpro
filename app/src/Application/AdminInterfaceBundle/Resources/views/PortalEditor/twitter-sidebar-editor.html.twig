@@ -4,6 +4,7 @@
 		<h4>Configure Twitter Block</h4>
 	</div>
 	<div class="overlay-content">
+		{#
 		{% if not consumer_key %}
 			<div style="margin-bottom: 1em">
 				<a class="btn primary" href="{{ path('admin_twitter_apps') }}">Setup Twitter Application</a>
@@ -39,5 +40,6 @@
 				<button class="clean-white save-trigger">{{ phrase('agent.general.save') }}</button>
 			</div>
 		</div>
+		#}
 	</div>
 </section>

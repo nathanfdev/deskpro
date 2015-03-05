@@ -39,47 +39,47 @@ use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.use_gravatar', null);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function uninstall(InstallerContext $context)
+    {
+        $context->getContainer()->getSettingsHandler()->setSetting('core.use_gravatar', null);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updateSettings(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updatePackage(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * @param InstallerContext $context
-	 */
-	private function _doInstall(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.use_gravatar', 1);
-	}
+    /**
+     * @param InstallerContext $context
+     */
+    private function _doInstall(InstallerContext $context)
+    {
+        $context->getContainer()->getSettingsHandler()->setSetting('core.use_gravatar', 1);
+    }
 }

@@ -42,127 +42,130 @@ use Application\DeskPRO\Entity;
  */
 class HelpMessages implements \Orb\Helper\ShortCallableInterface
 {
-	const ALL = '__ALL__';
+    const ALL = '__ALL__';
 
-	/** @var \Application\DeskPRO\Entity\Person */
-	protected $person;
-	/** @var Entity\PersonPref */
-	protected $pref;
-	/** @var string */
-	protected $pref_name;
+    /** @var \Application\DeskPRO\Entity\Person */
+    protected $person;
+    /** @var Entity\PersonPref */
+    protected $pref;
+    /** @var string */
+    protected $pref_name;
 
-	public function __construct(Entity\Person $person)
-	{
-		$this->person = $person;
-		$this->pref_name = 'ui.dismissed-help-messages';
-	}
+    public function __construct(Entity\Person $person)
+    {
+        $this->person = $person;
+        $this->pref_name = 'ui.dismissed-help-messages';
+    }
 
-	public function setPrefName($pref_name)
-	{
-		$this->pref_name = $pref_name;
-	}
+    public function setPrefName($pref_name)
+    {
+        $this->pref_name = $pref_name;
+    }
 
-	protected function _initPref()
-	{
-		if ($this->pref !== null) return;
+    protected function _initPref()
+    {
+        if ($this->pref !== null) return;
 
-		$this->pref = $this->person->getPref($this->pref_name);
-		if (!$this->pref) {
-			$this->pref = $this->person->addPreference($this->pref_name);
-			$this->pref['value'] = array();
-			$person = $this->person;
+        $this->pref = $this->person->getPref($this->pref_name);
+        if (!$this->pref) {
+            $this->pref = $this->person->addPreference($this->pref_name);
+            $this->pref['value'] = array();
+            $person = $this->person;
 
-			App::getOrm()->transactional(function ($em) use ($person) {
-				$em->persist($person);
-				$em->flush();
-			});
-		}
-	}
+            App::getOrm()->transactional(function ($em) use ($person) {
+                $em->persist($person);
+                $em->flush();
+            });
+        }
+    }
 
-	public function _getThis()
-	{
-		return $this;
-	}
+    public function _getThis()
+    {
+        return $this;
+    }
 
-	public function getShortCallableNames()
-	{
-		return array(
-			'getHelpMessages' => '_getThis',
-			'shouldShowMessage' => 'shouldShowMessage'
-		);
-	}
+    public function getShortCallableNames()
+    {
+        return array(
+            'getHelpMessages' => '_getThis',
+            'shouldShowMessage' => 'shouldShowMessage'
+        );
+    }
 
-	public function getDismissedIds()
-	{
-		$this->_initPref();
-		return $this->pref['value'];
-	}
+    public function getDismissedIds()
+    {
+        $this->_initPref();
 
-	public function shouldShowMessage($id)
-	{
-		$this->_initPref();
-		return !$this->isDismissed($id);
-	}
+        return $this->pref['value'];
+    }
 
-	public function isDismissed($id)
-	{
-		$this->_initPref();
-		return (in_array(self::ALL, $this->pref['value']) OR in_array($id, $this->pref['value']));
-	}
+    public function shouldShowMessage($id)
+    {
+        $this->_initPref();
 
-	public function dismiss($id)
-	{
-		if ($this->isDismissed($id)) {
-			return;
-		}
+        return !$this->isDismissed($id);
+    }
 
-		$this->_initPref();
+    public function isDismissed($id)
+    {
+        $this->_initPref();
 
-		$val = $this->pref['value'];
-		$val[] = $id;
+        return (in_array(self::ALL, $this->pref['value']) OR in_array($id, $this->pref['value']));
+    }
 
-		$this->pref['value'] = $val;
+    public function dismiss($id)
+    {
+        if ($this->isDismissed($id)) {
+            return;
+        }
 
-		$pref = $this->pref;
-		App::getOrm()->transactional(function ($em) use ($pref) {
-			$em->persist($pref);
-			$em->flush();
-		});
-	}
+        $this->_initPref();
 
-	public function undismiss($id)
-	{
-		$this->_initPref();
+        $val = $this->pref['value'];
+        $val[] = $id;
 
-		$val = $this->pref['value'];
+        $this->pref['value'] = $val;
 
-		// Not in here
-		if (($key = array_search($id, $val)) === false) {
-			return;
-		}
+        $pref = $this->pref;
+        App::getOrm()->transactional(function ($em) use ($pref) {
+            $em->persist($pref);
+            $em->flush();
+        });
+    }
 
-		unset($val[$key]);
-		$val = array_values($val); // rekey numerically
+    public function undismiss($id)
+    {
+        $this->_initPref();
 
-		$this->pref['value'] = $val;
+        $val = $this->pref['value'];
 
-		$pref = $this->pref;
-		App::getOrm()->transactional(function ($em) use ($pref) {
-			$em->persist($pref);
-			$em->flush();
-		});
-	}
+        // Not in here
+        if (($key = array_search($id, $val)) === false) {
+            return;
+        }
 
-	public function reset()
-	{
-		$this->_initPref();
+        unset($val[$key]);
+        $val = array_values($val); // rekey numerically
 
-		$this->pref['value'] = array();
+        $this->pref['value'] = $val;
 
-		$pref = $this->pref;
-		App::getOrm()->transactional(function ($em) use ($pref) {
-			$em->persist($pref);
-			$em->flush();
-		});
-	}
+        $pref = $this->pref;
+        App::getOrm()->transactional(function ($em) use ($pref) {
+            $em->persist($pref);
+            $em->flush();
+        });
+    }
+
+    public function reset()
+    {
+        $this->_initPref();
+
+        $this->pref['value'] = array();
+
+        $pref = $this->pref;
+        App::getOrm()->transactional(function ($em) use ($pref) {
+            $em->persist($pref);
+            $em->flush();
+        });
+    }
 }

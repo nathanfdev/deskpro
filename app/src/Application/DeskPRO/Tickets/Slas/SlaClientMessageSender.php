@@ -43,88 +43,88 @@ use Orb\Util\Strings;
 
 class SlaClientMessageSender implements PersonContextInterface
 {
-	const CHANNEL = 'agent.ticket-sla-updated';
+    const CHANNEL = 'agent.ticket-sla-updated';
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var Person
-	 */
-	private $person;
+    /**
+     * @var Person
+     */
+    private $person;
 
-	/**
-	 * @var array()
-	 */
-	private $queue = array();
-
-
-	/**
-	 * @param Connection $db
-	 */
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
+    /**
+     * @var array()
+     */
+    private $queue = array();
 
 
-	/**
-	 * @param Person $person
-	 */
-	public function setPersonContext(Person $person)
-	{
-		$this->person = $person;
-	}
+    /**
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+    }
 
 
-	/**
-	 * @param Ticket    $ticket           The ticket
-	 * @param TicketSla $ticket_sla       The SLA on the ticket
-	 * @param string    $orig_status      The original status before it was updated
-	 * @param string    $orig_completed   The original is_completed state before it was updated
-	 */
-	public function sendMessage(Ticket $ticket, TicketSla $ticket_sla, $orig_status, $orig_completed)
-	{
-		$this->queue[] = array(
-			'channel'       => self::CHANNEL,
-			'auth'          => Strings::random(15, Strings::CHARS_KEY),
-			'date_created'  => date('Y-m-d H:i:s'),
-			'data'          => serialize(array(
-				'ticket_id'             => $ticket->id,
-				'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
-				'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
-				'sla_id'                => $ticket_sla->sla->id,
-				'sla_status'            => $ticket_sla->sla_status,
-				'original_status'       => $orig_status,
-				'warn_date'             => $ticket_sla->warn_date ? $ticket_sla->warn_date->format('c') : null,
-				'fail_date'             => $ticket_sla->fail_date ? $ticket_sla->fail_date->format('c') : null,
-				'is_completed'          => $ticket_sla->is_completed,
-				'original_is_completed' => $orig_completed,
-				'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
-				'via_person'            => $this->person ? $this->person->id : null
-			))
-		);
-	}
+    /**
+     * @param Person $person
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person = $person;
+    }
 
 
-	/**
-	 * Send all messages.
-	 *
-	 * @return int How many messages were sent
-	 */
-	public function sendQueue()
-	{
-		if (!$this->queue) {
-			return 0;
-		}
+    /**
+     * @param Ticket    $ticket         The ticket
+     * @param TicketSla $ticket_sla     The SLA on the ticket
+     * @param string    $orig_status    The original status before it was updated
+     * @param string    $orig_completed The original is_completed state before it was updated
+     */
+    public function sendMessage(Ticket $ticket, TicketSla $ticket_sla, $orig_status, $orig_completed)
+    {
+        $this->queue[] = array(
+            'channel'       => self::CHANNEL,
+            'auth'          => Strings::random(15, Strings::CHARS_KEY),
+            'date_created'  => date('Y-m-d H:i:s'),
+            'data'          => serialize(array(
+                'ticket_id'             => $ticket->id,
+                'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
+                'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
+                'sla_id'                => $ticket_sla->sla->id,
+                'sla_status'            => $ticket_sla->sla_status,
+                'original_status'       => $orig_status,
+                'warn_date'             => $ticket_sla->warn_date ? $ticket_sla->warn_date->format('c') : null,
+                'fail_date'             => $ticket_sla->fail_date ? $ticket_sla->fail_date->format('c') : null,
+                'is_completed'          => $ticket_sla->is_completed,
+                'original_is_completed' => $orig_completed,
+                'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
+                'via_person'            => $this->person ? $this->person->id : null
+            ))
+        );
+    }
 
-		$q = $this->queue;
-		$this->queue = array();
 
-		$this->db->batchInsert('client_messages', $q);
+    /**
+     * Send all messages.
+     *
+     * @return int How many messages were sent
+     */
+    public function sendQueue()
+    {
+        if (!$this->queue) {
+            return 0;
+        }
 
-		return count($q);
-	}
+        $q = $this->queue;
+        $this->queue = array();
+
+        $this->db->batchInsert('client_messages', $q);
+
+        return count($q);
+    }
 }

@@ -38,73 +38,73 @@ use Application\DeskPRO\App;
 
 class Phrase extends AbstractEntityRepository
 {
-	public function getPhraseForLanguage($phrase_name, $language = null)
-	{
-		if ($language === null OR $language === 0) {
-			return $this->getEntityManager()->createQuery("
-				SELECT p
-				FROM DeskPRO:Phrase p
-				WHERE p.language IS NULL AND p.name = ?1
-			")->setParameters(array(1=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
-		} else {
-			return $this->getEntityManager()->createQuery("
-				SELECT p
-				FROM DeskPRO:Phrase p
-				WHERE p.language = ?1 AND p.name = ?2
-			")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
-		}
-	}
+    public function getPhraseForLanguage($phrase_name, $language = null)
+    {
+        if ($language === null OR $language === 0) {
+            return $this->getEntityManager()->createQuery("
+                SELECT p
+                FROM DeskPRO:Phrase p
+                WHERE p.language IS NULL AND p.name = ?1
+            ")->setParameters(array(1=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+        } else {
+            return $this->getEntityManager()->createQuery("
+                SELECT p
+                FROM DeskPRO:Phrase p
+                WHERE p.language = ?1 AND p.name = ?2
+            ")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+        }
+    }
 
-	public function getCustomPhraseNamesInLanguage($language)
-	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM phrases
-			WHERE language_id = ? AND phrase IS NOT NULL
-		", array($language['id']));
+    public function getCustomPhraseNamesInLanguage($language)
+    {
+        $names = App::getDb()->fetchColumn("
+            SELECT name
+            FROM phrases
+            WHERE language_id = ? AND phrase IS NOT NULL
+        ", array($language['id']));
 
-		return $names;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Language $language
-	 * @param string $group
-	 * @return array
-	 */
-	public function getPhrasesInGroup($language, $group)
-	{
-		$parts = explode('.', $group);
-		if (count($parts) == 2) {
-			if ($parts[0] == $parts[1]) {
-				$group = $parts[0];
-			}
-		}
-		$phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
-			SELECT name, COALESCE(phrase, original_phrase) AS phrase
-			FROM phrases
-			WHERE language_id = ? AND groupname = ?
-		', array($language['id'], $group));
-
-		return $phrases;
-	}
+        return $names;
+    }
 
 
-	public function getLanguagePhrasesInGroup($language, $group)
-	{
-		return $this->_em->createQuery("
-			SELECT p
-			FROM DeskPRO:Phrase p INDEX BY p.name
-			WHERE p.language = ?0 AND p.groupname = ?1
-		")->setParameters(array($language, $group))->execute();
-	}
+    /**
+     * @param  \Application\DeskPRO\Entity\Language $language
+     * @param  string                               $group
+     * @return array
+     */
+    public function getPhrasesInGroup($language, $group)
+    {
+        $parts = explode('.', $group);
+        if (count($parts) == 2) {
+            if ($parts[0] == $parts[1]) {
+                $group = $parts[0];
+            }
+        }
+        $phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+            SELECT name, COALESCE(phrase, original_phrase) AS phrase
+            FROM phrases
+            WHERE language_id = ? AND groupname = ?
+        ', array($language['id'], $group));
 
-	public function getCustomPhrases($language)
-	{
-		return $this->_em->createQuery("
-			SELECT p
-			FROM DeskPRO:Phrase p INDEX BY p.name
-			WHERE p.language = ?0 AND p.phrase IS NOT NULL AND p.phrase != ''
-		")->setParameters(array($language))->execute();
-	}
+        return $phrases;
+    }
+
+
+    public function getLanguagePhrasesInGroup($language, $group)
+    {
+        return $this->_em->createQuery("
+            SELECT p
+            FROM DeskPRO:Phrase p INDEX BY p.name
+            WHERE p.language = ?0 AND p.groupname = ?1
+        ")->setParameters(array($language, $group))->execute();
+    }
+
+    public function getCustomPhrases($language)
+    {
+        return $this->_em->createQuery("
+            SELECT p
+            FROM DeskPRO:Phrase p INDEX BY p.name
+            WHERE p.language = ?0 AND p.phrase IS NOT NULL AND p.phrase != ''
+        ")->setParameters(array($language))->execute();
+    }
 }

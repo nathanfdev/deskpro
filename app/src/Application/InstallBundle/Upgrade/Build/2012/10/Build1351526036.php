@@ -36,24 +36,24 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351526036 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Support for HTML-based agent signatures");
-		$this->execMutateSql("CREATE INDEX authcode_idx ON blobs (authcode)");
-		$this->execMutateSql("
-			INSERT IGNORE INTO permissions
-				(usergroup_id, name, value)
-			SELECT id, 'agent_general.signature', 1
-			FROM usergroups
-			WHERE is_agent_group = 1
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO permissions
-				(usergroup_id, name, value)
-			SELECT id, 'agent_general.signature_rte', 1
-			FROM usergroups
-			WHERE is_agent_group = 1
-		");
-		$this->execMutateSql("TRUNCATE TABLE permissions_cache");
-	}
+    public function run()
+    {
+        $this->out("Support for HTML-based agent signatures");
+        $this->execMutateSql("CREATE INDEX authcode_idx ON blobs (authcode)");
+        $this->execMutateSql("
+            INSERT IGNORE INTO permissions
+                (usergroup_id, name, value)
+            SELECT id, 'agent_general.signature', 1
+            FROM usergroups
+            WHERE is_agent_group = 1
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO permissions
+                (usergroup_id, name, value)
+            SELECT id, 'agent_general.signature_rte', 1
+            FROM usergroups
+            WHERE is_agent_group = 1
+        ");
+        $this->execMutateSql("TRUNCATE TABLE permissions_cache");
+    }
 }

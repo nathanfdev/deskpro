@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
-use Orb\Util\Strings;
 
 /**
  * Set the subject.
@@ -48,80 +47,81 @@ use Orb\Util\Strings;
  */
 class SetSubject extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('subject');
-		$options->addValidNames('with_formatter');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('subject');
+        $options->addValidNames('with_formatter');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$this->getActionOption('subject')) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$this->getActionOption('subject')) {
+            return;
+        }
 
-		$subject = $this->getActionOption('subject');
+        $subject = $this->getActionOption('subject');
 
-		if ($this->getActionOption('with_formatter')) {
-			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
-			$formatter->addVar('user_vars', $context->getUserVars());
-			$subject = $formatter->formatText($subject, $ticket);
-			$subject = preg_replace("#[\r\n]#", ' ', $subject);
-			$subject = preg_replace("#\\s{2,}#", ' ', $subject);
-			$subject = trim($subject);
+        if ($this->getActionOption('with_formatter')) {
+            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter->addVar('user_vars', $context->getUserVars());
+            $subject = $formatter->formatText($subject, $ticket);
+            $subject = preg_replace("#[\r\n]#", ' ', $subject);
+            $subject = preg_replace("#\\s{2,}#", ' ', $subject);
+            $subject = trim($subject);
 
-			if (!$subject) {
-				$context->getLogger()->notice("[SetSubject] Subject pattern evaluates to an empty string");
-				return;
-			}
-		}
+            if (!$subject) {
+                $context->getLogger()->notice("[SetSubject] Subject pattern evaluates to an empty string");
 
-		if ($subject != $ticket->subject) {
-			$ticket->subject = $subject;
-		}
-	}
+                return;
+            }
+        }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($ticket->subject == $this->getActionOption('subject') || !$this->getActionOption('subject')) {
-			return true;
-		}
-
-		return false;
-	}
+        if ($subject != $ticket->subject) {
+            $ticket->subject = $subject;
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($ticket->subject == $this->getActionOption('subject') || !$this->getActionOption('subject')) {
+            return true;
+        }
 
-		return null;
-	}
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

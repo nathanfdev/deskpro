@@ -42,133 +42,133 @@ use Application\DeskPRO\App;
  */
 abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\SearchLog
-	 */
-	protected $searchlog = null;
+    /**
+     * @var \Application\DeskPRO\Entity\SearchLog
+     */
+    protected $searchlog = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Visitor
-	 */
-	protected $visitor = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Visitor
+     */
+    protected $visitor = null;
 
-	/**
-	 * @var string
-	 */
-	protected $ip_address = '';
+    /**
+     * @var string
+     */
+    protected $ip_address = '';
 
-	/**
-	 * @var string
-	 */
-	protected $email = null;
+    /**
+     * @var string
+     */
+    protected $email = null;
 
-	/**
-	 * @var string
-	 */
-	protected $name = null;
+    /**
+     * @var string
+     */
+    protected $name = null;
 
-	/**
-	 * @var string
-	 */
-	protected $rating;
+    /**
+     * @var string
+     */
+    protected $rating;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public static function create($user_rating, $use_request = true)
-	{
-		$rating = new static();
-		$rating->rating = $user_rating;
+    public static function create($user_rating, $use_request = true)
+    {
+        $rating = new static();
+        $rating->rating = $user_rating;
 
-		if ($use_request && App::has('request')) {
-			if (!App::getCurrentPerson()->isGuest()) {
-				$rating->person = App::getCurrentPerson();
-			}
+        if ($use_request && App::has('request')) {
+            if (!App::getCurrentPerson()->isGuest()) {
+                $rating->person = App::getCurrentPerson();
+            }
 
-			$rating->visitor = App::getSession()->getVisitor();
-		}
+            $rating->visitor = App::getSession()->getVisitor();
+        }
 
-		return $rating;
-	}
+        return $rating;
+    }
 
-	public function __construct()
-	{
-		$this['date_created'] = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this['date_created'] = new \DateTime();
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setRating($rating)
-	{
-		if ($rating > 0) {
-			$this->setModelField('rating', 1);
-		} else {
-			$this->setModelField('rating', -1);
-		}
-	}
+    public function setRating($rating)
+    {
+        if ($rating > 0) {
+            $this->setModelField('rating', 1);
+        } else {
+            $this->setModelField('rating', -1);
+        }
+    }
 
-	public function rateUp()
-	{
-		$this->setRating(1);
-	}
+    public function rateUp()
+    {
+        $this->setRating(1);
+    }
 
-	public function rateDown()
-	{
-		return $this->setRating(-1);
-	}
+    public function rateDown()
+    {
+        return $this->setRating(-1);
+    }
 
-	public function setVisitor(Visitor $visitor = null)
-	{
-		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this->visitor = $visitor;
+    public function setVisitor(Visitor $visitor = null)
+    {
+        $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
+        $this->visitor = $visitor;
 
-		if ($visitor === null) return;
+        if ($visitor === null) return;
 
-		$this['ip_address'] = $visitor['ip_address'];
+        $this['ip_address'] = $visitor['ip_address'];
 
-		if (!$this->name AND $visitor['name']) {
-			$this['name'] = $visitor['name'];
-		}
-		if (!$this->email AND $visitor['email']) {
-			$this['email'] = $visitor['email'];
-		}
-	}
+        if (!$this->name AND $visitor['name']) {
+            $this['name'] = $visitor['name'];
+        }
+        if (!$this->email AND $visitor['email']) {
+            $this['email'] = $visitor['email'];
+        }
+    }
 
-	public function getPersonId()
-	{
-		if ($this->person) {
-			return $this->person->getId();
-		}
+    public function getPersonId()
+    {
+        if ($this->person) {
+            return $this->person->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public function getVisitorId()
-	{
-		if ($this->visitor) {
-			return $this->visitor->getId();
-		}
+    public function getVisitorId()
+    {
+        if ($this->visitor) {
+            return $this->visitor->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	abstract public function setContentObject($obj);
+    abstract public function setContentObject($obj);
 }

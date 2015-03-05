@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 define('DP_BUILDING', true);
@@ -20,10 +20,10 @@ $loader->register();
 
 $finder = new \Symfony\Component\Finder\Finder();
 $it = $finder->files()
-		     ->in(DP_ROOT)
-		     ->notName('distro-checksums.php')
-		     ->exclude(DP_ROOT.'/sys/cache/dev')
-		     ->exclude(dp_get_cache_dir().'/cache/dev');
+             ->in(DP_ROOT)
+             ->notName('distro-checksums.php')
+             ->exclude(DP_ROOT.'/sys/cache/dev')
+             ->exclude(dp_get_cache_dir().'/cache/dev');
 
 $hashes = array();
 

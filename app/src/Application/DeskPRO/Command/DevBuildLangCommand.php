@@ -41,102 +41,107 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dpdev:dev-build-lang');
-		$this->addOption('lang-id', 'l', InputOption::VALUE_REQUIRED, 'Only build a specific language instead of all');
-		$this->addOption('transifex', null, InputOption::VALUE_NONE, 'Build from transifex');
-		$this->addOption('onesky', null, InputOption::VALUE_NONE, 'Build form onesky');
-	}
+    protected function configure()
+    {
+        $this->setName('dpdev:dev-build-lang');
+        $this->addOption('lang-id', 'l', InputOption::VALUE_REQUIRED, 'Only build a specific language instead of all');
+        $this->addOption('transifex', null, InputOption::VALUE_NONE, 'Build from transifex');
+        $this->addOption('onesky', null, InputOption::VALUE_NONE, 'Build form onesky');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$build_transifex = $input->getOption('transifex');
-		$build_onesky = $input->getOption('onesky');
-		$done_any = false;
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $build_transifex = $input->getOption('transifex');
+        $build_onesky = $input->getOption('onesky');
+        $done_any = false;
 
-		if ($build_transifex) {
-			$done_any = true;
-			if (
-				!dp_get_config('transifex.url')
-				|| !dp_get_config('transifex.username')
-				|| !dp_get_config('transifex.password')
-			) {
-				$output->writeln("Missing transifex configuration");
-				return 1;
-			}
+        if ($build_transifex) {
+            $done_any = true;
+            if (
+                !dp_get_config('transifex.url')
+                || !dp_get_config('transifex.username')
+                || !dp_get_config('transifex.password')
+            ) {
+                $output->writeln("Missing transifex configuration");
 
-			$build = new TransifexBuild(
-				dp_get_config('transifex.url'),
-				dp_get_config('transifex.username'),
-				dp_get_config('transifex.password')
-			);
+                return 1;
+            }
 
-			$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-			$build->getLogger()->addWriter($wr);
+            $build = new TransifexBuild(
+                dp_get_config('transifex.url'),
+                dp_get_config('transifex.username'),
+                dp_get_config('transifex.password')
+            );
 
-			if ($input->getOption('lang-id')) {
+            $wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
+            $build->getLogger()->addWriter($wr);
 
-				if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
-					$output->writeln("Invalid language ID");
-					return 2;
-				}
+            if ($input->getOption('lang-id')) {
 
-				$diff = $build->buildLanguage($input->getOption('lang-id'));
+                if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
+                    $output->writeln("Invalid language ID");
 
-				$lang_title = $build->getLangPackInfo()->getLangInfo($input->getOption('lang-id'), 'title');
-				echo sprintf(">> Built %-30s Changed: %-4s Added: -%4s Removed: %-s4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
-			} else {
-				$diffs = $build->buildAll();
+                    return 2;
+                }
 
-				foreach ($diffs as $id => $diff) {
-					$lang_title = $build->getLangPackInfo()->getLangInfo($id, 'title');
-					echo sprintf(">> Built %-18s Changed: %-4s Added: %-4s Removed: %-4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
-				}
-			}
-		}
+                $diff = $build->buildLanguage($input->getOption('lang-id'));
 
-		if ($build_onesky) {
-			$done_any = true;
-			if (
-				!dp_get_config('onesky.api_key')
-				|| !dp_get_config('onesky.secret_key')
-			) {
-				$output->writeln("Missing onesky configuration");
-				return 1;
-			}
+                $lang_title = $build->getLangPackInfo()->getLangInfo($input->getOption('lang-id'), 'title');
+                echo sprintf(">> Built %-30s Changed: %-4s Added: -%4s Removed: %-s4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
+            } else {
+                $diffs = $build->buildAll();
 
-			$build = new OneSkyBuild(dp_get_config('onesky.api_key'), dp_get_config('onesky.secret_key'));
+                foreach ($diffs as $id => $diff) {
+                    $lang_title = $build->getLangPackInfo()->getLangInfo($id, 'title');
+                    echo sprintf(">> Built %-18s Changed: %-4s Added: %-4s Removed: %-4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
+                }
+            }
+        }
 
-			$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-			$build->getLogger()->addWriter($wr);
+        if ($build_onesky) {
+            $done_any = true;
+            if (
+                !dp_get_config('onesky.api_key')
+                || !dp_get_config('onesky.secret_key')
+            ) {
+                $output->writeln("Missing onesky configuration");
 
-			if ($input->getOption('lang-id')) {
+                return 1;
+            }
 
-				if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
-					$output->writeln("Invalid language ID");
-					return 2;
-				}
+            $build = new OneSkyBuild(dp_get_config('onesky.api_key'), dp_get_config('onesky.secret_key'));
 
-				$diff = $build->buildLanguage($input->getOption('lang-id'));
+            $wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
+            $build->getLogger()->addWriter($wr);
 
-				$lang_title = $build->getLangPackInfo()->getLangInfo($input->getOption('lang-id'), 'title');
-				echo sprintf(">> Built %-30s Changed: %-4s Added: -%4s Removed: %-s4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
-			} else {
-				$diffs = $build->buildAll();
+            if ($input->getOption('lang-id')) {
 
-				foreach ($diffs as $id => $diff) {
-					$lang_title = $build->getLangPackInfo()->getLangInfo($id, 'title');
-					echo sprintf(">> Built %-18s Changed: %-4s Added: %-4s Removed: %-4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
-				}
-			}
-		}
+                if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
+                    $output->writeln("Invalid language ID");
 
-		if (!$done_any) {
-			$output->writeln("<error>Choose an build option. See --help for options.</error>");
-			return 1;
-		}
+                    return 2;
+                }
 
-		return 0;
-	}
+                $diff = $build->buildLanguage($input->getOption('lang-id'));
+
+                $lang_title = $build->getLangPackInfo()->getLangInfo($input->getOption('lang-id'), 'title');
+                echo sprintf(">> Built %-30s Changed: %-4s Added: -%4s Removed: %-s4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
+            } else {
+                $diffs = $build->buildAll();
+
+                foreach ($diffs as $id => $diff) {
+                    $lang_title = $build->getLangPackInfo()->getLangInfo($id, 'title');
+                    echo sprintf(">> Built %-18s Changed: %-4s Added: %-4s Removed: %-4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
+                }
+            }
+        }
+
+        if (!$done_any) {
+            $output->writeln("<error>Choose an build option. See --help for options.</error>");
+
+            return 1;
+        }
+
+        return 0;
+    }
 }

@@ -35,7 +35,6 @@
 namespace Application\UserBundle\Form;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -44,24 +43,24 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class ProfileType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('first_name', 'text');
-		$builder->add('last_name', 'text');
-		$builder->add('timezone', 'choice', array(
-			'choices' => array_combine(array_values(\DateTimeZone::listIdentifiers()), array_values(\DateTimeZone::listIdentifiers()))
-		));
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('first_name', 'text');
+        $builder->add('last_name', 'text');
+        $builder->add('timezone', 'choice', array(
+            'choices' => array_combine(array_values(\DateTimeZone::listIdentifiers()), array_values(\DateTimeZone::listIdentifiers()))
+        ));
 
-		$langs = App::getDataService('Language')->getTitles();
-		if (count($langs) != 1) {
-			$builder->add('language_id', 'choice', array(
-				'choices' => $langs
-			));
-		}
-	}
+        $langs = App::getDataService('Language')->getTitles();
+        if (count($langs) != 1) {
+            $builder->add('language_id', 'choice', array(
+                'choices' => $langs
+            ));
+        }
+    }
 
-	public function getName()
-	{
-		return 'profile';
-	}
+    public function getName()
+    {
+        return 'profile';
+    }
 }

@@ -51,410 +51,412 @@ use Orb\Util\Arrays;
 
 class Build1400056733 extends AbstractBuild
 {
-	/**
-	 * @var TriggerTermConverter
-	 */
-	private $term_converter;
+    /**
+     * @var TriggerTermConverter
+     */
+    private $term_converter;
 
-	/**
-	 * @var TriggerActionConverter
-	 */
-	private $action_converter;
+    /**
+     * @var TriggerActionConverter
+     */
+    private $action_converter;
 
-	public function run()
-	{
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
+    public function run()
+    {
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
 
-		// See Build1411577850.php
-		// We need to apply this alter now because we use Doctrine to load some
-		// entities, and they will fail because we changed these definitions.
-		// So to prevent them failing, we are bringing "forward" these alters from the future
+        // See Build1411577850.php
+        // We need to apply this alter now because we use Doctrine to load some
+        // entities, and they will fail because we changed these definitions.
+        // So to prevent them failing, we are bringing "forward" these alters from the future
 
-		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1411577850 AND name = 'did_pre_alter'");
-		if (!$did_do) {
-			$this->out("Adding avatar feilds to temas and departments");
-			$this->execMutateSql("ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL");
-			$this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-			$this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)");
-			$this->execMutateSql("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-			$this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-			$this->execMutateSql("CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)");
-			$this->container->getDb()->insertIgnore('install_data', array('build' => '1411577850', 'name' => 'did_pre_alter', 'data' => '1'));
-		}
+        $did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1411577850 AND name = 'did_pre_alter'");
+        if (!$did_do) {
+            $this->out("Adding avatar feilds to temas and departments");
+            $this->execMutateSql("ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL");
+            $this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+            $this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)");
+            $this->execMutateSql("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
+            $this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+            $this->execMutateSql("CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)");
+            $this->container->getDb()->insertIgnore('install_data', array('build' => '1411577850', 'name' => 'did_pre_alter', 'data' => '1'));
+        }
 
-		$this->out("Upgrading triggers");
+        $this->out("Upgrading triggers");
 
-		$em = $this->container->getEm();
-		$db = $this->container->getDb();
-		$db->executeUpdate('DELETE FROM ticket_triggers');
+        $em = $this->container->getEm();
+        $db = $this->container->getDb();
+        $db->executeUpdate('DELETE FROM ticket_triggers');
 
-		#------------------------------
-		# Install new default triggers
-		#------------------------------
+        #------------------------------
+        # Install new default triggers
+        #------------------------------
 
-		$this->out("Installing default triggers");
-		$trigger_data = new TriggerData($this->container, new NullLogger());
-		$trigger_data->runInstall();
+        $this->out("Installing default triggers");
+        $trigger_data = new TriggerData($this->container, new NullLogger());
+        $trigger_data->runInstall();
 
-		$db->executeUpdate("
-			UPDATE ticket_triggers
-			SET is_enabled = 0
-			WHERE sys_name IN (
-				'default_newticket_userautoreply', 'default_newreply_userautoreply',
-				'default_newticket_requirevalid'
-			)
-		");
+        $db->executeUpdate("
+            UPDATE ticket_triggers
+            SET is_enabled = 0
+            WHERE sys_name IN (
+                'default_newticket_userautoreply', 'default_newreply_userautoreply',
+                'default_newticket_requirevalid'
+            )
+        ");
 
-		$this->out("Processing old triggers ...");
+        $this->out("Processing old triggers ...");
 
-		#------------------------------
-		# Install default triggers for deps
-		#------------------------------
+        #------------------------------
+        # Install default triggers for deps
+        #------------------------------
 
-		$email_accounts = $em->getRepository('DeskPRO:EmailAccount')->findAll();
-		$email_accounts = Arrays::keyFromData($email_accounts, 'id');
+        $email_accounts = $em->getRepository('DeskPRO:EmailAccount')->findAll();
+        $email_accounts = Arrays::keyFromData($email_accounts, 'id');
 
-		$deps = $em->getRepository('DeskPRO:Department')->findBy(array('is_tickets_enabled' => true));
-		$deps = Arrays::keyFromData($deps, 'id');
+        $deps = $em->getRepository('DeskPRO:Department')->findBy(array('is_tickets_enabled' => true));
+        $deps = Arrays::keyFromData($deps, 'id');
 
-		$old_deps = $this->getUpgradeData('201404', 'departments');
-		if ($old_deps) {
-			$old_deps = Arrays::keyFromData($old_deps, 'id');
-		} else {
-			$old_deps = array();
-		}
+        $old_deps = $this->getUpgradeData('201404', 'departments');
+        if ($old_deps) {
+            $old_deps = Arrays::keyFromData($old_deps, 'id');
+        } else {
+            $old_deps = array();
+        }
 
-		foreach ($deps as $dep) {
-			if (!isset($old_deps[$dep->id])) {
-				continue;
-			}
+        foreach ($deps as $dep) {
+            if (!isset($old_deps[$dep->id])) {
+                continue;
+            }
 
-			$old_dep = $old_deps[$dep->id];
-			$map_id = $old_dep['email_gateway_id'];
-			if (!$map_id || !isset($email_accounts[$map_id])) {
-				continue;
-			}
+            $old_dep = $old_deps[$dep->id];
+            $map_id = $old_dep['email_gateway_id'];
+            if (!$map_id || !isset($email_accounts[$map_id])) {
+                continue;
+            }
 
-			$trigger = new TicketTrigger();
-			$trigger->department    = $dep;
-			$trigger->event_trigger = 'newticket';
-			$trigger->by_agent_mode = array('api', 'web');
-			$trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
-			$trigger->title         = 'New Ticket';
-			$trigger->is_enabled    = true;
-			$trigger->run_order     = -100;
+            $trigger = new TicketTrigger();
+            $trigger->department    = $dep;
+            $trigger->event_trigger = 'newticket';
+            $trigger->by_agent_mode = array('api', 'web');
+            $trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
+            $trigger->title         = 'New Ticket';
+            $trigger->is_enabled    = true;
+            $trigger->run_order     = -100;
 
-			$term_sets = new TriggerTerms();
-			$terms_all = new TriggerTermComposite();
-			$terms_all->add(new CheckDepartment('is', array('department_ids' => array($dep->id))));
-			$term_sets->addTerm($terms_all);
+            $term_sets = new TriggerTerms();
+            $terms_all = new TriggerTermComposite();
+            $terms_all->add(new CheckDepartment('is', array('department_ids' => array($dep->id))));
+            $term_sets->addTerm($terms_all);
 
-			$actions_set = new TriggerActions();
-			$actions_set->addAction(new SetEmailAccount(array('email_account_id' => $map_id)));
+            $actions_set = new TriggerActions();
+            $actions_set->addAction(new SetEmailAccount(array('email_account_id' => $map_id)));
 
-			$trigger->terms = $term_sets;
-			$trigger->actions = $actions_set;
+            $trigger->terms = $term_sets;
+            $trigger->actions = $actions_set;
 
-			$em->persist($trigger);
-			$em->flush($trigger);
-		}
+            $em->persist($trigger);
+            $em->flush($trigger);
+        }
 
-		#------------------------------
-		# Install default triggers for email accounts
-		#------------------------------
+        #------------------------------
+        # Install default triggers for email accounts
+        #------------------------------
 
-		$old_accounts = $this->getUpgradeData('201404', 'email_gateways');
-		if ($old_accounts) {
-			$old_accounts = Arrays::keyFromData($old_accounts, 'id');
-		} else {
-			$old_accounts = array();
-		}
+        $old_accounts = $this->getUpgradeData('201404', 'email_gateways');
+        if ($old_accounts) {
+            $old_accounts = Arrays::keyFromData($old_accounts, 'id');
+        } else {
+            $old_accounts = array();
+        }
 
-		foreach ($email_accounts as $acc) {
-			if (!isset($old_accounts[$acc->id])) {
-				continue;
-			}
+        foreach ($email_accounts as $acc) {
+            if (!isset($old_accounts[$acc->id])) {
+                continue;
+            }
 
-			$old_acc = $old_accounts[$acc->id];
-			$map_id = $old_acc['department_id'];
-			if (!$map_id || !isset($deps[$map_id])) {
-				continue;
-			}
+            $old_acc = $old_accounts[$acc->id];
+            $map_id = $old_acc['department_id'];
+            if (!$map_id || !isset($deps[$map_id])) {
+                continue;
+            }
 
-			$trigger = new TicketTrigger();
-			$trigger->email_account = $acc;
-			$trigger->event_trigger = 'newticket';
-			$trigger->by_agent_mode = array('email');
-			$trigger->by_user_mode  = array('email');
-			$trigger->title         = 'New Ticket';
-			$trigger->is_enabled    = true;
-			$trigger->run_order     = -100;
+            $trigger = new TicketTrigger();
+            $trigger->email_account = $acc;
+            $trigger->event_trigger = 'newticket';
+            $trigger->by_agent_mode = array('email');
+            $trigger->by_user_mode  = array('email');
+            $trigger->title         = 'New Ticket';
+            $trigger->is_enabled    = true;
+            $trigger->run_order     = -100;
 
-			$term_sets = new TriggerTerms();
-			$terms_all = new TriggerTermComposite();
-			$terms_all->add(new CheckEmailAccount('is', array('email_account_ids' => array($acc->id))));
-			$term_sets->addTerm($terms_all);
+            $term_sets = new TriggerTerms();
+            $terms_all = new TriggerTermComposite();
+            $terms_all->add(new CheckEmailAccount('is', array('email_account_ids' => array($acc->id))));
+            $term_sets->addTerm($terms_all);
 
-			$actions_set = new TriggerActions();
-			$actions_set->addAction(new SetDepartment(array('department_id' => $map_id)));
+            $actions_set = new TriggerActions();
+            $actions_set->addAction(new SetDepartment(array('department_id' => $map_id)));
 
-			$trigger->terms = $term_sets;
-			$trigger->actions = $actions_set;
+            $trigger->terms = $term_sets;
+            $trigger->actions = $actions_set;
 
-			$em->persist($trigger);
-			$em->flush($trigger);
-		}
+            $em->persist($trigger);
+            $em->flush($trigger);
+        }
 
-		#------------------------------
-		# Init helpers
-		#------------------------------
+        #------------------------------
+        # Init helpers
+        #------------------------------
 
-		$gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
-		$mappings = array(
-			'gateway_address_to_email_account' => $gateway_addr_map
-		);
+        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
+        $mappings = array(
+            'gateway_address_to_email_account' => $gateway_addr_map
+        );
 
-		$this->term_converter   = new TriggerTermConverter($mappings);
-		$this->action_converter = new TriggerActionConverter($mappings);
+        $this->term_converter   = new TriggerTermConverter($mappings);
+        $this->action_converter = new TriggerActionConverter($mappings);
 
-		#------------------------------
-		# Process old triggers
-		#------------------------------
+        #------------------------------
+        # Process old triggers
+        #------------------------------
 
-		$old_triggers = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
+        $old_triggers = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
 
-		foreach ($old_triggers as $trigger) {
-			$this->out("Processing #{$trigger['id']} {$trigger['sys_name']} {$trigger['title']} ...");
-			try {
-				$new_trigger = $this->processTrigger($trigger);
-			} catch (\Exception $e) {
-				// log for error reporting
-				KernelErrorHandler::logException($e);
-				continue;
-			}
-			if ($new_trigger) {
-				$this->container->getEm()->persist($new_trigger);
-				$this->container->getEm()->flush();
-				$this->out("-- Saved");
-			} else {
-				$this->out("-- Skipped");
-			}
-		}
+        foreach ($old_triggers as $trigger) {
+            $this->out("Processing #{$trigger['id']} {$trigger['sys_name']} {$trigger['title']} ...");
+            try {
+                $new_trigger = $this->processTrigger($trigger);
+            } catch (\Exception $e) {
+                // log for error reporting
+                KernelErrorHandler::logException($e);
+                continue;
+            }
+            if ($new_trigger) {
+                $this->container->getEm()->persist($new_trigger);
+                $this->container->getEm()->flush();
+                $this->out("-- Saved");
+            } else {
+                $this->out("-- Skipped");
+            }
+        }
 
-	}
+    }
 
 
-	/**
-	 * @param array $old_trigger
-	 * @return TicketTrigger|null
-	 */
-	private function processTrigger(array $old_trigger)
-	{
-		// We dont do escalations or slas in this task
-		if (strpos($old_trigger['event_trigger'], 'time') !== false || strpos($old_trigger['event_trigger'], 'sla') !== false) {
-			return null;
-		}
+    /**
+     * @param  array              $old_trigger
+     * @return TicketTrigger|null
+     */
+    private function processTrigger(array $old_trigger)
+    {
+        // We dont do escalations or slas in this task
+        if (strpos($old_trigger['event_trigger'], 'time') !== false || strpos($old_trigger['event_trigger'], 'sla') !== false) {
+            return null;
+        }
 
-		// Default triggers just turn on depending on the status of the old default triggers
-		if ($old_trigger['sys_name']) {
-			if (!$old_trigger['is_enabled']) {
-				return null;
-			}
-			switch ($old_trigger['sys_name']) {
-				case 'email_validation.email':
-					$this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
-					break;
-				case 'newticket_confirm.email_user':
-					$this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_userautoreply'));
-					break;
-				case 'newticket_confirm.web_user':
-					$this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_userautoreply'));
-					break;
-				case 'email_validation.web':
-					$this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
-					break;
-				case 'email_validation.widget':
-					$this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
-					break;
-				case 'response.reply_confirm':
-					$this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newreply_userautoreply'));
-					break;
-			}
-			return null;
-		}
+        // Default triggers just turn on depending on the status of the old default triggers
+        if ($old_trigger['sys_name']) {
+            if (!$old_trigger['is_enabled']) {
+                return null;
+            }
+            switch ($old_trigger['sys_name']) {
+                case 'email_validation.email':
+                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
+                    break;
+                case 'newticket_confirm.email_user':
+                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_userautoreply'));
+                    break;
+                case 'newticket_confirm.web_user':
+                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_userautoreply'));
+                    break;
+                case 'email_validation.web':
+                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
+                    break;
+                case 'email_validation.widget':
+                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
+                    break;
+                case 'response.reply_confirm':
+                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newreply_userautoreply'));
+                    break;
+            }
 
-		$old_trigger['terms']     = @unserialize($old_trigger['terms']) ?: array();
-		$old_trigger['terms_any'] = @unserialize($old_trigger['terms_any']) ?: array();
-		$old_trigger['actions']   = @unserialize($old_trigger['actions']) ?: array();
+            return null;
+        }
 
-		$trigger = new TicketTrigger();
+        $old_trigger['terms']     = @unserialize($old_trigger['terms']) ?: array();
+        $old_trigger['terms_any'] = @unserialize($old_trigger['terms_any']) ?: array();
+        $old_trigger['actions']   = @unserialize($old_trigger['actions']) ?: array();
 
-		$replytype = false;
-		foreach (array($old_trigger['terms'], $old_trigger['terms_any']) as $terms) {
-			foreach ($terms as $t) {
-				if ($t['type'] == 'new_reply_user' || $t['type'] == 'new_reply_agent' || $t['type'] == 'new_reply_note') {
-					$replytype = true;
-					break 2;
-				}
-			}
-		}
+        $trigger = new TicketTrigger();
 
-		switch ($old_trigger['event_trigger']) {
-			case 'new.email.user':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_user_mode = array('email');
-				break;
-			case 'new.web.user':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_user_mode = array('portal', 'widget', 'form');
-				break;
-			case 'new.web.user.portal':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_user_mode = array('portal');
-				break;
-			case 'new.web.user.embed':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_user_mode = array('form');
-				break;
-			case 'new.web.user.widget':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_user_mode = array('widget');
-				break;
-			case 'new.email.agent':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_agent_mode = array('email');
-				break;
-			case 'new.web.agent.portal':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_agent_mode = array('web');
-				break;
-			case 'new.web.api':
-				$trigger->event_trigger = 'newticket';
-				$trigger->by_agent_mode = array('api');
-				$trigger->by_user_mode  = array('api');
-				break;
-			case 'update.agent':
-				$trigger->event_trigger = $replytype ? 'newreply' : 'update';
-				$trigger->by_agent_mode = array('web', 'email');
-				break;
-			case 'update.user':
-				$trigger->event_trigger = $replytype ? 'newreply' : 'update';
-				$trigger->by_user_mode = array('portal', 'email', 'api');
-				break;
-			case 'update.api':
-				$trigger->event_trigger = $replytype ? 'newreply' : 'update';
-				$trigger->by_agent_mode = array('api');
-				$trigger->by_user_mode  = array('api');
-				break;
-			case 'new':
-				// 'new' is used by sla triggers
-				return null;
-				break;
-			default:
-				throw new \InvalidArgumentException("Unknown event trigger: {$old_trigger['event_trigger']}");
-		}
+        $replytype = false;
+        foreach (array($old_trigger['terms'], $old_trigger['terms_any']) as $terms) {
+            foreach ($terms as $t) {
+                if ($t['type'] == 'new_reply_user' || $t['type'] == 'new_reply_agent' || $t['type'] == 'new_reply_note') {
+                    $replytype = true;
+                    break 2;
+                }
+            }
+        }
 
-		#------------------------------
-		# Update terms
-		#------------------------------
+        switch ($old_trigger['event_trigger']) {
+            case 'new.email.user':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_user_mode = array('email');
+                break;
+            case 'new.web.user':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_user_mode = array('portal', 'widget', 'form');
+                break;
+            case 'new.web.user.portal':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_user_mode = array('portal');
+                break;
+            case 'new.web.user.embed':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_user_mode = array('form');
+                break;
+            case 'new.web.user.widget':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_user_mode = array('widget');
+                break;
+            case 'new.email.agent':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_agent_mode = array('email');
+                break;
+            case 'new.web.agent.portal':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_agent_mode = array('web');
+                break;
+            case 'new.web.api':
+                $trigger->event_trigger = 'newticket';
+                $trigger->by_agent_mode = array('api');
+                $trigger->by_user_mode  = array('api');
+                break;
+            case 'update.agent':
+                $trigger->event_trigger = $replytype ? 'newreply' : 'update';
+                $trigger->by_agent_mode = array('web', 'email');
+                break;
+            case 'update.user':
+                $trigger->event_trigger = $replytype ? 'newreply' : 'update';
+                $trigger->by_user_mode = array('portal', 'email', 'api');
+                break;
+            case 'update.api':
+                $trigger->event_trigger = $replytype ? 'newreply' : 'update';
+                $trigger->by_agent_mode = array('api');
+                $trigger->by_user_mode  = array('api');
+                break;
+            case 'new':
+                // 'new' is used by sla triggers
+                return null;
+                break;
+            default:
+                throw new \InvalidArgumentException("Unknown event trigger: {$old_trigger['event_trigger']}");
+        }
 
-		$is_incomplete = false;
+        #------------------------------
+        # Update terms
+        #------------------------------
 
-		/*
-		 * Before we had "When ALL of these match: <set> AND ANY of these match: <set>"
-		 * That is: (a and b and c) AND (x or y or z)
-		 *
-		 * Now we have: "When <set> or <set>"
-		 * That is: (a and b and c) OR (x and y and z)
-		 *
-		 * This means that if there's an 'any' set, we have to combine it with multiple
-		 * permutations of the old 'all' set:
-		 * (a and b and c and x) or (a and b and c and y) or (a and b and c and z)
-		 */
+        $is_incomplete = false;
 
-		$term_sets = new TriggerTerms();
+        /*
+         * Before we had "When ALL of these match: <set> AND ANY of these match: <set>"
+         * That is: (a and b and c) AND (x or y or z)
+         *
+         * Now we have: "When <set> or <set>"
+         * That is: (a and b and c) OR (x and y and z)
+         *
+         * This means that if there's an 'any' set, we have to combine it with multiple
+         * permutations of the old 'all' set:
+         * (a and b and c and x) or (a and b and c and y) or (a and b and c and z)
+         */
 
-		$terms_all = new TriggerTermComposite();
-		if (!empty($old_trigger['terms'])) {
-			foreach ($old_trigger['terms'] as $term) {
-				$new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
-				if ($new_term) {
-					$terms_all->add($new_term);
-				} else {
-					$this->out("-- Skipping all term {$term['type']}");
-					$is_incomplete = true;
-				}
-			}
-		}
+        $term_sets = new TriggerTerms();
 
-		if (!empty($old_trigger['terms_any'])) {
-			foreach ($old_trigger['terms_any'] as $term) {
-				$new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
-				if ($new_term) {
-					$set = new TriggerTermComposite();
-					$set->setOperator(TriggerTermComposite::OP_AND);
-					$set->add($new_term);
+        $terms_all = new TriggerTermComposite();
+        if (!empty($old_trigger['terms'])) {
+            foreach ($old_trigger['terms'] as $term) {
+                $new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
+                if ($new_term) {
+                    $terms_all->add($new_term);
+                } else {
+                    $this->out("-- Skipping all term {$term['type']}");
+                    $is_incomplete = true;
+                }
+            }
+        }
 
-					if (count($terms_all)) {
-						foreach ($terms_all->getAll() as $t) {
-							$set->add($t);
-						}
-					}
+        if (!empty($old_trigger['terms_any'])) {
+            foreach ($old_trigger['terms_any'] as $term) {
+                $new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
+                if ($new_term) {
+                    $set = new TriggerTermComposite();
+                    $set->setOperator(TriggerTermComposite::OP_AND);
+                    $set->add($new_term);
 
-					$term_sets->addTerm($set);
-				} else {
-					$this->out("-- Skipping any term {$term['type']}");
-					$is_incomplete = true;
-				}
-			}
-		}
+                    if (count($terms_all)) {
+                        foreach ($terms_all->getAll() as $t) {
+                            $set->add($t);
+                        }
+                    }
 
-		// no any terms, so we can just use the normal all terms
-		if (!count($term_sets)) {
-			$term_sets->addTerm($terms_all);
-		}
+                    $term_sets->addTerm($set);
+                } else {
+                    $this->out("-- Skipping any term {$term['type']}");
+                    $is_incomplete = true;
+                }
+            }
+        }
 
-		#------------------------------
-		# Update actions
-		#------------------------------
+        // no any terms, so we can just use the normal all terms
+        if (!count($term_sets)) {
+            $term_sets->addTerm($terms_all);
+        }
 
-		$actions_set = new TriggerActions();
+        #------------------------------
+        # Update actions
+        #------------------------------
 
-		foreach ($old_trigger['actions'] as $act) {
-			$new_act = $this->action_converter->getTriggerAction($act);
-			if ($new_act) {
-				if (is_array($new_act)) {
-					foreach ($new_act as $a) {
-						$actions_set->addAction($a);
-					}
-				} else {
-					$actions_set->addAction($new_act);
-				}
-			} else {
-				$this->out("-- Skipping action {$act['type']}");
-				$is_incomplete = true;
-			}
-		}
+        $actions_set = new TriggerActions();
 
-		if (!count($actions_set)) {
-			$this->out("-- Skipping no-action trigger");
-			return null;
-		}
+        foreach ($old_trigger['actions'] as $act) {
+            $new_act = $this->action_converter->getTriggerAction($act);
+            if ($new_act) {
+                if (is_array($new_act)) {
+                    foreach ($new_act as $a) {
+                        $actions_set->addAction($a);
+                    }
+                } else {
+                    $actions_set->addAction($new_act);
+                }
+            } else {
+                $this->out("-- Skipping action {$act['type']}");
+                $is_incomplete = true;
+            }
+        }
 
-		#------------------------------
-		# Create trigger object
-		#------------------------------
+        if (!count($actions_set)) {
+            $this->out("-- Skipping no-action trigger");
 
-		$trigger->title      = $old_trigger['title'] ?: 'Trigger ' . $old_trigger['id'];
-		if ($is_incomplete) {
-			$trigger->title .= ' (REQUIRES REVIEW)';
-		}
-		$trigger->is_enabled = (bool)$old_trigger['is_enabled'] && !$is_incomplete;
-		$trigger->run_order  = (int)$old_trigger['run_order'];
-		$trigger->terms      = $term_sets;
-		$trigger->actions    = $actions_set;
+            return null;
+        }
 
-		return $trigger;
-	}
+        #------------------------------
+        # Create trigger object
+        #------------------------------
+
+        $trigger->title      = $old_trigger['title'] ?: 'Trigger ' . $old_trigger['id'];
+        if ($is_incomplete) {
+            $trigger->title .= ' (REQUIRES REVIEW)';
+        }
+        $trigger->is_enabled = (bool)$old_trigger['is_enabled'] && !$is_incomplete;
+        $trigger->run_order  = (int)$old_trigger['run_order'];
+        $trigger->terms      = $term_sets;
+        $trigger->actions    = $actions_set;
+
+        return $trigger;
+    }
 }

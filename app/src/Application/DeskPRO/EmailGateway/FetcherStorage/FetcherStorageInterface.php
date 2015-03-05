@@ -38,13 +38,13 @@ use Orb\Log\Loggable;
 
 interface FetcherStorageInterface extends Loggable
 {
-	/**
-	 * @return mixed
-	 */
-	public function getStorage();
+    /**
+     * @return mixed
+     */
+    public function getStorage();
 
-	/**
-	 * @void
-	 */
-	public function closeStorage();
+    /**
+     * @void
+     */
+    public function closeStorage();
 }

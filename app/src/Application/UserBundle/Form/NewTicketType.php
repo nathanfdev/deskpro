@@ -45,128 +45,125 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class NewTicketType extends AbstractType
 {
-	const MODE_NORMAL = 'normal';
-	const MODE_WIDGE = 'widget';
+    const MODE_NORMAL = 'normal';
+    const MODE_WIDGE = 'widget';
 
-	/**
-	 * The actual person (logged in)
-	 */
-	protected $person;
+    /**
+     * The actual person (logged in)
+     */
+    protected $person;
 
-	/**
-	 * A person object we'll use for things like permissions.
-	 * So if the person is a guest, then this is a guest object
-	 * with basic properties.
-	 */
-	protected $mock_person;
+    /**
+     * A person object we'll use for things like permissions.
+     * So if the person is a guest, then this is a guest object
+     * with basic properties.
+     */
+    protected $mock_person;
 
-	/**
-	 * @var array
-	 */
-	protected $ticket_options;
-	/**
-	 * @var array
-	 */
-	protected $ticket_fields = array();
+    /**
+     * @var array
+     */
+    protected $ticket_options;
+    /**
+     * @var array
+     */
+    protected $ticket_fields = array();
 
-	/**
-	 * @var string
-	 */
-	protected $mode;
+    /**
+     * @var string
+     */
+    protected $mode;
 
-	public function __construct($person, $mode = self::MODE_NORMAL)
-	{
-		$this->person = $person;
-		$this->mode = $mode;
-	}
+    public function __construct($person, $mode = self::MODE_NORMAL)
+    {
+        $this->person = $person;
+        $this->mode = $mode;
+    }
 
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$this->buildPersonForm($builder);
-		$this->buildTicketForm($builder);
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $this->buildPersonForm($builder);
+        $this->buildTicketForm($builder);
+    }
 
+    /**
+     * Configures the person form
+     */
+    protected function buildPersonForm(FormBuilderInterface $builder)
+    {
+        if ($this->person AND $this->person['id']) {
+            $this->mock_person = $this->person;
+        } else {
+            $this->person = null;
 
+            // We need this for some things to get basic permissions
+            $this->mock_person = Entity\Person::newContactPerson();
+        }
 
-	/**
-	 * Configures the person form
-	 */
-	protected function buildPersonForm(FormBuilderInterface $builder)
-	{
-		if ($this->person AND $this->person['id']) {
-			$this->mock_person = $this->person;
-		} else {
-			$this->person = null;
+        $person_builder = $builder->create('person', 'form')
+            ->add('name', 'text', array('data' => $this->mock_person['name']));
 
-			// We need this for some things to get basic permissions
-			$this->mock_person = Entity\Person::newContactPerson();
-		}
+        $person_builder->add('email', 'text', array('data' => $this->mock_person['primary_email_address']));
 
-		$person_builder = $builder->create('person', 'form')
-			->add('name', 'text', array('data' => $this->mock_person['name']));
+        $builder->add($person_builder);
+    }
 
-		$person_builder->add('email', 'text', array('data' => $this->mock_person['primary_email_address']));
+    /**
+     * Configures the ticket form
+     */
+    protected function buildTicketForm(FormBuilderInterface $builder)
+    {
+        $ticket_builder = $builder->create('ticket', 'form');
 
-		$builder->add($person_builder);
-	}
+        #------------------------------
+        # Standard fields
+        #------------------------------
 
+        $ticket_options = App::getApi('tickets')->getTicketOptions($this->mock_person);
+        $this->ticket_options = $ticket_options;
 
-	/**
-	 * Configures the ticket form
-	 */
-	protected function buildTicketForm(FormBuilderInterface $builder)
-	{
-		$ticket_builder = $builder->create('ticket', 'form');
+        $this->ticket_options = $ticket_options;
 
-		#------------------------------
-		# Standard fields
-		#------------------------------
+        $ticket_builder->add('subject', 'text');
+        $ticket_builder->add('message', 'textarea');
 
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->mock_person);
-		$this->ticket_options = $ticket_options;
+        if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
+            $ticket_builder->add('department_id', 'choice', array(
+                'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
+                'required' => false
+            ));
+        }
 
-		$this->ticket_options = $ticket_options;
+        $ticket_builder->add('category_id', 'hidden', array('required' => false));
+        $ticket_builder->add('product_id', 'hidden', array('required' => false));
+        $ticket_builder->add('priority_id', 'hidden', array('required' => false));
+        $ticket_builder->add('cc_emails', 'text', array('required' => false));
 
-		$ticket_builder->add('subject', 'text');
-		$ticket_builder->add('message', 'textarea');
+        #------------------------------
+        # Custom fields
+        #------------------------------
 
-		if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
-			$ticket_builder->add('department_id', 'choice', array(
-				'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
-				'required' => false
-			));
-		}
+        if ($this->mode == self::MODE_NORMAL) {
+            $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+            $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
+            $this->ticket_fields = $custom_fields;
 
-		$ticket_builder->add('category_id', 'hidden', array('required' => false));
-		$ticket_builder->add('product_id', 'hidden', array('required' => false));
-		$ticket_builder->add('priority_id', 'hidden', array('required' => false));
-		$ticket_builder->add('cc_emails', 'text', array('required' => false));
+            $builder->add($ticket_builder);
+        }
+    }
 
-		#------------------------------
-		# Custom fields
-		#------------------------------
+    public function getTicketOptions()
+    {
+        return $this->ticket_options;
+    }
 
-		if ($this->mode == self::MODE_NORMAL) {
-			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
-			$this->ticket_fields = $custom_fields;
+    public function getTicketFields()
+    {
+        return $this->ticket_fields;
+    }
 
-			$builder->add($ticket_builder);
-		}
-	}
-
-	public function getTicketOptions()
-	{
-		return $this->ticket_options;
-	}
-
-	public function getTicketFields()
-	{
-		return $this->ticket_fields;
-	}
-
-	public function getName()
-	{
-		return 'newticket';
-	}
+    public function getName()
+    {
+        return 'newticket';
+    }
 }

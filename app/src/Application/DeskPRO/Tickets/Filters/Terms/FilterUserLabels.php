@@ -45,28 +45,30 @@ use Application\DeskPRO\Util as DeskPROUtil;
  */
 class FilterUserLabels extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('labels');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('labels');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
 
-		$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
+        $labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 
-		$query = $this->getStringMatchQuery('user_labels.label', $labels);
-		$query->addJoin('tickets.person.labels', 'labels_people', 'user_labels', 'user_labels.person_id = tickets.person_id');
-		return $query;
-	}
+        $query = $this->getStringMatchQuery('user_labels.label', $labels);
+        $query->addJoin('tickets.person.labels', 'labels_people', 'user_labels', 'user_labels.person_id = tickets.person_id');
+
+        return $query;
+    }
 }

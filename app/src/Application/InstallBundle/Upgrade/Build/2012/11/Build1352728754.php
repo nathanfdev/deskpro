@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352728754 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add templates.variant_of");
-		$this->execMutateSql("ALTER TABLE templates ADD variant_of VARCHAR(255) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add templates.variant_of");
+        $this->execMutateSql("ALTER TABLE templates ADD variant_of VARCHAR(255) DEFAULT NULL");
+    }
 }

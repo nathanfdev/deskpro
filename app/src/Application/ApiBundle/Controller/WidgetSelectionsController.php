@@ -37,46 +37,46 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 
 class WidgetSelectionsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
-		 */
+    public function getAction()
+    {
+        /**
+         * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
+         */
 
-		$widget_selections = $this->container->getSystemService('widget_selections');
+        $widget_selections = $this->container->getSystemService('widget_selections');
 
-		return $this->createApiResponse(
-			$widget_selections->getWidgetSelections()
-		);
-	}
+        return $this->createApiResponse(
+            $widget_selections->getWidgetSelections()
+        );
+    }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction()
-	{
-		$selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
+    public function saveAction()
+    {
+        $selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
 
-		/**
-		 * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
-		 */
+        /**
+         * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
+         */
 
-		$widget_selections = $this->container->getSystemService('widget_selections');
-		$widget_selections->saveSelections($selections);
+        $widget_selections = $this->container->getSystemService('widget_selections');
+        $widget_selections->saveSelections($selections);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

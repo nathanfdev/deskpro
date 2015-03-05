@@ -36,9 +36,6 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Tickets\TicketPurger;
-
-use Symfony\Component\HttpFoundation\Response;
-
 use Orb\Util\Arrays;
 
 /**
@@ -52,13 +49,18 @@ use Orb\Util\Arrays;
  */
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
+
+
+    ####################################################################################################################
+    # get-status
+    ####################################################################################################################
 
     /**
      * @SWG\Api(
@@ -74,30 +76,34 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *
      * @return Response
      */
-	public function getStatsAction()
-	{
-		$stats = $this->db->fetchAllKeyValue("
-			SELECT status, COUNT(*)
-			FROM tickets
-			GROUP BY status
-		");
+    public function getStatsAction()
+    {
+        $stats = $this->db->fetchAllKeyValue("
+            SELECT status, COUNT(*)
+            FROM tickets
+            GROUP BY status
+        ");
 
-		$h_stats = $this->db->fetchAllKeyValue("
-			SELECT hidden_status, COUNT(*)
-			FROM tickets
-			WHERE status = 'hidden' AND hidden_status IS NOT NULL
-			GROUP BY hidden_status
-		");
-		foreach ($h_stats as $s => $c) {
-			$stats['hidden_' . $s] = $c;
-		}
+        $h_stats = $this->db->fetchAllKeyValue("
+            SELECT hidden_status, COUNT(*)
+            FROM tickets
+            WHERE status = 'hidden' AND hidden_status IS NOT NULL
+            GROUP BY hidden_status
+        ");
+        foreach ($h_stats as $s => $c) {
+            $stats['hidden_' . $s] = $c;
+        }
 
-		$stats = Arrays::castToType($stats, 'int', 'string');
+        $stats = Arrays::castToType($stats, 'int', 'string');
 
-		return $this->createApiResponse(array('status_stats' => $stats));
-	}
+        return $this->createApiResponse(array('status_stats' => $stats));
+    }
 
-    /**
+    ####################################################################################################################
+    # get-archived-info
+    ####################################################################################################################
+
+	/**
      * @SWG\Api(
      * 	path="/ticket_statuses/archived",
      * 	@SWG\Operation(
@@ -110,19 +116,23 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * @return Response
      *
      */
-	public function getArchivedInfoAction()
-	{
-		$info = array(
-			'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
-			'auto_archive_time' => (int)$this->settings->get('core_tickets.auto_archive_time'),
-		);
+    public function getArchivedInfoAction()
+    {
+        $info = array(
+            'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
+            'auto_archive_time' => (int)$this->settings->get('core_tickets.auto_archive_time'),
+        );
 
-		return $this->createApiResponse(array(
-			'archived_info' => $info
-		));
-	}
+        return $this->createApiResponse(array(
+            'archived_info' => $info
+        ));
+    }
 
-    /**
+    ####################################################################################################################
+    # save-archived-settings
+    ####################################################################################################################
+
+	/**
      * @return Response
      *
      * @SWG\Api(
@@ -151,14 +161,13 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * )
      */
-	public function saveArchivedSettingsAction()
-	{
-		$this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
-		$this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
+    public function saveArchivedSettingsAction()
+    {
+        $this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
+        $this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
 
-		return $this->createSuccessResponse();
-	}
-
+        return $this->createSuccessResponse();
+    }
 
     /**
      * @SWG\Api(
@@ -173,13 +182,16 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * @return Response
      *
      */
-	public function resetSearchTablesAction()
-	{
-        /** @var \Application\DeskPRO\EntityRepository\Ticket $entityRepository*/
-        $entityRepository = $this->em->getRepository('DeskPRO:Ticket');
-        $entityRepository->fillSearchTable();
-		return $this->createSuccessResponse();
-	}
+    public function resetSearchTablesAction()
+    {
+        $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
+
+        return $this->createSuccessResponse();
+    }
+
+    ####################################################################################################################
+    # get-deleted-info
+    ####################################################################################################################
 
     /**
      * @SWG\Api(
@@ -194,18 +206,18 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * @return Response
      *
      */
-	public function getDeletedInfoAction()
-	{
-		$info = array(
-			'auto_purge_time' => (int)$this->settings->get('core_tickets.hard_delete_time'),
-		);
+    public function getDeletedInfoAction()
+    {
+        $info = array(
+            'auto_purge_time' => (int)$this->settings->get('core_tickets.hard_delete_time'),
+        );
 
-		return $this->createApiResponse(array(
-			'deleted_info' => $info
-		));
-	}
+        return $this->createApiResponse(array(
+            'deleted_info' => $info
+        ));
+    }
 
-    /**
+	/**
      * Purge deleted tickets manually
      * @return Response
      *
@@ -218,15 +230,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * )
      */
-	public function purgeDeletedAction()
-	{
-		$purger = new TicketPurger($this->db);
-		$count = $purger->purgeDeletedAction();
+    public function purgeDeletedAction()
+    {
+        $purger = new TicketPurger($this->db);
+        $count = $purger->purgeDeletedAction();
 
-		return $this->createSuccessResponse(array(
-			'count' => $count
-		));
-	}
+        return $this->createSuccessResponse(array(
+            'count' => $count
+        ));
+    }
+
+    ####################################################################################################################
+    # save-deleted-settings
+    ####################################################################################################################
 
     /**
      * @return Response
@@ -249,12 +265,16 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * )
      */
-	public function saveDeletedSettingsAction()
-	{
-		$this->settings->setSetting('core_tickets.hard_delete_time', $this->in->getUint('auto_purge_time'));
+    public function saveDeletedSettingsAction()
+    {
+        $this->settings->setSetting('core_tickets.hard_delete_time', $this->in->getUint('auto_purge_time'));
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
+
+    ####################################################################################################################
+    # get-spam-info
+    ####################################################################################################################
 
     /**
      * @SWG\Api(
@@ -268,18 +288,18 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * @return Response
      *
      */
-	public function getSpamInfoAction()
-	{
-		$info = array(
-			'auto_purge_time' => (int)$this->settings->get('core_tickets.spam_delete_time'),
-		);
+    public function getSpamInfoAction()
+    {
+        $info = array(
+            'auto_purge_time' => (int)$this->settings->get('core_tickets.spam_delete_time'),
+        );
 
-		return $this->createApiResponse(array(
-			'spam_info' => $info
-		));
-	}
+        return $this->createApiResponse(array(
+            'spam_info' => $info
+        ));
+    }
 
-    /**
+	/**
      * Purge spam tickets manually
      * @return Response
      *
@@ -292,17 +312,21 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * )
      */
-	public function purgeSpamAction()
-	{
-		$purger = new TicketPurger($this->db);
-		$count = $purger->purgeSpamAction();
+    public function purgeSpamAction()
+    {
+        $purger = new TicketPurger($this->db);
+        $count = $purger->purgeSpamAction();
 
-		return $this->createSuccessResponse(array(
-			'count' => $count
-		));
-	}
+        return $this->createSuccessResponse(array(
+            'count' => $count
+        ));
+    }
 
-    /**
+    ####################################################################################################################
+    # save-spam-settings
+    ####################################################################################################################
+
+	/**
      * @return Response
      *
      * @SWG\Api(
@@ -323,10 +347,10 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * )
      */
-	public function saveSpamSettingsAction()
-	{
-		$this->settings->setSetting('core_tickets.spam_delete_time', $this->in->getUint('auto_purge_time'));
+    public function saveSpamSettingsAction()
+    {
+        $this->settings->setSetting('core_tickets.spam_delete_time', $this->in->getUint('auto_purge_time'));
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

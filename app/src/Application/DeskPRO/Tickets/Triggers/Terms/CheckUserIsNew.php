@@ -43,29 +43,30 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserIsNew extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$is_news = $ticket->person->isNewPerson();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $is_news = $ticket->person->isNewPerson();
 
-		if ($is_news) {
-			if ($this->getTermOperator() == 'is') return true;
-			else return false;
-		} else {
-			if ($this->getTermOperator() == 'is') return false;
-			else return true;
-		}
-	}
+        if ($is_news) {
+            if ($this->getTermOperator() == 'is') return true;
+            else return false;
+        } else {
+            if ($this->getTermOperator() == 'is') return false;
+            else return true;
+        }
+    }
 }

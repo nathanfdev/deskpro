@@ -1,14 +1,14 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
 if (function_exists('apc_clear_cache')) {
-	apc_clear_cache();
-	apc_clear_cache('user');
-	echo "APC Cache Cleared";
-} else if (extension_loaded('wincache')) {
-	wincache_ucache_clear();
-	echo "WinCache User Cache Cleared";
+    apc_clear_cache();
+    apc_clear_cache('user');
+    echo "APC Cache Cleared";
+} elseif (extension_loaded('wincache')) {
+    wincache_ucache_clear();
+    echo "WinCache User Cache Cleared";
 } else {
-	echo "APC not installed";
+    echo "APC not installed";
 }
 
 #------------------------------

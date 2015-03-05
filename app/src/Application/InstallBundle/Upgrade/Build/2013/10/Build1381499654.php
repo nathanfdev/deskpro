@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1381499654 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("My Upgrade Class");
-		$this->execMutateSql("ALTER TABLE tickets ADD parent_ticket_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF4814B683C FOREIGN KEY (parent_ticket_id) REFERENCES tickets (id) ON DELETE SET NULL");
-		$this->execMutateSql("CREATE INDEX IDX_54469DF4814B683C ON tickets (parent_ticket_id)");
-	}
+    public function run()
+    {
+        $this->out("My Upgrade Class");
+        $this->execMutateSql("ALTER TABLE tickets ADD parent_ticket_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF4814B683C FOREIGN KEY (parent_ticket_id) REFERENCES tickets (id) ON DELETE SET NULL");
+        $this->execMutateSql("CREATE INDEX IDX_54469DF4814B683C ON tickets (parent_ticket_id)");
+    }
 }

@@ -39,9 +39,10 @@ use Application\DeskPRO\WidgetSelections\WidgetSelections;
 
 class WidgetSelectionsService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new WidgetSelections($container->getEm());
+
         return $x;
-	}
+    }
 }

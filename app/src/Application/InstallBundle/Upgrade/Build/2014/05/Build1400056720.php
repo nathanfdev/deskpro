@@ -38,16 +38,16 @@ use Application\DeskPRO\Util;
 
 class Build1400056720 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Upgrade ticket filters data type");
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $this->out("Upgrade ticket filters data type");
+        $db = $this->container->getDb();
 
-		$all_filters = $db->fetchAllKeyValue("SELECT id, terms FROM ticket_filters");
-		foreach ($all_filters as $id => $terms) {
-			$terms = unserialize($terms);
-			$terms = Util::jsonEncode($terms);
-			$db->update('ticket_filters', array('terms' => $terms), array('id' => $id));
-		}
-	}
+        $all_filters = $db->fetchAllKeyValue("SELECT id, terms FROM ticket_filters");
+        foreach ($all_filters as $id => $terms) {
+            $terms = unserialize($terms);
+            $terms = Util::jsonEncode($terms);
+            $db->update('ticket_filters', array('terms' => $terms), array('id' => $id));
+        }
+    }
 }

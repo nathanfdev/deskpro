@@ -39,9 +39,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class ChatDepartmentsService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new ChatDepartments($container->getEm());
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new ChatDepartments($container->getEm());
+
+        return $x;
+    }
 }

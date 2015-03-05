@@ -36,41 +36,41 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1356604502 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Improve label count speed");
-		$this->execMutateSql("ALTER TABLE label_defs ADD total INT NOT NULL");
+    public function run()
+    {
+        $this->out("Improve label count speed");
+        $this->execMutateSql("ALTER TABLE label_defs ADD total INT NOT NULL");
 
-		$types = array(
-			'article'             => 'labels_articles',
-			'chat_conversation'   => 'labels_chat_conversations',
-			'download'            => 'labels_downloads',
-			'feedback'            => 'labels_feedback',
-			'news'                => 'labels_news',
-			'organization'        => 'labels_organizations',
-			'person'              => 'labels_people',
-			'task'                => 'labels_tasks',
-			'ticket'              => 'labels_tickets',
-		);
+        $types = array(
+            'article'             => 'labels_articles',
+            'chat_conversation'   => 'labels_chat_conversations',
+            'download'            => 'labels_downloads',
+            'feedback'            => 'labels_feedback',
+            'news'                => 'labels_news',
+            'organization'        => 'labels_organizations',
+            'person'              => 'labels_people',
+            'task'                => 'labels_tasks',
+            'ticket'              => 'labels_tickets',
+        );
 
-		$db = $this->container->getDb();
-		foreach ($types AS $type => $table) {
-			$totals = $db->fetchAllKeyValue("
-				SELECT label, COUNT(*)
-				FROM $table
-				GROUP BY label
-			");
-			$db->beginTransaction();
-			foreach ($totals AS $label => $total) {
-				$db->executeUpdate("
-					INSERT INTO label_defs (label_type, label, total)
-					VALUES (?, ?, ?)
-					ON DUPLICATE KEY UPDATE total = total + VALUES(total)
-				", array($type . 's', $label, $total));
-			}
-			$db->commit();
-		}
+        $db = $this->container->getDb();
+        foreach ($types AS $type => $table) {
+            $totals = $db->fetchAllKeyValue("
+                SELECT label, COUNT(*)
+                FROM $table
+                GROUP BY label
+            ");
+            $db->beginTransaction();
+            foreach ($totals AS $label => $total) {
+                $db->executeUpdate("
+                    INSERT INTO label_defs (label_type, label, total)
+                    VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE total = total + VALUES(total)
+                ", array($type . 's', $label, $total));
+            }
+            $db->commit();
+        }
 
-		$this->execMutateSql("CREATE INDEX type_total_idx ON label_defs (label_type, total)");
-	}
+        $this->execMutateSql("CREATE INDEX type_total_idx ON label_defs (label_type, total)");
+    }
 }

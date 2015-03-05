@@ -36,22 +36,22 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1410361094 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct status on tickets where user has validated themselves");
-		$this->execMutateSql("
-			UPDATE tickets
-				LEFT JOIN people ON (people.id = tickets.person_id)
-				LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
-			SET tickets.status = 'awaiting_agent', tickets.hidden_status = NULL
-			WHERE
-				tickets.status = 'hidden'
-				AND tickets.hidden_status = 'validating'
-				AND tickets.person_email_id IS NULL
-				AND people_emails.is_validated = 1
-		");
+    public function run()
+    {
+        $this->out("Correct status on tickets where user has validated themselves");
+        $this->execMutateSql("
+            UPDATE tickets
+                LEFT JOIN people ON (people.id = tickets.person_id)
+                LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
+            SET tickets.status = 'awaiting_agent', tickets.hidden_status = NULL
+            WHERE
+                tickets.status = 'hidden'
+                AND tickets.hidden_status = 'validating'
+                AND tickets.person_email_id IS NULL
+                AND people_emails.is_validated = 1
+        ");
 
-		$this->out("Refill search tables");
-		$this->container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
-	}
+        $this->out("Refill search tables");
+        $this->container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+    }
 }

@@ -11,6 +11,8 @@
  * more children.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_MultipleOperandBooleanExpressionType.
  */
 class EWSType_OrType extends EWSType
 {

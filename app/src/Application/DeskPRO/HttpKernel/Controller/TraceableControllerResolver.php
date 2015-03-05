@@ -52,6 +52,7 @@ class TraceableControllerResolver extends \Symfony\Component\HttpKernel\Controll
                                 $controller = $this->parser->parse($controller);
             } elseif (1 == $count) {
                                 list($service, $method) = explode(':', $controller);
+
                 return array($this->container->get($service), $method);
             } else {
                 throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
@@ -64,17 +65,17 @@ class TraceableControllerResolver extends \Symfony\Component\HttpKernel\Controll
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-		if (is_subclass_of($class, 'Application\\DeskPRO\\HttpKernel\\Controller\\Controller')) {
-			$controller = new $class($this->container);
-		} else {
-			$controller = new $class();
-			if (is_subclass_of($class, 'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface')) {
-			//if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
-				$controller->setContainer($this->container);
-			} else {
-				die($class);
-			}
-		}
+        if (is_subclass_of($class, 'Application\\DeskPRO\\HttpKernel\\Controller\\Controller')) {
+            $controller = new $class($this->container);
+        } else {
+            $controller = new $class();
+            if (is_subclass_of($class, 'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface')) {
+            //if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
+                $controller->setContainer($this->container);
+            } else {
+                die($class);
+            }
+        }
 
         return array($controller, $method);
     }

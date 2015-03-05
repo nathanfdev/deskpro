@@ -13,9 +13,9 @@ echo of a command line window.
 echo.
 set /p php="PHP Path: "
 echo.
-"%php%" -r "echo(\"installed\");" > data\tmp\php.txt
-set /p info= < data\tmp\php.txt
-del data\tmp\php.txt
+"%php%" -r "echo(\"installed\");" > _tmp_phpinfo.txt
+set /p info= < _tmp_phpinfo.txt
+del _tmp_phpinfo.txt /Q
 IF NOT "%info%"=="installed" (
 echo. 
 echo.
@@ -26,7 +26,6 @@ echo.
 GOTO Label1
 )
 schtasks /create /tn DeskPRO /sc MINUTE /tr "\"%php%\" -q \"%~dp0cron.php\""
-echo %DATE% %TIME% > data\tmp\schedule.txt
 echo.
 echo It will take 60 seconds for the scheduled task to begin
 echo.

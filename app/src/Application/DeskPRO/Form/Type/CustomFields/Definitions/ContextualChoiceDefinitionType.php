@@ -27,24 +27,36 @@
 
 namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ContextualChoiceDefinitionType extends ChoiceDefinitionType
 {
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		parent::setDefaultOptions($resolver);
-		$resolver->setRequired(array('context'));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildForm($builder, $options);
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'cf_definition_contextual_choice';
-	}
+        // if we need to define all properties, not only children
+        if (!$options['children_only']) {
+            $builder->get('options')
+                ->add('allow_edit', 'checkbox')
+            ;
+        }
+    }
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+        $resolver->setRequired(array('context'));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'cf_definition_contextual_choice';
+    }
 }

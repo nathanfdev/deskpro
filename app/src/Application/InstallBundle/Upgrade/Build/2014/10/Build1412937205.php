@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1412937205 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set super flag on old superuser keys");
-		$this->execMutateSql("UPDATE api_keys SET flags = 'super' WHERE person_id IS NULL");
-	}
+    public function run()
+    {
+        $this->out("Set super flag on old superuser keys");
+        $this->execMutateSql("UPDATE api_keys SET flags = 'super' WHERE person_id IS NULL");
+    }
 }

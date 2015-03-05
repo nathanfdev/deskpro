@@ -40,51 +40,51 @@ use Application\DeskPRO\Entity\Person;
 
 class NewFeedbackNotification extends AbstractAgentNotification
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Feedback
-	 */
-	protected $feedback;
+    /**
+     * @var \Application\DeskPRO\Entity\Feedback
+     */
+    protected $feedback;
 
-	public function __construct(Feedback $feedback)
-	{
-		parent::__construct();
-		$this->feedback = $feedback;
-	}
+    public function __construct(Feedback $feedback)
+    {
+        parent::__construct();
+        $this->feedback = $feedback;
+    }
 
-	public function shouldSendBrowserNotification(Person $person)
-	{
-		if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
-			return true;
-		} elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
-			return true;
-		}
+    public function shouldSendBrowserNotification(Person $person)
+    {
+        if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
+            return true;
+        } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function shouldSendEmailNotification(Person $person)
-	{
-		if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.email')) {
-			return true;
-		} elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
-			return true;
-		}
+    public function shouldSendEmailNotification(Person $person)
+    {
+        if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.email')) {
+            return true;
+        } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function send()
-	{
-		$this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', array('feedback' => $this->feedback, 'notify_data' => array('notify_type' => 'new_feedback')));
-		$this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', array('feedback' => $this->feedback));
+    public function send()
+    {
+        $this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', array('feedback' => $this->feedback, 'notify_data' => array('notify_type' => 'new_feedback')));
+        $this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', array('feedback' => $this->feedback));
 
-		$cm = new ClientMessage();
-		$cm->fromArray(array(
-			'channel' => 'agent.ui.new-feedback',
-			'feedback_id' => $this->feedback->getId(),
-			'created_by_client' => 'sys'
-		));
-		$this->em->persist($cm);
-		$this->em->flush();
-	}
+        $cm = new ClientMessage();
+        $cm->fromArray(array(
+            'channel' => 'agent.ui.new-feedback',
+            'feedback_id' => $this->feedback->getId(),
+            'created_by_client' => 'sys'
+        ));
+        $this->em->persist($cm);
+        $this->em->flush();
+    }
 }

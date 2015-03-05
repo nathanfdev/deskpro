@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,186 +40,192 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	/** @var array  */
-	protected $_data_cache = array();
+    /** @var array  */
+    protected $_data_cache = array();
 
-	protected function configure()
-	{
-		$this->setName('dpdev:pagelog');
-		$this->addArgument('action', InputArgument::OPTIONAL, 'What to do?', 'help');
-		$this->addOption('file', null, InputOption::VALUE_REQUIRED,  '[load] The file to load');
-		$this->addOption('type', null, InputOption::VALUE_REQUIRED,  '[group] The type of URL to group on');
-		$this->addOption('var', null, InputOption::VALUE_REQUIRED,  '[group] The variable to group on ');
-	}
+    protected function configure()
+    {
+        $this->setName('dpdev:pagelog');
+        $this->addArgument('action', InputArgument::OPTIONAL, 'What to do?', 'help');
+        $this->addOption('file', null, InputOption::VALUE_REQUIRED,  '[load] The file to load');
+        $this->addOption('type', null, InputOption::VALUE_REQUIRED,  '[group] The type of URL to group on');
+        $this->addOption('var', null, InputOption::VALUE_REQUIRED,  '[group] The variable to group on ');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		set_time_limit(0);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        set_time_limit(0);
 
-		switch ($input->getArgument('action')) {
-			case 'help':
-				$output->write($this->getHelp());
-				return 0;
+        switch ($input->getArgument('action')) {
+            case 'help':
+                $output->write($this->getHelp());
 
-			case 'count':
-				$count = $this->getSqliteConnection()->fetchColumn("SELECT COUNT(*) FROM pagelog");
-				echo "There are $count loaded page logs\n";
-				return 0;
+                return 0;
 
-			case 'group':
-				return $this->viewGroupedAction($input, $output);
+            case 'count':
+                $count = $this->getSqliteConnection()->fetchColumn("SELECT COUNT(*) FROM pagelog");
+                echo "There are $count loaded page logs\n";
 
-			case 'load':
-				return $this->loadAction($input, $output);
+                return 0;
 
-			default:
-				echo "Unknown action";
-				return 1;
-		}
-	}
+            case 'group':
+                return $this->viewGroupedAction($input, $output);
 
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	protected function getSqliteConnection()
-	{
-		static $conn;
+            case 'load':
+                return $this->loadAction($input, $output);
 
-		if (!$conn) {
-			/** @var $conn \Application\DeskPRO\DBAL\Connection */
-			$conn = \Doctrine\DBAL\DriverManager::getConnection(array(
-				'driver'       => 'pdo_sqlite',
-				'path'         => dp_get_data_dir() . '/log-analytics.sqlite'
-			));
+            default:
+                echo "Unknown action";
 
-			if (!$conn->getSchemaManager()->tablesExist('pagelog')) {
-				$conn->exec('
-					CREATE  TABLE "pagelog" (
-						"id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
-						"url" VARCHAR NOT NULL ,
-						"url_noparams" VARCHAR NOT NULL ,
-						"url_noaccount" VARCHAR NOT NULL ,
-						"url_noaccount_noparams" VARCHAR NOT NULL ,
-						"time_total" FLOAT NOT NULL ,
-						"time_php" FLOAT NOT NULL ,
-						"time_db" FLOAT NOT NULL ,
-						"query_count" FLOAT NOT NULL ,
-						"peak_memory" INTEGER NOT NULL ,
-						"hit_at" DATETIME NOT NULL
-					);
-				');
-			}
-		}
+                return 1;
+        }
+    }
 
-		return $conn;
-	}
+    /**
+     * @return \Application\DeskPRO\DBAL\Connection
+     */
+    protected function getSqliteConnection()
+    {
+        static $conn;
 
-	protected function viewGroupedAction(InputInterface $input, OutputInterface $output)
-	{
-		$url_type = $input->getOption('type');
-		if (!$url_type) {
-			$url_type = 'raw';
-		}
+        if (!$conn) {
+            /** @var $conn \Application\DeskPRO\DBAL\Connection */
+            $conn = \Doctrine\DBAL\DriverManager::getConnection(array(
+                'driver'       => 'pdo_sqlite',
+                'path'         => dp_get_data_dir() . '/log-analytics.sqlite'
+            ));
 
-		switch ($url_type) {
-			case 'raw': $url_field = 'url'; break;
-			case 'noparams': $url_field = 'url_noparams'; break;
-			case 'noaccount': $url_field = 'url_noaccount'; break;
-			case 'noaccount_noparams': $url_field = 'url_noaccount_noparams'; break;
-			default:
-				echo "Invalid type";
-				return 1;
-		}
+            if (!$conn->getSchemaManager()->tablesExist('pagelog')) {
+                $conn->exec('
+                    CREATE  TABLE "pagelog" (
+                        "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
+                        "url" VARCHAR NOT NULL ,
+                        "url_noparams" VARCHAR NOT NULL ,
+                        "url_noaccount" VARCHAR NOT NULL ,
+                        "url_noaccount_noparams" VARCHAR NOT NULL ,
+                        "time_total" FLOAT NOT NULL ,
+                        "time_php" FLOAT NOT NULL ,
+                        "time_db" FLOAT NOT NULL ,
+                        "query_count" FLOAT NOT NULL ,
+                        "peak_memory" INTEGER NOT NULL ,
+                        "hit_at" DATETIME NOT NULL
+                    );
+                ');
+            }
+        }
 
-		$group_var = $input->getOption('var');
-		if (!$group_var) {
-			$group_var = 'time';
-		}
+        return $conn;
+    }
 
-		switch ($group_var) {
-			case 'time': $group_field = 'time_total'; break;
-			case 'time_php': $group_field = 'time_php'; break;
-			case 'time_db': $group_field = 'time_db'; break;
-			case 'queries': $group_field = 'query_count'; break;
-			case 'memory': $group_field = 'peak_memory'; break;
-			case 'count': $group_field = 'COUNT(*)'; break;
-			default: echo "Invalid var."; return 1;
-		}
+    protected function viewGroupedAction(InputInterface $input, OutputInterface $output)
+    {
+        $url_type = $input->getOption('type');
+        if (!$url_type) {
+            $url_type = 'raw';
+        }
 
-		$query = "SELECT $url_field AS urlfield, $group_field AS groupfield FROM pagelog GROUP BY urlfield ORDER BY groupfield DESC LIMIT 2000";
-		$data = $this->getSqliteConnection()->fetchAll($query);
+        switch ($url_type) {
+            case 'raw': $url_field = 'url'; break;
+            case 'noparams': $url_field = 'url_noparams'; break;
+            case 'noaccount': $url_field = 'url_noaccount'; break;
+            case 'noaccount_noparams': $url_field = 'url_noaccount_noparams'; break;
+            default:
+                echo "Invalid type";
 
-		foreach ($data as $r) {
-			echo sprintf("%-10s %s\n", $r['groupfield'], $r['urlfield']);
-		}
+                return 1;
+        }
 
-		echo "\n";
-		return 0;
-	}
+        $group_var = $input->getOption('var');
+        if (!$group_var) {
+            $group_var = 'time';
+        }
 
-	protected function loadAction(InputInterface $input, OutputInterface $output)
-	{
-		$log_path = $input->getOption('file');
-		if (!is_file($log_path)) {
-			$output->writeln('<error>Unknown file</error>');
-			return 1;
-		}
+        switch ($group_var) {
+            case 'time': $group_field = 'time_total'; break;
+            case 'time_php': $group_field = 'time_php'; break;
+            case 'time_db': $group_field = 'time_db'; break;
+            case 'queries': $group_field = 'query_count'; break;
+            case 'memory': $group_field = 'peak_memory'; break;
+            case 'count': $group_field = 'COUNT(*)'; break;
+            default: echo "Invalid var."; return 1;
+        }
 
-		$fh = fopen($log_path, 'r');
+        $query = "SELECT $url_field AS urlfield, $group_field AS groupfield FROM pagelog GROUP BY urlfield ORDER BY groupfield DESC LIMIT 2000";
+        $data = $this->getSqliteConnection()->fetchAll($query);
 
-		$count = 0;
-		while (!feof($fh)) {
-			$count++;
-			$line = fgets($fh);
-			$m = null;
+        foreach ($data as $r) {
+            echo sprintf("%-10s %s\n", $r['groupfield'], $r['urlfield']);
+        }
 
-			if (!preg_match('#^\[(.*?)\]\s+Time: (\d+\.\d+)\s+PHP_Time: (\d+\.\d+)\s+DB_Time: (\d+\.\d+)\s+Query_Count: (\d+)\s+Peak_Memory: (\d+)\s+URL: (.*?)$#', $line, $m)) {
-				continue;
-			}
+        echo "\n";
 
-			$date        = $m[1];
-			$time_total  = $m[2];
-			$time_php    = $m[3];
-			$time_db     = $m[4];
-			$query_count = $m[4];
-			$peak_memory = $m[4];
-			$url         = $m[7];
+        return 0;
+    }
 
-			$url = preg_replace('#\?v=[0-9]+#', '', $url);
+    protected function loadAction(InputInterface $input, OutputInterface $output)
+    {
+        $log_path = $input->getOption('file');
+        if (!is_file($log_path)) {
+            $output->writeln('<error>Unknown file</error>');
 
-			if (strpos($url, 'chat/poll') !== false) {
-				$url_no_nums = preg_replace('#chat/poll/.*?$#', 'chat/poll', $url);
-			} elseif (strpos($url, 'similar-to/articlecontent') !== null) {
-				$url_no_nums = preg_replace('#similar-to/articlecontent/.*?$#', 'similar-to/articlecontent', $url);
-			} elseif (strpos($url, 'search/articlecontent') !== null) {
-				$url_no_nums = preg_replace('#search/articlecontent/.*?$#', 'search/articlecontent', $url);
-			} else {
-				$url_no_nums = preg_replace('#/[0-9]+$#', '', $url);
-				$url_no_nums = preg_replace('#/[0-9]+\-[a-zA-Z0-9_\-]+$#', '', $url_no_nums);
-			}
+            return 1;
+        }
 
-			$url_noaccount = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url);
-			$url_noaccount_nonums = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url_no_nums);
+        $fh = fopen($log_path, 'r');
 
-			$this->getSqliteConnection()->insert('pagelog', array(
-				'url'                    => $url,
-				'url_noparams'           => $url_no_nums,
-				'url_noaccount'          => $url_noaccount,
-				'url_noaccount_noparams' => $url_noaccount_nonums,
-				'time_total'             => $time_total,
-				'time_php'               => $time_php,
-				'time_db'                => $time_db,
-				'query_count'            => $query_count,
-				'peak_memory'            => $peak_memory,
-				'hit_at'                 => $date
-			));
+        $count = 0;
+        while (!feof($fh)) {
+            $count++;
+            $line = fgets($fh);
+            $m = null;
 
-			if ($count % 1000 == 0) {
-				echo ".";
-			}
-		}
+            if (!preg_match('#^\[(.*?)\]\s+Time: (\d+\.\d+)\s+PHP_Time: (\d+\.\d+)\s+DB_Time: (\d+\.\d+)\s+Query_Count: (\d+)\s+Peak_Memory: (\d+)\s+URL: (.*?)$#', $line, $m)) {
+                continue;
+            }
 
-		echo "\n";
-		echo "Insert $count logs.\n";
-	}
+            $date        = $m[1];
+            $time_total  = $m[2];
+            $time_php    = $m[3];
+            $time_db     = $m[4];
+            $query_count = $m[4];
+            $peak_memory = $m[4];
+            $url         = $m[7];
+
+            $url = preg_replace('#\?v=[0-9]+#', '', $url);
+
+            if (strpos($url, 'chat/poll') !== false) {
+                $url_no_nums = preg_replace('#chat/poll/.*?$#', 'chat/poll', $url);
+            } elseif (strpos($url, 'similar-to/articlecontent') !== null) {
+                $url_no_nums = preg_replace('#similar-to/articlecontent/.*?$#', 'similar-to/articlecontent', $url);
+            } elseif (strpos($url, 'search/articlecontent') !== null) {
+                $url_no_nums = preg_replace('#search/articlecontent/.*?$#', 'search/articlecontent', $url);
+            } else {
+                $url_no_nums = preg_replace('#/[0-9]+$#', '', $url);
+                $url_no_nums = preg_replace('#/[0-9]+\-[a-zA-Z0-9_\-]+$#', '', $url_no_nums);
+            }
+
+            $url_noaccount = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url);
+            $url_noaccount_nonums = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url_no_nums);
+
+            $this->getSqliteConnection()->insert('pagelog', array(
+                'url'                    => $url,
+                'url_noparams'           => $url_no_nums,
+                'url_noaccount'          => $url_noaccount,
+                'url_noaccount_noparams' => $url_noaccount_nonums,
+                'time_total'             => $time_total,
+                'time_php'               => $time_php,
+                'time_db'                => $time_db,
+                'query_count'            => $query_count,
+                'peak_memory'            => $peak_memory,
+                'hit_at'                 => $date
+            ));
+
+            if ($count % 1000 == 0) {
+                echo ".";
+            }
+        }
+
+        echo "\n";
+        echo "Insert $count logs.\n";
+    }
 }

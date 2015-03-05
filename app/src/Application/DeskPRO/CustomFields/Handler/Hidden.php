@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
 /**
  * Hidden input field
  */

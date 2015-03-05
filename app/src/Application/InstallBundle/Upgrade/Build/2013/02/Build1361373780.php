@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361373780 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add chat_conversations.date_user_waiting");
-		$this->execMutateSql("ALTER TABLE chat_conversations ADD date_user_waiting DATETIME DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add chat_conversations.date_user_waiting");
+        $this->execMutateSql("ALTER TABLE chat_conversations ADD date_user_waiting DATETIME DEFAULT NULL");
+    }
 }

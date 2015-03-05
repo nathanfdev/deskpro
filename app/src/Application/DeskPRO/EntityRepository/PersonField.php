@@ -34,19 +34,17 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class PersonField extends AbstractEntityRepository
 {
-	/**
-	 * @return array
-	 */
-	public function getEnabledFields()
-	{
-		return $this->_em->createQuery("
-			SELECT f
-			FROM DeskPRO:PersonField f
-			WHERE f.parent IS NULL
-		")->execute();
-	}
+    /**
+     * @return array
+     */
+    public function getEnabledFields()
+    {
+        return $this->_em->createQuery("
+            SELECT f
+            FROM DeskPRO:PersonField f
+            WHERE f.parent IS NULL
+        ")->execute();
+    }
 }

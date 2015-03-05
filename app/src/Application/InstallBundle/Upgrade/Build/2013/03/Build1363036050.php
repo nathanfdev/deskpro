@@ -36,28 +36,28 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1363036050 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set missing delete times so cleanup job can process");
+    public function run()
+    {
+        $this->out("Set missing delete times so cleanup job can process");
 
-		$ticket_ids = $this->container->getDb()->fetchAllCol("
-			SELECT tickets.id
-			FROM tickets
-			LEFT JOIN tickets_deleted ON (tickets_deleted.ticket_id = tickets.id)
-			WHERE tickets.status = 'hidden' AND tickets.hidden_status = 'deleted' AND tickets_deleted.ticket_id IS NULL
-		");
+        $ticket_ids = $this->container->getDb()->fetchAllCol("
+            SELECT tickets.id
+            FROM tickets
+            LEFT JOIN tickets_deleted ON (tickets_deleted.ticket_id = tickets.id)
+            WHERE tickets.status = 'hidden' AND tickets.hidden_status = 'deleted' AND tickets_deleted.ticket_id IS NULL
+        ");
 
-		$ins = array();
-		foreach ($ticket_ids as $tid) {
-			$ins[] = array(
-				'ticket_id' => $tid,
-				'date_created' => '2012-01-01 00:00:00',
-				'reason' => '(system marked)'
-			);
-		}
+        $ins = array();
+        foreach ($ticket_ids as $tid) {
+            $ins[] = array(
+                'ticket_id' => $tid,
+                'date_created' => '2012-01-01 00:00:00',
+                'reason' => '(system marked)'
+            );
+        }
 
-		if($ins) {
-			$this->container->getDb()->batchInsert('tickets_deleted', $ins, true);
-		}
-	}
+        if($ins) {
+            $this->container->getDb()->batchInsert('tickets_deleted', $ins, true);
+        }
+    }
 }

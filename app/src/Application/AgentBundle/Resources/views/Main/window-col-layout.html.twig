@@ -56,7 +56,7 @@
 					</div>
 				</li>
 
-				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
+				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>{{ phrase('agent.chrome.btn_add') }}</span></li>
 
 				<li ng-repeat="tab in tabs track by tab.id" id="{{ ng_var('tab.tabBtnId') }}"
 					ng-mousedown="tabClick($event, tab)"

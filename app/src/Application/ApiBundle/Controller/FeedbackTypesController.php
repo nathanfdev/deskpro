@@ -44,24 +44,25 @@ use Orb\Util\Arrays;
 
 class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
+    public function listAction()
+    {
         /**
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
          */
@@ -73,162 +74,161 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
                  'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll()))
             )
         );
-	}
+    }
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
-		 */
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+         */
 
-		$feedback_types = $this->container->getSystemService('feedback_types');
-		$feedback_type  = $feedback_types->getById($id);
+        $feedback_types = $this->container->getSystemService('feedback_types');
+        $feedback_type  = $feedback_types->getById($id);
 
-		if (!$feedback_type) {
+        if (!$feedback_type) {
 
-			throw $this->createNotFoundException();
-		}
+            throw $this->createNotFoundException();
+        }
 
-		$returnedData               = $this->getApiData($feedback_type);
-		$returnedData['usergroups'] = $feedback_types->getNonAgentUserGroups($feedback_type);
+        $returnedData               = $this->getApiData($feedback_type);
+        $returnedData['usergroups'] = $feedback_types->getNonAgentUserGroups($feedback_type);
 
-		return $this->createApiResponse(
-			array(
-				 'feedback_type' => $returnedData
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'feedback_type' => $returnedData
+            )
+        );
+    }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
-		 */
+    public function saveAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+         */
 
-		$feedback_types = $this->container->getSystemService('feedback_types');
+        $feedback_types = $this->container->getSystemService('feedback_types');
 
-		if ($id) {
+        if ($id) {
 
-			$feedback_type = $feedback_types->getById($id);
+            $feedback_type = $feedback_types->getById($id);
 
-			if (!$feedback_type) {
+            if (!$feedback_type) {
 
-				throw $this->createNotFoundException();
-			}
-		} else {
+                throw $this->createNotFoundException();
+            }
+        } else {
 
-			$feedback_type = $feedback_types->createNew();
-		}
+            $feedback_type = $feedback_types->createNew();
+        }
 
-		$postData = $this->in->getAll('post');
+        $postData = $this->in->getAll('post');
 
-		$feedback_type_edit = new FeedbackTypeEdit($feedback_type);
+        $feedback_type_edit = new FeedbackTypeEdit($feedback_type);
 
-		$form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
+        $form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
 
-		if ($form->isValid()) {
+        if ($form->isValid()) {
 
-			$feedback_type_edit->save($this->em);
+            $feedback_type_edit->save($this->em);
 
-		} else {
+        } else {
+            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedback_type));
+        }
 
-			return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedback_type));
-		}
+        return $this->createApiResponse(
+            array(
+                 'success' => true,
+                 'id'      => $feedback_type->getId(),
+            )
+        );
+    }
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $feedback_type->getId(),
-			)
-		);
-	}
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    public function removeAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+         */
 
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
-		 */
+        $feedback_types = $this->container->getSystemService('feedback_types');
+        $feedback_type   = $feedback_types->getById($id);
 
-		$feedback_types = $this->container->getSystemService('feedback_types');
-		$feedback_type   = $feedback_types->getById($id);
+        if (!$feedback_type) {
 
-		if (!$feedback_type) {
+            throw $this->createNotFoundException();
+        }
 
-			throw $this->createNotFoundException();
-		}
+        $move_to               = $this->in->getUint('move_to');
+        $move_to_feedback_type = $feedback_types->getById($move_to);
 
-		$move_to               = $this->in->getUint('move_to');
-		$move_to_feedback_type = $feedback_types->getById($move_to);
+        if (!$move_to_feedback_type) {
 
-		if (!$move_to_feedback_type) {
+            throw ValidationException::create(
+                "feedback_type.remove.move_feedback_types",
+                "You must select a feedback type to move existing feedback into"
+            );
+        }
 
-			throw ValidationException::create(
-				"feedback_type.remove.move_feedback_types",
-				"You must select a feedback type to move existing feedback into"
-			);
-		}
+        if ($move_to_feedback_type->getId() == $feedback_type->getId()) {
 
-		if ($move_to_feedback_type->getId() == $feedback_type->getId()) {
+            throw ValidationException::create(
+                "feedback_type.remove.move_feedback_types",
+                "You must choose a different feedback type"
+            );
+        }
 
-			throw ValidationException::create(
-				"feedback_type.remove.move_feedback_types",
-				"You must choose a different feedback type"
-			);
-		}
+        $old_id = $feedback_type->getId();
 
-		$old_id = $feedback_type->getId();
+        $this->db->beginTransaction();
 
-		$this->db->beginTransaction();
+        try {
 
-		try {
+            $this->db->executeUpdate(
+                "UPDATE feedback SET category_id = ? WHERE category_id = ?",
+                array($move_to, $old_id)
+            );
 
-			$this->db->executeUpdate(
-				"UPDATE feedback SET category_id = ? WHERE category_id = ?",
-				array($move_to, $old_id)
-			);
+            $this->em->remove($feedback_type);
+            $this->em->flush();
 
-			$this->em->remove($feedback_type);
-			$this->em->flush();
+            $this->db->commit();
 
-			$this->db->commit();
+        } catch(\Exception $e) {
 
-		} catch(\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
 
-			$this->db->rollback();
-			throw $e;
-		}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+    public function saveDisplayOrderAction()
+    {
+        $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-	public function saveDisplayOrderAction()
-	{
-		$display_orders = $this->in->getArrayOfUInts('display_orders');
+        /**
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+         */
 
-		/**
-		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
-		 */
+        $feedback_types = $this->container->getSystemService('feedback_types');
+        $feedback_types->updateDisplayOrders($display_orders);
 
-		$feedback_types = $this->container->getSystemService('feedback_types');
-		$feedback_types->updateDisplayOrders($display_orders);
-
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

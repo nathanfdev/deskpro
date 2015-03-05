@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361371037 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add sessions.interface");
-		$this->execMutateSql("ALTER TABLE sessions ADD interface VARCHAR(50) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add sessions.interface");
+        $this->execMutateSql("ALTER TABLE sessions ADD interface VARCHAR(50) NOT NULL");
+    }
 }

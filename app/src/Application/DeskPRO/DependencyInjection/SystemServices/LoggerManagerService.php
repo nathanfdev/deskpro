@@ -40,11 +40,11 @@ use Application\DeskPRO\Monolog\LoggerManager;
 
 class LoggerManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$factory = new LoggerFactory($container);
-		$manager = new LoggerManager($factory);
+    public static function create(DeskproContainer $container)
+    {
+        $factory = new LoggerFactory($container);
+        $manager = new LoggerManager($factory);
 
-		return $manager;
-	}
+        return $manager;
+    }
 }

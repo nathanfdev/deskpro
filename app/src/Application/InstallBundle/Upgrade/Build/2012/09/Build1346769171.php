@@ -36,38 +36,38 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346769171 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix missing cascade on ticket_logs");
+    public function run()
+    {
+        $this->out("Fix missing cascade on ticket_logs");
 
-		$db = $this->container->getDb();
-		$schema = $db->getSchemaManager();
+        $db = $this->container->getDb();
+        $schema = $db->getSchemaManager();
 
-		$log_table = $schema->listTableDetails('tickets_logs');
+        $log_table = $schema->listTableDetails('tickets_logs');
 
-		$make = false;
-		$drop = false;
-		$has = false;
-		foreach ($log_table->getForeignKeys() as $name => $fk) {
-			/** @var $fk \Doctrine\DBAL\Schema\ForeignKeyConstraint */
-			$cols = $fk->getColumns();
-			if (count($cols) == 1 && $cols[0] == 'ticket_id') {
-				$has = true;
-				if (!$fk->getOption('onDelete') || $fk->getOption('onDelete') != 'CASCADE') {
-					$drop = $name;
-				}
-			}
-		}
+        $make = false;
+        $drop = false;
+        $has = false;
+        foreach ($log_table->getForeignKeys() as $name => $fk) {
+            /** @var $fk \Doctrine\DBAL\Schema\ForeignKeyConstraint */
+            $cols = $fk->getColumns();
+            if (count($cols) == 1 && $cols[0] == 'ticket_id') {
+                $has = true;
+                if (!$fk->getOption('onDelete') || $fk->getOption('onDelete') != 'CASCADE') {
+                    $drop = $name;
+                }
+            }
+        }
 
-		if (!$has) {
-			$make = true;
-		}
+        if (!$has) {
+            $make = true;
+        }
 
-		if ($drop) {
-			$this->execMutateSql("ALTER TABLE tickets_logs DROP FOREIGN KEY `$drop`");
-		}
-		if ($make) {
-			$this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F41081700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
-		}
-	}
+        if ($drop) {
+            $this->execMutateSql("ALTER TABLE tickets_logs DROP FOREIGN KEY `$drop`");
+        }
+        if ($make) {
+            $this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F41081700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+        }
+    }
 }

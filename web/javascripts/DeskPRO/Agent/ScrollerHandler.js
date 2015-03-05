@@ -44,6 +44,24 @@ if (!window.DP_NO_JS_SCROLL) {
 
 			function updateSize() {
 				if (!element) return;
+
+				// hardcoded update of list height
+				var $content = $('.list-pane-content'),
+						sh = $('#dp_center').height() - 65,
+						hh = 0,
+						$listing = $('.list-listing:visible', $content);
+
+				$listing.siblings('header:visible').each(function(){
+					hh += $(this).outerHeight(true);
+				});
+
+				if (!hh) {
+					$listing.closest('.view-body').siblings('header:visible').each(function(){
+						hh += $(this).outerHeight(true);
+					});
+				}
+				$listing.height(sh - hh - 1);
+
 				initScroll();
 				if (element.tinyscrollbar_update) {
 					element.tinyscrollbar_update();

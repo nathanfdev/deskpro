@@ -38,10 +38,10 @@ use Doctrine\ORM\EntityManager;
 
 class FeedbackStatuses
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
+    protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackStatusCategory[]
@@ -55,57 +55,57 @@ class FeedbackStatuses
 
     protected $closed_statuses;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * Loads feedback statuses data from the database
-	 */
+    /**
+     * Loads feedback statuses data from the database
+     */
 
-	private function preload()
-	{
-		if ($this->active_statuses !== null && $this->closed_statuses !== null) {
-			return;
-		}
+    private function preload()
+    {
+        if ($this->active_statuses !== null && $this->closed_statuses !== null) {
+            return;
+        }
 
-		$this->active_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $this->active_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $this->closed_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
-	}
+    }
 
 
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
+    /**
+     * Resets this repository so the next time data is requested form it, it will
+     * be queried again.
+     */
 
-	public function reset()
-	{
-		$this->active_statuses = null;
+    public function reset()
+    {
+        $this->active_statuses = null;
         $this->closed_statuses = null;
-	}
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
-	 */
+    /**
+     * @param  int                                                $id
+     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
+     */
 
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->get($id);
-	}
+    public function getById($id)
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->get($id);
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
+     */
 
-	public function getAll()
-	{
-		$this->preload();
+    public function getAll()
+    {
+        $this->preload();
 
-		return $this->active_statuses + $this->closed_statuses;
-	}
+        return $this->active_statuses + $this->closed_statuses;
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
@@ -129,51 +129,51 @@ class FeedbackStatuses
         return $this->closed_statuses;
     }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function count()
-	{
-		$this->preload();
+    public function count()
+    {
+        $this->preload();
 
-		return count($this->active_statuses) + count($this->closed_statuses);
-	}
+        return count($this->active_statuses) + count($this->closed_statuses);
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
+     */
 
-	public function createNew()
-	{
-		return FeedbackStatusCategory::createFeedbackStatusCategory();
-	}
+    public function createNew()
+    {
+        return FeedbackStatusCategory::createFeedbackStatusCategory();
+    }
 
-	/**
-	 * @param array $newOrders
-	 */
+    /**
+     * @param array $newOrders
+     */
 
-	public function updateDisplayOrders($newOrders)
-	{
-		$x = 10;
+    public function updateDisplayOrders($newOrders)
+    {
+        $x = 10;
 
-		$feedback_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getByIds($newOrders);
+        $feedback_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getByIds($newOrders);
 
-		foreach ($newOrders as $id) {
+        foreach ($newOrders as $id) {
 
-			if (!isset($feedback_statuses[$id])) {
+            if (!isset($feedback_statuses[$id])) {
 
-				continue;
-			}
+                continue;
+            }
 
-			$feedback_status                = $feedback_statuses[$id];
-			$feedback_status->display_order = $x;
+            $feedback_status                = $feedback_statuses[$id];
+            $feedback_status->display_order = $x;
 
-			$this->em->persist($feedback_status);
+            $this->em->persist($feedback_status);
 
-			$x += 10;
-		}
+            $x += 10;
+        }
 
-		$this->em->flush();
-	}
+        $this->em->flush();
+    }
 }

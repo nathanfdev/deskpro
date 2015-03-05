@@ -45,115 +45,115 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var integer
-	 */
-	protected $id;
+    /**
+     * @var integer
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 */
-	protected $account;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterAccount
+     */
+    protected $account;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected $user;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterUser
+     */
+    protected $user;
 
-	/**
-	 * @var int
-	 */
-	protected $follow_order;
+    /**
+     * @var int
+     */
+    protected $follow_order;
 
-	/**
-	 * @var bool
-	 */
-	protected $is_archived = false;
+    /**
+     * @var bool
+     */
+    protected $is_archived = false;
 
-	/**
-	 * @return integer
-	 */
-	public function getAccountId()
-	{
-		if (null !== $this->account) {
-			return $this->account->getId();
-		}
+    /**
+     * @return integer
+     */
+    public function getAccountId()
+    {
+        if (null !== $this->account) {
+            return $this->account->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	/**
-	 * @param integer $id
-	 */
-	public function setAccountId($id)
-	{
-		if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
-			$this->account = $account;
-		} else {
-			$this->account = null;
-		}
-	}
+    /**
+     * @param integer $id
+     */
+    public function setAccountId($id)
+    {
+        if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
+            $this->account = $account;
+        } else {
+            $this->account = null;
+        }
+    }
 
-	/**
-	 * @return integer
-	 */
-	public function getUserId()
-	{
-		if (null !== $this->user) {
-			return $this->user->getId();
-		}
+    /**
+     * @return integer
+     */
+    public function getUserId()
+    {
+        if (null !== $this->user) {
+            return $this->user->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	/**
-	 * @param integer $id
-	 */
-	public function setUserId($id)
-	{
-		if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-			$this->user = $user;
-		} else {
-			$this->user = null;
-		}
-	}
+    /**
+     * @param integer $id
+     */
+    public function setUserId($id)
+    {
+        if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
+            $this->user = $user;
+        } else {
+            $this->user = null;
+        }
+    }
 
-	public function _preInsert()
-	{
-		if ($this->follow_order === null) {
-			$max = App::getDb()->fetchColumn("
-				SELECT MAX(follow_order)
-				FROM twitter_accounts_followers
-				WHERE account_id = ?
-			", array($this->account->id));
-			$this->follow_order = intval($max) + 1;
-		}
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    public function _preInsert()
+    {
+        if ($this->follow_order === null) {
+            $max = App::getDb()->fetchColumn("
+                SELECT MAX(follow_order)
+                FROM twitter_accounts_followers
+                WHERE account_id = ?
+            ", array($this->account->id));
+            $this->follow_order = intval($max) + 1;
+        }
+    }
 
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFollower';
-		$metadata->setPrimaryTable(array(
-			'name' => 'twitter_accounts_followers',
-			'uniqueConstraints' => array(
-				'account_user_idx' => array('columns' => array('account_id', 'user_id'))
-			)
-		));
-		$metadata->addLifecycleCallback('_preInsert', 'prePersist');
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'follow_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'follow_order', ));
-		$metadata->mapField(array( 'fieldName' => 'is_archived', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_archived', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'followers', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'followers', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFollower';
+        $metadata->setPrimaryTable(array(
+            'name' => 'twitter_accounts_followers',
+            'uniqueConstraints' => array(
+                'account_user_idx' => array('columns' => array('account_id', 'user_id'))
+            )
+        ));
+        $metadata->addLifecycleCallback('_preInsert', 'prePersist');
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'follow_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'follow_order', ));
+        $metadata->mapField(array( 'fieldName' => 'is_archived', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_archived', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'followers', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'followers', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

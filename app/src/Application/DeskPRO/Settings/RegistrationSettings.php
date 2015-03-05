@@ -41,217 +41,218 @@ use Doctrine\ORM\EntityManager;
 
 class RegistrationSettings
 {
-	/**
-	 * @var \Application\DeskPRO\Settings\Settings
-	 */
-	private $settings;
+    /**
+     * @var \Application\DeskPRO\Settings\Settings
+     */
+    private $settings;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketTrigger
-	 */
-	private $email_validation_trigger;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketTrigger
+     */
+    private $email_validation_trigger;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup
-	 */
-	private $everyone_group;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup
+     */
+    private $everyone_group;
 
-	/**
-	 * @var bool
-	 */
-	public $reg_enabled;
-	/**
-	 * @var bool
-	 */
-	public $reg_required;
-	/**
-	 * @var bool
-	 */
-	public $email_validation;
-	/**
-	 * @var bool
-	 */
-	public $agent_validation;
-	/**
-	 * @var bool
-	 */
-	public $existing_account_login;
-	/**
-	 * @var bool
-	 */
-	public $everyone_group_enabled;
-	/**
-	 * @var bool
-	 */
-	public $email_validation_ticket_web;
-	/**
-	 * @var bool
-	 */
-	public $email_validation_ticket_email;
-
-
-	/**
-	 * @param Settings $settings
-	 * @param EntityManager $em
-	 */
-	public function __construct(Settings $settings, EntityManager $em)
-	{
-		$this->settings = $settings;
-		$this->em       = $em;
-
-		$this->everyone_group = $this->em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'everyone'));
-
-		$this->email_validation_trigger = $this->em->createQuery("
-			SELECT t
-			FROM DeskPRO:TicketTrigger t
-			WHERE t.sys_name = 'default_newticket_requirevalid'
-		")->setMaxResults(1)->getOneOrNullResult();
-
-		$this->resetSettings();
-	}
+    /**
+     * @var bool
+     */
+    public $reg_enabled;
+    /**
+     * @var bool
+     */
+    public $reg_required;
+    /**
+     * @var bool
+     */
+    public $email_validation;
+    /**
+     * @var bool
+     */
+    public $agent_validation;
+    /**
+     * @var bool
+     */
+    public $existing_account_login;
+    /**
+     * @var bool
+     */
+    public $everyone_group_enabled;
+    /**
+     * @var bool
+     */
+    public $email_validation_ticket_web;
+    /**
+     * @var bool
+     */
+    public $email_validation_ticket_email;
 
 
-	/**
-	 * Resets settings based on stored values.
-	 */
-	public function resetSettings()
-	{
-		$this->reg_enabled            = (bool)$this->settings->get('core.reg_enabled');
-		$this->reg_required           = (bool)$this->settings->get('core.reg_required');
-		$this->email_validation       = (bool)$this->settings->get('core.email_validation');
-		$this->agent_validation       = (bool)$this->settings->get('core.agent_validation');
-		$this->existing_account_login = (bool)$this->settings->get('core.existing_account_login');
-		$this->everyone_group_enabled = (bool)$this->everyone_group->is_enabled;
+    /**
+     * @param Settings      $settings
+     * @param EntityManager $em
+     */
+    public function __construct(Settings $settings, EntityManager $em)
+    {
+        $this->settings = $settings;
+        $this->em       = $em;
 
-		if ($this->email_validation_trigger && $this->email_validation_trigger->is_enabled) {
-			if (in_array('email', $this->email_validation_trigger->by_user_mode)) {
-				$this->email_validation_ticket_email = true;
-			}
-			if (in_array('portal', $this->email_validation_trigger->by_user_mode)) {
-				$this->email_validation_ticket_web = true;
-			}
-		}
-	}
+        $this->everyone_group = $this->em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'everyone'));
+
+        $this->email_validation_trigger = $this->em->createQuery("
+            SELECT t
+            FROM DeskPRO:TicketTrigger t
+            WHERE t.sys_name = 'default_newticket_requirevalid'
+        ")->setMaxResults(1)->getOneOrNullResult();
+
+        $this->resetSettings();
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function toArray()
-	{
-		$export_settings = array(
-			'reg_enabled'            => $this->reg_enabled,
-			'reg_required'           => $this->reg_required,
-			'email_validation'       => $this->email_validation,
-			'agent_validation'       => $this->agent_validation,
-			'existing_account_login' => $this->existing_account_login,
-			'everyone_group_enabled' => $this->everyone_group_enabled,
+    /**
+     * Resets settings based on stored values.
+     */
+    public function resetSettings()
+    {
+        $this->reg_enabled            = (bool)$this->settings->get('core.reg_enabled');
+        $this->reg_required           = (bool)$this->settings->get('core.reg_required');
+        $this->email_validation       = (bool)$this->settings->get('core.email_validation');
+        $this->agent_validation       = (bool)$this->settings->get('core.agent_validation');
+        $this->existing_account_login = (bool)$this->settings->get('core.existing_account_login');
+        $this->everyone_group_enabled = (bool)$this->everyone_group->is_enabled;
 
-			'email_validation_ticket_web'    => $this->email_validation_ticket_web,
-			'email_validation_ticket_email'  => $this->email_validation_ticket_email,
-		);
-		return $export_settings;
-	}
-
-
-	/**
-	 * @param array $set_settings
-	 */
-	public function setArray(array $set_settings)
-	{
-		foreach ($set_settings as $s => $val) {
-			if (property_exists($this, $s)) {
-				$this->$s = $val;
-			}
-		}
-	}
+        if ($this->email_validation_trigger && $this->email_validation_trigger->is_enabled) {
+            if (in_array('email', $this->email_validation_trigger->by_user_mode)) {
+                $this->email_validation_ticket_email = true;
+            }
+            if (in_array('portal', $this->email_validation_trigger->by_user_mode)) {
+                $this->email_validation_ticket_web = true;
+            }
+        }
+    }
 
 
-	/**
-	 * Persists settings
-	 */
-	public function saveSettings()
-	{
-		if ($this->reg_enabled) {
-			$this->settings->setSetting('core.reg_enabled', 1);
-			$this->settings->setSetting('core.reg_required', (int)$this->reg_required);
-			$this->settings->setSetting('core.email_validation', (int)$this->email_validation);
-			$this->settings->setSetting('core.agent_validation', (int)$this->agent_validation);
-		} else {
-			$this->settings->setSetting('core.reg_enabled', 0);
-			$this->settings->setSetting('core.reg_required', 0);
-			$this->settings->setSetting('core.email_validation', 0);
-			$this->settings->setSetting('core.agent_validation', 0);
-		}
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $export_settings = array(
+            'reg_enabled'            => $this->reg_enabled,
+            'reg_required'           => $this->reg_required,
+            'email_validation'       => $this->email_validation,
+            'agent_validation'       => $this->agent_validation,
+            'existing_account_login' => $this->existing_account_login,
+            'everyone_group_enabled' => $this->everyone_group_enabled,
 
-		$this->settings->setSetting("core.existing_account_login", (int)$this->existing_account_login);
+            'email_validation_ticket_web'    => $this->email_validation_ticket_web,
+            'email_validation_ticket_email'  => $this->email_validation_ticket_email,
+        );
 
-		if (!$this->email_validation_trigger) {
-
-		}
-
-		if (!$this->email_validation_ticket_email && !$this->email_validation_ticket_web) {
-			if ($this->email_validation_trigger) {
-				$this->email_validation_trigger->by_user_mode = array('email', 'form', 'portal', 'widget');
-				$this->email_validation_trigger->is_enabled   = false;
-			}
-		} else {
-			if (!$this->email_validation_trigger) {
-				$this->email_validation_trigger = $this->_createTrigger();
-			}
-
-			$this->email_validation_trigger->is_enabled = true;
-			$mode = array();
-			if ($this->email_validation_ticket_web) {
-				$mode[] = 'form';
-				$mode[] = 'portal';
-				$mode[] = 'widget';
-			}
-			if ($this->email_validation_ticket_email) {
-				$mode[] = 'email';
-			}
-
-			$this->email_validation_trigger->by_user_mode = $mode;
-		}
-
-		$this->everyone_group->is_enabled = (bool)$this->everyone_group_enabled;
-		$this->em->persist($this->everyone_group);
-
-		if ($this->email_validation_trigger) {
-			$this->em->persist($this->email_validation_trigger);
-		}
-
-		$this->em->flush();
-	}
+        return $export_settings;
+    }
 
 
-	/**
-	 * @return TicketTrigger
-	 * @throws \InvalidArgumentException
-	 */
-	private function _createTrigger()
-	{
-		$trigger = new TicketTrigger();
-		$trigger->event_trigger = 'newticket';
-		$trigger->run_order     = -1000;
-		$trigger->by_user_mode  = array('email', 'form', 'portal', 'widget');
-		$trigger->is_enabled    = true;
-		$trigger->is_hidden     = true;
-		$trigger->sys_name      = 'default_newticket_requirevalid';
-		$trigger->title         = 'Enable email validation';
+    /**
+     * @param array $set_settings
+     */
+    public function setArray(array $set_settings)
+    {
+        foreach ($set_settings as $s => $val) {
+            if (property_exists($this, $s)) {
+                $this->$s = $val;
+            }
+        }
+    }
 
-		$set = new TriggerTermComposite();
-		$set->setOperator('AND');
-		$set->add(new CheckUserIsNew('is'));
-		$trigger->terms->addTerm($set);
 
-		$trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
+    /**
+     * Persists settings
+     */
+    public function saveSettings()
+    {
+        if ($this->reg_enabled) {
+            $this->settings->setSetting('core.reg_enabled', 1);
+            $this->settings->setSetting('core.reg_required', (int)$this->reg_required);
+            $this->settings->setSetting('core.email_validation', (int)$this->email_validation);
+            $this->settings->setSetting('core.agent_validation', (int)$this->agent_validation);
+        } else {
+            $this->settings->setSetting('core.reg_enabled', 0);
+            $this->settings->setSetting('core.reg_required', 0);
+            $this->settings->setSetting('core.email_validation', 0);
+            $this->settings->setSetting('core.agent_validation', 0);
+        }
 
-		return $trigger;
-	}
+        $this->settings->setSetting("core.existing_account_login", (int)$this->existing_account_login);
+
+        if (!$this->email_validation_trigger) {
+
+        }
+
+        if (!$this->email_validation_ticket_email && !$this->email_validation_ticket_web) {
+            if ($this->email_validation_trigger) {
+                $this->email_validation_trigger->by_user_mode = array('email', 'form', 'portal', 'widget');
+                $this->email_validation_trigger->is_enabled   = false;
+            }
+        } else {
+            if (!$this->email_validation_trigger) {
+                $this->email_validation_trigger = $this->_createTrigger();
+            }
+
+            $this->email_validation_trigger->is_enabled = true;
+            $mode = array();
+            if ($this->email_validation_ticket_web) {
+                $mode[] = 'form';
+                $mode[] = 'portal';
+                $mode[] = 'widget';
+            }
+            if ($this->email_validation_ticket_email) {
+                $mode[] = 'email';
+            }
+
+            $this->email_validation_trigger->by_user_mode = $mode;
+        }
+
+        $this->everyone_group->is_enabled = (bool)$this->everyone_group_enabled;
+        $this->em->persist($this->everyone_group);
+
+        if ($this->email_validation_trigger) {
+            $this->em->persist($this->email_validation_trigger);
+        }
+
+        $this->em->flush();
+    }
+
+
+    /**
+     * @return TicketTrigger
+     * @throws \InvalidArgumentException
+     */
+    private function _createTrigger()
+    {
+        $trigger = new TicketTrigger();
+        $trigger->event_trigger = 'newticket';
+        $trigger->run_order     = -1000;
+        $trigger->by_user_mode  = array('email', 'form', 'portal', 'widget');
+        $trigger->is_enabled    = true;
+        $trigger->is_hidden     = true;
+        $trigger->sys_name      = 'default_newticket_requirevalid';
+        $trigger->title         = 'Enable email validation';
+
+        $set = new TriggerTermComposite();
+        $set->setOperator('AND');
+        $set->add(new CheckUserIsNew('is'));
+        $trigger->terms->addTerm($set);
+
+        $trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
+
+        return $trigger;
+    }
 }

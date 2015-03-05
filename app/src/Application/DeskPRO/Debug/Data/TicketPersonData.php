@@ -33,25 +33,25 @@
 
 namespace Application\DeskPRO\Debug\Data;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 class TicketPersonData implements DataInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket;
 
-	public function __construct(Ticket $ticket)
-	{
-		$this->ticket = $ticket;
-	}
+    public function __construct(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+    }
 
-	public function getData()
-	{
-		$data = array();
-		$data['person'] = $this->ticket->person->toApiData(true, true);
-		return $data;
-	}
+    public function getData()
+    {
+        $data = array();
+        $data['person'] = $this->ticket->person->toApiData(true, true);
+
+        return $data;
+    }
 }

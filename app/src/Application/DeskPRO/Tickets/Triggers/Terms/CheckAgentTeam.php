@@ -45,35 +45,36 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckAgentTeam extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('team_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('team_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		$team_ids = $options['team_ids'];
-		if ($context->getPersonContext() && in_array(-1, $team_ids)) {
-			$person = $context->getPersonContext();
-			if ($person->is_agent) {
-				$person->loadHelper('Agent');
-				foreach ($person->getHelper('Agent')->getTeams() as $t) {
-					$team_ids[] = $t->id;
-				}
-			}
-		}
+        $team_ids = $options['team_ids'];
+        if ($context->getPersonContext() && in_array(-1, $team_ids)) {
+            $person = $context->getPersonContext();
+            if ($person->is_agent) {
+                $person->loadHelper('Agent');
+                foreach ($person->getHelper('Agent')->getTeams() as $t) {
+                    $team_ids[] = $t->id;
+                }
+            }
+        }
 
-		return $this->isEntityMatch($ticket, $context, 'agent_team', 'id', $team_ids);
-	}
+        return $this->isEntityMatch($ticket, $context, 'agent_team', 'id', $team_ids);
+    }
 }

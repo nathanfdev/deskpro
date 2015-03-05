@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340957327 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Enable team option");
-		$count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM agent_teams");
+    public function run()
+    {
+        $this->out("Enable team option");
+        $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM agent_teams");
 
-		if ($count) {
-			$this->container->getDb()->replace('settings', array(
-				'name' => 'core.use_agent_team',
-				'value' => '1',
-			));
-		}
-	}
+        if ($count) {
+            $this->container->getDb()->replace('settings', array(
+                'name' => 'core.use_agent_team',
+                'value' => '1',
+            ));
+        }
+    }
 }

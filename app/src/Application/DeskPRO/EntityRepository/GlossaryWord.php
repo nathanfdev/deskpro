@@ -34,36 +34,34 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class GlossaryWord extends AbstractEntityRepository
 {
-	/**
-	 * Get a list of all words
-	 */
-	public function getWords()
-	{
-		$words = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-			SELECT id, word
-			FROM glossary_words
-			ORDER BY word ASC
-		");
+    /**
+     * Get a list of all words
+     */
+    public function getWords()
+    {
+        $words = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT id, word
+            FROM glossary_words
+            ORDER BY word ASC
+        ");
 
-		return $words;
-	}
+        return $words;
+    }
 
-	/**
-	 * Get a list of all words containing the string
-	 */
-	public function getWordsContaining($string)
-	{
-		$words = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-			SELECT id, word
-			FROM glossary_words
-			WHERE word LIKE ?
-			ORDER BY word ASC
-		", array("%$string%"));
+    /**
+     * Get a list of all words containing the string
+     */
+    public function getWordsContaining($string)
+    {
+        $words = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT id, word
+            FROM glossary_words
+            WHERE word LIKE ?
+            ORDER BY word ASC
+        ", array("%$string%"));
 
-		return $words;
-	}
+        return $words;
+    }
 }

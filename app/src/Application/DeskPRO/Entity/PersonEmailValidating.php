@@ -60,106 +60,104 @@ use Orb\Util\Strings;
  */
 class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * The email address
-	 *
-	 * @var string
-	 */
-	protected $email;
+    /**
+     * The email address
+     *
+     * @var string
+     */
+    protected $email;
 
-	/**
-	 * @var int
-	 */
-	protected $auth;
+    /**
+     * @var int
+     */
+    protected $auth;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * An array of array('entityname', 'id')
-	 * of content that is validating based on this email address.
-	 *
-	 * @var string
-	 */
-	protected $validating_content = array();
+    /**
+     * An array of array('entityname', 'id')
+     * of content that is validating based on this email address.
+     *
+     * @var string
+     */
+    protected $validating_content = array();
 
-	/**
-	 * @var bool
-	 */
-	protected $_is_new = false;
+    /**
+     * @var bool
+     */
+    protected $_is_new = false;
 
-	public function __construct()
-	{
-		$this->_is_new = true;
-		$this->setModelField('date_created', new \DateTime());
-		$this->setModelField('auth', Strings::random(8, Strings::CHARS_KEY));
-	}
+    public function __construct()
+    {
+        $this->_is_new = true;
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('auth', Strings::random(8, Strings::CHARS_KEY));
+    }
 
-	public function isNewEntity()
-	{
-		return $this->_is_new;
-	}
+    public function isNewEntity()
+    {
+        return $this->_is_new;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function getEmailDomain()
-	{
-		return Strings::extractRegexMatch('#@(.*?)$#', $this->email, 1);
-	}
+    public function getEmailDomain()
+    {
+        return Strings::extractRegexMatch('#@(.*?)$#', $this->email, 1);
+    }
 
-	public function addValidatingContent($entity_name, $id)
-	{
-		$old = $this->validating_content;
+    public function addValidatingContent($entity_name, $id)
+    {
+        $old = $this->validating_content;
 
-		$this->validating_content[] = array($entity_name, $id);
+        $this->validating_content[] = array($entity_name, $id);
 
-		$this->_onPropertyChanged('validating_content', $old, $this->validating_content);
-	}
+        $this->_onPropertyChanged('validating_content', $old, $this->validating_content);
+    }
 
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmailValidating';
-		$metadata->setPrimaryTable(array(
-			'name' => 'people_emails_validating',
-			'uniqueConstraints' => array(
-				'email_idx' => array('columns' => array('email'))
-			),
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
-		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'validating_content', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'validating_content', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmailValidating';
+        $metadata->setPrimaryTable(array(
+            'name' => 'people_emails_validating',
+            'uniqueConstraints' => array(
+                'email_idx' => array('columns' => array('email'))
+            ),
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'validating_content', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'validating_content', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-use Application\DeskPRO\App;
 
 /**
  * A log of API requests per key
@@ -46,115 +45,115 @@ use Application\DeskPRO\App;
 class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
-	 * @var int
-	 */
-	protected $id = null;
-	
+     * @var int
+     */
+    protected $id = null;
+
     /**
-	 * @var int
-	 * @var \Application\DeskPRO\Entity\ApiKey
-	 */
-	protected $key;
+     * @var int
+     * @var \Application\DeskPRO\Entity\ApiKey
+     */
+    protected $key;
 
-	/**
-	 * @var int
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $request;
-        
-	/**
-	 * @var int
-	 */
-	protected $response;
+    /**
+     * @var int
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $request;
 
-	/**
-	 * @var int
-	 */
-	protected $time;
+    /**
+     * @var int
+     */
+    protected $response;
 
-	public function __construct()
-	{
-		$this['time'] = time();
-		$this['request'] = array();
-		$this['response'] = array();
-	}
+    /**
+     * @var int
+     */
+    protected $time;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
+    public function __construct()
+    {
+        $this['time'] = time();
+        $this['request'] = array();
+        $this['response'] = array();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
         return $this->id;
-	}
+    }
 
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		$data['time'] = date('Y-m-d H:i:s', $data['time']);
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+        $data['time'] = date('Y-m-d H:i:s', $data['time']);
 
-		return $data;
-	}
+        return $data;
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKeyLog';
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKeyLog';
 
-		$metadata->setPrimaryTable(array(
-			'name' => 'api_key_log',
-		));
-
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-
-		$metadata->mapField(array(
-	        'fieldName' => 'id',
-	        'type' => 'integer',
-	        'nullable' => false,
-	        'columnName' => 'id',
-	        'id' => true,
+        $metadata->setPrimaryTable(array(
+            'name' => 'api_key_log',
         ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'time',
-			'type' => 'integer',
-			'nullable' => false,
-			'columnName' => 'time',
-		));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
-		$metadata->mapField(array(
-			'fieldName' => 'request',
-			'type' => 'array',
-			'nullable' => false,
-			'columnName' => 'request',
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'id',
+            'type' => 'integer',
+            'nullable' => false,
+            'columnName' => 'id',
+            'id' => true,
+        ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'response',
-			'type' => 'array',
-			'nullable' => false,
-			'columnName' => 'response',
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'time',
+            'type' => 'integer',
+            'nullable' => false,
+            'columnName' => 'time',
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'key',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKey',
-			'mappedBy' => null,
-			'inversedBy' => 'logs',
-			'joinColumns' => array(
-				0 => array(
-					'name' => 'key_id',
-					'referencedColumnName' => 'id',
-					'nullable' => false,
-					'onDelete' => 'cascade',
-				),
-			),
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'request',
+            'type' => 'array',
+            'nullable' => false,
+            'columnName' => 'request',
+        ));
 
-	    $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+        $metadata->mapField(array(
+            'fieldName' => 'response',
+            'type' => 'array',
+            'nullable' => false,
+            'columnName' => 'response',
+        ));
+
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'key',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKey',
+            'mappedBy' => null,
+            'inversedBy' => 'logs',
+            'joinColumns' => array(
+                0 => array(
+                    'name' => 'key_id',
+                    'referencedColumnName' => 'id',
+                    'nullable' => false,
+                    'onDelete' => 'cascade',
+                ),
+            ),
+        ));
+
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

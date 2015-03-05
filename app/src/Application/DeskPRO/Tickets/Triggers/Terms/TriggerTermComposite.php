@@ -40,127 +40,126 @@ use Orb\Util\Util;
 
 class TriggerTermComposite implements TriggerTermInterface, \Countable
 {
-	const OP_AND = 'AND';
-	const OP_OR  = 'OR';
+    const OP_AND = 'AND';
+    const OP_OR  = 'OR';
 
-	/**
-	 * @var TriggerTermInterface[]
-	 */
-	private $terms = array();
+    /**
+     * @var TriggerTermInterface[]
+     */
+    private $terms = array();
 
-	/**
-	 * @var string
-	 */
-	private $op = 'AND';
-
-
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 * @param string $op
-	 */
-	public function __construct(array $terms = array(), $op = self::OP_AND)
-	{
-		$this->setAll($terms);
-		$this->setOperator($op);
-	}
+    /**
+     * @var string
+     */
+    private $op = 'AND';
 
 
-	/**
-	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
-	 *
-	 * @param string $op
-	 */
-	public function setOperator($op)
-	{
-		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
-	}
+    /**
+     * @param TriggerTermInterface[] $terms
+     * @param string                 $op
+     */
+    public function __construct(array $terms = array(), $op = self::OP_AND)
+    {
+        $this->setAll($terms);
+        $this->setOperator($op);
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getOperator()
-	{
-		return $this->op;
-	}
+    /**
+     * Change the logic operator between AND/OR ('all must match' versus 'any match')
+     *
+     * @param string $op
+     */
+    public function setOperator($op)
+    {
+        $this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
+    }
 
 
-	/**
-	 * @param TriggerTermInterface $term
-	 */
-	public function add(TriggerTermInterface $term)
-	{
-		$this->terms[] = $term;
-	}
+    /**
+     * @return string
+     */
+    public function getOperator()
+    {
+        return $this->op;
+    }
 
 
-	/**
-	 * @param TriggerTermInterface[] $terms
-	 */
-	public function setAll(array $terms)
-	{
-		$this->terms = array();
-		foreach ($terms as $t) {
-			$this->add($t);
-		}
-	}
+    /**
+     * @param TriggerTermInterface $term
+     */
+    public function add(TriggerTermInterface $term)
+    {
+        $this->terms[] = $term;
+    }
 
 
-	/**
-	 * @return TriggerTermInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->terms;
-	}
+    /**
+     * @param TriggerTermInterface[] $terms
+     */
+    public function setAll(array $terms)
+    {
+        $this->terms = array();
+        foreach ($terms as $t) {
+            $this->add($t);
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$logger = $context->getLogger();
-
-		if (!$this->terms) {
-			if ($logger) $logger->debug('[Term:Composite] Empty term set => true');
-			return true;
-		}
-
-		if ($this->op == self::OP_AND) {
-			if ($logger) $logger->debug('[Term:Composite] AND operator');
-			foreach ($this->terms as $k => $t) {
-				if (!$t->isTriggerMatch($ticket, $context)) {
-					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
-					return false;
-				} else {
-					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
-				}
-			}
-
-			return true;
-		} else {
-			if ($logger) $logger->debug('[Term:Composite] OR operator');
-
-			foreach ($this->terms as $k => $t) {
-				if ($t->isTriggerMatch($ticket, $context)) {
-					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
-					return true;
-				} else {
-					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
-				}
-			}
-
-			return false;
-		}
-	}
+    /**
+     * @return TriggerTermInterface[]
+     */
+    public function getAll()
+    {
+        return $this->terms;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->terms);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $logger = $context->getLogger();
+
+        if (!$this->terms) {
+            if ($logger) $logger->debug('[Term:Composite] Empty term set => true');
+            return true;
+        }
+
+        if ($this->op == self::OP_AND) {
+            if ($logger) $logger->debug('[Term:Composite] AND operator');
+            foreach ($this->terms as $k => $t) {
+                if (!$t->isTriggerMatch($ticket, $context)) {
+                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
+                    return false;
+                } else {
+                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
+                }
+            }
+
+            return true;
+        } else {
+            if ($logger) $logger->debug('[Term:Composite] OR operator');
+
+            foreach ($this->terms as $k => $t) {
+                if ($t->isTriggerMatch($ticket, $context)) {
+                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
+                    return true;
+                } else {
+                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
+                }
+            }
+
+            return false;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->terms);
+    }
 }

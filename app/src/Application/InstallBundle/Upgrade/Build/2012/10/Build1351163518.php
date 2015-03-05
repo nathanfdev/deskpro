@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351163518 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Change password length to allow longer hashes");
-		$this->execMutateSql("ALTER TABLE people CHANGE password password VARCHAR(100) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Change password length to allow longer hashes");
+        $this->execMutateSql("ALTER TABLE people CHANGE password password VARCHAR(100) DEFAULT NULL");
+    }
 }

@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1368181111 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct lable_type of people labels");
-		$this->execMutateSql("
-			UPDATE IGNORE label_defs
-			SET label_type = 'people'
-			WHERE label_type = 'persons'
-		");
-		$this->execMutateSql("
-			DELETE FROM label_defs
-			WHERE label_type = 'persons'
-		");
-	}
+    public function run()
+    {
+        $this->out("Correct lable_type of people labels");
+        $this->execMutateSql("
+            UPDATE IGNORE label_defs
+            SET label_type = 'people'
+            WHERE label_type = 'persons'
+        ");
+        $this->execMutateSql("
+            DELETE FROM label_defs
+            WHERE label_type = 'persons'
+        ");
+    }
 }

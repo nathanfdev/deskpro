@@ -241,6 +241,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getReplyTextArea().trigger('dp_autosave_trigger');
 		});
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
+			var ticketId = parseInt(info.ticket_id),
+				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
+				isLocked = info.is_locked;
+
+			if (self.meta.ticket_id == ticketId) {
+				if (byAgentId && byAgentId != DESKPRO_PERSON_ID) {
+					// Reload the ticket page
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+					self.closeSelf();
+					return;
+				} else if (!byAgentId) {
+					self.wrapper.find('.lock-overlay').remove();
+					self.getEl('locked_message').hide();
+					self.getEl('locked_message').data('locked-self', false);
+					self.getEl('lock_ticket').show();
+					self.getEl('unlock_ticket').hide();
+				}
+			}
+		}, null, [this.OBJ_ID]);
+
 		this.addEvent('shortcutFocusReply', function(ev) {
 			ev.preventDefault();
 
@@ -812,19 +833,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
-		
-		if (this.meta.jiraEnabled) {
-			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
-				ticketId: self.meta.ticket_id,
-				baseId: self.meta.baseId,
-				defaultProject: self.meta.jiraDefaultProject
-			});
-			this.addEvent('destroy', function() {
-				if (jiraWidget) {
-					jiraWidget.destroy();
-				}
-			});
-		}
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1132,7 +1140,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
 					keepOpen = true;
-				}
+				} else if (DeskPRO_Window.$scope) {
+          var trigger = false,
+            action = null;
+          for (var i = 0; i < formData.length; i++) {
+            var data = formData[i];
+            if ('options[do_trigger_jira_app]' === data.name) trigger = true;
+            if ('options[jira_app_action]' === data.name) action = data.value;
+          }
+
+          if (trigger && action) {
+	          result.id = self.meta.ticket_id;
+            DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.new_reply', result, action);
+          }
+        }
 
 				if (result.notified_agents && DeskPRO.Agent.Widget.AgentChatWin_Registry) {
 					Array.each(result.notified_agents, function(aid) {
@@ -1328,7 +1349,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	updateUi: function(toReplyHeight) {
-		var x;
+		var x, pageHeaderEl, pos;
 		if (!this.IS_ACTIVE) {
 			return;
 		}
@@ -1352,6 +1373,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			this.getEl('labels_wrap').find('.select2-input').width('95%');
+
+			pageHeaderEl = this.getEl('layout_header_first');
+			if (pageHeaderEl && pageHeaderEl.length) {
+				pos = pageHeaderEl.position();
+				if (pos && pos.top > 20) {
+					this.getEl('layout_sidebar_icons').css('top', pos.top + 10)
+				} else {
+					this.getEl('layout_sidebar_icons').css('top', 0)
+				}
+			}
 		}
 	},
 
@@ -1360,7 +1391,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
 		DeskPRO_Window.initStickyTips(messageEl);
-		
+		var $triggers = messageEl.find('.with-stickytip');
+		self.addEvent('destroy', function(){
+			$triggers.each(function(){
+				var id = $(this).data('stickytip-target');
+				if (id) $(id).remove();
+			});
+		});
+
 		DeskPRO_Window.util.filedownload(messageEl);
 
 		$('.timeago', messageEl).timeago();
@@ -1424,6 +1462,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					ev.preventDefault();
 					fullEl.show();
 					simpleEl.hide();
+					self._initTicketMessageClipped(article);
 					self.updateUi();
 
 					if (!fullEl.hasClass('loaded')) {
@@ -1580,9 +1619,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 	},
 
-	_initTicketMessageClipped: function(article) {
+	_initTicketMessageClipped: function(article, isImgUpdate) {
 		var self = this;
-		var h = article.find('div.body-text-message').height();
+		var h = article.find('div.body-text-container').height();
 		var doClipping = false;
 		var allArticles = null, idx;
 		var isFirst = false;
@@ -1595,8 +1634,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				isFirst = true;
 				if (h >= 1200) {
 					doClipping = true;
-				} else {
-					doClipping = false;
 				}
 			} else {
 				doClipping = true;
@@ -1611,21 +1648,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		if (doClipping) {
 			if (!article.hasClass('with-clipped-body')) {
-				article.addClass('with-clipped-body');
 				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
 				});
-
-				// Images might change the visible height once loaded
-				article.find('img').on('load', function() {
-					self._initTicketMessageClipped(article);
-				});
 			}
+			article.addClass('with-clipped-body');
 		} else {
-			if (article.hasClass('with-clipped-body')) {
-				article.removeClass('with-clipped-body')
-			}
+			article.removeClass('with-clipped-body');
+		}
+
+		// Images might change the visible height once loaded
+		if (!isImgUpdate) {
+			var throttled = _.throttle(function () { self._initTicketMessageClipped(article, true); }, 1000);
+			article.find('div.body-text-container').find('img').on('load', function () {
+				throttled();
+			});
 		}
 	},
 
@@ -3107,7 +3145,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-save-subject.json',
 				type: 'POST',
-				data: postData
+				data: postData,
+                success: function(){
+                    if (DeskPRO_Window.$scope) {
+                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
+                    }
+                }
 			});
 
 			self.meta.title = setName;

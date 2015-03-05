@@ -31,6 +31,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
 
+        var jiraActionSel = this.getElById('jira_app_action'),
+            jiraActionText = this.getElById('jira_app_action_text'),
+            jiraActionCheck = this.getElById('jira_app_action_check');
+
 		var storedReplyText = '';
 		var storedNoteText = '';
 
@@ -323,6 +327,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				storedNoteText = textarea.val();
 				textarea.val(storedReplyText || '');
 			}
+
+			var actionsRow = self.getElById('actions_row');
+			if (actionsRow.find('ul').find('li')[0]) {
+				actionsRow.show();
+			}
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
@@ -330,6 +339,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				return;
 			}
 			replyMode = 'note';
+
+			self.getElById('actions_row').hide();
 
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
@@ -530,35 +541,48 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var ticketLangId = self.page.getEl('value_form').find('.language_id').val();
 				var snippetId    = info.snippetId;
 				var snippetCode  = info.snippetCode;
-
-				var agentText;
-				var defaultText;
-				var wantText;
-				var useText;
+				var vars         = self.page.meta.api_data;
 				var result;
+				var useText;
 
-				Array.each(snippetCode, function(info) {
-					if (info.value) {
-						if (info.language_id == ticketLangId) {
-							wantText = info.value;
+				var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
+					var agentText, defaultText, wantText, useText;
+
+					Array.each(options, function(info) {
+						if (info[value_prop]) {
+							if (info[lang_id_prop] == ticketLangId) {
+								wantText = info[value_prop];
+							}
+							if (info[lang_id_prop] == DESKPRO_PERSON_LANG_ID) {
+								agentText = info[value_prop];
+							}
+							if (info[lang_id_prop] == DESKPRO_DEFAULT_LANG_ID) {
+								defaultText = info[value_prop];
+							}
+							useText = info[value_prop];
 						}
-						if (info.language_id == DESKPRO_PERSON_LANG_ID) {
-							agentText = info.value;
-						}
-						if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-							defaultText = info.value;
-						}
-						useText = info.value;
+					});
+
+					if (wantText) {
+						useText = wantText;
+					} else if (agentText) {
+						useText = agentText;
+					} else if (defaultText) {
+						useText = defaultText;
+					} else if (fallback_text) {
+						useText = fallback_text;
+					}
+
+					return useText;
+				};
+
+				useText = selectText(snippetCode, 'value', 'language_id');
+
+				Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
+					if (vars[prop] && vars[prop]['title_translated']) {
+						vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
 					}
 				});
-
-				if (wantText) {
-					useText = wantText;
-				} else if (agentText) {
-					useText = agentText;
-				} else if (defaultText) {
-					useText = defaultText;
-				}
 
 				try {
 					var tpl = twig({
@@ -567,7 +591,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					});
 					if (tpl) {
 						result = tpl.render({
-							ticket: self.page.meta.api_data
+							ticket: vars
 						}, {
 							strict_variables: false
 						});
@@ -791,6 +815,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		window.setTimeout(function() {
 			DP.select(agentSel);
 			DP.select(teamSel);
+            DP.select(jiraActionSel);
 		}, 150);
 
 		agentSel.on('change', function() {
@@ -811,11 +836,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			teamSelText.text($(this).find(':selected').text());
 			teamSelCheck.prop('checked', true);
 		});
+        jiraActionSel.on('change', function() {
+          jiraActionText.text($(this).find(':selected').text());
+          jiraActionCheck.prop('checked', true);
+        });
 
 		var option = agentSel.find(':selected');
 		agentSelText.text(option.data('name-short'));
 		agentSelText.css('background-image', 'url(' + option.data('icon')+ ')');
 		teamSelText.text(teamSel.find(':selected').text());
+        jiraActionText.text(jiraActionSel.find(':selected').text());
 
 		if (agentSel.data('auto-switch-status')) {
 			agentSelCheck.on('change', function() {
@@ -1133,7 +1163,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		if (this.el.hasClass('dp-note-on')) {
 			this.getElById('replybox_notetab_btn').click();
 		}
-	},
+    },
 
 	setReplyAsOptionName: function(name) {
 		var item = this.getElById('status_menu').find('li[data-type="' + name + '"]').first();

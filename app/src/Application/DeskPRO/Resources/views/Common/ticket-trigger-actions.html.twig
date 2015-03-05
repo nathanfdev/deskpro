@@ -255,7 +255,7 @@
 	<div class="builder-type" title="Add reply from snippet" data-rule-type="reply_snippet" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="snippet_id" class="select2">
-				{% for info in app.user.Agent.getGroupedSnippets() if info.snippets %}
+				{% for info in app.user.Agent.getGroupedSnippets(true) if info.snippets %}
 					<optgroup label="{{ info.category.title }}">
 						{% for snippet in info.snippets %}
 							<option value="{{ snippet.id }}">{{ snippet.title }}</option>

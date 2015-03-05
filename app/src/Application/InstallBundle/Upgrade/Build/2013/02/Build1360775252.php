@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1360775252 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct daily cleanup interval");
-		$this->execMutateSql("UPDATE `worker_jobs` SET `run_interval` = '86400' WHERE `id` = 'cleanup_daily'");
-	}
+    public function run()
+    {
+        $this->out("Correct daily cleanup interval");
+        $this->execMutateSql("UPDATE `worker_jobs` SET `run_interval` = '86400' WHERE `id` = 'cleanup_daily'");
+    }
 }

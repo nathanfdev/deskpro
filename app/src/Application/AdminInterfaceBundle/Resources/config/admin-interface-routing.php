@@ -121,4 +121,24 @@ $collection->create('admin_upgrade_index', array(
 	'controller'  => 'AdminInterfaceBundle:Upgrade:index',
 ));
 
+########################################################################################################################
+# JIRA
+########################################################################################################################
+
+$collection->create('jira_token', array(
+	'path'        => '/jira/request_token',
+	'controller'  => 'AdminInterfaceBundle:Jira:token',
+));
+
+
+########################################################################################################################
+# Download authcoded files
+########################################################################################################################
+
+$collection->create('admin_download_export_file', array(
+	'path'        => '/export/download/{code}',
+	'controller'  => 'AdminInterfaceBundle:Interface:downloadExportFile',
+	'methods'     => array('GET'),
+));
+
 return $collection;

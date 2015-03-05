@@ -71,14 +71,18 @@
             <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a></li>
             {% endif %}
 		</ul>
+
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tickets', type: 'perms', section: 'ticket'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.people', type: 'perms', section: 'people'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.chat', type: 'perms', section: 'chat'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.publish', type: 'perms', section: 'publish'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.profile', type: 'perms', section: 'general'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tasks', type: 'perms', section: 'tasks'} %}
 	</nav>
 
 	{# TICKET PERMISSIONS #}
 	<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.tickets">
 		<tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'ticket'} %}
-
         {{ _self.perm_row('ticket', 'use') }}
 		{{ _self.perm_row('ticket', 'create') }}
 		{{ _self.perm_row('ticket', 'reply_mass') }}
@@ -86,6 +90,7 @@
 		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 			{{ _self.perm_row('ticket', 'modify_billing') }}
 		{% endif %}
+		{{ _self.perm_row('ticket', 'create_labels') }}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('ticket', 'reply_own',                     {first: true}) }}
@@ -104,6 +109,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_own',  {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_own') }}
 		{{ _self.perm_row('ticket', 'delete_own', {destructive: true}) }}
 		</tbody>
@@ -124,6 +130,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_followed',  {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_followed') }}
 		{{ _self.perm_row('ticket', 'delete_followed', {destructive: true}) }}
 		</tbody>
@@ -145,6 +152,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_unassigned',   {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_unassigned') }}
 		{{ _self.perm_row('ticket', 'delete_unassigned', {destructive: true}) }}
 		</tbody>
@@ -166,6 +174,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_others',  {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_others',     {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_others') }}
 		{{ _self.perm_row('ticket', 'delete_others', {destructive: true}) }}
 		</tbody>
@@ -175,15 +184,13 @@
 	{# PEOPLE PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.people">
 		<tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'people'} %}
-
 		{{ _self.perm_row('people', 'use') }}
 		{{ _self.perm_row('people', 'create') }}
 		{{ _self.perm_row('people', 'edit') }}
 		{{ _self.perm_row('people', 'validate') }}
 		{{ _self.perm_row('people', 'manage_emails') }}
 		{{ _self.perm_row('people', 'reset_password') }}
+		{{ _self.perm_row('people', 'create_labels') }}
 		{{ _self.perm_row('people', 'notes') }}
 		{{ _self.perm_row('people', 'delete', {destructive: true}) }}
 		{{ _self.perm_row('people', 'disable') }}
@@ -194,6 +201,7 @@
 		{{ _self.perm_row('org', 'create', {first: true}) }}
 		{{ _self.perm_row('org', 'edit') }}
 		{{ _self.perm_row('org', 'notes') }}
+		{{ _self.perm_row('org', 'create_labels') }}
 		{{ _self.perm_row('org', 'delete', {destructive: true}) }}
 		</tbody>
 	</table>
@@ -203,13 +211,11 @@
 	{% if app.getSetting('core.apps_chat') %}
 		<table class="table table-hover" dp-tab-body="main.perms.chat">
 			<tbody>
-
-            {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'chat'} %}
-
 			{{ _self.perm_row('chat', 'use') }}
 			{{ _self.perm_row('chat', 'view_transcripts') }}
 			{{ _self.perm_row('chat', 'view_unassigned') }}
 			{{ _self.perm_row('chat', 'view_others') }}
+			{{ _self.perm_row('chat', 'create_labels') }}
 			{{ _self.perm_row('chat', 'delete', {destructive: true}) }}
 			</tbody>
 		</table>
@@ -234,13 +240,17 @@
 	{# PUBLISH PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.publish">
 		<tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'publish'} %}
-
-		{{ _self.perm_row('publish', 'create') }}
-		{{ _self.perm_row('publish', 'delete') }}
-		{{ _self.perm_row('publish', 'edit') }}
-		{{ _self.perm_row('publish', 'validate') }}
+            {{ _self.perm_row('publish', 'create') }}
+            {{ _self.perm_row('publish', 'delete') }}
+            {{ _self.perm_row('publish', 'edit') }}
+            {{ _self.perm_row('publish', 'can_insert_html') }}
+            {{ _self.perm_row('publish', 'validate') }}
+		</tbody>
+		<tbody>
+		{{ _self.perm_row('publish', 'articles_create_labels') }}
+		{{ _self.perm_row('publish', 'downloads_create_labels') }}
+		{{ _self.perm_row('publish', 'news_create_labels') }}
+		{{ _self.perm_row('publish', 'feedback_create_labels') }}
 		</tbody>
 	</table>
 	{# /PUBLISH PERMISSIONS #}
@@ -248,9 +258,6 @@
 	{# GENERAL PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.profile">
         <tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'general'} %}
-
 		{{ _self.perm_row('general', 'picture') }}
 		{{ _self.perm_row('general', 'signature') }}
 		</tbody>
@@ -260,9 +267,6 @@
     {# TASKS PERMISSIONS #}
     <table class="table table-hover" dp-tab-body="main.perms.tasks">
         <tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'tasks'} %}
-
         {{ _self.perm_row('tasks', 'use') }}
         </tbody>
     </table>

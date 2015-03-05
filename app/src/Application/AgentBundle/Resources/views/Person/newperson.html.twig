@@ -85,6 +85,35 @@ pageMeta.baseId = '{{ baseId }}';
                         </div>
                 </div>
 
+                <div class="section cat-section" id="{{baseId}}_set_password_section">
+                    <div class="content">
+                        <label>
+                            <input type="checkbox" id="{{baseId}}_set_password" name="newperson[set_password]" value="true" />
+                            {{ phrase('agent.general.set_password') }}
+                        </label>
+                        <div style="display: none;line-height: 25px;" id="{{baseId}}_set_password_trigger">
+                            <label>
+                                <input type="radio" name="newperson[set_password_radio]" value="generate" checked="checked" />
+                                {{ phrase('agent.general.generate_password') }}
+                            </label>
+                            <label>
+                                <input type="radio" name="newperson[set_password_radio]" value="set" />
+                                {{ phrase('agent.general.set_password_manual') }}
+                                <input type="password" name="newperson[new_password]" id="{{baseId}}_set_password_input" style="display: none;" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section cat-section" id="{{baseId}}_send_email_section">
+                    <div class="content">
+                        <label>
+                            <input type="checkbox" name="newperson[send_welcome_email]" id="{{baseId}}_send_welcome_email" value="1" />
+                            {{ phrase('agent.general.send_welcome_email') }}
+                        </label>
+                    </div>
+                </div>
+
                 {% if custom_fields|length %}
                 <div class="section title-section" id="{{baseId}}_fields_section">
                         <div class="content">
@@ -96,6 +125,18 @@ pageMeta.baseId = '{{ baseId }}';
                         </div>
                 </div>
                 {% endif %}
+
+	            {% if custom_fields_definitions|length %}
+		            <div class="section title-section" id="{{baseId}}_custom_fields_section">
+			            <div class="content">
+				            {% for f in custom_fields_definitions %}
+					            <h4>{{ form_label(f) }}</h4>
+					            {{ form_widget(f) }}
+					            <br />
+				            {% endfor %}
+			            </div>
+		            </div>
+	            {% endif %}
 
                 <div class="section other-section" id="{{baseId}}_other_section">
                         <div class="content">
@@ -119,7 +160,7 @@ pageMeta.baseId = '{{ baseId }}';
                                                                                         data-select-width="auto"
                                                                                         data-placeholder="Add a label"
                                                                                         value="{% for label in state.newperson.labels %}{{label}},{% endfor %}"
-                                                                                        {% if app.getSetting('labels.people.agent_can_create') %}data-allow-new="1"{% endif %}
+                                                                                        data-allow-new="{% if app.user.hasPerm('agent_people.create_labels') %}1{% endif %}"
                                                                                 />
                                                                         </td>
                                                                 </tr>

@@ -34,15 +34,14 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
 
 class PermissionUtil
 {
-	/**
-	 * Fetches bad permissions and removes them. This makes changes to the database.
-	 */
-	public static function cleanPermissions()
-	{
-		App::getDb()->exec("DELETE FROM permissions_cache");
-	}
+    /**
+     * Fetches bad permissions and removes them. This makes changes to the database.
+     */
+    public static function cleanPermissions()
+    {
+        App::getDb()->exec("DELETE FROM permissions_cache");
+    }
 }

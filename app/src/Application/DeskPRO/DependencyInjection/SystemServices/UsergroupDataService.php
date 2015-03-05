@@ -38,233 +38,232 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class UsergroupDataService extends BaseRepositoryService
 {
-	/**
-	 * @var bool
-	 */
-	protected $has_init = false;
+    /**
+     * @var bool
+     */
+    protected $has_init = false;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	protected $ugs;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+    protected $ugs;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	protected $agent_ugs;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+    protected $agent_ugs;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	protected $user_ugs;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+    protected $user_ugs;
 
-	/**
-	 * @var int[]
-	 */
-	protected $ug_ids = array();
+    /**
+     * @var int[]
+     */
+    protected $ug_ids = array();
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	protected $continer;
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		if (!$options) $options = array();
-		$options['entity'] = 'Application\\DeskPRO\\Entity\\Usergroup';
-		$options['container']  = $container;
-
-		$em = $container->getEm();
-		$o = new static($em, $options);
-		return $o;
-	}
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    protected $continer;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function init()
-	{
-		$this->continer = $this->options['container'];
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        if (!$options) $options = array();
+        $options['entity'] = 'Application\\DeskPRO\\Entity\\Usergroup';
+        $options['container']  = $container;
+
+        $em = $container->getEm();
+        $o = new static($em, $options);
+
+        return $o;
+    }
 
 
-	/**
-	 * Loads data
-	 */
-	protected function preload()
-	{
-		if ($this->has_init) {
-			return;
-		}
-		$this->has_init = true;
-
-		$this->ugs = $this->em->createQuery("
-			SELECT ug
-			FROM DeskPRO:Usergroup ug INDEX BY ug.id
-			ORDER BY ug.id ASC
-		")->execute();
-		$this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:Usergroup');
-
-		foreach ($this->ugs as $ug) {
-			$this->ug_ids[] = $ug->getId();
-			$ug->getTitle();
-
-			if ($ug->is_agent_group) {
-				$this->agent_ugs[$ug->getId()] = $ug;
-			} else {
-				$this->user_ugs[$ug->getId()] = $ug;
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function init()
+    {
+        $this->continer = $this->options['container'];
+    }
 
 
-	/**
-	 * Gets a usergroup (either user or agent)
-	 *
-	 * @param int $ug_id
-	 * @return \Application\DeskPRO\Entity\Usergroup|null
-	 */
-	public function get($ug_id)
-	{
-		$this->preload();
-		return isset($this->ugs[$ug_id]) ? $this->ugs[$ug_id] : null;
-	}
+    /**
+     * Loads data
+     */
+    protected function preload()
+    {
+        if ($this->has_init) {
+            return;
+        }
+        $this->has_init = true;
 
+        $this->ugs = $this->em->createQuery("
+            SELECT ug
+            FROM DeskPRO:Usergroup ug INDEX BY ug.id
+            ORDER BY ug.id ASC
+        ")->execute();
+        $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:Usergroup');
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Usergroup|null
-	 */
-	public function getAgentGroup($id)
-	{
-		$this->preload();
-		return isset($this->agent_ugs[$id]) ? $this->agent_ugs[$id] : null;
-	}
+        foreach ($this->ugs as $ug) {
+            $this->ug_ids[] = $ug->getId();
+            $ug->getTitle();
 
+            if ($ug->is_agent_group) {
+                $this->agent_ugs[$ug->getId()] = $ug;
+            } else {
+                $this->user_ugs[$ug->getId()] = $ug;
+            }
+        }
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Usergroup|null
-	 */
-	public function getUserGroup($id)
-	{
-		$this->preload();
-		return isset($this->user_ugs[$id]) ? $this->user_ugs[$id] : null;
-	}
+    /**
+     * Gets a usergroup (either user or agent)
+     *
+     * @param  int                                        $ug_id
+     * @return \Application\DeskPRO\Entity\Usergroup|null
+     */
+    public function get($ug_id)
+    {
+        $this->preload();
 
+        return isset($this->ugs[$ug_id]) ? $this->ugs[$ug_id] : null;
+    }
 
-	/**
-	 * Gets all groups
-	 *
-	 * @return array
-	 */
-	public function getAll()
-	{
-		$this->preload();
-		return $this->ugs;
-	}
+    /**
+     * @param  int                                        $id
+     * @return \Application\DeskPRO\Entity\Usergroup|null
+     */
+    public function getAgentGroup($id)
+    {
+        $this->preload();
 
+        return isset($this->agent_ugs[$id]) ? $this->agent_ugs[$id] : null;
+    }
 
-	/**
-	 * Gets an array of user groups
-	 *
-	 * @return array
-	 */
-	public function getUserUsergroups()
-	{
-		$this->preload();
-		return $this->user_ugs;
-	}
+    /**
+     * @param  int                                        $id
+     * @return \Application\DeskPRO\Entity\Usergroup|null
+     */
+    public function getUserGroup($id)
+    {
+        $this->preload();
 
+        return isset($this->user_ugs[$id]) ? $this->user_ugs[$id] : null;
+    }
 
-	/**
-	 * Gets an array of agent groups
-	 */
-	public function getAgentUsergroups()
-	{
-		$this->preload();
-		return $this->agent_ugs;
-	}
+    /**
+     * Gets all groups
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+        $this->preload();
 
+        return $this->ugs;
+    }
 
-	/**
-	 * @param null $for_ids
-	 * @return array
-	 */
-	public function getNames($for_ids = null)
-	{
-		$this->preload();
+    /**
+     * Gets an array of user groups
+     *
+     * @return array
+     */
+    public function getUserUsergroups()
+    {
+        $this->preload();
 
-		$ret = array();
+        return $this->user_ugs;
+    }
 
-		if ($for_ids) {
-			foreach ($for_ids as $cid) {
-				if (!$this->get($cid)) {
-					$ret[$cid] = "Unknown #$cid";
-				} else {
-					$ret[$cid] = $this->get($cid)->title;
-				}
-			}
-		} else {
-			foreach ($this->ug_ids as $cid) {
-				$ret[$cid] = $this->get($cid)->title;
-			}
-		}
+    /**
+     * Gets an array of agent groups
+     */
+    public function getAgentUsergroups()
+    {
+        $this->preload();
 
-		return $ret;
-	}
+        return $this->agent_ugs;
+    }
 
+    /**
+     * @param  null  $for_ids
+     * @return array
+     */
+    public function getNames($for_ids = null)
+    {
+        $this->preload();
 
-	/**
-	 * @return array
-	 */
-	public function getUsergroupNames()
-	{
-		$this->preload();
-		$names = $this->getNames(array_keys($this->user_ugs));
-		return $names;
-	}
+        $ret = array();
 
+        if ($for_ids) {
+            foreach ($for_ids as $cid) {
+                if (!$this->get($cid)) {
+                    $ret[$cid] = "Unknown #$cid";
+                } else {
+                    $ret[$cid] = $this->get($cid)->title;
+                }
+            }
+        } else {
+            foreach ($this->ug_ids as $cid) {
+                $ret[$cid] = $this->get($cid)->title;
+            }
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getAgentUsergroupNames()
-	{
-		return $this->getUsergroupNames(array_keys($this->agent_ugs));
-	}
+        return $ret;
+    }
 
+    /**
+     * @return array
+     */
+    public function getUsergroupNames()
+    {
+        $this->preload();
+        $names = $this->getNames(array_keys($this->user_ugs));
 
-	/**
-	 * @param array $ids
-	 * @param bool $keep_order
-	 * @return array
-	 */
-	public function getByIds(array $ids, $keep_order = false)
-	{
-		$this->preload();
-		$ret = array();
+        return $names;
+    }
 
-		foreach ($ids as $id) {
-			if (isset($this->ugs[$id])) {
-				$ret[$id] = $this->ugs[$id];
-			}
-		}
+    /**
+     * @return array
+     */
+    public function getAgentUsergroupNames()
+    {
+        return $this->getUsergroupNames(array_keys($this->agent_ugs));
+    }
 
-		return $ret;
-	}
+    /**
+     * @param  array $ids
+     * @param  bool  $keep_order
+     * @return array
+     */
+    public function getByIds(array $ids, $keep_order = false)
+    {
+        $this->preload();
+        $ret = array();
 
-	/**
-	 * Pass-through to repository
-	 */
-	public function __call($method, array $args = array())
-	{
-		$this->preload();
-		return parent::__call($method, $args);
-	}
+        foreach ($ids as $id) {
+            if (isset($this->ugs[$id])) {
+                $ret[$id] = $this->ugs[$id];
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Pass-through to repository
+     */
+    public function __call($method, array $args = array())
+    {
+        $this->preload();
+
+        return parent::__call($method, $args);
+    }
 }

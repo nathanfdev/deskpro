@@ -34,215 +34,214 @@
 
 namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Strings;
 use Zend\Loader\Exception\InvalidArgumentException;
 
 class TicketFieldManager extends FieldManager
 {
-	/**
-	 * @var \Application\DeskPRO\Settings\Settings
-	 */
-	private $settings;
+    /**
+     * @var \Application\DeskPRO\Settings\Settings
+     */
+    private $settings;
 
-	protected function init()
-	{
-		$this->settings = $this->options->get('settings_handler');
-	}
+    protected function init()
+    {
+        $this->settings = $this->options->get('settings_handler');
+    }
 
-	/**
-	 * Get a collection of all top-level (parent) fields
-	 *
-	 * @return array
-	 */
-	public function getFields()
-	{
-		if ($this->fields === null) {
-			$this->fields = array();
-			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+    /**
+     * Get a collection of all top-level (parent) fields
+     *
+     * @return array
+     */
+    public function getFields()
+    {
+        if ($this->fields === null) {
+            $this->fields = array();
+            $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
-			foreach ($all_fields as $f) {
+            foreach ($all_fields as $f) {
 
-				$this->all_fields[$f->getId()] = $f;
+                $this->all_fields[$f->getId()] = $f;
 
-				if (!$f->getParentId()) {
-					$this->fields[$f->getId()] = $f;
-				}
+                if (!$f->getParentId()) {
+                    $this->fields[$f->getId()] = $f;
+                }
 
-				if ($p = $f->getParentId()) {
-					if (!isset($this->field_to_children[$p])) {
-						$this->field_to_children[$p] = array();
-					}
-					$this->field_to_children[$p][$f->getId()] = $f;
-				}
-			}
+                if ($p = $f->getParentId()) {
+                    if (!isset($this->field_to_children[$p])) {
+                        $this->field_to_children[$p] = array();
+                    }
+                    $this->field_to_children[$p][$f->getId()] = $f;
+                }
+            }
 
-			// Choice fields that have no options are considered disabled
-			foreach ($this->fields as $f) {
-				if ($f->isChoiceType()) {
-					if (!$this->getFieldChildren($f)) {
-						unset(
-							$this->all_fields[$f->getId()],
-							$this->fields[$f->getId()],
-							$this->field_to_children[$f->getId()]
-						);
-					}
-				}
-			}
-		}
+            // Choice fields that have no options are considered disabled
+            foreach ($this->fields as $f) {
+                if ($f->isChoiceType()) {
+                    if (!$this->getFieldChildren($f)) {
+                        unset(
+                            $this->all_fields[$f->getId()],
+                            $this->fields[$f->getId()],
+                            $this->field_to_children[$f->getId()]
+                        );
+                    }
+                }
+            }
+        }
 
-		return $this->fields;
-	}
-
-
-	/**
-	 * Get an array of all defined fields (by doing a query).
-	 *
-	 * @return array
-	 */
-	public function getDefinedFields()
-	{
-		return array_values($this->em->getRepository('DeskPRO:CustomDefTicket')->getTopFields());
-	}
-
-	public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
-	{
-		if (!$ticket->getTicketLogger()) {
-			return parent::setCustomDataOnObject($ticket, $field_def, $in_data);
-		}
-
-		$all_display_data = $this->_orig_display;
-
-		$old_value = null;
-
-		if (isset($all_display_data[$field_def->id])) {
-			$handler = $all_display_data[$field_def->id]['handler'];
-			$old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
-
-			if ($old_value) {
-				$old_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($old_value)));
-			}
-		}
-
-		$return = parent::setCustomDataOnObject($ticket, $field_def, $in_data);
-
-		$new_value = null;
-		if ($return) {
-			$all_display_data = $this->getDisplayArrayForObject($ticket);
-			$handler = $all_display_data[$field_def->id]['handler'];
-			$new_value = $handler->renderText($all_display_data[$field_def->id]['value']);
-			if ($new_value) {
-				$new_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($new_value)));
-			}
-		}
-
-		if (($new_value || $old_value) && ($new_value != $old_value)) {
-			$ticket->getTicketLogger()->recordMultiPropertyChanged(
-				'custom_data',
-				array('field_def' => $field_def, 'value' => $old_value),
-				array('field_def' => $field_def, 'value' => $new_value)
-			);
-		}
-
-		return $new_value;
-	}
+        return $this->fields;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isProductEnabled()
-	{
-		return (bool)$this->settings->get('core.use_product');
-	}
+    /**
+     * Get an array of all defined fields (by doing a query).
+     *
+     * @return array
+     */
+    public function getDefinedFields()
+    {
+        return array_values($this->em->getRepository('DeskPRO:CustomDefTicket')->getTopFields());
+    }
+
+    public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
+    {
+        if (!$ticket->getTicketLogger()) {
+            return parent::setCustomDataOnObject($ticket, $field_def, $in_data);
+        }
+
+        $all_display_data = $this->_orig_display;
+
+        $old_value = null;
+
+        if (isset($all_display_data[$field_def->id])) {
+            $handler = $all_display_data[$field_def->id]['handler'];
+            $old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
+
+            if ($old_value) {
+                $old_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($old_value)));
+            }
+        }
+
+        $return = parent::setCustomDataOnObject($ticket, $field_def, $in_data);
+
+        $new_value = null;
+        if ($return) {
+            $all_display_data = $this->getDisplayArrayForObject($ticket);
+            $handler = $all_display_data[$field_def->id]['handler'];
+            $new_value = $handler->renderText($all_display_data[$field_def->id]['value']);
+            if ($new_value) {
+                $new_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($new_value)));
+            }
+        }
+
+        if (($new_value || $old_value) && ($new_value != $old_value)) {
+            $ticket->getTicketLogger()->recordMultiPropertyChanged(
+                'custom_data',
+                array('field_def' => $field_def, 'value' => $old_value),
+                array('field_def' => $field_def, 'value' => $new_value)
+            );
+        }
+
+        return $new_value;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isPriorityEnabled()
-	{
-		return (bool)$this->settings->get('core.use_ticket_priority');
-	}
+    /**
+     * @return bool
+     */
+    public function isProductEnabled()
+    {
+        return (bool)$this->settings->get('core.use_product');
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isWorkflowEnabled()
-	{
-		return (bool)$this->settings->get('core.use_ticket_workflow');
-	}
+    /**
+     * @return bool
+     */
+    public function isPriorityEnabled()
+    {
+        return (bool)$this->settings->get('core.use_ticket_priority');
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isCategoryEnabled()
-	{
-		return (bool)$this->settings->get('core.use_ticket_category');
-	}
+    /**
+     * @return bool
+     */
+    public function isWorkflowEnabled()
+    {
+        return (bool)$this->settings->get('core.use_ticket_workflow');
+    }
 
 
-	/**
-	 * @param $enabled bool
-	 */
-	public function setIsProductEnabled($enabled = true)
-	{
-		$this->settings->setSetting('core.use_product', intval((bool)$enabled));
-	}
+    /**
+     * @return bool
+     */
+    public function isCategoryEnabled()
+    {
+        return (bool)$this->settings->get('core.use_ticket_category');
+    }
 
 
-	/**
-	 * @param $enabled bool
-	 */
-	public function setIsPriorityEnabled($enabled = true)
-	{
-		$this->settings->setSetting('core.use_ticket_priority', intval((bool)$enabled));
-	}
+    /**
+     * @param $enabled bool
+     */
+    public function setIsProductEnabled($enabled = true)
+    {
+        $this->settings->setSetting('core.use_product', intval((bool)$enabled));
+    }
 
 
-	/**
-	 * @param $enabled bool
-	 */
-	public function setIsWorkflowEnabled($enabled = true)
-	{
-		$this->settings->setSetting('core.use_ticket_workflow', intval((bool)$enabled));
-	}
+    /**
+     * @param $enabled bool
+     */
+    public function setIsPriorityEnabled($enabled = true)
+    {
+        $this->settings->setSetting('core.use_ticket_priority', intval((bool)$enabled));
+    }
 
 
-	/**
-	 * @param $enabled bool
-	 */
-	public function setIsCategoryEnabled($enabled = true)
-	{
-		$this->settings->setSetting('core.use_ticket_category', intval((bool)$enabled));
-	}
+    /**
+     * @param $enabled bool
+     */
+    public function setIsWorkflowEnabled($enabled = true)
+    {
+        $this->settings->setSetting('core.use_ticket_workflow', intval((bool)$enabled));
+    }
 
 
-	/**
-	 * @param string $id
-	 * @param bool $enabled
-	 * @throws \Zend\Loader\Exception\InvalidArgumentException
-	 */
-	public function setFieldEnabledById($id, $enabled = true)
-	{
-		if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
-			$field = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
-			$field->is_enabled = $enabled;
-			$this->em->persist($field);
-			$this->em->flush($field);
+    /**
+     * @param $enabled bool
+     */
+    public function setIsCategoryEnabled($enabled = true)
+    {
+        $this->settings->setSetting('core.use_ticket_category', intval((bool)$enabled));
+    }
 
-		} else {
-			switch ($id) {
-				case 'product':  $this->setIsProductEnabled($enabled); break;
-				case 'workflow': $this->setIsWorkflowEnabled($enabled); break;
-				case 'priority': $this->setIsPriorityEnabled($enabled); break;
-				case 'category': $this->setIsCategoryEnabled($enabled); break;
-				default:
-					throw new InvalidArgumentException("Invalid \$id");
-			}
-		}
-	}
+
+    /**
+     * @param  string                                          $id
+     * @param  bool                                            $enabled
+     * @throws \Zend\Loader\Exception\InvalidArgumentException
+     */
+    public function setFieldEnabledById($id, $enabled = true)
+    {
+        if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
+            $field = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
+            $field->is_enabled = $enabled;
+            $this->em->persist($field);
+            $this->em->flush($field);
+
+        } else {
+            switch ($id) {
+                case 'product':  $this->setIsProductEnabled($enabled); break;
+                case 'workflow': $this->setIsWorkflowEnabled($enabled); break;
+                case 'priority': $this->setIsPriorityEnabled($enabled); break;
+                case 'category': $this->setIsCategoryEnabled($enabled); break;
+                default:
+                    throw new InvalidArgumentException("Invalid \$id");
+            }
+        }
+    }
 }

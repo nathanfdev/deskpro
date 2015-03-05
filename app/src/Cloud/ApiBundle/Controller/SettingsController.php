@@ -40,104 +40,104 @@ use Orb\Util\OptionsArray;
 
 class SettingsController extends BaseSettingsController
 {
-	####################################################################################################################
-	# get-url-settings
-	####################################################################################################################
+    ####################################################################################################################
+    # get-url-settings
+    ####################################################################################################################
 
-	public function getUrlSettingsAction()
-	{
-		$settings = array(
-			// The custom domain being used, if any
-			'cloud_custom_domain'     => $this->settings->get('core.cloud_custom_domain') ?: null,
+    public function getUrlSettingsAction()
+    {
+        $settings = array(
+            // The custom domain being used, if any
+            'cloud_custom_domain'     => $this->settings->get('core.cloud_custom_domain') ?: null,
 
-			// The custom domain that we have configured with a custom cert
-			'cloud_custom_domain_ssl' => $this->settings->get('core.cloud_custom_domain_ssl') ? true : false,
+            // The custom domain that we have configured with a custom cert
+            'cloud_custom_domain_ssl' => $this->settings->get('core.cloud_custom_domain_ssl') ? true : false,
 
-			// If the URL should be https or not
-			'cloud_url_ssl'           => $this->settings->get('core.cloud_url_ssl') ? true : false,
-		);
+            // If the URL should be https or not
+            'cloud_url_ssl'           => $this->settings->get('core.cloud_url_ssl') ? true : false,
+        );
 
-		$settings['domain_choice'] = 'default';
-		if ($settings['cloud_custom_domain']) {
-			$settings['domain_choice'] = 'custom';
-		}
+        $settings['domain_choice'] = 'default';
+        if ($settings['cloud_custom_domain']) {
+            $settings['domain_choice'] = 'custom';
+        }
 
-		return $this->createApiResponse(array('settings' => $settings));
-	}
+        return $this->createApiResponse(array('settings' => $settings));
+    }
 
-	####################################################################################################################
-	# save-url-settings
-	####################################################################################################################
+    ####################################################################################################################
+    # save-url-settings
+    ####################################################################################################################
 
-	public function saveUrlSettingsAction()
-	{
-		$in_settings = new OptionsArray($this->in->getArrayValue('settings'));
-		$set_settings = array();
+    public function saveUrlSettingsAction()
+    {
+        $in_settings = new OptionsArray($this->in->getArrayValue('settings'));
+        $set_settings = array();
 
-		if ($in_settings->get('domain_choice') == 'custom') {
-			$domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));
-			$domain = trim($domain, '/');
+        if ($in_settings->get('domain_choice') == 'custom') {
+            $domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));
+            $domain = trim($domain, '/');
 
-			$url_test = 'http://' . $domain . '/';
-			$url_bits = @parse_url($url_test);
+            $url_test = 'http://' . $domain . '/';
+            $url_bits = @parse_url($url_test);
 
-			if (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain) {
-				return $this->createApiErrorResponse('invalid_custom_domain', 'The domain you entered appears to be invalid');
-			}
+            if (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain) {
+                return $this->createApiErrorResponse('invalid_custom_domain', 'The domain you entered appears to be invalid');
+            }
 
-			$set_settings['core.cloud_custom_domain'] = $domain;
+            $set_settings['core.cloud_custom_domain'] = $domain;
 
-			if ($in_settings->get('cloud_url_ssl') && $this->settings->get('core.cloud_custom_domain_ssl') == $domain) {
-				$set_settings['core.cloud_url_ssl'] = true;
-			} else {
-				$set_settings['core.cloud_url_ssl'] = false;
-			}
+            if ($in_settings->get('cloud_url_ssl') && $this->settings->get('core.cloud_custom_domain_ssl') == $domain) {
+                $set_settings['core.cloud_url_ssl'] = true;
+            } else {
+                $set_settings['core.cloud_url_ssl'] = false;
+            }
 
-			if ($set_settings['core.cloud_url_ssl']) {
-				$url = 'https://' . $domain . '/';
-			} else {
-				$url = 'http://' . $domain . '/';
-			}
-			$set_settings['core.deskpro_url'] = $url;
+            if ($set_settings['core.cloud_url_ssl']) {
+                $url = 'https://' . $domain . '/';
+            } else {
+                $url = 'http://' . $domain . '/';
+            }
+            $set_settings['core.deskpro_url'] = $url;
 
-			if ($domain != $this->settings->get('core.cloud_custom_domain')) {
-				$tmpdata = new TmpData();
-				$tmpdata->setType('dpc_set_domain');
-				$tmpdata->setData('by_person', $this->person->getId());
-				$tmpdata->setData('set_domain', $domain);
-				$tmpdata->date_expire = new \DateTime('+30 minutes');
+            if ($domain != $this->settings->get('core.cloud_custom_domain')) {
+                $tmpdata = new TmpData();
+                $tmpdata->setType('dpc_set_domain');
+                $tmpdata->setData('by_person', $this->person->getId());
+                $tmpdata->setData('set_domain', $domain);
+                $tmpdata->date_expire = new \DateTime('+30 minutes');
 
-				$this->em->persist($tmpdata);
-				$this->em->flush();
+                $this->em->persist($tmpdata);
+                $this->em->flush();
 
-				$url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
+                $url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
 
-				try {
-					$client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
-					$client->setMethod(\Zend\Http\Request::METHOD_GET);
-					$client->setUri($url);
-					$client->send();
-				} catch (\Exception $e) {
-					return $this->createApiErrorResponse('error_activating_domain', 'There was a problem activating your custom domain. Please try again later.');
-				}
-			}
+                try {
+                    $client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
+                    $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                    $client->setUri($url);
+                    $client->send();
+                } catch (\Exception $e) {
+                    return $this->createApiErrorResponse('error_activating_domain', 'There was a problem activating your custom domain. Please try again later.');
+                }
+            }
 
-		} else {
-			$set_settings['cloud_custom_domain'] = null;
+        } else {
+            $set_settings['cloud_custom_domain'] = null;
 
-			$set_settings['core.cloud_url_ssl'] = (bool)$in_settings->get('cloud_url_ssl');
-			if ($set_settings['core.cloud_url_ssl']) {
-				$url = 'https://' . DPC_SITE_DOMAIN . '/';
-			} else {
-				$url = 'http://' . DPC_SITE_DOMAIN . '/';
-			}
-			$set_settings['core.deskpro_url'] = $url;
-		}
+            $set_settings['core.cloud_url_ssl'] = (bool)$in_settings->get('cloud_url_ssl');
+            if ($set_settings['core.cloud_url_ssl']) {
+                $url = 'https://' . DPC_SITE_DOMAIN . '/';
+            } else {
+                $url = 'http://' . DPC_SITE_DOMAIN . '/';
+            }
+            $set_settings['core.deskpro_url'] = $url;
+        }
 
-		foreach ($set_settings as $k => $v) {
-			$this->settings->setSetting($k, $v);
-		}
+        foreach ($set_settings as $k => $v) {
+            $this->settings->setSetting($k, $v);
+        }
 
-		return $this->createApiSuccessResponse();
-	}
+        return $this->createApiSuccessResponse();
+    }
 }

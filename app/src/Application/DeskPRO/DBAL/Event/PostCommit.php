@@ -38,16 +38,16 @@ use Application\DeskPRO\DBAL\Connection;
 
 class PostCommit extends \Doctrine\Common\EventArgs
 {
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $connection;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $connection;
 
-	/**
-	 * @param \Application\DeskPRO\DBAL\Connection $connection
-	 */
-	public function __construct(Connection $connection)
-	{
-		$this->connection = $connection;
-	}
+    /**
+     * @param \Application\DeskPRO\DBAL\Connection $connection
+     */
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
 }

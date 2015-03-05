@@ -8,7 +8,11 @@
 {% else %}
 	{% if online_chat_deps|length == 1 and (online_chat_deps|first).children|length <= 1 %}
 		{% for cat in online_chat_deps %}
-			<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
+			{% if cat.children|length %}
+				<input type="hidden" name="department_id" class="department_id" value="{{ (cat.children|first).id }}">
+			{% else %}
+				<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
+			{% endif %}
 		{% endfor %}
 	{% else %}
 		<div class="dp-control-group">

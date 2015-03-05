@@ -43,84 +43,84 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class UrgencyAction extends AbstractAction implements PermissionableAction
 {
-	/** @var int */
-	protected $num;
+    /** @var int */
+    protected $num;
 
-	public function __construct($num)
-	{
-		$this->num = $num;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$ticket['urgency'] = $ticket['urgency'] + $this->num;
-	}
+    public function __construct($num)
+    {
+        $this->num = $num;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return false;
-		}
-
-		return true;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $ticket['urgency'] = $ticket['urgency'] + $this->num;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'urgency', 'urgency' => $ticket['urgency'] + $this->num)
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return false;
+        }
+
+        return true;
+    }
 
 
-	/**
-	 * Get the number modifier
-	 *
-	 * @return int
-	 */
-	public function getNum()
-	{
-		return $this->num;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'urgency', 'urgency' => $ticket['urgency'] + $this->num)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return new self($this->getNum() + $other_action->getNum());
-	}
+    /**
+     * Get the number modifier
+     *
+     * @return int
+     */
+    public function getNum()
+    {
+        return $this->num;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
-		if (!$this->num) return '';
 
-		if ($this->num < 0) {
-			return $tr->phrase('agent.tickets.decrease_urgency_action', array('amount' => abs($this->num)));
-		} else {
-			return $tr->phrase('agent.tickets.increase_urgency_action', array('amount' => $this->num));
-		}
-	}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return new self($this->getNum() + $other_action->getNum());
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+        if (!$this->num) return '';
+
+        if ($this->num < 0) {
+            return $tr->phrase('agent.tickets.decrease_urgency_action', array('amount' => abs($this->num)));
+        } else {
+            return $tr->phrase('agent.tickets.increase_urgency_action', array('amount' => $this->num));
+        }
+    }
 }

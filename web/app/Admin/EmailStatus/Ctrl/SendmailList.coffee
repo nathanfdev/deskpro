@@ -1,113 +1,137 @@
-define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
-	class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base
-		@CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList'
-		@CTRL_AS = 'ListCtrl'
-		@DEPS    = ['DpDateService']
+define [
+  'Admin/Main/Ctrl/Base',
+  'DeskPRO/Util/LocalStore',
+  'moment'
+], (
+  Admin_Ctrl_Base,
+  LocalStore,
+  moment) ->
+  class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList'
+    @CTRL_AS = 'ListCtrl'
+    @DEPS    = ['DpDateService']
 
-		init: ->
-			@filter = {
-				page: 1
-			}
-			@results = []
-			@num_results = 0
-			@num_pages = 0
-			@page_nums = [1]
-			@filter_date_mode = "none"
-			@page = 1
-			@massActionsOp = "resend"
+    init: ->
+      @storeFilterId = Admin_EmailStatus_Ctrl_SendmailList.CTRL_ID+'.filter'
+      @filter = {
+        page: 1
+      }
+      @results = []
+      @num_results = 0
+      @num_pages = 0
+      @page_nums = [1]
+      @filter_date_mode = "none"
+      @page = 1
+      @massActionsOp = "resend"
 
-			@$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
-				if parseInt(newVal) == parseInt(oldVal)
-					return
-				if isNaN(parseInt(newVal))
-					return
+      if LocalStore.has(@storeFilterId)
+        @filter = LocalStore.getObject(@storeFilterId, @filter)
+        @filter.page = 1
+        @$scope.filter_open = true
 
-				@changePage()
-			)
+      @$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
+        if parseInt(newVal) == parseInt(oldVal)
+          return
+        if isNaN(parseInt(newVal))
+          return
 
-		initialLoad: ->
-			return @loadResults()
+        @changePage()
+      )
 
-		changePage: ->
-			if @filter.page == @page
-				return
+    initialLoad: ->
+      return @loadResults()
 
-			@filter.page = @page
-			@loadResults()
+    changePage: ->
+      if @filter.page == @page
+        return
 
-		updateFilter: ->
-			@page = 1
-			@filter.page = @page
+      @filter.page = @page
+      @loadResults(true)
 
-			@filter.date_start = null
-			@filter.date_end = null
-			if @filter_date_mode and @filter_date_mode != 'none'
-				if @filter_date1 and (@filter_date_mode == 'between' || @filter_date_mode == 'after')
-					@filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
-				if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
-					@filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
+    clearFilter: ->
+      @filter = {
+        page: 1
+      }
+      @$scope.filter_open = false
+      @updateFilter(true)
+      LocalStore.remove(@storeFilterId)
 
-			@loadResults()
+    updateFilter: (skipSave) ->
+      @page = 1
+      @filter.page = @page
 
-		loadResults: (fallbackPrevPage) ->
-			@startSpinner('loading_page')
-			@results = []
-			promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
-				@stopSpinner('loading_page', true)
-				@results     = data.sendmail_queue
-				@page        = data.page
-				@num_pages   = data.num_pages
-				@num_results = data.count
-				@massActions = {}
-				@massActionsAll = false
-				@massActionsLoading = false
+      @filter.date_start = null
+      @filter.date_end = null
+      if @filter_date_mode and @filter_date_mode != 'none'
+        if @filter_date1 and (@filter_date_mode == 'between' || @filter_date_mode == 'after')
+          @filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
+        if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
+          @filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
 
-				@page_nums = []
-				for i in [0...@num_pages]
-					@page_nums.push(i+1)
+      if not skipSave
+        LocalStore.setObject(@storeFilterId, @filter)
 
-				@results.map (res) =>
-					res.date_created = @DpDateService.local res.date_created
-					if res.date_sent
-						res.date_sent = @DpDateService.local res.date_sent
-					if res.date_next_attempt
-						res.date_next_attempt = @DpDateService.local res.date_next_attempt
+      @loadResults()
 
-				if fallbackPrevPage and !@results.length and data.page > 1
-					@filter.page = data.page - 1;
-					@loadResults()
-			)
+    loadResults: (fallbackPrevPage) ->
+      @startSpinner('loading_page')
+      @results = []
+      promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
+        @stopSpinner('loading_page', true)
+        @results     = data.sendmail_queue
+        @page        = data.page
+        @num_pages   = data.num_pages
+        @num_results = data.count
+        @massActions = {}
+        @massActionsAll = false
+        @massActionsLoading = false
 
-			return promise
+        @page_nums = []
+        for i in [0...@num_pages]
+          @page_nums.push(i+1)
 
-		toggleMassActions: ->
-			@massActions = {}
-			if @massActionsAll
-				for r in @results
-					@massActions[r.id] = true
+        @results.map (res) =>
+          res.date_created = @DpDateService.local res.date_created
+          if res.date_sent
+            res.date_sent = @DpDateService.local res.date_sent
+          if res.date_next_attempt
+            res.date_next_attempt = @DpDateService.local res.date_next_attempt
 
-		hasAnyMassActions: ->
-			for r in @results
-				return true if @massActions[r.id]
-			return false
+        if fallbackPrevPage and !@results.length and data.page > 1
+          @filter.page = data.page - 1;
+          @loadResults()
+      )
 
-		performMassActions: ->
-			url = "/email_status/sendmail/mass-actions/#{@massActionsOp}"
-			@massActionsLoading = true
+      return promise
 
-			ids = []
-			for r in @results
-				if @massActions[r.id] then ids.push(r.id)
+    toggleMassActions: ->
+      @massActions = {}
+      if @massActionsAll
+        for r in @results
+          @massActions[r.id] = true
 
-			@Api.sendPostJson(url, { ids: ids }).then(=>
-				@Growl.success(@getRegisteredMessage("#{@massActionsOp}_done"))
-				@loadResults(true)
-			)
+    hasAnyMassActions: ->
+      for r in @results
+        return true if @massActions[r.id]
+      return false
 
-		goPrevPage: ->
-			@page--
+    performMassActions: ->
+      url = "/email_status/sendmail/mass-actions/#{@massActionsOp}"
+      @massActionsLoading = true
 
-		goNextPage: ->
-			@page++
+      ids = []
+      for r in @results
+        if @massActions[r.id] then ids.push(r.id)
 
-	Admin_EmailStatus_Ctrl_SendmailList.EXPORT_CTRL()
+      @Api.sendPostJson(url, { ids: ids }).then(=>
+        @Growl.success(@getRegisteredMessage("#{@massActionsOp}_done"))
+        @loadResults(true)
+      )
+
+    goPrevPage: ->
+      @page--
+
+    goNextPage: ->
+      @page++
+
+  Admin_EmailStatus_Ctrl_SendmailList.EXPORT_CTRL()

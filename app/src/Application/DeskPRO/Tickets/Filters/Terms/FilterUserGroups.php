@@ -39,26 +39,28 @@ use Orb\Util\CheckedOptionsArray;
 
 class FilterUserGroups extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('group_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('group_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
 
-		$query = $this->getIdMatchQuery('user_groups.id', $options['group_ids']);
-		$query->addJoin('tickets.person.groups', 'person2usergroups', 'user_groups', 'user_groups.person_id = tickets.person_id');
-		return $query;
-	}
+        $query = $this->getIdMatchQuery('user_groups.id', $options['group_ids']);
+        $query->addJoin('tickets.person.groups', 'person2usergroups', 'user_groups', 'user_groups.person_id = tickets.person_id');
+
+        return $query;
+    }
 }

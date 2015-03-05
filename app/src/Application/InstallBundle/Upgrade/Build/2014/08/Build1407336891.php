@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1407336891 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct creation_system");
-		$this->execMutateSql("UPDATE tickets SET creation_system = 'gateway.person' WHERE creation_system = 'gatway.person'");
-		$this->execMutateSql("UPDATE tickets SET creation_system = 'gateway.agent' WHERE creation_system = 'gatway.agent'");
-	}
+    public function run()
+    {
+        $this->out("Correct creation_system");
+        $this->execMutateSql("UPDATE tickets SET creation_system = 'gateway.person' WHERE creation_system = 'gatway.person'");
+        $this->execMutateSql("UPDATE tickets SET creation_system = 'gateway.agent' WHERE creation_system = 'gatway.agent'");
+    }
 }

@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1353683310 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add permission to control whether people can reopen resolved tickets");
-		$this->execMutateSql("
-			INSERT IGNORE INTO permissions
-				(usergroup_id, person_id, name, value)
-			VALUES
-				(1, NULL, 'tickets.reopen_resolved', 1)
-		");
+    public function run()
+    {
+        $this->out("Add permission to control whether people can reopen resolved tickets");
+        $this->execMutateSql("
+            INSERT IGNORE INTO permissions
+                (usergroup_id, person_id, name, value)
+            VALUES
+                (1, NULL, 'tickets.reopen_resolved', 1)
+        ");
 
-		$this->container->getDb()->executeUpdate("TRUNCATE TABLE permissions_cache");
-	}
+        $this->container->getDb()->executeUpdate("TRUNCATE TABLE permissions_cache");
+    }
 }

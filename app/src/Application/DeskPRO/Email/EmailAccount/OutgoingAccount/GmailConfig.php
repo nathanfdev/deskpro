@@ -40,59 +40,59 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class GmailConfig implements AccountConfigInterface
 {
-	/**
-	 * @var string
-	 */
-	public $user;
+    /**
+     * @var string
+     */
+    public $user;
 
-	/**
-	 * @var string
-	 */
-	public $password;
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array(
-			'user'        => $this->user,
-			'password'    => $this->password,
-		);
-	}
+    /**
+     * @var string
+     */
+    public $password;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data as $k => $v) {
-			$obj->$k = $v;
-		}
-
-		return $obj;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array(
+            'user'        => $this->user,
+            'password'    => $this->password,
+        );
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'gmail';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $k => $v) {
+            $obj->$k = $v;
+        }
+
+        return $obj;
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'gmail';
+    }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('user', new Constraints\NotBlank());
-		$metadata->addPropertyConstraint('password', new Constraints\NotBlank());
-	}
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('password', new Constraints\NotBlank());
+    }
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348222417 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update ticket charges to have correct column name");
-		$this->execMutateSql("ALTER TABLE ticket_charges CHANGE charge amount NUMERIC(10, 2) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Update ticket charges to have correct column name");
+        $this->execMutateSql("ALTER TABLE ticket_charges CHANGE charge amount NUMERIC(10, 2) DEFAULT NULL");
+    }
 }

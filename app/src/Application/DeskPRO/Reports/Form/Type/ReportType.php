@@ -39,24 +39,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ReportType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('report', new ReportPropsType());
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('report', new ReportPropsType());
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\Reports\\ReportEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\Reports\\ReportEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'report_edit';
-	}
+    public function getName()
+    {
+        return 'report_edit';
+    }
 
 }

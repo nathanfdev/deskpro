@@ -40,42 +40,42 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 
 class TicketLayoutData extends AbstractDefaultData
 {
-	public function runInstall()
-	{
-		$exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+    public function runInstall()
+    {
+        $exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
 
-		if (!$exists) {
-			$ticket_layout               = new TicketLayout();
-			$ticket_layout->is_enabled   = true;
-			$ticket_layout->user_layout  = new Layout();
-			$ticket_layout->agent_layout = new Layout();
+        if (!$exists) {
+            $ticket_layout               = new TicketLayout();
+            $ticket_layout->is_enabled   = true;
+            $ticket_layout->user_layout  = new Layout();
+            $ticket_layout->agent_layout = new Layout();
 
-			foreach (array('department', 'subject', 'message') as $field) {
-				$ticket_layout->user_layout->add(new LayoutField($field));
-				$ticket_layout->agent_layout->add(new LayoutField($field));
-			}
+            foreach (array('department', 'subject', 'message') as $field) {
+                $ticket_layout->user_layout->add(new LayoutField($field));
+                $ticket_layout->agent_layout->add(new LayoutField($field));
+            }
 
-			$ticket_layout->user_layout->add(new LayoutField('attach'));
+            $ticket_layout->user_layout->add(new LayoutField('attach'));
 
-			$this->getEm()->persist($ticket_layout);
-			$this->getEm()->flush();
-		}
-	}
+            $this->getEm()->persist($ticket_layout);
+            $this->getEm()->flush();
+        }
+    }
 
-	public function runReset()
-	{
-		$exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
-		if ($exists) {
-			$this->getDb()->delete('ticket_layouts', array('id' => $exists));
-		}
-		$this->runInstall();
-	}
+    public function runReset()
+    {
+        $exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+        if ($exists) {
+            $this->getDb()->delete('ticket_layouts', array('id' => $exists));
+        }
+        $this->runInstall();
+    }
 
-	public function runSync()
-	{
-		$exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
-		if (!$exists) {
-			$this->runInstall();
-		}
-	}
+    public function runSync()
+    {
+        $exists = $this->getDb()->fetchColumn("SELECT id FROM ticket_layouts WHERE department_id IS NULL");
+        if (!$exists) {
+            $this->runInstall();
+        }
+    }
 }

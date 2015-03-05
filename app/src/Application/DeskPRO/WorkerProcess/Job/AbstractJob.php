@@ -41,56 +41,55 @@ use Application\DeskPRO\Log\Logger;
  */
 abstract class AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+    const DEFAULT_INTERVAL = 3600;
 
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	protected $options;
+    /**
+     * @var \Orb\Util\OptionsArray
+     */
+    protected $options;
 
-	/**
-	 * @var \Application\DeskPRO\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Application\DeskPRO\Log\Logger
+     */
+    protected $logger;
 
-	final public function __construct(Logger $logger, array $options = null)
-	{
-		$this->options = new \Orb\Util\OptionsArray($options);
-		$this->logger = $logger;
-		$this->init();
-	}
-
-
-	protected function init() { }
+    final public function __construct(Logger $logger, array $options = null)
+    {
+        $this->options = new \Orb\Util\OptionsArray($options);
+        $this->logger = $logger;
+        $this->init();
+    }
 
 
-	/**
-	 * Run the task
-	 */
-	abstract public function run();
+    protected function init() { }
 
 
-	/**
-	 * Log a status message. These should include information about how many records
-	 * processed etc.
-	 *
-	 * @param string $message
-	 * @param array $details
-	 */
-	public function logStatus($message, array $details = array())
-	{
-		$details['flag'] = 'status';
-		$this->logger->log($message, Logger::INFO, $details);
-	}
+    /**
+     * Run the task
+     */
+    abstract public function run();
 
 
-	/**
-	 * Get the logger for this job
-	 *
-	 * @return \Application\DeskPRO\Log\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+    /**
+     * Log a status message. These should include information about how many records
+     * processed etc.
+     *
+     * @param string $message
+     * @param array  $details
+     */
+    public function logStatus($message, array $details = array())
+    {
+        $details['flag'] = 'status';
+        $this->logger->log($message, Logger::INFO, $details);
+    }
+
+    /**
+     * Get the logger for this job
+     *
+     * @return \Application\DeskPRO\Log\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 }

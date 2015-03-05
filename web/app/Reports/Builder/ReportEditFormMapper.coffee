@@ -1,42 +1,42 @@
 define [
-	'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util'
 ], (
-	Util
+  Util
 ) ->
-	class ReportEditFormMapper
+  class ReportEditFormMapper
 
-		###
-			#
- 		#
-		###
-		getFormFromModel: (model) ->
+    ###
+      #
+    #
+    ###
+    getFormFromModel: (model) ->
 
-			form = {}
-			form.id = model.report.id
-			form.title = model.report.title
-			form.description = model.report.description
+      form = {}
+      form.id = model.report.id
+      form.title = model.report.title
+      form.description = model.report.description
 
-			return form
-
-
-		###
-			#
-			#
-		###
-		applyFormToModel: (model, formModel) ->
-
-			model.title = formModel.title
+      return form
 
 
-		###
-			#
-			#
-		###
-		getPostDataFromForm: (formModel) ->
+    ###
+      #
+      #
+    ###
+    applyFormToModel: (model, formModel) ->
 
-			postData = {}
-			postData.id = formModel.id
-			postData.title = formModel.title
-			postData.description = formModel.description
+      model.title = formModel.title
 
-			return postData
+
+    ###
+      #
+      #
+    ###
+    getPostDataFromForm: (formModel) ->
+
+      postData = {}
+      postData.id = formModel.id
+      postData.title = formModel.title
+      postData.description = formModel.description
+
+      return postData

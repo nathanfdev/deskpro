@@ -39,129 +39,131 @@ use Doctrine\ORM\EntityManager;
 
 class GroupsDbLoader
 {
-	/**
-	 * @var int[]
-	 */
-	private $group_ids;
+    /**
+     * @var int[]
+     */
+    private $group_ids;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var array
-	 */
-	private $group_perms;
+    /**
+     * @var array
+     */
+    private $group_perms;
 
-	/**
-	 * @var array
-	 */
-	public static $prefix_map = array(
-		'tickets'   => 'ticket',
-		'chat'      => 'chat',
-		'feedback'  => 'feedback',
-		'articles'  => 'article',
-		'downloads' => 'download',
-		'news'      => 'news',
-	);
-
-
-	/**
-	 * @param int[] $groups  Group IDs or Usergroup objects
-	 * @param EntityManager $em
-	 */
-	public function __construct(array $groups, EntityManager $em)
-	{
-		$this->group_ids = array();
-
-		foreach ($groups as $g) {
-			if (is_object($g)) {
-				$this->group_ids[] = $g->id;
-			} else if (is_int($g) || ctype_digit($g)) {
-				$this->group_ids[] = (int)$g;
-			}
-		}
-
-		$this->em = $em;
-		$this->db = $em->getConnection();
-	}
+    /**
+     * @var array
+     */
+    public static $prefix_map = array(
+        'tickets'   => 'ticket',
+        'chat'      => 'chat',
+        'feedback'  => 'feedback',
+        'articles'  => 'article',
+        'downloads' => 'download',
+        'news'      => 'news',
+    );
 
 
-	/**
-	 * @param int $group_id
-	 * @return array
-	 */
-	private function getPermissions($group_id)
-	{
-		if ($this->group_perms !== null) {
-			return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
-		}
+    /**
+     * @param int[]         $groups Group IDs or Usergroup objects
+     * @param EntityManager $em
+     */
+    public function __construct(array $groups, EntityManager $em)
+    {
+        $this->group_ids = array();
 
-		if (!$this->group_ids) {
-			$this->group_perms = array();
-			return array();
-		}
+        foreach ($groups as $g) {
+            if (is_object($g)) {
+                $this->group_ids[] = $g->id;
+            } elseif (is_int($g) || ctype_digit($g)) {
+                $this->group_ids[] = (int)$g;
+            }
+        }
 
-		$perm_recs = $this->db->fetchAll("
-			SELECT name, usergroup_id
-			FROM permissions
-			WHERE usergroup_id IN (?)
-				AND value = 1
-		", array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
-
-		$this->group_perms = array();
-
-		foreach ($perm_recs as $rec) {
-			if (!isset($this->group_perms[$rec['usergroup_id']])) {
-				$this->group_perms[$rec['usergroup_id']] = array();
-			}
-
-			$this->group_perms[$rec['usergroup_id']][$rec['name']] = true;
-		}
-
-		return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
-	}
+        $this->em = $em;
+        $this->db = $em->getConnection();
+    }
 
 
-	/**
-	 * @param $group_id
-	 * @return UserPermissions
-	 */
-	public function getGroupPermissions($group_id)
-	{
-		$perms = $this->getPermissions($group_id);
-		return $this->createUserPermissions($perms);
-	}
+    /**
+     * @param  int   $group_id
+     * @return array
+     */
+    private function getPermissions($group_id)
+    {
+        if ($this->group_perms !== null) {
+            return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
+        }
+
+        if (!$this->group_ids) {
+            $this->group_perms = array();
+
+            return array();
+        }
+
+        $perm_recs = $this->db->fetchAll("
+            SELECT name, usergroup_id
+            FROM permissions
+            WHERE usergroup_id IN (?)
+                AND value = 1
+        ", array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
+
+        $this->group_perms = array();
+
+        foreach ($perm_recs as $rec) {
+            if (!isset($this->group_perms[$rec['usergroup_id']])) {
+                $this->group_perms[$rec['usergroup_id']] = array();
+            }
+
+            $this->group_perms[$rec['usergroup_id']][$rec['name']] = true;
+        }
+
+        return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
+    }
 
 
-	/**
-	 * @param array $perm_array
-	 * @return UserPermissions
-	 */
-	private function createUserPermissions(array $perm_array)
-	{
-		$user_perms = new UserPermissions();
+    /**
+     * @param $group_id
+     * @return UserPermissions
+     */
+    public function getGroupPermissions($group_id)
+    {
+        $perms = $this->getPermissions($group_id);
 
-		foreach ($perm_array as $k => $v) {
-			if (!$v) continue; // disabled
-			if (strpos($k, '.') === false) continue; // invalid
+        return $this->createUserPermissions($perms);
+    }
 
-			list ($type, $name) = explode('.', $k, 2);
-			if (!isset(self::$prefix_map[$type])) continue; // unknown type
 
-			$obj_name = self::$prefix_map[$type];
-			$obj = $user_perms->$obj_name;
-			if (!isset($obj->$name)) continue; // invalid;
+    /**
+     * @param  array           $perm_array
+     * @return UserPermissions
+     */
+    private function createUserPermissions(array $perm_array)
+    {
+        $user_perms = new UserPermissions();
 
-			$obj->$name = true;
-		}
+        foreach ($perm_array as $k => $v) {
+            if (!$v) continue; // disabled
+            if (strpos($k, '.') === false) continue; // invalid
 
-		return $user_perms;
-	}
+            list ($type, $name) = explode('.', $k, 2);
+            if (!isset(self::$prefix_map[$type])) continue; // unknown type
+
+            $obj_name = self::$prefix_map[$type];
+            $obj = $user_perms->$obj_name;
+            if (!isset($obj->$name)) continue; // invalid;
+
+            $obj->$name = true;
+        }
+
+        return $user_perms;
+    }
 }

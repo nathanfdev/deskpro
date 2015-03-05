@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352301179 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add email_uids table");
-		$this->execMutateSql("CREATE TABLE email_uids (id VARCHAR(100) NOT NULL, gateway_id INT DEFAULT NULL, date_created DATETIME NOT NULL, INDEX IDX_6D08D1BD577F8E00 (gateway_id), PRIMARY KEY(id)) ENGINE = InnoDB");
-		$this->execMutateSql("ALTER TABLE email_uids ADD CONSTRAINT FK_6D08D1BD577F8E00 FOREIGN KEY (gateway_id) REFERENCES email_gateways (id) ON DELETE CASCADE");
+    public function run()
+    {
+        $this->out("Add email_uids table");
+        $this->execMutateSql("CREATE TABLE email_uids (id VARCHAR(100) NOT NULL, gateway_id INT DEFAULT NULL, date_created DATETIME NOT NULL, INDEX IDX_6D08D1BD577F8E00 (gateway_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+        $this->execMutateSql("ALTER TABLE email_uids ADD CONSTRAINT FK_6D08D1BD577F8E00 FOREIGN KEY (gateway_id) REFERENCES email_gateways (id) ON DELETE CASCADE");
 
-		$this->out("Add email_gateways.keep_read");
-		$this->execMutateSql("ALTER TABLE email_gateways ADD keep_read TINYINT(1) NOT NULL");
+        $this->out("Add email_gateways.keep_read");
+        $this->execMutateSql("ALTER TABLE email_gateways ADD keep_read TINYINT(1) NOT NULL");
 
-		$this->out("Add email_sources.uid");
-		$this->execMutateSql("ALTER TABLE email_sources ADD uid VARCHAR(100) DEFAULT NULL");
-	}
+        $this->out("Add email_sources.uid");
+        $this->execMutateSql("ALTER TABLE email_sources ADD uid VARCHAR(100) DEFAULT NULL");
+    }
 }

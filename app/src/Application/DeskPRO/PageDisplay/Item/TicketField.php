@@ -36,8 +36,8 @@ namespace Application\DeskPRO\PageDisplay\Item;
 
 class TicketField extends TicketItemAbstract
 {
-	public function getType()
-	{
-		return 'ticket_field';
-	}
+    public function getType()
+    {
+        return 'ticket_field';
+    }
 }

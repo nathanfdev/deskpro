@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1363080840 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct ON DELETE action for sessions.visitor");
-		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
-		$this->execMutateSql("ALTER TABLE sessions DROP FOREIGN KEY FK_9A609D1370BEE6D");
-		$this->execMutateSql("ALTER TABLE sessions ADD CONSTRAINT FK_9A609D1370BEE6D FOREIGN KEY (visitor_id) REFERENCES visitors (id) ON DELETE SET NULL");
-		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
-	}
+    public function run()
+    {
+        $this->out("Correct ON DELETE action for sessions.visitor");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+        $this->execMutateSql("ALTER TABLE sessions DROP FOREIGN KEY FK_9A609D1370BEE6D");
+        $this->execMutateSql("ALTER TABLE sessions ADD CONSTRAINT FK_9A609D1370BEE6D FOREIGN KEY (visitor_id) REFERENCES visitors (id) ON DELETE SET NULL");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
+    }
 }

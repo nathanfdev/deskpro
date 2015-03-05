@@ -39,33 +39,34 @@ use Orb\Zip;
 
 class ZipperService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$type = dp_get_config('force_zip_adapter');
+    public static function create(DeskproContainer $container)
+    {
+        $type = dp_get_config('force_zip_adapter');
 
-		if (!$type) {
-			if (extension_loaded('Zip')) {
-				$type = 'zip';
-			} else if (extension_loaded('zlib')) {
-				$type = 'pcl_zip';
-			}
-		}
+        if (!$type) {
+            if (extension_loaded('Zip')) {
+                $type = 'zip';
+            } elseif (extension_loaded('zlib')) {
+                $type = 'pcl_zip';
+            }
+        }
 
-		switch ($type) {
-			case 'zip':
-				$adapter = new Zip\Adapter\ZipArchiveAdapter();
-				break;
+        switch ($type) {
+            case 'zip':
+                $adapter = new Zip\Adapter\ZipArchiveAdapter();
+                break;
 
-			case 'pcl_zip':
-				require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
-				$adapter = new Zip\Adapter\PclZipAdapter();
-				break;
+            case 'pcl_zip':
+                require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
+                $adapter = new Zip\Adapter\PclZipAdapter();
+                break;
 
-			default:
-				throw new Zip\ZipException("Zip and zlib extensions not installed, no way to zip", 0);
-		}
+            default:
+                throw new Zip\ZipException("Zip and zlib extensions not installed, no way to zip", 0);
+        }
 
-		$zip = new Zip\Zip($adapter);
-		return $zip;
-	}
+        $zip = new Zip\Zip($adapter);
+
+        return $zip;
+    }
 }

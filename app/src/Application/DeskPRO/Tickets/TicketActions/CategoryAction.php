@@ -40,99 +40,99 @@ use Application\DeskPRO\Entity\Ticket;
 
 class CategoryAction extends AbstractAction implements PermissionableAction
 {
-	/** @var int */
-	protected $category_id;
+    /** @var int */
+    protected $category_id;
 
-	public function __construct($category)
-	{
-		$this->category_id = $category;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$ticket['category_id'] = $this->category_id;
-	}
+    public function __construct($category)
+    {
+        $this->category_id = $category;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		if ($ticket->getCategoryId() == $this->category_id) {
-			return true;
-		}
-
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return false;
-		}
-
-		return true;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $ticket['category_id'] = $this->category_id;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket['category_id'] == $this->category_id) {
-			return array();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        if ($ticket->getCategoryId() == $this->category_id) {
+            return true;
+        }
 
-		return array(
-			array('action' => 'category', 'category_id' => $this->category_id)
-		);
-	}
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return false;
+        }
 
-
-	/**
-	 * Get the category id
-	 *
-	 * @return int
-	 */
-	public function getCategoryId()
-	{
-		return $this->category_id;
-	}
+        return true;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket['category_id'] == $this->category_id) {
+            return array();
+        }
+
+        return array(
+            array('action' => 'category', 'category_id' => $this->category_id)
+        );
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
+    /**
+     * Get the category id
+     *
+     * @return int
+     */
+    public function getCategoryId()
+    {
+        return $this->category_id;
+    }
 
-		if ($this->category_id == 0) {
-			return $tr->phrase('agent.tickets.remove_category_action');
-		} else {
-			$names = App::getEntityRepository('DeskPRO:TicketCategory')->getFullNames();
-			if (!isset($names[$this->category_id])) {
-				$name = "<error>Unknown #{$this->category_id}</error>";
-			} else {
-				$name = $names[$this->category_id];
-			}
 
-			return $tr->phrase('agent.tickets.set_category_action', array('category' => $name));
-		}
-	}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+
+        if ($this->category_id == 0) {
+            return $tr->phrase('agent.tickets.remove_category_action');
+        } else {
+            $names = App::getEntityRepository('DeskPRO:TicketCategory')->getFullNames();
+            if (!isset($names[$this->category_id])) {
+                $name = "<error>Unknown #{$this->category_id}</error>";
+            } else {
+                $name = $names[$this->category_id];
+            }
+
+            return $tr->phrase('agent.tickets.set_category_action', array('category' => $name));
+        }
+    }
 }

@@ -43,131 +43,132 @@ use Doctrine\ORM\EntityManager;
  */
 class GlossaryHandler
 {
-	/**
-	 * Entity manager
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * Entity manager
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * Plain database connection for raw queries
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * All words defined
-	 * @var array
-	 */
-	protected $_words = null;
+    /**
+     * All words defined
+     * @var array
+     */
+    protected $_words = null;
 
-	/**
-	 * @var array
-	 */
-	protected $_defs = array();
+    /**
+     * @var array
+     */
+    protected $_defs = array();
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-		$this->db = $em->getConnection();
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+        $this->db = $em->getConnection();
+    }
 
-	protected function _initWords()
-	{
-		if ($this->_words !== null) return;
+    protected function _initWords()
+    {
+        if ($this->_words !== null) return;
 
-		$this->_words = $this->db->fetchAllCol("
-			SELECT word
-			FROM glossary_words
-		");
-	}
+        $this->_words = $this->db->fetchAllCol("
+            SELECT word
+            FROM glossary_words
+        ");
+    }
 
-	public function clear()
-	{
-		$this->_defs = array();
-	}
+    public function clear()
+    {
+        $this->_defs = array();
+    }
 
-	public function loadWords(array $words)
-	{
-		if (!$words) {
-			return;
-		}
+    public function loadWords(array $words)
+    {
+        if (!$words) {
+            return;
+        }
 
-		$load = array_diff($words, array_keys($this->_defs));
-		if ($load) {
+        $load = array_diff($words, array_keys($this->_defs));
+        if ($load) {
 
-			$words = $this->db->fetchAllKeyValue("
-				SELECT word, glossary_word_definitions.definition
-				FROM glossary_words
-				INNER JOIN glossary_word_definitions ON (glossary_words.definition_id = glossary_word_definitions.id)
-				WHERE word IN (?)
-			", array($load), array(Connection::PARAM_STR_ARRAY));
+            $words = $this->db->fetchAllKeyValue("
+                SELECT word, glossary_word_definitions.definition
+                FROM glossary_words
+                INNER JOIN glossary_word_definitions ON (glossary_words.definition_id = glossary_word_definitions.id)
+                WHERE word IN (?)
+            ", array($load), array(Connection::PARAM_STR_ARRAY));
 
-			$this->_defs = array_merge($this->_defs, $words);
-		}
-	}
+            $this->_defs = array_merge($this->_defs, $words);
+        }
+    }
 
-	public function getWordDefs(array $words = array())
-	{
-		$this->loadWords($words);
-		return $this->_defs;
-	}
+    public function getWordDefs(array $words = array())
+    {
+        $this->loadWords($words);
 
-	/**
-	 * @param $text
-	 * @return array
-	 */
-	public function findWords($text)
-	{
-		$this->_initWords();
+        return $this->_defs;
+    }
 
-		$load = array();
-		foreach ($this->_words as $word) {
-			if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
-				$load[] = $word;
-			}
-		}
+    /**
+     * @param $text
+     * @return array
+     */
+    public function findWords($text)
+    {
+        $this->_initWords();
 
-		return $load;
-	}
+        $load = array();
+        foreach ($this->_words as $word) {
+            if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
+                $load[] = $word;
+            }
+        }
 
-	/**
-	 * @param $text
-	 * @return mixed
-	 */
-	public function processText($text)
-	{
-		$this->_initWords();
+        return $load;
+    }
 
-		$load = array();
-		foreach ($this->_words as $word) {
-			if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
-				$load[] = $word;
-			}
-		}
+    /**
+     * @param $text
+     * @return mixed
+     */
+    public function processText($text)
+    {
+        $this->_initWords();
 
-		$url_base = App::getRouter()->generate('agent_glossary_word_tip', array('word' => '__DP_WORD__'));
+        $load = array();
+        foreach ($this->_words as $word) {
+            if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
+                $load[] = $word;
+            }
+        }
 
-		foreach ($load as $word) {
-			$word_h = htmlentities($word);
-			$word_u = urlencode($word);
+        $url_base = App::getRouter()->generate('agent_glossary_word_tip', array('word' => '__DP_WORD__'));
 
-			$text = preg_replace_callback(
-				'#(\b)(' . preg_quote($word, '#') . ')(\b)#i',
-				function($m) use ($word_h, $word_u, $url_base) {
-					$url = str_replace('__DP_WORD__', $word_u, $url_base);
+        foreach ($load as $word) {
+            $word_h = htmlentities($word);
+            $word_u = urlencode($word);
 
-					return $m[1]
-						. '<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
-						. $m[2]
-						. '</span>'
-						. $m[3];
-				},
-				$text,
-				1
-			);
-		}
+            $text = preg_replace_callback(
+                '#(\b)(' . preg_quote($word, '#') . ')(\b)#i',
+                function ($m) use ($word_h, $word_u, $url_base) {
+                    $url = str_replace('__DP_WORD__', $word_u, $url_base);
 
-		return $text;
-	}
+                    return $m[1]
+                        . '<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
+                        . $m[2]
+                        . '</span>'
+                        . $m[3];
+                },
+                $text,
+                1
+            );
+        }
+
+        return $text;
+    }
 }

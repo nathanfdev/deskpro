@@ -45,27 +45,29 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckPerformer extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('person_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('person_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$context->getPersonContext()) {
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$context->getPersonContext()) {
+            return false;
+        }
 
-		$options = $this->getTermOptions();
-		return $this->isIntMatch($ticket, $context, TermValue::createWithValue($context->getPersonContext()->getId()), $options['person_ids']);
-	}
+        $options = $this->getTermOptions();
+
+        return $this->isIntMatch($ticket, $context, TermValue::createWithValue($context->getPersonContext()->getId()), $options['person_ids']);
+    }
 }

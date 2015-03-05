@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350748103 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add people.was_agent");
-		$this->execMutateSql("ALTER TABLE people ADD was_agent TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add people.was_agent");
+        $this->execMutateSql("ALTER TABLE people ADD was_agent TINYINT(1) NOT NULL");
+    }
 }

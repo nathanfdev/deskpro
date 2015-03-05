@@ -39,24 +39,24 @@ namespace Application\DeskPRO\Queue;
  */
 class Message extends \ZendQueue\Message
 {
-	/** @var bool */
-	protected $_has_init_qi = false;
+    /** @var bool */
+    protected $_has_init_qi = false;
 
-	public function __get($key)
-	{
-		if ($this->_has_init_qi) {
-			return parent::__get($key);
-		}
+    public function __get($key)
+    {
+        if ($this->_has_init_qi) {
+            return parent::__get($key);
+        }
 
-		if ($key == 'body') {
-			$this->_has_init_qi = true;
-			$match = null;
-			if (preg_match('#^<QueueItem:([0-9]+)>$#', $this->_data['body'])) {
-				$db = $this->getAdapter()->getDb();
-				$this->_data['body'] = $db->fetchColumn("SELECT data FROM queue_item WHERE id = ?", array($match[1]));
-			}
-		}
+        if ($key == 'body') {
+            $this->_has_init_qi = true;
+            $match = null;
+            if (preg_match('#^<QueueItem:([0-9]+)>$#', $this->_data['body'])) {
+                $db = $this->getAdapter()->getDb();
+                $this->_data['body'] = $db->fetchColumn("SELECT data FROM queue_item WHERE id = ?", array($match[1]));
+            }
+        }
 
-		return parent::__get($key);
-	}
+        return parent::__get($key);
+    }
 }

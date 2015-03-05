@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1363610723 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add text_snippets.shortcut_code");
-		$this->execMutateSql("ALTER TABLE text_snippets ADD shortcut_code VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add text_snippets.shortcut_code");
+        $this->execMutateSql("ALTER TABLE text_snippets ADD shortcut_code VARCHAR(255) NOT NULL");
+    }
 }

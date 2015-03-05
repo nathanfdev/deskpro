@@ -41,117 +41,118 @@ use Orb\Util\Urls;
 
 class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterface
 {
-	/**
-	 * @var string
-	 */
-	protected $cid;
+    /**
+     * @var string
+     */
+    protected $cid;
 
-	/**
-	 * @var string
-	 */
-	protected $cs;
+    /**
+     * @var string
+     */
+    protected $cs;
 
-	/**
-	 * @var string only authenticate users if their email is of this domain
-	 */
-	private $domain;
-
-
-	public function __construct($cid, $cs, $domain)
-	{
-		$this->cid = $cid;
-		$this->cs = $cs;
-		$this->domain = $domain;
-	}
+    /**
+     * @var string only authenticate users if their email is of this domain
+     */
+    private $domain;
 
 
-	/**
-	 * Initialize the auth process by setting state, and returning a redirect result.
-	 *
-	 * @return \Orb\Auth\Result
-	 */
-	protected function authenticateInitialize(StateHandlerInterface $state)
-	{
-		$client = $this->createClient();
-
-		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $client->createAuthUrl()));
-		return $result;
-	}
+    public function __construct($cid, $cs, $domain)
+    {
+        $this->cid = $cid;
+        $this->cs = $cs;
+        $this->domain = $domain;
+    }
 
 
+    /**
+     * Initialize the auth process by setting state, and returning a redirect result.
+     *
+     * @return \Orb\Auth\Result
+     */
+    protected function authenticateInitialize(StateHandlerInterface $state)
+    {
+        $client = $this->createClient();
 
-	/**
-	 * Process the callback and return a final result.
-	 *
-	 * @return \Orb\Auth\Result
-	 */
-	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
-	{
-		$client = $this->createClient();
+        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $client->createAuthUrl()));
 
-		if (isset($_GET['code'])) {
-			$client->authenticate($_GET['code']);
-
-			if ($access_token = $client->getAccessToken()) {
-				$attrs = $client->verifyIdToken()->getAttributes();
-
-				if ($this->domain && !Urls::verifyEmailDomain($attrs['payload']['email'], $this->domain)) {
-					return new Result(
-						Result::FAILURE, null,
-						array(
-							'error_code' => 'invalid_argument',
-							'error_message' => 'email does not match specified domain'
-						)
-					);
-				}
-
-				$identity = new Identity(
-					$attrs['payload']['id'],
-					array(
-						'email'          => $attrs['payload']['email'],
-						'email_verified' => $attrs['payload']['email_verified'],
-						'id'             => $attrs['payload']['id']
-					)
-				);
-				$identity->setFriendlyIdentity($attrs['payload']['email']);
-
-				return new Result(Result::SUCCESS, $identity);
-			} else {
-				return new Result(
-					Result::FAILURE, null,
-					array('error_code' => 'invalid_argument', 'error_message' => 'no code provided')
-				);
-			}
-		}
-
-		return new Result(
-			Result::FAILURE, null, array('error_code' => 'invalid_argument', 'error_message' => 'no code provided')
-		);
-	}
+        return $result;
+    }
 
 
-	/**
-	 * @return \Google_Client
-	 */
-	protected function createClient()
-	{
-		$client = new \Google_Client();
-		$client->setClientId($this->cid);
-		$client->setClientSecret($this->cs);
-		$client->setRedirectUri($this->getCallbackUrl());
-		$client->setScopes('email');
 
-		return $client;
-	}
+    /**
+     * Process the callback and return a final result.
+     *
+     * @return \Orb\Auth\Result
+     */
+    protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
+    {
+        $client = $this->createClient();
+
+        if (isset($_GET['code'])) {
+            $client->authenticate($_GET['code']);
+
+            if ($access_token = $client->getAccessToken()) {
+                $attrs = $client->verifyIdToken()->getAttributes();
+
+                if ($this->domain && !Urls::verifyEmailDomain($attrs['payload']['email'], $this->domain)) {
+                    return new Result(
+                        Result::FAILURE, null,
+                        array(
+                            'error_code' => 'invalid_argument',
+                            'error_message' => 'email does not match specified domain'
+                        )
+                    );
+                }
+
+                $identity = new Identity(
+                    $attrs['payload']['id'],
+                    array(
+                        'email'          => $attrs['payload']['email'],
+                        'email_verified' => $attrs['payload']['email_verified'],
+                        'id'             => $attrs['payload']['id']
+                    )
+                );
+                $identity->setFriendlyIdentity($attrs['payload']['email']);
+
+                return new Result(Result::SUCCESS, $identity);
+            } else {
+                return new Result(
+                    Result::FAILURE, null,
+                    array('error_code' => 'invalid_argument', 'error_message' => 'no code provided')
+                );
+            }
+        }
+
+        return new Result(
+            Result::FAILURE, null, array('error_code' => 'invalid_argument', 'error_message' => 'no code provided')
+        );
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getExtraDetails()
-	{
-		return array(
-			'callback_url' => $this->getCallbackUrl()
-		);
-	}
+    /**
+     * @return \Google_Client
+     */
+    protected function createClient()
+    {
+        $client = new \Google_Client();
+        $client->setClientId($this->cid);
+        $client->setClientSecret($this->cs);
+        $client->setRedirectUri($this->getCallbackUrl());
+        $client->setScopes('email');
+
+        return $client;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getExtraDetails()
+    {
+        return array(
+            'callback_url' => $this->getCallbackUrl()
+        );
+    }
 }

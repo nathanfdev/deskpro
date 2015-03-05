@@ -41,28 +41,28 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ElasticaClientPass implements CompilerPassInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function process(ContainerBuilder $container)
-	{
-		if (!$container->hasDefinition('fos_elastica.client.default')) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function process(ContainerBuilder $container)
+    {
+        if (!$container->hasDefinition('fos_elastica.client.default')) {
+            return;
+        }
 
-		$definition = $container->getDefinition('fos_elastica.client.default');
-		$definition->setClass('Application\\DeskPRO\\Elastica\\Client');
-		$definition->setFactoryService('deskpro.elastica.client_factory');
-		$definition->setFactoryMethod('createSystemClientByConfig');
+        $definition = $container->getDefinition('fos_elastica.client.default');
+        $definition->setClass('Application\\DeskPRO\\Elastica\\Client');
+        $definition->setFactoryService('deskpro.elastica.client_factory');
+        $definition->setFactoryMethod('createSystemClientByConfig');
 
-		$indexFactoryDef = new Definition('Application\\DeskPRO\\Elastica\\IndexFactory');
-		$indexFactoryDef->setArguments(array(new Reference('fos_elastica.client.default')));
-		$container->setDefinition('deskpro.elastica.default_index_factory', $indexFactoryDef);
+        $indexFactoryDef = new Definition('Application\\DeskPRO\\Elastica\\IndexFactory');
+        $indexFactoryDef->setArguments(array(new Reference('fos_elastica.client.default')));
+        $container->setDefinition('deskpro.elastica.default_index_factory', $indexFactoryDef);
 
-		$indexDef = new Definition('Elastica\\Index');
-		$indexDef->setFactoryService('deskpro.elastica.default_index_factory');
-		$indexDef->setFactoryMethod('getIndex');
-		$indexDef->setArguments(array('deskpro'));
-		$container->setDefinition('fos_elastica.index.deskpro', $indexDef);
-	}
+        $indexDef = new Definition('Elastica\\Index');
+        $indexDef->setFactoryService('deskpro.elastica.default_index_factory');
+        $indexDef->setFactoryMethod('getIndex');
+        $indexDef->setArguments(array('deskpro'));
+        $container->setDefinition('fos_elastica.index.deskpro', $indexDef);
+    }
 }

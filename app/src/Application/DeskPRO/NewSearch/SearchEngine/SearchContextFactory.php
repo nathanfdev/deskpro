@@ -32,52 +32,52 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class SearchContextFactory
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function __construct(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
 
-	/**
-	 * @param Person $person
-	 * @return SearchContextInterface
-	 */
-	public function createUserSearchContext(Person $person)
-	{
-		$context = new SearchContext();
+    /**
+     * @param  Person                 $person
+     * @return SearchContextInterface
+     */
+    public function createUserSearchContext(Person $person)
+    {
+        $context = new SearchContext();
 
-		$person->loadHelper('PermissionsManager');
+        $person->loadHelper('PermissionsManager');
 
-		if ($person && !$person->isGuest()) {
-			$context->setPerson($person);
-		}
+        if ($person && !$person->isGuest()) {
+            $context->setPerson($person);
+        }
 
-		if ($person->hasPerm('articles.use')) {
-			$ids = $person->PermissionsManager->ArticleCategories->getAllowedCategories();
-			$context->setArticleCategoryIds($ids);
-		}
-		if ($person->hasPerm('feedback.use')) {
-			$ids = $person->PermissionsManager->FeedbackCategories->getAllowedCategories();
-			$context->setFeedbackCategoryIds($ids);
-		}
-		if ($person->hasPerm('news.use')) {
-			$ids = $person->PermissionsManager->NewsCategories->getAllowedCategories();
-			$context->setNewsCategoryIds($ids);
-		}
-		if ($person->hasPerm('downloads.use')) {
-			$ids = $person->PermissionsManager->DownloadCategories->getAllowedCategories();
-			$context->setDownloadCategoryIds($ids);
-		}
+        if ($person->hasPerm('articles.use')) {
+            $ids = $person->PermissionsManager->ArticleCategories->getAllowedCategories();
+            $context->setArticleCategoryIds($ids);
+        }
+        if ($person->hasPerm('feedback.use')) {
+            $ids = $person->PermissionsManager->FeedbackCategories->getAllowedCategories();
+            $context->setFeedbackCategoryIds($ids);
+        }
+        if ($person->hasPerm('news.use')) {
+            $ids = $person->PermissionsManager->NewsCategories->getAllowedCategories();
+            $context->setNewsCategoryIds($ids);
+        }
+        if ($person->hasPerm('downloads.use')) {
+            $ids = $person->PermissionsManager->DownloadCategories->getAllowedCategories();
+            $context->setDownloadCategoryIds($ids);
+        }
 
-		return $context;
-	}
+        return $context;
+    }
 }

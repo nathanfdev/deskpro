@@ -34,7 +34,6 @@
 
 namespace Application\UserBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketDisplay;
@@ -45,191 +44,208 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TicketViewController extends AbstractController
 {
-	###########################################################################
-	# load
-	###########################################################################
+    ###########################################################################
+    # load
+    ###########################################################################
 
-	/**
-	 * Loader action takes one of: ticket ID, ref, TAC or PTAC.
-	 *
-	 * With ID or Ref, the user must be logged in. TAC or PTAC shows the
-	 * "guest view" of a ticket.
-	 *
-	 * @param string|int $ticket_id
-	 */
-	public function loadAction($ticket_ref, array $display_data = array())
-	{
-		if ($this->person['id']) {
-			$try_order = array('id', 'ref', 'ptac');
-		} else {
-			// People who arent logged in we can try ptac first to save a query
-			// (since ref and ptac could look smiliar based on ref format, we'd have to check two)
-			$try_order = array('id', 'ptac', 'ref');
-		}
+    /**
+     * Loader action takes one of: ticket ID, ref, TAC or PTAC.
+     *
+     * With ID or Ref, the user must be logged in. TAC or PTAC shows the
+     * "guest view" of a ticket.
+     *
+     * @param string|int $ticket_id
+     */
+    public function loadAction($ticket_ref, array $display_data = array())
+    {
+        if ($this->person['id']) {
+            $try_order = array('id', 'ref', 'ptac');
+        } else {
+            // People who arent logged in we can try ptac first to save a query
+            // (since ref and ptac could look smiliar based on ref format, we'd have to check two)
+            $try_order = array('id', 'ptac', 'ref');
+        }
 
-		$return = $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket_ref));
+        $return = $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket_ref));
 
-		foreach ($try_order as $lookup_type) {
-			switch ($lookup_type) {
-				case 'id':
-					if (Numbers::isInteger($ticket_ref)) {
-						$ticket = $this->em->find('DeskPRO:Ticket', $ticket_ref);
-						if ($ticket) {
-							return $this->viewTicket($ticket, $display_data);
-						}
-					}
-					break;
+        foreach ($try_order as $lookup_type) {
+            switch ($lookup_type) {
+                case 'id':
+                    if (Numbers::isInteger($ticket_ref)) {
+                        $ticket = $this->em->find('DeskPRO:Ticket', $ticket_ref);
+                        if ($ticket) {
+                            return $this->viewTicket($ticket, $display_data);
+                        }
+                    }
+                    break;
 
-				case 'ref':
-					$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
-					if ($ticket) {
-						return $this->viewTicket($ticket, $display_data);
-					}
-					break;
+                case 'ref':
+                    $ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+                    if ($ticket) {
+                        return $this->viewTicket($ticket, $display_data);
+                    }
+                    break;
 
-				case 'ptac':
+                case 'ptac':
 
-					$ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
+                    $ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
 
-					if ($ticket) {
-						// If they arent a user they can register now
-						if ($ticket && $this->person->isGuest()) {
+                    if ($ticket) {
+                        // If they arent a user they can register now
+                        if ($ticket && $this->person->isGuest()) {
 
-							if ($this->container->getDataService('Language')->isMultiLang()) {
-								if (
-									$ticket->person->getRealLanguage()
-									&& $ticket->person->getRealLanguage()->getId() != $this->session->get('language_id')
-									&& $ticket->person->getRealLanguage()->getId() != $this->container->getDataService('Language')->getDefault()->getId()
-								) {
-									$this->session->set('language_id', $ticket->person->getRealLanguage()->getId());
-									$this->session->save();
+                            if ($this->container->getDataService('Language')->isMultiLang()) {
+                                if (
+                                    $ticket->person->getRealLanguage()
+                                    && $ticket->person->getRealLanguage()->getId() != $this->session->get('language_id')
+                                    && $ticket->person->getRealLanguage()->getId() != $this->container->getDataService('Language')->getDefault()->getId()
+                                ) {
+                                    $this->session->set('language_id', $ticket->person->getRealLanguage()->getId());
+                                    $this->session->save();
 
-									// Reload self
-									return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
-								}
-							}
+                                    // Reload self
+                                    return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+                                }
+                            }
 
-							$this->session->set('ticket_from_ptac_register', $ticket->getPublicId());
-							$this->session->save();
+                            $this->session->set('ticket_from_ptac_register', $ticket->getPublicId());
+                            $this->session->save();
 
-							$tpl_globals = $this->container->get('templating.globals');
+                            $tpl_globals = $this->container->get('templating.globals');
 
-							// If they have a password it means
-							// they have a local DeskPRO account
-							if ($ticket->person->password) {
-								if ($ticket->person_email) {
-									$tpl_globals->setVariable('login_with_email', $ticket->person_email->email);
-								} elseif ($ticket->person && $ticket->person->getPrimaryEmailAddress()) {
-									$tpl_globals->setVariable('login_with_email', $ticket->person->getPrimaryEmailAddress());
-								}
+                            // If they have a password it means
+                            // they have a local DeskPRO account
+                            if ($ticket->person->password) {
+                                if ($ticket->person_email) {
+                                    $tpl_globals->setVariable('login_with_email', $ticket->person_email->email);
+                                } elseif ($ticket->person && $ticket->person->getPrimaryEmailAddress()) {
+                                    $tpl_globals->setVariable('login_with_email', $ticket->person->getPrimaryEmailAddress());
+                                }
 
-							// Otherwise, they might have an account
-							// from elsewhere (eg active directory)
-							} else {
-								foreach ($ticket->person->usersource_assoc as $us) {
-									if ($us->identity_friendly) {
-										$tpl_globals->setVariable('login_with_email', $us->identity_friendly);
-										break;
-									}
-								}
-							}
+                            // Otherwise, they might have an account
+                            // from elsewhere (eg active directory)
+                            } else {
+                                $account_name = null;
+                                foreach ($ticket->person->usersource_assoc as $us) {
+                                    if ($us->identity_friendly) {
+                                        $account_name = $us->identity_friendly;
+                                        break;
+                                    }
+                                }
 
-							$type = 'login';
-							if (!$ticket->person->is_user) {
-								$type = 'register';
-							}
+                                // - If the friendly identity looks like an email address
+                                // but the user does not have that address on their account,
+                                // then just fallback to using the one on their account which sholud
+                                // map to the correct user anyway.
+                                // - This is to fix a certain kind of bug where the friendly identity
+                                // in AD might have been the users full account name (user@network)
+                                if (strpos($account_name, '@') !== false) {
+                                    if (!$ticket->person->hasEmailAddress($account_name)) {
+                                        $account_name = $ticket->person->getPrimaryEmailAddress();
+                                    }
+                                }
 
-							return $this->renderLoginOrPermissionError($return, $type);
-						}
+                                if ($account_name) {
+                                    $tpl_globals->setVariable('login_with_email', $account_name);
+                                }
+                            }
 
-						if ($ticket->person->getId() == $this->person->getId() || $ticket->hasParticipantPerson($this->person)) {
-							return $this->viewTicket($ticket, $display_data);
-						} else {
-							// If they came here through the access code but arent on the ticket,
-							// then we need to add them so they can see it
-							if ($this->in->getBool('join')) {
+                            $type = 'login';
+                            if (!$ticket->person->is_user) {
+                                $type = 'register';
+                            }
 
-								$part = $ticket->addParticipantPerson($this->person);
-								if ($part) {
-									$this->em->persist($part);
-								}
-								$this->em->persist($ticket);
-								$this->em->flush();
+                            return $this->renderLoginOrPermissionError($return, $type);
+                        }
 
-								return $this->viewTicket($ticket, $display_data);
-							} else {
-								return $this->render('UserBundle:TicketView:part-join.html.twig', array(
-									'ticket' => $ticket,
-									'request_ref' => $ticket_ref,
-								));
-							}
-						}
-					}
-					break;
-			}
-		}
+                        if ($ticket->person->getId() == $this->person->getId() || $ticket->hasParticipantPerson($this->person)) {
+                            return $this->viewTicket($ticket, $display_data);
+                        } else {
+                            // If they came here through the access code but arent on the ticket,
+                            // then we need to add them so they can see it
+                            if ($this->in->getBool('join')) {
 
-		return $this->renderLoginOrPermissionError($return);
-	}
+                                $part = $ticket->addParticipantPerson($this->person);
+                                if ($part) {
+                                    $this->em->persist($part);
+                                }
+                                $this->em->persist($ticket);
+                                $this->em->flush();
 
-	###########################################################################
-	# viewTicket
-	###########################################################################
+                                return $this->viewTicket($ticket, $display_data);
+                            } else {
+                                return $this->render('UserBundle:TicketView:part-join.html.twig', array(
+                                    'ticket' => $ticket,
+                                    'request_ref' => $ticket_ref,
+                                ));
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
 
-	/**
-	 * View a ticket without a user session
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function viewTicket(Ticket $ticket, array $display_data = array())
-	{
-		/** @var Request $request */
-		$request = $this->get('request');
+        return $this->renderLoginOrPermissionError($return);
+    }
+
+    ###########################################################################
+    # viewTicket
+    ###########################################################################
+
+    /**
+     * View a ticket without a user session
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function viewTicket(Ticket $ticket, array $display_data = array())
+    {
+        /** @var Request $request */
+        $request = $this->get('request');
         $is_pdf = $this->in->getBool('pdf');
 
-		$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
-		$is_org_manager = (
-			$ticket->organization
-			&& $this->person->organization
-			&& $ticket->organization->id == $this->person->organization->id
-			&& $this->person->organization_manager
-		);
+        $is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
+        $is_org_manager = (
+            $ticket->organization
+            && $this->person->organization
+            && $ticket->organization->id == $this->person->organization->id
+            && $this->person->organization_manager
+        );
 
-		if (!$is_participant && !$is_org_manager) {
-			return $this->renderStandardError(null, null, 403);
-		}
+        if (!$is_participant && !$is_org_manager) {
+            return $this->renderStandardError(null, null, 403);
+        }
 
-		$can_edit = $ticket->person === $this->person;
-		if (!$can_edit && ($this->in->getBool('edit') || $this->in->getBool('process'))) {
-			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
-		}
+        $can_edit = $ticket->person === $this->person;
+        if (!$can_edit && ($this->in->getBool('edit') || $this->in->getBool('process'))) {
+            return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+        }
 
-		$ticket_display = new TicketDisplay($ticket, $this->person);
-		$vars = $ticket_display->getDisplayArray();
+        $ticket_display = new TicketDisplay($ticket, $this->person);
+        $vars = $ticket_display->getDisplayArray();
 
-		$vars['is_participant'] = $is_participant;
-		$vars['is_org_manager'] = $is_org_manager;
+        $vars['is_participant'] = $is_participant;
+        $vars['is_org_manager'] = $is_org_manager;
 
-		$newreply_form = $this->get('form.factory')->create(new NewTicketReplyType());
-		$vars['newreply_form'] = $newreply_form->createView();
+        $newreply_form = $this->get('form.factory')->create(new NewTicketReplyType());
+        $vars['newreply_form'] = $newreply_form->createView();
 
-		if ($display_data) {
-			$vars = array_merge($vars, $display_data);
-		}
+        if ($display_data) {
+            $vars = array_merge($vars, $display_data);
+        }
 
-		$user_participants = $ticket->getUserParticipants();
-		$vars['user_participants'] = $user_participants;
+        $user_participants = $ticket->getUserParticipants();
+        $vars['user_participants'] = $user_participants;
 
-		$layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
-		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+        $layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
+        $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 
-		// new custom fields
-		$new_field_manager = $this->container->getCustomFieldManager();
-		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $this->person, $layout);
-		if ($org = $this->person->organization) {
-			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, $layout));
-		}
-		$vars['new_custom_fields'] = $new_custom_fields->createView();
+        // new custom fields
+        $new_field_manager = $this->container->getCustomFieldManager();
+        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+        if ($org = $ticket->person->organization) {
+            $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, $layout));
+        }
+        $vars['new_custom_fields'] = $new_custom_fields->createView();
 
         if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_user:view_ticket.html.twig', $vars);
@@ -259,9 +275,7 @@ class TicketViewController extends AbstractController
 
             if($this->in->getBool('html')) {
                 $response->setContent($content_html);
-            }
-            else
-            {
+            } else {
                 $response->setContent($pdf);
                 $response->headers->set('Content-Type', 'application/pdf');
                 $response->headers->set('Content-Disposition', 'attachment; filename=Ticket-'.$ticket->id.'.pdf');
@@ -270,95 +284,107 @@ class TicketViewController extends AbstractController
             return $response;
         }
 
-		$vars['page_display'] = $layout;
+        $vars['page_display'] = $layout;
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
-		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-		$user_field_manager = $this->container->getSystemService('person_fields_manager');
-		$custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('custom_user_fields', 'form');
-		$custom_user_fields = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
+        $user_field_manager = $this->container->getSystemService('person_fields_manager');
+        $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('custom_user_fields', 'form');
+        $custom_user_fields = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
 
-		$tpl = 'UserBundle:TicketView:view.html.twig';
-		if ($this->in->getBool('edit')) {
+        // new custom fields, without layout (handled on client side)
+        $new_field_manager = $this->container->getCustomFieldManager();
+        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $this->person);
+        if ($org = $this->person->organization) {
+            $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org));
+        }
 
-			$newticket = new \Application\DeskPRO\Tickets\EditTicket\EditTicket(
-				$ticket
-			);
-			$newticket_formtype = new \Application\UserBundle\Form\EditTicketType($this->person);
-			$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+        $tpl = 'UserBundle:TicketView:view.html.twig';
+        if ($this->in->getBool('edit')) {
 
-			$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
-			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+            $newticket = new \Application\DeskPRO\Tickets\EditTicket\EditTicket(
+                $ticket
+            );
+            $newticket_formtype = new \Application\UserBundle\Form\EditTicketType($this->person);
+            $form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-			$default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
-			$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::EDIT_TICKET, $ticket);
+            $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+            $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 
-			if ($default_page) {
-				$page_data_field_ids = array();
-				foreach ($default_page as $field) {
-					$page_data_field_ids[] = $field->getId();
-				}
-			} else {
-				$page_data_field_ids = array();
-			}
+            $default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
+            $default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::EDIT_TICKET, $ticket);
 
-			$unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
+            if ($default_page) {
+                $page_data_field_ids = array();
+                foreach ($default_page as $field) {
+                    $page_data_field_ids[] = $field->getId();
+                }
+            } else {
+                $page_data_field_ids = array();
+            }
 
-			$errors = array();
-			$error_fields = array();
+            $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
-			if ($this->in->getBool('process')) {
+            $errors = array();
+            $error_fields = array();
 
-				$newticket->setLayout($default_page);
+            if ($this->in->getBool('process')) {
 
-				$validator = new \Application\UserBundle\Validator\NewTicketValidator();
-				$validator->enableEditMode();
-				$validator->setLayout($default_page);
-				$form->handleRequest($request);
+                $newticket->setLayout($default_page);
 
-				if (!$request->request->has($new_custom_fields->getName())) {
-					$request->request->set($new_custom_fields->getName(), array());
-				}
-				$new_custom_fields->handleRequest($request);
+                $validator = new \Application\UserBundle\Validator\NewTicketValidator();
+                $validator->enableEditMode();
+                $validator->setLayout($default_page);
+                $form->handleRequest($request);
 
-				$newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
-				$newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
+                $newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
+                $newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 
-				if ($validator->isValid($newticket) && $new_custom_fields->isValid()) {
-					$newticket->save();
+                if ($validator->isValid($newticket)) {
+                    $newticket->save();
 
-					$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
-					if (!$is_participant && !$is_org_manager) {
-						// removed self from the ticket, so redirect to the main page
-						return $this->redirectRoute('user');
-					}
+                    if (!$request->request->has($new_custom_fields->getName())) {
+                        $request->request->set($new_custom_fields->getName(), array());
+                    }
+                    $new_custom_fields->handleRequest($request);
+                    if ($new_custom_fields->isValid()) {
+                        $new_field_manager->flush($new_custom_fields);
+                    }
 
-					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
-				} else {
-					$errors = $validator->getErrors(true);
-					$error_fields = $validator->getErrorGroups(true);
-				}
-			}
+                    $is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
+                    if (!$is_participant && !$is_org_manager) {
+                        // removed self from the ticket, so redirect to the main page
+                        return $this->redirectRoute('user');
+                    }
 
-			$vars = array_merge($vars, array(
-				'page_data_field_ids' => $page_data_field_ids,
-				'all_items' => $unique_items,
+                    return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+                } else {
+                    $errors = $validator->getErrors(true);
+                    $error_fields = $validator->getErrorGroups(true);
+                }
+            }
 
-				'form' => $form->createView(),
-				'newticket' => $newticket,
-				'custom_fields' => $custom_fields,
-				'custom_user_fields' => $custom_user_fields,
-				'errors' => $errors,
-				'error_fields' => $error_fields,
-				'ticket_display_js' => $ticket_display_js,
-			));
+            $vars = array_merge($vars, array(
+                'page_data_field_ids' => $page_data_field_ids,
+                'all_items' => $unique_items,
 
-			$tpl = 'UserBundle:TicketView:view-modify.html.twig';
-		}
+                'form' => $form->createView(),
+                'newticket' => $newticket,
+                'custom_fields' => $custom_fields,
+                'custom_user_fields' => $custom_user_fields,
+                'errors' => $errors,
+                'error_fields' => $error_fields,
+                'ticket_display_js' => $ticket_display_js,
 
-		$vars['can_edit'] = $can_edit;
+                'new_custom_fields' => $new_custom_fields->createView(),
+            ));
 
-		return $this->render($tpl, $vars);
-	}
+            $tpl = 'UserBundle:TicketView:view-modify.html.twig';
+        }
+
+        $vars['can_edit'] = $can_edit;
+
+        return $this->render($tpl, $vars);
+    }
 }

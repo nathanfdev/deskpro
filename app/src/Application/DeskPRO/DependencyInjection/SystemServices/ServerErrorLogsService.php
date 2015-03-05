@@ -39,9 +39,10 @@ use Application\DeskPRO\ServerErrorLogs\ServerErrorLogs;
 
 class ServerErrorLogsService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ServerErrorLogs($container->getEm());
+
         return $x;
-	}
+    }
 }

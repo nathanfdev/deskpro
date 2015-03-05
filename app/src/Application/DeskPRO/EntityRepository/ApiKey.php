@@ -38,128 +38,127 @@ use Application\DeskPRO\App;
 
 class ApiKey extends AbstractEntityRepository
 {
-	/**
-	 * Find an API key based off of a key string. A key string is: "id:code"
-	 *
-	 * @param string $key_string
-	 * @return ApiKey
-	 */
+    /**
+     * Find an API key based off of a key string. A key string is: "id:code"
+     *
+     * @param  string $key_string
+     * @return ApiKey
+     */
 
-	public function findByKeyString($key_string)
-	{
-		if (strpos($key_string, ':') === false) return null;
-		
-		list ($id, $code) = explode(':', $key_string, 2);
+    public function findByKeyString($key_string)
+    {
+        if (strpos($key_string, ':') === false) return null;
 
-		$apikey = $this->find($id);
-		if (!$apikey) return null;
-		if ($apikey['code'] != $code) return null;
+        list ($id, $code) = explode(':', $key_string, 2);
 
-		return $apikey;
-	}
+        $apikey = $this->find($id);
+        if (!$apikey) return null;
+        if ($apikey['code'] != $code) return null;
+        return $apikey;
+    }
 
-	/**
-	 * @return ApiKey[]
-	 */
+    /**
+     * @return ApiKey[]
+     */
 
-	public function getAllApiKeys()
-	{
-		return $this->_em->createQuery('
-			SELECT k
-			FROM DeskPRO:ApiKey k
-			LEFT JOIN k.person p
-			ORDER BY p.name
-		')->execute();
-	}
+    public function getAllApiKeys()
+    {
+        return $this->_em->createQuery('
+            SELECT k
+            FROM DeskPRO:ApiKey k
+            LEFT JOIN k.person p
+            ORDER BY p.name
+        ')->execute();
+    }
 
-	/**
-	 * @param array $ids
-	 *
-	 * @return array
-	 */
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
 
-	public function getApiKeyTitles(array $ids = null)
-	{
-		$output = array();
-		foreach ($this->getAllApiKeys() AS $key) {
-			if ($ids === null || in_array($key->id, $ids)) {
-				$output[$key->id] = ($key->person ? $key->person->display_name : 'Super User')
-					. ($key->note ? " ($key->note)" : '');
-			}
-		}
+    public function getApiKeyTitles(array $ids = null)
+    {
+        $output = array();
+        foreach ($this->getAllApiKeys() AS $key) {
+            if ($ids === null || in_array($key->id, $ids)) {
+                $output[$key->id] = ($key->person ? $key->person->display_name : 'Super User')
+                    . ($key->note ? " ($key->note)" : '');
+            }
+        }
 
-		return $output;
-	}
+        return $output;
+    }
 
-	/**
-	 * @return mixed
-	 */
+    /**
+     * @return mixed
+     */
 
-	public function countApiKeys()
-	{
-		return App::getDb()->fetchColumn('
-			SELECT COUNT(*)
-			FROM api_keys
-		');
-	}
+    public function countApiKeys()
+    {
+        return App::getDb()->fetchColumn('
+            SELECT COUNT(*)
+            FROM api_keys
+        ');
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\ApiKey $api_key
-	 *
-	 * @return array
-	 */
+    /**
+     * @param \Application\DeskPRO\Entity\ApiKey $api_key
+     *
+     * @return array
+     */
 
-	public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiKey $api_key)
-	{
-		$rate_limit = App::getDb()->fetchAssoc(
-			"
-						SELECT *
-						FROM api_key_rate_limit
-						WHERE api_key_id = ?
-					",
-			array($api_key->id)
-		);
+    public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiKey $api_key)
+    {
+        $rate_limit = App::getDb()->fetchAssoc(
+            "
+                        SELECT *
+                        FROM api_key_rate_limit
+                        WHERE api_key_id = ?
+                    ",
+            array($api_key->id)
+        );
 
-		if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
-			App::getDb()->delete(
-				'api_key_rate_limit',
-				array(
-					 'api_key_id' => $api_key->id
-				)
-			);
-		}
+        if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
+            App::getDb()->delete(
+                'api_key_rate_limit',
+                array(
+                     'api_key_id' => $api_key->id
+                )
+            );
+        }
 
-		$interval = (int) App::getSetting('core.api_rate_limit_interval');
-		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
-			$rate_limit = array(
-				'api_key_id'    => $api_key->id,
-				'hits'          => 0,
-				'created_stamp' => time(),
-				'reset_stamp'   => time() + $interval
-			);
-		}
+        $interval = (int) App::getSetting('core.api_rate_limit_interval');
+        if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
+            $rate_limit = array(
+                'api_key_id'    => $api_key->id,
+                'hits'          => 0,
+                'created_stamp' => time(),
+                'reset_stamp'   => time() + $interval
+            );
+        }
 
-		return $rate_limit;
-	}
+        return $rate_limit;
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\ApiKey $api_key
-	 */
+    /**
+     * @param \Application\DeskPRO\Entity\ApiKey $api_key
+     */
 
-	public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
-	{
-		$time = time();
-		$interval = (int) App::getSetting('core.api_rate_limit_interval');
+    public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
+    {
+        $time = time();
+        $interval = (int) App::getSetting('core.api_rate_limit_interval');
 
-		App::getDb()->executeUpdate(
-			"
-						INSERT INTO api_key_rate_limit
-							(api_key_id, hits, created_stamp, reset_stamp)
-						VALUES
-							(?, 1, ?, ?)
-						ON DUPLICATE KEY UPDATE hits = hits + 1
-					",
-			array($api_key->id, $time, $time + $interval)
-		);
-	}
+        App::getDb()->executeUpdate(
+            "
+                        INSERT INTO api_key_rate_limit
+                            (api_key_id, hits, created_stamp, reset_stamp)
+                        VALUES
+                            (?, 1, ?, ?)
+                        ON DUPLICATE KEY UPDATE hits = hits + 1
+                    ",
+            array($api_key->id, $time, $time + $interval)
+        );
+    }
 }

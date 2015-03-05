@@ -43,27 +43,27 @@ use Application\DeskPRO\Log\Logger;
  */
 class Standard extends AbstractRunner
 {
-	/** @var bool */
-	protected $is_verbose = false;
-	public function setVerbose()
-	{
-		$this->is_verbose = true;
-	}
+    /** @var bool */
+    protected $is_verbose = false;
+    public function setVerbose()
+    {
+        $this->is_verbose = true;
+    }
 
-	public function _initLogger(Logger $logger, Entity\WorkerJob $worker_job)
-	{
-		if ($this->is_verbose) {
-			if (isset($GLOBALS['DP_OUTPUT'])) {
-				$out_writer = new \Orb\Log\Writer\ConsoleOutputWriter($GLOBALS['DP_OUTPUT']);
-			} else {
-				$out_writer = new \Orb\Log\Writer\Stream('php://stdout');
-			}
-			$logger->addWriter($out_writer);
-		}
+    public function _initLogger(Logger $logger, Entity\WorkerJob $worker_job)
+    {
+        if ($this->is_verbose) {
+            if (isset($GLOBALS['DP_OUTPUT'])) {
+                $out_writer = new \Orb\Log\Writer\ConsoleOutputWriter($GLOBALS['DP_OUTPUT']);
+            } else {
+                $out_writer = new \Orb\Log\Writer\Stream('php://stdout');
+            }
+            $logger->addWriter($out_writer);
+        }
 
-		if (App::getConfig('debug.write_cron_logfile')) {
-			$out_writer = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/cron.log');
-			$logger->addWriter($out_writer);
-		}
-	}
+        if (App::getConfig('debug.write_cron_logfile')) {
+            $out_writer = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/cron.log');
+            $logger->addWriter($out_writer);
+        }
+    }
 }

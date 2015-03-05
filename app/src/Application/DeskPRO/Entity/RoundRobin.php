@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -45,107 +44,107 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * Next agent in queue
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $next = null;
+    /**
+     * Next agent in queue
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $next = null;
 
-	/**
-	 * Agents
-	 *
-	 * @var ArrayCollection
-	 */
-	protected $agents;
+    /**
+     * Agents
+     *
+     * @var ArrayCollection
+     */
+    protected $agents;
 
-	/**
-	 * @var string
-	 */
-	protected $title;
-
-
-	public function __construct()
-	{
-		$this->agents = new ArrayCollection();
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		foreach ($this->agents as $agentRef) {
-			$a = $agentRef->agent;
-			if (!$a['is_agent'] || $a['is_disabled'] || $a['is_deleted']) {
-				$this->agents->removeElement($agentRef);
-			}
-		}
-		$data = parent::toApiData($primary, $deep, $visited);
-
-		return $data;
-	}
+    /**
+     * @var string
+     */
+    protected $title;
 
 
+    public function __construct()
+    {
+        $this->agents = new ArrayCollection();
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RoundRobin';
-		$metadata->setPrimaryTable(array('name' => 'round_robin'));
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        foreach ($this->agents as $agentRef) {
+            $a = $agentRef->agent;
+            if (!$a['is_agent'] || $a['is_disabled'] || $a['is_deleted']) {
+                $this->agents->removeElement($agentRef);
+            }
+        }
+        $data = parent::toApiData($primary, $deep, $visited);
 
-		$metadata->mapField(array(
-			'columnName' => 'id',
-			'fieldName'  => 'id',
-			'type'       => 'integer',
-			'nullable'   => false,
-			'id'         => true
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'title',
-			'columnName' => 'title',
-			'type'       => 'string',
-			'length'     => 255,
-			'nullable'  => false
-		));
+        return $data;
+    }
 
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'next',
-			'dpApi'        => true,
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-			'joinColumns' => array(array(
-				'name'                 => 'next_agent_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'set null',
-				'columnDefinition'    => NULL,
-			)),
-		));
 
-		$metadata->mapOneToMany(array(
-			'fieldName'     => 'agents',
-			'dpApi'         => true,
-			'dpApiDeep'     => true,
-			'targetEntity'  => 'Application\\DeskPRO\\Entity\\RoundRobinAgent',
-			'mappedBy'      => 'robin',
-			'orphanRemoval' => true,
-			'orderBy'       => array('sort' => 'ASC'),
-		));
-	}
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RoundRobin';
+        $metadata->setPrimaryTable(array('name' => 'round_robin'));
+
+        $metadata->mapField(array(
+            'columnName' => 'id',
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+            'id'         => true
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'title',
+            'columnName' => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'  => false
+        ));
+
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'next',
+            'dpApi'        => true,
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'joinColumns' => array(array(
+                'name'                 => 'next_agent_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'set null',
+                'columnDefinition'    => NULL,
+            )),
+        ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName'     => 'agents',
+            'dpApi'         => true,
+            'dpApiDeep'     => true,
+            'targetEntity'  => 'Application\\DeskPRO\\Entity\\RoundRobinAgent',
+            'mappedBy'      => 'robin',
+            'orphanRemoval' => true,
+            'orderBy'       => array('sort' => 'ASC'),
+        ));
+    }
 }

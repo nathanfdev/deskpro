@@ -41,24 +41,24 @@ use Orb\Log\Logger;
  */
 abstract class AbstractInitializer
 {
-	/**
-	 * @var \Application\DeskPRO\Search\Adapter\AbstractAdapter
-	 */
-	protected $adapter;
+    /**
+     * @var \Application\DeskPRO\Search\Adapter\AbstractAdapter
+     */
+    protected $adapter;
 
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    protected $logger;
 
-	public function __construct(AbstractAdapter $adapter, Logger $logger = null)
-	{
-		$this->adapter = $adapter;
+    public function __construct(AbstractAdapter $adapter, Logger $logger = null)
+    {
+        $this->adapter = $adapter;
 
-		if (!$this->logger) {
-			$this->logger = new Logger();
-		} else {
-			$this->logger = $logger;
-		}
-	}
+        if (!$this->logger) {
+            $this->logger = new Logger();
+        } else {
+            $this->logger = $logger;
+        }
+    }
 }

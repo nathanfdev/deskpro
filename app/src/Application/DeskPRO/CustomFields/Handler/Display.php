@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Orb\Util\Strings;
 
 /**
@@ -44,52 +43,52 @@ use Orb\Util\Strings;
  */
 class Display extends HandlerAbstract
 {
-	public function getFormField($data = null)
-	{
-		$setData = '';
-		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
-		return $field;
-	}
+    public function getFormField($data = null)
+    {
+        $setData = '';
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
 
-	public function renderHtml($data = null, array $template_vars = array())
-	{
-		return $this->field_def->getOption('html');
-	}
+        return $field;
+    }
 
-	public function renderText($data = null, array $template_vars = array())
-	{
-		return Strings::stripTags($this->field_def->getOption('html'));
-	}
+    public function renderHtml($data = null, array $template_vars = array())
+    {
+        return $this->field_def->getOption('html');
+    }
 
-	function getDataFromForm(array $form_data)
-	{
-		return array();
-	}
+    public function renderText($data = null, array $template_vars = array())
+    {
+        return Strings::stripTags($this->field_def->getOption('html'));
+    }
 
-	/**
-	 * Gets an array of search operation types we can perform against this
-	 * field.
-	 *
-	 * @return array
-	 */
-	public function getSearchCapabilities()
-	{
-		// Not searchable by default
-		return array();
-	}
+    public function getDataFromForm(array $form_data)
+    {
+        return array();
+    }
 
+    /**
+     * Gets an array of search operation types we can perform against this
+     * field.
+     *
+     * @return array
+     */
+    public function getSearchCapabilities()
+    {
+        // Not searchable by default
+        return array();
+    }
 
-	/**
-	 * Get the type of search this field sholud be on.
-	 *
-	 * - Text/input have 'input'
-	 * - Dates/numric have 'value'
-	 * - Fields that use an option go by 'id'
-	 *
-	 * @return string
-	 */
-	public function getSearchType()
-	{
-		return 'display';
-	}
+    /**
+     * Get the type of search this field sholud be on.
+     *
+     * - Text/input have 'input'
+     * - Dates/numric have 'value'
+     * - Fields that use an option go by 'id'
+     *
+     * @return string
+     */
+    public function getSearchType()
+    {
+        return 'display';
+    }
 }

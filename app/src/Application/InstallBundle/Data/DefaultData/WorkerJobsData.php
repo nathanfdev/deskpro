@@ -263,15 +263,6 @@ class WorkerJobsData extends AbstractDefaultData
 		);
 
 		$jobs[] = array(
-			'id'           => 'jira_comments_fetch',
-			'worker_group' => 'jira_comments_fetch',
-			'title'        => 'JIRA Comments Fetch',
-			'description'  => 'Fetches JIRA comments on issues that are associated with DeskPRO tickets',
-			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\FetchJiraComments',
-			'run_interval' => Job\FetchJiraComments::DEFAULT_INTERVAL
-		);
-
-		$jobs[] = array(
 			'id'           => 'locked_tickets_release',
 			'worker_group' => 'locked_tickets_release',
 			'title'        => 'Locked Tickets Release',

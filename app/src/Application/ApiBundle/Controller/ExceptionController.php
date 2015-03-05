@@ -38,12 +38,12 @@ use Symfony\Component\Debug\Exception\FlattenException;
 
 class ExceptionController extends AbstractController
 {
-	public function showAction(FlattenException $exception, \Symfony\Component\HttpKernel\Log\DebugLoggerInterface $logger = null, $format = 'html')
-	{
-		return $this->createApiErrorResponse(
-			'http_error.' . $exception->getStatusCode(),
-			$exception->getMessage(),
-			$exception->getStatusCode()
-		);
-	}
+    public function showAction(FlattenException $exception, \Symfony\Component\HttpKernel\Log\DebugLoggerInterface $logger = null, $format = 'html')
+    {
+        return $this->createApiErrorResponse(
+            'http_error.' . $exception->getStatusCode(),
+            $exception->getMessage(),
+            $exception->getStatusCode()
+        );
+    }
 }

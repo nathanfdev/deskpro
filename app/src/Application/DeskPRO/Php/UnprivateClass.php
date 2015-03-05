@@ -39,59 +39,59 @@ namespace Application\DeskPRO\Php;
  */
 class UnprivateClass
 {
-	/** @var string */
-	protected $code;
-	/** @var string */
-	protected $new_code;
-	/** @var bool */
-	protected $strip_comments = false;
+    /** @var string */
+    protected $code;
+    /** @var string */
+    protected $new_code;
+    /** @var bool */
+    protected $strip_comments = false;
 
-	public function __construct($code)
-	{
-		$this->code = $code;
-	}
+    public function __construct($code)
+    {
+        $this->code = $code;
+    }
 
-	/**
-	 * Strip comments as well
-	 */
-	public function enableStripComments()
-	{
-		$this->strip_comments = true;
-	}
+    /**
+     * Strip comments as well
+     */
+    public function enableStripComments()
+    {
+        $this->strip_comments = true;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getCode()
-	{
-		if ($this->new_code !== null) {
-			return $this->new_code;
-		}
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        if ($this->new_code !== null) {
+            return $this->new_code;
+        }
 
-		$tokens = token_get_all($this->code);
+        $tokens = token_get_all($this->code);
 
-		$this->new_code = '';
-		foreach ($tokens as $token) {
-			if (!is_array($token)) {
-				$this->new_code .= $token;
-				continue;
-			}
+        $this->new_code = '';
+        foreach ($tokens as $token) {
+            if (!is_array($token)) {
+                $this->new_code .= $token;
+                continue;
+            }
 
-			$token_name = $token[0];
-			$token_str = $token[1];
+            $token_name = $token[0];
+            $token_str = $token[1];
 
-			if (($this->strip_comments && ($token_name == T_DOC_COMMENT || $token_name == T_COMMENT)) || $token_name == T_FINAL) {
-				continue;
-			}
+            if (($this->strip_comments && ($token_name == T_DOC_COMMENT || $token_name == T_COMMENT)) || $token_name == T_FINAL) {
+                continue;
+            }
 
-			if ($token_name == T_PRIVATE) {
-				$token_str = 'protected';
-			}
+            if ($token_name == T_PRIVATE) {
+                $token_str = 'protected';
+            }
 
-			$this->new_code .= $token_str;
-		}
+            $this->new_code .= $token_str;
+        }
 
-		return $this->new_code;
-	}
+        return $this->new_code;
+    }
 }

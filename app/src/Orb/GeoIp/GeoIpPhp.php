@@ -36,166 +36,166 @@ namespace Orb\GeoIp;
 
 class GeoIpPhp extends AbstractGeoIp
 {
-	/**
-	 * @var null
-	 */
-	private $last = null;
+    /**
+     * @var null
+     */
+    private $last = null;
 
-	/**
-	 * @var array
-	 */
-	private $dbs = array();
+    /**
+     * @var array
+     */
+    private $dbs = array();
 
-	/**
-	 * @var array
-	 */
-	private $db_handles = array();
+    /**
+     * @var array
+     */
+    private $db_handles = array();
 
-	public function __construct()
-	{
-		if (defined('GEOIP_API_INC_PATH')) {
-			require_once GEOIP_API_INC_PATH.'/geoip.inc';
-		} else {
-			require_once 'geoip.inc';
-		}
-	}
-
-
-	/**
-	 * Add a database file
-	 *
-	 * @param string $type
-	 * @param string $path
-	 */
-	public function addDatabase($type, $path)
-	{
-		$this->dbs[$type] = $path;
-	}
+    public function __construct()
+    {
+        if (defined('GEOIP_API_INC_PATH')) {
+            require_once GEOIP_API_INC_PATH.'/geoip.inc';
+        } else {
+            require_once 'geoip.inc';
+        }
+    }
 
 
-	/**
-	 * @param string $type
-	 * @return \GeoIP
-	 */
-	public function getDbHandle($type)
-	{
-		if (!isset($this->db_handles[$type])) {
-			$this->db_handles[$type] = geoip_open($this->dbs[$type], \GEOIP_STANDARD);
-		}
-
-		return $this->db_handles[$type];
-	}
+    /**
+     * Add a database file
+     *
+     * @param string $type
+     * @param string $path
+     */
+    public function addDatabase($type, $path)
+    {
+        $this->dbs[$type] = $path;
+    }
 
 
-	/**
-	 * @param string $type
-	 * @return bool
-	 */
-	public function hasDb($type)
-	{
-		return isset($this->dbs[$type]);
-	}
+    /**
+     * @param  string $type
+     * @return \GeoIP
+     */
+    public function getDbHandle($type)
+    {
+        if (!isset($this->db_handles[$type])) {
+            $this->db_handles[$type] = geoip_open($this->dbs[$type], \GEOIP_STANDARD);
+        }
+
+        return $this->db_handles[$type];
+    }
 
 
-	/**
-	 * @param string $host
-	 * @param array $what
-	 * @return array
-	 */
-	public function lookup($host, array $what = null)
-	{
-		if ($this->last && $this->last[0] == $host) {
-			$rec = $this->last[1];
-		} else {
-			if ($this->hasDb(\GEOIP_CITY_EDITION_REV0) || $this->hasDb(\GEOIP_CITY_EDITION_REV1)) {
-				if ($this->hasDb(\GEOIP_CITY_EDITION_REV1)) {
-					$db = $this->getDbHandle(\GEOIP_CITY_EDITION_REV1);
-				} else {
-					$db = $this->getDbHandle(\GEOIP_CITY_EDITION_REV0);
-				}
+    /**
+     * @param  string $type
+     * @return bool
+     */
+    public function hasDb($type)
+    {
+        return isset($this->dbs[$type]);
+    }
 
-				$rec_obj = \GeoIP_record_by_addr($db, $host);
-				$rec = array();
-				$map = array(
-					'continent_code',
-					'country_code',
-					'region',
-					'city',
-					'latitude',
-					'longitutde',
-				);
 
-				foreach ($map as $prop) {
-					if (!empty($rec_obj->$prop)) {
-						$rec[$prop] = $rec_obj->$prop;
-					} else {
-						$rec[$prop] = null;
-					}
-				}
+    /**
+     * @param  string $host
+     * @param  array  $what
+     * @return array
+     */
+    public function lookup($host, array $what = null)
+    {
+        if ($this->last && $this->last[0] == $host) {
+            $rec = $this->last[1];
+        } else {
+            if ($this->hasDb(\GEOIP_CITY_EDITION_REV0) || $this->hasDb(\GEOIP_CITY_EDITION_REV1)) {
+                if ($this->hasDb(\GEOIP_CITY_EDITION_REV1)) {
+                    $db = $this->getDbHandle(\GEOIP_CITY_EDITION_REV1);
+                } else {
+                    $db = $this->getDbHandle(\GEOIP_CITY_EDITION_REV0);
+                }
 
-			} elseif ($this->hasDb(\GEOIP_COUNTRY_EDITION)) {
-				$db = $this->getDbHandle(\GEOIP_COUNTRY_EDITION);
+                $rec_obj = \GeoIP_record_by_addr($db, $host);
+                $rec = array();
+                $map = array(
+                    'continent_code',
+                    'country_code',
+                    'region',
+                    'city',
+                    'latitude',
+                    'longitutde',
+                );
 
-				$country_id = geoip_country_id_by_addr($db, $host);
-				$country    = null;
-				$continent  = null;
+                foreach ($map as $prop) {
+                    if (!empty($rec_obj->$prop)) {
+                        $rec[$prop] = $rec_obj->$prop;
+                    } else {
+                        $rec[$prop] = null;
+                    }
+                }
 
-				if ($country_id !== false) {
-					if (isset($db->GEOIP_CONTINENT_CODES[$country_id])) {
-						$continent = $db->GEOIP_CONTINENT_CODES[$country_id];
-					}
-					if (isset($db->GEOIP_COUNTRY_CODES[$country_id])) {
-						$country = $db->GEOIP_COUNTRY_CODES[$country_id];
-					}
-				}
+            } elseif ($this->hasDb(\GEOIP_COUNTRY_EDITION)) {
+                $db = $this->getDbHandle(\GEOIP_COUNTRY_EDITION);
 
-				$rec = array(
-					'continent_code' => $continent,
-					'country_code'   => $country,
-				);
-			} else {
-				$rec = array();
-			}
-		}
+                $country_id = geoip_country_id_by_addr($db, $host);
+                $country    = null;
+                $continent  = null;
 
-		$this->last = array(
-			$host,
-			$rec
-		);
+                if ($country_id !== false) {
+                    if (isset($db->GEOIP_CONTINENT_CODES[$country_id])) {
+                        $continent = $db->GEOIP_CONTINENT_CODES[$country_id];
+                    }
+                    if (isset($db->GEOIP_COUNTRY_CODES[$country_id])) {
+                        $country = $db->GEOIP_COUNTRY_CODES[$country_id];
+                    }
+                }
 
-		if ($what === null) {
-			$what = array_keys($this->getEmptyRecord());
-		}
+                $rec = array(
+                    'continent_code' => $continent,
+                    'country_code'   => $country,
+                );
+            } else {
+                $rec = array();
+            }
+        }
 
-		$return = array_fill_keys($what, null);
-		foreach ($what as $w) {
-			switch ($w) {
-				case self::CONTINENT:
-					$return[self::CONTINENT] = !empty($rec['continent_code']) ? $rec['continent_code'] : null;
-					break;
+        $this->last = array(
+            $host,
+            $rec
+        );
 
-				case self::COUNTRY:
-					$return[self::COUNTRY] = !empty($rec['country_code']) ? $rec['country_code'] : null;
-					break;
+        if ($what === null) {
+            $what = array_keys($this->getEmptyRecord());
+        }
 
-				case self::REGION:
-					$return[self::REGION] = !empty($rec['region']) ? $rec['region'] : null;
-					break;
+        $return = array_fill_keys($what, null);
+        foreach ($what as $w) {
+            switch ($w) {
+                case self::CONTINENT:
+                    $return[self::CONTINENT] = !empty($rec['continent_code']) ? $rec['continent_code'] : null;
+                    break;
 
-				case self::CITY:
-					$return[self::CITY] = !empty($rec['city']) ? $rec['city'] : null;
-					break;
+                case self::COUNTRY:
+                    $return[self::COUNTRY] = !empty($rec['country_code']) ? $rec['country_code'] : null;
+                    break;
 
-				case self::LATITUDE:
-					$return[self::LATITUDE] = !empty($rec['latitude']) ? $rec['latitude'] : null;
-					break;
+                case self::REGION:
+                    $return[self::REGION] = !empty($rec['region']) ? $rec['region'] : null;
+                    break;
 
-				case self::LONGITUDE:
-					$return[self::LATITUDE] = !empty($rec['longitude']) ? $rec['longitude'] : null;
-					break;
-			}
-		}
+                case self::CITY:
+                    $return[self::CITY] = !empty($rec['city']) ? $rec['city'] : null;
+                    break;
 
-		return $return;
-	}
+                case self::LATITUDE:
+                    $return[self::LATITUDE] = !empty($rec['latitude']) ? $rec['latitude'] : null;
+                    break;
+
+                case self::LONGITUDE:
+                    $return[self::LATITUDE] = !empty($rec['longitude']) ? $rec['longitude'] : null;
+                    break;
+            }
+        }
+
+        return $return;
+    }
 }

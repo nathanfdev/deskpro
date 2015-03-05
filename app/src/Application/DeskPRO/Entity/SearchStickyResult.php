@@ -44,35 +44,35 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class SearchStickyResult extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var string
-	 */
-	protected $word;
+    /**
+     * @var string
+     */
+    protected $word;
 
-	/**
-	 * @var string
-	 */
-	protected $object_type;
+    /**
+     * @var string
+     */
+    protected $object_type;
 
-	/**
-	 * @var int
-	 */
-	protected $object_id = null;
+    /**
+     * @var int
+     */
+    protected $object_id = null;
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchStickyResult';
-		$metadata->setPrimaryTable(array( 'name' => 'search_sticky_result', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 150, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true, ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchStickyResult';
+        $metadata->setPrimaryTable(array( 'name' => 'search_sticky_result', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 150, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true, ));
+    }
 }

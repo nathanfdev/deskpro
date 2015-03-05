@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DataSync\AbstractDataSync;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,60 +40,64 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:sync-data');
-		$this->addOption('sync', null, InputOption::VALUE_REQUIRED, 'Sync the specified sync data type');
-		$this->addOption('sync-all', null, InputOption::VALUE_NONE, 'Syncs all sync data');
-		$this->addOption('list', null, InputOption::VALUE_NONE, 'Lists the available sync data');
-	}
+    protected function configure()
+    {
+        $this->setName('dp:sync-data');
+        $this->addOption('sync', null, InputOption::VALUE_REQUIRED, 'Sync the specified sync data type');
+        $this->addOption('sync-all', null, InputOption::VALUE_NONE, 'Syncs all sync data');
+        $this->addOption('list', null, InputOption::VALUE_NONE, 'Lists the available sync data');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		if ($input->getOption('sync-all')) {
-			$output->writeln("Importing all sync data...");
-			$start = microtime(true);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->getOption('sync-all')) {
+            $output->writeln("Importing all sync data...");
+            $start = microtime(true);
 
-			$classes = \Application\DeskPRO\DataSync\AbstractDataSync::getAvailableSyncClasses();
-			foreach ($classes AS $name => $class) {
-				/* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
-				$sync = new $class();
-				$res = $sync->syncBaseToLive();
-				$output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
-					$name, $res['insert'], $res['update'], $res['delete']
-				));
-			}
+            $classes = \Application\DeskPRO\DataSync\AbstractDataSync::getAvailableSyncClasses();
+            foreach ($classes AS $name => $class) {
+                /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
+                $sync = new $class();
+                $res = $sync->syncBaseToLive();
+                $output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
+                    $name, $res['insert'], $res['update'], $res['delete']
+                ));
+            }
 
-			$end = microtime(true);
-			$output->writeln(sprintf("Done (%.4fs)", $end - $start));
-			return 0;
-		} else if ($input->getOption('sync')) {
-			$name = $input->getOption('sync');
-			$classes = AbstractDataSync::getAvailableSyncClasses();
+            $end = microtime(true);
+            $output->writeln(sprintf("Done (%.4fs)", $end - $start));
 
-			if (isset($classes[$name])) {
-				$class = $classes[$name];
+            return 0;
+        } elseif ($input->getOption('sync')) {
+            $name = $input->getOption('sync');
+            $classes = AbstractDataSync::getAvailableSyncClasses();
 
-				/* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
-				$sync = new $class();
-				$res = $sync->syncBaseToLive();
-				$output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
-					$name, $res['insert'], $res['update'], $res['delete']
-				));
+            if (isset($classes[$name])) {
+                $class = $classes[$name];
 
-				return 0;
-			} else {
-				$output->writeln(sprintf("Could not find %s data.", $name));
-				return 1;
-			}
-		} else if ($input->getOption('list')) {
-			$names = array_keys(AbstractDataSync::getAvailableSyncClasses());
+                /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
+                $sync = new $class();
+                $res = $sync->syncBaseToLive();
+                $output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
+                    $name, $res['insert'], $res['update'], $res['delete']
+                ));
 
-			$output->writeln(sprintf("Available sync data options:\n\t%s", implode("\n\t", $names)));
-			return 0;
-		} else {
-			$output->writeln("Use --help to see available commands");
-			return 0;
-		}
-	}
+                return 0;
+            } else {
+                $output->writeln(sprintf("Could not find %s data.", $name));
+
+                return 1;
+            }
+        } elseif ($input->getOption('list')) {
+            $names = array_keys(AbstractDataSync::getAvailableSyncClasses());
+
+            $output->writeln(sprintf("Available sync data options:\n\t%s", implode("\n\t", $names)));
+
+            return 0;
+        } else {
+            $output->writeln("Use --help to see available commands");
+
+            return 0;
+        }
+    }
 }

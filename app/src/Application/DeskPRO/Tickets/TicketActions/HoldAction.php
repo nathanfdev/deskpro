@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
@@ -44,88 +43,86 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
  */
 class HoldAction extends AbstractAction implements PermissionableAction
 {
-	/**
-	 * @var bool
-	 */
-	protected $is_hold;
+    /**
+     * @var bool
+     */
+    protected $is_hold;
 
-	/**
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	protected $tracker;
+    /**
+     * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+     */
+    protected $tracker;
 
-	public function __construct($is_hold, TicketChangeTracker $tracker = null)
-	{
-		$this->is_hold = (bool)$is_hold;
-		$this->tracker = $tracker;
-	}
+    public function __construct($is_hold, TicketChangeTracker $tracker = null)
+    {
+        $this->is_hold = (bool)$is_hold;
+        $this->tracker = $tracker;
+    }
 
-	/**
-	 * True to stop processing actions after this one
-	 *
-	 * @return bool
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		// No change, sure they can apply no change
-		if ($ticket->is_hold == $this->is_hold) {
-			return true;
-		}
+    /**
+     * True to stop processing actions after this one
+     *
+     * @return bool
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        // No change, sure they can apply no change
+        if ($ticket->is_hold == $this->is_hold) {
+            return true;
+        }
 
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_hold')) {
-			return false;
-		}
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_hold')) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$ticket->is_hold = $this->is_hold;
-	}
-
-
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket->is_hold == $this->is_hold) {
-			return array();
-		}
-
-		return array(
-			array('action' => 'hold', 'is_hold' => $this->is_hold)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $ticket->is_hold = $this->is_hold;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket->is_hold == $this->is_hold) {
+            return array();
+        }
 
+        return array(
+            array('action' => 'hold', 'is_hold' => $this->is_hold)
+        );
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         if ($this->is_hold) {
-			return "Put ticket on hold";
-		} else {
-			return "Remove ticket from hold";
-		}
-	}
+            return "Put ticket on hold";
+        } else {
+            return "Remove ticket from hold";
+        }
+    }
 }

@@ -41,107 +41,103 @@ namespace Orb\HttpFoundation\Session;
  */
 class FlashMessenger
 {
-	/**
-	 * @var Orb\HttpFoundation\Session\SessionInterface
-	 */
-	protected $session;
+    /**
+     * @var Orb\HttpFoundation\Session\SessionInterface
+     */
+    protected $session;
 
-	/**
-	 * Messages we read from the session for the current request. They
-	 * will be deleted now.
-	 * @var array
-	 */
-	protected $messages = array();
+    /**
+     * Messages we read from the session for the current request. They
+     * will be deleted now.
+     * @var array
+     */
+    protected $messages = array();
 
-	/**
-	 * The messages that we'll save for the next request
-	 * @var ArrayObject
-	 */
-	protected $current_messages;
+    /**
+     * The messages that we'll save for the next request
+     * @var ArrayObject
+     */
+    protected $current_messages;
 
-	public function __construct(SessionInterface $session)
-	{
-		$this->session = $session;
-		$this->messages = $session->get('flash_messages')->getArrayCopy();
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->messages = $session->get('flash_messages')->getArrayCopy();
 
-		$this->current_messages = new \ArrayObject();
-		$session->set('flash_messages', $this->current_messages);
-	}
+        $this->current_messages = new \ArrayObject();
+        $session->set('flash_messages', $this->current_messages);
+    }
 
+    /**
+     * Get the messages for this request
+     *
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
 
-
-	/**
-	 * Get the messages for this request
-	 *
-	 * @return array
-	 */
-	public function getMessages()
-	{
-		return $this->messages;
-	}
-
-
-
-	/**
-	 * Gets the messages added during this request, but won't be displayed until the next.
-	 * @return array
-	 */
-	public function getCurrentMessages()
-	{
-		return $this->current_messages->getArrayCopy();
-	}
+    /**
+     * Gets the messages added during this request, but won't be displayed until the next.
+     * @return array
+     */
+    public function getCurrentMessages()
+    {
+        return $this->current_messages->getArrayCopy();
+    }
 
 
 
-	/**
-	 * Get messages for this request, as well as messages we just added.
-	 * @return array
-	 */
-	public function getAllMessages()
-	{
-		return array_merge($this->messages, $this->current_messages->getArrayCopy());
-	}
+    /**
+     * Get messages for this request, as well as messages we just added.
+     * @return array
+     */
+    public function getAllMessages()
+    {
+        return array_merge($this->messages, $this->current_messages->getArrayCopy());
+    }
 
 
 
-	/**
-	 * Remove the messages for this request
-	 */
-	public function clearMessages()
-	{
-		$this->messages = array();
-	}
+    /**
+     * Remove the messages for this request
+     */
+    public function clearMessages()
+    {
+        $this->messages = array();
+    }
 
 
 
-	/**
-	 * Remove the messages we added during this request
-	 */
-	public function clearCurrentMessages()
-	{
-		$this->current_messages->exchangeArray(array());
-	}
+    /**
+     * Remove the messages we added during this request
+     */
+    public function clearCurrentMessages()
+    {
+        $this->current_messages->exchangeArray(array());
+    }
 
 
 
-	/**
-	 * Clear all messages, both from session and current.
-	 */
-	public function clearAllMessages()
-	{
-		$this->clearMessages();
-		$this->clearCurrentMessages();
-	}
+    /**
+     * Clear all messages, both from session and current.
+     */
+    public function clearAllMessages()
+    {
+        $this->clearMessages();
+        $this->clearCurrentMessages();
+    }
 
 
 
-	/**
-	 * Add a message for the next request.
-	 *
-	 * @param  $message
-	 */
-	public function addMessage($message)
-	{
-		$this->session->get('flash_messages')->append($message);
-	}
+    /**
+     * Add a message for the next request.
+     *
+     * @param  $message
+     */
+    public function addMessage($message)
+    {
+        $this->session->get('flash_messages')->append($message);
+    }
 }

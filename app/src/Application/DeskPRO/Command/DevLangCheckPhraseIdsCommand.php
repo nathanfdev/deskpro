@@ -40,83 +40,84 @@ use Symfony\Component\Finder\Finder;
 
 class DevLangCheckPhraseIdsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dpdev:lang:check-phrase-ids');
-	}
+    protected function configure()
+    {
+        $this->setName('dpdev:lang:check-phrase-ids');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$phrase_loader = new AllPhrases(DP_ROOT.'/languages/default');
-		$phrase_ids = $phrase_loader->getPhraseIds();
-		unset($phrase_loader);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $phrase_loader = new AllPhrases(DP_ROOT.'/languages/default');
+        $phrase_ids = $phrase_loader->getPhraseIds();
+        unset($phrase_loader);
 
-		$phrase_ids = array_combine($phrase_ids,$phrase_ids);
+        $phrase_ids = array_combine($phrase_ids,$phrase_ids);
 
-		#------------------------------
-		# Read all DeskPRO files to try and find
-		# phrase tags that reference unknown phrase IDs
-		#------------------------------
+        #------------------------------
+        # Read all DeskPRO files to try and find
+        # phrase tags that reference unknown phrase IDs
+        #------------------------------
 
-		$missing_count = 0;
+        $missing_count = 0;
 
-		$search_dirs = array(
-			DP_ROOT.'/src/Application',
-			DP_ROOT.'/src/Cloud',
-		);
+        $search_dirs = array(
+            DP_ROOT.'/src/Application',
+            DP_ROOT.'/src/Cloud',
+        );
 
-		$finder = Finder::create()->files()->name('*.php')->name('*.twig')->in($search_dirs);
-		foreach ($finder as $file) {
-			/** @var $file \SplFileInfo */
-			$path = $file->getRealPath();
-			$file_content = file_get_contents($path);
+        $finder = Finder::create()->files()->name('*.php')->name('*.twig')->in($search_dirs);
+        foreach ($finder as $file) {
+            /** @var $file \SplFileInfo */
+            $path = $file->getRealPath();
+            $file_content = file_get_contents($path);
 
-			$missing = array();
+            $missing = array();
 
-			switch ($file->getExtension()) {
-				case 'php':
-					$matches = null;
-					if (preg_match_all('#phrase\((\'|")([a-zA-Z0-9\._\-]+)\1\)#', $file_content, $matches, \PREG_PATTERN_ORDER)) {
-						foreach ($matches[2] as $pid) {
-							if (!isset($phrase_ids[$pid])) {
-								$missing[$pid] = $pid;
-							}
-						}
-					}
-					break;
+            switch ($file->getExtension()) {
+                case 'php':
+                    $matches = null;
+                    if (preg_match_all('#phrase\((\'|")([a-zA-Z0-9\._\-]+)\1\)#', $file_content, $matches, \PREG_PATTERN_ORDER)) {
+                        foreach ($matches[2] as $pid) {
+                            if (!isset($phrase_ids[$pid])) {
+                                $missing[$pid] = $pid;
+                            }
+                        }
+                    }
+                    break;
 
-				case 'twig':
-					$matches = null;
-					if (preg_match_all('#phrase\((\'|")([a-zA-Z0-9\._\-]+)\1\)#', $file_content, $matches, \PREG_PATTERN_ORDER)) {
-						foreach ($matches[2] as $pid) {
-							if (!isset($phrase_ids[$pid])) {
-								$missing[$pid] = $pid;
-							}
-						}
-					}
-					break;
-			}
+                case 'twig':
+                    $matches = null;
+                    if (preg_match_all('#phrase\((\'|")([a-zA-Z0-9\._\-]+)\1\)#', $file_content, $matches, \PREG_PATTERN_ORDER)) {
+                        foreach ($matches[2] as $pid) {
+                            if (!isset($phrase_ids[$pid])) {
+                                $missing[$pid] = $pid;
+                            }
+                        }
+                    }
+                    break;
+            }
 
-			if ($missing) {
-				$output->writeln("\n\n<info>####################\n# $path\n####################\n</info>");
-				echo "Bad phrase IDs:";
-				foreach ($missing as $m) {
-					echo "\t$m\n";
-				}
+            if ($missing) {
+                $output->writeln("\n\n<info>####################\n# $path\n####################\n</info>");
+                echo "Bad phrase IDs:";
+                foreach ($missing as $m) {
+                    echo "\t$m\n";
+                }
 
-				$missing_count += count($missing);
-			}
-		}
+                $missing_count += count($missing);
+            }
+        }
 
-		echo "\n";
+        echo "\n";
 
-		if ($missing_count) {
-			$output->writeln("<error>Found $missing_count bad phrase IDs</error>\n");
-			return 1;
-		} else {
-			$output->writeln("<info>All phrase IDs check out fine</info>\n");
-		}
+        if ($missing_count) {
+            $output->writeln("<error>Found $missing_count bad phrase IDs</error>\n");
 
-		return 0;
-	}
+            return 1;
+        } else {
+            $output->writeln("<info>All phrase IDs check out fine</info>\n");
+        }
+
+        return 0;
+    }
 }

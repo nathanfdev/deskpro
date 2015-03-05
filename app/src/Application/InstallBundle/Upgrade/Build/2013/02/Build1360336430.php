@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1360336430 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets.original_subject");
-		$this->execMutateSql("ALTER TABLE tickets ADD original_subject VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add tickets.original_subject");
+        $this->execMutateSql("ALTER TABLE tickets ADD original_subject VARCHAR(255) NOT NULL");
+    }
 }

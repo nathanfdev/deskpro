@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352368567 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add ticket_changetracker_logs");
-		$this->execMutateSql("CREATE TABLE ticket_changetracker_logs (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, log LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F2205216700047D2 (ticket_id), PRIMARY KEY(id)) ENGINE = InnoDB");
-		$this->execMutateSql("ALTER TABLE ticket_changetracker_logs ADD CONSTRAINT FK_F2205216700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Add ticket_changetracker_logs");
+        $this->execMutateSql("CREATE TABLE ticket_changetracker_logs (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, log LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F2205216700047D2 (ticket_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+        $this->execMutateSql("ALTER TABLE ticket_changetracker_logs ADD CONSTRAINT FK_F2205216700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+    }
 }

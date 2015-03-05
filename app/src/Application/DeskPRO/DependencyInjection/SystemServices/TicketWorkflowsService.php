@@ -39,10 +39,11 @@ use Application\DeskPRO\Tickets\TicketWorkflows;
 
 class TicketWorkflowsService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new TicketWorkflows($container->getEm());
-		$x->setDefaultWorkflowPreference($container->getSetting('core.default_ticket_work'));
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new TicketWorkflows($container->getEm());
+        $x->setDefaultWorkflowPreference($container->getSetting('core.default_ticket_work'));
+
+        return $x;
+    }
 }

@@ -38,24 +38,24 @@ use Application\DeskPRO\Labels\ContentLabelCloud;
 
 class Labels extends PortalItemAbstract implements CacheableItem
 {
-	public function getCacheOptions()
-	{
-		return array('tags' => array('labels'));
-	}
+    public function getCacheOptions()
+    {
+        return array('tags' => array('labels'));
+    }
 
-	public function getHtml()
-	{
-		$content_cloud = new ContentLabelCloud();
-		$cloud = $content_cloud->getCloud();
+    public function getHtml()
+    {
+        $content_cloud = new ContentLabelCloud();
+        $cloud = $content_cloud->getCloud();
 
-		$vars = array(
-			'section' => $this->section,
-			'options' => $this->options,
-			'cloud' => $cloud
-		);
+        $vars = array(
+            'section' => $this->section,
+            'options' => $this->options,
+            'cloud' => $cloud
+        );
 
-		$html = $this->renderView('UserBundle:Portal:labels-sidebar.html.twig', $vars);
+        $html = $this->renderView('UserBundle:Portal:labels-sidebar.html.twig', $vars);
 
-		return $html;
-	}
+        return $html;
+    }
 }

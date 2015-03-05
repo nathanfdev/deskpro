@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355917170 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Ensure that snippets are deleted with their categories");
-		$this->execMutateSql("ALTER TABLE text_snippets DROP FOREIGN KEY FK_5B6379CE12469DE2");
-		$this->execMutateSql("ALTER TABLE text_snippets ADD CONSTRAINT FK_5B6379CE12469DE2 FOREIGN KEY (category_id) REFERENCES text_snippet_categories (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE ticket_snippets DROP FOREIGN KEY FK_6848095D12469DE2");
-		$this->execMutateSql("ALTER TABLE ticket_snippets ADD CONSTRAINT FK_6848095D12469DE2 FOREIGN KEY (category_id) REFERENCES ticket_snippet_categories (id) ON DELETE CASCADE");
-		$this->execMutateSql("DELETE FROM text_snippets WHERE category_id IS NULL");
-		$this->execMutateSql("DELETE FROM ticket_snippets WHERE category_id IS NULL");
-	}
+    public function run()
+    {
+        $this->out("Ensure that snippets are deleted with their categories");
+        $this->execMutateSql("ALTER TABLE text_snippets DROP FOREIGN KEY FK_5B6379CE12469DE2");
+        $this->execMutateSql("ALTER TABLE text_snippets ADD CONSTRAINT FK_5B6379CE12469DE2 FOREIGN KEY (category_id) REFERENCES text_snippet_categories (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE ticket_snippets DROP FOREIGN KEY FK_6848095D12469DE2");
+        $this->execMutateSql("ALTER TABLE ticket_snippets ADD CONSTRAINT FK_6848095D12469DE2 FOREIGN KEY (category_id) REFERENCES ticket_snippet_categories (id) ON DELETE CASCADE");
+        $this->execMutateSql("DELETE FROM text_snippets WHERE category_id IS NULL");
+        $this->execMutateSql("DELETE FROM ticket_snippets WHERE category_id IS NULL");
+    }
 }

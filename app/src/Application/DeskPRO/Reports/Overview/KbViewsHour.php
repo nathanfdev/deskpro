@@ -40,77 +40,77 @@ use Orb\Util\Dates;
 
 class KbViewsHour extends AbstractTableOverviewStat
 {
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_start;
+    /**
+     * @var \DateTime
+     */
+    protected $date_start;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
+    /**
+     * @var \DateTime
+     */
+    protected $date_end;
 
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
+    /**
+     * @var int[]
+     */
+    protected $values = null;
 
-	/**
-	 * @var array
-	 */
-	protected $titles = null;
+    /**
+     * @var array
+     */
+    protected $titles = null;
 
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
-	{
-		$this->date_start = $date_start;
-		$this->date_end   = $date_end;
-	}
-
-
-	/**
-	 * @return string[]
-	 */
-	public function getTitles()
-	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
-
-		return $titles;
-	}
+    public function __construct(\DateTime $date_start, \DateTime $date_end)
+    {
+        $this->date_start = $date_start;
+        $this->date_end   = $date_end;
+    }
 
 
-	/**
-	 * @return int[]
-	 */
-	public function getValues()
-	{
-		if ($this->values !== null) {
-			return $this->values;
-		}
+    /**
+     * @return string[]
+     */
+    public function getTitles()
+    {
+        $titles = array_combine(range(1, 23), range(1,23));
+        $titles['0'] = '0';
 
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = Dates::convertToUtcDateTime($this->date_start);
-		$date2 = Dates::convertToUtcDateTime($this->date_end);
+        return $titles;
+    }
 
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
 
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
+    /**
+     * @return int[]
+     */
+    public function getValues()
+    {
+        if ($this->values !== null) {
+            return $this->values;
+        }
 
-		$type = PageViewLog::TYPE_ARTICLE;
-		$sql = "
-			SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM page_view_log
-			WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
-		";
+        // Convert input datetime which has timezone data, into UTC for db range
+        $date1 = Dates::convertToUtcDateTime($this->date_start);
+        $date2 = Dates::convertToUtcDateTime($this->date_end);
 
-		$this->logger->logDebug("[KbViewsHour] $sql");
-		$this->logger->startTimer('KbViewsHour');
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('KbViewsHour');
+        $d1 = $date1->format('Y-m-d H:i:s');
+        $d2 = $date2->format('Y-m-d H:i:s');
 
-		return $this->values;
-	}
+        // Get offset of original date from UTC, we need for mysql
+        $offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
+
+        $type = PageViewLog::TYPE_ARTICLE;
+        $sql = "
+            SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
+            FROM page_view_log
+            WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
+            GROUP BY hour
+        ";
+
+        $this->logger->logDebug("[KbViewsHour] $sql");
+        $this->logger->startTimer('KbViewsHour');
+        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->logger->logTotalTime('KbViewsHour');
+
+        return $this->values;
+    }
 }

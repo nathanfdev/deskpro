@@ -38,16 +38,16 @@ use Orb\Util\Env;
 
 class Build1363950128 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Changes to blobs");
-		$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_pref VARCHAR(50) DEFAULT NULL, ADD file_url VARCHAR(255) DEFAULT NULL");
-		$this->execMutateSql("CREATE INDEX storage_loc_idx ON blobs (storage_loc, storage_loc_pref)");
-		$this->execMutateSql("UPDATE blobs SET storage_loc = 'db' WHERE storage_loc IS NULL OR storage_loc = ''");
+    public function run()
+    {
+        $this->out("Changes to blobs");
+        $this->execMutateSql("ALTER TABLE blobs ADD storage_loc_pref VARCHAR(50) DEFAULT NULL, ADD file_url VARCHAR(255) DEFAULT NULL");
+        $this->execMutateSql("CREATE INDEX storage_loc_idx ON blobs (storage_loc, storage_loc_pref)");
+        $this->execMutateSql("UPDATE blobs SET storage_loc = 'db' WHERE storage_loc IS NULL OR storage_loc = ''");
 
-		$this->out("Standardise Windows paths in blobs");
-		if (Env::isWindows()) {
-			$this->execMutateSql("UPDATE blobs SET save_path = REPLACE(save_path, '\\\\', '/')");
-		}
-	}
+        $this->out("Standardise Windows paths in blobs");
+        if (Env::isWindows()) {
+            $this->execMutateSql("UPDATE blobs SET save_path = REPLACE(save_path, '\\\\', '/')");
+        }
+    }
 }

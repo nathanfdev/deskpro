@@ -29,6 +29,12 @@
 									</optgroup>
 								</select>
 								<span ng-if="is_creating">Creating a new template</span>
+								<span ng-if="!is_creating && model.template" style="margin-left: 3px;">
+									<a class="inline-edit-link expanded" ng-click="editTemplate()">
+										<i class="fa fa-pencil"></i>
+										<em>edit template</em>
+									</a>
+								</span>
 							</td>
 						</tr>
 						<tr>

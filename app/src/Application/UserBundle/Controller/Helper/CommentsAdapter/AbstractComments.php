@@ -39,32 +39,32 @@ use Application\DeskPRO\Entity;
 
 abstract class AbstractComments
 {
-	/** @var string ? */
-	protected $entity;
-	/** @var string */
-	protected $page_id;
-	/** @var \Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
-	protected $page_url;
+    /** @var string ? */
+    protected $entity;
+    /** @var string */
+    protected $page_id;
+    /** @var \Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
+    protected $page_url;
 
-	/**
-	 * @param string $page_url The permalink to the page
-	 * @param Entity $entity   The entity we're adding comments to
-	 */
-	public function __construct($entity)
-	{
-		$this->page_url = $entity->getPermalink();
-		$this->entity = $entity;
-		$this->page_id  = 'dp_' . App::getSetting('core.site_id') . '_' . md5(get_class($entity)) . '_' . $entity->getId();
+    /**
+     * @param string $page_url The permalink to the page
+     * @param Entity $entity   The entity we're adding comments to
+     */
+    public function __construct($entity)
+    {
+        $this->page_url = $entity->getPermalink();
+        $this->entity = $entity;
+        $this->page_id  = 'dp_' . App::getSetting('core.site_id') . '_' . md5(get_class($entity)) . '_' . $entity->getId();
 
-		$this->init();
-	}
+        $this->init();
+    }
 
-	protected function init() {}
+    protected function init() {}
 
-	/**
-	 * Get the HTML block for disqus templates
-	 *
-	 * @return string
-	 */
-	abstract public function getHtml();
+    /**
+     * Get the HTML block for disqus templates
+     *
+     * @return string
+     */
+    abstract public function getHtml();
 }

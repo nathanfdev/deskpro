@@ -39,75 +39,74 @@ namespace Application\DeskPRO\Dpql;
  */
 class Results
 {
-	/**
-	 * List of result sets. Each element is another array with 2 elements:
-	 *  - 0: results set (multiple rows, with each row 0-base keyed)
-	 *  - 1: split results row (0-based keyed array) or null for non-split results
-	 *
-	 * @var array
-	 */
-	protected $_results = array();
+    /**
+     * List of result sets. Each element is another array with 2 elements:
+     *  - 0: results set (multiple rows, with each row 0-base keyed)
+     *  - 1: split results row (0-based keyed array) or null for non-split results
+     *
+     * @var array
+     */
+    protected $_results = array();
 
-	/**
-	 * Sets the results to a single result set
-	 *
-	 * @param array $results
-	 */
-	public function setResults(array $results)
-	{
-		$this->_results = array(0 => array($results, null));
-	}
+    /**
+     * Sets the results to a single result set
+     *
+     * @param array $results
+     */
+    public function setResults(array $results)
+    {
+        $this->_results = array(0 => array($results, null));
+    }
 
-	/**
-	 * Adds a split result set
-	 *
-	 * @param array $results
-	 * @param array $split Row of data for the split header
-	 */
-	public function addSplitResults(array $results, array $split)
-	{
-		$this->_results[] = array($results, $split);
-	}
+    /**
+     * Adds a split result set
+     *
+     * @param array $results
+     * @param array $split   Row of data for the split header
+     */
+    public function addSplitResults(array $results, array $split)
+    {
+        $this->_results[] = array($results, $split);
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function hasSplitResults()
-	{
-		$total = count($this->_results);
+    /**
+     * @return bool
+     */
+    public function hasSplitResults()
+    {
+        $total = count($this->_results);
 
-		if ($total > 1) return true;
-		if ($total < 1) return false;
+        if ($total > 1) return true;
+        if ($total < 1) return false;
+        return ($this->_results[0][1] !== null);
+    }
 
-		return ($this->_results[0][1] !== null);
-	}
+    /**
+     * Gets all split result sets
+     *
+     * @return array
+     */
+    public function getSplitResults()
+    {
+        return $this->_results;
+    }
 
-	/**
-	 * Gets all split result sets
-	 *
-	 * @return array
-	 */
-	public function getSplitResults()
-	{
-		return $this->_results;
-	}
+    /**
+     * Gets the single result set (errors if multiple result sets).
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getResults()
+    {
+        if (!$this->_results) {
+            return array();
+        }
 
-	/**
-	 * Gets the single result set (errors if multiple result sets).
-	 *
-	 * @return array
-	 * @throws \Exception
-	 */
-	public function getResults()
-	{
-		if (!$this->_results) {
-			return array();
-		}
+        if ($this->hasSplitResults()) {
+            throw new \Exception("Has split results but trying to get base results");
+        }
 
-		if ($this->hasSplitResults()) {
-			throw new \Exception("Has split results but trying to get base results");
-		}
-
-		return $this->_results[0][0];
-	}
+        return $this->_results[0][0];
+    }
 }

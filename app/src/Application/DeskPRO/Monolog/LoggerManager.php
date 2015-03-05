@@ -36,149 +36,150 @@ namespace Application\DeskPRO\Monolog;
 
 class LoggerManager
 {
-	/**
-	 * @var Logger[]
-	 */
-	private $loggers = array();
+    /**
+     * @var Logger[]
+     */
+    private $loggers = array();
 
-	/**
-	 * @var LoggerFactory
-	 */
-	private $factory;
+    /**
+     * @var LoggerFactory
+     */
+    private $factory;
 
-	public function __construct(LoggerFactory $factory)
-	{
-		$this->factory = $factory;
-	}
-
-
-	/**
-	 * @param string $id
-	 * @param string|array $config
-	 * @return Logger
-	 */
-	public function getLogger($id, $config = null)
-	{
-		if (isset($this->loggers[$id])) {
-			return $this->loggers[$id];
-		}
-
-		if (!$config) {
-			$config = array();
-		}
-		if (is_string($config)) {
-			$config = array('@preset' => $config);
-		}
-		if (!isset($config['@preset'])) {
-			$config['@preset'] = $id;
-		}
-
-		$this->loggers[$id] = $this->factory->createLoggerFromPreset($id, $config);
-
-		return $this->loggers[$id];
-	}
+    public function __construct(LoggerFactory $factory)
+    {
+        $this->factory = $factory;
+    }
 
 
-	/**
-	 * @param string $id
-	 * @param Logger $logger
-	 * @throws \LogicException
-	 */
-	public function registerLogger($id, Logger $logger)
-	{
-		if (isset($this->loggers[$id])) {
-			throw new \LogicException("$id is already registered");
-		}
+    /**
+     * @param  string       $id
+     * @param  string|array $config
+     * @return Logger
+     */
+    public function getLogger($id, $config = null)
+    {
+        if (isset($this->loggers[$id])) {
+            return $this->loggers[$id];
+        }
 
-		$this->loggers[$id] = $logger;
-	}
+        if (!$config) {
+            $config = array();
+        }
+        if (is_string($config)) {
+            $config = array('@preset' => $config);
+        }
+        if (!isset($config['@preset'])) {
+            $config['@preset'] = $id;
+        }
 
+        $this->loggers[$id] = $this->factory->createLoggerFromPreset($id, $config);
 
-	/**
-	 * @param string $id
-	 * @return bool
-	 */
-	public function hasLogger($id)
-	{
-		return isset($this->loggers[$id]);
-	}
-
-
-	/**
-	 * Unsets a registered logger.
-	 *
-	 * @param string $id
-	 * @return void
-	 */
-	public function unsetLogger($id)
-	{
-		if (isset($this->loggers[$id])) {
-			unset($this->loggers[$id]);
-		}
-	}
+        return $this->loggers[$id];
+    }
 
 
-	/**
-	 * Destroys a registered logger if it exists.
-	 *
-	 * Note that any classes have a reference to the logger will have a reference to
-	 * an empty logger without any handlers or processors etc.
-	 *
-	 * @param string $id
-	 * @return void
-	 */
-	public function destroyLogger($id)
-	{
-		if (!isset($this->loggers[$id])) {
-			return;
-		}
+    /**
+     * @param  string          $id
+     * @param  Logger          $logger
+     * @throws \LogicException
+     */
+    public function registerLogger($id, Logger $logger)
+    {
+        if (isset($this->loggers[$id])) {
+            throw new \LogicException("$id is already registered");
+        }
 
-		$logger = $this->loggers[$id];
-		unset($this->loggers[$id]);
-
-		$this->destroyLoggerInstance($logger);
-	}
+        $this->loggers[$id] = $logger;
+    }
 
 
-	/**
-	 * Unsets all processors handlers on a logger instance. For handlers that have a 'close'
-	 * method, that method is called now (e.g., messages may be flushed).
-	 *
-	 * @param Logger $logger
-	 */
-	public function destroyLoggerInstance(Logger $logger)
-	{
-		try {
-			while ($h = $logger->popHandler()) {
-				if (method_exists($h, 'close')) {
-					$h->close();
-				}
-			}
-		} catch (\LogicException $e) {}
-
-		try {
-			while ($h = $logger->popProcessor()) { }
-		} catch (\LogicException $e) {}
-	}
+    /**
+     * @param  string $id
+     * @return bool
+     */
+    public function hasLogger($id)
+    {
+        return isset($this->loggers[$id]);
+    }
 
 
-	/**
-	 * Create a new logger.
-	 *
-	 * @param string $channel
-	 * @param string|array $config A preset name or an array of configuration
-	 * @return Logger
-	 */
-	public function createLogger($channel, $config = null)
-	{
-		if (!$config) {
-			$config = array();
-		}
-		if (is_string($config)) {
-			$config = array('@preset' => $config);
-		}
+    /**
+     * Unsets a registered logger.
+     *
+     * @param  string $id
+     * @return void
+     */
+    public function unsetLogger($id)
+    {
+        if (isset($this->loggers[$id])) {
+            unset($this->loggers[$id]);
+        }
+    }
 
-		$logger = $this->factory->createLoggerFromPreset($channel, $config);
-		return $logger;
-	}
+
+    /**
+     * Destroys a registered logger if it exists.
+     *
+     * Note that any classes have a reference to the logger will have a reference to
+     * an empty logger without any handlers or processors etc.
+     *
+     * @param  string $id
+     * @return void
+     */
+    public function destroyLogger($id)
+    {
+        if (!isset($this->loggers[$id])) {
+            return;
+        }
+
+        $logger = $this->loggers[$id];
+        unset($this->loggers[$id]);
+
+        $this->destroyLoggerInstance($logger);
+    }
+
+
+    /**
+     * Unsets all processors handlers on a logger instance. For handlers that have a 'close'
+     * method, that method is called now (e.g., messages may be flushed).
+     *
+     * @param Logger $logger
+     */
+    public function destroyLoggerInstance(Logger $logger)
+    {
+        try {
+            while ($h = $logger->popHandler()) {
+                if (method_exists($h, 'close')) {
+                    $h->close();
+                }
+            }
+        } catch (\LogicException $e) {}
+
+        try {
+            while ($h = $logger->popProcessor()) { }
+        } catch (\LogicException $e) {}
+    }
+
+
+    /**
+     * Create a new logger.
+     *
+     * @param  string       $channel
+     * @param  string|array $config  A preset name or an array of configuration
+     * @return Logger
+     */
+    public function createLogger($channel, $config = null)
+    {
+        if (!$config) {
+            $config = array();
+        }
+        if (is_string($config)) {
+            $config = array('@preset' => $config);
+        }
+
+        $logger = $this->factory->createLoggerFromPreset($channel, $config);
+
+        return $logger;
+    }
 }

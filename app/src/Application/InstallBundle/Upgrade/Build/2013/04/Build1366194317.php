@@ -36,22 +36,22 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366194317 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Move trigger for sending ticket email from agent newticket form");
+    public function run()
+    {
+        $this->out("Move trigger for sending ticket email from agent newticket form");
 
-		$is_enabled = $this->container->getDb()->fetchColumn("
-			SELECT is_enabled
-			FROM ticket_triggers
-			WHERE sys_name = 'newticket_confirm.web_agent'
-			LIMIT 1
-		");
+        $is_enabled = $this->container->getDb()->fetchColumn("
+            SELECT is_enabled
+            FROM ticket_triggers
+            WHERE sys_name = 'newticket_confirm.web_agent'
+            LIMIT 1
+        ");
 
-		$this->container->getDb()->delete('ticket_triggers', array('sys_name' => 'newticket_confirm.web_agent'));
+        $this->container->getDb()->delete('ticket_triggers', array('sys_name' => 'newticket_confirm.web_agent'));
 
-		$this->container->getDb()->replace('settings', array(
-			'name'  => 'core_tickets.new_default_send_user_notify',
-			'value' => $is_enabled ? 1 : 0
-		));
-	}
+        $this->container->getDb()->replace('settings', array(
+            'name'  => 'core_tickets.new_default_send_user_notify',
+            'value' => $is_enabled ? 1 : 0
+        ));
+    }
 }

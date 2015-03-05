@@ -45,123 +45,123 @@ use Orb\Util\Strings;
  */
 class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Visitor
-	 */
-	protected $visitor = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Visitor
+     */
+    protected $visitor = null;
 
-	/**
-	 * @var string
-	 */
-	protected $ip_address = '';
+    /**
+     * @var string
+     */
+    protected $ip_address = '';
 
-	/**
-	 * @var string
-	 */
-	protected $email = null;
+    /**
+     * @var string
+     */
+    protected $email = null;
 
-	/**
-	 * @var string
-	 */
-	protected $name = null;
+    /**
+     * @var string
+     */
+    protected $name = null;
 
-	/**
-	 * @var string
-	 */
-	protected $query;
+    /**
+     * @var string
+     */
+    protected $query;
 
-	/**
-	 * @var string
-	 */
-	protected $num_results;
+    /**
+     * @var string
+     */
+    protected $num_results;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public static function create($query, $num_results, $use_request = true)
-	{
-		$searchlog = new self();
-		$searchlog->query = $query;
-		$searchlog->num_results = $num_results;
+    public static function create($query, $num_results, $use_request = true)
+    {
+        $searchlog = new self();
+        $searchlog->query = $query;
+        $searchlog->num_results = $num_results;
 
-		if ($use_request && App::has('request')) {
-			if (!App::getCurrentPerson()->isGuest()) {
-				$searchlog->person = App::getCurrentPerson();
-			}
+        if ($use_request && App::has('request')) {
+            if (!App::getCurrentPerson()->isGuest()) {
+                $searchlog->person = App::getCurrentPerson();
+            }
 
-			$searchlog->visitor = App::getSession()->getVisitor();
-		}
+            $searchlog->visitor = App::getSession()->getVisitor();
+        }
 
-		return $searchlog;
-	}
+        return $searchlog;
+    }
 
-	public function __construct()
-	{
-		$this['date_created'] = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this['date_created'] = new \DateTime();
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Sets the query after trying to normalize it a bit
-	 *
-	 * @param $query
-	 */
-	public function setQuery($query)
-	{
-		$query = trim($query);
-		$query = preg_replace('# {2,}#', ' ', $query);
-		$query = Strings::utf8_strtolower($query);
-		$query = Strings:: utf8_accents_to_ascii($query);
+    /**
+     * Sets the query after trying to normalize it a bit
+     *
+     * @param $query
+     */
+    public function setQuery($query)
+    {
+        $query = trim($query);
+        $query = preg_replace('# {2,}#', ' ', $query);
+        $query = Strings::utf8_strtolower($query);
+        $query = Strings:: utf8_accents_to_ascii($query);
 
-		$this['query'] = $query;
-	}
+        $this['query'] = $query;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchLog';
-		$metadata->setPrimaryTable(array(
-			'name' => 'searchlog',
-			'indexes' => array(
-				'searchlog_query_idx' => array('columns' => array('query')),
-				'num_results_idx' => array('columns' => array('num_results')),
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
-		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'email', ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName' => 'query', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'query', ));
-		$metadata->mapField(array( 'fieldName' => 'num_results', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_results', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchLog';
+        $metadata->setPrimaryTable(array(
+            'name' => 'searchlog',
+            'indexes' => array(
+                'searchlog_query_idx' => array('columns' => array('query')),
+                'num_results_idx' => array('columns' => array('num_results')),
+            )
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'email', ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
+        $metadata->mapField(array( 'fieldName' => 'query', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'query', ));
+        $metadata->mapField(array( 'fieldName' => 'num_results', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_results', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

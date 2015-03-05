@@ -1,5 +1,5 @@
 define ["jquery", "intl-tel-input"] , ($, intlTelInput) ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -20,28 +20,28 @@ define ["jquery", "intl-tel-input"] , ($, intlTelInput) ->
     #
     # Example with handling a model attached:
     # <input dp-phone-number="{{ phone.region }}" ng-model="phone.number">
-	###
-	Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', ($rootScope, $timeout) ->
-		return {
-			require: 'ngModel',
-			restrict: 'A',
-			scope: {
-				region: '@dpPhoneNumber'
-			},
-			link: (scope, element, attr, ngModel) ->
-				# when we get the dpPhoneNumber attribute value, setup intlTelInput
-				attr.$observe 'dpPhoneNumber', (reg) ->
-					element.intlTelInput()
-					if reg
-						element.intlTelInput("selectCountry", reg.toLowerCase())
-					if element.val()
-						element.intlTelInput("setNumber", element.val())
+  ###
+  Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', ($rootScope, $timeout) ->
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      scope: {
+        region: '@dpPhoneNumber'
+      },
+      link: (scope, element, attr, ngModel) ->
+        # when we get the dpPhoneNumber attribute value, setup intlTelInput
+        attr.$observe 'dpPhoneNumber', (reg) ->
+          element.intlTelInput()
+          if reg
+            element.intlTelInput("selectCountry", reg.toLowerCase())
+          if element.val()
+            element.intlTelInput("setNumber", element.val())
 
-				# keep the element and angular's model in sync
-				element.on 'focus blur keyup change', ->
-					scope.$apply ->
-						ngModel.$setViewValue(element.val())
-		}
-	]
+        # keep the element and angular's model in sync
+        element.on 'focus blur keyup change', ->
+          scope.$apply ->
+            ngModel.$setViewValue(element.val())
+    }
+  ]
 
-	return Admin_Main_Directive_DpPhoneNumber
+  return Admin_Main_Directive_DpPhoneNumber

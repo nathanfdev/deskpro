@@ -40,15 +40,15 @@ use Zend\Mail\Protocol\Exception;
 
 class Pop3 extends \Zend\Mail\Storage\Pop3
 {
-	const ERR_CONNECT = 1;
-	const ERR_LOGIN = 2;
+    const ERR_CONNECT = 1;
+    const ERR_LOGIN = 2;
 
-	/**
-	 * @var array
-	 */
-	protected $capa_res = null;
+    /**
+     * @var array
+     */
+    protected $capa_res = null;
 
-	public function __construct($params)
+    public function __construct($params)
     {
         if (is_array($params)) {
             $params = (object)$params;
@@ -60,6 +60,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 
         if ($params instanceof Pop3Protocol) {
             $this->protocol = $params;
+
             return;
         }
 
@@ -68,69 +69,69 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         $user     = isset($params->user)     ? $params->user     : '';
         $port     = isset($params->port)     ? $params->port     : null;
         $ssl      = isset($params->ssl)      ? strtoupper($params->ssl) : false;
-		$logger   = isset($params->logger)   ? $params->logger   : null;
-		$test_mode = isset($params->test_mode) && $params->test_mode;
+        $logger   = isset($params->logger)   ? $params->logger   : null;
+        $test_mode = isset($params->test_mode) && $params->test_mode;
 
         $this->protocol = new Pop3Protocol();
-		if ($logger) {
-			$this->protocol->setLogger($logger);
+        if ($logger) {
+            $this->protocol->setLogger($logger);
 
-			$logger->logDebug(Arrays::implodeTemplate(array(
-				'host'     => $host,
-				'user'     => $user,
-				'password' => $test_mode ? $password : 'xxxxxx',
-				'port'     => $port,
-				'ssl'      => $ssl
-			), "[options] {KEY}: {VAL}\n"));
-		}
+            $logger->logDebug(Arrays::implodeTemplate(array(
+                'host'     => $host,
+                'user'     => $user,
+                'password' => $test_mode ? $password : 'xxxxxx',
+                'port'     => $port,
+                'ssl'      => $ssl
+            ), "[options] {KEY}: {VAL}\n"));
+        }
 
-		try {
-			$this->protocol->connect($host, $port, $ssl, $logger);
-			if ($logger) {
-				$logger->logDebug("[protocol] connect okay");
-			}
-		} catch (Exception\RuntimeException $e) {
-			if ($logger) {
-				$logger->logError("[error:protocol] " . $e->getMessage());
-			}
-			$new_e = new Exception\RuntimeException('There was an error connecting to the server: ' . $e->getMessage(), self::ERR_CONNECT, $e);
-			throw $new_e;
-		}
+        try {
+            $this->protocol->connect($host, $port, $ssl, $logger);
+            if ($logger) {
+                $logger->logDebug("[protocol] connect okay");
+            }
+        } catch (Exception\RuntimeException $e) {
+            if ($logger) {
+                $logger->logError("[error:protocol] " . $e->getMessage());
+            }
+            $new_e = new Exception\RuntimeException('There was an error connecting to the server: ' . $e->getMessage(), self::ERR_CONNECT, $e);
+            throw $new_e;
+        }
 
-		try {
-			$this->protocol->login($user, $password);
-			if ($logger) {
-				$logger->logDebug("[protocol] login okay");
-			}
-		} catch (Exception\RuntimeException $e) {
-			if ($logger) {
-				$logger->logError("[error:protocol] ({$e->getCode()}) " . $e->getMessage() . " <" . get_class($e) . ">");
-			}
-			$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
-			throw $new_e;
-		}
+        try {
+            $this->protocol->login($user, $password);
+            if ($logger) {
+                $logger->logDebug("[protocol] login okay");
+            }
+        } catch (Exception\RuntimeException $e) {
+            if ($logger) {
+                $logger->logError("[error:protocol] ({$e->getCode()}) " . $e->getMessage() . " <" . get_class($e) . ">");
+            }
+            $new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
+            throw $new_e;
+        }
     }
 
-	public function getProtocolCapabilities()
-	{
-		if ($this->capa_res !== null) {
-			return $this->capa_res;
-		}
+    public function getProtocolCapabilities()
+    {
+        if ($this->capa_res !== null) {
+            return $this->capa_res;
+        }
 
-		$this->capa_res = $this->getProtocol()->capa();
-		$this->capa_res = Arrays::func($this->capa_res, 'trim');
-		$this->capa_res = Arrays::removeFalsey($this->capa_res);
+        $this->capa_res = $this->getProtocol()->capa();
+        $this->capa_res = Arrays::func($this->capa_res, 'trim');
+        $this->capa_res = Arrays::removeFalsey($this->capa_res);
 
-		return $this->capa_res;
-	}
+        return $this->capa_res;
+    }
 
-	public function canUniqueId()
-	{
-		return in_array('UIDL', $this->getProtocolCapabilities());
-	}
+    public function canUniqueId()
+    {
+        return in_array('UIDL', $this->getProtocolCapabilities());
+    }
 
-	public function getProtocol()
-	{
-		return $this->protocol;
-	}
+    public function getProtocol()
+    {
+        return $this->protocol;
+    }
 }

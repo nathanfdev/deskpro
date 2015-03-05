@@ -39,18 +39,18 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class OrgFieldsManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$m = new OrganizationFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',
-				'entity_name'        => 'DeskPRO:CustomDefOrganization',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataOrganization',
-				'data_entity_name'   => 'DeskPRO:CustomDataOrganization',
-			)
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $m = new OrganizationFieldManager(
+            $container->get('doctrine.orm.entity_manager'),
+            array(
+                'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',
+                'entity_name'        => 'DeskPRO:CustomDefOrganization',
+                'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataOrganization',
+                'data_entity_name'   => 'DeskPRO:CustomDataOrganization',
+            )
+        );
 
-		return $m;
-	}
+        return $m;
+    }
 }

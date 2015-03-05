@@ -52,210 +52,210 @@ use Orb\Types\JsonObjectSerializable;
  */
 class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSerializable, \Countable
 {
-	/**
-	 * @var TriggerTermComposite
-	 */
-	private $criteria;
+    /**
+     * @var TriggerTermComposite
+     */
+    private $criteria;
 
-	/**
-	 * @var TermFactory
-	 */
-	private $term_factory;
+    /**
+     * @var TermFactory
+     */
+    private $term_factory;
 
-	public function __construct()
-	{
-		$this->criteria = new TriggerTermComposite();
-		$this->criteria->setOperator(TriggerTermComposite::OP_OR);
-		$this->term_factory = new TermFactory();
-	}
-
-
-	/**
-	 * @param TriggerTermInterface $term
-	 * @throws \InvalidArgumentException
-	 */
-	public function addTerm(TriggerTermInterface $term)
-	{
-		if (!($term instanceof CriteriaTermInterface) && !($term instanceof TriggerTermComposite)) {
-			$class_name = get_class($term);
-			throw new \InvalidArgumentException("TriggerCriteria can only manage terms terms that implement CriteriaTermInterface. Invalid class: $class_name");
-		}
-		$this->criteria->add($term);
-	}
+    public function __construct()
+    {
+        $this->criteria = new TriggerTermComposite();
+        $this->criteria->setOperator(TriggerTermComposite::OP_OR);
+        $this->term_factory = new TermFactory();
+    }
 
 
-	/**
-	 * @param array $term_info
-	 * @throws \InvalidArgumentException
-	 */
-	public function addTermFromArray(array $term_info)
-	{
-		if (isset($term_info['set_terms'])) {
-			$composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
-			foreach ($term_info['set_terms'] as $ti) {
-				$t = $this->getTermFromArray($ti);
-				$composite->add($t);
-			}
-
-			$this->addTerm($composite);
-		} else {
-			$term = $this->getTermFromArray($term_info);
-			$this->addTerm($term);
-		}
-	}
+    /**
+     * @param  TriggerTermInterface      $term
+     * @throws \InvalidArgumentException
+     */
+    public function addTerm(TriggerTermInterface $term)
+    {
+        if (!($term instanceof CriteriaTermInterface) && !($term instanceof TriggerTermComposite)) {
+            $class_name = get_class($term);
+            throw new \InvalidArgumentException("TriggerCriteria can only manage terms terms that implement CriteriaTermInterface. Invalid class: $class_name");
+        }
+        $this->criteria->add($term);
+    }
 
 
-	/**
-	 * @param array $term_info
-	 * @throws \InvalidArgumentException
-	 */
-	public function getTermFromArray(array $term_info)
-	{
-		return $this->term_factory->createFromArray($term_info);
-	}
+    /**
+     * @param  array                     $term_info
+     * @throws \InvalidArgumentException
+     */
+    public function addTermFromArray(array $term_info)
+    {
+        if (isset($term_info['set_terms'])) {
+            $composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
+            foreach ($term_info['set_terms'] as $ti) {
+                $t = $this->getTermFromArray($ti);
+                $composite->add($t);
+            }
+
+            $this->addTerm($composite);
+        } else {
+            $term = $this->getTermFromArray($term_info);
+            $this->addTerm($term);
+        }
+    }
 
 
-	/**
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return bool
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return $this->criteria->isTriggerMatch($ticket, $context);
-	}
+    /**
+     * @param  array                     $term_info
+     * @throws \InvalidArgumentException
+     */
+    public function getTermFromArray(array $term_info)
+    {
+        return $this->term_factory->createFromArray($term_info);
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->criteria);
-	}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return bool
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return $this->criteria->isTriggerMatch($ticket, $context);
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function exportToArray()
-	{
-		$data = array();
-
-		$data['version']  = 1;
-		$data['terms'] = array();
-		foreach ($this->criteria->getAll() as $criteria) {
-			if ($criteria instanceof TriggerTermComposite) {
-				$set_terms = array();
-				foreach ($criteria->getAll() as $set_criteria) {
-					if (!($set_criteria instanceof CriteriaTermInterface)) {
-						continue;
-					}
-
-					$set_terms[] = array(
-						'type'    => $set_criteria->getTermType(),
-						'op'      => $set_criteria->getTermOperator(),
-						'options' => $set_criteria->getTermOptions()->all()
-					);
-				}
-
-				if ($set_terms) {
-					$data['terms'][] = array(
-						'set_terms' => $set_terms
-					);
-				}
-			} else {
-				if (!($criteria instanceof CriteriaTermInterface)) {
-					continue;
-				}
-
-				$data['terms'][] = array(
-					'type'    => $criteria->getTermType(),
-					'op'      => $criteria->getTermOperator(),
-					'options' => $criteria->getTermOptions()->all()
-				);
-			}
-		}
-
-		return $data;
-	}
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->criteria);
+    }
 
 
-	/**
-	 * @param array $data
-	 */
-	public function importFromArray(array $data)
-	{
-		foreach ($data['terms'] as $term_info) {
-			$this->addTermFromArray($term_info);
-		}
-	}
+    /**
+     * @return array
+     */
+    public function exportToArray()
+    {
+        $data = array();
+
+        $data['version']  = 1;
+        $data['terms'] = array();
+        foreach ($this->criteria->getAll() as $criteria) {
+            if ($criteria instanceof TriggerTermComposite) {
+                $set_terms = array();
+                foreach ($criteria->getAll() as $set_criteria) {
+                    if (!($set_criteria instanceof CriteriaTermInterface)) {
+                        continue;
+                    }
+
+                    $set_terms[] = array(
+                        'type'    => $set_criteria->getTermType(),
+                        'op'      => $set_criteria->getTermOperator(),
+                        'options' => $set_criteria->getTermOptions()->all()
+                    );
+                }
+
+                if ($set_terms) {
+                    $data['terms'][] = array(
+                        'set_terms' => $set_terms
+                    );
+                }
+            } else {
+                if (!($criteria instanceof CriteriaTermInterface)) {
+                    continue;
+                }
+
+                $data['terms'][] = array(
+                    'type'    => $criteria->getTermType(),
+                    'op'      => $criteria->getTermOperator(),
+                    'options' => $criteria->getTermOptions()->all()
+                );
+            }
+        }
+
+        return $data;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function exportToJson()
-	{
-		return json_encode($this->exportToArray());
-	}
+    /**
+     * @param array $data
+     */
+    public function importFromArray(array $data)
+    {
+        foreach ($data['terms'] as $term_info) {
+            $this->addTermFromArray($term_info);
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return $this->exportToJson();
-	}
+    /**
+     * @return string
+     */
+    public function exportToJson()
+    {
+        return json_encode($this->exportToArray());
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function serializeJsonArray()
-	{
-		return $this->exportToArray();
-	}
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->exportToJson();
+    }
 
 
-	/**
-	 * @param array $data
-	 * @return TriggerTerms
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data['terms'] as $term_info) {
-			try {
-				$obj->addTermFromArray($term_info);
-			} catch (\Exception $e) {
-				if (!empty($term_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
-				}
-			}
-		}
-
-		return $obj;
-	}
+    /**
+     * @return array
+     */
+    public function serializeJsonArray()
+    {
+        return $this->exportToArray();
+    }
 
 
-	/**
-	 * @param string $data
-	 */
-	public function unserialize($data)
-	{
-		$data = json_decode($data, true);
-		$this->__construct();
+    /**
+     * @param  array        $data
+     * @return TriggerTerms
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data['terms'] as $term_info) {
+            try {
+                $obj->addTermFromArray($term_info);
+            } catch (\Exception $e) {
+                if (!empty($term_info['type'])) {
+                    KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
+                }
+            }
+        }
 
-		foreach ($data['terms'] as $term_info) {
-			try {
-				$this->addTermFromArray($term_info);
-			} catch (\Exception $e) {
-				if (!empty($term_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
-				}
-			}
-		}
-	}
+        return $obj;
+    }
+
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $data = json_decode($data, true);
+        $this->__construct();
+
+        foreach ($data['terms'] as $term_info) {
+            try {
+                $this->addTermFromArray($term_info);
+            } catch (\Exception $e) {
+                if (!empty($term_info['type'])) {
+                    KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
+                }
+            }
+        }
+    }
 }

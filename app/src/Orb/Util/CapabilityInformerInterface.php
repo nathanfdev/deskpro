@@ -36,7 +36,7 @@ namespace Orb\Util;
 
 /**
  * An object that implements this interface is able to tell about its own capabilities.
- * 
+ *
  * For example, useful with adapters when various features might not be supported between each adapter
  * and implementation code will need to check.
  *
@@ -53,19 +53,18 @@ namespace Orb\Util;
  */
 interface CapabilityInformerInterface
 {
-	/**
-	 * Returns an array of all capabilities
-	 *
-	 * @return array
-	 */
-	public function getCapabilities();
+    /**
+     * Returns an array of all capabilities
+     *
+     * @return array
+     */
+    public function getCapabilities();
 
-
-	/**
-	 * Check if this object is capable of a specific thing
-	 * 
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability);
+    /**
+     * Check if this object is capable of a specific thing
+     *
+     * @param  mixed $capability
+     * @return bool
+     */
+    public function isCapable($capability);
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1362069236 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add visitors.user_token and visitors.hint_hidden");
-		$this->execMutateSql("ALTER TABLE visitors ADD user_token VARCHAR(8) DEFAULT NULL, ADD hint_hidden TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add visitors.user_token and visitors.hint_hidden");
+        $this->execMutateSql("ALTER TABLE visitors ADD user_token VARCHAR(8) DEFAULT NULL, ADD hint_hidden TINYINT(1) NOT NULL");
+    }
 }

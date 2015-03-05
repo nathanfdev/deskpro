@@ -43,99 +43,99 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class ChatDepartmentEdit implements HasValidationMetadataInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\Department
+     */
 
-	public $department;
+    public $department;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\Department
+     */
 
-	public $move_department;
+    public $move_department;
 
-	/**
-	 * @var array
-	 */
+    /**
+     * @var array
+     */
 
-	public $permissions;
+    public $permissions;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department|null
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\Department|null
+     */
 
-	private $old_parent;
+    private $old_parent;
 
-	public function __construct(Department $department)
-	{
-		$this->department  = $department;
-		$this->permissions = new ArrayCollection(); // this is needed for proper validation of 'permissions'
+    public function __construct(Department $department)
+    {
+        $this->department  = $department;
+        $this->permissions = new ArrayCollection(); // this is needed for proper validation of 'permissions'
 
-		if ($department->parent) {
+        if ($department->parent) {
 
-			$this->old_parent = $department->parent;
-		}
-	}
+            $this->old_parent = $department->parent;
+        }
+    }
 
-	/**
-	 * @param EntityManager $em
-	 */
+    /**
+     * @param EntityManager $em
+     */
 
-	public function save(EntityManager $em)
-	{
-		$em->persist($this->department);
-		$em->flush();
-	}
+    public function save(EntityManager $em)
+    {
+        $em->persist($this->department);
+        $em->flush();
+    }
 
 
-	/**
-	 * @param EntityManager $em
-	 * @param \Application\DeskPRO\Entity\Person[] $agents
-	 * @param \Application\DeskPRO\Entity\Usergroup[] $groups
-	 */
+    /**
+     * @param EntityManager                           $em
+     * @param \Application\DeskPRO\Entity\Person[]    $agents
+     * @param \Application\DeskPRO\Entity\Usergroup[] $groups
+     */
 
-	public function savePermissions(EntityManager $em, array $agents, array $groups)
-	{
-		$matrix = new DepartmentPermissionMatrix($agents, $groups);
-		$matrix->setPermArray($this->permissions);
-		$matrix->save($this->department, $em);
-	}
+    public function savePermissions(EntityManager $em, array $agents, array $groups)
+    {
+        $matrix = new DepartmentPermissionMatrix($agents, $groups);
+        $matrix->setPermArray($this->permissions);
+        $matrix->save($this->department, $em);
+    }
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
 
-	/**
-	 * @param ExecutionContextInterface $context
-	 */
+    /**
+     * @param ExecutionContextInterface $context
+     */
 
-	public function validateChangingOfParent(ExecutionContextInterface $context)
-	{
-		if(!$this->old_parent) {
+    public function validateChangingOfParent(ExecutionContextInterface $context)
+    {
+        if(!$this->old_parent) {
 
-			if (sizeof($this->department->getChildren()) > 0 && $this->department->getParentId() != 0) {
+            if (sizeof($this->department->getChildren()) > 0 && $this->department->getParentId() != 0) {
 
-				$context->addViolationAt(
-					'edit_department',
-					'department.edit_chat.changing_parent_when_have_children'
-				);
-			}
-		}
-	}
+                $context->addViolationAt(
+                    'edit_department',
+                    'department.edit_chat.changing_parent_when_have_children'
+                );
+            }
+        }
+    }
 
-	/**
-	 * @param ValidatorClassMetadata $metadata
-	 */
+    /**
+     * @param ValidatorClassMetadata $metadata
+     */
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addConstraint(
-			new Callback(
-				array(
-					 'methods' => array('validateChangingOfParent')
-				)
-			)
-		);
-	}
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addConstraint(
+            new Callback(
+                array(
+                     'methods' => array('validateChangingOfParent')
+                )
+            )
+        );
+    }
 }

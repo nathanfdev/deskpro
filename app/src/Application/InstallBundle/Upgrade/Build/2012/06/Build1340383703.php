@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340383703 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add ended_by to chat_conversations");
-		$this->execMutateSql("ALTER TABLE chat_conversations ADD ended_by VARCHAR(15) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add ended_by to chat_conversations");
+        $this->execMutateSql("ALTER TABLE chat_conversations ADD ended_by VARCHAR(15) NOT NULL");
+    }
 }

@@ -49,7 +49,7 @@ pageMeta.baseId = '{{ baseId }}';
 			data-select-width="auto"
 			data-placeholder="Add a label"
 			value="{% for label in feedback.labels %}{{ label.label }},{% endfor %}"
-            data-allow-new="{{ app.getSetting('labels.feedback.agent_can_create') }}"
+			data-allow-new="{% if app.user.hasPerm('agent_publish.feedback_create_labels') %}1{% endif %}"
 		/>
 	</div>
 	<br class="clear" />
@@ -81,10 +81,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<section class="description-area">
 		<dl class="info-list">
 
-			<dt>URL Slug</dt>
+			<dt>{{ phrase('agent.publish.slug') }}</dt>
 			<dd>
 				<span id="{{ baseId }}_slug">{{ feedback.slug }}</span>
-				<button class="clean-white" id="{{ baseId }}_editslug">Edit Slug</button>
+				<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
+					{{ phrase('agent.publish.slug_edit') }}
+				</button>
 			</dd>
 
 			<dt>{{ phrase('agent.general.votes') }}:</dt>
@@ -131,7 +133,9 @@ pageMeta.baseId = '{{ baseId }}';
 				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
 				<button class="clean-white spam delete-type noedit-hide" {% if feedback.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.general.mark_spam') }}</button>
 				<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
-				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
+				<button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
+					{{ phrase('agent.general.copy_permalink') }}
+				</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
 			</div>
 		</div>

@@ -39,9 +39,10 @@ use Application\DeskPRO\Reports\Overview;
 
 class ReportsOverviewService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new Overview($container->getEm());
+
         return $x;
-	}
+    }
 }

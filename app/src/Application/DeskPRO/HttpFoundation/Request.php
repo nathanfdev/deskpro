@@ -33,110 +33,124 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
-use Symfony\Component\HttpFoundation\SessionStorage\NativeSessionStorage;
+
+use Orb\Util\Strings;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
-	const PARTIAL_REQUEST_KEY = '_partial';
+    const PARTIAL_REQUEST_KEY = '_partial';
 
-	/** @var null */
-	protected $url_locale = null;
+    /** @var null */
+    protected $url_locale = null;
 
-	/**
-	 * When a client sends _partial in POST/GET data, they're requesting a partial result
-	 *
-	 * For example: more search results, or a page being put into an existing page etc. The actual
-	 * meaning of what "partial" is depends on the page.
-	 *
-	 * Returns either 'partial', or a string value of the _partial (which might be used to denote different
-	 * types of partial templates).
-	 *
-	 * @return bool|string
-	 */
-	public function isPartialRequest()
-	{
-		$val = false;
+    protected $index_included;
 
-		if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
-			$val = $this->query->get(self::PARTIAL_REQUEST_KEY);
-			if (!$val) $val = 'partial';
-		} elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
-			$val = $this->request->get(self::PARTIAL_REQUEST_KEY);
-			if (!$val) $val = 'partial';
-		}
+    protected $info;
 
-		return $val;
-	}
-
-	public function isPost()
-	{
-		return $this->getMethod() == 'POST';
-	}
-
-	public function isGet()
-	{
-		return $this->getMethod() == 'GET';
-	}
-
-	/**
-	 * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.
-	 *
-	 * @return string
-	 */
-	public function getUrlLocale()
-	{
-		if ($this->url_locale !== null) return $this->url_locale;
-
-		$this->url_locale = false;
-
-		#------------------------------
-		# We check for locale prefix in user section
-		#------------------------------
-
-		$nocheck_sections = array(
-			'/agent',
-			'/admin',
-			'/dev',
-			'/api'
-		);
-
-		$check_for_locale = true;
-		foreach ($nocheck_sections as $s) {
-			if (strpos($pathinfo, $s) === 0) {
-				$check_for_locale = false;
-			}
-		}
-
-		if ($check_for_locale) {
-			$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
-			if ($locale) {
-				$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
-			}
-
-			if ($locale) {
-				$this->url_locale = $locale;
-			}
-		}
-
-		$this->attributes->set('_locale', $this->url_locale);
-
-		return $this->url_locale;
-	}
-
-	/**
-	 * Same as parent, except directory matching is case-insensitive for Windows.
-	 *
-	 * @return mixed|null|string
-	 */
-	protected function prepareBaseUrl()
+    /**
+     * When a client sends _partial in POST/GET data, they're requesting a partial result
+     *
+     * For example: more search results, or a page being put into an existing page etc. The actual
+     * meaning of what "partial" is depends on the page.
+     *
+     * Returns either 'partial', or a string value of the _partial (which might be used to denote different
+     * types of partial templates).
+     *
+     * @return bool|string
+     */
+    public function isPartialRequest()
     {
-		// Not Windows (which is case insensitive), then do the normal
-		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-			return parent::prepareBaseUrl();
-		}
+        $val = false;
 
-		// Below is the same except for a few cases where
-		// strpos is replaced with stripos and some strtolowers
+        if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
+            $val = $this->query->get(self::PARTIAL_REQUEST_KEY);
+            if (!$val) $val = 'partial';
+        } elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
+            $val = $this->request->get(self::PARTIAL_REQUEST_KEY);
+            if (!$val) $val = 'partial';
+        }
+
+        return $val;
+    }
+
+    /**
+     * returns bool only
+     * @return bool
+     */
+    public function isPartial()
+    {
+        return !empty($_REQUEST[self::PARTIAL_REQUEST_KEY]);
+    }
+
+    public function isPost()
+    {
+        return $this->getMethod() == 'POST';
+    }
+
+    public function isGet()
+    {
+        return $this->getMethod() == 'GET';
+    }
+
+    /**
+     * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.
+     *
+     * @return string
+     */
+    public function getUrlLocale()
+    {
+        if ($this->url_locale !== null) return $this->url_locale;
+
+        $this->url_locale = false;
+
+        #------------------------------
+        # We check for locale prefix in user section
+        #------------------------------
+
+        $nocheck_sections = array(
+            '/agent',
+            '/admin',
+            '/dev',
+            '/api'
+        );
+
+        $check_for_locale = true;
+        foreach ($nocheck_sections as $s) {
+            if (strpos($this->getPathInfo(), $s) === 0) {
+                $check_for_locale = false;
+            }
+        }
+
+        if ($check_for_locale) {
+            $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+            if ($locale) {
+                $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
+            }
+
+            if ($locale) {
+                $this->url_locale = $locale;
+            }
+        }
+
+        $this->attributes->set('_locale', $this->url_locale);
+
+        return $this->url_locale;
+    }
+
+    /**
+     * Same as parent, except directory matching is case-insensitive for Windows.
+     *
+     * @return mixed|null|string
+     */
+    protected function prepareBaseUrl()
+    {
+        // Not Windows (which is case insensitive), then do the normal
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            return parent::prepareBaseUrl();
+        }
+
+        // Below is the same except for a few cases where
+        // strpos is replaced with stripos and some strtolowers
         $filename = strtolower(basename($this->server->get('SCRIPT_FILENAME')));
 
         if (strtolower(basename($this->server->get('SCRIPT_NAME'))) === $filename) {
@@ -194,5 +208,91 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         return rtrim($baseUrl, '/');
+    }
+
+    public function isIndexIncluded()
+    {
+        return null === $this->index_included
+            ? $this->index_included = false !== strpos($this->getRequestUri(), '/index.php')
+            : $this->index_included;
+    }
+
+    /**
+     * @param null $correctHost
+     * @return bool|null
+     */
+    public function isCorrectHost($correctHost = null)
+    {
+        if (!$info = $this->getCorrectInfo($correctHost)) {
+            return false;
+        }
+
+        $host = $info['port']
+            ? $info['host'] . ':' . $info['port']
+            : $info['host'];
+
+        return $this->getHttpHost() === $host;
+    }
+
+    /**
+     * @param null $correctHost
+     * @return bool|null
+     */
+    public function isCorrectScheme($correctHost = null)
+    {
+        if (!$info = $this->getCorrectInfo($correctHost)) {
+            return false;
+        }
+
+        return 'https' === $this->getScheme() || 'https' !== $info['scheme'];
+    }
+
+    /**
+     * @param null $correctHost
+     * @return array
+     */
+    public function getCorrectInfo($correctHost = null)
+    {
+        if ($this->info) {
+            return $this->info;
+        }
+
+        if ($correctHost) {
+            if (!$info = parse_url($correctHost)) {
+                return array();
+            }
+            $info['scheme'] = strtolower(@$info['scheme']);
+            $info['host'] = strtolower(@$info['host']);
+            $info['port'] = @$info['port'];
+            $this->info = $info;
+        }
+
+        return $this->info;
+    }
+
+    public function getReturnParam()
+    {
+        if ('application/json' === $this->getContentType()) {
+            if ($data = json_decode((string) $this->getContent(), 1)) {
+                if (!$return = @$data['return']) {
+                    return null;
+                }
+            }
+        }
+
+        if (!$return = (string) $this->get('return')) {
+            return null;
+        }
+
+        $return = Strings::removeInvisibleCharacters($return);
+        if (!$return) {
+            return null;
+        }
+
+        if ('/' !== $return[0] || '//' === substr($return, 0, 2) || false !== strpos($return, '/validate-email/')) {
+            return null;
+        }
+
+        return $return;
     }
 }

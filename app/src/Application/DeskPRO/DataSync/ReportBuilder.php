@@ -33,30 +33,29 @@
 
 namespace Application\DeskPRO\DataSync;
 
-use Application\DeskPRO\App;
 
 /**
  * Data sync handler for built in report builder queries.
  */
 class ReportBuilder extends AbstractDataSync
 {
-	public function getTableName()
-	{
-		return 'report_builder';
-	}
+    public function getTableName()
+    {
+        return 'report_builder';
+    }
 
-	public function getKeyField()
-	{
-		return 'unique_key';
-	}
+    public function getKeyField()
+    {
+        return 'unique_key';
+    }
 
-	public function getSyncFields()
-	{
-		return array('title', 'description', 'query', 'category', 'display_order');
-	}
+    public function getSyncFields()
+    {
+        return array('title', 'description', 'query', 'category', 'display_order');
+    }
 
-	public function getDefaultInsertValues()
-	{
-		return array('is_custom' => 0, 'parent_id' => null);
-	}
+    public function getDefaultInsertValues()
+    {
+        return array('is_custom' => 0, 'parent_id' => null);
+    }
 }

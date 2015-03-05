@@ -36,61 +36,60 @@ namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
-use Application\DeskPRO\App;
 
 class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 {
-	public function getFieldsFromIdentity(Identity $identity)
-	{
-		$info = $identity->getRawData();
+    public function getFieldsFromIdentity(Identity $identity)
+    {
+        $info = $identity->getRawData();
 
-		return array(
-			'name'            => isset($info['name']) ? $info['name'] : '',
-			'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
-			'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
-			'email'           => isset($info['email']) ? $info['email'] : '',
-			'email_confirmed' => true,
-		);
-	}
-
-
-	/**
-	 * @return \deskpro_magento\Usersource\Auth\Magento
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		$options = $this->usersource->options;
-
-		return new \Orb\Auth\Adapter\Saml($options);
-	}
+        return array(
+            'name'            => isset($info['name']) ? $info['name'] : '',
+            'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
+            'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
+            'email'           => isset($info['email']) ? $info['email'] : '',
+            'email_confirmed' => true,
+        );
+    }
 
 
-	public function getAgentLogoutRedirectUrl()
-	{
-		return '';
-	}
+    /**
+     * @return \deskpro_magento\Usersource\Auth\Magento
+     */
+    protected function _createAuthAdapterObject()
+    {
+        $options = $this->usersource->options;
+
+        return new \Orb\Auth\Adapter\Saml($options);
+    }
 
 
-	public function getUserLogoutRedirectUrl()
-	{
-		return '';
-	}
+    public function getAgentLogoutRedirectUrl()
+    {
+        return '';
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		$capabilities = array(
-			UsersourceInfo::CAPABILITY_SSO,
-			UsersourceInfo::CAPABILITY_SSO_JS
-		);
+    public function getUserLogoutRedirectUrl()
+    {
+        return '';
+    }
 
-		if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
-			$capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
-		}
 
-		return $capabilities;
-	}
+    /**
+     * @return array
+     */
+    public function getCapabilities()
+    {
+        $capabilities = array(
+            UsersourceInfo::CAPABILITY_SSO,
+            UsersourceInfo::CAPABILITY_SSO_JS
+        );
+
+        if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
+            $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
+        }
+
+        return $capabilities;
+    }
 }

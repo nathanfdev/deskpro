@@ -25,68 +25,77 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\ImporterCommandStatusCallback;
-use Application\ImportBundle\ImporterFactory;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportCommand extends ContainerAwareCommand
+/**
+ * Class ImportCommand
+ * @package Application\ImportBundle\Command
+ */
+class ImportCommand extends AbstractExportCommand
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
-	{
-		$this->setName('dp:import:run');
-		$this->setHelp("Executes the importer.");
-		$this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
-		$this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:import:run');
+        $this->setHelp("Executes the importer.");
 
+        parent::configure();
+    }
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
+        $config = $this->createGeneratorConfig($input, $this->importEntityTypesQueue());
+        $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
+        if ( ! $config->getInputPath()) {
+            throw new \Exception('Input path must be specified');
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$factory = new ImporterFactory($this->getContainer(), $input);
+        $logger    = $this->createLogger($config, $output);
+        $generator = $this->createGenerator($config, $output, $logger);
 
-		try {
-			$config       = $factory->createImporterConfig();
-			$config->mode = 'live';
-		} catch (\InvalidArgumentException $e) {
-			$output->writeln("<error>Config Error</error>");
-			$output->writeln("Message: " . $e->getMessage());
-			$output->writeln("");
-			$output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
-			$output->writeln("");
-			return 1;
-		}
+        try {
+            $generator->generate();
+            $output->writeln('');
+            $output->writeln(sprintf(
+                'Done. Importing was successful. Look at the log file `%s` to see details.',
+                $config->getLogPath()
+            ));
 
-		$config->log_path = null;
+        } catch (Generator\GeneratorException $e) {
+            $output->writeln('');
+            foreach ($e->getExceptions() as $exception) {
+                /** @var Generator\Validator\ValidatorConstraintException $exception */
+                $logger->critical($exception);
+            }
+            if ($config->isVerbose() === false) {
+                $output->writeln(sprintf(
+                    'An error has occurred while importing. Look at the log file `%s` to see details.',
+                    $config->getLogPath()
+                ));
+            }
 
-		$importer = $factory->createImporter($config);
-		$importer->setStatusCallback(new ImporterCommandStatusCallback($this, $output));
-		$importer->processImports();
+        } catch (\Exception $e) {
+            $logger->critical($e->getMessage());
 
-		echo "\n";
-		return 0;
-	}
+            if ($config->isVerbose() === false) {
+                $output->writeln('');
+            }
+            $output->writeln('');
+            $output->writeln(sprintf(
+                'An error has occurred while importing. Look at the log file `%s` to see details.',
+                $config->getLogPath()
+            ));
+        }
+    }
 }

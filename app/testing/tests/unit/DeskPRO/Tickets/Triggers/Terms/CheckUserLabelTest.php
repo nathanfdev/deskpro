@@ -9,92 +9,97 @@ require_once 'AbstractEntityCheckTest.php';
 
 class CheckUserLabelTest extends AbstractEntityCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param $object
-	 * @return Ticket
-	 */
-	public function createTicket($id, $object)
-	{
-		$person = new Person();
+    /**
+     * @param  int    $id
+     * @param $object
+     * @return Ticket
+     */
+    public function createTicket($id, $object)
+    {
+        if ($object === null) {
+            // no test for nulls
+            return null;
+        }
 
-		$bogus = new LabelPerson();
-		$bogus->label = "bogus";
+        $person = new Person();
 
-		$person->labels->add($bogus);
-		$person->labels->add($object);
+        $bogus = new LabelPerson();
+        $bogus->label = "bogus";
 
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->person = $person;
+        $person->labels->add($bogus);
+        $person->labels->add($object);
 
-		return $ticket;
-	}
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->person = $person;
 
-	public function testNoLabelIs()
-	{
-		$person = new Person();
+        return $ticket;
+    }
 
-		$ticket = new Ticket();
-		$ticket->id = 5000;
-		$ticket->person = $person;
+    public function testNoLabelIs()
+    {
+        $person = new Person();
 
-		$checker = $this->createChecker('is', array('labels' => array('test')));
-		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $ticket = new Ticket();
+        $ticket->id = 5000;
+        $ticket->person = $person;
 
-		$checker = $this->createChecker('is', array('labels' => array('test', 'test2')));
-		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
-	}
+        $checker = $this->createChecker('is', array('labels' => array('test')));
+        $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-	public function testNoLabelNot()
-	{
-		$person = new Person();
+        $checker = $this->createChecker('is', array('labels' => array('test', 'test2')));
+        $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+    }
 
-		$ticket = new Ticket();
-		$ticket->id = 5000;
-		$ticket->person = $person;
+    public function testNoLabelNot()
+    {
+        $person = new Person();
 
-		$checker = $this->createChecker('not', array('labels' => array('test')));
-		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $ticket = new Ticket();
+        $ticket->id = 5000;
+        $ticket->person = $person;
 
-		$checker = $this->createChecker('not', array('labels' => array('test', 'test2')));
-		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
-	}
+        $checker = $this->createChecker('not', array('labels' => array('test')));
+        $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckUserLabel';
-	}
+        $checker = $this->createChecker('not', array('labels' => array('test', 'test2')));
+        $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'labels';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckUserLabel';
+    }
 
-	/**
-	 * The entity class we are checking
-	 * @return string
-	 */
-	public function getEntityClass()
-	{
-		return 'Application\DeskPRO\Entity\LabelPerson';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'labels';
+    }
 
-	/**
-	 * @param int $id
-	 * @return object
-	 */
-	public function createEntityObject($id)
-	{
-		$object = new LabelPerson();
-		$object->label = $id;
+    /**
+     * The entity class we are checking
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'Application\DeskPRO\Entity\LabelPerson';
+    }
 
-		return $object;
-	}
+    /**
+     * @param  int    $id
+     * @return object
+     */
+    public function createEntityObject($id)
+    {
+        $object = new LabelPerson();
+        $object->label = $id;
+
+        return $object;
+    }
 }

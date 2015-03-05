@@ -39,9 +39,10 @@ use Application\DeskPRO\People\AgentPermissions\PermissionNamesLoader;
 
 class AgentPermissionNamesLoaderService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$loader = new PermissionNamesLoader();
-		return $loader;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $loader = new PermissionNamesLoader();
+
+        return $loader;
+    }
 }

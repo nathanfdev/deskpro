@@ -24,7 +24,12 @@
             <option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
         </select>
 		<div style="display: inline-block" ng-show="model.op != 'isset' && model.op != 'not_isset'">
-        	<input ui-select2="model.inputOptions" ng-model="model.value" style="min-width: 140px;" />
+            <div ng-if="model.op == 'is' || model.op == 'not'">
+                <input ui-select2="model.inputOptions" ng-model="model.value" style="min-width: 140px;" />
+            </div>
+            <div ng-if="!(model.op == 'is' || model.op == 'not')">
+                <input type="text" class="form-control row-content" ng-model="model.valueString" placeholder="{{ ng_var('options.placeholder') }}" />
+            </div>
 		</div>
 	</div>
 </dp-optionbuilder-row>

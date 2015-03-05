@@ -34,12 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
-use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\TicketEmailBuilder;
-use Orb\Util\CheckedOptionsArray;
 
 /**
  * Send an email to the user
@@ -52,11 +48,11 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SendSpecificUserEmail extends SendArbitraryUserEmail
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return false;
+    }
 }

@@ -3,95 +3,95 @@ namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Tickets\Actions\SetAgent;
 use DpTestingMocks\ContainerMock;
-use Mockery as m;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetAgentTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withAgentData()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withAgentData()->get();
 
-	public function testSetAgent()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$action = new SetAgent(array('agent_id' => 55));
-		$action->setContainer($this->getMockContainer());
+    public function testSetAgent()
+    {
+        $ticket = new Ticket();
+        $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetAgent(array('agent_id' => 55));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
-		$this->assertEquals(55, $ticket->agent->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetUnassigned()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-		$exec   = new ExecutorContext();
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
+        $this->assertEquals(55, $ticket->agent->id);
+    }
 
-		$action = new SetAgent(array('agent_id' => 0));
-		$action->setContainer($this->getMockContainer());
+    public function testSetUnassigned()
+    {
+        $ticket = new Ticket();
+        $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetAgent(array('agent_id' => 0));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertNull($ticket->agent);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetSelf()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
+        $this->assertNull($ticket->agent);
+    }
 
-		$exec = new ExecutorContext();
-		$exec->setPersonContext($this->getMockContainer()->getAgentData()->get(55));
+    public function testSetSelf()
+    {
+        $ticket = new Ticket();
+        $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
 
-		$action = new SetAgent(array('agent_id' => -1));
-		$action->setContainer($this->getMockContainer());
+        $exec = new ExecutorContext();
+        $exec->setPersonContext($this->getMockContainer()->getAgentData()->get(55));
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetAgent(array('agent_id' => -1));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
-		$this->assertEquals(55, $ticket->agent->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->agent = $this->getMockContainer()->getAgentData()->get(55);
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\Person', $ticket->agent);
+        $this->assertEquals(55, $ticket->agent->id);
+    }
 
-		$exec = new ExecutorContext();
+    public function testNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->agent = $this->getMockContainer()->getAgentData()->get(55);
 
-		$action = new SetAgent(array('agent_id' => 55));
-		$action->setContainer($this->container);
+        $exec = new ExecutorContext();
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $action = new SetAgent(array('agent_id' => 55));
+        $action->setContainer($this->container);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-		$action = new SetAgent(array('agent_id' => 200));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$this->assertNull($ticket->agent);
-	}
+        $action = new SetAgent(array('agent_id' => 200));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertNull($ticket->agent);
+    }
 }

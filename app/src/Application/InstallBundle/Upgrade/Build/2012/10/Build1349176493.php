@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349176493 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Allow plugins to define ticket trigger actions");
-		$this->execMutateSql("CREATE TABLE ticket_trigger_plugin_actions (id INT AUTO_INCREMENT NOT NULL, plugin_id VARCHAR(255) DEFAULT NULL, event_type VARCHAR(50) NOT NULL, setup_class VARCHAR(255) NOT NULL, action_class VARCHAR(255) NOT NULL, INDEX IDX_1D905890EC942BCF (plugin_id), UNIQUE INDEX event_type_idx (event_type), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions ADD CONSTRAINT FK_1D905890EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Allow plugins to define ticket trigger actions");
+        $this->execMutateSql("CREATE TABLE ticket_trigger_plugin_actions (id INT AUTO_INCREMENT NOT NULL, plugin_id VARCHAR(255) DEFAULT NULL, event_type VARCHAR(50) NOT NULL, setup_class VARCHAR(255) NOT NULL, action_class VARCHAR(255) NOT NULL, INDEX IDX_1D905890EC942BCF (plugin_id), UNIQUE INDEX event_type_idx (event_type), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions ADD CONSTRAINT FK_1D905890EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
+    }
 }

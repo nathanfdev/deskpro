@@ -38,16 +38,16 @@ use Application\DeskPRO\App;
 
 class ArticlesFetcher extends AbstractFetcher
 {
-	const TYPENAME = 'articles';
+    const TYPENAME = 'articles';
 
-	/**
-	 * Returns an array of entities identified by $related_ids, that the user is able to see.
-	 *
-	 * @param array $related_ids
-	 * @return array
-	 */
-	function getEntities(array $related_ids)
-	{
-		return App::getEntityRepository('DeskPRO:Article')->getByIdsWithContext($related_ids, $this->person);
-	}
+    /**
+     * Returns an array of entities identified by $related_ids, that the user is able to see.
+     *
+     * @param  array $related_ids
+     * @return array
+     */
+    public function getEntities(array $related_ids)
+    {
+        return App::getEntityRepository('DeskPRO:Article')->getByIdsWithContext($related_ids, $this->person);
+    }
 }

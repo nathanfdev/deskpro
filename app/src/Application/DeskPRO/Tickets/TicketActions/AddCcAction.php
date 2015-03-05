@@ -46,139 +46,139 @@ use Orb\Validator\StringEmail;
  */
 class AddCcAction extends AbstractAction
 {
-	/**
-	 * @var string[]
-	 */
-	protected $add_emails;
+    /**
+     * @var string[]
+     */
+    protected $add_emails;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person[]
-	 */
-	protected $add_people;
+    /**
+     * @var \Application\DeskPRO\Entity\Person[]
+     */
+    protected $add_people;
 
-	public function __construct($add_emails)
-	{
-		if (!is_array($add_emails)) {
-			$add_emails = explode(',', $add_emails);
-			$add_emails = Arrays::func($add_emails, 'trim');
-		}
+    public function __construct($add_emails)
+    {
+        if (!is_array($add_emails)) {
+            $add_emails = explode(',', $add_emails);
+            $add_emails = Arrays::func($add_emails, 'trim');
+        }
 
-		$valid = array();
-		foreach ($add_emails as $email) {
-			if (StringEmail::isValueValid($email)) {
-				$valid[] = $email;
-			}
-		}
+        $valid = array();
+        foreach ($add_emails as $email) {
+            if (StringEmail::isValueValid($email)) {
+                $valid[] = $email;
+            }
+        }
 
-		$valid = array_unique($valid);
+        $valid = array_unique($valid);
 
-		$this->add_emails = $valid;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Person[]
-	 */
-	public function getPeople()
-	{
-		if ($this->add_people) {
-			return $this->add_people;
-		}
-
-		$this->add_people = array();
-
-		foreach ($this->add_emails as $email) {
-			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($person) {
-				$this->add_people[$person->getId()] = $person;
-			} else {
-				if (App::getContainer()->getSetting('core.reg_enabled')) {
-					continue;
-				}
-				$person_processor = new PersonFromEmailProcessor();
-
-				$eml = new EmailAddress();
-				$eml->email = $email;
-				$person = $person_processor->createPerson($eml, false);
-
-				if ($person) {
-					$this->add_people[$person->getId()] = $person;
-				}
-			}
-		}
-
-		return $this->add_people;
-	}
+        $this->add_emails = $valid;
+    }
 
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$people = $this->getPeople();
-		foreach ($people as $person) {
-			$ticket->addParticipantPerson($person);
-		}
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
+    public function getPeople()
+    {
+        if ($this->add_people) {
+            return $this->add_people;
+        }
+
+        $this->add_people = array();
+
+        foreach ($this->add_emails as $email) {
+            $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+            if ($person) {
+                $this->add_people[$person->getId()] = $person;
+            } else {
+                if (App::getContainer()->getSetting('core.reg_enabled')) {
+                    continue;
+                }
+                $person_processor = new PersonFromEmailProcessor();
+
+                $eml = new EmailAddress();
+                $eml->email = $email;
+                $person = $person_processor->createPerson($eml, false);
+
+                if ($person) {
+                    $this->add_people[$person->getId()] = $person;
+                }
+            }
+        }
+
+        return $this->add_people;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		$actions = array();
-
-		foreach ($this->getPeople() as $pid => $person) {
-			$actions[] = array(
-				'action' => 'add_participant',
-				'person_id' => $pid
-			);
-		}
-
-		return $actions;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $people = $this->getPeople();
+        foreach ($people as $person) {
+            $ticket->addParticipantPerson($person);
+        }
+    }
 
 
-	/**
-	 * @return string[]
-	 */
-	public function getEmailAddresses()
-	{
-		return $this->add_emails;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        $actions = array();
+
+        foreach ($this->getPeople() as $pid => $person) {
+            $actions[] = array(
+                'action' => 'add_participant',
+                'person_id' => $pid
+            );
+        }
+
+        return $actions;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		$email_addresses = $this->getEmailAddresses();
-		$email_addresses = array_merge($email_addresses, $other_action->getEmailAddresses());
-		$email_addresses = array_unique($email_addresses);
-
-		$new = new self($email_addresses);
-
-		return $new;
-	}
+    /**
+     * @return string[]
+     */
+    public function getEmailAddresses()
+    {
+        return $this->add_emails;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		if (!$this->add_emails) {
-			return '';
-		}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        $email_addresses = $this->getEmailAddresses();
+        $email_addresses = array_merge($email_addresses, $other_action->getEmailAddresses());
+        $email_addresses = array_unique($email_addresses);
 
-		return "CC users: " . implode(', ', $this->add_emails);
-	}
+        $new = new self($email_addresses);
+
+        return $new;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        if (!$this->add_emails) {
+            return '';
+        }
+
+        return "CC users: " . implode(', ', $this->add_emails);
+    }
 }

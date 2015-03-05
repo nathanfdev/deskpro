@@ -41,157 +41,157 @@ use Orb\Util\Arrays;
 
 class AgentDelete
 {
-	/** @var \Application\DeskPRO\Entity\Person  */
-	private $agent;
+    /** @var \Application\DeskPRO\Entity\Person  */
+    private $agent;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
-
-
-	/**
-	 * @param Person $agent
-	 * @param EntityManager $em
-	 * @throws \InvalidArgumentException
-	 */
-	public function __construct(Person $agent, EntityManager $em)
-	{
-		if (!$agent->is_agent) {
-			throw new \InvalidArgumentException();
-		}
-
-		$this->agent  = $agent;
-		$this->em     = $em;
-		$this->db     = $em->getConnection();
-	}
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
 
-	/**
-	 * Makes the agent account a user account instead
-	 */
-	public function deleteToUser()
-	{
-		$this->agent->is_agent              = false;
-		$this->agent->can_agent             = false;
-		$this->agent->can_admin             = false;
-		$this->agent->can_billing           = false;
-		$this->agent->can_reports           = false;
-		$this->agent->was_agent             = true;
-		$this->agent->is_deleted            = false;
-		$this->agent->is_disabled           = false;
-		$this->agent->override_display_name = ''; // only settable for agents currently
-		$this->em->persist($this->agent);
+    /**
+     * @param  Person                    $agent
+     * @param  EntityManager             $em
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(Person $agent, EntityManager $em)
+    {
+        if (!$agent->is_agent) {
+            throw new \InvalidArgumentException();
+        }
 
-		$this->db->beginTransaction();
-		try {
-
-			$this->em->flush();
-
-			// Specific department permissions are agent-only feature, remove those
-			// Users get them from their usergroups
-			$this->db->executeUpdate("
-				DELETE FROM department_permissions
-				WHERE person_id = ?
-			", array($this->agent->id));
-
-			// Agent groups
-			$agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
-			if ($agent_groups) {
-				$agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
-				$this->db->executeUpdate("
-					DELETE FROM person2usergroups
-					WHERE person_id = ? AND usergroup_id IN (?)
-				", array($this->agent->id, $agent_group_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
-			}
-
-			// Assigned tickets
-			$this->db->executeUpdate("
-				UPDATE tickets SET agent_id = NULL
-				WHERE agent_id = ?
-			", array($this->agent->id));
-			$this->db->executeUpdate("
-				UPDATE tickets_search_active SET agent_id = NULL
-				WHERE agent_id = ?
-			", array($this->agent->id));
-
-			// Filters
-			$this->db->executeUpdate("
-				DELETE FROM ticket_filters
-				WHERE person_id = ?
-			", array($this->agent->id));
-
-			// Subscriptions
-			$this->db->executeUpdate("
-				DELETE FROM ticket_filter_subscriptions
-				WHERE person_id = ?
-			", array($this->agent->id));
-
-			// Agent team
-			$this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));
-
-			// Permission overrides
-			$this->db->delete('permissions', array('person_id' => $this->agent->getId()));
-
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
-
-		$this->clearSessions();
-
-		return true;
-	}
+        $this->agent  = $agent;
+        $this->em     = $em;
+        $this->db     = $em->getConnection();
+    }
 
 
-	/**
-	 * Marks the agent account as deleted
-	 */
-	public function softDelete()
-	{
-		$this->agent->is_deleted = true;
-		$this->agent->can_admin  = false; // to be safe
+    /**
+     * Makes the agent account a user account instead
+     */
+    public function deleteToUser()
+    {
+        $this->agent->is_agent              = false;
+        $this->agent->can_agent             = false;
+        $this->agent->can_admin             = false;
+        $this->agent->can_billing           = false;
+        $this->agent->can_reports           = false;
+        $this->agent->was_agent             = true;
+        $this->agent->is_deleted            = false;
+        $this->agent->is_disabled           = false;
+        $this->agent->override_display_name = ''; // only settable for agents currently
+        $this->em->persist($this->agent);
 
-		// Remove their permissions
-		$this->db->delete('department_permissions'     , array('person_id' => $this->agent->getId()));
-		$this->db->delete('permissions'                , array('person_id' => $this->agent->getId()));
-		$this->db->delete('agent_team_members'         , array('person_id' => $this->agent->getId()));
-		$this->db->delete('ticket_filter_subscriptions', array('person_id' => $this->agent->getId()));
+        $this->db->beginTransaction();
+        try {
 
-		// Any open tickets should be unassigned
-		$this->db->executeUpdate("
-			UPDATE tickets SET agent_id = NULL
-			WHERE agent_id = ? AND status IN ('awaiting_agent')
-		", array($this->agent->id));
-		$this->db->executeUpdate("
-			UPDATE tickets_search_active SET agent_id = NULL
-			WHERE agent_id = ? AND status IN ('awaiting_agent')
-		", array($this->agent->id));
+            $this->em->flush();
 
-		$this->em->persist($this->agent);
-		$this->em->flush();
+            // Specific department permissions are agent-only feature, remove those
+            // Users get them from their usergroups
+            $this->db->executeUpdate("
+                DELETE FROM department_permissions
+                WHERE person_id = ?
+            ", array($this->agent->id));
 
-		$this->clearSessions();
+            // Agent groups
+            $agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
+            if ($agent_groups) {
+                $agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
+                $this->db->executeUpdate("
+                    DELETE FROM person2usergroups
+                    WHERE person_id = ? AND usergroup_id IN (?)
+                ", array($this->agent->id, $agent_group_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            }
 
-		return true;
-	}
+            // Assigned tickets
+            $this->db->executeUpdate("
+                UPDATE tickets SET agent_id = NULL
+                WHERE agent_id = ?
+            ", array($this->agent->id));
+            $this->db->executeUpdate("
+                UPDATE tickets_search_active SET agent_id = NULL
+                WHERE agent_id = ?
+            ", array($this->agent->id));
+
+            // Filters
+            $this->db->executeUpdate("
+                DELETE FROM ticket_filters
+                WHERE person_id = ?
+            ", array($this->agent->id));
+
+            // Subscriptions
+            $this->db->executeUpdate("
+                DELETE FROM ticket_filter_subscriptions
+                WHERE person_id = ?
+            ", array($this->agent->id));
+
+            // Agent team
+            $this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));
+
+            // Permission overrides
+            $this->db->delete('permissions', array('person_id' => $this->agent->getId()));
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+
+        $this->clearSessions();
+
+        return true;
+    }
 
 
-	/**
-	 * Clears any sessions the agent has open.
-	 *
-	 * This is needed because they might have an active agent session right now,
-	 * but if they actually do anything (even ajax polling) will result in some exceptions
-	 * because they arent actually agents anymore.
-	 */
-	private function clearSessions()
-	{
-		$this->db->delete('sessions', array('person_id' => $this->agent->getId()));
-	}
+    /**
+     * Marks the agent account as deleted
+     */
+    public function softDelete()
+    {
+        $this->agent->is_deleted = true;
+        $this->agent->can_admin  = false; // to be safe
+
+        // Remove their permissions
+        $this->db->delete('department_permissions'     , array('person_id' => $this->agent->getId()));
+        $this->db->delete('permissions'                , array('person_id' => $this->agent->getId()));
+        $this->db->delete('agent_team_members'         , array('person_id' => $this->agent->getId()));
+        $this->db->delete('ticket_filter_subscriptions', array('person_id' => $this->agent->getId()));
+
+        // Any open tickets should be unassigned
+        $this->db->executeUpdate("
+            UPDATE tickets SET agent_id = NULL
+            WHERE agent_id = ? AND status IN ('awaiting_agent')
+        ", array($this->agent->id));
+        $this->db->executeUpdate("
+            UPDATE tickets_search_active SET agent_id = NULL
+            WHERE agent_id = ? AND status IN ('awaiting_agent')
+        ", array($this->agent->id));
+
+        $this->em->persist($this->agent);
+        $this->em->flush();
+
+        $this->clearSessions();
+
+        return true;
+    }
+
+
+    /**
+     * Clears any sessions the agent has open.
+     *
+     * This is needed because they might have an active agent session right now,
+     * but if they actually do anything (even ajax polling) will result in some exceptions
+     * because they arent actually agents anymore.
+     */
+    private function clearSessions()
+    {
+        $this->db->delete('sessions', array('person_id' => $this->agent->getId()));
+    }
 }

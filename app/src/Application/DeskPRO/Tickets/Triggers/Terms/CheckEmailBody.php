@@ -51,45 +51,47 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckEmailBody extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('body');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('body');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$context->hasEmailContext()) {
-			$context->getLogger()->debug('Not email context');
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$context->hasEmailContext()) {
+            $context->getLogger()->debug('Not email context');
 
-		$options = $this->getTermOptions();
+            return false;
+        }
 
-		$reader = $context->getEmailContext();
-		$strings = array();
+        $options = $this->getTermOptions();
 
-		if ($html = $reader->getBodyHtml()->getBodyUtf8()) {
-			$strings[] = $html;
-			$strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($html)));
-		}
-		if ($txt = $reader->getBodyText()->getBodyUtf8()) {
-			$strings[] = $txt;
-			$strings[] = trim(preg_replace('#\s+#' , ' ', $txt));
-		}
+        $reader = $context->getEmailContext();
+        $strings = array();
 
-		$strings = array_unique($strings);
+        if ($html = $reader->getBodyHtml()->getBodyUtf8()) {
+            $strings[] = $html;
+            $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($html)));
+        }
+        if ($txt = $reader->getBodyText()->getBodyUtf8()) {
+            $strings[] = $txt;
+            $strings[] = trim(preg_replace('#\s+#' , ' ', $txt));
+        }
 
-		$value = TermValue::createWithValue($strings);
+        $strings = array_unique($strings);
 
-		return $this->isStringMatch($ticket, $context, $value, $options['body']);
-	}
+        $value = TermValue::createWithValue($strings);
+
+        return $this->isStringMatch($ticket, $context, $value, $options['body']);
+    }
 }

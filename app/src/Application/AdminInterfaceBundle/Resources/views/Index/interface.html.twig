@@ -204,14 +204,14 @@
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:timepicker.html.twig', 'template/timepicker/timepicker.html') }}
 
-<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app/bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}">
-<link rel="stylesheet" href="{{ asset('app/bower_components/angular-slider/angular-slider.min.css') }}">
-<link rel="stylesheet" href="{{ asset('app/bower_components/angular-grid/ng-grid.min.css') }}">
-<link rel="stylesheet" href="{{ asset('app/bower_components/animate.css/animate.min.css') }}">
-<link rel="stylesheet" href="{{ asset('app/build/Admin/css/admin-style.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app/build/Admin/css/icons-style.css') }}"/>
+<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
+<link rel="stylesheet" href="{{ asset('bower_components/select2/select2.css') }}"/>
+<link rel="stylesheet" href="{{ asset('bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}">
+<link rel="stylesheet" href="{{ asset('bower_components/angular-slider/slider.css') }}">
+<link rel="stylesheet" href="{{ asset('bower_components/angular-grid/ng-grid.min.css') }}">
+<link rel="stylesheet" href="{{ asset('bower_components/animate.css/animate.min.css') }}">
+<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
+<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
 <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
 
 <!-- legacy: portal editor -->
@@ -246,8 +246,11 @@ window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% e
 </script>
 {{ js_error_tracking('admin_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
-<script type="text/javascript">window.DP_INTERFACE_LOADER = 'AdminLoad';</script>
-<script	type="text/javascript" data-main="{{ asset('app/loader.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('app/bower_components/requirejs/require.js') }}"></script>
+<script type="text/javascript">
+	window.name = "NG_DEFER_BOOTSTRAP!";
+	window.DP_INTERFACE_LOADER = 'AdminLoad';
+</script>
+<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
 </body>
 </html>

@@ -45,9 +45,9 @@ namespace Orb\Sms;
 interface SmsProviderInterface
 {
     /**
-     * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
-     * @param string $toPhoneNumber phone number, provider should be able to handle any format
-     * @param SmsMessageChunk $textMessage the message chunk to be sent to the given number
+     * @param string          $fromPhoneNumber phone number to send to, provider should be able to handle any format
+     * @param string          $toPhoneNumber   phone number, provider should be able to handle any format
+     * @param SmsMessageChunk $textMessage     the message chunk to be sent to the given number
      *
      * @throws \Orb\Sms\SmsException
      * @return \Orb\Sms\SmsResult

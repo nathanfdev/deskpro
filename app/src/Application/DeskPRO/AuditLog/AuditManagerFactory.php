@@ -39,49 +39,50 @@ use Application\DeskPRO\AuditLog\AuditWriter\AuditFileWriter;
 
 class AuditManagerFactory
 {
-	public static function getAuditManager()
-	{
-		$audit_manager  = new AuditManager();
+    public static function getAuditManager()
+    {
+        $audit_manager  = new AuditManager();
 
-		if (dp_get_config('debug.write_audit_log_file')) {
-			$audit_writer   = new AuditFileWriter(dp_get_log_dir() . '/audit.log');
-			$audit_manager->addWriter($audit_writer);
-		}
+        if (dp_get_config('debug.write_audit_log_file')) {
+            $audit_writer   = new AuditFileWriter(dp_get_log_dir() . '/audit.log');
+            $audit_manager->addWriter($audit_writer);
+        }
 
-		if (class_exists('DpShutdown', false)) {
-			\DpShutdown::add(function() use ($audit_manager) {
-				$audit_manager->flushLogs();
-			});
-		}
+        if (class_exists('DpShutdown', false)) {
+            \DpShutdown::add(function () use ($audit_manager) {
+                $audit_manager->flushLogs();
+            });
+        }
 
-		if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {
-			$audit_manager->disable();
-		}
+        if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {
+            $audit_manager->disable();
+        }
 
-		return $audit_manager;
-	}
+        return $audit_manager;
+    }
 
-	public static function getAuditDbWriter()
-	{
-		return new AuditDbWriter();
-	}
+    public static function getAuditDbWriter()
+    {
+        return new AuditDbWriter();
+    }
 
-	public static function getAuditListener(AuditManager $audit_manager)
-	{
-		$audit_defs     = require(DP_ROOT.'/sys/config/auditlog-defs.php');
-		$audit_listener = new AuditDoctrineListener($audit_manager, $audit_defs);
+    public static function getAuditListener(AuditManager $audit_manager)
+    {
+        $audit_defs     = require(DP_ROOT.'/sys/config/auditlog-defs.php');
+        $audit_listener = new AuditDoctrineListener($audit_manager, $audit_defs);
 
-		if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {
-			$audit_listener->disable();
-		} else {
-			$audit_listener->setFilterFn(function() {
-				if (!App::getCurrentPerson() || !App::getCurrentPerson()->is_agent) {
-					return false;
-				}
-				return true;
-			});
-		}
+        if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {
+            $audit_listener->disable();
+        } else {
+            $audit_listener->setFilterFn(function () {
+                if (!App::getCurrentPerson() || !App::getCurrentPerson()->is_agent) {
+                    return false;
+                }
 
-		return $audit_listener;
-	}
+                return true;
+            });
+        }
+
+        return $audit_listener;
+    }
 }

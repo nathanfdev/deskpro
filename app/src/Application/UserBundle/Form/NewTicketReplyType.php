@@ -34,8 +34,6 @@
 
 namespace Application\UserBundle\Form;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -45,33 +43,33 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class NewTicketReplyType extends AbstractType
 {
-	/**
-	 * @option array tmp_files Add new checkboxes for tmp files
-	 *
-	 * @param \Symfony\Component\Form\FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('message', 'textarea');
+    /**
+     * @option array tmp_files Add new checkboxes for tmp files
+     *
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder
+     * @param array                                        $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('message', 'textarea');
 
-		$builder->add('new_upload', 'file', array('required' => false));
+        $builder->add('new_upload', 'file', array('required' => false));
 
-		if (!empty($options['tmp_files'])) {
-			$builder->add('tmp_files', 'choice', array(
-				'choices' => array_combine($options['tmp_files'], $options['tmp_files']),
+        if (!empty($options['tmp_files'])) {
+            $builder->add('tmp_files', 'choice', array(
+                'choices' => array_combine($options['tmp_files'], $options['tmp_files']),
 
-				// These make them checkboxes
-				'multiple' => true,
-				'expanded' => true,
+                // These make them checkboxes
+                'multiple' => true,
+                'expanded' => true,
 
-				'required' => false,
-			));
-		}
-	}
+                'required' => false,
+            ));
+        }
+    }
 
-	public function getName()
-	{
-		return 'newreply';
-	}
+    public function getName()
+    {
+        return 'newreply';
+    }
 }

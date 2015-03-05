@@ -38,44 +38,44 @@ use Doctrine\ORM\EntityManager;
 
 class ServerFileCheck
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\Distribution\VerifyChecksums
-	 */
+    /**
+     * @var \Application\DeskPRO\Distribution\VerifyChecksums
+     */
 
-	protected $verify;
+    protected $verify;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
 
-		$this->verify = new VerifyChecksums();
-	}
+        $this->verify = new VerifyChecksums();
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getCount()
-	{
-		return array(
-			'count' => $this->verify->countChunks()
-		);
-	}
+    public function getCount()
+    {
+        return array(
+            'count' => $this->verify->countChunks()
+        );
+    }
 
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
 
-	public function getById($id)
-	{
-		return $this->verify->compareChunk($id);
-	}
+    public function getById($id)
+    {
+        return $this->verify->compareChunk($id);
+    }
 }

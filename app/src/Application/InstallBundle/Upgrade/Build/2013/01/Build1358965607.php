@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358965607 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add people.disable_picture");
-		$this->execMutateSql("ALTER TABLE people ADD disable_picture TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add people.disable_picture");
+        $this->execMutateSql("ALTER TABLE people ADD disable_picture TINYINT(1) NOT NULL");
+    }
 }

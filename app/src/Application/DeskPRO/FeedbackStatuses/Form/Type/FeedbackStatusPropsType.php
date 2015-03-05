@@ -39,24 +39,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FeedbackStatusPropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add('status_type', 'choice', array(
-		    'choices'   => array('active' => 'active', 'closed' => 'closed'),
-		    'required'  => true,
-		));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('title', 'text', array('required' => true));
+        $builder->add('status_type', 'choice', array(
+            'choices'   => array('active' => 'active', 'closed' => 'closed'),
+            'required'  => true,
+        ));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory',
-		));
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory',
+        ));
+    }
 
-	public function getName()
-	{
-		return 'feedback_status_category';
-	}
+    public function getName()
+    {
+        return 'feedback_status_category';
+    }
 }

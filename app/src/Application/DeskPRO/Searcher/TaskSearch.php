@@ -34,271 +34,266 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Orb\Util\Util;
 
 class TaskSearch extends SearcherAbstract
 {
-	const TERM_ID                     = 'id';
-	const TERM_PERSON_ID              = 'person_id';
-	const TERM_ASSIGNED_AGENT_ID      = 'assigned_agent_id';
-	const TERM_ASSIGNED_AGENT_TEAM_ID = 'assigned_agent_team_id';
-	const TERM_IS_COMPLETED           = 'is_completed';
-	const TERM_TITLE                  = 'title';
-	const TERM_VISIBILITY             = 'visibility';
-	const TERM_DATE_CREATED           = 'date_created';
-	const TERM_DATE_COMPLETED         = 'date_completed';
-	const TERM_DATE_DUE               = 'date_due';
+    const TERM_ID                     = 'id';
+    const TERM_PERSON_ID              = 'person_id';
+    const TERM_ASSIGNED_AGENT_ID      = 'assigned_agent_id';
+    const TERM_ASSIGNED_AGENT_TEAM_ID = 'assigned_agent_team_id';
+    const TERM_IS_COMPLETED           = 'is_completed';
+    const TERM_TITLE                  = 'title';
+    const TERM_VISIBILITY             = 'visibility';
+    const TERM_DATE_CREATED           = 'date_created';
+    const TERM_DATE_COMPLETED         = 'date_completed';
+    const TERM_DATE_DUE               = 'date_due';
 
 
-	/**
-	 * Run the search and return an array of matching ID's.
-	 *
-	 * @return array
-	 */
-	public function getMatches()
-	{
-		$db = App::getDbRead('search.filter.tasks');
+    /**
+     * Run the search and return an array of matching ID's.
+     *
+     * @return array
+     */
+    public function getMatches()
+    {
+        $db = App::getDbRead('search.filter.tasks');
 
-		$tasks_ids = $db->fetchAllCol($this->getSql());
+        $tasks_ids = $db->fetchAllCol($this->getSql());
 
-		return $tasks_ids;
-	}
+        return $tasks_ids;
+    }
 
+    /**
+     * Get the SQL query that'll fetch the results
+     * @return string
+     */
+    public function getSql()
+    {
+        $sql = "SELECT tasks.id FROM tasks ";
 
-
-	/**
-	 * Get the SQL query that'll fetch the results
-	 * @return string
-	 */
-	public function getSql()
-	{
-		$sql = "SELECT tasks.id FROM tasks ";
-
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.task_id = tasks.id ";
-			}
-		}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.task_id = tasks.id ";
+            }
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+        if (is_array($order_by)) {
+            list ($order_join, $order_by) = $order_by;
 
-			$sql .= " $order_join ";
-		}
+            $sql .= " $order_join ";
+        }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		if ($this->person && $this->person->is_agent) {
-			$person_id = App::getDbRead('search.filter.tasks')->quote($this->person->id);
+        if ($this->person && $this->person->is_agent) {
+            $person_id = App::getDbRead('search.filter.tasks')->quote($this->person->id);
 
-			$this->person->loadHelper('Agent');
-			if ($this->person->Agent->getTeamIds()) {
-				$where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (" . implode(',', $this->person->Agent->getTeamIds()) . ")) OR tasks.visibility = 1)";
-			} else {
-				$where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id) OR tasks.visibility = 1)";
-			}
-		} else {
-			$where = '1';
-		}
+            $this->person->loadHelper('Agent');
+            if ($this->person->Agent->getTeamIds()) {
+                $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (" . implode(',', $this->person->Agent->getTeamIds()) . ")) OR tasks.visibility = 1)";
+            } else {
+                $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id) OR tasks.visibility = 1)";
+            }
+        } else {
+            $where = '1';
+        }
 
-		if ($parts['wheres']) {
-			$where .= ' AND ' . implode(" AND ", $parts['wheres']);
-		}
+        if ($parts['wheres']) {
+            $where .= ' AND ' . implode(" AND ", $parts['wheres']);
+        }
 
-		$sql .= "WHERE $where";
+        $sql .= "WHERE $where";
 
-		$sql .= " GROUP BY tasks.id ";
-		$sql .= $order_by;
-		$sql .= " LIMIT 1000";
+        $sql .= " GROUP BY tasks.id ";
+        $sql .= $order_by;
+        $sql .= " LIMIT 1000";
 
-		return $sql;
-	}
-
-
-
-	/**
-	 * Get the ORDER BY clause based on order info set.
-	 *
-	 * @return string
-	 */
-	public function getOrderByPart()
-	{
-		// Set a default if none
-		if (!$this->order_by) {
-			$this->order_by = array('tasks.id', 'DESC');
-		}
-
-		list($type, $dir) = $this->order_by;
-
-		$dir = strtoupper($dir);
-		if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
-			$dir = self::ORDER_DESC;
-		}
-
-		$order_by = '';
-
-		switch ($type) {
-			case 'tasks.id':
-				$order_by = "ORDER BY tasks.id $dir";
-				break;
-
-			case 'tasks.title':
-				$order_by = "ORDER BY tasks.title $dir";
-				break;
-
-			case 'tasks.person':
-				$order_by = "ORDER BY tasks.person_id $dir";
-				break;
-
-			case 'tasks.assigned_agent':
-				$order_by = "ORDER BY tasks.assigned_agent_id $dir";
-				break;
-
-			case 'tasks.assigned_agent_team':
-				$order_by = "ORDER BY tasks.assigned_agent_team_id $dir";
-				break;
-
-			case 'tasks.is_completed':
-				$order_by = "ORDER BY tasks.is_completed $dir";
-				break;
-
-			case 'tasks.visibility':
-				$order_by = "ORDER BY tasks.visibility $dir";
-				break;
-
-			case 'tasks.date_created':
-				$order_by = "ORDER BY tasks.date_created $dir";
-				break;
-
-			case 'tasks.date_completed':
-				$order_by = "ORDER BY tasks.date_completed $dir";
-				break;
-
-			case 'tasks.date_due':
-				$order_by = "ORDER BY tasks.date_due $dir";
-				break;
-		}
-
-		return $order_by;
-	}
+        return $sql;
+    }
 
 
 
-	/**
-	 * Get the SQL parts we need in the query.
-	 *
-	 * @return array
-	 */
-	public function getSqlParts()
-	{
-		$org_table = 'tasks';
+    /**
+     * Get the ORDER BY clause based on order info set.
+     *
+     * @return string
+     */
+    public function getOrderByPart()
+    {
+        // Set a default if none
+        if (!$this->order_by) {
+            $this->order_by = array('tasks.id', 'DESC');
+        }
 
-		$tr = App::getTranslator();
+        list($type, $dir) = $this->order_by;
 
-		$wheres = array();
-		$joins = array();
+        $dir = strtoupper($dir);
+        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+            $dir = self::ORDER_DESC;
+        }
 
-		foreach ($this->terms as $info) {
+        $order_by = '';
 
-			list($term, $op, $choice) = $info;
+        switch ($type) {
+            case 'tasks.id':
+                $order_by = "ORDER BY tasks.id $dir";
+                break;
 
-			$term_id = null;
+            case 'tasks.title':
+                $order_by = "ORDER BY tasks.title $dir";
+                break;
 
-			$m = null;
-			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-				$term = $m[1];
-			}
+            case 'tasks.person':
+                $order_by = "ORDER BY tasks.person_id $dir";
+                break;
 
-			switch ($term) {
-				case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
-					break;
+            case 'tasks.assigned_agent':
+                $order_by = "ORDER BY tasks.assigned_agent_id $dir";
+                break;
 
-				case self::TERM_TITLE:
-					$wheres[] = $this->_stringMatch("tasks.title", $op, $choice);
-					break;
+            case 'tasks.assigned_agent_team':
+                $order_by = "ORDER BY tasks.assigned_agent_team_id $dir";
+                break;
 
-				case self::TERM_PERSON_ID:
-					$wheres[] = $this->_rangeMatch("tasks.person_id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.person_id'), $op, $choice);
-					break;
+            case 'tasks.is_completed':
+                $order_by = "ORDER BY tasks.is_completed $dir";
+                break;
 
-				case self::TERM_ASSIGNED_AGENT_ID:
-					$wheres[] = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
-					break;
+            case 'tasks.visibility':
+                $order_by = "ORDER BY tasks.visibility $dir";
+                break;
 
-				case self::TERM_ASSIGNED_AGENT_TEAM_ID:
-					$wheres[] = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
-					break;
+            case 'tasks.date_created':
+                $order_by = "ORDER BY tasks.date_created $dir";
+                break;
 
-				case self::TERM_DATE_CREATED:
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
-					$wheres[] = $this->_dateMatch("tasks.date_created", $op, $choice);
-					break;
+            case 'tasks.date_completed':
+                $order_by = "ORDER BY tasks.date_completed $dir";
+                break;
 
-				case self::TERM_DATE_COMPLETED:
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_completed'), $op, $choice);
-					$wheres[] = $this->_dateMatch("tasks.date_completed", $op, $choice);
-					break;
+            case 'tasks.date_due':
+                $order_by = "ORDER BY tasks.date_due $dir";
+                break;
+        }
 
-				case self::TERM_DATE_DUE:
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_due'), $op, $choice);
-					$wheres[] = $this->_dateMatch("tasks.date_due", $op, $choice);
-					break;
+        return $order_by;
+    }
 
-				case self::TERM_IS_COMPLETED:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
 
-					if ($choice) {
-						$choice = 1;
-					} else {
-						$choice = 0;
-					}
 
-					$wheres[] = $this->_choiceMatch("tasks.is_completed", $op, $choice, false);
-					break;
+    /**
+     * Get the SQL parts we need in the query.
+     *
+     * @return array
+     */
+    public function getSqlParts()
+    {
+        $org_table = 'tasks';
 
-				case self::TERM_VISIBILITY:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
+        $tr = App::getTranslator();
 
-					if ($choice) {
-						$choice = 1;
-					} else {
-						$choice = 0;
-					}
+        $wheres = array();
+        $joins = array();
 
-					$wheres[] = $this->_choiceMatch("tasks.visibility", $op, $choice, false);
-					break;
-			}
-		}
+        foreach ($this->terms as $info) {
 
-		$joins = array_unique($joins);
+            list($term, $op, $choice) = $info;
 
-		return array(
-			'joins' => $joins,
-			'wheres' => $wheres
-		);
-	}
+            $term_id = null;
 
+            $m = null;
+            if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+                $term = $m[1];
+            }
+
+            switch ($term) {
+                case self::TERM_ID:
+                    $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
+                    $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+                    break;
+
+                case self::TERM_TITLE:
+                    $wheres[] = $this->_stringMatch("tasks.title", $op, $choice);
+                    break;
+
+                case self::TERM_PERSON_ID:
+                    $wheres[] = $this->_rangeMatch("tasks.person_id", $op, $choice, true);
+                    $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.person_id'), $op, $choice);
+                    break;
+
+                case self::TERM_ASSIGNED_AGENT_ID:
+                    $wheres[] = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
+                    $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
+                    break;
+
+                case self::TERM_ASSIGNED_AGENT_TEAM_ID:
+                    $wheres[] = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
+                    $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
+                    break;
+
+                case self::TERM_DATE_CREATED:
+                    $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
+                    $wheres[] = $this->_dateMatch("tasks.date_created", $op, $choice);
+                    break;
+
+                case self::TERM_DATE_COMPLETED:
+                    $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_completed'), $op, $choice);
+                    $wheres[] = $this->_dateMatch("tasks.date_completed", $op, $choice);
+                    break;
+
+                case self::TERM_DATE_DUE:
+                    $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_due'), $op, $choice);
+                    $wheres[] = $this->_dateMatch("tasks.date_due", $op, $choice);
+                    break;
+
+                case self::TERM_IS_COMPLETED:
+                    if (is_array($choice)) {
+                        $choice = array_pop($choice);
+                    }
+
+                    if ($choice) {
+                        $choice = 1;
+                    } else {
+                        $choice = 0;
+                    }
+
+                    $wheres[] = $this->_choiceMatch("tasks.is_completed", $op, $choice, false);
+                    break;
+
+                case self::TERM_VISIBILITY:
+                    if (is_array($choice)) {
+                        $choice = array_pop($choice);
+                    }
+
+                    if ($choice) {
+                        $choice = 1;
+                    } else {
+                        $choice = 0;
+                    }
+
+                    $wheres[] = $this->_choiceMatch("tasks.visibility", $op, $choice, false);
+                    break;
+            }
+        }
+
+        $joins = array_unique($joins);
+
+        return array(
+            'joins' => $joins,
+            'wheres' => $wheres
+        );
+    }
 
 }

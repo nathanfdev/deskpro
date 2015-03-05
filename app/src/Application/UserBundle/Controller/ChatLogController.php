@@ -34,57 +34,56 @@
 
 namespace Application\UserBundle\Controller;
 
-use Application\DeskPRO\App;
 
 class ChatLogController extends AbstractController implements RequireUserInterface
 {
-	############################################################################
-	# list
-	############################################################################
+    ############################################################################
+    # list
+    ############################################################################
 
-	public function listAction()
-	{
-		$chat_conversations = $this->em->createQuery("
-			SELECT c
-			FROM DeskPRO:ChatConversation c
-			WHERE
-				c.is_agent = 0
-				AND c.status = 'ended'
-				AND c.person = ?0
-			ORDER BY c.id DESC
-		")->execute(array($this->person));
+    public function listAction()
+    {
+        $chat_conversations = $this->em->createQuery("
+            SELECT c
+            FROM DeskPRO:ChatConversation c
+            WHERE
+                c.is_agent = 0
+                AND c.status = 'ended'
+                AND c.person = ?0
+            ORDER BY c.id DESC
+        ")->execute(array($this->person));
 
-		return $this->render('UserBundle:ChatLog:list.html.twig', array(
-			'chat_conversations' => $chat_conversations,
-		));
-	}
+        return $this->render('UserBundle:ChatLog:list.html.twig', array(
+            'chat_conversations' => $chat_conversations,
+        ));
+    }
 
-	############################################################################
-	# view
-	############################################################################
+    ############################################################################
+    # view
+    ############################################################################
 
-	public function viewAction($conversation_id)
-	{
-		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+    public function viewAction($conversation_id)
+    {
+        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$convo || $convo->is_agent || !$convo->person || $convo->person->getId() != $this->person->getId()) {
-			throw $this->createNotFoundException();
-		}
+        if (!$convo || $convo->is_agent || !$convo->person || $convo->person->getId() != $this->person->getId()) {
+            throw $this->createNotFoundException();
+        }
 
-		$convo_messages = $this->em->createQuery("
-			SELECT m
-			FROM DeskPRO:ChatMessage m
-			WHERE m.conversation = ?0 AND m.is_user_hidden = false
-			ORDER BY m.id ASC
-		")->execute(array($convo));
+        $convo_messages = $this->em->createQuery("
+            SELECT m
+            FROM DeskPRO:ChatMessage m
+            WHERE m.conversation = ?0 AND m.is_user_hidden = false
+            ORDER BY m.id ASC
+        ")->execute(array($convo));
 
-		$field_manager = $this->container->getSystemService('chat_fields_manager');
-		$custom_fields = $field_manager->getDisplayArrayForObject($convo);
+        $field_manager = $this->container->getSystemService('chat_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($convo);
 
-		return $this->render('UserBundle:ChatLog:view.html.twig', array(
-			'convo'           => $convo,
-			'custom_fields'   => $custom_fields,
-			'convo_messages'  => $convo_messages,
-		));
-	}
+        return $this->render('UserBundle:ChatLog:view.html.twig', array(
+            'convo'           => $convo,
+            'custom_fields'   => $custom_fields,
+            'convo_messages'  => $convo_messages,
+        ));
+    }
 }

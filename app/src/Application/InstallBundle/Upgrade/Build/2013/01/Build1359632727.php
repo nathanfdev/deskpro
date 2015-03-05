@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1359632727 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Track Twitter user status counts");
-		$this->execMutateSql("ALTER TABLE twitter_users ADD statuses_count INT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Track Twitter user status counts");
+        $this->execMutateSql("ALTER TABLE twitter_users ADD statuses_count INT NOT NULL");
+    }
 }

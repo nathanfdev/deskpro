@@ -41,318 +41,329 @@ use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
 use Application\DeskPRO\Search\SearcherResult\Result;
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
+use Orb\Util\Strings;
 
 /**
  * The content searcher searches: articles, downloads, feedback, news
  */
 class ContentSearcher implements ContentSearcherInterface, PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var bool
-	 */
-	protected $ignore_perms = false;
+    /**
+     * @var bool
+     */
+    protected $ignore_perms = false;
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function setPersonContext(Person $person)
-	{
-		$this->person = $person;
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person = $person;
 
-		// Agents in the agent interface dont apply user usergroup permissions
-		if ($person->is_agent && defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
-			$this->ignore_perms = true;
-		}
-	}
+        // Agents in the agent interface dont apply user usergroup permissions
+        if ($person->is_agent && defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+            $this->ignore_perms = true;
+        }
+    }
 
-	protected function permFilterTypes($types)
-	{
-		$limit_types = array_combine($types,$types);
+    protected function permFilterTypes($types)
+    {
+        $limit_types = array_combine($types,$types);
 
-		if ($this->person) {
-			if (!$this->person->hasPerm('articles.use')) unset($limit_types['article']);
-			if (!$this->person->hasPerm('feedback.use')) unset($limit_types['feedback']);
-			if (!$this->person->hasPerm('news.use')) unset($limit_types['news']);
-			if (!$this->person->hasPerm('downloads.use')) unset($limit_types['download']);
-		}
+        if ($this->person) {
+            if (!$this->person->hasPerm('articles.use')) unset($limit_types['article']);
+            if (!$this->person->hasPerm('feedback.use')) unset($limit_types['feedback']);
+            if (!$this->person->hasPerm('news.use')) unset($limit_types['news']);
+            if (!$this->person->hasPerm('downloads.use')) unset($limit_types['download']);
+        }
 
-		return array_values($limit_types);
-	}
+        return array_values($limit_types);
+    }
 
-	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = false)
-	{
-		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
-		if (!$limit_types) {
-			$limit_types = array('article', 'download', 'feedback', 'news');
-		}
+    public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = false)
+    {
+        $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
+        if (!$limit_types) {
+            $limit_types = array('article', 'download', 'feedback', 'news');
+        }
 
-		$limit_types = $this->permFilterTypes($limit_types);
+        $limit_types = $this->permFilterTypes($limit_types);
 
-		if (!$limit_types) {
-			return new ResultSet(0, array());
-		}
+        if (!$limit_types) {
+            return new ResultSet(0, array());
+        }
 
-		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
+        $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
-		// Specific labels
-		if (preg_match_all('#\[(.*?)\]#', $query_text, $m)) {
-			foreach ($m[1] as $w) {
-				$query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
-			}
-		}
+        $query_text_orig = $query_text;
 
-		$words = explode(' ', $query_text);
-		foreach ($words as $w) {
-			$query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
-		}
+        $query_text = Strings::decodeHtmlEntities($query_text);
+        $query_text = Strings::decodeUnicodeEntities($query_text);
+        $query_text = Strings::utf8_accents_to_ascii($query_text);
 
-		$where = "
-			content_search.object_type IN ($limit_types)
-			AND MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE)
-		";
+        // Specific labels
+        if (preg_match_all('#\[(.*?)\]#', $query_text_orig, $m)) {
+            foreach ($m[1] as $w) {
+                $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+            }
+        }
 
-		if (!$this->ignore_perms) {
-			$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-			$permfilter->setPersonContext($this->person);
-			$perm_join  = $permfilter->getJoin();
-			$perm_where = $permfilter->getWhere();
-			if (!$perm_where) {
-				$perm_where = '1';
-			}
-		} else {
-			$perm_join = '';
-			$perm_where = '1';
-		}
+        $words = explode(' ', $query_text);
+        foreach ($words as $w) {
+            $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+        }
 
-		$count_query = "
-			SELECT COUNT(*)
-			FROM content_search
-			$perm_join
-			WHERE $perm_where AND $where
-		";
+        $where = "
+            content_search.object_type IN ($limit_types)
+            AND MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE)
+        ";
 
-		$start = ($page - 1) * $per_page;
-		$select_query = "
-			SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
-			FROM content_search
-			$perm_join
-			WHERE $perm_where AND $where
-			ORDER BY _rel DESC
-			LIMIT $start, $per_page
-		";
+        if (!$this->ignore_perms) {
+            $permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+            $permfilter->setPersonContext($this->person);
+            $perm_join  = $permfilter->getJoin();
+            $perm_where = $permfilter->getWhere();
+            if (!$perm_where) {
+                $perm_where = '1';
+            }
+        } else {
+            $perm_join = '';
+            $perm_where = '1';
+        }
 
-		if ($top) {
-			$total = null;
-		} else {
-			$total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($query_text));
-		}
+        $count_query = "
+            SELECT COUNT(*)
+            FROM content_search
+            $perm_join
+            WHERE $perm_where AND $where
+        ";
 
-		$results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($query_text, $query_text));
-		$results      = array();
+        $start = ($page - 1) * $per_page;
+        $select_query = "
+            SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
+            FROM content_search
+            $perm_join
+            WHERE $perm_where AND $where
+            ORDER BY _rel DESC
+            LIMIT $start, $per_page
+        ";
 
-		foreach ($results_raw as $result_raw) {
-			$result = Result::newFromArray(array(
-				'id' => $result_raw['object_id'],
-				'content_type' => $result_raw['object_type'],
-			));
+        if ($top) {
+            $total = null;
+        } else {
+            $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($query_text));
+        }
 
-			$results[] = $result;
-		}
+        $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($query_text, $query_text));
+        $results      = array();
 
-		if ($total === null) {
-			$total = count($results);
-		}
+        foreach ($results_raw as $result_raw) {
+            $result = Result::newFromArray(array(
+                'id' => $result_raw['object_id'],
+                'content_type' => $result_raw['object_type'],
+            ));
 
-		$result_set = new ResultSet($total, $results);
+            $results[] = $result;
+        }
 
-		return $result_set;
-	}
+        if ($total === null) {
+            $total = count($results);
+        }
 
-	public function labelled(array $labels, $per_page = 25, $page = 1, array $limit_types = null)
-	{
-		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
-		if (!$limit_types) {
-			$limit_types = array('article', 'download', 'feedback', 'news');
-		}
+        $result_set = new ResultSet($total, $results);
 
-		$limit_types = $this->permFilterTypes($limit_types);
+        return $result_set;
+    }
 
-		if (!$limit_types) {
-			return new ResultSet(0, array());
-		}
+    public function labelled(array $labels, $per_page = 25, $page = 1, array $limit_types = null)
+    {
+        $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
+        if (!$limit_types) {
+            $limit_types = array('article', 'download', 'feedback', 'news');
+        }
 
-		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
+        $limit_types = $this->permFilterTypes($limit_types);
 
-		$label_where = array();
+        if (!$limit_types) {
+            return new ResultSet(0, array());
+        }
 
-		foreach ($labels as $label) {
-			$label_where[] = "+" . MysqlAdapter::encodeLabel($label);
-		}
+        $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
-		$label_where = implode(' ', $label_where);
+        $label_where = array();
 
-		$where = "
-			object_type IN ($limit_types)
-			AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
-		";
+        foreach ($labels as $label) {
+            $label_where[] = "+" . MysqlAdapter::encodeLabel($label);
+        }
 
-		$count_query = "
-			SELECT COUNT(*)
-			FROM content_search
-			WHERE $where
-		";
+        $label_where = implode(' ', $label_where);
 
-		$start = ($page - 1) * $per_page;
-		$select_query = "
-			SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
-			FROM content_search
-			WHERE $where
-			ORDER BY _rel DESC
-			LIMIT $start, $per_page
-		";
+        $where = "
+            object_type IN ($limit_types)
+            AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
+        ";
 
-		$total        = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($label_where));
-		$results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where,$label_where));
-		$results      = array();
+        $count_query = "
+            SELECT COUNT(*)
+            FROM content_search
+            WHERE $where
+        ";
 
-		foreach ($results_raw as $result_raw) {
-			$result = Result::newFromArray(array(
-				'id' => $result_raw['object_id'],
-				'content_type' => $result_raw['object_type'],
-			));
+        $start = ($page - 1) * $per_page;
+        $select_query = "
+            SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
+            FROM content_search
+            WHERE $where
+            ORDER BY _rel DESC
+            LIMIT $start, $per_page
+        ";
 
-			$results[] = $result;
-		}
+        $total        = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($label_where));
+        $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where,$label_where));
+        $results      = array();
 
-		$result_set = new ResultSet($total, $results);
+        foreach ($results_raw as $result_raw) {
+            $result = Result::newFromArray(array(
+                'id' => $result_raw['object_id'],
+                'content_type' => $result_raw['object_type'],
+            ));
 
-		return $result_set;
-	}
+            $results[] = $result;
+        }
 
-	/**
-	 * Find content similar to $content.
-	 *
-	 * @param string $content
-	 * @param array $in_types Types you want to search in, or null for all
-	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
-	 */
-	public function similarContent($content, array $in_types = array())
-	{
-		throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
-	}
+        $result_set = new ResultSet($total, $results);
+
+        return $result_set;
+    }
+
+    /**
+     * Find content similar to $content.
+     *
+     * @param  string                                               $content
+     * @param  array                                                $in_types Types you want to search in, or null for all
+     * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
+     */
+    public function similarContent($content, array $in_types = array())
+    {
+        throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
+    }
 
 
-	public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
-	{
-		$per_page = 25; $page = 1;
+    public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
+    {
+        $per_page = 25; $page = 1;
 
-		// Fulltext matches
-		$r = $this->query($query_text, $per_page, $page, $limit_types, true);
-		if ($r->count()) {
-			return $r;
-		}
+        // Fulltext matches
+        $r = $this->query($query_text, $per_page, $page, $limit_types, true);
+        if ($r->count()) {
+            return $r;
+        }
 
-		// Otherwise fallback to like
-		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
-		if (!$limit_types) {
-			$limit_types = array('article', 'download', 'feedback', 'news');
-		}
+        // Otherwise fallback to like
+        $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
+        if (!$limit_types) {
+            $limit_types = array('article', 'download', 'feedback', 'news');
+        }
 
-		$limit_types = $this->permFilterTypes($limit_types);
+        $limit_types = $this->permFilterTypes($limit_types);
 
-		if (!$limit_types) {
-			return new ResultSet(0, array());
-		}
+        if (!$limit_types) {
+            return new ResultSet(0, array());
+        }
 
-		$limit_type_names = $limit_types;
-		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
+        $limit_type_names = $limit_types;
+        $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
-		$query_words = explode(' ', $query_text);
-		if (!$query_words) {
-			return $r;
-		}
+        $query_text = Strings::decodeHtmlEntities($query_text);
+        $query_text = Strings::decodeUnicodeEntities($query_text);
+        $query_text = Strings::utf8_accents_to_ascii($query_text);
 
-		$params = array();
-		$likes = array();
-		foreach ($query_words as $w) {
-			if (strlen($w) <= 2) {
-				continue;
-			}
+        $query_words = explode(' ', $query_text);
+        if (!$query_words) {
+            return $r;
+        }
 
-			$likes[] = "content_search.content LIKE ?";
-			$params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
-		}
-		if ($likes) {
-			$where = "
-				content_search.object_type IN ($limit_types)
-				AND (" . implode(' OR ', $likes) . ")
-			";
+        $params = array();
+        $likes = array();
+        foreach ($query_words as $w) {
+            if (strlen($w) <= 2) {
+                continue;
+            }
 
-			if (!$this->ignore_perms) {
-				$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-				$permfilter->setPersonContext($this->person);
+            $likes[] = "content_search.content LIKE ?";
+            $params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+        }
+        if ($likes) {
+            $where = "
+                content_search.object_type IN ($limit_types)
+                AND (" . implode(' OR ', $likes) . ")
+            ";
 
-				if ($limit_type_names) {
-					$permfilter->setTypes($limit_type_names);
-				}
+            if (!$this->ignore_perms) {
+                $permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+                $permfilter->setPersonContext($this->person);
 
-				$perm_join  = $permfilter->getJoin();
-				$perm_where = $permfilter->getWhere();
-				if (!$perm_where) {
-					$perm_where = '1';
-				}
-			} else {
-				$perm_join = '';
-				$perm_where = '1';
-			}
+                if ($limit_type_names) {
+                    $permfilter->setTypes($limit_type_names);
+                }
 
-			$count_query = "
-				SELECT COUNT(*)
-				FROM content_search
-				$perm_join
-				WHERE $perm_where AND $where
-				LIMIT $per_page
-			";
+                $perm_join  = $permfilter->getJoin();
+                $perm_where = $permfilter->getWhere();
+                if (!$perm_where) {
+                    $perm_where = '1';
+                }
+            } else {
+                $perm_join = '';
+                $perm_where = '1';
+            }
 
-			$start = ($page - 1) * $per_page;
-			$select_query = "
-				SELECT content_search.object_type, content_search.object_id
-				FROM content_search
-				$perm_join
-				WHERE $perm_where AND $where
-				ORDER BY content_search.object_id DESC
-				LIMIT $start, $per_page
-			";
+            $count_query = "
+                SELECT COUNT(*)
+                FROM content_search
+                $perm_join
+                WHERE $perm_where AND $where
+                LIMIT $per_page
+            ";
 
-			$total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, $params);
+            $start = ($page - 1) * $per_page;
+            $select_query = "
+                SELECT content_search.object_type, content_search.object_id
+                FROM content_search
+                $perm_join
+                WHERE $perm_where AND $where
+                ORDER BY content_search.object_id DESC
+                LIMIT $start, $per_page
+            ";
 
-			$results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, $params);
-			$results      = array();
+            $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, $params);
 
-			foreach ($results_raw as $result_raw) {
-				$result = Result::newFromArray(array(
-					'id' => $result_raw['object_id'],
-					'content_type' => $result_raw['object_type'],
-				));
+            $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, $params);
+            $results      = array();
 
-				$results[] = $result;
-			}
-		} else {
-			$total       = 0;
-			$results     = array();
-		}
+            foreach ($results_raw as $result_raw) {
+                $result = Result::newFromArray(array(
+                    'id' => $result_raw['object_id'],
+                    'content_type' => $result_raw['object_type'],
+                ));
 
-		if ($total === null) {
-			$total = count($results);
-		}
+                $results[] = $result;
+            }
+        } else {
+            $total       = 0;
+            $results     = array();
+        }
 
-		$result_set = new ResultSet($total, $results);
+        if ($total === null) {
+            $total = count($results);
+        }
 
-		return $result_set;
-	}
+        $result_set = new ResultSet($total, $results);
+
+        return $result_set;
+    }
 }

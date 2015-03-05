@@ -43,131 +43,131 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class CustomFieldData extends DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
-	 */
-	protected $definition;
+    /**
+     * @var \Application\DeskPRO\Entity\CustomFieldDefinition
+     */
+    protected $definition;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
-	 */
-	protected $root_definition;
+    /**
+     * @var \Application\DeskPRO\Entity\CustomFieldDefinition
+     */
+    protected $root_definition;
 
-	/**
-	 * @var int
-	 */
-	protected $owner_id;
+    /**
+     * @var int
+     */
+    protected $owner_id;
 
-	/**
-	 * @var int
-	 */
-	protected $value;
+    /**
+     * @var int
+     */
+    protected $value;
 
-	/**
-	 * @var input
-	 */
-	protected $input;
+    /**
+     * @var input
+     */
+    protected $input;
 
-	/**
-	 * @var DomainObject
-	 */
-	protected $owner;
+    /**
+     * @var DomainObject
+     */
+    protected $owner;
 
-	public function __construct()
-	{
-		$this->value = 0;
-		$this->input = '';
-	}
+    public function __construct()
+    {
+        $this->value = 0;
+        $this->input = '';
+    }
 
-	public function getData()
-	{
-		return $this->value ?: $this->input;
-	}
+    public function getData()
+    {
+        return $this->value ?: $this->input;
+    }
 
-	public function preFlush()
-	{
-		$this['value'] = (int) $this['value'];
-		$this['input'] = (string) $this['input'];
+    public function preFlush()
+    {
+        $this['value'] = (int) $this['value'];
+        $this['input'] = (string) $this['input'];
 
-		if ($this->owner && $this->owner['id']) {
-			$this['owner_id'] = $this->owner['id'];
-		}
-	}
+        if ($this->owner && $this->owner['id']) {
+            $this['owner_id'] = $this->owner['id'];
+        }
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setPrimaryTable(array(
-			'name' => 'custom_field_data',
-			'uniqueConstraints' => array(
-				'unique_idx' => array('columns' => array('owner_id', 'definition_id'))
-			),
-		));
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('preFlush', 'preFlush');
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setPrimaryTable(array(
+            'name' => 'custom_field_data',
+            'uniqueConstraints' => array(
+                'unique_idx' => array('columns' => array('owner_id', 'definition_id'))
+            ),
+        ));
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addLifecycleCallback('preFlush', 'preFlush');
 
-		$metadata->mapField(array(
-			'fieldName' => 'id',
-			'type' => 'integer',
-			'nullable' => false,
-			'columnName' => 'id',
-			'id' => true,
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'id',
+            'type' => 'integer',
+            'nullable' => false,
+            'columnName' => 'id',
+            'id' => true,
+        ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'owner_id',
-			'type' => 'integer',
-			'nullable' => false,
-			'columnName' => 'owner_id',
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'owner_id',
+            'type' => 'integer',
+            'nullable' => false,
+            'columnName' => 'owner_id',
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'definition',
-			'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-			'joinColumns' => array(
-				array(
-					'name' => 'definition_id',
-					'referencedColumnName' => 'id',
-					'onDelete' => 'cascade',
-				),
-			),
-		));
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'definition',
+            'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
+            'joinColumns' => array(
+                array(
+                    'name' => 'definition_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete' => 'cascade',
+                ),
+            ),
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'root_definition',
-			'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-			'joinColumns' => array(
-				array(
-					'name' => 'root_definition_id',
-					'referencedColumnName' => 'id',
-					'onDelete' => 'cascade',
-				),
-			),
-		));
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'root_definition',
+            'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
+            'joinColumns' => array(
+                array(
+                    'name' => 'root_definition_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete' => 'cascade',
+                ),
+            ),
+        ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'value',
-			'type' => 'integer',
-			'nullable' => false,
-			'columnName' => 'value',
-		));
+        $metadata->mapField(array(
+            'fieldName' => 'value',
+            'type' => 'integer',
+            'nullable' => false,
+            'columnName' => 'value',
+        ));
 
-		$metadata->mapField(array(
-			'fieldName' => 'input',
-			'type' => 'text',
-			'nullable' => false,
-			'columnName' => 'input',
-		));
-	}
+        $metadata->mapField(array(
+            'fieldName' => 'input',
+            'type' => 'text',
+            'nullable' => false,
+            'columnName' => 'input',
+        ));
+    }
 }

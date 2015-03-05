@@ -113,7 +113,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
         $words = explode(' ', $words);
         $words = Arrays::removeFalsey($words);
         $words = array_unique($words);
-        $words = array_filter($words, function($s) {
+        $words = array_filter($words, function ($s) {
             if (strlen($s) >= 3) {
                 return true;
             } else {
@@ -142,12 +142,12 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             $where = implode(' AND ', $where);
 
             $ticket_ids = $this->container->getDbRead()->fetchAllCol("
-				SELECT id
-				FROM tickets
-				WHERE $where
-				ORDER BY id DESC
-				LIMIT 100
-			");
+                SELECT id
+                FROM tickets
+                WHERE $where
+                ORDER BY id DESC
+                LIMIT 100
+            ");
 
             if ($ticket_ids) {
                 $tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
@@ -176,12 +176,12 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                          'news'         => 'news',
                      ) as $type => $table) {
                 $ids = $this->container->getDbRead()->fetchAllCol("
-					SELECT id
-					FROM $table
-					WHERE $where
-					ORDER BY id DESC
-					LIMIT 25
-				");
+                    SELECT id
+                    FROM $table
+                    WHERE $where
+                    ORDER BY id DESC
+                    LIMIT 25
+                ");
 
                 if ($ids) {
                     $results[$type] = $this->em->getRepository($type_to_ent[$type])->getByIds($ids, true);
@@ -235,50 +235,50 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
                                 if ($this->settings->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
-										SELECT people.id
-										FROM people
-										JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE people_emails.email_domain LIKE ?
-										ORDER BY people.id DESC
-										LIMIT 15
-									", array($email));
+                                        SELECT people.id
+                                        FROM people
+                                        JOIN people_emails ON (people_emails.person_id = people.id)
+                                        WHERE people_emails.email_domain LIKE ?
+                                        ORDER BY people.id DESC
+                                        LIMIT 15
+                                    ", array($email));
                                 } else {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
-										SELECT people.id
-										FROM people
-										JOIN tickets ON (tickets.person_id = people.id)
-										JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE
-											tickets.id > ?
-											AND people_emails.email_domain LIKE ?
-										ORDER BY tickets.id DESC
-										LIMIT 15
-									", array($after_id, $email));
+                                        SELECT people.id
+                                        FROM people
+                                        JOIN tickets ON (tickets.person_id = people.id)
+                                        JOIN people_emails ON (people_emails.person_id = people.id)
+                                        WHERE
+                                            tickets.id > ?
+                                            AND people_emails.email_domain LIKE ?
+                                        ORDER BY tickets.id DESC
+                                        LIMIT 15
+                                    ", array($after_id, $email));
                                 }
                             } else {
                                 $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
                                 if ($this->settings->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
-										SELECT people.id
-										FROM people
-										JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE people_emails.email LIKE ?
-										ORDER BY people.id DESC
-										LIMIT 15
-									", array($email));
+                                        SELECT people.id
+                                        FROM people
+                                        JOIN people_emails ON (people_emails.person_id = people.id)
+                                        WHERE people_emails.email LIKE ?
+                                        ORDER BY people.id DESC
+                                        LIMIT 15
+                                    ", array($email));
                                 } else {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
-										SELECT people.id
-										FROM people
-										JOIN tickets ON (tickets.person_id = people.id)
-										JOIN people_emails ON (people_emails.person_id = people.id)
-										WHERE
-											tickets.id > ?
-											AND people_emails.email LIKE ?
-										ORDER BY tickets.id DESC
-										LIMIT 15
-									", array($after_id, $email));
+                                        SELECT people.id
+                                        FROM people
+                                        JOIN tickets ON (tickets.person_id = people.id)
+                                        JOIN people_emails ON (people_emails.person_id = people.id)
+                                        WHERE
+                                            tickets.id > ?
+                                            AND people_emails.email LIKE ?
+                                        ORDER BY tickets.id DESC
+                                        LIMIT 15
+                                    ", array($after_id, $email));
                                 }
                             }
 
@@ -307,37 +307,37 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
                         if ($this->settings->get('core_tablecounts.people') < 150000) {
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
-								SELECT people.id
-								FROM people
-								JOIN people_emails ON (people_emails.person_id = people.id)
-								WHERE
-									people.name LIKE ?
-									OR people.first_name LIKE ?
-									OR people.last_name LIKE ?
-									OR people_emails.email LIKE ?
-									OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
-								ORDER BY people.id DESC
-								LIMIT 15
-							", array($q_search, $q_search, $q_search, $q_search, $q_search));
+                                SELECT people.id
+                                FROM people
+                                JOIN people_emails ON (people_emails.person_id = people.id)
+                                WHERE
+                                    people.name LIKE ?
+                                    OR people.first_name LIKE ?
+                                    OR people.last_name LIKE ?
+                                    OR people_emails.email LIKE ?
+                                    OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
+                                ORDER BY people.id DESC
+                                LIMIT 15
+                            ", array($q_search, $q_search, $q_search, $q_search, $q_search));
                         } else {
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
-								SELECT people.id
-								FROM people
-								JOIN tickets ON (tickets.person_id = people.id)
-								JOIN tickets_participants ON (tickets_participants.person_id = people.id)
-								JOIN people_emails ON (people_emails.person_id = people.id)
-								WHERE
-									(tickets.id > ? OR tickets_participants.ticket_id > ?)
-									AND (
-										people.name LIKE ?
-										OR people.first_name LIKE ?
-										OR people.last_name LIKE ?
-										OR people_emails.email LIKE ?
-										OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
-									)
-								ORDER BY tickets.id DESC
-								LIMIT 15
-							", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
+                                SELECT people.id
+                                FROM people
+                                JOIN tickets ON (tickets.person_id = people.id)
+                                JOIN tickets_participants ON (tickets_participants.person_id = people.id)
+                                JOIN people_emails ON (people_emails.person_id = people.id)
+                                WHERE
+                                    (tickets.id > ? OR tickets_participants.ticket_id > ?)
+                                    AND (
+                                        people.name LIKE ?
+                                        OR people.first_name LIKE ?
+                                        OR people.last_name LIKE ?
+                                        OR people_emails.email LIKE ?
+                                        OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
+                                    )
+                                ORDER BY tickets.id DESC
+                                LIMIT 15
+                            ", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
                         }
 
                         if ($people_ids) {
@@ -363,11 +363,11 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                         if ($oids) {
                             // Fetch users of these orgs too
                             $people = $this->em->createQuery("
-								SELECT p
-								FROM DeskPRO:Person p
-								WHERE p.organization IN (?0)
-								ORDER BY p.date_last_login DESC, p.id DESC
-							")->setMaxResults(100)->execute(array($oids));
+                                SELECT p
+                                FROM DeskPRO:Person p
+                                WHERE p.organization IN (?0)
+                                ORDER BY p.date_last_login DESC, p.id DESC
+                            ")->setMaxResults(100)->execute(array($oids));
                             foreach ($people as $p) {
                                 $results['person'][$p->id] = $p;
                             }
@@ -421,4 +421,4 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
     {
         $this->settings = $settings;
     }
-} 
+}

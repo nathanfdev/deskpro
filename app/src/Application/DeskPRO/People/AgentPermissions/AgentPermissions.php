@@ -45,105 +45,102 @@ use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
 
 class AgentPermissions
 {
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions
-	 */
-	public $chat;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions
+     */
+    public $chat;
 
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions
-	 */
-	public $general;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions
+     */
+    public $general;
 
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions
-	 */
-	public $org;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions
+     */
+    public $org;
 
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions
-	 */
-	public $people;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions
+     */
+    public $people;
 
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions
-	 */
-	public $publish;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions
+     */
+    public $publish;
 
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions
-	 */
-	public $ticket;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions
+     */
+    public $ticket;
 
-	/**
-	 * @var \Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions
-	 */
-	public $tasks;
+    /**
+     * @var \Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions
+     */
+    public $tasks;
 
-	public function __construct()
-	{
-		$this->chat    = new ChatPermissions();
-		$this->general = new GeneralPermissions();
-		$this->org     = new OrgPermissions();
-		$this->people  = new PeoplePermissions();
-		$this->publish = new PublishPermissions();
-		$this->ticket  = new TicketPermissions();
-		$this->tasks   = new TasksPermissions();
-	}
+    public function __construct()
+    {
+        $this->chat    = new ChatPermissions();
+        $this->general = new GeneralPermissions();
+        $this->org     = new OrgPermissions();
+        $this->people  = new PeoplePermissions();
+        $this->publish = new PublishPermissions();
+        $this->ticket  = new TicketPermissions();
+        $this->tasks   = new TasksPermissions();
+    }
 
+    /**
+     * @return Value\PermissionValueInterface[]
+     */
+    public function getCollections()
+    {
+        return array(
+            $this->chat,
+            $this->general,
+            $this->org,
+            $this->people,
+            $this->publish,
+            $this->ticket,
+        );
+    }
 
-	/**
-	 * @return Value\PermissionValueInterface[]
-	 */
-	public function getCollections()
-	{
-		return array(
-			$this->chat,
-			$this->general,
-			$this->org,
-			$this->people,
-			$this->publish,
-			$this->ticket,
-		);
-	}
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $arr = array();
+        foreach (get_object_vars($this) as $prop => $val) {
+            if (! $val instanceof PermissionValueInterface) {
+                continue;
+            }
+            $arr[$prop] = array();
+            foreach ($this->$prop->getNames() as $name) {
+                $arr[$prop][$name] = (bool)$this->$prop->$name;
+            }
+        }
 
+        return $arr;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function toArray()
-	{
-		$arr = array();
-		foreach (get_object_vars($this) as $prop => $val) {
-			if (! $val instanceof PermissionValueInterface) {
-				continue;
-			}
-			$arr[$prop] = array();
-			foreach ($this->$prop->getNames() as $name) {
-				$arr[$prop][$name] = (bool)$this->$prop->$name;
-			}
-		}
+    /**
+     * Reads perms in from an array
+     *
+     * @param array $perms
+     */
+    public function fromArray(array $perms)
+    {
+        foreach (get_object_vars($this) as $prop => $val) {
+            if (! $val instanceof PermissionValueInterface) {
+                continue;
+            }
+            if (!isset($perms[$prop])) continue;
 
-		return $arr;
-	}
-
-
-	/**
-	 * Reads perms in from an array
-	 *
-	 * @param array $perms
-	 */
-	public function fromArray(array $perms)
-	{
-		foreach (get_object_vars($this) as $prop => $val) {
-			if (! $val instanceof PermissionValueInterface) {
-				continue;
-			}
-			if (!isset($perms[$prop])) continue;
-
-			foreach ($this->$prop->getNames() as $name) {
-				$this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
-			}
-		}
-	}
+            foreach ($this->$prop->getNames() as $name) {
+                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
+            }
+        }
+    }
 }

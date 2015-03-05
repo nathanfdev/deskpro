@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355420085 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add long Twitter message support");
-		$this->execMutateSql("ALTER TABLE twitter_statuses_long ADD for_user_id BIGINT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE twitter_statuses_long CHANGE status_id status_id BIGINT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE twitter_statuses_long ADD CONSTRAINT FK_8B914BFB9B5BB4B8 FOREIGN KEY (for_user_id) REFERENCES twitter_users (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_8B914BFB9B5BB4B8 ON twitter_statuses_long (for_user_id)");
-	}
+    public function run()
+    {
+        $this->out("Add long Twitter message support");
+        $this->execMutateSql("ALTER TABLE twitter_statuses_long ADD for_user_id BIGINT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE twitter_statuses_long CHANGE status_id status_id BIGINT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE twitter_statuses_long ADD CONSTRAINT FK_8B914BFB9B5BB4B8 FOREIGN KEY (for_user_id) REFERENCES twitter_users (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_8B914BFB9B5BB4B8 ON twitter_statuses_long (for_user_id)");
+    }
 }

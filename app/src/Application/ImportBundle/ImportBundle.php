@@ -36,44 +36,48 @@ namespace Application\ImportBundle;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Application\ImportBundle\DependencyInjection;
 
 class ImportBundle extends Bundle
 {
-	public function __construct()
-	{
-		$this->name = 'Import';
-	}
-
-	public function build(ContainerBuilder $container)
+    public function __construct()
     {
-        parent::build($container);
+        $this->name = 'Import';
     }
 
-	/**
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->registerExtension(new DependencyInjection\ImportExtension());
+    }
+
+    /**
      * @param Application $application An Application instance
      */
     public function registerCommands(Application $application)
     {
-		$commands = array(
-			'Application\\ImportBundle\\Command\\CheckImportCommand',
-			'Application\\ImportBundle\\Command\\CheckExportCommand',
-			'Application\\ImportBundle\\Command\\ExportCommand',
-			'Application\\ImportBundle\\Command\\ImportCommand',
-			'Application\\ImportBundle\\Command\\ResetCommand',
-		);
+        $commands = array(
+            'Application\\ImportBundle\\Command\\CheckExportCommand',
+            'Application\\ImportBundle\\Command\\ExportCommand',
+            'Application\\ImportBundle\\Command\\ImportCommand',
+            'Application\\ImportBundle\\Command\\ImportBatchCommand',
+            'Application\\ImportBundle\\Command\\ResetCommand',
+        );
 
-		foreach ($commands as $cmd) {
-			$application->add(new $cmd);
-		}
+        foreach ($commands as $cmd) {
+            $application->add(new $cmd);
+        }
     }
 
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 
-	public function getPath()
-	{
-		return __DIR__;
-	}
+    public function getPath()
+    {
+        return __DIR__;
+    }
 }

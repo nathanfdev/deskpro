@@ -48,52 +48,50 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 abstract class Scraper
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 * 
-	 */
-	protected $id;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id;
 
-	/**
-	 * The handler classname. A handler is created from this usersource, and is responsible for
-	 * creating all the resources needed for a scraper to do its job.
-	 *
-	 * @var string
-	 */
-	protected $handler_class;
+    /**
+     * The handler classname. A handler is created from this usersource, and is responsible for
+     * creating all the resources needed for a scraper to do its job.
+     *
+     * @var string
+     */
+    protected $handler_class;
 
-	/**
-	 * Options we'll pass to the handler
-	 *
-	 * @var array
-	 */
-	protected $options = array();
+    /**
+     * Options we'll pass to the handler
+     *
+     * @var array
+     */
+    protected $options = array();
 
-	/**
-	 * True if this scraper is enabled
-	 *
-	 * @var bool
-	 */
-	protected $is_enabled = true;
+    /**
+     * True if this scraper is enabled
+     *
+     * @var bool
+     */
+    protected $is_enabled = true;
 
-	/**
-	 * @var Application\DeskPRO\Scraper\Handler\HandlerAbstract
-	 */
-	protected $_handler_instance = null;
+    /**
+     * @var Application\DeskPRO\Scraper\Handler\HandlerAbstract
+     */
+    protected $_handler_instance = null;
 
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'Scraper', )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->isMappedSuperclass = true;
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array( 'name' => 'Scraper', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+    }
 }

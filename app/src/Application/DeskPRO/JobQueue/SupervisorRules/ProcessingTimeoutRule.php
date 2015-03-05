@@ -42,46 +42,45 @@ use Application\DeskPRO\JobQueue\JobSupervisorException;
  */
 class ProcessingTimeoutRule extends AbstractSupervisorRule
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function check()
-	{
-		$date = new \DateTime('5 minutes ago');
+    /**
+     * {@inheritdoc}
+     */
+    public function check()
+    {
+        $date = new \DateTime('5 minutes ago');
 
-		$query = $this->connection->executeQuery(
-			'
-			SELECT count(id) as total
-			FROM jobs
-			WHERE status = :processing_state
-			AND date_touch < :five_mins_ago
-			',
-			array(
-				'processing_state' => Job::STATUS_PROCESSING,
-				'five_mins_ago' => $date
-			),
-			array(
-				'processing_state' => 'string',
-				'five_mins_ago' => 'datetime'
-			)
-		);
-		$result = $query->fetch();
-		if (is_array($result) and array_key_exists('total', $result)) {
-			$total = $result['total'];
-			if ($total > 0) {
-				throw new JobSupervisorException("Found $total idle jobs that have been processing for 5+ minutes.");
-			}
-		}
+        $query = $this->connection->executeQuery(
+            '
+            SELECT count(id) as total
+            FROM jobs
+            WHERE status = :processing_state
+            AND date_touch < :five_mins_ago
+            ',
+            array(
+                'processing_state' => Job::STATUS_PROCESSING,
+                'five_mins_ago' => $date
+            ),
+            array(
+                'processing_state' => 'string',
+                'five_mins_ago' => 'datetime'
+            )
+        );
+        $result = $query->fetch();
+        if (is_array($result) and array_key_exists('total', $result)) {
+            $total = $result['total'];
+            if ($total > 0) {
+                throw new JobSupervisorException("Found $total idle jobs that have been processing for 5+ minutes.");
+            }
+        }
 
-	}
+    }
 
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function attemptToFix()
-	{
-		// we might want to retry jobs like this up to 5 "num_tries" or something
-		return false;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function attemptToFix()
+    {
+        // we might want to retry jobs like this up to 5 "num_tries" or something
+        return false;
+    }
 }

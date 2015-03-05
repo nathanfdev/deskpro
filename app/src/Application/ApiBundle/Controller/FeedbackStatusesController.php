@@ -44,31 +44,32 @@ use Orb\Util\Arrays;
 
 class FeedbackStatusesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
+    public function listAction()
+    {
         /**
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
          */
 
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
-		$active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
+        $active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
         $closed_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getClosedStatuses()));
 
         return $this->createApiResponse(
@@ -79,155 +80,153 @@ class FeedbackStatusesController extends AbstractController implements Protected
                  )
             )
         );
-	}
+    }
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
-		 */
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+         */
 
-		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
-		$feedback_status   = $feedback_statuses->getById($id);
+        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_status   = $feedback_statuses->getById($id);
 
-		if (!$feedback_status) {
-			throw $this->createNotFoundException();
-		}
+        if (!$feedback_status) {
+            throw $this->createNotFoundException();
+        }
 
-		return $this->createApiResponse(array('feedback_status' => $this->getApiData($feedback_status)));
-	}
+        return $this->createApiResponse(array('feedback_status' => $this->getApiData($feedback_status)));
+    }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
-		 */
+    public function saveAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+         */
 
-		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
-		if ($id) {
+        if ($id) {
 
-			$feedback_status   = $feedback_statuses->getById($id);
+            $feedback_status   = $feedback_statuses->getById($id);
 
-			if (!$feedback_status) {
-				throw $this->createNotFoundException();
-			}
-		} else {
+            if (!$feedback_status) {
+                throw $this->createNotFoundException();
+            }
+        } else {
 
-			$feedback_status = $feedback_statuses->createNew();
-		}
+            $feedback_status = $feedback_statuses->createNew();
+        }
 
-		$feedback_status_edit = new FeedbackStatusEdit($feedback_status);
+        $feedback_status_edit = new FeedbackStatusEdit($feedback_status);
 
-		$postData      = $this->in->getAll('post');
+        $postData      = $this->in->getAll('post');
 
-		$form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
+        $form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
 
-		if ($form->isValid()) {
+        if ($form->isValid()) {
 
-			$feedback_status_edit->save($this->em);
-		}
-		else {
+            $feedback_status_edit->save($this->em);
+        } else {
+            return $this->createApiValidationErrorResponse(
+                $this->container->getValidator()->validate($feedback_status)
+            );
+        }
 
-			return $this->createApiValidationErrorResponse(
-				$this->container->getValidator()->validate($feedback_status)
-			);
-		}
+        return $this->createApiResponse(
+            array(
+                 'success'     => true,
+                 'id'          => $feedback_status->getId(),
+            )
+        );
+    }
 
-		return $this->createApiResponse(
-			array(
-				 'success'     => true,
-				 'id'          => $feedback_status->getId(),
-			)
-		);
-	}
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    public function removeAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+         */
 
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
-		 */
+        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_status   = $feedback_statuses->getById($id);
 
-		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
-		$feedback_status   = $feedback_statuses->getById($id);
+        if (!$feedback_status) {
 
-		if (!$feedback_status) {
+            throw $this->createNotFoundException();
+        }
 
-			throw $this->createNotFoundException();
-		}
+        $move_to                 = $this->in->getUint('move_to');
+        $move_to_feedback_status = $feedback_statuses->getById($move_to);
 
-		$move_to                 = $this->in->getUint('move_to');
-		$move_to_feedback_status = $feedback_statuses->getById($move_to);
+        if (!$move_to_feedback_status) {
 
-		if (!$move_to_feedback_status) {
+            throw ValidationException::create(
+                "feedback_status.remove.move_feedback_statuses",
+                "You must select a feedback status to move existing feedback into"
+            );
+        }
 
-			throw ValidationException::create(
-				"feedback_status.remove.move_feedback_statuses",
-				"You must select a feedback status to move existing feedback into"
-			);
-		}
+        if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
 
-		if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
+            throw ValidationException::create(
+                "feedback_status.remove.move_feedback_statuses",
+                "You must choose a different feedback status"
+            );
+        }
 
-			throw ValidationException::create(
-				"feedback_status.remove.move_feedback_statuses",
-				"You must choose a different feedback status"
-			);
-		}
+        $old_id = $feedback_status->getId();
 
-		$old_id = $feedback_status->getId();
+        $this->db->beginTransaction();
 
-		$this->db->beginTransaction();
+        try {
 
-		try {
+            $this->db->executeUpdate(
+                "UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?",
+                array($move_to, $old_id)
+            );
 
-			$this->db->executeUpdate(
-				"UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?",
-				array($move_to, $old_id)
-			);
+            $this->em->remove($feedback_status);
+            $this->em->flush();
 
-			$this->em->remove($feedback_status);
-			$this->em->flush();
+            $this->db->commit();
 
-			$this->db->commit();
+        } catch(\Exception $e) {
 
-		} catch(\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
 
-			$this->db->rollback();
-			throw $e;
-		}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+    public function saveDisplayOrderAction()
+    {
+        $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-	public function saveDisplayOrderAction()
-	{
-		$display_orders = $this->in->getArrayOfUInts('display_orders');
+        /**
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+         */
 
-		/**
-		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
-		 */
+        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_statuses->updateDisplayOrders($display_orders);
 
-		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
-		$feedback_statuses->updateDisplayOrders($display_orders);
-
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

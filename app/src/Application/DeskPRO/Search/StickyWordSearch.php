@@ -48,226 +48,227 @@ use Orb\Util\Arrays;
  */
 class StickyWordSearch implements PersonContextInterface
 {
-	/**
-	 * Entity manager
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	public $em;
+    /**
+     * Entity manager
+     * @var \Doctrine\ORM\EntityManager
+     */
+    public $em;
 
-	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	public $db;
+    /**
+     * Plain database connection for raw queries
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    public $db;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-		$this->db = $em->getConnection();
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+        $this->db = $em->getConnection();
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
 
-	public function getWordsFromQuery($query)
-	{
-		// Split query into words, quoted strings are grouped togehter
-		$words = preg_split(
-			"/[\\s,]*\\\"([^\\\"]+)\\\"[\\s,]*|[\\s,]+/",
-			$query,
-			0,
-			PREG_SPLIT_DELIM_CAPTURE
-		);
+    public function getWordsFromQuery($query)
+    {
+        // Split query into words, quoted strings are grouped togehter
+        $words = preg_split(
+            "/[\\s,]*\\\"([^\\\"]+)\\\"[\\s,]*|[\\s,]+/",
+            $query,
+            0,
+            PREG_SPLIT_DELIM_CAPTURE
+        );
 
-		$words = array_filter($words, function($w) {
-			if (strlen($w) >= 2 && strlen($w) <= 50) {
-				return true;
-			}
-			return false;
-		});
-		$words = Arrays::removeFalsey($words);
-		$words = array_values($words);
+        $words = array_filter($words, function ($w) {
+            if (strlen($w) >= 2 && strlen($w) <= 50) {
+                return true;
+            }
 
-		return $words;
-	}
+            return false;
+        });
+        $words = Arrays::removeFalsey($words);
+        $words = array_values($words);
 
-	public function getResults($query, $limit = 10)
-	{
-		$words = $this->getWordsFromQuery($query);
+        return $words;
+    }
 
-		if (!$words) {
-			return array();
-		}
+    public function getResults($query, $limit = 10)
+    {
+        $words = $this->getWordsFromQuery($query);
 
-		if (count($words) > 15) {
-			$words = array_slice($words, 0, 15);
-		}
+        if (!$words) {
+            return array();
+        }
 
-		$in_q = array_fill(0, count($words), '?');
-		$in_q = implode(',', $in_q);
+        if (count($words) > 15) {
+            $words = array_slice($words, 0, 15);
+        }
 
-		$results_raw = $this->db->fetchAll("
-			SELECT object_type, object_id
-			FROM search_sticky_result
-			WHERE word IN ($in_q)
-			ORDER BY object_id DESC
-			LIMIT 1000
-		", $words);
+        $in_q = array_fill(0, count($words), '?');
+        $in_q = implode(',', $in_q);
 
-		if (!$results_raw) {
-			return array();
-		}
+        $results_raw = $this->db->fetchAll("
+            SELECT object_type, object_id
+            FROM search_sticky_result
+            WHERE word IN ($in_q)
+            ORDER BY object_id DESC
+            LIMIT 1000
+        ", $words);
 
-		#------------------------------
-		# Need to verify the user can see
-		# the results that we matched
-		#------------------------------
+        if (!$results_raw) {
+            return array();
+        }
 
-		$check_ids = array(
-			'DeskPRO:Article'  => array(),
-			'DeskPRO:News'     => array(),
-			'DeskPRO:Download' => array(),
-			'DeskPRO:Feedback' => array(),
-		);
-		$valid_ids = $check_ids; //copy structure
+        #------------------------------
+        # Need to verify the user can see
+        # the results that we matched
+        #------------------------------
 
-		if ($this->person_context) {
-			foreach ($results_raw as $r) {
-				$check_ids[$r['object_type']][] = $r['object_id'];
-			}
+        $check_ids = array(
+            'DeskPRO:Article'  => array(),
+            'DeskPRO:News'     => array(),
+            'DeskPRO:Download' => array(),
+            'DeskPRO:Feedback' => array(),
+        );
+        $valid_ids = $check_ids; //copy structure
 
-			if ($check_ids['DeskPRO:Article']) {
-				$search = new ArticleSearch();
-				$search->setPersonContext($this->person_context);
-				$search->addTerm(ArticleSearch::TERM_ID, ArticleSearch::OP_CONTAINS, $check_ids['DeskPRO:Article']);
-				$valid_ids['DeskPRO:Article'] = $search->getMatches();
-			}
-			if ($check_ids['DeskPRO:News']) {
-				$search = new NewsSearch();
-				$search->setPersonContext($this->person_context);
-				$search->addTerm(NewsSearch::TERM_ID, NewsSearch::OP_CONTAINS, $check_ids['DeskPRO:News']);
-				$valid_ids['DeskPRO:News'] = $search->getMatches();
-			}
-			if ($check_ids['DeskPRO:Download']) {
-				$search = new DownloadSearch();
-				$search->setPersonContext($this->person_context);
-				$search->addTerm(DownloadSearch::TERM_ID, DownloadSearch::OP_CONTAINS, $check_ids['DeskPRO:Download']);
-				$valid_ids['DeskPRO:Download'] = $search->getMatches();
-			}
-			if ($check_ids['DeskPRO:Feedback']) {
-				$search = new FeedbackSearch();
-				$search->setPersonContext($this->person_context);
-				$search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:Feedback']);
-				$valid_ids['DeskPRO:Feedback'] = $search->getMatches();
-			}
-		} else {
-			// No person context means any of the matches are valid
-			// (the user interface will always have a context though)
-			$valid_ids = $check_ids;
-		}
+        if ($this->person_context) {
+            foreach ($results_raw as $r) {
+                $check_ids[$r['object_type']][] = $r['object_id'];
+            }
 
-		// Key them for isset() lookups below
-		$valid_ids = array_map(function($v) { return $v ? array_combine($v, $v) : $v; }, $valid_ids);
+            if ($check_ids['DeskPRO:Article']) {
+                $search = new ArticleSearch();
+                $search->setPersonContext($this->person_context);
+                $search->addTerm(ArticleSearch::TERM_ID, ArticleSearch::OP_CONTAINS, $check_ids['DeskPRO:Article']);
+                $valid_ids['DeskPRO:Article'] = $search->getMatches();
+            }
+            if ($check_ids['DeskPRO:News']) {
+                $search = new NewsSearch();
+                $search->setPersonContext($this->person_context);
+                $search->addTerm(NewsSearch::TERM_ID, NewsSearch::OP_CONTAINS, $check_ids['DeskPRO:News']);
+                $valid_ids['DeskPRO:News'] = $search->getMatches();
+            }
+            if ($check_ids['DeskPRO:Download']) {
+                $search = new DownloadSearch();
+                $search->setPersonContext($this->person_context);
+                $search->addTerm(DownloadSearch::TERM_ID, DownloadSearch::OP_CONTAINS, $check_ids['DeskPRO:Download']);
+                $valid_ids['DeskPRO:Download'] = $search->getMatches();
+            }
+            if ($check_ids['DeskPRO:Feedback']) {
+                $search = new FeedbackSearch();
+                $search->setPersonContext($this->person_context);
+                $search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:Feedback']);
+                $valid_ids['DeskPRO:Feedback'] = $search->getMatches();
+            }
+        } else {
+            // No person context means any of the matches are valid
+            // (the user interface will always have a context though)
+            $valid_ids = $check_ids;
+        }
 
-		#------------------------------
-		# Get and sort the results
-		#------------------------------
+        // Key them for isset() lookups below
+        $valid_ids = array_map(function ($v) { return $v ? array_combine($v, $v) : $v; }, $valid_ids);
 
-		// Count matches
-		$results_ranked = array();
-		foreach ($results_raw as $r) {
-			// Make sure the result is within the list of valid
-			// ids we got back from our search verify above
-			if (!isset($valid_ids[$r['object_type']][$r['object_id']])) {
-				continue;
-			}
-			$k = "{$r['object_type']}-{$r['object_id']}";
-			if (!isset($results_ranked[$k])) {
-				$results_ranked[$k] = $r;
-				$results_ranked[$k]['count'] = 0;
-			}
+        #------------------------------
+        # Get and sort the results
+        #------------------------------
 
-			$results_ranked[$k]['count']++;
-		}
+        // Count matches
+        $results_ranked = array();
+        foreach ($results_raw as $r) {
+            // Make sure the result is within the list of valid
+            // ids we got back from our search verify above
+            if (!isset($valid_ids[$r['object_type']][$r['object_id']])) {
+                continue;
+            }
+            $k = "{$r['object_type']}-{$r['object_id']}";
+            if (!isset($results_ranked[$k])) {
+                $results_ranked[$k] = $r;
+                $results_ranked[$k]['count'] = 0;
+            }
 
-		// If we have too many results, we have to trim them down
-		// to the top $limit results
-		if (count($results_ranked) > $limit) {
-			Arrays::sortMulti($results_ranked, 'count', \SORT_NUMERIC);
-			$results_ranked = array_slice($results_ranked, 0, $limit, true);
-		}
+            $results_ranked[$k]['count']++;
+        }
 
-		// Get IDs for each type
-		$results_typed = array();
-		foreach ($results_ranked as $r) {
-			if (!isset($results_typed[$r['object_type']])) {
-				$results_typed[$r['object_type']] = array();
-			}
-			$results_typed[$r['object_type']][] = $r['object_id'];
-		}
+        // If we have too many results, we have to trim them down
+        // to the top $limit results
+        if (count($results_ranked) > $limit) {
+            Arrays::sortMulti($results_ranked, 'count', \SORT_NUMERIC);
+            $results_ranked = array_slice($results_ranked, 0, $limit, true);
+        }
 
-		// Fetech actual objects
-		$real_results = array();
-		foreach ($results_typed as $entity_name => $ids) {
-			$real_results = array_merge(
-				$real_results,
-				array_values($this->em->getRepository($entity_name)->getByIds($ids))
-			);
-		}
+        // Get IDs for each type
+        $results_typed = array();
+        foreach ($results_ranked as $r) {
+            if (!isset($results_typed[$r['object_type']])) {
+                $results_typed[$r['object_type']] = array();
+            }
+            $results_typed[$r['object_type']][] = $r['object_id'];
+        }
 
-		// Sort
-		usort($real_results, function($a, $b) use ($results_ranked) {
-			$class = get_class($a);
-			$entity_name = $class::getEntityName();
-			$ka = "$entity_name-{$a['id']}";
+        // Fetech actual objects
+        $real_results = array();
+        foreach ($results_typed as $entity_name => $ids) {
+            $real_results = array_merge(
+                $real_results,
+                array_values($this->em->getRepository($entity_name)->getByIds($ids))
+            );
+        }
 
-			$class = get_class($b);
-			$entity_name = $class::getEntityName();
-			$kb = "$entity_name-{$b['id']}";
+        // Sort
+        usort($real_results, function ($a, $b) use ($results_ranked) {
+            $class = get_class($a);
+            $entity_name = $class::getEntityName();
+            $ka = "$entity_name-{$a['id']}";
 
-			if (isset($results_ranked[$ka]) && !isset($results_ranked[$kb])) {
-				return -1;
-			}
-			if (!isset($results_ranked[$ka]) && isset($results_ranked[$kb])) {
-				return 1;
-			}
-			if (!isset($results_ranked[$ka]) && !isset($results_ranked[$kb])) {
-				return 0;
-			}
+            $class = get_class($b);
+            $entity_name = $class::getEntityName();
+            $kb = "$entity_name-{$b['id']}";
 
-			if ($results_ranked[$ka]['count'] == $results_ranked[$kb]['count']) {
-				return 0;
-			}
+            if (isset($results_ranked[$ka]) && !isset($results_ranked[$kb])) {
+                return -1;
+            }
+            if (!isset($results_ranked[$ka]) && isset($results_ranked[$kb])) {
+                return 1;
+            }
+            if (!isset($results_ranked[$ka]) && !isset($results_ranked[$kb])) {
+                return 0;
+            }
 
-			return ($results_ranked[$ka]['count'] < $results_ranked[$kb]['count']) ? -1 : 1;
-		});
+            if ($results_ranked[$ka]['count'] == $results_ranked[$kb]['count']) {
+                return 0;
+            }
 
-		// Make them a usual array we expect
-		// type => typename, object => entity
-		$typed_results = array();
-		foreach ($real_results as $r) {
-			$class = get_class($r);
-			$entity_name = $class::getEntityName();
-			$type = strtolower(str_replace('DeskPRO:', '', $entity_name));
+            return ($results_ranked[$ka]['count'] < $results_ranked[$kb]['count']) ? -1 : 1;
+        });
 
-			$key = $type . '.' . $r->getId();
+        // Make them a usual array we expect
+        // type => typename, object => entity
+        $typed_results = array();
+        foreach ($real_results as $r) {
+            $class = get_class($r);
+            $entity_name = $class::getEntityName();
+            $type = strtolower(str_replace('DeskPRO:', '', $entity_name));
 
-			$typed_results[$key] = array(
-				'type' => $type,
-				'object' => $r
-			);
-		}
+            $key = $type . '.' . $r->getId();
 
-		return $typed_results;
-	}
+            $typed_results[$key] = array(
+                'type' => $type,
+                'object' => $r
+            );
+        }
+
+        return $typed_results;
+    }
 }

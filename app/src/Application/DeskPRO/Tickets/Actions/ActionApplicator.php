@@ -42,33 +42,31 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 class ActionApplicator implements ActionApplicatorInterface
 {
-	/**
-	 * @var DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var DeskproContainer
+     */
+    private $container;
 
+    /**
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function __construct(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param  ActionInterface          $action
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function apply(ActionInterface $action, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($action instanceof DeskproContainerAwareInterface || $action instanceof ContainerAwareInterface) {
+            $action->setContainer($this->container);
+        }
 
-
-	/**
-	 * @param ActionInterface $action
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function apply(ActionInterface $action, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($action instanceof DeskproContainerAwareInterface || $action instanceof ContainerAwareInterface) {
-			$action->setContainer($this->container);
-		}
-
-		$action->applyAction($ticket, $context);
-	}
+        $action->applyAction($ticket, $context);
+    }
 }

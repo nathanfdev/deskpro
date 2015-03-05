@@ -34,299 +34,296 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class TwitterStatus extends AbstractEntityRepository
 {
-	public function getByTwitterStatusId($id)
-	{
-		return $this->getEntityManager()->createQuery("
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.id = ?0
-		")->setParameters(array($id))->getOneOrNullResult();
-	}
+    public function getByTwitterStatusId($id)
+    {
+        return $this->getEntityManager()->createQuery("
+            SELECT s
+            FROM DeskPRO:TwitterStatus s
+            WHERE s.id = ?0
+        ")->setParameters(array($id))->getOneOrNullResult();
+    }
 
-	/**
-	 * @param integer $id
-	 * @param array|null $from_user_ids If not null, only from these users
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
-	{
-		if ($from_user_ids !== null && !$from_user_ids) {
-			return array();
-		}
+    /**
+     * @param  integer    $id
+     * @param  array|null $from_user_ids   If not null, only from these users
+     * @param  Boolean    $includeArchived (optional)
+     * @param  string     $sortByDate      (optional)
+     * @param  integer    $limit           (optional)
+     * @param  integer    $page            (optional)
+     * @return array
+     */
+    public function findMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+    {
+        if ($from_user_ids !== null && !$from_user_ids) {
+            return array();
+        }
 
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s INDEX BY s.id
-			WHERE s.recipient IS NOT NULL
-		";
+        $query = "
+            SELECT s
+            FROM DeskPRO:TwitterStatus s INDEX BY s.id
+            WHERE s.recipient IS NOT NULL
+        ";
 
-		if ($from_user_ids) {
-			if (in_array($id, $from_user_ids)) {
-				// make sure we can see anything this account sent
-				$query .= " AND ((s.user = :user_id) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
-			} else {
-				$from_user_ids[] = $id;
-				$query .= " AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
-			}
-			$params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
-		} else {
-			$query .= " AND (s.user = :user_id OR s.recipient = :user_id) ";
-			$params = array('user_id' => $id);
-		}
+        if ($from_user_ids) {
+            if (in_array($id, $from_user_ids)) {
+                // make sure we can see anything this account sent
+                $query .= " AND ((s.user = :user_id) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
+            } else {
+                $from_user_ids[] = $id;
+                $query .= " AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
+            }
+            $params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
+        } else {
+            $query .= " AND (s.user = :user_id OR s.recipient = :user_id) ";
+            $params = array('user_id' => $id);
+        }
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
+        if (!$includeArchived) {
+            $query .= " AND s.is_archived = 0 ";
+        }
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+        $query .= sprintf("
+            ORDER BY s.date_created %s
+        ", $this->normalizeSortByDate($sortByDate));
 
-		return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute($params);
-	}
+        return $this
+            ->getEntityManager()
+            ->createQuery($query)
+            ->setMaxResults($limit)
+            ->setFirstResult($this->calculateOffset($limit, $page))
+            ->execute($params);
+    }
 
-	/**
-	 * @param integer $id
-	 * @param array|null $from_user_ids If not null, only from these users
-	 * @param Boolean $includeArchived (optional)
-	 * @return integer
-	 */
-	public function countMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false)
-	{
-		if ($from_user_ids !== null && !$from_user_ids) {
-			return 0;
-		}
+    /**
+     * @param  integer    $id
+     * @param  array|null $from_user_ids   If not null, only from these users
+     * @param  Boolean    $includeArchived (optional)
+     * @return integer
+     */
+    public function countMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false)
+    {
+        if ($from_user_ids !== null && !$from_user_ids) {
+            return 0;
+        }
 
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.recipient IS NOT NULL
-		";
+        $query = "
+            SELECT COUNT(s.id)
+            FROM DeskPRO:TwitterStatus s
+            WHERE s.recipient IS NOT NULL
+        ";
 
-		if ($from_user_ids) {
-			if (in_array($id, $from_user_ids)) {
-				// make sure we can see anything this account sent
-				$query .= " AND ((s.user = :user_id) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
-			} else {
-				$from_user_ids[] = $id;
-				$query .= " AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
-			}
-			$params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
-		} else {
-			$query .= " AND (s.user = :user_id OR s.recipient = :user_id) ";
-			$params = array('user_id' => $id);
-		}
+        if ($from_user_ids) {
+            if (in_array($id, $from_user_ids)) {
+                // make sure we can see anything this account sent
+                $query .= " AND ((s.user = :user_id) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
+            } else {
+                $from_user_ids[] = $id;
+                $query .= " AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
+            }
+            $params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
+        } else {
+            $query .= " AND (s.user = :user_id OR s.recipient = :user_id) ";
+            $params = array('user_id' => $id);
+        }
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
+        if (!$includeArchived) {
+            $query .= " AND s.is_archived = 0 ";
+        }
 
-		return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameters($params)
-			->getSingleScalarResult();
-	}
+        return $this
+            ->getEntityManager()
+            ->createQuery($query)
+            ->setParameters($params)
+            ->getSingleScalarResult();
+    }
 
-	/**
-	 * @param integer $id
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findOutgoingForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
-	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s INDEX BY s.id
-			WHERE s.user = :user_id
-				AND s.recipient IS NULL
-		";
+    /**
+     * @param  integer $id
+     * @param  Boolean $includeArchived (optional)
+     * @param  string  $sortByDate      (optional)
+     * @param  integer $limit           (optional)
+     * @param  integer $page            (optional)
+     * @return array
+     */
+    public function findOutgoingForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+    {
+        $query = "
+            SELECT s
+            FROM DeskPRO:TwitterStatus s INDEX BY s.id
+            WHERE s.user = :user_id
+                AND s.recipient IS NULL
+        ";
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
+        if (!$includeArchived) {
+            $query .= " AND s.is_archived = 0 ";
+        }
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+        $query .= sprintf("
+            ORDER BY s.date_created %s
+        ", $this->normalizeSortByDate($sortByDate));
 
+        return $this
+            ->getEntityManager()
+            ->createQuery($query)
+            ->setMaxResults($limit)
+            ->setFirstResult($this->calculateOffset($limit, $page))
+            ->execute(array(
+                'user_id' => $id
+            ));
+    }
 
-		return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'user_id' => $id
-			));
-	}
+    /**
+     * @param  integer $id
+     * @param  Boolean $includeArchived (optional)
+     * @param  string  $sortByDate      (optional)
+     * @param  integer $limit           (optional)
+     * @param  integer $page            (optional)
+     * @return array
+     */
+    public function findRepliesForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+    {
+        $query = "
+            SELECT r
+            FROM DeskPRO:TwitterStatus r INDEX BY s.id
+            WHERE r.in_reply_to_status IN (
+                SELECT s.id
+                FROM DeskPRO:TwitterStatus s
+                WHERE s.user = :user_id
+            )
+        ";
 
-	/**
-	 * @param integer $id
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findRepliesForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
-	{
-		$query = "
-			SELECT r
-			FROM DeskPRO:TwitterStatus r INDEX BY s.id
-			WHERE r.in_reply_to_status IN (
-				SELECT s.id
-				FROM DeskPRO:TwitterStatus s
-				WHERE s.user = :user_id
-			)
-		";
+        if (!$includeArchived) {
+            $query .= " AND r.is_archived = 0 ";
+        }
 
-		if (!$includeArchived) {
-			$query .= " AND r.is_archived = 0 ";
-		}
+        $query .= sprintf("
+            ORDER BY s.date_created %s
+        ", $this->normalizeSortByDate($sortByDate));
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+        return $this
+            ->getEntityManager()
+            ->createQuery($query)
+            ->setMaxResults($limit)
+            ->setFirstResult($this->calculateOffset($limit, $page))
+            ->execute(array(
+                'user_id' => $id
+            ));
+    }
 
-		return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'user_id' => $id
-			));
-	}
+    /**
+     * @param  integer    $id
+     * @param  array|null $from_user_ids   If not null, only from these users
+     * @param  boolean    $includeArchived (optional)
+     * @param  string     $sortByDate      (optional)
+     * @param  integer    $limit           (optional)
+     * @param  integer    $page            (optional)
+     * @return array
+     */
+    public function findMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+    {
+        if ($from_user_ids !== null && !$from_user_ids) {
+            return array();
+        }
 
-	/**
-	 * @param integer $id
-	 * @param array|null $from_user_ids If not null, only from these users
-	 * @param boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
-	{
-		if ($from_user_ids !== null && !$from_user_ids) {
-			return array();
-		}
+        $query = "
+            SELECT s
+            FROM DeskPRO:TwitterStatus s INDEX BY s.id
+            INNER JOIN s.mentions m
+        ";
 
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s INDEX BY s.id
-			INNER JOIN s.mentions m
-		";
+        $params = array(
+            'user_id' => $id
+        );
 
-		$params = array(
-			'user_id' => $id
-		);
+        if ($from_user_ids) {
+            $query .= "WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ";
+            $params['from_user_ids'] = $from_user_ids;
+        } else {
+            $query .= "WHERE m.user = :user_id";
+        }
 
-		if ($from_user_ids) {
-			$query .= "WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ";
-			$params['from_user_ids'] = $from_user_ids;
-		} else {
-			$query .= "WHERE m.user = :user_id";
-		}
+        if (!$includeArchived) {
+            $query .= " AND s.is_archived = 0 ";
+        }
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
+        $query .= sprintf("
+            ORDER BY s.date_created %s
+        ", $this->normalizeSortByDate($sortByDate));
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+        return $this
+            ->getEntityManager()
+            ->createQuery($query)
+            ->setMaxResults($limit)
+            ->setFirstResult($this->calculateOffset($limit, $page))
+            ->execute($params);
+    }
 
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute($params);
-	}
+    /**
+     * @param  integer    $id
+     * @param  array|null $from_user_ids   If not null, only from these users
+     * @param  boolean    $includeArchived (optional)
+     * @return array
+     */
+    public function countMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false)
+    {
+        if ($from_user_ids !== null && !$from_user_ids) {
+            return 0;
+        }
 
-	/**
-	 * @param integer $id
-	 * @param array|null $from_user_ids If not null, only from these users
-	 * @param boolean $includeArchived (optional)
-	 * @return array
-	 */
-	public function countMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false)
-	{
-		if ($from_user_ids !== null && !$from_user_ids) {
-			return 0;
-		}
+        $query = "
+            SELECT COUNT(s.id)
+            FROM DeskPRO:TwitterStatus s
+            LEFT JOIN s.mentions m
+        ";
 
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			LEFT JOIN s.mentions m
-		";
+        $params = array(
+            'user_id' => $id
+        );
 
-		$params = array(
-			'user_id' => $id
-		);
+        if ($from_user_ids) {
+            $query .= "WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ";
+            $params['from_user_ids'] = $from_user_ids;
+        } else {
+            $query .= "WHERE m.user = :user_id";
+        }
 
-		if ($from_user_ids) {
-			$query .= "WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ";
-			$params['from_user_ids'] = $from_user_ids;
-		} else {
-			$query .= "WHERE m.user = :user_id";
-		}
+        if (!$includeArchived) {
+            $query .= " AND s.is_archived = 0 ";
+        }
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
+        return $this
+            ->getEntityManager()
+            ->createQuery($query)
+            ->setParameters($params)
+            ->getSingleScalarResult();
+    }
 
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameters($params)
-			->getSingleScalarResult();
-	}
+    /**
+     * @param  string $sortByDate (optional)
+     * @return string
+     */
+    protected function normalizeSortByDate($sortByDate = 'asc')
+    {
+        // check that sort by date is asc or desc
+        if (!in_array(strtolower($sortByDate), array('asc', 'desc'))) {
+            $sortByDate = 'asc';
+        }
 
-	/**
-	 * @param string $sortByDate (optional)
-	 * @return string
-	 */
-	protected function normalizeSortByDate($sortByDate = 'asc')
-	{
-		// check that sort by date is asc or desc
-		if (!in_array(strtolower($sortByDate), array('asc', 'desc'))) {
-			$sortByDate = 'asc';
-		}
+        return strtoupper($sortByDate);
+    }
 
-		return strtoupper($sortByDate);
-	}
+    /**
+     * @param  integer $limit
+     * @param  integer $page
+     * @return integer
+     */
+    protected function calculateOffset($limit, $page)
+    {
+        $page = max(1, intval($page));
 
-
-	/**
-	 * @param integer $limit
-	 * @param integer $page
-	 * @return integer
-	 */
-	protected function calculateOffset($limit, $page)
-	{
-		$page = max(1, intval($page));
-
-		return ($page - 1) * $limit;
-	}
+        return ($page - 1) * $limit;
+    }
 }

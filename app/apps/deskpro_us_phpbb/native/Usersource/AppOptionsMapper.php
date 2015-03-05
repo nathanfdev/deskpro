@@ -39,35 +39,35 @@ use Orb\Util\OptionsArray;
 
 class AppOptionsMapper
 {
-	/**
-	 * @param array|AppInstance $app_or_settings
-	 * @return array
-	 * @throws \InvalidArgumentException
-	 */
-	public static function getOptions($app_or_settings)
-	{
-		if ($app_or_settings instanceof AppInstance) {
-			$settings = $app_or_settings->getSettings();
-		} else {
-			if (!is_array($app_or_settings)) {
-				throw new \InvalidArgumentException;
-			}
-			$settings = $app_or_settings;
-		}
+    /**
+     * @param  array|AppInstance         $app_or_settings
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    public static function getOptions($app_or_settings)
+    {
+        if ($app_or_settings instanceof AppInstance) {
+            $settings = $app_or_settings->getSettings();
+        } else {
+            if (!is_array($app_or_settings)) {
+                throw new \InvalidArgumentException;
+            }
+            $settings = $app_or_settings;
+        }
 
-		$settings = new OptionsArray($settings);
+        $settings = new OptionsArray($settings);
 
-		$options = array();
-		$options['db_dsn']            = $settings->get('db_dsn');
-		$options['db_username']       = $settings->get('db_username');
-		$options['db_password']       = $settings->get('db_password');
-		$options['table_prefix']      = $settings->get('table_prefix');
+        $options = array();
+        $options['db_dsn']            = $settings->get('db_dsn');
+        $options['db_username']       = $settings->get('db_username');
+        $options['db_password']       = $settings->get('db_password');
+        $options['table_prefix']      = $settings->get('table_prefix');
 
-		if ($settings->get('phpbb_version') == '3') {
-			$options['check_service_url'] = $settings->get('check_service_url', '');
-			$options['check_service_key'] = $settings->get('check_service_key', 'dp_login_check');
-		}
+        if ($settings->get('phpbb_version') == '3') {
+            $options['check_service_url'] = $settings->get('check_service_url', '');
+            $options['check_service_key'] = $settings->get('check_service_key', 'dp_login_check');
+        }
 
-		return $options;
-	}
+        return $options;
+    }
 }

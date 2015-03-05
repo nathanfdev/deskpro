@@ -40,43 +40,43 @@ namespace Application\DeskPRO\Entity;
  */
 abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	const STATUS_VISIBLE     = 'published';
-	const STATUS_VALIDATING  = 'validating';
-	const STATUS_DECLINED    = 'declined';
-	const STATUS_DRAFT       = 'draft';
+    const STATUS_VISIBLE     = 'published';
+    const STATUS_VALIDATING  = 'validating';
+    const STATUS_DECLINED    = 'declined';
+    const STATUS_DRAFT       = 'draft';
 
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 * @var string
-	 */
-	protected $status = 'visible';
+    /**
+     * @var string
+     */
+    protected $status = 'visible';
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct()
-	{
-		$this['date_created']	= new \DateTime();
-	}
+    public function __construct()
+    {
+        $this['date_created']	= new \DateTime();
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }

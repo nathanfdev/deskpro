@@ -45,44 +45,46 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckMessageAttach extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('filename');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('filename');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		$state = $ticket->getStateChangeRecorder();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+        $state = $ticket->getStateChangeRecorder();
 
-		if (!$state->hasNewReply()) {
-			if ($this->getTermOperator() == 'not_isset') {
-				return true;
-			}
-			return false;
-		}
-		if ($this->getTermOperator() == 'isset') {
-			return true;
-		}
+        if (!$state->hasNewReply()) {
+            if ($this->getTermOperator() == 'not_isset') {
+                return true;
+            }
 
-		$strings = array();
-		foreach ($state->getNewAgentReplies() as $reply) {
-			foreach ($reply->attachments as $attach) {
-				$strings[] = $attach->blob->filename;
-			}
-		}
+            return false;
+        }
+        if ($this->getTermOperator() == 'isset') {
+            return true;
+        }
 
-		$value = TermValue::createWithValue($strings);
+        $strings = array();
+        foreach ($state->getNewAgentReplies() as $reply) {
+            foreach ($reply->attachments as $attach) {
+                $strings[] = $attach->blob->filename;
+            }
+        }
 
-		return $this->isStringMatch($ticket, $context, $value, $options['filename']);
-	}
+        $value = TermValue::createWithValue($strings);
+
+        return $this->isStringMatch($ticket, $context, $value, $options['filename']);
+    }
 }

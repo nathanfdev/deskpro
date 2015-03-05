@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056703 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Add people_emails.is_own_validated");
-		$db->exec("ALTER TABLE people_emails ADD is_own_validated TINYINT(1) NOT NULL");
-	}
+        $this->out("Add people_emails.is_own_validated");
+        $db->exec("ALTER TABLE people_emails ADD is_own_validated TINYINT(1) NOT NULL");
+    }
 }

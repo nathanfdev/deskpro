@@ -39,10 +39,11 @@ use Application\DeskPRO\Products\Products;
 
 class ProductsService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new Products($container->getEm());
-		$x->setDefaultProductPreference($container->getSetting('core.default_prod_id'));
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new Products($container->getEm());
+        $x->setDefaultProductPreference($container->getSetting('core.default_prod_id'));
+
+        return $x;
+    }
 }

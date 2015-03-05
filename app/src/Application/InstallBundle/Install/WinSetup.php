@@ -33,9 +33,9 @@
  */
 
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 // regex for php_path line

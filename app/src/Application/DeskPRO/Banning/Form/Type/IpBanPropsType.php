@@ -39,22 +39,22 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class IpBanPropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('banned_ip', 'text', array('required' => true));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('banned_ip', 'text', array('required' => true));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\BanIp',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\BanIp',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'ip_ban';
-	}
+    public function getName()
+    {
+        return 'ip_ban';
+    }
 }

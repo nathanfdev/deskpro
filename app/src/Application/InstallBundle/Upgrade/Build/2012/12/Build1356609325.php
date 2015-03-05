@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1356609325 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adjust Twitter constraints");
-		$this->execMutateSql("ALTER TABLE twitter_statuses DROP FOREIGN KEY FK_553D9D8D6B347969");
-		$this->execMutateSql("ALTER TABLE twitter_statuses ADD CONSTRAINT FK_553D9D8D6B347969 FOREIGN KEY (in_reply_to_status_id) REFERENCES twitter_statuses (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Adjust Twitter constraints");
+        $this->execMutateSql("ALTER TABLE twitter_statuses DROP FOREIGN KEY FK_553D9D8D6B347969");
+        $this->execMutateSql("ALTER TABLE twitter_statuses ADD CONSTRAINT FK_553D9D8D6B347969 FOREIGN KEY (in_reply_to_status_id) REFERENCES twitter_statuses (id) ON DELETE SET NULL");
+    }
 }

@@ -34,21 +34,19 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * Loads feedback category permissions
  */
 class FeedbackCategories extends BasicTreeCategoryPermission
 {
-	protected function getCategoryPermissionEntity()
-	{
-		return 'DeskPRO:FeedbackCategoryPermission';
-	}
+    protected function getCategoryPermissionEntity()
+    {
+        return 'DeskPRO:FeedbackCategoryPermission';
+    }
 
-	protected function getCategoryEntity()
-	{
-		return 'DeskPRO:FeedbackCategory';
-	}
+    protected function getCategoryEntity()
+    {
+        return 'DeskPRO:FeedbackCategory';
+    }
 }

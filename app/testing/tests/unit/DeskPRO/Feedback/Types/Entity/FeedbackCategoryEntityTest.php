@@ -5,54 +5,54 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 
 class FeedbackCategoryEntityTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\FeedbackCategory
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\FeedbackCategory
+     */
 
-	private $entity;
+    private $entity;
 
-	/**
-	 * @var \Symfony\Component\Validator\Validator
-	 */
+    /**
+     * @var \Symfony\Component\Validator\Validator
+     */
 
-	private $validator;
+    private $validator;
 
-	public function runBefore()
-	{
-		$this->entity    = new FeedbackCategory();
-		$this->validator = $this->helper->getSymfonyContainer()->getValidator();
-	}
+    public function runBefore()
+    {
+        $this->entity    = new FeedbackCategory();
+        $this->validator = $this->helper->getSymfonyContainer()->getValidator();
+    }
 
-	public function testSuccessfulValidationOfFeedbackCategoryEntity()
-	{
-		$this->entity->title = 'test title';
+    public function testSuccessfulValidationOfFeedbackCategoryEntity()
+    {
+        $this->entity->title = 'test title';
 
-		$errors = $this->validator->validate($this->entity);
-		$this->assertEquals(0, sizeof($errors));
-	}
+        $errors = $this->validator->validate($this->entity);
+        $this->assertEquals(0, sizeof($errors));
+    }
 
-	public function testUnsuccessfulValidationOfFeedbackCategoryEntity()
-	{
-		$this->entity->title = '';
+    public function testUnsuccessfulValidationOfFeedbackCategoryEntity()
+    {
+        $this->entity->title = '';
 
-		$errors = $this->validator->validate($this->entity);
+        $errors = $this->validator->validate($this->entity);
 
-		$this->assertEquals(1, sizeof($errors));
-		$this->assertNotSame(false, strpos($errors[0]->getMessage(), 'This value should not be blank'));
-	}
+        $this->assertEquals(1, sizeof($errors));
+        $this->assertNotSame(false, strpos($errors[0]->getMessage(), 'This value should not be blank'));
+    }
 
-	public function testUsergroupsForFeedbackCategoryEntity()
-	{
-		$usergroup1 = $this->getMock('\Application\DeskPRO\Entity\Usergroup');
-		$usergroup2 = $this->getMock('\Application\DeskPRO\Entity\Usergroup');
+    public function testUsergroupsForFeedbackCategoryEntity()
+    {
+        $usergroup1 = $this->getMock('\Application\DeskPRO\Entity\Usergroup');
+        $usergroup2 = $this->getMock('\Application\DeskPRO\Entity\Usergroup');
 
-		$this->entity->addUsergroup($usergroup1);
-		$this->entity->addUsergroup($usergroup2);
+        $this->entity->addUsergroup($usergroup1);
+        $this->entity->addUsergroup($usergroup2);
 
-		$this->assertEquals(2, sizeof($this->entity->getUserGroups()));
+        $this->assertEquals(2, sizeof($this->entity->getUserGroups()));
 
-		$this->entity->removeUsergroup($usergroup1);
+        $this->entity->removeUsergroup($usergroup1);
 
-		$this->assertEquals(1, sizeof($this->entity->getUserGroups()));
-	}
+        $this->assertEquals(1, sizeof($this->entity->getUserGroups()));
+    }
 }

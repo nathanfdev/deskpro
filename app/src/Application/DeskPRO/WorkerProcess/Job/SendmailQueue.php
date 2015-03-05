@@ -33,35 +33,38 @@
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
-
 use Application\DeskPRO\App;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
-use Application\DeskPRO\Mail\SendmailQueueRunner;
+use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
 
 /**
  * Goes through queued messages
  */
 class SendmailQueue extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 60;
 
-	/** @var int */
-	protected $count_success = 0;
-	/** @var int */
-	protected $count_failed = 0;
-	/** @var int */
-	protected $time_start = 0;
+    public function run()
+    {
+        $runner = App::getContainer()->get('email.queue_runner');
+        $count_problems = $runner->detectProblems();
+        $count = 0;
 
-	public function run()
-	{
-		@ini_set('memory_limit', DP_MAX_MEMSIZE);
-		$runner = new SendmailQueueRunner();
-		$runner->setLogger($this->logger);
-		$count = $runner->run(0, 30);
-		@ini_set('memory_limit', DP_SET_MEMSIZE);
+        $source_mapper = App::getContainer()->get('email.source_mapper');
 
-		if ($count) {
-			$this->logStatus("Processed {$count} emails in queue.");
-		}
-	}
+        // If we are using an external pending queue implementation,
+        // then this cron job should NOT run the main queue loop
+        // because the external queue is responsible for that
+        if (!($source_mapper instanceof ExternalPendingQueue)) {
+            @ini_set('memory_limit', DP_MAX_MEMSIZE);
+            $count = $runner->run();
+            @ini_set('memory_limit', DP_SET_MEMSIZE);
+        }
+
+        if ($count_problems) {
+            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
+        }
+        if ($count) {
+            $this->logStatus("Processed {$count} emails in queue.");
+        }
+    }
 }

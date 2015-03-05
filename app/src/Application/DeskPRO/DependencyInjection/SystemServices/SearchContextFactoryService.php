@@ -39,8 +39,8 @@ use Application\DeskPRO\NewSearch\SearchEngine;
 
 class SearchContextFactoryService
 {
-	public static function create(DeskproContainer $container)
-	{
-		return new SearchEngine\SearchContextFactory($container);
-	}
+    public static function create(DeskproContainer $container)
+    {
+        return new SearchEngine\SearchContextFactory($container);
+    }
 }

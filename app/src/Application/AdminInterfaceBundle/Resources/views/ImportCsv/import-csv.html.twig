@@ -17,7 +17,7 @@
 				<p> Each user must have a primary email address to be imported. If the email address matches an existing user record, no data will be imported for that user.</p>
 				<p> See <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#importing-user-data-in-csv-format" target="_blank">a list of valid user fields and more details about CSV format</a>.
 				</p>
-				<br /> 
+				<br />
 				<form id="fileupload"
 					  method="POST"
 					  enctype="multipart/form-data"
@@ -85,7 +85,7 @@
 
 			<div class="well danger-message upload-message" ng-if="importErrors.no_move">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. Please, refresh the page and try again.
+				There was a problem uploading the file. Please refresh the page and try again.
 			</div>
 
 			<div class="well danger-message upload-message" ng-if="importErrors.no_email">
@@ -139,6 +139,7 @@
 										<option value="password">Password</option>
 										<option value="organization">Organization</option>
 										<option value="organization_position">Organization Position</option>
+										<option value="language">Language</option>
 									</optgroup>
 									<optgroup label="Contact Details">
 										<option value="phone">Phone Number</option>
@@ -283,32 +284,47 @@
 						This should be selected if the "column name" values above contain actual data.
 					</label>
 				</div>
+
+				<div class="inner-group">
+					<label style="font-weight: normal; display: block;">
+						When a user from your CSV already exists in DeskPRO:
+						<select
+								ui-select2
+								ng-model="importSettings.updateIfExists"
+								class="no-search"
+								>
+							<option value="1">Update the user with information from the CSV file</option>
+							<option value="">Skip</option>
+						</select>
+					</label>
+				</div>
+
 				<div class="inner-group">
 					<label><input type="checkbox" ng-model="importSettings.welcomeEmail" /> Send welcome email to every new user</label>
 				</div>
 				<div class="clearfix"></div>
 				<button type="button" class="btn btn-success" ng-click="Ctrl.startImport()">
-					<span>Click here to start Import</span>
+					<span>Click here to start import</span>
 				</button>
 			</div>
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'no_file'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. No file was provided, please re-upload file.
+				No file was provided; please re-upload the file.
 			</div>
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'no_move'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. Can't move file, check write permissions please.
+				Problem with file upload; please check write permissions.
 			</div>
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared.
-				It doesn't have CSV format, please re-upload file in appropriate format.
+				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
+				
 			</div>
 
             <br />

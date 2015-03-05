@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056704 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Add sendmail_queue.status");
-		$db->exec("ALTER TABLE sendmail_queue ADD status VARCHAR(15) NOT NULL");
-		$db->exec("UPDATE sendmail_queue SET status = 'complete' WHERE has_sent = 1");
-		$db->exec("UPDATE sendmail_queue SET status = 'error' WHERE has_sent = 0 AND date_next_attempt IS NULL");
-		$db->exec("UPDATE sendmail_queue SET status = 'pending' WHERE has_sent = 0 AND date_next_attempt IS NOT NULL");
+        $this->out("Add sendmail_queue.status");
+        $db->exec("ALTER TABLE sendmail_queue ADD status VARCHAR(15) NOT NULL");
+        $db->exec("UPDATE sendmail_queue SET status = 'complete' WHERE has_sent = 1");
+        $db->exec("UPDATE sendmail_queue SET status = 'error' WHERE has_sent = 0 AND date_next_attempt IS NULL");
+        $db->exec("UPDATE sendmail_queue SET status = 'pending' WHERE has_sent = 0 AND date_next_attempt IS NOT NULL");
 
-		$this->out("Correct email_sources.status");
-		$db->exec("UPDATE email_sources SET status = 'rejected' WHERE status = 'error' AND error_code NOT IN ('server_error', 'timeout')");
-	}
+        $this->out("Correct email_sources.status");
+        $db->exec("UPDATE email_sources SET status = 'rejected' WHERE status = 'error' AND error_code NOT IN ('server_error', 'timeout')");
+    }
 }

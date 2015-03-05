@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351855094 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets.feedback_rating");
-		$this->execMutateSql("ALTER TABLE tickets ADD feedback_rating INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE tickets ADD date_feedback_rating DATETIME DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add tickets.feedback_rating");
+        $this->execMutateSql("ALTER TABLE tickets ADD feedback_rating INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE tickets ADD date_feedback_rating DATETIME DEFAULT NULL");
+    }
 }

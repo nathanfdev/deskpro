@@ -43,76 +43,76 @@ use Application\DeskPRO\HttpFoundation\Session;
  */
 class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
 {
-	/** @var \Application\DeskPRO\Entity\Person */
-	protected $person;
-	/** @var Session */
-	protected $session;
-	/** @var \Application\DeskPRO\Entity\Visitor */
-	protected $visitor;
+    /** @var \Application\DeskPRO\Entity\Person */
+    protected $person;
+    /** @var Session */
+    protected $session;
+    /** @var \Application\DeskPRO\Entity\Visitor */
+    protected $visitor;
 
-	protected $ticket_count = null;
+    protected $ticket_count = null;
 
-	public function __construct(Entity\Person $person, array $options)
-	{
-		$this->person = $person;
-		$this->session = $options['session'];
-		$this->visitor = $options['visitor'];
-	}
+    public function __construct(Entity\Person $person, array $options)
+    {
+        $this->person = $person;
+        $this->session = $options['session'];
+        $this->visitor = $options['visitor'];
+    }
 
-	public function _getThis()
-	{
-		return $this;
-	}
+    public function _getThis()
+    {
+        return $this;
+    }
 
-	public function getShortCallableNames()
-	{
-		return array(
-			'HelpdeskUser' => '_getThis',
-			'getHelpdeskUser' => '_getThis',
-			'getTicketCount' => 'getTicketCount',
-		);
-	}
+    public function getShortCallableNames()
+    {
+        return array(
+            'HelpdeskUser' => '_getThis',
+            'getHelpdeskUser' => '_getThis',
+            'getTicketCount' => 'getTicketCount',
+        );
+    }
 
-	public function getTicketCount()
-	{
-		if ($this->ticket_count !== null) return $this->ticket_count;
+    public function getTicketCount()
+    {
+        if ($this->ticket_count !== null) return $this->ticket_count;
 
-		$this->ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
+        $this->ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
 
-		return $this->ticket_count;
-	}
+        return $this->ticket_count;
+    }
 
-	/**
-	 * Check if the user has access to anything at all.
-	 *
-	 * @return bool
-	 */
-	public function canDoAnything()
-	{
-		if ($this->person->hasPerm('tickets.use')) {
-			return true;
-		}
+    /**
+     * Check if the user has access to anything at all.
+     *
+     * @return bool
+     */
+    public function canDoAnything()
+    {
+        if ($this->person->hasPerm('tickets.use')) {
+            return true;
+        }
 
-		if ($this->person->hasPerm('chat.use')) {
-			return true;
-		}
+        if ($this->person->hasPerm('chat.use')) {
+            return true;
+        }
 
-		if ($this->person->hasPerm('feedback.use')) {
-			return true;
-		}
+        if ($this->person->hasPerm('feedback.use')) {
+            return true;
+        }
 
-		if ($this->person->hasPerm('articles.use')) {
-			return true;
-		}
+        if ($this->person->hasPerm('articles.use')) {
+            return true;
+        }
 
-		if ($this->person->hasPerm('downloads.use')) {
-			return true;
-		}
+        if ($this->person->hasPerm('downloads.use')) {
+            return true;
+        }
 
-		if ($this->person->hasPerm('news.use')) {
-			return true;
-		}
+        if ($this->person->hasPerm('news.use')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

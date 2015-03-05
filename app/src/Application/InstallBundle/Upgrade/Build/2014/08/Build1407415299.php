@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1407415299 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tables for whitelisted IPs");
-		$this->execMutateSql("CREATE TABLE white_listed_ips (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, date_created DATETIME NOT NULL, ip_address VARCHAR(255) NOT NULL, INDEX IDX_47D195D9217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE white_listed_ips ADD CONSTRAINT FK_47D195D9217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Add tables for whitelisted IPs");
+        $this->execMutateSql("CREATE TABLE white_listed_ips (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, date_created DATETIME NOT NULL, ip_address VARCHAR(255) NOT NULL, INDEX IDX_47D195D9217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE white_listed_ips ADD CONSTRAINT FK_47D195D9217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+    }
 }

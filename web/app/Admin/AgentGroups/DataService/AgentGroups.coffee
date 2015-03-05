@@ -1,14 +1,14 @@
 define [
-	'Admin/Main/DataService/BaseListEdit',
+  'Admin/Main/DataService/BaseListEdit',
 ], (
-	Admin_Main_DataService_BaseListEdit,
+  Admin_Main_DataService_BaseListEdit,
 )  ->
-	class Admin_AgentGroups_DataService_AgentGroups extends Admin_Main_DataService_BaseListEdit
-		@$inject = ['Api', '$q']
+  class Admin_AgentGroups_DataService_AgentGroups extends Admin_Main_DataService_BaseListEdit
+    @$inject = ['Api', '$q']
 
-		url: -> 'agent_groups'
+    url: -> 'agent_groups'
 
-		resolveResponse: (response) -> response.groups
+    resolveResponse: (response) -> response.groups
 
-		all: ->
-			super false, {with_perms: 1}
+    all: ->
+      super false, {with_perms: 1}

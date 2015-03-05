@@ -50,6 +50,7 @@ class Build1400056729 extends AbstractBuild
 			$this->execMutateSql("ALTER TABLE usersources ADD agent_permission_group_id INT DEFAULT NULL, ADD auto_agent TINYINT(1) NOT NULL");
 			$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CF9C72B85 FOREIGN KEY (agent_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL");
 			$this->execMutateSql("CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)");
+			$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
 			$this->container->getDb()->insertIgnore('install_data', array('build' => '1413803749', 'name' => 'did_pre_alter', 'data' => '1'));
 		}
 

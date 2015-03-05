@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1360578874 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set English flag image if not set");
-		$this->execMutateSql("UPDATE languages SET flag_image = 'us.png' WHERE sys_name = 'default' AND flag_image = ''");
-	}
+    public function run()
+    {
+        $this->out("Set English flag image if not set");
+        $this->execMutateSql("UPDATE languages SET flag_image = 'us.png' WHERE sys_name = 'default' AND flag_image = ''");
+    }
 }

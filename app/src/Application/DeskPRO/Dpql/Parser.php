@@ -23,7 +23,7 @@
 | looking for great developers to join us: http://www.deskpro.com/jobs/    |
 |                                                                          |
 | ~ Thanks, Everyone at Team DeskPRO                                       |
-		\**************************************************************************/
+        \**************************************************************************/
 
 /**
  * DeskPRO
@@ -45,12 +45,12 @@ namespace Application\DeskPRO\Dpql;
  */
 class ParseyyToken implements \ArrayAccess
 {
-	/** @var string */
+    /** @var string */
     public $string = '';
-	/** @var array */
+    /** @var array */
     public $metadata = array();
 
-    function __construct($s, $m = array())
+    public function __construct($s, $m = array())
     {
         if ($s instanceof ParseyyToken) {
             $this->string = $s->string;
@@ -65,28 +65,29 @@ class ParseyyToken implements \ArrayAccess
         }
     }
 
-    function __toString()
+    public function __toString()
     {
         return $this->string;
     }
 
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
         return isset($this->metadata[$offset]);
     }
 
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         return $this->metadata[$offset];
     }
 
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         if ($offset === null) {
             if (isset($value[0])) {
                 $x = ($value instanceof ParseyyToken) ?
                     $value->metadata : $value;
                 $this->metadata = array_merge($this->metadata, $x);
+
                 return;
             }
             $offset = count($this->metadata);
@@ -103,7 +104,7 @@ class ParseyyToken implements \ArrayAccess
         }
     }
 
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         unset($this->metadata[$offset]);
     }
@@ -140,72 +141,72 @@ class Parser#line 102 "Parser.php"
 ** in the input file. */
 #line 10 "Parser.y"
 
-	/**
-	 * Line number currently being parsed. This comes from the lexer.
-	 *
-	 * @var integer
-	 */
-	public $line = 1;
+    /**
+     * Line number currently being parsed. This comes from the lexer.
+     *
+     * @var integer
+     */
+    public $line = 1;
 
-	/**
-	 * The output of parsing. When parsing has run, this will be a statement object.
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Display|null
-	 */
-	protected $_result = null;
+    /**
+     * The output of parsing. When parsing has run, this will be a statement object.
+     *
+     * @var \Application\DeskPRO\Dpql\Statement\Display|null
+     */
+    protected $_result = null;
 
-	/**
-	 * Gets the result object.
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Display|null
-	 */
-	public function getResult()
-	{
-		return $this->_result;
-	}
+    /**
+     * Gets the result object.
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Display|null
+     */
+    public function getResult()
+    {
+        return $this->_result;
+    }
 
-	/**
-	 * Processes a quoted string, by removing the quotes and un-escaping
-	 * backslashes.
-	 *
-	 * @param string $string Quoted string
-	 *
-	 * @return string String with quotes/escaping removed.
-	 */
-	public function processQuoted($string)
-	{
-		if (!strlen($string)) {
-			return $string;
-		}
-		$firstChar = $string[0];
-		if (substr($string, -1) !== $firstChar) {
-			return $string; // not quoted properly
-		}
+    /**
+     * Processes a quoted string, by removing the quotes and un-escaping
+     * backslashes.
+     *
+     * @param string $string Quoted string
+     *
+     * @return string String with quotes/escaping removed.
+     */
+    public function processQuoted($string)
+    {
+        if (!strlen($string)) {
+            return $string;
+        }
+        $firstChar = $string[0];
+        if (substr($string, -1) !== $firstChar) {
+            return $string; // not quoted properly
+        }
 
-		$string = substr($string, 1, -1); // strip off quotes
+        $string = substr($string, 1, -1); // strip off quotes
 
-		$searchPos = 0;
-		do {
-			$searchPos = strpos($string, '\\', $searchPos);
-			if ($searchPos === false) {
-				break;
-			}
+        $searchPos = 0;
+        do {
+            $searchPos = strpos($string, '\\', $searchPos);
+            if ($searchPos === false) {
+                break;
+            }
 
-			// strip out the back slash and step 1 forward to skip the character after (what it escaped)
-			$string = substr($string, 0, $searchPos) . substr($string, $searchPos + 1);
-			$searchPos++;
-		} while (true);
+            // strip out the back slash and step 1 forward to skip the character after (what it escaped)
+            $string = substr($string, 0, $searchPos) . substr($string, $searchPos + 1);
+            $searchPos++;
+        } while (true);
 
-		return $string;
-	}
+        return $string;
+    }
 #line 167 "Parser.php"
 
 /* Next is all token values, as class constants
 */
-/* 
+/*
 ** These constants (all generated automatically by the parser generator)
 ** specify the various kinds of tokens (terminals) that the parser
-** understands. 
+** understands.
 **
 ** Each symbol here is a terminal symbol in the grammar.
 */
@@ -265,7 +266,7 @@ class Parser#line 102 "Parser.php"
 /* Next are that tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
 ** functions that take a state number and lookahead value and return an
-** action integer.  
+** action integer.
 **
 ** Suppose the action integer is N.  Then the action is determined as
 ** follows
@@ -293,7 +294,7 @@ class Parser#line 102 "Parser.php"
 ** If the index value self::$yy_shift_ofst[S]+X is out of range or if the value
 ** self::$yy_lookahead[self::$yy_shift_ofst[S]+X] is not equal to X or if
 ** self::$yy_shift_ofst[S] is equal to self::YY_SHIFT_USE_DFLT, it means that
-** the action is not in the table and that self::$yy_default[S] should be used instead.  
+** the action is not in the table and that self::$yy_default[S] should be used instead.
 **
 ** The formula above is for computing the action when the lookahead is
 ** a terminal symbol.  If the lookahead is a non-terminal (as occurs after
@@ -339,7 +340,7 @@ static public $yy_action = array(
  /*   220 */   101,   57,   26,   96,  118,   38,   35,   25,   33,  106,
  /*   230 */   116,   59,  119,  104,   73,   40,   76,   79,   88,
     );
-    static public $yy_lookahead = array(
+    public static $yy_lookahead = array(
  /*     0 */     1,    2,    3,    4,    5,    6,    7,    8,    9,   10,
  /*    10 */    11,   12,   13,   14,   15,   16,    1,    2,    3,    4,
  /*    20 */     5,    6,    7,    8,    9,   10,   11,   12,   13,   14,
@@ -367,7 +368,7 @@ static public $yy_action = array(
 );
     const YY_SHIFT_USE_DFLT = -2;
     const YY_SHIFT_MAX = 79;
-    static public $yy_shift_ofst = array(
+    public static $yy_shift_ofst = array(
  /*     0 */   156,  151,  151,  119,  183,  183,  183,  183,  183,  183,
  /*    10 */   183,   -1,   15,   15,   61,   61,   61,  183,  183,  183,
  /*    20 */   183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
@@ -379,14 +380,14 @@ static public $yy_action = array(
 );
     const YY_REDUCE_USE_DFLT = -24;
     const YY_REDUCE_MAX = 46;
-    static public $yy_reduce_ofst = array(
+    public static $yy_reduce_ofst = array(
  /*     0 */    27,   75,   74,   69,   62,   59,   14,   60,   23,   63,
  /*    10 */   -23,   84,   80,   79,   67,   76,  114,  118,  123,  137,
  /*    20 */   155,  146,  139,  144,   82,  143,  145,  157,  150,  136,
  /*    30 */   122,  128,  142,  133,  158,  168,  177,  169,  160,  163,
  /*    40 */   167,  166,  175,  112,   83,   78,   92,
 );
-    static public $yyExpectedTokens = array(
+    public static $yyExpectedTokens = array(
         /* 0 */ array(20, ),
         /* 1 */ array(3, 13, 18, 28, 30, 31, 41, 44, 46, 47, 48, 49, ),
         /* 2 */ array(3, 13, 18, 28, 30, 31, 41, 44, 46, 47, 48, 49, ),
@@ -509,7 +510,7 @@ static public $yy_action = array(
         /* 119 */ array(),
         /* 120 */ array(),
 );
-    static public $yy_default = array(
+    public static $yy_default = array(
  /*     0 */   194,  194,  194,  194,  194,  194,  191,  194,  194,  194,
  /*    10 */   194,  159,  140,  140,  193,  193,  193,  194,  194,  194,
  /*    20 */   194,  194,  194,  194,  194,  194,  194,  194,  194,  194,
@@ -528,7 +529,7 @@ static public $yy_action = array(
 ** various aspects of the generated parser.
 **    self::YYNOCODE      is a number which corresponds
 **                        to no legal terminal or nonterminal number.  This
-**                        number is used to fill in empty slots of the hash 
+**                        number is used to fill in empty slots of the hash
 **                        table.
 **    self::YYFALLBACK    If defined, this indicates that one or more tokens
 **                        have fall-back values which should be used if the
@@ -548,7 +549,7 @@ static public $yy_action = array(
     const YYFALLBACK = 0;
     /** The next table maps tokens into fallback tokens.  If a construct
      * like the following:
-     * 
+     *
      *      %fallback ID X Y Z.
      *
      * appears in the grammer, then ID becomes a fallback token for X, Y,
@@ -556,15 +557,15 @@ static public $yy_action = array(
      * but it does not parse, the type of the token is changed to ID and
      * the parse is retried before an error is thrown.
      */
-    static public $yyFallback = array(
+    public static $yyFallback = array(
     );
     /**
      * Turn parser tracing on by giving a stream to which to write the trace
      * and a prompt to preface each trace message.  Tracing is turned off
-     * by making either argument NULL 
+     * by making either argument NULL
      *
      * Inputs:
-     * 
+     *
      * - A stream resource to which trace output should be written.
      *   If NULL, then tracing is turned off.
      * - A prefix string written at the beginning of every
@@ -572,12 +573,12 @@ static public $yy_action = array(
      *   turned off.
      *
      * Outputs:
-     * 
+     *
      * - None.
      * @param resource
      * @param string
      */
-    static function Trace($TraceFILE, $zTracePrompt)
+    public static function Trace($TraceFILE, $zTracePrompt)
     {
         if (!$TraceFILE) {
             $zTracePrompt = 0;
@@ -591,7 +592,7 @@ static public $yy_action = array(
     /**
      * Output debug information to output (php://output stream)
      */
-    static function PrintTrace()
+    public static function PrintTrace()
     {
         self::$yyTraceFILE = fopen('php://output', 'w');
         self::$yyTracePrompt = '';
@@ -600,12 +601,12 @@ static public $yy_action = array(
     /**
      * @var resource|0
      */
-    static public $yyTraceFILE;
+    public static $yyTraceFILE;
     /**
      * String to prepend to debug output
      * @var string|0
      */
-    static public $yyTracePrompt;
+    public static $yyTracePrompt;
     /**
      * @var int
      */
@@ -624,34 +625,34 @@ static public $yy_action = array(
      * are required.  The following table supplies these names
      * @var array
      */
-    static public $yyTokenName = array( 
-  '$',             'OP_OR',         'OP_AND',        'OP_NOT',      
-  'OP_EQ',         'OP_NE',         'OP_GT',         'OP_GTEQ',     
-  'OP_LT',         'OP_LTEQ',       'OP_IN',         'OP_LIKE',     
-  'OP_REGEXP',     'OP_MINUS',      'OP_PLUS',       'OP_MULTIPLY', 
-  'OP_DIVIDE',     'OP_U_MINUS',    'OP_BANG',       'SEMICOLON',   
-  'DISPLAY',       'TABLE',         'BAR',           'LINE',        
-  'PIE',           'AREA',          'COMMA',         'SELECT',      
-  'COLUMN_STAR',   'AS',            'LITERAL',       'QUOTED',      
-  'FROM',          'WHERE',         'SPLIT',         'BY',          
-  'GROUP',         'ORDER',         'ASC',           'DESC',        
-  'LIMIT',         'NUMBER',        'OFFSET',        'INTERVAL',    
-  'LEFT_PAREN',    'RIGHT_PAREN',   'COLUMN',        'PLACEHOLDER', 
-  'AT',            'NULL',          'error',         'start',       
+    public static $yyTokenName = array(
+  '$',             'OP_OR',         'OP_AND',        'OP_NOT',
+  'OP_EQ',         'OP_NE',         'OP_GT',         'OP_GTEQ',
+  'OP_LT',         'OP_LTEQ',       'OP_IN',         'OP_LIKE',
+  'OP_REGEXP',     'OP_MINUS',      'OP_PLUS',       'OP_MULTIPLY',
+  'OP_DIVIDE',     'OP_U_MINUS',    'OP_BANG',       'SEMICOLON',
+  'DISPLAY',       'TABLE',         'BAR',           'LINE',
+  'PIE',           'AREA',          'COMMA',         'SELECT',
+  'COLUMN_STAR',   'AS',            'LITERAL',       'QUOTED',
+  'FROM',          'WHERE',         'SPLIT',         'BY',
+  'GROUP',         'ORDER',         'ASC',           'DESC',
+  'LIMIT',         'NUMBER',        'OFFSET',        'INTERVAL',
+  'LEFT_PAREN',    'RIGHT_PAREN',   'COLUMN',        'PLACEHOLDER',
+  'AT',            'NULL',          'error',         'start',
   'display_query',  'trailing_semicolon',  'display_clause',  'select_clause',
   'from_clause',   'where_clause',  'split_clause',  'group_clause',
   'order_clause',  'limit_clause',  'display_type',  'display_type_option',
   'select_field',  'select_fields_extra',  'expression',    'alias_optional',
   'split_expression',  'split_expressions_extra',  'group_expression',  'group_expressions_extra',
   'order_expression',  'comma_order_expression_opt',  'direction_opt',  'limit_offset_opt',
-  'interval_expression',  'comma_expressions_opt',  'func_args',   
+  'interval_expression',  'comma_expressions_opt',  'func_args',
     );
 
     /**
      * For tracing reduce actions, the names of all rules are required.
      * @var array
      */
-    static public $yyRuleName = array(
+    public static $yyRuleName = array(
  /*   0 */ "start ::= display_query trailing_semicolon",
  /*   1 */ "trailing_semicolon ::= SEMICOLON",
  /*   2 */ "trailing_semicolon ::=",
@@ -733,7 +734,7 @@ static public $yy_action = array(
      * @param int
      * @return string
      */
-    function tokenName($tokenType)
+    public function tokenName($tokenType)
     {
         if ($tokenType === 0) {
             return 'End of Input';
@@ -751,13 +752,13 @@ static public $yy_action = array(
      * @param int the symbol code
      * @param mixed the symbol's value
      */
-    static function yy_destructor($yymajor, $yypminor)
+    public static function yy_destructor($yymajor, $yypminor)
     {
         switch ($yymajor) {
         /* Here is inserted the actions which take place when a
         ** terminal or non-terminal is destroyed.  This can happen
         ** when the symbol is popped from the stack during a
-        ** reduce or during error processing or when a parser is 
+        ** reduce or during error processing or when a parser is
         ** being destroyed before it is finished parsing.
         **
         ** Note: during a reduce, the only symbols destroyed are those
@@ -778,7 +779,7 @@ static public $yy_action = array(
      * @param ParseyyParser
      * @return int
      */
-    function yy_pop_parser_stack()
+    public function yy_pop_parser_stack()
     {
         if (!count($this->yystack)) {
             return;
@@ -792,6 +793,7 @@ static public $yy_action = array(
         $yymajor = $yytos->major;
         self::yy_destructor($yymajor, $yytos->minor);
         $this->yyidx--;
+
         return $yymajor;
     }
 
@@ -799,7 +801,7 @@ static public $yy_action = array(
      * Deallocate and destroy a parser.  Destructors are all called for
      * all stack elements before shutting the parser down.
      */
-    function __destruct()
+    public function __destruct()
     {
         while ($this->yyidx >= 0) {
             $this->yy_pop_parser_stack();
@@ -815,7 +817,7 @@ static public $yy_action = array(
      * @param int
      * @return array
      */
-    function yy_get_expected_tokens($token)
+    public function yy_get_expected_tokens($token)
     {
         $state = $this->yystack[$this->yyidx]->stateno;
         $expected = self::$yyExpectedTokens[$state];
@@ -848,6 +850,7 @@ static public $yy_action = array(
                                   self::$yyExpectedTokens[$nextstate], true)) {
                             $this->yyidx = $yyidx;
                             $this->yystack = $stack;
+
                             return array_unique($expected);
                         }
                     }
@@ -878,19 +881,20 @@ static public $yy_action = array(
             }
             break;
         } while (true);
+
         return array_unique($expected);
     }
 
     /**
      * Based on the parser state and current parser stack, determine whether
      * the lookahead token is possible.
-     * 
+     *
      * The parser will convert the token value to an error token if not.  This
      * catches some unusual edge cases where the parser would fail.
      * @param int
      * @return bool
      */
-    function yy_is_expected_token($token)
+    public function yy_is_expected_token($token)
     {
         if ($token === 0) {
             return true; // 0 is not part of this
@@ -923,6 +927,7 @@ static public $yy_action = array(
                           in_array($token, self::$yyExpectedTokens[$nextstate], true)) {
                         $this->yyidx = $yyidx;
                         $this->yystack = $stack;
+
                         return true;
                     }
                     if ($nextstate < self::YYNSTATE) {
@@ -958,6 +963,7 @@ static public $yy_action = array(
         } while (true);
         $this->yyidx = $yyidx;
         $this->yystack = $stack;
+
         return true;
     }
 
@@ -970,10 +976,10 @@ static public $yy_action = array(
      * return YY_NO_ACTION.
      * @param int The look-ahead token
      */
-    function yy_find_shift_action($iLookAhead)
+    public function yy_find_shift_action($iLookAhead)
     {
         $stateno = $this->yystack[$this->yyidx]->stateno;
-     
+
         /* if ($this->yyidx < 0) return self::YY_NO_ACTION;  */
         if (!isset(self::$yy_shift_ofst[$stateno])) {
             // no shift actions
@@ -996,8 +1002,10 @@ static public $yy_action = array(
                         self::$yyTokenName[$iLookAhead] . " => " .
                         self::$yyTokenName[$iFallback] . "\n");
                 }
+
                 return $this->yy_find_shift_action($iFallback);
             }
+
             return self::$yy_default[$stateno];
         } else {
             return self::$yy_action[$i];
@@ -1014,7 +1022,7 @@ static public $yy_action = array(
      * @param int Current state number
      * @param int The look-ahead token
      */
-    function yy_find_reduce_action($stateno, $iLookAhead)
+    public function yy_find_reduce_action($stateno, $iLookAhead)
     {
         /* $stateno = $this->yystack[$this->yyidx]->stateno; */
 
@@ -1043,19 +1051,19 @@ static public $yy_action = array(
      * @param int The major token to shift in
      * @param mixed the minor token to shift in
      */
-    function yy_shift($yyNewState, $yyMajor, $yypMinor)
+    public function yy_shift($yyNewState, $yyMajor, $yypMinor)
     {
         $this->yyidx++;
         if ($this->yyidx >= self::YYSTACKDEPTH) {
             $this->yyidx--;
             if (self::$yyTraceFILE) {
                 fprintf(self::$yyTraceFILE, "%sStack Overflow!\n", self::$yyTracePrompt);
-            }
-            while ($this->yyidx >= 0) {
+            } while ($this->yyidx >= 0) {
                 $this->yy_pop_parser_stack();
             }
             /* Here code is inserted which will execute if the parser
             ** stack ever overflows */
+
             return;
         }
         $yytos = new ParseyyStackEntry;
@@ -1088,7 +1096,7 @@ static public $yy_action = array(
      * );
      * </pre>
      */
-    static public $yyRuleInfo = array(
+    public static $yyRuleInfo = array(
   array( 'lhs' => 51, 'rhs' => 2 ),
   array( 'lhs' => 53, 'rhs' => 1 ),
   array( 'lhs' => 53, 'rhs' => 0 ),
@@ -1167,10 +1175,10 @@ static public $yy_action = array(
     /**
      * The following table contains a mapping of reduce action to method name
      * that handles the reduction.
-     * 
+     *
      * If a rule is not set, it has no handler.
      */
-    static public $yyReduceMap = array(
+    public static $yyReduceMap = array(
         3 => 3,
         4 => 4,
         5 => 5,
@@ -1230,343 +1238,388 @@ static public $yy_action = array(
     /* Beginning here are the reduction cases.  A typical example
     ** follows:
     **  #line <lineno> <grammarfile>
-    **   function yy_r0($yymsp){ ... }           // User supplied code
+    **   function yy_r0($yymsp) { ... }           // User supplied code
     **  #line <lineno> <thisfile>
     */
 #line 94 "Parser.y"
-    function yy_r3(){
-	$res = new Statement\Display($this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -5]->minor);
+    public function yy_r3()
+    {
+    $res = new Statement\Display($this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -5]->minor);
 
-	if ($this->yystack[$this->yyidx + -4]->minor) {
-		$res->setWhere($this->yystack[$this->yyidx + -4]->minor);
-	}
-	if ($this->yystack[$this->yyidx + -3]->minor) {
-		$res->setSplitBy($this->yystack[$this->yyidx + -3]->minor);
-	}
-	if ($this->yystack[$this->yyidx + -2]->minor) {
-		$res->setGroupBy($this->yystack[$this->yyidx + -2]->minor);
-	}
-	if ($this->yystack[$this->yyidx + -1]->minor) {
-		$res->setOrderBy($this->yystack[$this->yyidx + -1]->minor);
-	}
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$res->setLimitAmount($this->yystack[$this->yyidx + 0]->minor['limit']);
-		if (isset($this->yystack[$this->yyidx + 0]->minor['offset'])) {
-			$res->setLimitOffset($this->yystack[$this->yyidx + 0]->minor['offset']);
-		}
-	}
+    if ($this->yystack[$this->yyidx + -4]->minor) {
+        $res->setWhere($this->yystack[$this->yyidx + -4]->minor);
+    }
+    if ($this->yystack[$this->yyidx + -3]->minor) {
+        $res->setSplitBy($this->yystack[$this->yyidx + -3]->minor);
+    }
+    if ($this->yystack[$this->yyidx + -2]->minor) {
+        $res->setGroupBy($this->yystack[$this->yyidx + -2]->minor);
+    }
+    if ($this->yystack[$this->yyidx + -1]->minor) {
+        $res->setOrderBy($this->yystack[$this->yyidx + -1]->minor);
+    }
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $res->setLimitAmount($this->yystack[$this->yyidx + 0]->minor['limit']);
+        if (isset($this->yystack[$this->yyidx + 0]->minor['offset'])) {
+            $res->setLimitOffset($this->yystack[$this->yyidx + 0]->minor['offset']);
+        }
+    }
 
-	$this->_result = $res;
+    $this->_result = $res;
     }
 #line 1229 "Parser.php"
 #line 122 "Parser.y"
-    function yy_r4(){
-	$this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
-	}
+    public function yy_r4()
+    {
+    $this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
+    }
     }
 #line 1237 "Parser.php"
 #line 130 "Parser.y"
-    function yy_r5(){
-	$this->_retvalue = 'table';
+    public function yy_r5()
+    {
+    $this->_retvalue = 'table';
     }
 #line 1242 "Parser.php"
 #line 134 "Parser.y"
-    function yy_r6(){
-	$this->_retvalue = 'bar';
+    public function yy_r6()
+    {
+    $this->_retvalue = 'bar';
     }
 #line 1247 "Parser.php"
 #line 138 "Parser.y"
-    function yy_r7(){
-	$this->_retvalue = 'line';
+    public function yy_r7()
+    {
+    $this->_retvalue = 'line';
     }
 #line 1252 "Parser.php"
 #line 142 "Parser.y"
-    function yy_r8(){
-	$this->_retvalue = 'pie';
+    public function yy_r8()
+    {
+    $this->_retvalue = 'pie';
     }
 #line 1257 "Parser.php"
 #line 146 "Parser.y"
-    function yy_r9(){
-	$this->_retvalue = 'area';
+    public function yy_r9()
+    {
+    $this->_retvalue = 'area';
     }
 #line 1262 "Parser.php"
 #line 151 "Parser.y"
-    function yy_r10(){
-	$this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
+    public function yy_r10()
+    {
+    $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
     }
 #line 1267 "Parser.php"
 #line 158 "Parser.y"
-    function yy_r12(){
-	$this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
-	}
+    public function yy_r12()
+    {
+    $this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
+    }
     }
 #line 1275 "Parser.php"
 #line 167 "Parser.y"
-    function yy_r13(){
-	if (!$this->yystack[$this->yyidx + -2]->minor) {
-		$this->_retvalue = array();
-	} else {
-		$this->_retvalue = $this->yystack[$this->yyidx + -2]->minor;
-	}
-	$this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
+    public function yy_r13()
+    {
+    if (!$this->yystack[$this->yyidx + -2]->minor) {
+        $this->_retvalue = array();
+    } else {
+        $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor;
+    }
+    $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
     }
 #line 1285 "Parser.php"
 #line 180 "Parser.y"
-    function yy_r15(){
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue = new Statement\Part\Alias($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
-	} else {
-		$this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
-	}
+    public function yy_r15()
+    {
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue = new Statement\Part\Alias($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    } else {
+        $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
+    }
     }
 #line 1294 "Parser.php"
 #line 189 "Parser.y"
-    function yy_r16(){
-	$this->_retvalue = new Statement\Part\ColumnStar(explode('.', $this->yystack[$this->yyidx + 0]->minor));
+    public function yy_r16()
+    {
+    $this->_retvalue = new Statement\Part\ColumnStar(explode('.', $this->yystack[$this->yyidx + 0]->minor));
     }
 #line 1299 "Parser.php"
 #line 200 "Parser.y"
-    function yy_r18(){
-	$this->_retvalue = $this->processQuoted($this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r18()
+    {
+    $this->_retvalue = $this->processQuoted($this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1304 "Parser.php"
 #line 223 "Parser.y"
-    function yy_r23(){
-	$this->_retvalue = ($this->yystack[$this->yyidx + -1]->minor ? array($this->yystack[$this->yyidx + -1]->minor) : array());
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
-	}
+    public function yy_r23()
+    {
+    $this->_retvalue = ($this->yystack[$this->yyidx + -1]->minor ? array($this->yystack[$this->yyidx + -1]->minor) : array());
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
+    }
     }
 #line 1312 "Parser.php"
 #line 234 "Parser.y"
-    function yy_r25(){
-	if (!$this->yystack[$this->yyidx + -2]->minor) {
-		$this->_retvalue = array();
-	} else {
-		$this->_retvalue = $this->yystack[$this->yyidx + -2]->minor;
-	}
+    public function yy_r25()
+    {
+    if (!$this->yystack[$this->yyidx + -2]->minor) {
+        $this->_retvalue = array();
+    } else {
+        $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor;
+    }
 
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
-	}
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
+    }
     }
 #line 1325 "Parser.php"
 #line 250 "Parser.y"
-    function yy_r27(){
-	if ($this->yystack[$this->yyidx + 0]->minor instanceof Statement\Part\NullValue) {
-		$this->_retvalue = false;
-	} else {
-		$this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
-	}
+    public function yy_r27()
+    {
+    if ($this->yystack[$this->yyidx + 0]->minor instanceof Statement\Part\NullValue) {
+        $this->_retvalue = false;
+    } else {
+        $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
+    }
     }
 #line 1334 "Parser.php"
 #line 287 "Parser.y"
-    function yy_r32(){
-	if ($this->yystack[$this->yyidx + -1]->minor instanceof Statement\Part\NullValue) {
-		$this->_retvalue = false;
-	} else if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue = new Statement\Part\Alias($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
-	} else {
-		$this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
-	}
+    public function yy_r32()
+    {
+    if ($this->yystack[$this->yyidx + -1]->minor instanceof Statement\Part\NullValue) {
+        $this->_retvalue = false;
+    } elseif ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue = new Statement\Part\Alias($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    } else {
+        $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
+    }
     }
 #line 1345 "Parser.php"
 #line 311 "Parser.y"
-    function yy_r35(){
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue = new Statement\Part\OrderDir($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
-	} else {
-		$this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
-	}
+    public function yy_r35()
+    {
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue = new Statement\Part\OrderDir($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    } else {
+        $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
+    }
     }
 #line 1354 "Parser.php"
 #line 322 "Parser.y"
-    function yy_r36(){
-	$this->_retvalue = 'ASC';
+    public function yy_r36()
+    {
+    $this->_retvalue = 'ASC';
     }
 #line 1359 "Parser.php"
 #line 327 "Parser.y"
-    function yy_r37(){
-	$this->_retvalue = 'DESC';
+    public function yy_r37()
+    {
+    $this->_retvalue = 'DESC';
     }
 #line 1364 "Parser.php"
 #line 349 "Parser.y"
-    function yy_r41(){
-	$this->_retvalue = array('limit' => intval($this->yystack[$this->yyidx + -1]->minor));
-	if ($this->yystack[$this->yyidx + 0]->minor) {
-		$this->_retvalue['offset'] = $this->yystack[$this->yyidx + 0]->minor;
-	}
+    public function yy_r41()
+    {
+    $this->_retvalue = array('limit' => intval($this->yystack[$this->yyidx + -1]->minor));
+    if ($this->yystack[$this->yyidx + 0]->minor) {
+        $this->_retvalue['offset'] = $this->yystack[$this->yyidx + 0]->minor;
+    }
     }
 #line 1372 "Parser.php"
 #line 360 "Parser.y"
-    function yy_r43(){
-	$this->_retvalue = intval($this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r43()
+    {
+    $this->_retvalue = intval($this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1377 "Parser.php"
 #line 368 "Parser.y"
-    function yy_r45(){
-	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-	$token = $this->yystack[$this->yyidx + -1]->major;
+    public function yy_r45()
+    {
+    // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
+    $token = $this->yystack[$this->yyidx + -1]->major;
 
-	$this->_retvalue = new Statement\Part\BinaryComparison($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    $this->_retvalue = new Statement\Part\BinaryComparison($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1385 "Parser.php"
 #line 376 "Parser.y"
-    function yy_r46(){
-	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-	$token = $this->yystack[$this->yyidx + -1]->major;
+    public function yy_r46()
+    {
+    // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
+    $token = $this->yystack[$this->yyidx + -1]->major;
 
-	$this->_retvalue = new Statement\Part\BinaryLogical($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    $this->_retvalue = new Statement\Part\BinaryLogical($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1393 "Parser.php"
 #line 384 "Parser.y"
-    function yy_r47(){
-	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-	$token = $this->yystack[$this->yyidx + -1]->major;
-	$expression = $this->yystack[$this->yyidx + 0]->minor;
+    public function yy_r47()
+    {
+    // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
+    $token = $this->yystack[$this->yyidx + -1]->major;
+    $expression = $this->yystack[$this->yyidx + 0]->minor;
 
-	if ($expression[0] == 'interval') {
-		$this->_retvalue = new Statement\Part\BinaryInterval($token, $this->yystack[$this->yyidx + -2]->minor, $expression[1], $expression[2]);
-	} else {
-		$this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $expression[1]);
-	}
+    if ($expression[0] == 'interval') {
+        $this->_retvalue = new Statement\Part\BinaryInterval($token, $this->yystack[$this->yyidx + -2]->minor, $expression[1], $expression[2]);
+    } else {
+        $this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $expression[1]);
+    }
     }
 #line 1406 "Parser.php"
 #line 397 "Parser.y"
-    function yy_r48(){
-	$this->_retvalue = array('interval', $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r48()
+    {
+    $this->_retvalue = array('interval', $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1411 "Parser.php"
 #line 402 "Parser.y"
-    function yy_r49(){
-	$this->_retvalue = array('expression', $this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r49()
+    {
+    $this->_retvalue = array('expression', $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1416 "Parser.php"
 #line 407 "Parser.y"
-    function yy_r50(){
-	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-	$token = $this->yystack[$this->yyidx + -1]->major;
+    public function yy_r50()
+    {
+    // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
+    $token = $this->yystack[$this->yyidx + -1]->major;
 
-	$this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    $this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1424 "Parser.php"
 #line 415 "Parser.y"
-    function yy_r51(){
-	$this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r51()
+    {
+    $this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1429 "Parser.php"
 #line 420 "Parser.y"
-    function yy_r52(){
-	$this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
+    public function yy_r52()
+    {
+    $this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
     }
 #line 1434 "Parser.php"
 #line 425 "Parser.y"
-    function yy_r53(){
-	$this->_retvalue = new Statement\Part\RegExp($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r53()
+    {
+    $this->_retvalue = new Statement\Part\RegExp($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1439 "Parser.php"
 #line 430 "Parser.y"
-    function yy_r54(){
-	$this->_retvalue = new Statement\Part\RegExp($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
+    public function yy_r54()
+    {
+    $this->_retvalue = new Statement\Part\RegExp($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
     }
 #line 1444 "Parser.php"
 #line 435 "Parser.y"
-    function yy_r55(){
-	$values = array($this->yystack[$this->yyidx + -2]->minor);
-	if ($this->yystack[$this->yyidx + -1]->minor) {
-		$values = array_merge($values, $this->yystack[$this->yyidx + -1]->minor);
-	}
-	$this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -5]->minor, $values);
+    public function yy_r55()
+    {
+    $values = array($this->yystack[$this->yyidx + -2]->minor);
+    if ($this->yystack[$this->yyidx + -1]->minor) {
+        $values = array_merge($values, $this->yystack[$this->yyidx + -1]->minor);
+    }
+    $this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -5]->minor, $values);
     }
 #line 1453 "Parser.php"
 #line 444 "Parser.y"
-    function yy_r56(){
-	$values = array($this->yystack[$this->yyidx + -2]->minor);
-	if ($this->yystack[$this->yyidx + -1]->minor) {
-		$values = array_merge($values, $this->yystack[$this->yyidx + -1]->minor);
-	}
-	$this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -6]->minor, $values, false);
+    public function yy_r56()
+    {
+    $values = array($this->yystack[$this->yyidx + -2]->minor);
+    if ($this->yystack[$this->yyidx + -1]->minor) {
+        $values = array_merge($values, $this->yystack[$this->yyidx + -1]->minor);
+    }
+    $this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -6]->minor, $values, false);
     }
 #line 1462 "Parser.php"
 #line 453 "Parser.y"
-    function yy_r57(){
-	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-	$token = $this->yystack[$this->yyidx + -1]->major;
+    public function yy_r57()
+    {
+    // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
+    $token = $this->yystack[$this->yyidx + -1]->major;
 
-	$this->_retvalue = new Statement\Part\UnaryOperator($token, $this->yystack[$this->yyidx + 0]->minor);
+    $this->_retvalue = new Statement\Part\UnaryOperator($token, $this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1470 "Parser.php"
 #line 469 "Parser.y"
-    function yy_r59(){
-	$this->_retvalue = new Statement\Part\Parentheses($this->yystack[$this->yyidx + -1]->minor);
+    public function yy_r59()
+    {
+    $this->_retvalue = new Statement\Part\Parentheses($this->yystack[$this->yyidx + -1]->minor);
     }
 #line 1475 "Parser.php"
 #line 474 "Parser.y"
-    function yy_r60(){
-	if (!$this->yystack[$this->yyidx + -1]->minor) {
-		$this->yystack[$this->yyidx + -1]->minor = array();
-	}
-	$this->_retvalue = new Statement\Part\FunctionCall($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor);
+    public function yy_r60()
+    {
+    if (!$this->yystack[$this->yyidx + -1]->minor) {
+        $this->yystack[$this->yyidx + -1]->minor = array();
+    }
+    $this->_retvalue = new Statement\Part\FunctionCall($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor);
     }
 #line 1483 "Parser.php"
 #line 482 "Parser.y"
-    function yy_r61(){
-	$this->_retvalue = new Statement\Part\Column(explode('.', $this->yystack[$this->yyidx + 0]->minor));
+    public function yy_r61()
+    {
+    $this->_retvalue = new Statement\Part\Column(explode('.', $this->yystack[$this->yyidx + 0]->minor));
     }
 #line 1488 "Parser.php"
 #line 487 "Parser.y"
-    function yy_r62(){
-	$this->_retvalue = new Statement\Part\String($this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r62()
+    {
+    $this->_retvalue = new Statement\Part\String($this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1493 "Parser.php"
 #line 492 "Parser.y"
-    function yy_r63(){
-	$this->_retvalue = new Statement\Part\String($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
+    public function yy_r63()
+    {
+    $this->_retvalue = new Statement\Part\String($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
 #line 1498 "Parser.php"
 #line 497 "Parser.y"
-    function yy_r64(){
-	$value = substr($this->yystack[$this->yyidx + 0]->minor, 1, -1);
-	$this->_retvalue = new Statement\Part\Placeholder($value);
+    public function yy_r64()
+    {
+    $value = substr($this->yystack[$this->yyidx + 0]->minor, 1, -1);
+    $this->_retvalue = new Statement\Part\Placeholder($value);
     }
 #line 1504 "Parser.php"
 #line 503 "Parser.y"
-    function yy_r65(){
-	$this->_retvalue = new Statement\Part\AliasRef($this->yystack[$this->yyidx + 0]->minor);
+    public function yy_r65()
+    {
+    $this->_retvalue = new Statement\Part\AliasRef($this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1509 "Parser.php"
 #line 508 "Parser.y"
-    function yy_r66(){
-	$this->_retvalue = new Statement\Part\AliasRef($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
+    public function yy_r66()
+    {
+    $this->_retvalue = new Statement\Part\AliasRef($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
 #line 1514 "Parser.php"
 #line 513 "Parser.y"
-    function yy_r67(){
-	$this->_retvalue =  new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
+    public function yy_r67()
+    {
+    $this->_retvalue =  new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
     }
 #line 1519 "Parser.php"
 #line 518 "Parser.y"
-    function yy_r68(){
-	$this->_retvalue = new Statement\Part\NullValue();
+    public function yy_r68()
+    {
+    $this->_retvalue = new Statement\Part\NullValue();
     }
 #line 1524 "Parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
-     * 
+     *
      * For a parser with a rule like this:
      * <pre>
      * rule(A) ::= B. { A = 1; }
      * </pre>
-     * 
+     *
      * The parser will translate to something like:
-     * 
+     *
      * <code>
-     * function yy_r0(){$this->_retvalue = 1;}
+     * function yy_r0() {$this->_retvalue = 1;}
      * </code>
      */
     private $_retvalue;
@@ -1574,13 +1627,13 @@ static public $yy_action = array(
     /**
      * Perform a reduce action and the shift that must immediately
      * follow the reduce.
-     * 
+     *
      * For a rule such as:
-     * 
+     *
      * <pre>
      * A ::= B blah C. { dosomething(); }
      * </pre>
-     * 
+     *
      * This function will first call the action, if any, ("dosomething();" in our
      * example), and then it will pop three states from the stack,
      * one for each entry on the right-hand side of the expression
@@ -1589,7 +1642,7 @@ static public $yy_action = array(
      * file)
      * @param int Number of the rule by which to reduce
      */
-    function yy_reduce($yyruleno)
+    public function yy_reduce($yyruleno)
     {
         //int $yygoto;                     /* The next state */
         //int $yyact;                      /* The next action */
@@ -1640,15 +1693,14 @@ static public $yy_action = array(
 
     /**
      * The following code executes when the parse fails
-     * 
+     *
      * Code from %parse_fail is inserted here
      */
-    function yy_parse_failed()
+    public function yy_parse_failed()
     {
         if (self::$yyTraceFILE) {
             fprintf(self::$yyTraceFILE, "%sFail!\n", self::$yyTracePrompt);
-        }
-        while ($this->yyidx >= 0) {
+        } while ($this->yyidx >= 0) {
             $this->yy_pop_parser_stack();
         }
         /* Here code is inserted which will be executed whenever the
@@ -1657,30 +1709,29 @@ static public $yy_action = array(
 
     /**
      * The following code executes when a syntax error first occurs.
-     * 
+     *
      * %syntax_error code is inserted here
      * @param int The major type of the error token
      * @param mixed The minor type of the error token
      */
-    function yy_syntax_error($yymajor, $TOKEN)
+    public function yy_syntax_error($yymajor, $TOKEN)
     {
 #line 5 "Parser.y"
 
-	throw new Exception("Error parsing DPQL statement at line $this->line");
+    throw new Exception("Error parsing DPQL statement at line $this->line");
 #line 1640 "Parser.php"
     }
 
     /**
      * The following is executed when the parser accepts
-     * 
+     *
      * %parse_accept code is inserted here
      */
-    function yy_accept()
+    public function yy_accept()
     {
         if (self::$yyTraceFILE) {
             fprintf(self::$yyTraceFILE, "%sAccept!\n", self::$yyTracePrompt);
-        }
-        while ($this->yyidx >= 0) {
+        } while ($this->yyidx >= 0) {
             $this->yy_pop_parser_stack();
         }
         /* Here code is inserted which will be executed whenever the
@@ -1689,7 +1740,7 @@ static public $yy_action = array(
 
     /**
      * The main parser program.
-     * 
+     *
      * The first argument is the major token number.  The second is
      * the token value string as scanned from the input.
      *
@@ -1699,12 +1750,12 @@ static public $yy_action = array(
      *
      * @return void
      */
-    function doParse($yymajor, $yytokenvalue)
+    public function doParse($yymajor, $yytokenvalue)
     {
 //        $yyact;            /* The parser action. */
 //        $yyendofinput;     /* True if we are at the end of input */
         $yyerrorhit = 0;   /* True if yymajor has invoked an error */
-        
+
         /* (re)initialize the parser, if necessary */
         if ($this->yyidx === null || $this->yyidx < 0) {
             /* if ($yymajor == 0) return; // not sure why this was here... */
@@ -1717,7 +1768,7 @@ static public $yy_action = array(
             array_push($this->yystack, $x);
         }
         $yyendofinput = ($yymajor==0);
-        
+
         if (self::$yyTraceFILE) {
             fprintf(
                 self::$yyTraceFILE,
@@ -1726,7 +1777,7 @@ static public $yy_action = array(
                 self::$yyTokenName[$yymajor]
             );
         }
-        
+
         do {
             $yyact = $this->yy_find_shift_action($yymajor);
             if ($yymajor < self::YYERRORSYMBOL
@@ -1756,7 +1807,7 @@ static public $yy_action = array(
                 if (self::YYERRORSYMBOL) {
                     /* A syntax error has occurred.
                     ** The response to an error depends upon whether or not the
-                    ** grammar defines an error token "ERROR".  
+                    ** grammar defines an error token "ERROR".
                     **
                     ** This is what we do if the grammar does define ERROR:
                     **
@@ -1830,7 +1881,7 @@ static public $yy_action = array(
             } else {
                 $this->yy_accept();
                 $yymajor = self::YYNOCODE;
-            }            
+            }
         } while ($yymajor != self::YYNOCODE && $this->yyidx >= 0);
     }
 }

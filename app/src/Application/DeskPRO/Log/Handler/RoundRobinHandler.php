@@ -28,16 +28,15 @@
 namespace Application\DeskPRO\Log\Handler;
 
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LogRoundRobin;
 
 class RoundRobinHandler extends DBHandler
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function isHandling(array $record)
-	{
-		return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogRoundRobin;
-	}
-} 
+    /**
+     * @inheritdoc
+     */
+    public function isHandling(array $record)
+    {
+        return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogRoundRobin;
+    }
+}

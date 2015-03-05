@@ -40,61 +40,61 @@ use Application\DeskPRO\Entity\Task;
 
 class TaskAssignNotification extends AbstractAgentNotification
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Task
-	 */
-	protected $task;
+    /**
+     * @var \Application\DeskPRO\Entity\Task
+     */
+    protected $task;
 
-	public function __construct(Task $task)
-	{
-		parent::__construct();
-		$this->task = $task;
-	}
+    public function __construct(Task $task)
+    {
+        parent::__construct();
+        $this->task = $task;
+    }
 
-	public function shouldSendBrowserNotification(Person $agent)
-	{
-		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.alert")) {
-			return false;
-		}
+    public function shouldSendBrowserNotification(Person $agent)
+    {
+        if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.alert")) {
+            return false;
+        }
 
-		$agent->loadHelper('AgentTeam');
+        $agent->loadHelper('AgentTeam');
 
-		if ($this->task->assigned_agent_team && $agent->getPref('agent_notif.task_assign_team.alert') && in_array($this->task->assigned_agent_team->getId(), $agent->getAgentTeamIds())) {
-			return true;
-		} elseif ($this->task->assigned_agent && $agent->getPref('agent_notif.task_assign_self.alert') && $this->task->assigned_agent->getId() == $agent->id) {
-			return true;
-		}
+        if ($this->task->assigned_agent_team && $agent->getPref('agent_notif.task_assign_team.alert') && in_array($this->task->assigned_agent_team->getId(), $agent->getAgentTeamIds())) {
+            return true;
+        } elseif ($this->task->assigned_agent && $agent->getPref('agent_notif.task_assign_self.alert') && $this->task->assigned_agent->getId() == $agent->id) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function shouldSendEmailNotification(Person $agent)
-	{
-		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.email")) {
-			return false;
-		}
+    public function shouldSendEmailNotification(Person $agent)
+    {
+        if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.email")) {
+            return false;
+        }
 
-		$agent->loadHelper('AgentTeam');
+        $agent->loadHelper('AgentTeam');
 
-		if ($this->task->assigned_agent_team && $agent->getPref('agent_notif.task_assign_team.email') && in_array($this->task->assigned_agent_team->getId(), $agent->getAgentTeamIds())) {
-			return true;
-		} elseif ($this->task->assigned_agent && $agent->getPref('agent_notif.task_assign_self.email') && $this->task->assigned_agent->getId() == $agent->id) {
-			return true;
-		}
+        if ($this->task->assigned_agent_team && $agent->getPref('agent_notif.task_assign_team.email') && in_array($this->task->assigned_agent_team->getId(), $agent->getAgentTeamIds())) {
+            return true;
+        } elseif ($this->task->assigned_agent && $agent->getPref('agent_notif.task_assign_self.email') && $this->task->assigned_agent->getId() == $agent->id) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function send()
-	{
-		$this->sendBrowserNotifications('AgentBundle:Task:notify-row-assigned.html.twig', array(
-			'task' => $this->task,
-			'performer' => App::getCurrentPerson(),
-			'notify_data' => array('notify_type' => 'tasks')
-		));
-		$this->sendEmailNotifications('DeskPRO:emails_agent:task-assigned.html.twig', array(
-			'task' => $this->task,
-			'performer' => App::getCurrentPerson(),
-		));
-	}
+    public function send()
+    {
+        $this->sendBrowserNotifications('AgentBundle:Task:notify-row-assigned.html.twig', array(
+            'task' => $this->task,
+            'performer' => App::getCurrentPerson(),
+            'notify_data' => array('notify_type' => 'tasks')
+        ));
+        $this->sendEmailNotifications('DeskPRO:emails_agent:task-assigned.html.twig', array(
+            'task' => $this->task,
+            'performer' => App::getCurrentPerson(),
+        ));
+    }
 }

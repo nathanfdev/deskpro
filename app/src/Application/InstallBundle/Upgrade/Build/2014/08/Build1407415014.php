@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1407415014 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add people.browser");
-		$this->execMutateSql("ALTER TABLE people ADD browser VARCHAR(255) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add people.browser");
+        $this->execMutateSql("ALTER TABLE people ADD browser VARCHAR(255) DEFAULT NULL");
+    }
 }

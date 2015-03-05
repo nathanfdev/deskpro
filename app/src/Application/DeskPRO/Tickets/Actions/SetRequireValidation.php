@@ -46,47 +46,48 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetRequireValidation extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('force');
-		$options->addRequiredNames('require_validation');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('force');
+        $options->addRequiredNames('require_validation');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$email = $ticket->getTicketPersonEmail();
-		if (!$email || (!$this->getActionOption('force') && $email->is_own_validated)) {
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $email = $ticket->getTicketPersonEmail();
+        if (!$email || (!$this->getActionOption('force') && $email->is_own_validated)) {
+            return true;
+        }
 
-		$email->is_validated = false;
-		$email->date_validated = null;
+        $email->is_validated = false;
+        $email->date_validated = null;
 
-		$ticket->status = 'hidden.validating';
+        $ticket->status = 'hidden.validating';
 
-		$this->getContainer()->getEm()->persist($email);
-	}
+        $this->getContainer()->getEm()->persist($email);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$email = $ticket->getTicketPersonEmail();
-		if (!$email || (!$this->getActionOption('force') && $email->is_own_validated)) {
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $email = $ticket->getTicketPersonEmail();
+        if (!$email || (!$this->getActionOption('force') && $email->is_own_validated)) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

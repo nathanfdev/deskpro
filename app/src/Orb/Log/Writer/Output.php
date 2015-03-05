@@ -41,32 +41,32 @@ use \Orb\Log\LogItem;
  */
 class Output extends AbstractWriter
 {
-	/** @var bool */
-	protected $html = false;
-	
-	/**
-	 * @param  streamOrUrl     Stream or URL to open as a stream
-	 * @param  mode            Mode, only applicable if a URL is given
-	 */
-	public function __construct($html = false)
-	{
-		$this->html = $html;
+    /** @var bool */
+    protected $html = false;
 
-		$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
-	}
+    /**
+     * @param  streamOrUrl     Stream or URL to open as a stream
+     * @param  mode            Mode, only applicable if a URL is given
+     */
+    public function __construct($html = false)
+    {
+        $this->html = $html;
 
-	/**
-	 * Write a message to the log.
-	 */
-	public function _write(LogItem $log_item)
-	{
-		$msg = $log_item[LogItem::MESSAGE_LINE];
-		if ($this->html) {
-			$msg = '<pre style="margin:0;padding:0;">' . htmlspecialchars(trim($msg)) . '</pre>';
-		} else {
-			$msg .= "\n";
-		}
+        $this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+    }
 
-		echo $msg;
-	}
+    /**
+     * Write a message to the log.
+     */
+    public function _write(LogItem $log_item)
+    {
+        $msg = $log_item[LogItem::MESSAGE_LINE];
+        if ($this->html) {
+            $msg = '<pre style="margin:0;padding:0;">' . htmlspecialchars(trim($msg)) . '</pre>';
+        } else {
+            $msg .= "\n";
+        }
+
+        echo $msg;
+    }
 }

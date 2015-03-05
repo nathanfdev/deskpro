@@ -2,7 +2,7 @@
 	"package_name": "deskpro_us_google",
 	"is_native": true,
 	"title": "Google Authentication",
-	"description": "Allows users to log in using their Google or Google Apps profile.",
+	"description": "Deprecated: this uses an older authentication system that is being phased out by Google. Use Google+ Sign-In instead. If you are using this app for authentication, switch to Google+ Sign-In.",
 	"tags": ["usersources"],
 	"api_version": 1,
 	"version": 1,

@@ -38,130 +38,129 @@ use Orb\Util\Strings;
 
 class Blob
 {
-	/**
-	 * @var string
-	 */
-	protected $path;
+    /**
+     * @var string
+     */
+    protected $path;
 
-	/**
-	 * @var string
-	 */
-	protected $filename;
+    /**
+     * @var string
+     */
+    protected $filename;
 
-	/**
-	 * @var string
-	 */
-	protected $filename_safe = null;
+    /**
+     * @var string
+     */
+    protected $filename_safe = null;
 
-	/**
-	 * @var string
-	 */
-	protected $content_type;
+    /**
+     * @var string
+     */
+    protected $content_type;
 
-	/**
-	 * @var array
-	 */
-	protected $meta;
+    /**
+     * @var array
+     */
+    protected $meta;
 
-	public function __construct($filename, $content_type, array $meta = array())
-	{
-		$this->filename = $filename;
-		$this->content_type = $content_type;
-		$this->meta = $meta;
+    public function __construct($filename, $content_type, array $meta = array())
+    {
+        $this->filename = $filename;
+        $this->content_type = $content_type;
+        $this->meta = $meta;
 
-		// Automatically detect disposition if none provided
-		if (!isset($this->meta['content_disposition'])) {
-			if (ContentTypes::isInlineContentType($content_type, true)) {
-				$this->meta['content_disposition'] = 'inline';
-			} else {
-				$this->meta['content_disposition'] = 'attachment';
-			}
-		}
-	}
-
-
-	/**
-	 * @param $path
-	 */
-	public function setPath($path)
-	{
-		$this->path = $path;
-	}
+        // Automatically detect disposition if none provided
+        if (!isset($this->meta['content_disposition'])) {
+            if (ContentTypes::isInlineContentType($content_type, true)) {
+                $this->meta['content_disposition'] = 'inline';
+            } else {
+                $this->meta['content_disposition'] = 'attachment';
+            }
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getPath()
-	{
-		return $this->path;
-	}
+    /**
+     * @param $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getContentType()
-	{
-		return $this->content_type;
-	}
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getFilename()
-	{
-		return $this->filename;
-	}
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->content_type;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getFilenameSafe()
-	{
-		if ($this->filename_safe !== null) {
-			return $this->filename_safe;
-		}
-
-		$this->filename_safe = $this->filename;
-		$this->filename_safe = Strings::utf8_accents_to_ascii($this->filename_safe);
-		$this->filename_safe = preg_replace('#[^a-zA-Z0-9\.\-_]#', '-', $this->filename_safe);
-		$this->filename_safe = preg_replace('#\-{2,}#', '-', $this->filename_safe);
-		return $this->filename_safe;
-	}
+    /**
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
 
 
-	/**
-	 * @param string $id
-	 * @param mixed $value
-	 */
-	public function setMeta($id, $value)
-	{
-		if ($value === null) {
-			unset($this->meta[$value]);
-		} else {
-			$this->meta[$id] = $value;
-		}
-	}
+    /**
+     * @return string
+     */
+    public function getFilenameSafe()
+    {
+        if ($this->filename_safe !== null) {
+            return $this->filename_safe;
+        }
 
-	/**
-	 * @param $id
-	 * @param null $default
-	 * @return null
-	 */
-	public function getMeta($id, $default = null)
-	{
-		return isset($this->meta[$id]) ? $this->meta[$id] : $default;
-	}
+        $this->filename_safe = $this->filename;
+        $this->filename_safe = Strings::utf8_accents_to_ascii($this->filename_safe);
+        $this->filename_safe = preg_replace('#[^a-zA-Z0-9\.\-_]#', '-', $this->filename_safe);
+        $this->filename_safe = preg_replace('#\-{2,}#', '-', $this->filename_safe);
 
+        return $this->filename_safe;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getAllMeta()
-	{
-		return $this->meta;
-	}
+    /**
+     * @param string $id
+     * @param mixed  $value
+     */
+    public function setMeta($id, $value)
+    {
+        if ($value === null) {
+            unset($this->meta[$value]);
+        } else {
+            $this->meta[$id] = $value;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param  null $default
+     * @return null
+     */
+    public function getMeta($id, $default = null)
+    {
+        return isset($this->meta[$id]) ? $this->meta[$id] : $default;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMeta()
+    {
+        return $this->meta;
+    }
 }

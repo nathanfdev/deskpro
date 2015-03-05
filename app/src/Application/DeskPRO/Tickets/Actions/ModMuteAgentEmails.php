@@ -42,11 +42,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class ModMuteAgentEmails extends AbstractAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getVars()->set('mute_agent_emails', true);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getVars()->set('mute_agent_emails', true);
+    }
 }

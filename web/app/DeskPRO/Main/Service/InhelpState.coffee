@@ -1,28 +1,28 @@
 define ->
-	class DeskPRO_Main_Service_InhelpState
-		constructor: (Api) ->
-			@Api = Api
+  class DeskPRO_Main_Service_InhelpState
+    constructor: (Api) ->
+      @Api = Api
 
-			if window.DP_INHELP_STATES
-				@states = window.DP_INHELP_STATES
-			else
-				@states = {}
+      if window.DP_INHELP_STATES
+        @states = window.DP_INHELP_STATES
+      else
+        @states = {}
 
-		getState: (id) ->
-			if not @states[id]?
-				return null
+    getState: (id) ->
+      if not @states[id]?
+        return null
 
-			if @states[id] == 'open'
-				return true
+      if @states[id] == 'open'
+        return true
 
-			return false
+      return false
 
-		setState: (id, state) ->
+    setState: (id, state) ->
 
-			if state
-				state = 'open'
-			else
-				state = 'closed'
+      if state
+        state = 'open'
+      else
+        state = 'closed'
 
-			if @states?[id] != state
-				@Api.sendPost('/profile/inhelp/'+id+'/'+state)
+      if @states?[id] != state
+        @Api.sendPost('/profile/inhelp/'+id+'/'+state)

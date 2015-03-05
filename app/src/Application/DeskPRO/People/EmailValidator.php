@@ -45,237 +45,237 @@ use Application\DeskPRO\Entity\PersonEmailValidating;
  */
 class EmailValidator
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\PersonEmailValidating
-	 */
-	protected $validating_email;
+    /**
+     * @var \Application\DeskPRO\Entity\PersonEmailValidating
+     */
+    protected $validating_email;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var array
-	 */
-	protected $ticket_ids = array();
+    /**
+     * @var array
+     */
+    protected $ticket_ids = array();
 
-	/**
-	 * @param int         $id        The validating email address to fetch
-	 * @param null|string $auth_code Optionally verify this ID too
-	 * @return \Application\DeskPRO\People\EmailValidator
-	 */
-	public static function createFromId($id, $auth_code = null)
-	{
-		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $id);
-		if (!$validating_email) {
-			return null;
-		}
+    /**
+     * @param  int                                        $id        The validating email address to fetch
+     * @param  null|string                                $auth_code Optionally verify this ID too
+     * @return \Application\DeskPRO\People\EmailValidator
+     */
+    public static function createFromId($id, $auth_code = null)
+    {
+        $validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $id);
+        if (!$validating_email) {
+            return null;
+        }
 
-		if ($auth_code !== null && $validating_email->auth != $auth_code) {
-			return null;
-		}
+        if ($auth_code !== null && $validating_email->auth != $auth_code) {
+            return null;
+        }
 
-		return new self($validating_email);
-	}
+        return new self($validating_email);
+    }
 
-	public function __construct(PersonEmailValidating $validating_email)
-	{
-		$this->validating_email = $validating_email;
-		$this->person = App::getOrm()->find('DeskPRO:Person', $validating_email->person->getId());
+    public function __construct(PersonEmailValidating $validating_email)
+    {
+        $this->validating_email = $validating_email;
+        $this->person = App::getOrm()->find('DeskPRO:Person', $validating_email->person->getId());
 
-		$this->em = App::getOrm();
-		$this->db = $this->em->getConnection();
-	}
+        $this->em = App::getOrm();
+        $this->db = $this->em->getConnection();
+    }
 
-	public function getPerson()
-	{
-		return $this->person;
-	}
+    public function getPerson()
+    {
+        return $this->person;
+    }
 
-	/**
-	 * Validate the email address and return the newly created PersonEmail
-	 *
-	 * @throws \Exception|\OutOfBoundsException
-	 * @return \Application\DeskPRO\Entity\PersonEmail
-	 */
-	public function validate()
-	{
-		$exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
-		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithValidatingEmail($this->validating_email);
+    /**
+     * Validate the email address and return the newly created PersonEmail
+     *
+     * @throws \Exception|\OutOfBoundsException
+     * @return \Application\DeskPRO\Entity\PersonEmail
+     */
+    public function validate()
+    {
+        $exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
+        $this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithValidatingEmail($this->validating_email);
 
-		$this->em->getConnection()->beginTransaction();
+        $this->em->getConnection()->beginTransaction();
 
-		try {
-			if (!$exist_email) {
-				$email = new PersonEmail();
-				$email->email = $this->validating_email->email;
-				$email->date_created = $this->validating_email->date_created;
-				$email->date_validated = new \DateTime();
-				$email->is_validated = true;
-				$email->person = $this->person;
+        try {
+            if (!$exist_email) {
+                $email = new PersonEmail();
+                $email->email = $this->validating_email->email;
+                $email->date_created = $this->validating_email->date_created;
+                $email->date_validated = new \DateTime();
+                $email->is_validated = true;
+                $email->person = $this->person;
 
-				$this->person->addEmailAddress($email);
-				$this->em->persist($email);
-			} else {
-				$email = $exist_email;
-				$email->date_validated = new \DateTime();
-				$email->is_validated = true;
-				$this->em->persist($email);
-			}
+                $this->person->addEmailAddress($email);
+                $this->em->persist($email);
+            } else {
+                $email = $exist_email;
+                $email->date_validated = new \DateTime();
+                $email->is_validated = true;
+                $this->em->persist($email);
+            }
 
-			$this->em->flush();
+            $this->em->flush();
 
-			if (!$this->person->primary_email) {
-				$this->person->primary_email = $email;
-			}
+            if (!$this->person->primary_email) {
+                $this->person->primary_email = $email;
+            }
 
-			$is_newly_confirmed = false;
-			if (!$this->person->is_confirmed) {
-				$is_newly_confirmed = true;
-			}
+            $is_newly_confirmed = false;
+            if (!$this->person->is_confirmed) {
+                $is_newly_confirmed = true;
+            }
 
-			$this->person->is_confirmed = true;
+            $this->person->is_confirmed = true;
 
-			if ($this->person->primary_email && $this->person->primary_email->getId() == $email->getId()) {
-				$this->db->update('people', array(
-					'is_confirmed' => 1,
-					'primary_email_id' => $email->getId()
-				), array('id' => $this->person->getId()));
-			} else {
-				$this->db->update('people', array(
-					'is_confirmed' => 1
-				), array('id' => $this->person->getId()));
-			}
+            if ($this->person->primary_email && $this->person->primary_email->getId() == $email->getId()) {
+                $this->db->update('people', array(
+                    'is_confirmed' => 1,
+                    'primary_email_id' => $email->getId()
+                ), array('id' => $this->person->getId()));
+            } else {
+                $this->db->update('people', array(
+                    'is_confirmed' => 1
+                ), array('id' => $this->person->getId()));
+            }
 
-			$ticket_manager = App::$container->getTicketManager();
+            $ticket_manager = App::$container->getTicketManager();
 
-			// Find tickets with this email awaiting validation
-			if ($this->ticket_ids) {
-				foreach ($this->ticket_ids as $ticket_id) {
-					$ticket = $ticket_manager->getTicket($ticket_id);
-					$context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
+            // Find tickets with this email awaiting validation
+            if ($this->ticket_ids) {
+                foreach ($this->ticket_ids as $ticket_id) {
+                    $ticket = $ticket_manager->getTicket($ticket_id);
+                    $context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
 
-					$ticket->person_email_validating = null;
-					$ticket->person_email = $email;
+                    $ticket->person_email_validating = null;
+                    $ticket->person_email = $email;
 
-					if ($this->person->is_agent_confirmed) {
-						$ticket->setStatus('awaiting_agent');
-					}
+                    if ($this->person->is_agent_confirmed) {
+                        $ticket->setStatus('awaiting_agent');
+                    }
 
-					$ticket_manager->saveTicket($ticket, $context);
-					$this->em->persist($ticket);
-					$this->em->flush();
-				}
-			}
+                    $ticket_manager->saveTicket($ticket, $context);
+                    $this->em->persist($ticket);
+                    $this->em->flush();
+                }
+            }
 
-			// Validate the attached objects
-			foreach ($this->validating_email->validating_content as $validating_object) {
-				list($entity_name, $entity_id) = $validating_object;
+            // Validate the attached objects
+            foreach ($this->validating_email->validating_content as $validating_object) {
+                list($entity_name, $entity_id) = $validating_object;
 
-				if (strpos($entity_name, 'Application\\DeskPRO\\Entity\\') === 0) {
-					$entity_name = str_replace('Application\\DeskPRO\\Entity\\', 'DeskPRO:', $entity_name);
-				}
+                if (strpos($entity_name, 'Application\\DeskPRO\\Entity\\') === 0) {
+                    $entity_name = str_replace('Application\\DeskPRO\\Entity\\', 'DeskPRO:', $entity_name);
+                }
 
-				switch ($entity_name) {
-					case 'DeskPRO:Feedback':
-						$feedback = App::findEntity('DeskPRO:Feedback', $entity_id);
-						if (!$feedback) {
-							break;
-						}
+                switch ($entity_name) {
+                    case 'DeskPRO:Feedback':
+                        $feedback = App::findEntity('DeskPRO:Feedback', $entity_id);
+                        if (!$feedback) {
+                            break;
+                        }
 
-						$feedback->validating = null;
-						if ($feedback->status_code == 'hidden.user_validating') {
-							if (!$this->person->hasPerm('feedback.no_submit_validate')) {
-								$feedback->setStatusCode('hidden.validating');
-							} else {
-								$feedback->setStatusCode('new');
-							}
-						}
+                        $feedback->validating = null;
+                        if ($feedback->status_code == 'hidden.user_validating') {
+                            if (!$this->person->hasPerm('feedback.no_submit_validate')) {
+                                $feedback->setStatusCode('hidden.validating');
+                            } else {
+                                $feedback->setStatusCode('new');
+                            }
+                        }
 
-						$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
-						$notify_send->send();
+                        $notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
+                        $notify_send->send();
 
-						App::getOrm()->transactional(function ($em) use ($feedback) {
-							$em->persist($feedback);
-							$em->flush();
-						});
+                        App::getOrm()->transactional(function ($em) use ($feedback) {
+                            $em->persist($feedback);
+                            $em->flush();
+                        });
 
-						break;
+                        break;
 
-					case 'DeskPRO:ArticleComment':
-					case 'DeskPRO:DownloadComment':
-					case 'DeskPRO:FeedbackComment':
-					case 'DeskPRO:NewsComment':
-						$comment = App::findEntity($entity_name, $entity_id);
-						if (!$comment) {
-							break;
-						}
+                    case 'DeskPRO:ArticleComment':
+                    case 'DeskPRO:DownloadComment':
+                    case 'DeskPRO:FeedbackComment':
+                    case 'DeskPRO:NewsComment':
+                        $comment = App::findEntity($entity_name, $entity_id);
+                        if (!$comment) {
+                            break;
+                        }
 
-						$perm_map = array(
-							'DeskPRO:ArticleComment'        => 'articles.no_comment_validate',
-							'DeskPRO:DownloadComment'       => 'downloads.no_comment_validate',
-							'DeskPRO:FeedbackComment'       => 'feedback.no_comment_validate',
-							'DeskPRO:NewsComment'           => 'news.no_comment_validate',
-						);
+                        $perm_map = array(
+                            'DeskPRO:ArticleComment'        => 'articles.no_comment_validate',
+                            'DeskPRO:DownloadComment'       => 'downloads.no_comment_validate',
+                            'DeskPRO:FeedbackComment'       => 'feedback.no_comment_validate',
+                            'DeskPRO:NewsComment'           => 'news.no_comment_validate',
+                        );
 
-						$validate_perm = $this->person->hasPerm($perm_map[$entity_name]);
+                        $validate_perm = $this->person->hasPerm($perm_map[$entity_name]);
 
-						$comment->validating = null;
-						if ($comment->status == 'user_validating') {
-							if ($this->person->is_agent_confirmed && $validate_perm) {
-								$comment->setStatus('visible');
-							} else {
-								$comment->setStatus('validating');
-							}
-						}
+                        $comment->validating = null;
+                        if ($comment->status == 'user_validating') {
+                            if ($this->person->is_agent_confirmed && $validate_perm) {
+                                $comment->setStatus('visible');
+                            } else {
+                                $comment->setStatus('validating');
+                            }
+                        }
 
-						App::getOrm()->transactional(function ($em) use ($comment) {
-							$em->persist($comment);
+                        App::getOrm()->transactional(function ($em) use ($comment) {
+                            $em->persist($comment);
 
-							$send_notify = new \Application\DeskPRO\Notifications\NewCommentNotification($comment);
-							$send_notify->send();
+                            $send_notify = new \Application\DeskPRO\Notifications\NewCommentNotification($comment);
+                            $send_notify->send();
 
-							$em->flush();
-						});
-				}
-			}
+                            $em->flush();
+                        });
+                }
+            }
 
-			$this->em->remove($this->validating_email);
-			$this->em->flush();
+            $this->em->remove($this->validating_email);
+            $this->em->flush();
 
-			if ($is_newly_confirmed) {
-				$send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($this->person);
-				$send_notify->send();
-			}
+            if ($is_newly_confirmed) {
+                $send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($this->person);
+                $send_notify->send();
+            }
 
-			$this->em->getConnection()->commit();
+            $this->em->getConnection()->commit();
 
-			return $email;
+            return $email;
 
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-	}
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
+    }
 
-	public function getTicketIds()
-	{
-		return $this->ticket_ids;
-	}
+    public function getTicketIds()
+    {
+        return $this->ticket_ids;
+    }
 
-	public function getValidatingEmail()
-	{
-		return $this->validating_email;
-	}
+    public function getValidatingEmail()
+    {
+        return $this->validating_email;
+    }
 }

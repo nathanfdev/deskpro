@@ -8,73 +8,74 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetDepartmentTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withTicketDepartments()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withTicketDepartments()->get();
 
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$action = new SetDepartment(array('department_id' => 55));
-		$action->setContainer($this->getMockContainer());
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetDepartment(array('department_id' => 55));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Department', $ticket->department);
-		$this->assertEquals(55, $ticket->department->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetNullNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
-		$exec   = new ExecutorContext();
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\Department', $ticket->department);
+        $this->assertEquals(55, $ticket->department->id);
+    }
 
-		$action = new SetDepartment(array('department_id' => 0));
-		$action->setContainer($this->getMockContainer());
+    public function testSetNullNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetDepartment(array('department_id' => 0));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Department', $ticket->department);
-		$this->assertEquals(1, $ticket->department->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(55);
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\Department', $ticket->department);
+        $this->assertEquals(1, $ticket->department->id);
+    }
 
-		$exec = new ExecutorContext();
+    public function testNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(55);
 
-		$action = new SetDepartment(array('department_id' => 55));
-		$action->setContainer($this->container);
+        $exec = new ExecutorContext();
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $action = new SetDepartment(array('department_id' => 55));
+        $action->setContainer($this->container);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-		$action = new SetDepartment(array('department_id' => 200));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$this->assertNull($ticket->department);
-	}
+        $action = new SetDepartment(array('department_id' => 200));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertNull($ticket->department);
+    }
 }

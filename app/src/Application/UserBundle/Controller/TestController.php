@@ -34,13 +34,11 @@
 
 namespace Application\UserBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 class TestController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->createResponse('');
-	}
+    public function indexAction()
+    {
+        return $this->createResponse('');
+    }
 }

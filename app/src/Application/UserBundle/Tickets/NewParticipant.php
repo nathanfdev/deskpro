@@ -40,63 +40,63 @@ use Application\DeskPRO\Entity\Ticket;
 
 class NewParticipant implements \ArrayAccess
 {
-	/** @var array */
-	protected static $prop_names = array(
-		'first_name' => 1, 'last_name' => 1, 'email' => 1,
-	);
+    /** @var array */
+    protected static $prop_names = array(
+        'first_name' => 1, 'last_name' => 1, 'email' => 1,
+    );
 
-	/** @var string */
-	public $first_name;
-	/** @var string */
-	public $last_name;
-	/** @var string */
-	public $email;
+    /** @var string */
+    public $first_name;
+    /** @var string */
+    public $last_name;
+    /** @var string */
+    public $email;
 
-	/** @var \Application\DeskPRO\Entity\Ticket */
-	protected $ticket;
+    /** @var \Application\DeskPRO\Entity\Ticket */
+    protected $ticket;
 
-	public function __construct(Ticket $ticket)
-	{
-		$this->ticket = $ticket;
-	}
+    public function __construct(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+    }
 
-	public function save()
-	{
-		// User already on the tikcet, dont do anything
-		if ($this->ticket->findUserByEmail($this->email)) {
-			return;
-		}
+    public function save()
+    {
+        // User already on the tikcet, dont do anything
+        if ($this->ticket->findUserByEmail($this->email)) {
+            return;
+        }
 
-		$ticket = $this->ticket;
-		$part_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->email);
+        $ticket = $this->ticket;
+        $part_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->email);
 
-		if (!$part_person) {
-			$part_person = new Person();
-			$part_person->addEmailAddressString($this->email);
-			$part_person['first_name'] = $this->first_name;
-			$part_person['last_name'] = $this->last_name;
-		}
+        if (!$part_person) {
+            $part_person = new Person();
+            $part_person->addEmailAddressString($this->email);
+            $part_person['first_name'] = $this->first_name;
+            $part_person['last_name'] = $this->last_name;
+        }
 
-		if (!$part_person['first_name'] AND $this->first_name) {
-			$part_person['first_name'] = $this->first_name;
-		}
-		if (!$part_person['last_name'] AND $this->last_name) {
-			$part_person['last_name'] = $this->last_name;
-		}
+        if (!$part_person['first_name'] AND $this->first_name) {
+            $part_person['first_name'] = $this->first_name;
+        }
+        if (!$part_person['last_name'] AND $this->last_name) {
+            $part_person['last_name'] = $this->last_name;
+        }
 
-		$part_email = $part_person->findEmailAddress($this->email);
+        $part_email = $part_person->findEmailAddress($this->email);
 
-		$ticket->addParticipant($part_person);
+        $ticket->addParticipant($part_person);
 
-		App::getOrm()->transactional(function($em) use ($part_person, $part_email, $ticket) {
-			$em->persist($part_person);
-			$em->persist($ticket);
-			$em->flush();
-		});
-	}
+        App::getOrm()->transactional(function ($em) use ($part_person, $part_email, $ticket) {
+            $em->persist($part_person);
+            $em->persist($ticket);
+            $em->flush();
+        });
+    }
 
-	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

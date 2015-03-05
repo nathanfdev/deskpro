@@ -5,6 +5,7 @@
 				<td class="nowrap">
 					<label class="row-label" ng-show="model.type == 'AddAgentReply'">Add Agent Reply</label>
 					<label class="row-label" ng-show="model.type == 'AddAgentNote'">Add Agent Note</label>
+                    <label class="row-label" ng-show="model.type == 'AddJIRAComment'">Add JIRA Comment</label>
 				</td>
 				<td ng-show="rowOpts.rowEnabled">
 					<table class="display-table spaced">
@@ -31,7 +32,8 @@
 						<tr>
 							<td width="100">Text:</td>
 							<td>
-								<textarea class="form-control" dp-redactor style="height: 100px;" ng-model="model.text"></textarea>
+								<textarea class="form-control" dp-redactor style="height: 100px;" ng-model="model.text" ng-if="model.type != 'AddJIRAComment'""></textarea>
+                                <textarea class="form-control" style="height: 100px;" ng-model="model.text" ng-if="model.type == 'AddJIRAComment'""></textarea>
 							</td>
 						</tr>
 					</table>

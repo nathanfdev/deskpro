@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340701954 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("My Upgrade Class");
-		$this->execMutateSql("ALTER TABLE tickets_messages ADD show_full_hint TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("My Upgrade Class");
+        $this->execMutateSql("ALTER TABLE tickets_messages ADD show_full_hint TINYINT(1) NOT NULL");
+    }
 }

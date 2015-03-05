@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-use Application\DeskPRO\App;
 
 /**
  * Similar to Content except this just takes a template name and renders it.
@@ -43,29 +42,29 @@ use Application\DeskPRO\App;
  */
 class OmniSearch extends PortalItemAbstract
 {
-	public function getHtml()
-	{
-		$query = '';
-		if ($this->container->has('request')) {
-			$request = $this->container->get('request');
-			if ($request->attributes->get('_controller') == 'Application\UserBundle\Controller\SearchController::searchAction') {
-				$query = $request->query->get('query', '');
-			}
-		}
+    public function getHtml()
+    {
+        $query = '';
+        if ($this->container->has('request')) {
+            $request = $this->container->get('request');
+            if ($request->attributes->get('_controller') == 'Application\UserBundle\Controller\SearchController::searchAction') {
+                $query = $request->query->get('query', '');
+            }
+        }
 
-		$html = $this->renderView('UserBundle:Portal:omnisearch-topsection.html.twig', array(
-			'section' => $this->section,
-			'options' => $this->options,
-			'query'   => $query
-		));
+        $html = $this->renderView('UserBundle:Portal:omnisearch-topsection.html.twig', array(
+            'section' => $this->section,
+            'options' => $this->options,
+            'query'   => $query
+        ));
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function getJsAssets()
-	{
-		return array(
-			'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js'
-		);
-	}
+    public function getJsAssets()
+    {
+        return array(
+            'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js'
+        );
+    }
 }

@@ -1,152 +1,89 @@
-define(['DeskPRO/Util/Strings'], function(Strings) {
-	return ['$scope', 'Api', '$q', '$modal', function($scope, Api, $q, $modal) {
-		var touched = {},
-			validateFn = [];
+define(function () {
+  return ['$scope', 'Api', '$q', '$modal', function ($scope, Api, $q, $modal) {
 
-		$scope.enableCustomFooter();
-		$scope.has_errors = false;
-		$scope.errors = {};
+    $scope.enableCustomFooter();
 
-		// do a bg check for curl support
-		Api.sendGet('/apps/packages/deskpro_jira/check-requirements').then(function(res) {
-			if (!res.data.curl_support) {
-				$scope.no_curl_support = true;
-			}
-		});
+    $scope.pack.settings_def = $scope.pack.settings_def || [];
+    $scope.definitions = {}
+    for (var i = 0; i < $scope.pack.settings_def.length; i++) {
+      var def = $scope.pack.settings_def[i];
+      $scope.definitions[def.name] = def;
 
-		//##############################################################################################################
-		//# Form validation / errors
-		//##############################################################################################################
+      if (def.default && !$scope.setting_values[def.name]) {
+        $scope.setting_values[def.name] = def.default;
+      }
+    }
 
-		['jira_url', 'jira_username', 'jira_password'].forEach(function(field) {
-			$scope.$watch('setting_values.' + field, function() {
-				if (touched[field] || touched.always || $scope.errors[field]) {
-					updateFormErrors();
-				}
-			});
+    var updateMeta = function () {
+      var data = $scope.meta_defaults || {};
+      $scope.loading_meta = true;
+      $scope.error = null;
+      $scope.meta_defaults = {};
+      $scope.Ctrl.startSpinner('saving_settings');
 
-			validateFn.push([field, function() {
-				return ($scope.setting_values[field] && Strings.trim($scope.setting_values[field]));
-			}]);
-		});
+      return Api.sendPostJson('/apps/packages/deskpro_jira/get-meta', data).then(
+        function (res) {
+          $scope.loading_meta = false;
+          $scope.Ctrl.stopSpinner('saving_settings');
+          $scope.error = res.data.error;
 
-		function updateFormErrors() {
-			$scope.has_errors = false;
-			$scope.errors = {};
+          if (!$scope.error) {
+            $scope.meta = res.data;
 
-			validateFn.forEach(function(val) {
-				if (!val[1]()) {
-					$scope.has_errors = true;
-					$scope.errors[val[0]] = true;
-				}
-			});
+            $scope.meta_defaults = {
+              default_fields_list: $scope.meta.default_fields_list,
+              default_fields_summary: $scope.meta.default_fields_summary,
+              default_project: $scope.meta.default_project,
+              default_issuetype: $scope.meta.default_issuetype
+            };
+          }
+        },
+        function (res) {
+          $scope.loading_meta = false;
+          $scope.error = res.data.error;
+          $scope.Ctrl.stopSpinner('saving_settings');
+        }
+      );
+    };
 
-			return $scope.has_errors;
-		};
+    $scope.getAccessToken = function () {
+      var backUrl = window.location.href;
+      window.location.href = '/admin/jira/request_token?back_url=' + encodeURIComponent(backUrl);
+    };
 
-		$scope.setPresaveCallback(function() {
-			var deferred = $q.defer();
-			updateFormErrors();
+    $scope.setPresaveCallback(function () {
+      var deferred = $q.defer();
 
-			if ($scope.has_errors) {
-				deferred.reject();
-			} else {
-				// sanitize url
-				var a = document.createElement('a');
-				a.href = $scope.setting_values.jira_url;
-				$scope.setting_values.jira_url = a.href;
+      //sanitize url
+      var a = document.createElement('a');
+      a.href = $scope.setting_values.url;
+      $scope.setting_values.url = a.href;
 
-				deferred.resolve();
-			}
+      deferred.resolve();
 
-			return deferred.promise;
-		});
+      return deferred.promise;
+    });
 
+    $scope.saveSettings = function () {
+      $scope.error = null;
+      $scope.Ctrl.saveSettings().then(
+        function () {
+          updateMeta();
+        },
+        function () {
+          updateMeta();
+        }
+      );
+    };
 
+    $scope.toggleField = function (field, isSummary) {
+      var arr = $scope.meta_defaults['default_fields_' + (isSummary ? 'summary' : 'list')];
+      var idx = arr.indexOf(field.id);
+      idx > -1
+        ? arr.splice(idx, 1)
+        : arr.push(field.id);
+    };
 
-
-
-
-
-
-		//##############################################################################################################
-		//# Test modal
-		//##############################################################################################################
-
-		function runTest() {
-			var deferred, postData;
-
-			postData = {
-				jira_url: Strings.trim($scope.setting_values.jira_url || ''),
-				jira_username: Strings.trim($scope.setting_values.jira_username || ''),
-				jira_password: Strings.trim($scope.setting_values.jira_password || '')
-			};
-
-			deferred = $q.defer();
-
-			Api.sendPostJson('/apps/packages/deskpro_jira/test-settings', postData).then(function(res) {
-				deferred.resolve({
-					log: res.data.log || '',
-					error: res.data.error || false,
-					error_code: res.data.error_code || false
-				});
-			}, function(res) {
-				deferred.resolve({
-					log: res.data.log || 'A server error occurred. Check the PHP error logs for more information. You should contact support@deskpro.com.',
-					error: res.data.error || 'There was a problem on the server that prevented the test from returning normally.',
-					error_code: res.data.error_code || 500
-				});
-			});
-
-			return deferred.promise;
-		};
-
-		$scope.openTestModal = function(existing_results) {
-			if (updateFormErrors()) {
-				return;
-			}
-
-			var inst = $modal.open({
-				templateUrl: 'deskpro_jira/Install/test-settings-modal.html',
-				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-
-					function setResults(results) {
-						$scope.loading     = false;
-						$scope.has_results = true;
-						$scope.log         = results.log;
-						$scope.error       = results.error || false;
-						$scope.error_code  = results.error_code;
-					};
-
-					$scope.test = {
-						username: '',
-						password: ''
-					};
-
-					$scope.resetTest = function() {
-						$scope.show_log    = false;
-						$scope.loading     = false;
-						$scope.has_results = false;
-						$scope.log         = null;
-						$scope.error       = null;
-						$scope.error_code  = null;
-					};
-
-					$scope.dismiss = function() { $modalInstance.dismiss(); }
-					$scope.doTest = function() {
-						$scope.loading = true;
-						runTest().then(function(results) {
-							setResults(results);
-						});
-					};
-
-					if (existing_results) {
-						setResults(existing_results);
-					}
-				}]
-			});
-
-			return inst;
-		};
-	}];
+    updateMeta();
+  }];
 });

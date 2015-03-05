@@ -36,57 +36,47 @@ namespace Application\AdminInterfaceBundle\Controller;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity\ApiToken;
 use DeskPRO\Kernel\License;
-use Orb\Util\Strings;
 
 class IndexController extends AbstractController
 {
-	public function interfaceAction()
-	{
-		$token = new ApiToken();
-		$token->scope = ApiToken::SCOPE_SESSION;
-		$token->person = $this->person;
-		$token->date_expires = new \DateTime("+1 hour");
+    public function interfaceAction()
+    {
+        $token = new ApiToken();
+        $token->scope = ApiToken::SCOPE_SESSION;
+        $token->person = $this->person;
+        $token->date_expires = new \DateTime("+1 hour");
 
-		$this->em->persist($token);
-		$this->em->flush();
+        $this->em->persist($token);
+        $this->em->flush();
 
-		// Default help states
-		$help_states = $this->db->fetchAllKeyValue("
-			SELECT name, value_str
-			FROM people_prefs
-			WHERE name LIKE 'inhelp.%'
-		");
+        // Default help states
+        $help_states = $this->db->fetchAllKeyValue("
+            SELECT name, value_str
+            FROM people_prefs
+            WHERE name LIKE 'inhelp.%'
+        ");
 
-		$inhelp_states = array();
-		foreach ($help_states as $k => $v) {
-			$k = preg_replace('#^inhelp\.#', '', $k);
-			$inhelp_states[$k] = $v;
-		}
+        $inhelp_states = array();
+        foreach ($help_states as $k => $v) {
+            $k = preg_replace('#^inhelp\.#', '', $k);
+            $inhelp_states[$k] = $v;
+        }
 
-		$rjs_apps = new AppsRequireJsConfigGenerator(
-			$this->container->getAppManager(),
-			$this->generateUrl('serve_file_root') . '/apps'
-		);
-		$rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
+        $rjs_apps = new AppsRequireJsConfigGenerator(
+            $this->container->getAppManager(),
+            $this->generateUrl('serve_file_root') . '/apps',
+            false
+        );
+        $rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
 
-		$this->getContainer()->getJobQueue()->add(
-			'outgoing_facebook_feed', array(
-				'message' => 'TESTING!!!!',
-				'app_id' => '1496820407237522',
-				'app_secret' => 'e32e0405c5fb777c4b2ce33822b36801',
-				'page_token' => 'CAAVRWaiqe5IBALFeZC8FLocRdamEsyJ84zu5pR1XYYeZCSL5PymeYtegXMThoXyfXr0BscPCglEk4HTHnNVc0PQdjooHGZBB1WzEIk5G98ZBLmNt5vOTpyWwzpz7rE5ISfd97Wg7GF7j0xAZA45HCwqJs7qH93XoCanT3UXhspc1u9vZC9ZAqup3KFEW9n8JIQZD',
-				'replying_to_id' => '570380816395197_574655099301102'
-			)
-		);
-
-		return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
-			'api_token'             => $token,
-			'session'               => $this->session->getEntity(),
-			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-			'inhelp_states'         => $inhelp_states,
-			'rjs_apps_config'       => $rjs_apps_config,
-			'redirect_license'      => defined('DP_BILLING_ERROR'),
-			'license_server'        => rtrim(License::getSecureLicServer(), '/'),
-		));
-	}
+        return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
+            'api_token'             => $token,
+            'session'               => $this->session->getEntity(),
+            'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
+            'inhelp_states'         => $inhelp_states,
+            'rjs_apps_config'       => $rjs_apps_config,
+            'redirect_license'      => defined('DP_BILLING_ERROR'),
+            'license_server'        => rtrim(License::getSecureLicServer(), '/'),
+        ));
+    }
 }

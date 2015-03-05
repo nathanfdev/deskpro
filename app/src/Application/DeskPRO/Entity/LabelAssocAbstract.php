@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 
 /**
  * Base labels associations class
@@ -42,31 +41,40 @@ use Application\DeskPRO\App;
  */
 abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The 'type' of label this is for, as it could be found in the
-	 * LabelDef.
-	 */
-	const LABEL_TYPENAME = 'OVERRIDE';
+    /**
+     * The 'type' of label this is for, as it could be found in the
+     * LabelDef.
+     */
+    const LABEL_TYPENAME = 'OVERRIDE';
 
-	/**
-	 * @var string
-	 */
-	protected $label;
-
-
-	/**
-	 * @param string $label
-	 */
-	public function setLabel($label)
-	{
-		$label = trim(strtolower($label));
-		$label = str_replace(',', '', $label);
-		$this->label = $label;
-	}
+    /**
+     * @var string
+     */
+    protected $label;
 
 
-	public function __toString()
-	{
-		return $this->label;
-	}
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $label = trim($label);
+        $label = str_replace(',', '', $label);
+        $this->label = $label;
+    }
+
+    /**
+     * Returns label name
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function __toString()
+    {
+        return $this->label;
+    }
 }

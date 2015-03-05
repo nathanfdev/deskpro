@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LogRoundRobin;
 use Application\DeskPRO\Entity\Person;
@@ -50,138 +49,139 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/** @var RoundRobinHandler */
-	protected $logHandler;
+    /** @var RoundRobinHandler */
+    protected $logHandler;
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function setContainer(DeskproContainer $container)
-	{
-		parent::setContainer($container);
-		$this->logHandler = new RoundRobinHandler($container->getEm());
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function setContainer(DeskproContainer $container)
+    {
+        parent::setContainer($container);
+        $this->logHandler = new RoundRobinHandler($container->getEm());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('id');
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\RoundRobin
-	 */
-	protected function getRep()
-	{
-		return $this->getContainer()->getEm()->getRepository('DeskPRO:RoundRobin');
-	}
+        return $options;
+    }
 
-	protected function getRoundRobin($id)
-	{
-		return $this->getRep()->find($id);
-	}
+    /**
+     * @return \Application\DeskPRO\EntityRepository\RoundRobin
+     */
+    protected function getRep()
+    {
+        return $this->getContainer()->getEm()->getRepository('DeskPRO:RoundRobin');
+    }
 
-	protected function resolve()
-	{
+    protected function getRoundRobin($id)
+    {
+        return $this->getRep()->find($id);
+    }
 
-	}
+    protected function resolve()
+    {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getLogger()->pushHandler($this->logHandler);
+    }
 
-		try {
-			$id = $this->getActionOption('id');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getLogger()->pushHandler($this->logHandler);
 
-			if (!$rr = $this->getRoundRobin($id)) {
-				throw new \InvalidArgumentException(sprintf('No Round Robin found with id %d', $id));
-			}
+        try {
+            $id = $this->getActionOption('id');
 
-			if (!$agent = $this->getRep()->getNextAgent($rr)) {
-				throw new \RuntimeException('Unable to assign agent');
-			}
+            if (!$rr = $this->getRoundRobin($id)) {
+                throw new \InvalidArgumentException(sprintf('No Round Robin found with id %d', $id));
+            }
 
-			$this->getRep()->updateNextAgent($rr);
-			$ticket->agent = $agent;
+            if (!$agent = $this->getRep()->getNextAgent($rr)) {
+                throw new \RuntimeException('Unable to assign agent');
+            }
 
-			$triggerId = (int) $context->getVars()->get('trigger_id', 0);
-			$entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
-			$context->getLogger()->info($entry);
+            $this->getRep()->updateNextAgent($rr);
+            $ticket->agent = $agent;
 
-		} catch (\RuntimeException $e) {
-			// todo log error
-		} catch (\InvalidArgumentException $e) {
-			// todo log error
-		}
+            $triggerId = (int) $context->getVars()->get('trigger_id', 0);
+            $entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
+            $context->getLogger()->info($entry);
 
-		$context->getLogger()->popHandler();
-	}
+        } catch (\RuntimeException $e) {
+            // todo log error
+        } catch (\InvalidArgumentException $e) {
+            // todo log error
+        }
 
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (! (int) $this->getContainer()->getSetting('core.round_robin.enabled')) {
-			return true;
-		}
-
-		if (! $rr = $this->getRoundRobin($this->getActionOption('id'))) {
-			return true;
-		}
-
-		if ($rr->agents->isEmpty()) {
-			return true;
-		}
-
-		return false;
-	}
+        $context->getLogger()->popHandler();
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$id = $this->getActionOption('id');
 
-		if (!$rr = $this->getRoundRobin($id)) {
-			return null;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (! (int) $this->getContainer()->getSetting('core.round_robin.enabled')) {
+            return true;
+        }
 
-		if (!$agent = $this->getRep()->getNextAgent($rr)) {
-			return null;
-		}
+        if (! $rr = $this->getRoundRobin($this->getActionOption('id'))) {
+            return true;
+        }
 
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
-			if ($agent['id'] == $person->getId()) {
-				if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-					return null;
-				}
-				return array('assign_self');
-			}
+        if ($rr->agents->isEmpty()) {
+            return true;
+        }
 
-			return array('assign_agent');
-		}
-
-		return null;
-	}
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $id = $this->getActionOption('id');
+
+        if (!$rr = $this->getRoundRobin($id)) {
+            return null;
+        }
+
+        if (!$agent = $this->getRep()->getNextAgent($rr)) {
+            return null;
+        }
+
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
+            if ($agent['id'] == $person->getId()) {
+                if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
+                    return null;
+                }
+
+                return array('assign_self');
+            }
+
+            return array('assign_agent');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

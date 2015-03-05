@@ -36,67 +36,67 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 abstract class AbstractInstallerHandler implements InstallerHandlerInterface
 {
-	/** @var array  */
-	protected $settingsDef;
+    /** @var array  */
+    protected $settingsDef;
 
-	public function __construct($settingsDef = array())
-	{
-		$this->settingsDef = $settingsDef;
-	}
+    public function __construct($settingsDef = array())
+    {
+        $this->settingsDef = $settingsDef;
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @param array $settings
-	 * @return array
-	 */
-	public function processSettings(InstallerContext $context, array $settings)
-	{
-		return $settings;
-	}
+    /**
+     * @param  InstallerContext $context
+     * @param  array            $settings
+     * @return array
+     */
+    public function processSettings(InstallerContext $context, array $settings)
+    {
+        return $settings;
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @param array $settings
-	 * @return array
-	 */
-	public function validateSettings(InstallerContext $context, array $settings)
-	{
-		return $settings;
-	}
+    /**
+     * @param  InstallerContext $context
+     * @param  array            $settings
+     * @return array
+     */
+    public function validateSettings(InstallerContext $context, array $settings)
+    {
+        return $settings;
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function install(InstallerContext $context)
-	{
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function install(InstallerContext $context)
+    {
 
-	}
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function uninstall(InstallerContext $context)
-	{
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function uninstall(InstallerContext $context)
+    {
 
-	}
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function updateSettings(InstallerContext $context)
+    {
 
-	}
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function updatePackage(InstallerContext $context)
+    {
 
-	}
+    }
 }

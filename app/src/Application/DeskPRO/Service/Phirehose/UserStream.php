@@ -39,176 +39,176 @@ namespace Application\DeskPRO\Service\Phirehose;
  */
 class UserStream extends \UserstreamPhirehose
 {
-	const URL_BASE         = 'https://userstream.twitter.com/1.1/';
+    const URL_BASE         = 'https://userstream.twitter.com/1.1/';
 
-	/**
-	 * @var array
-	 */
-	protected $account;
+    /**
+     * @var array
+     */
+    protected $account;
 
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	protected $connection;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $connection;
 
-	/**
-	 * @var \Closure|null
-	 */
-	protected $write_callback;
+    /**
+     * @var \Closure|null
+     */
+    protected $write_callback;
 
-	/**
-	 * @var \Closure
-	 */
-	protected $callback;
+    /**
+     * @var \Closure
+     */
+    protected $callback;
 
-	/**
-	 * @var array
-	 */
-	protected $log = array();
+    /**
+     * @var array
+     */
+    protected $log = array();
 
-	/**
-	 * Suppress Phirehose @error_log output.
-	 *
-	 * @param string $message
-	 * @return void
-	 */
-	protected function log($message)
-	{
-		$this->log[] = $message;
-	}
+    /**
+     * Suppress Phirehose @error_log output.
+     *
+     * @param  string $message
+     * @return void
+     */
+    protected function log($message)
+    {
+        $this->log[] = $message;
+    }
 
-	/**
-	 * @return \Doctrine\DBAL\Connection
-	 */
-	public function getConnection()
-	{
-		return $this->connection;
-	}
+    /**
+     * @return \Doctrine\DBAL\Connection
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
 
-	/**
-	 * @param \Doctrine\DBAL\Connection
-	 * @return void
-	 */
-	public function setConnection(\Doctrine\DBAL\Connection $connection = null)
-	{
-		$this->connection = $connection;
-	}
+    /**
+     * @param \Doctrine\DBAL\Connection
+     * @return void
+     */
+    public function setConnection(\Doctrine\DBAL\Connection $connection = null)
+    {
+        $this->connection = $connection;
+    }
 
-	/**
-	 * @param \Closure|null $callback
-	 */
-	public function setWriteCallback(\Closure $callback = null)
-	{
-		$this->write_callback = $callback;
-	}
+    /**
+     * @param \Closure|null $callback
+     */
+    public function setWriteCallback(\Closure $callback = null)
+    {
+        $this->write_callback = $callback;
+    }
 
-	/**
-	 * @return \Closure|null
-	 */
-	public function getWriteCallback()
-	{
-		return $this->write_callback;
-	}
+    /**
+     * @return \Closure|null
+     */
+    public function getWriteCallback()
+    {
+        return $this->write_callback;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getAccount()
-	{
-		return $this->account;
-	}
+    /**
+     * @return array
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
 
-	/**
-	 * @param array $account
-	 * @return void
-	 */
-	public function setAccount(array $account)
-	{
-		$this->account = $account;
-	}
+    /**
+     * @param  array $account
+     * @return void
+     */
+    public function setAccount(array $account)
+    {
+        $this->account = $account;
+    }
 
-	/**
-	 * @return \Closure|null
-	 */
-	public function getCallback()
-	{
-		return $this->callback;
-	}
+    /**
+     * @return \Closure|null
+     */
+    public function getCallback()
+    {
+        return $this->callback;
+    }
 
-	/**
-	 * @param \Closure|null $callback
-	 */
-	public function setCallback(\Closure $callback = null)
-	{
-		$this->callback = $callback;
-	}
+    /**
+     * @param \Closure|null $callback
+     */
+    public function setCallback(\Closure $callback = null)
+    {
+        $this->callback = $callback;
+    }
 
-	/**
-	 * Process raw streaming data.
-	 *
-	 * @param string $status
-	 * @return void
-	 */
-	public function enqueueStatus($status)
-	{
-		try {
-			if ($this->callback) {
-				$callback = $this->callback;
-				$status = $callback($status, $this);
-			}
+    /**
+     * Process raw streaming data.
+     *
+     * @param  string $status
+     * @return void
+     */
+    public function enqueueStatus($status)
+    {
+        try {
+            if ($this->callback) {
+                $callback = $this->callback;
+                $status = $callback($status, $this);
+            }
 
-			// skip "ping -> pong"
-			if (null === $status || !strlen(trim($status))) {
-				return false;
-			}
+            // skip "ping -> pong"
+            if (null === $status || !strlen(trim($status))) {
+                return false;
+            }
 
-			$status = trim($status);
+            $status = trim($status);
 
-			// decode json
-			$status = json_decode($status);
-			$event = 'unknown';
+            // decode json
+            $status = json_decode($status);
+            $event = 'unknown';
 
-			// check if status is a tweet
-			if (isset($status->text)) {
-				$event = 'status';
-			}
+            // check if status is a tweet
+            if (isset($status->text)) {
+                $event = 'status';
+            }
 
-			// check direct message
-			if (isset($status->direct_message)) {
-				$event = 'message';
-			}
+            // check direct message
+            if (isset($status->direct_message)) {
+                $event = 'message';
+            }
 
-			// check event
-			if (isset($status->event)) {
-				$event = 'event';
-			}
+            // check event
+            if (isset($status->event)) {
+                $event = 'event';
+            }
 
-			// check friend list
-			if (isset($status->friends)) {
-				$event = 'friends';
-			}
+            // check friend list
+            if (isset($status->friends)) {
+                $event = 'friends';
+            }
 
-			if (isset($status->delete)) {
-				$event = 'delete';
-			}
+            if (isset($status->delete)) {
+                $event = 'delete';
+            }
 
-			$data = array(
-				'account_id' => $this->account['id'],
-				'event' => $event,
-				'data' => serialize($status),
-				'date_created' => gmdate('Y-m-d H:i:s')
-			);
+            $data = array(
+                'account_id' => $this->account['id'],
+                'event' => $event,
+                'data' => serialize($status),
+                'date_created' => gmdate('Y-m-d H:i:s')
+            );
 
-			if ($this->write_callback) {
-				$callback = $this->write_callback;
-				$callback($data);
-			} else if ($this->connection) {
-				$this->connection->insert('twitter_stream', $data);
-			} else {
-				throw new \Exception("No connection or write callback - can't process");
-			}
-		} catch (\Exception $e) {
-			\DeskPRO\Kernel\KernelErrorHandler::handleException($e, false);
-		}
-	}
+            if ($this->write_callback) {
+                $callback = $this->write_callback;
+                $callback($data);
+            } elseif ($this->connection) {
+                $this->connection->insert('twitter_stream', $data);
+            } else {
+                throw new \Exception("No connection or write callback - can't process");
+            }
+        } catch (\Exception $e) {
+            \DeskPRO\Kernel\KernelErrorHandler::handleException($e, false);
+        }
+    }
 }

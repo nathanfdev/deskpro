@@ -36,15 +36,15 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1341491480 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Changes to languages");
-		$this->execMutateSql("ALTER TABLE languages ADD has_user TINYINT(1) NOT NULL, ADD has_agent TINYINT(1) NOT NULL, ADD has_admin TINYINT(1) NOT NULL");
+    public function run()
+    {
+        $this->out("Changes to languages");
+        $this->execMutateSql("ALTER TABLE languages ADD has_user TINYINT(1) NOT NULL, ADD has_agent TINYINT(1) NOT NULL, ADD has_admin TINYINT(1) NOT NULL");
 
-		$this->execMutateSql("
-			UPDATE languages
-			SET sys_name = 'default', base_filepath = '%DP_ROOT%/languages/default', has_user = 1, has_agent = 1, has_admin = 1
-			WHERE id = 1
-		");
-	}
+        $this->execMutateSql("
+            UPDATE languages
+            SET sys_name = 'default', base_filepath = '%DP_ROOT%/languages/default', has_user = 1, has_agent = 1, has_admin = 1
+            WHERE id = 1
+        ");
+    }
 }

@@ -40,87 +40,89 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:db-collation-change');
-		$this->addOption('collation', null, InputOption::VALUE_REQUIRED, 'The collation to change to (must be UTF-8)');
-	}
+    protected function configure()
+    {
+        $this->setName('dp:db-collation-change');
+        $this->addOption('collation', null, InputOption::VALUE_REQUIRED, 'The collation to change to (must be UTF-8)');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$collation = $input->getOption('collation');
-		if (!$collation || !preg_match('/^utf8_([a-z0-9_]+)_ci$/', $collation)) {
-			$output->writeln("No --collation argument given or not a utf8_xxx_ci type.");
-			return 1;
-		}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $collation = $input->getOption('collation');
+        if (!$collation || !preg_match('/^utf8_([a-z0-9_]+)_ci$/', $collation)) {
+            $output->writeln("No --collation argument given or not a utf8_xxx_ci type.");
 
-		$start = microtime(true);
-		$db = App::getDb();
+            return 1;
+        }
 
-		set_time_limit(0);
+        $start = microtime(true);
+        $db = App::getDb();
 
-		if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
-			@unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
-		}
-		$write_status = function($table, $type = 'table') use ($collation) {
-			$fp = @fopen(dp_get_tmp_dir() . '/db-collation-status.txt', 'w');
-			if (!$fp) {
-				return false;
-			}
+        set_time_limit(0);
 
-			$time = time();
-			if (!@fwrite($fp, "[$time|$collation]$type:$table")) {
-				return false;
-			}
-			@fclose($fp);
+        if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
+            @unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+        }
+        $write_status = function ($table, $type = 'table') use ($collation) {
+            $fp = @fopen(dp_get_tmp_dir() . '/db-collation-status.txt', 'w');
+            if (!$fp) {
+                return false;
+            }
 
-			return true;
-		};
+            $time = time();
+            if (!@fwrite($fp, "[$time|$collation]$type:$table")) {
+                return false;
+            }
+            @fclose($fp);
 
-		if (!$write_status('')) {
-			$output->writeln("Couldn't write to status file.");
-			return 2;
-		}
-		@chmod(dp_get_tmp_dir() . '/db-collation-status.txt', 0777);
+            return true;
+        };
 
-		$db->executeQuery('SET foreign_key_checks = 0');
+        if (!$write_status('')) {
+            $output->writeln("Couldn't write to status file.");
 
-		$tables = $db->fetchAll('SHOW TABLE STATUS');
-		foreach ($tables AS $table) {
-			echo str_pad("Updating $table[Name]...", 50) . "\r";
-			$write_status($table['Name']);
+            return 2;
+        }
+        @chmod(dp_get_tmp_dir() . '/db-collation-status.txt', 0777);
 
-			$changes = array();
-			if ($table['Collation'] != $collation) {
-				$changes[] = "DEFAULT CHARACTER SET utf8 COLLATE $collation";
-			}
+        $db->executeQuery('SET foreign_key_checks = 0');
 
-			$columns = $db->fetchAll("SHOW FULL COLUMNS FROM `$table[Name]`");
-			foreach ($columns AS $column) {
-				if (!empty($column['Collation']) && $column['Collation'] != $collation) {
-					$def = "$column[Type] "
-						. " CHARACTER SET utf8 COLLATE $collation "
-						. ($column['Null'] == 'NO' ? ' NOT NULL ' : ' NULL ')
-						. ($column['Default'] !== null ? ' DEFAULT ' . $db->quote($column['Default']) : '')
-						. ($column['Extra'] ? " $column[Extra] " : '')
-						. ($column['Comment'] ? ' COMMENT ' . $db->quote($column['Comment']) : '');
-					$changes[] = "CHANGE  `$column[Field]` `$column[Field]` $def";
-				}
-			}
+        $tables = $db->fetchAll('SHOW TABLE STATUS');
+        foreach ($tables AS $table) {
+            echo str_pad("Updating $table[Name]...", 50) . "\r";
+            $write_status($table['Name']);
 
-			if ($changes) {
-				$db->executequery("
-					ALTER TABLE `$table[Name]` " . implode(', ', $changes)
-				);
-			}
-		}
+            $changes = array();
+            if ($table['Collation'] != $collation) {
+                $changes[] = "DEFAULT CHARACTER SET utf8 COLLATE $collation";
+            }
 
-		$db->executeQuery('SET foreign_key_checks = 1');
+            $columns = $db->fetchAll("SHOW FULL COLUMNS FROM `$table[Name]`");
+            foreach ($columns AS $column) {
+                if (!empty($column['Collation']) && $column['Collation'] != $collation) {
+                    $def = "$column[Type] "
+                        . " CHARACTER SET utf8 COLLATE $collation "
+                        . ($column['Null'] == 'NO' ? ' NOT NULL ' : ' NULL ')
+                        . ($column['Default'] !== null ? ' DEFAULT ' . $db->quote($column['Default']) : '')
+                        . ($column['Extra'] ? " $column[Extra] " : '')
+                        . ($column['Comment'] ? ' COMMENT ' . $db->quote($column['Comment']) : '');
+                    $changes[] = "CHANGE  `$column[Field]` `$column[Field]` $def";
+                }
+            }
 
-		App::getContainer()->getSettingsHandler()->setSetting('core.db_collation', $collation);
-		@unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+            if ($changes) {
+                $db->executequery("
+                    ALTER TABLE `$table[Name]` " . implode(', ', $changes)
+                );
+            }
+        }
 
-		echo str_pad("", 50) . "\r";
-		$output->writeln(sprintf("Completed in %.4f seconds.", microtime(true) - $start));
-	}
+        $db->executeQuery('SET foreign_key_checks = 1');
+
+        App::getContainer()->getSettingsHandler()->setSetting('core.db_collation', $collation);
+        @unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+
+        echo str_pad("", 50) . "\r";
+        $output->writeln(sprintf("Completed in %.4f seconds.", microtime(true) - $start));
+    }
 }

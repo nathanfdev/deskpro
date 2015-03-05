@@ -39,34 +39,35 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevCheckReservedWordsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dpdev:check-reserved-words');
-	}
+    protected function configure()
+    {
+        $this->setName('dpdev:check-reserved-words');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		if (!dp_get_config('debug.dev')) {
-			$output->write("Dev mode is not enabled");
-			return 0;
-		}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!dp_get_config('debug.dev')) {
+            $output->write("Dev mode is not enabled");
 
-		echo "Checking database tables for fields named after reserved words ... ";
+            return 0;
+        }
 
-		$time_start = microtime(true);
-		$reserved_check = new \Application\DeskPRO\DBAL\ReservedWords(App::getDb()->getSchemaManager());
-		$bad = $reserved_check->getBadTables();
-		$time_end = microtime(true);
+        echo "Checking database tables for fields named after reserved words ... ";
 
-		echo sprintf("Done (%.4fs)\n", $time_end-$time_start);
+        $time_start = microtime(true);
+        $reserved_check = new \Application\DeskPRO\DBAL\ReservedWords(App::getDb()->getSchemaManager());
+        $bad = $reserved_check->getBadTables();
+        $time_end = microtime(true);
 
-		if ($bad) {
-			$output->writeln(sprintf("<error>There are %d tables using reserved words</error>", count($bad)));
-			foreach ($bad as $table => $c) {
-				echo "$table: " . implode(', ', $c) . "\n";
-			}
-		} else {
-			$output->writeln(sprintf("<info>All tables check out fine</info>"));
-		}
-	}
+        echo sprintf("Done (%.4fs)\n", $time_end-$time_start);
+
+        if ($bad) {
+            $output->writeln(sprintf("<error>There are %d tables using reserved words</error>", count($bad)));
+            foreach ($bad as $table => $c) {
+                echo "$table: " . implode(', ', $c) . "\n";
+            }
+        } else {
+            $output->writeln(sprintf("<info>All tables check out fine</info>"));
+        }
+    }
 }

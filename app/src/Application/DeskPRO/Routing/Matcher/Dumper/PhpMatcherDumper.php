@@ -17,34 +17,36 @@ class PhpMatcherDumper extends BasePhpMatcherDumper
 {
     public function dump(array $options = array())
     {
-		$options['base_class'] = 'Symfony\\Bundle\\FrameworkBundle\\Routing\\RedirectableUrlMatcher';
+        $options['base_class'] = 'Symfony\\Bundle\\FrameworkBundle\\Routing\\RedirectableUrlMatcher';
 
-		$dump = parent::dump($options);
-		$dump = str_replace("public function match(\$pathinfo)", "protected function doMatch(\$pathinfo)", $dump);
+        $dump = parent::dump($options);
+        $dump = str_replace("public function match(\$pathinfo)", "protected function doMatch(\$pathinfo)", $dump);
 
-		$add_match = <<<EOF
+        $add_match = <<<EOF
 public function match(\$pathinfo)
-	{
-		try {
-			return \$this->doMatch(\$pathinfo);
-		} catch (ResourceNotFoundException \$e) {
-			// Try without trailing
-			if (substr(\$pathinfo, -1) == '/') {
-				\$pathinfo = rtrim(\$pathinfo, '/');
-				\$match = \$this->doMatch(\$pathinfo);
-				return \$this->redirect(\$pathinfo, \$match['_route']);
-			// Try with trailing slash
-			} else {
-				\$pathinfo = \$pathinfo . '/';
-				\$match = \$this->doMatch(\$pathinfo);
-				return \$this->redirect(\$pathinfo, \$match['_route']);
-			}
-		}
-	}
+    {
+        try {
+            return \$this->doMatch(\$pathinfo);
+        } catch (ResourceNotFoundException \$e) {
+            // Try without trailing
+            if (substr(\$pathinfo, -1) == '/') {
+                \$pathinfo = rtrim(\$pathinfo, '/');
+                \$match = \$this->doMatch(\$pathinfo);
+
+                return \$this->redirect(\$pathinfo, \$match['_route']);
+            // Try with trailing slash
+            } else {
+                \$pathinfo = \$pathinfo . '/';
+                \$match = \$this->doMatch(\$pathinfo);
+
+                return \$this->redirect(\$pathinfo, \$match['_route']);
+            }
+        }
+    }
 EOF;
 
-		$dump = str_replace("protected function doMatch(", "$add_match\n\n\tprotected function doMatch(", $dump);
+        $dump = str_replace("protected function doMatch(", "$add_match\n\n\tprotected function doMatch(", $dump);
 
-		return $dump;
+        return $dump;
     }
 }

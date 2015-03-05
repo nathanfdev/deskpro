@@ -40,33 +40,31 @@ namespace Application\DeskPRO\Templating\Templates;
  */
 class TemplateCode
 {
-	/** @var string */
-	private $code;
+    /** @var string */
+    private $code;
 
-	public function __construct($code = null)
-	{
-		$this->code = '';
+    public function __construct($code = null)
+    {
+        $this->code = '';
 
-		if ($code) {
-			$this->setCode($code);
-		}
-	}
+        if ($code) {
+            $this->setCode($code);
+        }
+    }
 
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCode()
-	{
-		return $this->code;
-	}
-
-
-	/**
-	 * @param $code
-	 */
-	public function setCode($code)
-	{
-		$this->code = trim($code);
-	}
+    /**
+     * @param $code
+     */
+    public function setCode($code)
+    {
+        $this->code = trim($code);
+    }
 }

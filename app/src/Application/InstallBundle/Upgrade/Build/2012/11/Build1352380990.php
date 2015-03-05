@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352380990 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add support for Twitter feeds on the portal sidebar");
-		$this->execMutateSql("
-			INSERT INTO `portal_page_display` (`type`, `display_order`, `is_enabled`, `section`, `data`)
-			VALUES ('twitter', 70, 0, 'sidebar', 0x613a303a7b7d)
-		");
-	}
+    public function run()
+    {
+        $this->out("Add support for Twitter feeds on the portal sidebar");
+        $this->execMutateSql("
+            INSERT INTO `portal_page_display` (`type`, `display_order`, `is_enabled`, `section`, `data`)
+            VALUES ('twitter', 70, 0, 'sidebar', 0x613a303a7b7d)
+        ");
+    }
 }

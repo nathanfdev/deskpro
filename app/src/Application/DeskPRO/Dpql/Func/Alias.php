@@ -44,37 +44,37 @@ use Application\DeskPRO\Dpql\Statement\Display;
  */
 class Alias extends AbstractFunc
 {
-	/**
-	 * Prepares the function for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		if (count($this->_arguments) != 2) {
-			throw new Exception('ALIAS() can only accept 2 arguments');
-		}
+    /**
+     * Prepares the function for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        if (count($this->_arguments) != 2) {
+            throw new Exception('ALIAS() can only accept 2 arguments');
+        }
 
-		$childStack = $stack;
-		array_shift($childStack); // pop this off the stack - it doesn't exist to the children
+        $childStack = $stack;
+        array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-		$arg = reset($this->_arguments);
-		$format = next($this->_arguments);
-		$formatLiteral = $this->_toLiteral($format);
+        $arg = reset($this->_arguments);
+        $format = next($this->_arguments);
+        $formatLiteral = $this->_toLiteral($format);
 
-		$prepped = $arg->prepare($statement, $section, $childStack, $select, $result);
-		$prepped->setName($formatLiteral);
+        $prepped = $arg->prepare($statement, $section, $childStack, $select, $result);
+        $prepped->setName($formatLiteral);
 
-		return $prepped;
-	}
+        return $prepped;
+    }
 }

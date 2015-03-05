@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056724 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Re-fill search table");
-		$this->container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
-	}
+    public function run()
+    {
+        $this->out("Re-fill search table");
+        $this->container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+    }
 }

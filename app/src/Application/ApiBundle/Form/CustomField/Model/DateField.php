@@ -38,29 +38,29 @@ use Application\DeskPRO\App;
 
 class DateField extends CustomFieldAbstract
 {
-	/** @var string */
+    /** @var string */
     public $default_value = '';
-	/** @var string */
+    /** @var string */
     public $default_mode = 'current';
-	/** @var bool */
-	public $required = false;
-	/** @var bool */
-	public $agent_required  = false;
-	/** @var null */
-	public $date_timezone   = null;
+    /** @var bool */
+    public $required = false;
+    /** @var bool */
+    public $agent_required  = false;
+    /** @var null */
+    public $date_timezone   = null;
 
-	/** @var string|null */
-	public $date_valid_type       = null;
-	/** @var string|null */
-	public $date_valid_date1      = null;
-	/** @var string|null */
-	public $date_valid_date2      = null;
-	/** @var int|null */
-	public $date_valid_range1     = null;
-	/** @var int|null */
-	public $date_valid_range2     = null;
-	/** @var array|null */
-	public $date_valid_dow        = null;
+    /** @var string|null */
+    public $date_valid_type       = null;
+    /** @var string|null */
+    public $date_valid_date1      = null;
+    /** @var string|null */
+    public $date_valid_date2      = null;
+    /** @var int|null */
+    public $date_valid_range1     = null;
+    /** @var int|null */
+    public $date_valid_range2     = null;
+    /** @var array|null */
+    public $date_valid_dow        = null;
 
     public function init()
     {
@@ -75,35 +75,35 @@ class DateField extends CustomFieldAbstract
             $this->default_mode = 'current';
         }
 
-		if ($this->_field->getOption('required')) {
-			$this->required = true;
-		}
-		if ($this->_field->getOption('agent_required')) {
-			$this->agent_required = true;
-		}
-		if ($this->_field->getOption('agent_validation_resolve')) {
-			$this->agent_validation_resolve = true;
-		}
+        if ($this->_field->getOption('required')) {
+            $this->required = true;
+        }
+        if ($this->_field->getOption('agent_required')) {
+            $this->agent_required = true;
+        }
+        if ($this->_field->getOption('agent_validation_resolve')) {
+            $this->agent_validation_resolve = true;
+        }
 
-		if ($this->_field->getOption('date_valid_dow')) {
-			$this->date_valid_dow = $this->_field->getOption('date_valid_dow');
-		} else {
-			$this->date_valid_dow = range(0, 6);
-		}
+        if ($this->_field->getOption('date_valid_dow')) {
+            $this->date_valid_dow = $this->_field->getOption('date_valid_dow');
+        } else {
+            $this->date_valid_dow = range(0, 6);
+        }
 
-		if ($this->_field->getOption('date_valid_type')) {
-			$this->date_valid_type = $this->_field->getOption('date_valid_type');
+        if ($this->_field->getOption('date_valid_type')) {
+            $this->date_valid_type = $this->_field->getOption('date_valid_type');
 
-			if ($this->date_valid_type == 'date' && ($this->_field->getOption('date_valid_date1') || $this->_field->getOption('date_valid_date2'))) {
-				$this->date_valid_date1  = $this->_field->getOption('date_valid_date1') ?: null;
-				$this->date_valid_date2  = $this->_field->getOption('date_valid_date2') ?: null;
-			} elseif ($this->date_valid_type == 'range' && ($this->_field->getOption('date_valid_range1') || $this->_field->getOption('date_valid_range2'))) {
-				$this->date_valid_range1 = $this->_field->getOption('date_valid_range1') ?: null;
-				$this->date_valid_range2 = $this->_field->getOption('date_valid_range2') ?: null;
-			} else {
-				$this->date_valid_type = null;
-			}
-		}
+            if ($this->date_valid_type == 'date' && ($this->_field->getOption('date_valid_date1') || $this->_field->getOption('date_valid_date2'))) {
+                $this->date_valid_date1  = $this->_field->getOption('date_valid_date1') ?: null;
+                $this->date_valid_date2  = $this->_field->getOption('date_valid_date2') ?: null;
+            } elseif ($this->date_valid_type == 'range' && ($this->_field->getOption('date_valid_range1') || $this->_field->getOption('date_valid_range2'))) {
+                $this->date_valid_range1 = $this->_field->getOption('date_valid_range1') ?: null;
+                $this->date_valid_range2 = $this->_field->getOption('date_valid_range2') ?: null;
+            } else {
+                $this->date_valid_type = null;
+            }
+        }
     }
 
     protected function setFieldProperties()
@@ -112,77 +112,77 @@ class DateField extends CustomFieldAbstract
         $field->default_value = $this->default_value;
         $field->setOption('default_mode', $this->default_mode);
 
-		$field->setOption('required', (bool)$this->required);
-		$field->setOption('agent_required', (bool)$this->agent_required);
+        $field->setOption('required', (bool)$this->required);
+        $field->setOption('agent_required', (bool)$this->agent_required);
 
-		if ($this->date_valid_dow && count($this->date_valid_dow) != 7) {
-			$field->setOption('date_valid_dow', $this->date_valid_dow);
-		} else {
-			$field->setOption('date_valid_dow', null);
-		}
+        if ($this->date_valid_dow && count($this->date_valid_dow) != 7) {
+            $field->setOption('date_valid_dow', $this->date_valid_dow);
+        } else {
+            $field->setOption('date_valid_dow', null);
+        }
 
-		$field->setOption('date_valid_type', null);
-		$field->setOption('date_valid_date1', null);
-		$field->setOption('date_valid_date2', null);
-		$field->setOption('date_valid_range1', null);
-		$field->setOption('date_valid_range2', null);
+        $field->setOption('date_valid_type', null);
+        $field->setOption('date_valid_date1', null);
+        $field->setOption('date_valid_date2', null);
+        $field->setOption('date_valid_range1', null);
+        $field->setOption('date_valid_range2', null);
 
-		$this->date_valid_range1 = (int)$this->date_valid_range1;
-		$this->date_valid_range2 = (int)$this->date_valid_range2;
+        $this->date_valid_range1 = (int)$this->date_valid_range1;
+        $this->date_valid_range2 = (int)$this->date_valid_range2;
 
-		// Date range
-		if ($this->date_valid_type == 'date' && ($this->date_valid_date1 || $this->date_valid_date2)) {
-			$d1 = $d2 = null;
+        // Date range
+        if ($this->date_valid_type == 'date' && ($this->date_valid_date1 || $this->date_valid_date2)) {
+            $d1 = $d2 = null;
 
-			// Verify dates
-			if ($this->date_valid_date1) {
-				try {
-					$d1 = \DateTime::createFromFormat('Y-m-d', $this->date_valid_date1);
-					if (!$d1) {
-						$this->date_valid_date1 = null;
-					}
-				} catch (\Exception $e) { $this->date_valid_date1 = null; }
-			}
+            // Verify dates
+            if ($this->date_valid_date1) {
+                try {
+                    $d1 = \DateTime::createFromFormat('Y-m-d', $this->date_valid_date1);
+                    if (!$d1) {
+                        $this->date_valid_date1 = null;
+                    }
+                } catch (\Exception $e) { $this->date_valid_date1 = null; }
+            }
 
-			if ($this->date_valid_date2) {
-				try {
-					$d2 = \DateTime::createFromFormat('Y-m-d', $this->date_valid_date2);
-					if (!$d2) {
-						$this->date_valid_date2 = null;
-					}
-				} catch (\Exception $e) { $this->date_valid_date2 = null; }
-			}
+            if ($this->date_valid_date2) {
+                try {
+                    $d2 = \DateTime::createFromFormat('Y-m-d', $this->date_valid_date2);
+                    if (!$d2) {
+                        $this->date_valid_date2 = null;
+                    }
+                } catch (\Exception $e) { $this->date_valid_date2 = null; }
+            }
 
-			if ($this->date_valid_date1 || $this->date_valid_date2) {
+            if ($this->date_valid_date1 || $this->date_valid_date2) {
 
-				if ($this->date_valid_date1 && $this->date_valid_date2) {
-					if ($d1 > $d2) {
-						$tmp = $this->date_valid_date1;
-						$this->date_valid_date1 = $this->date_valid_date2;
-						$this->date_valid_date2 = $tmp;
-					}
-				}
+                if ($this->date_valid_date1 && $this->date_valid_date2) {
+                    if ($d1 > $d2) {
+                        $tmp = $this->date_valid_date1;
+                        $this->date_valid_date1 = $this->date_valid_date2;
+                        $this->date_valid_date2 = $tmp;
+                    }
+                }
 
-				$field->setOption('date_valid_type', 'date');
-				$field->setOption('date_valid_date1', $this->date_valid_date1);
-				$field->setOption('date_valid_date2', $this->date_valid_date2);
-			}
+                $field->setOption('date_valid_type', 'date');
+                $field->setOption('date_valid_date1', $this->date_valid_date1);
+                $field->setOption('date_valid_date2', $this->date_valid_date2);
+            }
 
-		// Day ranges
-		} elseif ($this->date_valid_type == 'range' && ($this->date_valid_range1 || $this->date_valid_range2)) {
-			if ($this->date_valid_range1 && $this->date_valid_range2) {
-				if ($this->date_valid_range1 > $this->date_valid_range2) {
-					$tmp = $this->date_valid_range1;
-					$this->date_valid_range1 = $this->date_valid_range2;
-					$this->date_valid_range2 = $tmp;
-				}
-			}
+        // Day ranges
+        } elseif ($this->date_valid_type == 'range' && ($this->date_valid_range1 || $this->date_valid_range2)) {
+            if ($this->date_valid_range1 && $this->date_valid_range2) {
+                if ($this->date_valid_range1 > $this->date_valid_range2) {
+                    $tmp = $this->date_valid_range1;
+                    $this->date_valid_range1 = $this->date_valid_range2;
+                    $this->date_valid_range2 = $tmp;
+                }
+            }
 
-			$field->setOption('date_valid_type', 'range');
-			$field->setOption('date_valid_range1', $this->date_valid_range1);
-			$field->setOption('date_valid_range2', $this->date_valid_range2);
-		}
+            $field->setOption('date_valid_type', 'range');
+            $field->setOption('date_valid_range1', $this->date_valid_range1);
+            $field->setOption('date_valid_range2', $this->date_valid_range2);
+        }
 
-		$field->setOption('date_valid_timezone', App::getCurrentPerson()->getTimezone());
+        $field->setOption('date_valid_timezone', App::getCurrentPerson()->getTimezone());
     }
 }

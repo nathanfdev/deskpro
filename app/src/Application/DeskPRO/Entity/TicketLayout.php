@@ -49,131 +49,131 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketLayout extends DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	/**
-	 * @var Department
-	 */
-	protected $department;
+    /**
+     * @var Department
+     */
+    protected $department;
 
-	/**
-	 * @var bool
-	 */
-	protected $is_enabled = true;
+    /**
+     * @var bool
+     */
+    protected $is_enabled = true;
 
-	/**
-	 * @var \Application\DeskPRO\TicketLayout\Layout
-	 */
-	protected $user_layout;
+    /**
+     * @var \Application\DeskPRO\TicketLayout\Layout
+     */
+    protected $user_layout;
 
-	/**
-	 * @var \Application\DeskPRO\TicketLayout\Layout
-	 */
-	protected $agent_layout;
+    /**
+     * @var \Application\DeskPRO\TicketLayout\Layout
+     */
+    protected $agent_layout;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_updated;
+    /**
+     * @var \DateTime
+     */
+    protected $date_updated;
 
-	public function __construct(Department $department = null)
-	{
-		$this->department   = $department;
-		$this->user_layout  = new Layout();
-		$this->agent_layout = new Layout();
-		$this->date_updated = new \DateTime();
-	}
-
-
-	/**
-	 * @throws \RuntimeException
-	 */
-	public function setDepartment(Department $dep = null)
-	{
-		if ($this->id){
-			throw new \RuntimeException("You cannot change the department once it has been set.");
-		} else {
-			$this->department = $dep;
-		}
-	}
+    public function __construct(Department $department = null)
+    {
+        $this->department   = $department;
+        $this->user_layout  = new Layout();
+        $this->agent_layout = new Layout();
+        $this->date_updated = new \DateTime();
+    }
 
 
-	/**
-	 * Enable the layout
-	 */
-	public function enable()
-	{
-		$this['is_enabled'] = true;
-	}
+    /**
+     * @throws \RuntimeException
+     */
+    public function setDepartment(Department $dep = null)
+    {
+        if ($this->id){
+            throw new \RuntimeException("You cannot change the department once it has been set.");
+        } else {
+            $this->department = $dep;
+        }
+    }
 
 
-	/**
-	 * Disable the layout
-	 */
-	public function disable()
-	{
-		$this['is_enabled'] = true;
-	}
+    /**
+     * Enable the layout
+     */
+    public function enable()
+    {
+        $this['is_enabled'] = true;
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * Disable the layout
+     */
+    public function disable()
+    {
+        $this['is_enabled'] = true;
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_layouts'
-		));
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-		$metadata->mapField(array(
-			'columnName' => 'id',
-			'fieldName'  => 'id',
-			'type'       => 'integer',
-			'nullable'   => false,
-			'id'         => true
-		));
-		$metadata->mapField(array(
-			'columnName' => 'is_enabled',
-			'fieldName'  => 'is_enabled',
-			'type'       => 'boolean',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'user_layout',
-			'fieldName'  => 'user_layout',
-			'type'       => 'dp_json_obj',
-			'nullable'   => false
-		));
-		$metadata->mapField(array(
-			'columnName' => 'agent_layout',
-			'fieldName'  => 'agent_layout',
-			'type'       => 'dp_json_obj',
-			'nullable'   => false
-		));
-		$metadata->mapField(array(
-			'columnName' => 'date_updated',
-			'fieldName'  => 'date_updated',
-			'type'       => 'datetime',
-			'nullable'   => false
-		));
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'department',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-			'joinColumns'  => array(array(
-				'name'                 => 'department_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'cascade',
-			))
-		));
-	}
+        $metadata->setPrimaryTable(array(
+            'name' => 'ticket_layouts'
+        ));
+
+        $metadata->mapField(array(
+            'columnName' => 'id',
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+            'id'         => true
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'is_enabled',
+            'fieldName'  => 'is_enabled',
+            'type'       => 'boolean',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'user_layout',
+            'fieldName'  => 'user_layout',
+            'type'       => 'dp_json_obj',
+            'nullable'   => false
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'agent_layout',
+            'fieldName'  => 'agent_layout',
+            'type'       => 'dp_json_obj',
+            'nullable'   => false
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'date_updated',
+            'fieldName'  => 'date_updated',
+            'type'       => 'datetime',
+            'nullable'   => false
+        ));
+
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'department',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
+            'joinColumns'  => array(array(
+                'name'                 => 'department_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'cascade',
+            ))
+        ));
+    }
 }

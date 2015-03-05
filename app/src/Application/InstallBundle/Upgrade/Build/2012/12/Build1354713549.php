@@ -36,22 +36,22 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354713549 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add preference to allow you to always receive notification when forwarding an email");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT id, 'agent_notify_override.forward.email', '1', 'N;'
-			FROM people
-			WHERE is_agent = 1
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT id, 'agent_notify_override.forward.alert', '1', 'N;'
-			FROM people
-			WHERE is_agent = 1
-		");
-	}
+    public function run()
+    {
+        $this->out("Add preference to allow you to always receive notification when forwarding an email");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT id, 'agent_notify_override.forward.email', '1', 'N;'
+            FROM people
+            WHERE is_agent = 1
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT id, 'agent_notify_override.forward.alert', '1', 'N;'
+            FROM people
+            WHERE is_agent = 1
+        ");
+    }
 }

@@ -41,94 +41,97 @@ use Application\DeskPRO\Entity\Person;
 
 class NewArticle
 {
-	/** @var string */
-	public $title;
-	/** @var int */
-	public $category_id;
-	/** @var string */
-	public $status;
-	/** @var string */
-	public $content;
-	/** @var int */
-	public $language_id;
+    /** @var string */
+    public $title;
+    /** @var int */
+    public $category_id;
+    /** @var string */
+    public $status;
+    /** @var string */
+    public $content;
+    /** @var int */
+    public $language_id;
 
-	/** @var string */
-	public $slug;
-	/** @var array */
-	public $labels = array();
-	/** @var array */
-	public $attach = array();
+    /** @var string */
+    public $slug;
+    /** @var array */
+    public $labels = array();
+    /** @var array */
+    public $attach = array();
 
-	/** @var Article */
-	protected $_article;
+    /** @var Article */
+    protected $_article;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $_em;
 
-	public function __construct(Person $person_context)
-	{
-		$this->_person_context = $person_context;
+    public function __construct(Person $person_context)
+    {
+        $this->_person_context = $person_context;
 
-		$this->_em = App::getOrm();
-	}
+        $this->_em = App::getOrm();
+    }
 
-	public function save()
-	{
-		$this->_em->beginTransaction();
+    public function save()
+    {
+        $this->_em->beginTransaction();
 
-		$article = new Article();
-		$article->person = $this->_person_context;
-		$article->setStatusCode($this->status);
+        $article = new Article();
+        $article->person = $this->_person_context;
+        $article->setStatusCode($this->status);
 
-		if ($article->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-			$article->setStatusCode('hidden.validating');
-		}
+        if ($article->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
+            $article->setStatusCode('hidden.validating');
+        }
 
-		$article->title = $this->title;
-		$article->content = $this->content ?: '';
+        $article->title = $this->title;
 
-		$lang = null;
-		if ($this->language_id) {
-			$lang = App::getContainer()->getLanguageData()->get($this->language_id);
-		}
-		if (!$lang) {
-			$lang = App::getContainer()->getLanguageData()->getDefault();
-		}
-		$article->language = $lang;
+        $article->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
-		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
-		$article->addToCategory($cat);
+        $lang = null;
+        if ($this->language_id) {
+            $lang = App::getContainer()->getLanguageData()->get($this->language_id);
+        }
+        if (!$lang) {
+            $lang = App::getContainer()->getLanguageData()->getDefault();
+        }
+        $article->language = $lang;
 
-		$this->_em->persist($article);
-		$this->_em->flush();
+        $cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
+        $article->addToCategory($cat);
 
-		if ($this->labels) {
-			$article->getLabelManager()->setLabelsArray($this->labels, $this->_em);
-		}
+        $this->_em->persist($article);
+        $this->_em->flush();
 
-		// Message Attachments
-		foreach ($this->attach as $blob_id) {
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-			if ($blob) {
-				$attach = new ArticleAttachment();
-				$attach['blob'] = $blob;
-				$attach['person'] = $this->_person_context;
-				$this->_em->persist($attach);
-				$article->addAttachment($attach);
-			}
-		}
+        if ($this->labels) {
+            $article->getLabelManager()->setLabelsArray($this->labels, $this->_em);
+        }
 
-		$this->_em->flush();
+        // Message Attachments
+        foreach ($this->attach as $blob_id) {
+            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+            if ($blob) {
+                $attach = new ArticleAttachment();
+                $attach['blob'] = $blob;
+                $attach['person'] = $this->_person_context;
+                $this->_em->persist($attach);
+                $article->addAttachment($attach);
+            }
+        }
 
-		$this->_em->commit();
+        $this->_em->flush();
 
-		$this->_article = $article;
-	}
+        $this->_em->commit();
 
-	public function getArticle()
-	{
-		return $this->_article;
-	}
+        $this->_article = $article;
+    }
+
+    public function getArticle()
+    {
+        return $this->_article;
+    }
 }

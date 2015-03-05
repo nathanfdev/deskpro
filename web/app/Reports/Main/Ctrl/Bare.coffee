@@ -1,9 +1,9 @@
 define [
-	'DeskPRO/Main/Ctrl/Base'
+  'DeskPRO/Main/Ctrl/Base'
 ], (
-	DeskPROBaseCtrl
+  DeskPROBaseCtrl
 ) ->
-	class Reports_Main_Ctrl_Bare extends DeskPROBaseCtrl
-		@CTRL_ID = 'Reports_Main_Ctrl_Bare'
+  class Reports_Main_Ctrl_Bare extends DeskPROBaseCtrl
+    @CTRL_ID = 'Reports_Main_Ctrl_Bare'
 
-	Reports_Main_Ctrl_Bare.EXPORT_CTRL()
+  Reports_Main_Ctrl_Bare.EXPORT_CTRL()

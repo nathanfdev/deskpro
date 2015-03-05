@@ -36,171 +36,181 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
+use Application\DeskPRO\Service\RateLimit;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
-	/** @var string */
-	protected $tpl_prefix = 'AgentBundle:Login';
-	/** @var string */
-	protected $route_prefix = 'agent';
+    /** @var string */
+    protected $tpl_prefix = 'AgentBundle:Login';
+    /** @var string */
+    protected $route_prefix = 'agent';
 
-	/**
-	 * Handles showing the login form, and on POST handles login credentials
-	 * through the auth adapters.
-	 */
-	public function indexAction()
-	{
-		$return = $this->in->getStringFromGet('return');
-		if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
-			$return = '';
-		}
+    /**
+     * Handles showing the login form, and on POST handles login credentials
+     * through the auth adapters.
+     */
+    public function indexAction()
+    {
+        $return = $this->request->getReturnParam();
 
-		if ($this->loginViaToken()) {
-			if ($return) return $this->redirect($return);
-			else return $this->redirectRoute('agent');
-		}
+        if ($this->loginViaToken()) {
+            if ($return) return $this->redirect($return);
+            else return $this->redirectRoute('agent');
+        }
 
-		$has_logged_out = $this->in->checkIsset('o');
+        $has_logged_out = $this->in->checkIsset('o');
 
-		//
-		// SSO Automatic Redirecting
-		//
-		if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $has_logged_out)) {
-			return $res;
-		}
+        //
+        // SSO Automatic Redirecting
+        //
+        if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $has_logged_out)) {
+            return $res;
+        }
 
-		// Already logged in
-		if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
-			if ($return) return $this->redirect($return);
-			else return $this->redirectRoute($this->route_prefix);
-		}
+        // Already logged in
+        if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
+            if ($return) return $this->redirect($return);
 
-		$has_done_reset = false;
+            // fastfix of redirect loop (with wrong scheme)
+            $url = $this->generateUrl($this->route_prefix, array(), UrlGeneratorInterface::ABSOLUTE_URL);
+            if (!$this->request->isCorrectScheme()) {
+                $url = str_replace('http://', 'https://', $url);
+            }
+            return $this->redirect($url);
+        }
 
-		if ($code = $this->in->getString('reset_code')) {
-			$code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
-			$person = null;
-			if ($code_data) {
-				$person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
-			}
+        $has_done_reset = false;
 
-			if ($code_data AND $person) {
-				if ($this->in->getString('new_password')) {
-					$has_done_reset = true;
+        if ($code = $this->in->getString('reset_code')) {
+            $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
+            $person = null;
+            if ($code_data) {
+                $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
+            }
 
-					$person->setPassword($this->in->getString('new_password'));
-					$this->db->executeUpdate("
-						UPDATE people
-						SET
-							is_user = 1,
-							password_scheme = 'bcrypt',
-							`password` = ?
-						WHERE id = ?
-					", array($person->password, $person->getId()));
+            if ($code_data AND $person) {
+                if ($this->in->getString('new_password')) {
+                    $has_done_reset = true;
 
-					$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
-					if ($token) {
-						$token->regenerateToken();
-						App::getOrm()->persist($token);
-					}
+                    $person->setPassword($this->in->getString('new_password'));
+                    $this->db->executeUpdate("
+                        UPDATE people
+                        SET
+                            is_user = 1,
+                            password_scheme = 'bcrypt',
+                            `password` = ?
+                        WHERE id = ?
+                    ", array($person->password, $person->getId()));
 
-					$this->db->delete('tmp_data', array('id' => $code_data->getId()));
-				} else {
-					return $this->render('AgentBundle:Login:reset-password.html.twig', array(
-						'reset_code'    => $this->in->getString('reset_code'),
-						'route_prefix'  => $this->route_prefix,
-					));
-				}
-			} else {
-				throw $this->createNotFoundException();
-			}
-		}
+                    $token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+                    if ($token) {
+                        $token->regenerateToken();
+                        App::getOrm()->persist($token);
+                    }
 
-		$failed_login_name = false;
-		if ($this->session->has('failed_login_name')) {
-			$failed_login_name = $this->session->get('failed_login_name');
-			$this->session->remove('failed_login_name');
-			$this->session->save();
-		}
+                    $this->db->delete('tmp_data', array('id' => $code_data->getId()));
 
-		$logo_blob = null;
-		if ($logo_blob_id = $this->settings->get('agent.login_logo_blob_id')) {
-			$logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
-		}
+                    // Delete old sessions for this user
+                    $this->db->delete('sessions', array('person_id' => $person->getId()));
+                } else {
+                    return $this->render('AgentBundle:Login:reset-password.html.twig', array(
+                        'reset_code'    => $this->in->getString('reset_code'),
+                        'route_prefix'  => $this->route_prefix,
+                    ));
+                }
+            } else {
+                throw $this->createNotFoundException();
+            }
+        }
 
-		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
+        $failed_login_name = false;
+        if ($this->session->has('failed_login_name')) {
+            $failed_login_name = $this->session->get('failed_login_name');
+            $this->session->remove('failed_login_name');
+            $this->session->save();
+        }
 
+        $logo_blob = null;
+        if ($logo_blob_id = $this->settings->get('agent.login_logo_blob_id')) {
+            $logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
+        }
 
-		return $this->render('AgentBundle:Login:index.html.twig', array(
-			'return'                   => $return,
-			'route_prefix'             => $this->route_prefix,
-			'logo_blob'                => $logo_blob,
-			'has_logged_out'           => $has_logged_out,
-			'has_done_reset'           => $has_done_reset,
-			'failed_login_name'        => $failed_login_name,
-			'browser_warnings'         => $browser_warnings,
-			'timeout'                  => $this->in->getBool('timeout')
-		));
-	}
+        $browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
-	public function preloadSourcesAction()
-	{
-		return $this->render('AgentBundle:Login:js-preload.html.twig');
-	}
+        $captcha = null;
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
+        }
 
-	public function browserRequirementsAction()
-	{
-		if (UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
-			return $this->redirectRoute('agent');
-		}
+        return $this->render('AgentBundle:Login:index.html.twig', array(
+            'return'                   => $return,
+            'route_prefix'             => $this->route_prefix,
+            'logo_blob'                => $logo_blob,
+            'has_logged_out'           => $has_logged_out,
+            'has_done_reset'           => $has_done_reset,
+            'failed_login_name'        => $failed_login_name,
+            'browser_warnings'         => $browser_warnings,
+            'timeout'                  => $this->in->getBool('timeout'),
+            'captcha'                  => $captcha,
+        ));
+    }
 
-		$browser = $this->container->get('browser_sniffer');
+    public function preloadSourcesAction()
+    {
+        return $this->render('AgentBundle:Login:js-preload.html.twig');
+    }
 
-		return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
-			'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
-		));
-	}
+    public function browserRequirementsAction()
+    {
+        if (UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
+            return $this->redirectRoute('agent');
+        }
 
-	public function ieCompatModeAction()
-	{
-		return $this->render('AgentBundle:Login:instruct-ie-compat-mode.html.twig', array(
+        $browser = $this->container->get('browser_sniffer');
 
-		));
-	}
+        return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
+            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
+        ));
+    }
 
-	public function authAdminLoginAction($code)
-	{
-		$tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
-		if (!$tmp) {
-			throw $this->createNotFoundException();
-		}
+    public function authAdminLoginAction($code)
+    {
+        $tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
+        if (!$tmp) {
+            throw $this->createNotFoundException();
+        }
 
-		$admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
-		$person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
+        $admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
+        $person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 
-		if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
-			throw $this->createNotFoundException();
-		}
+        if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
+            throw $this->createNotFoundException();
+        }
 
-		$this->session->set('auth_person_id', $person->id);
-		$this->session->set('dp_interface', DP_INTERFACE);
-		$this->session->save();
+        $this->session->invalidate();
+        $this->session->set('auth_person_id', $person->id);
+        $this->session->set('dp_interface', DP_INTERFACE);
+        $this->session->save();
 
-		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
-		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+        \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+        \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
-		$this->db->insert('login_log', array(
-			'person_id'    => $person->getId(),
-			'area'         => 'agent',
-			'is_success'   => 1,
-			'ip_address'   => dp_get_user_ip_address(),
-			'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-			'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-			'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
-			'date_created' => date('Y-m-d H:i:s')
-		));
+        $this->db->insert('login_log', array(
+            'person_id'    => $person->getId(),
+            'area'         => 'agent',
+            'is_success'   => 1,
+            'ip_address'   => dp_get_user_ip_address(),
+            'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+            'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+            'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
+            'date_created' => date('Y-m-d H:i:s')
+        ));
 
-		return $this->redirectRoute('agent');
-	}
+        return $this->redirectRoute('agent');
+    }
 }

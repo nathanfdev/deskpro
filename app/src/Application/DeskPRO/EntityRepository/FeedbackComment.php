@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class FeedbackComment extends CommentAbstract
 {
-	const FIELD = 'feedback';
+    const FIELD = 'feedback';
 }

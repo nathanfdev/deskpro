@@ -36,50 +36,50 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352459603 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Give new agent_people.disable permission to people with agent_people.delete");
+    public function run()
+    {
+        $this->out("Give new agent_people.disable permission to people with agent_people.delete");
 
-		#-------------------------
-		# Permission groups
-		#-------------------------
+        #-------------------------
+        # Permission groups
+        #-------------------------
 
-		$ug_ids = $this->container->getDb()->fetchAllCol("
-			SELECT usergroup_id
-			FROM permissions
-			WHERE name = 'agent_people.delete' AND usergroup_id IS NOT NULL
-		");
-		$insert = array();
-		foreach ($ug_ids as $id) {
-			$insert[] = array('usergroup_id' => $id, 'name' => 'agent_people.disable', 'value' => 1);
-		}
-		if ($insert) {
-			$this->container->getDb()->batchInsert('permissions', $insert);
-		}
+        $ug_ids = $this->container->getDb()->fetchAllCol("
+            SELECT usergroup_id
+            FROM permissions
+            WHERE name = 'agent_people.delete' AND usergroup_id IS NOT NULL
+        ");
+        $insert = array();
+        foreach ($ug_ids as $id) {
+            $insert[] = array('usergroup_id' => $id, 'name' => 'agent_people.disable', 'value' => 1);
+        }
+        if ($insert) {
+            $this->container->getDb()->batchInsert('permissions', $insert);
+        }
 
-		#-------------------------
-		# Permission overrides
-		#-------------------------
+        #-------------------------
+        # Permission overrides
+        #-------------------------
 
-		$person_ids = $this->container->getDb()->fetchAllCol("
-			SELECT person_id
-			FROM permissions
-			WHERE name = 'agent_people.delete' AND person_id IS NOT NULL
-		");
-		$insert = array();
-		foreach ($person_ids as $id) {
-			$insert[] = array('person_id' => $id, 'name' => 'agent_people.disable', 'value' => 1);
-		}
-		if ($insert) {
-			$this->container->getDb()->batchInsert('permissions', $insert);
-		}
+        $person_ids = $this->container->getDb()->fetchAllCol("
+            SELECT person_id
+            FROM permissions
+            WHERE name = 'agent_people.delete' AND person_id IS NOT NULL
+        ");
+        $insert = array();
+        foreach ($person_ids as $id) {
+            $insert[] = array('person_id' => $id, 'name' => 'agent_people.disable', 'value' => 1);
+        }
+        if ($insert) {
+            $this->container->getDb()->batchInsert('permissions', $insert);
+        }
 
-		#-------------------------
-		# Clear caache
-		#-------------------------
+        #-------------------------
+        # Clear caache
+        #-------------------------
 
-		if ($ug_ids || $person_ids) {
-			$this->container->getDb()->executeUpdate("TRUNCATE TABLE permissions_cache");
-		}
-	}
+        if ($ug_ids || $person_ids) {
+            $this->container->getDb()->executeUpdate("TRUNCATE TABLE permissions_cache");
+        }
+    }
 }

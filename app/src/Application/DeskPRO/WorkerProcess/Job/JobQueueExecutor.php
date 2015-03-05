@@ -39,16 +39,16 @@ use Application\DeskPRO\JobQueue\JobWorker;
 
 class JobQueueExecutor extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 60;
 
-	public function run()
-	{
-		// the old job "WorkerProcess" system wasn't designed with DI in mind, using the globals
-		$connection = App::getDb();
-		$router = App::$container->getSystemService('job_router');
-		$queue = App::$container->getSystemService('job_queue');
-		$worker = new JobWorker($connection, $router, $queue);
+    public function run()
+    {
+        // the old job "WorkerProcess" system wasn't designed with DI in mind, using the globals
+        $connection = App::getDb();
+        $router = App::$container->getSystemService('job_router');
+        $queue = App::$container->getSystemService('job_queue');
+        $worker = new JobWorker($connection, $router, $queue);
 
-		$worker->work(25);
-	}
+        $worker->work(25);
+    }
 }

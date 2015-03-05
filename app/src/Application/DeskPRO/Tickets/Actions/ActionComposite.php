@@ -41,113 +41,106 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class ActionComposite implements ActionInterface, DeskproContainerAwareInterface, \Countable, \IteratorAggregate
 {
-	/**
-	 * @var ActionInterface[]
-	 */
-	private $actions = array();
+    /**
+     * @var ActionInterface[]
+     */
+    private $actions = array();
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @param ActionInterface[] $actions
-	 */
-	public function __construct(array $actions = array())
-	{
-		$this->setAll($actions);
-	}
+    /**
+     * @param ActionInterface[] $actions
+     */
+    public function __construct(array $actions = array())
+    {
+        $this->setAll($actions);
+    }
 
+    /**
+     * @param DeskproContainer $container
+     */
+    public function setContainer(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function setContainer(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+        /**
+         * Gets the set container.
+         *
+         * @return DeskproContainer
+         * @throws \RuntimeException When no container has been set yet
+         */
+        protected function getContainer()
+    {
+        if (!$this->container) {
+            throw new \RuntimeException("No container has been set");
+        }
 
-		/**
-		 * Gets the set container.
-		 *
-		 * @return DeskproContainer
-		 * @throws \RuntimeException When no container has been set yet
-		 */
-		protected function getContainer()
-	{
-		if (!$this->container) {
-			throw new \RuntimeException("No container has been set");
-		}
+        return $this->container;
+    }
 
-		return $this->container;
-	}
+    /**
+     * @param ActionInterface $term
+     */
+    public function add(ActionInterface $term)
+    {
+        $this->actions[] = $term;
+    }
 
+    /**
+     * @param ActionInterface[] $actions
+     */
+    public function setAll(array $actions)
+    {
+        $this->actions = array();
+        foreach ($actions as $t) {
+            $this->add($t);
+        }
+    }
 
-	/**
-	 * @param ActionInterface $term
-	 */
-	public function add(ActionInterface $term)
-	{
-		$this->actions[] = $term;
-	}
+    /**
+     * @return ActionInterface[]
+     */
+    public function getAll()
+    {
+        return $this->actions;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        foreach ($this->actions as $a) {
+            if ($a instanceof DeskproContainerAwareInterface) {
+                $a->setContainer($this->getContainer());
+            }
+            if ($a instanceof NoopableInterface) {
+                if ($a->isNoop($ticket, $context)) {
+                    continue;
+                }
+            }
 
-	/**
-	 * @param ActionInterface[] $actions
-	 */
-	public function setAll(array $actions)
-	{
-		$this->actions = array();
-		foreach ($actions as $t) {
-			$this->add($t);
-		}
-	}
+            $a->applyAction($ticket, $context);
+        }
+    }
 
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->actions);
+    }
 
-	/**
-	 * @return ActionInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->actions;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		foreach ($this->actions as $a) {
-			if ($a instanceof DeskproContainerAwareInterface) {
-				$a->setContainer($this->getContainer());
-			}
-			if ($a instanceof NoopableInterface) {
-				if ($a->isNoop($ticket, $context)) {
-					continue;
-				}
-			}
-
-			$a->applyAction($ticket, $context);
-		}
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->actions);
-	}
-
-
-	/**
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->actions);
-	}
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->actions);
+    }
 }

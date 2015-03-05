@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361819761 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add visitors.visit_track_id");
-		$this->execMutateSql("ALTER TABLE visitors ADD visit_track_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE visitors ADD CONSTRAINT FK_7B74A43F5B84E254 FOREIGN KEY (visit_track_id) REFERENCES visitor_tracks (id) ON DELETE SET NULL");
-		$this->execMutateSql("CREATE INDEX IDX_7B74A43F5B84E254 ON visitors (visit_track_id)");
-		$this->execMutateSql("UPDATE visitors SET visit_track_id = initial_track_id WHERE initial_track_id IS NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add visitors.visit_track_id");
+        $this->execMutateSql("ALTER TABLE visitors ADD visit_track_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE visitors ADD CONSTRAINT FK_7B74A43F5B84E254 FOREIGN KEY (visit_track_id) REFERENCES visitor_tracks (id) ON DELETE SET NULL");
+        $this->execMutateSql("CREATE INDEX IDX_7B74A43F5B84E254 ON visitors (visit_track_id)");
+        $this->execMutateSql("UPDATE visitors SET visit_track_id = initial_track_id WHERE initial_track_id IS NOT NULL");
+    }
 }

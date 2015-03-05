@@ -40,108 +40,118 @@ use Application\DeskPRO\ORM\EntityManager;
 
 class Build1413803749 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Upgrade usersources to new auth settings");
+    public function run()
+    {
+        $this->out("Upgrade usersources to new auth settings");
 
-		$userType = Usersource::TYPE_USER;
+        $did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1416914310 AND name = 'did_app_triggers'");
+        if (!$did_do) {
+            $this->out("Add app_packages.trigger_events");
+            $this->execMutateSql("ALTER TABLE app_packages ADD trigger_events LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'", true);
+            $this->execMutateSql("ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL", true);
 
-		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1413803749 AND name = 'did_pre_alter'");
-		if (!$did_do) {
-			$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL, ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL");
-			$this->execMutateSql("ALTER TABLE usersources ADD agent_permission_group_id INT DEFAULT NULL, ADD auto_agent TINYINT(1) NOT NULL");
-			$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CF9C72B85 FOREIGN KEY (agent_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL");
-			$this->execMutateSql("CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)");
-		}
+            $this->out("Add ticket_triggers.by_app_mode");
+            $this->execMutateSql("ALTER TABLE ticket_triggers ADD by_app_mode LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)'", true);
+            $this->container->getDb()->insertIgnore('install_data', array('build' => '1416914310', 'name' => 'did_app_triggers', 'data' => '1'));
+        }
 
-		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
+        $userType = Usersource::TYPE_USER;
 
-		$em = $this->container->getEm();
+        $did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1413803749 AND name = 'did_pre_alter'");
+        if (!$did_do) {
+            $this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL, ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL", true);
+            $this->execMutateSql("ALTER TABLE usersources ADD agent_permission_group_id INT DEFAULT NULL, ADD auto_agent TINYINT(1) NOT NULL", true);
+            $this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CF9C72B85 FOREIGN KEY (agent_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL", true);
+            $this->execMutateSql("CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)", true);
+        }
 
-		$this->setupDeskProUsersource($userType, $em);
-	}
+        $this->execMutateSql("UPDATE usersources SET type = '$userType'");
+        $this->execMutateSql("ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL", true);
 
+        $em = $this->container->getEm();
 
-	private function setupDeskProUsersource($type, EntityManager $em)
-	{
-		$enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
-
-		$deskProUsers = new Usersource();
-		$deskProUsers->type = $type;
-		$deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-		$deskProUsers->is_enabled = $enabled;
-		$deskProUsers->display_order = -10; // ensure #1 order (initially!)
-		$deskProUsers->title = 'DeskPRO';
-		$deskProUsers->options = array();
-
-		$em->persist($deskProUsers);
-		$em->flush($deskProUsers);
-		$em->clear();
-		$this->runNext();
-
-		return $deskProUsers;
-	}
+        $this->setupDeskProUsersource($userType, $em);
+    }
 
 
-	public function runNext()
-	{
-		$this->out("Creates needed agent app instances and usersources and changes associations where necessary");
-		$em = $this->container->getEm();
+    private function setupDeskProUsersource($type, EntityManager $em)
+    {
+        $enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
 
-		/** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
-		$usersourceManager = $this->container->getSystemService('usersource_manager');
-		$userUsersources   = $usersourceManager->getAll()->configuredForUsers(true);
+        $deskProUsers = new Usersource();
+        $deskProUsers->type = $type;
+        $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+        $deskProUsers->is_enabled = $enabled;
+        $deskProUsers->display_order = -10; // ensure #1 order (initially!)
+        $deskProUsers->title = 'DeskPRO';
+        $deskProUsers->options = array();
 
-		/** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
-		foreach ($userUsersources as $userUsersource) {
+        $em->persist($deskProUsers);
+        $em->flush($deskProUsers);
+        $em->clear();
+        $this->runNext();
 
-			$agentApp = null;
-			if ($userUsersource->app) {
-				$agentApp = $this->copyAppInstance($userUsersource->app);
-				$em->persist($agentApp);
-				$em->flush($agentApp);
-			}
-
-			$agentDuplication                    = new Usersource();
-			$agentDuplication->type              = Usersource::TYPE_AGENT;
-			$agentDuplication->display_order     = $userUsersource->display_order;
-			$agentDuplication->app               = $agentApp;
-			$agentDuplication->is_enabled        = $userUsersource->is_enabled;
-			$agentDuplication->lost_password_url = $userUsersource->lost_password_url;
-			$agentDuplication->source_type       = $userUsersource->source_type;
-			$agentDuplication->title             = $userUsersource->title;
-			$agentDuplication->options           = $userUsersource->options;
-			$em->persist($agentDuplication);
-			$em->flush($agentDuplication);
-
-			$this->changeUsersourcesFromUserToAgent($userUsersource, $agentDuplication);
-		}
-	}
+        return $deskProUsers;
+    }
 
 
-	private function changeUsersourcesFromUserToAgent(Usersource $userUsersource, Usersource $agentDuplication)
-	{
-		$userUsersourceId  = $userUsersource->id;
-		$agentUsersourceId = $agentDuplication->id;
+    public function runNext()
+    {
+        $this->out("Creates needed agent app instances and usersources and changes associations where necessary");
+        $em = $this->container->getEm();
 
-		$this->execMutateSql(
-			"
-			UPDATE person_usersource_assoc pua
-			LEFT JOIN people ON pua.person_id = people.id
-			SET pua.usersource_id = $agentUsersourceId
-			WHERE people.is_agent = 1 AND pua.usersource_id = $userUsersourceId
-		"
-		);
-	}
+        /** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
+        $usersourceManager = $this->container->getSystemService('usersource_manager');
+        $userUsersources   = $usersourceManager->getAll()->configuredForUsers(true);
 
+        /** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
+        foreach ($userUsersources as $userUsersource) {
 
-	private function copyAppInstance(AppInstance $originApp)
-	{
-		$app = new AppInstance();
-		$app->setSettings($originApp->getSettings());
-		$app->title   = $originApp->title;
-		$app->package = $originApp->package;
+            $agentApp = null;
+            if ($userUsersource->app) {
+                $agentApp = $this->copyAppInstance($userUsersource->app);
+                $em->persist($agentApp);
+                $em->flush($agentApp);
+            }
 
-		return $app;
-	}
+            $agentDuplication                    = new Usersource();
+            $agentDuplication->type              = Usersource::TYPE_AGENT;
+            $agentDuplication->display_order     = $userUsersource->display_order;
+            $agentDuplication->app               = $agentApp;
+            $agentDuplication->is_enabled        = $userUsersource->is_enabled;
+            $agentDuplication->lost_password_url = $userUsersource->lost_password_url;
+            $agentDuplication->source_type       = $userUsersource->source_type;
+            $agentDuplication->title             = $userUsersource->title;
+            $agentDuplication->options           = $userUsersource->options;
+            $em->persist($agentDuplication);
+            $em->flush($agentDuplication);
+
+            $this->changeUsersourcesFromUserToAgent($userUsersource, $agentDuplication);
+        }
+    }
+
+    private function changeUsersourcesFromUserToAgent(Usersource $userUsersource, Usersource $agentDuplication)
+    {
+        $userUsersourceId  = $userUsersource->id;
+        $agentUsersourceId = $agentDuplication->id;
+
+        $this->execMutateSql(
+            "
+            UPDATE person_usersource_assoc pua
+            LEFT JOIN people ON pua.person_id = people.id
+            SET pua.usersource_id = $agentUsersourceId
+            WHERE people.is_agent = 1 AND pua.usersource_id = $userUsersourceId
+        "
+        );
+    }
+
+    private function copyAppInstance(AppInstance $originApp)
+    {
+        $app = new AppInstance();
+        $app->setSettings($originApp->getSettings());
+        $app->title   = $originApp->title;
+        $app->package = $originApp->package;
+
+        return $app;
+    }
 }

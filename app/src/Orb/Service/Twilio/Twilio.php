@@ -34,7 +34,6 @@
 
 namespace Orb\Service\Twilio;
 
-use Application\DeskPRO\Entity\PhoneNumber;
 use Orb\Util\PhoneNumbers;
 
 /**
@@ -42,104 +41,104 @@ use Orb\Util\PhoneNumbers;
  */
 class Twilio
 {
-	/**
-	 * @var \Services_Twilio the twilio service, provided by twilio-php sdk
-	 */
-	protected $twilio;
+    /**
+     * @var \Services_Twilio the twilio service, provided by twilio-php sdk
+     */
+    protected $twilio;
 
-	/**
-	 * @var string the sid
-	 */
-	protected $sid;
+    /**
+     * @var string the sid
+     */
+    protected $sid;
 
-	/**
-	 * @var string the auth token
-	 */
-	protected $auth_token;
+    /**
+     * @var string the auth token
+     */
+    protected $auth_token;
 
-	public function __construct($sid, $auth_token)
-	{
-		$this->sid = $sid;
-		$this->auth_token = $auth_token;
+    public function __construct($sid, $auth_token)
+    {
+        $this->sid = $sid;
+        $this->auth_token = $auth_token;
 
-		$this->twilio = new \Services_Twilio($sid, $auth_token);
-	}
+        $this->twilio = new \Services_Twilio($sid, $auth_token);
+    }
 
-	public function sendSms($toPhoneNumber, $textMessage, $fromPhoneNumber)
-	{
-		return $this->twilio->account->messages->sendMessage(
-			$fromPhoneNumber,
-			$toPhoneNumber,
-			$textMessage
-		);
-	}
-
-
-	/**
-	 * @return string a friendly name that the user sets in twillio, usually their email
-	 */
-	public function getFriendlyName()
-	{
-		return $this->twilio->accounts->get($this->sid)->friendly_name;
-	}
+    public function sendSms($toPhoneNumber, $textMessage, $fromPhoneNumber)
+    {
+        return $this->twilio->account->messages->sendMessage(
+            $fromPhoneNumber,
+            $toPhoneNumber,
+            $textMessage
+        );
+    }
 
 
-	/**
-	 * This method works only for phone numbers already purchased on Twilio. The number must be
-	 * SMS capable. Upon call, if the number is valid, we will tell the API to update the
-	 * "SmsUrl" and "VoiceUrl" to our service.
-	 *
-	 * @param        $phone_number a phone number to set the incoming URL config on
-	 * @param        $url http url for SMS script
-	 * @param string $method http method for SMS script
-	 */
-	public function setSmsUrl($phone_number, $url, $method = 'POST')
-	{
-		$request_num = PhoneNumbers::toE164Format($phone_number);
-		$numbers = $this->twilio->account->incoming_phone_numbers;
-		/** @var \Services_Twilio_Rest_IncomingPhoneNumber $number */
-		foreach ($numbers as $number) {
-			if ($request_num == PhoneNumbers::toE164Format($number->phone_number)) {
-				$number_sid = $number->sid;
-				$number = $this->twilio->account->incoming_phone_numbers->get($number_sid);
-				$number->update(
-					array(
-						"SmsUrl"   => "http://demo.twilio.com/docs/sms.xml"
-					)
-				);
-			}
-		}
-
-		return null;
-	}
-
-	public function getIncomingNumbers()
-	{
-		$numbers = array();
-		$nums = $this->twilio->account->incoming_phone_numbers;
-		foreach ($nums as $number) {
-			$numbers[$number->friendly_name] = $number->phone_number;
-		}
-
-		return $numbers;
-	}
+    /**
+     * @return string a friendly name that the user sets in twillio, usually their email
+     */
+    public function getFriendlyName()
+    {
+        return $this->twilio->accounts->get($this->sid)->friendly_name;
+    }
 
 
-	public function setUrlForNumber($url, $number)
-	{
-		$nums = $this->twilio->account->incoming_phone_numbers;
-		foreach ($nums as $num) {
-			if (PhoneNumbers::toE164Format($num->phone_number) == PhoneNumbers::toE164Format($number)) {
-				// this is the correct number
-				$num->update(
-					array(
-						"SmsUrl"   => $url,
-						"SmsMethod" => 'POST'
-					)
-				);
-			}
-		}
+    /**
+     * This method works only for phone numbers already purchased on Twilio. The number must be
+     * SMS capable. Upon call, if the number is valid, we will tell the API to update the
+     * "SmsUrl" and "VoiceUrl" to our service.
+     *
+     * @param        $phone_number a phone number to set the incoming URL config on
+     * @param        $url          http url for SMS script
+     * @param string $method       http method for SMS script
+     */
+    public function setSmsUrl($phone_number, $url, $method = 'POST')
+    {
+        $request_num = PhoneNumbers::toE164Format($phone_number);
+        $numbers = $this->twilio->account->incoming_phone_numbers;
+        /** @var \Services_Twilio_Rest_IncomingPhoneNumber $number */
+        foreach ($numbers as $number) {
+            if ($request_num == PhoneNumbers::toE164Format($number->phone_number)) {
+                $number_sid = $number->sid;
+                $number = $this->twilio->account->incoming_phone_numbers->get($number_sid);
+                $number->update(
+                    array(
+                        "SmsUrl"   => "http://demo.twilio.com/docs/sms.xml"
+                    )
+                );
+            }
+        }
 
-		return true;
-	}
+        return null;
+    }
+
+    public function getIncomingNumbers()
+    {
+        $numbers = array();
+        $nums = $this->twilio->account->incoming_phone_numbers;
+        foreach ($nums as $number) {
+            $numbers[$number->friendly_name] = $number->phone_number;
+        }
+
+        return $numbers;
+    }
+
+
+    public function setUrlForNumber($url, $number)
+    {
+        $nums = $this->twilio->account->incoming_phone_numbers;
+        foreach ($nums as $num) {
+            if (PhoneNumbers::toE164Format($num->phone_number) == PhoneNumbers::toE164Format($number)) {
+                // this is the correct number
+                $num->update(
+                    array(
+                        "SmsUrl"   => $url,
+                        "SmsMethod" => 'POST'
+                    )
+                );
+            }
+        }
+
+        return true;
+    }
 }

@@ -41,46 +41,46 @@ use deskpro_us_phpbb\Usersource\AppOptionsMapper;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
-	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-				break;
-			default:
-				throw $context->createNotFoundException();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function handleApiPackageRequest(ApiPackageRequestContext $context)
+    {
+        switch ($context->getAction()) {
+            case 'test-settings':
+                return $this->testSettingsAction($context);
+                break;
+            default:
+                throw $context->createNotFoundException();
+        }
+    }
 
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
-	{
-		$username = $context->getIn()->getString('username');
-		$password = $context->getIn()->getString('password');
-		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function testSettingsAction(ApiPackageRequestContext $context)
+    {
+        $username = $context->getIn()->getString('username');
+        $password = $context->getIn()->getString('password');
+        $options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
-		if (isset($options['phpbb_version']) && 3 == $options['phpbb_version']) {
-			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb3';
-		} else {
-			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb2';
-		}
+        if (isset($options['phpbb_version']) && 3 == $options['phpbb_version']) {
+            $type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb3';
+        } else {
+            $type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb2';
+        }
 
-		$tester = UsersourceTester::createFromOptions($type, $options);
-		$tester->test($username, $password);
+        $tester = UsersourceTester::createFromOptions($type, $options);
+        $tester->test($username, $password);
 
-		$result_data = array(
-			'log'        => $tester->getLog(),
-			'raw_data'   => $tester->getRawData(),
-			'is_valid'   => $tester->isValid(),
-		);
+        $result_data = array(
+            'log'        => $tester->getLog(),
+            'raw_data'   => $tester->getRawData(),
+            'is_valid'   => $tester->isValid(),
+        );
 
-		return $context->createJsonResponse($result_data);
-	}
+        return $context->createJsonResponse($result_data);
+    }
 }

@@ -42,129 +42,129 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class CustomDataFeedback extends CustomDataAbstract
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Feedback
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\Feedback
+     */
 
-	protected $feedback;
+    protected $feedback;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     */
 
-	protected $field = null;
+    protected $field = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     */
 
-	protected $root_field = null;
+    protected $root_field = null;
 
-	public function getFeedbackId()
-	{
-		return $this->feedback['id'];
-	}
+    public function getFeedbackId()
+    {
+        return $this->feedback['id'];
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(
-			array(
-				 'name'    => 'custom_data_feedback',
-				 'indexes' => array(
-					 'obj_id_idx'   => array('columns' => array(0 => 'feedback_id',),),
-					 'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'feedback_id',),),
-				 ),
-			)
-		);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'id',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'id',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'value',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'value',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'input',
-				 'type'       => 'text',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'input',
-			)
-		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'feedback',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'feedback_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'field',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'field_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'root_field',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'root_field_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(
+            array(
+                 'name'    => 'custom_data_feedback',
+                 'indexes' => array(
+                     'obj_id_idx'   => array('columns' => array(0 => 'feedback_id',),),
+                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'feedback_id',),),
+                 ),
+            )
+        );
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'id',
+                 'type'       => 'integer',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'id',
+                 'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'value',
+                 'type'       => 'integer',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'value',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'input',
+                 'type'       => 'text',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'input',
+            )
+        );
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'feedback',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+                 'mappedBy'     => null,
+                 'inversedBy'   => null,
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'feedback_id',
+                         'referencedColumnName' => 'id',
+                         'nullable'             => true,
+                         'onDelete'             => 'cascade',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'field',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                 'mappedBy'     => null,
+                 'inversedBy'   => null,
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'field_id',
+                         'referencedColumnName' => 'id',
+                         'nullable'             => true,
+                         'onDelete'             => 'cascade',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'root_field',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                 'mappedBy'     => null,
+                 'inversedBy'   => null,
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'root_field_id',
+                         'referencedColumnName' => 'id',
+                         'nullable'             => true,
+                         'onDelete'             => 'cascade',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+    }
 }

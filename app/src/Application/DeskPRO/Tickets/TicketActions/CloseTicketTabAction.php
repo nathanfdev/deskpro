@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
@@ -42,51 +41,48 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class CloseTicketTabAction extends AbstractAction
 {
-	/** @var \Application\DeskPRO\Tickets\TicketChangeTracker */
-	protected $tracker;
+    /** @var \Application\DeskPRO\Tickets\TicketChangeTracker */
+    protected $tracker;
 
-	public function __construct(\Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)
-	{
-		$this->tracker = $tracker;
-	}
+    public function __construct(\Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)
+    {
+        $this->tracker = $tracker;
+    }
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$GLOBALS['DP_TICKET_CLOSE_TAB'] = true;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $GLOBALS['DP_TICKET_CLOSE_TAB'] = true;
+    }
 
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array();
+    }
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array();
-	}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
 
-
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         return "<span class=\"with-close-tab\">Close ticket tab</span>";
-	}
+    }
 }

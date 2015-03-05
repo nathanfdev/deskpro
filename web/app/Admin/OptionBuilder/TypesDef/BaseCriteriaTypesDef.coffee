@@ -53,7 +53,7 @@ define [
     	# @return {Array}
 		###
 		getOperators: (options) ->
-			return options.operators || ['is', 'not']
+			return options.operators || ['is', 'not', 'isset', 'not_isset']
 
 		###
     	# Constructs standard input from a custom field def
@@ -69,7 +69,8 @@ define [
 				options.single = true
 				return @getStandardSelect(options)
 			else
-				if not options.operators then options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+				console.info(options)
+				if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
 				return @getStandardInput(options)
 
 		###
@@ -79,10 +80,10 @@ define [
     	# @param {Object} f         The field
     	# @retrn {String} The name of the field that was set
     	###
-		initFieldGetter: (base_name, f) ->
+		initFieldGetter: (base_name, f, force) ->
 			fname = base_name + f.id
 
-			if not this['get'+fname]
+			if !this['get'+fname] || force?
 				this['get'+fname] = (options = {}) =>
 					options.type = base_name + f.id
 					return @getStandardForFieldDef(f, options)

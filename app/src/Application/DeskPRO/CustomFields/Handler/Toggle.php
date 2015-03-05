@@ -35,80 +35,79 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * Handles the toggle field
  */
 class Toggle extends HandlerAbstract
 {
-	public function getFormField($data = null)
-	{
-		$setData = null;
-		if ($data AND !empty($data['value'])) {
-			$setData = true;
-		}
+    public function getFormField($data = null)
+    {
+        $setData = null;
+        if ($data AND !empty($data['value'])) {
+            $setData = true;
+        }
 
-		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'checkbox', $setData, array('required' => false));
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'checkbox', $setData, array('required' => false));
 
-		return $field;
-	}
+        return $field;
+    }
 
-	function getDataFromForm(array $form_data)
-	{
-		$name = $this->getFormFieldName();
+    public function getDataFromForm(array $form_data)
+    {
+        $name = $this->getFormFieldName();
 
-		if (!empty($form_data[$name])) {
-			return array(
-				array($this->field_def['id'], 'value', 1)
-			);
-		}
+        if (!empty($form_data[$name])) {
+            return array(
+                array($this->field_def['id'], 'value', 1)
+            );
+        }
 
-		return array();
-	}
+        return array();
+    }
 
-	public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
-	{
-		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    {
+        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
-		if (!is_scalar($data)) {
-			return $this->makeErrorArray(array('invalid_input'));
-		}
+        if (!is_scalar($data)) {
+            return $this->makeErrorArray(array('invalid_input'));
+        }
 
-		#------------------------------
-		# Validate options
-		#------------------------------
+        #------------------------------
+        # Validate options
+        #------------------------------
 
-		$opt_prefix = '';
-		if ($context == self::CONTEXT_AGENT) {
-			$opt_prefix = 'agent_';
-		}
+        $opt_prefix = '';
+        if ($context == self::CONTEXT_AGENT) {
+            $opt_prefix = 'agent_';
+        }
 
-		$options = array(
-			'required' => $this->field_def->getOption($opt_prefix . 'required')
-		);
+        $options = array(
+            'required' => $this->field_def->getOption($opt_prefix . 'required')
+        );
 
-		if ($options['required']) {
-			if (!$data || $data != '1') {
-				return $this->makeErrorArray(array('required'));
-			}
-		}
+        if ($options['required']) {
+            if (!$data || $data != '1') {
+                return $this->makeErrorArray(array('required'));
+            }
+        }
 
-		return array();
-	}
+        return array();
+    }
 
-	public function getSearchCapabilities()
-	{
-		return array('is', 'not');
-	}
+    public function getSearchCapabilities()
+    {
+        return array('is', 'not');
+    }
 
-	public function getFilterCapabilities()
-	{
-		return array('is', 'not');
-	}
+    public function getFilterCapabilities()
+    {
+        return array('is', 'not');
+    }
 
-	public function getSearchType()
-	{
-		return 'value';
-	}
+    public function getSearchType()
+    {
+        return 'value';
+    }
 }

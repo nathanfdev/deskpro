@@ -41,24 +41,24 @@ use Application\DeskPRO\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
-	{
-		$us->options           = array(
-			'app_key'    => $app->getSetting('app_key'),
-			'app_secret' => $app->getSetting('app_secret'),
-		);
-		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
-		$us->title             = $app->title;
-		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
+    /**
+     * {@inheritDoc}
+     */
+    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    {
+        $us->options           = array(
+            'app_key'    => $app->getSetting('app_key'),
+            'app_secret' => $app->getSetting('app_secret'),
+        );
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->title             = $app->title;
+        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
+        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
 
-		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
-		$em->persist($app);
-		$em->persist($us);
-		$em->flush();
-	}
+        $em->persist($app);
+        $em->persist($us);
+        $em->flush();
+    }
 }

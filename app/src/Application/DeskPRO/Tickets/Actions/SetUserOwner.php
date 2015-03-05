@@ -50,98 +50,99 @@ use Orb\Validator\StringEmail;
  */
 class SetUserOwner extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email_address');
-		$options->addValidNames('add_cc');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('email_address');
+        $options->addValidNames('add_cc');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$user_email = $this->getActionOption('email_address');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $user_email = $this->getActionOption('email_address');
 
-		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-		$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
+        $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
+        $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
 
-		if (!$person) {
-			if ($reg_closed) {
-				return;
-			}
-			$person_processor = new PersonFromEmailProcessor();
+        if (!$person) {
+            if ($reg_closed) {
+                return;
+            }
+            $person_processor = new PersonFromEmailProcessor();
 
-			$eml = new EmailAddress();
-			$eml->email = $user_email;
-			$person = $person_processor->createPerson($eml, true);
-		}
+            $eml = new EmailAddress();
+            $eml->email = $user_email;
+            $person = $person_processor->createPerson($eml, true);
+        }
 
-		$orig_person = $ticket->person;
+        $orig_person = $ticket->person;
 
-		if ($person) {
-			$ticket->person = $person;
-			$ticket->person_email = null;
-			$ticket->person_email_validating = null;
+        if ($person) {
+            $ticket->person = $person;
+            $ticket->person_email = null;
+            $ticket->person_email_validating = null;
 
-			if ($this->getActionOption('add_cc')) {
-				if (!$ticket->hasParticipantPerson($orig_person)) {
-					$ticket->addParticipantPerson($orig_person);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$user_email = $this->getActionOption('email_address');
-		if (!StringEmail::isValueValid($user_email)) {
-			return true;
-		}
-		if ($ticket->person->hasEmailAddress($user_email)) {
-			return true;
-		}
-
-		return false;
-	}
+            if ($this->getActionOption('add_cc')) {
+                if (!$ticket->hasParticipantPerson($orig_person)) {
+                    $ticket->addParticipantPerson($orig_person);
+                }
+            }
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_agent_id = $this->getActionOption('agent_id');
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
-			if ($set_agent_id == $person->getId()) {
-				if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-					return null;
-				}
-				return array('assign_self');
-			}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $user_email = $this->getActionOption('email_address');
+        if (!StringEmail::isValueValid($user_email)) {
+            return true;
+        }
+        if ($ticket->person->hasEmailAddress($user_email)) {
+            return true;
+        }
 
-			return array('assign_agent');
-		}
-
-		return null;
-	}
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_agent_id = $this->getActionOption('agent_id');
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
+            if ($set_agent_id == $person->getId()) {
+                if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
+                    return null;
+                }
+
+                return array('assign_self');
+            }
+
+            return array('assign_agent');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

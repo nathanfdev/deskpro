@@ -54,225 +54,226 @@ use Orb\Types\JsonObjectSerializable;
  */
 class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface, JsonObjectSerializable, \Countable, \IteratorAggregate
 {
-	/**
-	 * @var ActionComposite
-	 */
-	private $actions;
+    /**
+     * @var ActionComposite
+     */
+    private $actions;
 
-	/**
-	 * @var ActionFactory
-	 */
-	private $action_factory;
+    /**
+     * @var ActionFactory
+     */
+    private $action_factory;
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	public function __construct()
-	{
-		$this->actions = new ActionComposite();
-		$this->action_factory = new ActionFactory();
-	}
-
-
-	/**
-	 * @param ActionInterface $action
-	 * @throws \InvalidArgumentException
-	 */
-	public function addAction(ActionInterface $action)
-	{
-		if (!($action instanceof ActionDefinitionInterface)) {
-			$class_name = get_class($action);
-			throw new \InvalidArgumentException("TriggerActions can only manage terms terms that implement ActionDefinitionInterface. Invalid class: $class_name");
-		}
-		$this->actions->add($action);
-	}
+    public function __construct()
+    {
+        $this->actions = new ActionComposite();
+        $this->action_factory = new ActionFactory();
+    }
 
 
-	/**
-	 * @param array $action_info
-	 * @throws \InvalidArgumentException
-	 */
-	public function addActionFromArray(array $action_info)
-	{
-		$action = $this->action_factory->createFromArray($action_info);
-		$this->addAction($action);
-	}
+    /**
+     * @param  ActionInterface           $action
+     * @throws \InvalidArgumentException
+     */
+    public function addAction(ActionInterface $action)
+    {
+        if (!($action instanceof ActionDefinitionInterface)) {
+            $class_name = get_class($action);
+            throw new \InvalidArgumentException("TriggerActions can only manage terms terms that implement ActionDefinitionInterface. Invalid class: $class_name");
+        }
+        $this->actions->add($action);
+    }
 
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function setContainer(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param  array                     $action_info
+     * @throws \InvalidArgumentException
+     */
+    public function addActionFromArray(array $action_info)
+    {
+        $action = $this->action_factory->createFromArray($action_info);
+        $this->addAction($action);
+    }
 
 
-	/**
-	 * Gets the set container.
-	 *
-	 * @return DeskproContainer
-	 * @throws \RuntimeException When no container has been set yet
-	 */
-	protected function getContainer()
-	{
-		if (!$this->container) {
-			throw new \RuntimeException("No container has been set");
-		}
-
-		return $this->container;
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function setContainer(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($this->container && $this->actions instanceof DeskproContainerAwareInterface) {
-			$this->actions->setContainer($this->container);
-		}
+    /**
+     * Gets the set container.
+     *
+     * @return DeskproContainer
+     * @throws \RuntimeException When no container has been set yet
+     */
+    protected function getContainer()
+    {
+        if (!$this->container) {
+            throw new \RuntimeException("No container has been set");
+        }
 
-		$this->actions->applyAction($ticket, $context);
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->actions);
-	}
+        return $this->container;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function exportToArray()
-	{
-		$data = array();
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($this->container && $this->actions instanceof DeskproContainerAwareInterface) {
+            $this->actions->setContainer($this->container);
+        }
 
-		$data['version']  = 1;
-		$data['actions'] = array();
-		foreach ($this->actions->getAll() as $actions) {
-			if (!($actions instanceof ActionDefinitionInterface)) {
-				continue;
-			}
-
-			if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
-				$data['actions'][] = array(
-					'type'    => $actions->getActionType(),
-					'options' => $actions->getActionOptions()->all()
-				);
-			} else {
-				$data['actions'][] = array(
-					'type'       => $actions->getActionType(),
-					'type_class' => get_class($actions),
-					'options'    => $actions->getActionOptions()->all()
-				);
-			}
-		}
-
-		return $data;
-	}
+        $this->actions->applyAction($ticket, $context);
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Tickets\Actions\ActionInterface[]
-	 */
-	public function getActions()
-	{
-		return $this->actions->getAll();
-	}
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->actions);
+    }
 
 
-	/**
-	 * @return ActionComposite
-	 */
-	public function getIterator()
-	{
-		return $this->actions;
-	}
+    /**
+     * @return array
+     */
+    public function exportToArray()
+    {
+        $data = array();
+
+        $data['version']  = 1;
+        $data['actions'] = array();
+        foreach ($this->actions->getAll() as $actions) {
+            if (!($actions instanceof ActionDefinitionInterface)) {
+                continue;
+            }
+
+            if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
+                $data['actions'][] = array(
+                    'type'    => $actions->getActionType(),
+                    'options' => $actions->getActionOptions()->all()
+                );
+            } else {
+                $data['actions'][] = array(
+                    'type'       => $actions->getActionType(),
+                    'type_class' => get_class($actions),
+                    'options'    => $actions->getActionOptions()->all()
+                );
+            }
+        }
+
+        return $data;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function exportToJson()
-	{
-		return json_encode($this->exportToArray());
-	}
+    /**
+     * @return \Application\DeskPRO\Tickets\Actions\ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions->getAll();
+    }
 
 
-	/**
-	 * @param array $data
-	 */
-	public function importFromArray(array $data)
-	{
-		foreach ($data['actions'] as $action_info) {
-			$this->addActionFromArray($action_info);
-		}
-	}
+    /**
+     * @return ActionComposite
+     */
+    public function getIterator()
+    {
+        return $this->actions;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function serializeJsonArray()
-	{
-		return $this->exportToArray();
-	}
+    /**
+     * @return string
+     */
+    public function exportToJson()
+    {
+        return json_encode($this->exportToArray());
+    }
 
 
-	/**
-	 * @param array $data
-	 * @return TriggerActions
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data['actions'] as $action_info) {
-			try {
-				$obj->addActionFromArray($action_info);
-			} catch (\Exception $e) {
-				if (!empty($action_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
-				}
-			}
-		}
-		return $obj;
-	}
+    /**
+     * @param array $data
+     */
+    public function importFromArray(array $data)
+    {
+        foreach ($data['actions'] as $action_info) {
+            $this->addActionFromArray($action_info);
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return $this->exportToJson();
-	}
+    /**
+     * @return array
+     */
+    public function serializeJsonArray()
+    {
+        return $this->exportToArray();
+    }
 
 
-	/**
-	 * @param string $data
-	 */
-	public function unserialize($data)
-	{
-		$data = json_decode($data, true);
+    /**
+     * @param  array          $data
+     * @return TriggerActions
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data['actions'] as $action_info) {
+            try {
+                $obj->addActionFromArray($action_info);
+            } catch (\Exception $e) {
+                if (!empty($action_info['type'])) {
+                    KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
+                }
+            }
+        }
 
-		$this->__construct();
+        return $obj;
+    }
 
-		foreach ($data['actions'] as $action_info) {
-			try {
-				$this->addActionFromArray($action_info);
-			} catch (\Exception $e) {
-				if (!empty($action_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
-				}
-			}
-		}
-	}
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->exportToJson();
+    }
+
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $data = json_decode($data, true);
+
+        $this->__construct();
+
+        foreach ($data['actions'] as $action_info) {
+            try {
+                $this->addActionFromArray($action_info);
+            } catch (\Exception $e) {
+                if (!empty($action_info['type'])) {
+                    KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
+                }
+            }
+        }
+    }
 }

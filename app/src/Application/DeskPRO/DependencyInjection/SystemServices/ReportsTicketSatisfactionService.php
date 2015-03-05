@@ -39,9 +39,10 @@ use Application\DeskPRO\Reports\TicketSatisfaction;
 
 class ReportsTicketSatisfactionService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new TicketSatisfaction($container->getEm());
+
         return $x;
-	}
+    }
 }

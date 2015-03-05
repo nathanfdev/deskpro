@@ -48,119 +48,128 @@ use Orb\Log\Logger;
  */
 class Local implements AdapterInterface, FormLoginInterface, Loggable
 {
-	/**
-	 * Entity manager
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * Entity manager
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var Logger
-	 */
-	protected $logger;
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
-	/** @var string */
-	protected $email = '';
-	/** @var string */
-	protected $password = '';
+    /** @var string */
+    protected $email = '';
+    /** @var string */
+    protected $password = '';
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * Sets the data got from a form
-	 */
-	public function setFormData(array $form_data)
-	{
-		$identifier = isset($form_data['username']) ? $form_data['username'] : $form_data['email'];
-		$this->setCredentials($identifier, $form_data['password']);
-	}
+    /**
+     * Sets the data got from a form
+     *
+     * @param array $form_data
+     */
+    public function setFormData(array $form_data)
+    {
+        if (isset($form_data['username'])) {
+            $identifier = $form_data['username'];
+        } elseif (isset($form_data['email'])) {
+            $identifier = $form_data['email'];
+        } else {
+            $identifier = '';
+        }
 
-	public function setCredentials($email, $password)
-	{
-		$this->email = $email;
-		$this->password = $password;
-	}
+        $password = isset($form_data['password']) ? $form_data['password'] : '';
 
-	/**
-	 * Authenticate a user.
-	 *
-	 * @return
-	 */
-	public function authenticate()
-	{
-		$time_start = microtime(true);
-		if ($this->logger) {
-			$this->logger->log("START Local::authenticate", Logger::DEBUG);
-			$this->logger->log("Request: {$this->email}:{$this->password}", Logger::DEBUG);
-		}
+        $this->setCredentials($identifier, $password);
+    }
 
-		$qb = $this->em->createQueryBuilder();
-		$qb->select('p')
-			->from('DeskPRO:Person', 'p')
-			->leftJoin('p.emails', 'e')
-			->where('p.is_user = 1 AND p.is_deleted = 0')
-			->setMaxResults(1);
+    public function setCredentials($email, $password)
+    {
+        $this->email = $email;
+        $this->password = $password;
+    }
 
-		$qb->andWhere('e.email = ?2');
-		$qb->setParameter(2, $this->email);
+    /**
+     * Authenticate a user.
+     *
+     * @return
+     */
+    public function authenticate()
+    {
+        $time_start = microtime(true);
+        if ($this->logger) {
+            $this->logger->log("START Local::authenticate", Logger::DEBUG);
+            $this->logger->log("Request: {$this->email}:{$this->password}", Logger::DEBUG);
+        }
 
-		$person = null;
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('p')
+            ->from('DeskPRO:Person', 'p')
+            ->leftJoin('p.emails', 'e')
+            ->where('p.is_user = 1 AND p.is_deleted = 0')
+            ->setMaxResults(1);
 
-		try {
-			/** @var \Application\DeskPRO\Entity\Person $person */
-			$person = $qb->getQuery()->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {}
+        $qb->andWhere('e.email = ?2');
+        $qb->setParameter(2, $this->email);
 
-		if ($this->logger) {
+        $person = null;
 
-			if ($person) {
-				$this->logger->log("Found user " . $person->getId(), Logger::DEBUG);
-			} else {
-				$this->logger->log("No user found", Logger::DEBUG);
-			}
+        try {
+            /** @var \Application\DeskPRO\Entity\Person $person */
+            $person = $qb->getQuery()->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {}
 
-			$this->logger->log(
-				sprintf("END Local::authenticate (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
-			);
-		}
+        if ($this->logger) {
 
-		if (!$person OR !$person->checkPassword($this->password)) {
-			return new Result(Result::FAILURE_INVALID_CREDS);
-		}
+            if ($person) {
+                $this->logger->log("Found user " . $person->getId(), Logger::DEBUG);
+            } else {
+                $this->logger->log("No user found", Logger::DEBUG);
+            }
 
-		$identity = new Identity(
-			$person['id'],
-			array(
-				'email' => $person->primary_email->email,
-				'email_confirmed' => true
-			)
-		);
-		$identity->setFriendlyIdentity($person->primary_email->email);
-		$result = new Result(Result::SUCCESS, $identity);
+            $this->logger->log(
+                sprintf("END Local::authenticate (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+            );
+        }
 
-		return $result;
-	}
+        if (!$person OR !$person->checkPassword($this->password)) {
+            return new Result(Result::FAILURE_INVALID_CREDS);
+        }
 
+        $identity = new Identity(
+            $person['id'],
+            array(
+                'email' => $person->primary_email->email,
+                'email_confirmed' => true
+            )
+        );
+        $identity->setFriendlyIdentity($person->primary_email->email);
+        $result = new Result(Result::SUCCESS, $identity);
 
-	/**
-	 * Set the logger
-	 *
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+        return $result;
+    }
 
+    /**
+     * Set the logger
+     *
+     * @param \Orb\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
-	/**
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+    /**
+     * @return \Orb\Log\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 }

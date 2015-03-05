@@ -40,8 +40,6 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 
-use \Symfony\Component\HttpFoundation\Response;
-
 /**
  * Operations about Ticket fields
  *
@@ -53,19 +51,24 @@ use \Symfony\Component\HttpFoundation\Response;
  */
 class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
-
-
     /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
+
+
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
+
+	/**
      * @return Response;
      *
      * @SWG\Api(
@@ -78,24 +81,27 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function listAction()
-	{
-		$data = array();
+    public function listAction()
+    {
+        $data = array();
 
-		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		$custom_fields = $field_manager->getDefinedFields();
-		$data['custom_fields']  = $this->getApiData($custom_fields, false);
+        $custom_fields = $field_manager->getDefinedFields();
+        $data['custom_fields']  = $this->getApiData($custom_fields, false);
 
-		$data['product_enabled']  = $field_manager->isProductEnabled();
-		$data['category_enabled'] = $field_manager->isCategoryEnabled();
-		$data['priority_enabled'] = $field_manager->isPriorityEnabled();
-		$data['workflow_enabled'] = $field_manager->isWorkflowEnabled();
+        $data['product_enabled']  = $field_manager->isProductEnabled();
+        $data['category_enabled'] = $field_manager->isCategoryEnabled();
+        $data['priority_enabled'] = $field_manager->isPriorityEnabled();
+        $data['workflow_enabled'] = $field_manager->isWorkflowEnabled();
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
+    ####################################################################################################################
+    # get-custom-field
+    ####################################################################################################################
 
     /**
      * @param $id
@@ -123,18 +129,22 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function getCustomFieldAction($id)
-	{
-		$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
-		if (!$field || $field->parent) {
-			throw $this->createNotFoundException();
-		}
+    public function getCustomFieldAction($id)
+    {
+        $field = $this->em->find('DeskPRO:CustomDefTicket', $id);
+        if (!$field || $field->parent) {
+            throw $this->createNotFoundException();
+        }
 
-		$data = array();
-		$data['field'] = $field->toApiData();
+        $data = array();
+        $data['field'] = $field->toApiData();
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
+
+    ####################################################################################################################
+    # save-custom-field
+    ####################################################################################################################
 
     /**
      * @param $id
@@ -173,37 +183,40 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function saveCustomFieldAction($id)
-	{
-		if ($id) {
-			$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
-			if (!$field || $field->parent) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$field = $this->container->getTicketFieldManager()->createNewDefEntity();
-			$field->handler_class = $this->in->getString('handler_class');
-		}
+    public function saveCustomFieldAction($id)
+    {
+        if ($id) {
+            $field = $this->em->find('DeskPRO:CustomDefTicket', $id);
+            if (!$field || $field->parent) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $field = $this->container->getTicketFieldManager()->createNewDefEntity();
+            $field->handler_class = $this->in->getString('handler_class');
+        }
 
-		$post = $this->in->getAll('req');
+        $post = $this->in->getAll('req');
 
-		$helper = new CustomFieldHelper($this);
-		$helper->saveFormToField($field, $post);
+        $helper = new CustomFieldHelper($this);
+        $helper->saveFormToField($field, $post);
 
-		if ($id) {
-			return $this->createSuccessResponse(array(
-				'field_id' => $field->id
-			));
-		} else {
-			return $this->createSuccessResponse(array(
-				'field_id' => $field->id,
-				$this->generateUrl('api_ticket_fields_get', array('id' => $field->id))
-			));
-		}
-	}
+        if ($id) {
+            return $this->createSuccessResponse(array(
+                'field_id' => $field->id
+            ));
+        } else {
+            return $this->createSuccessResponse(array(
+                'field_id' => $field->id,
+                $this->generateUrl('api_ticket_fields_get', array('id' => $field->id))
+            ));
+        }
+    }
 
+    ####################################################################################################################
+    # delete-custom-field
+    ####################################################################################################################
 
-    /**
+	/**
      * @param $id
      * @return Response
      * @throws \Doctrine\ORM\ORMException
@@ -229,18 +242,22 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function deleteCustomFieldAction($id)
-	{
-		$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
-		if (!$field || $field->parent) {
-			throw $this->createNotFoundException();
-		}
+    public function deleteCustomFieldAction($id)
+    {
+        $field = $this->em->find('DeskPRO:CustomDefTicket', $id);
+        if (!$field || $field->parent) {
+            throw $this->createNotFoundException();
+        }
 
-		$this->em->remove($field);
-		$this->em->flush();
+        $this->em->remove($field);
+        $this->em->flush();
 
-		return $this->createApiDeleteResponse();
-	}
+        return $this->createApiDeleteResponse();
+    }
+
+    ####################################################################################################################
+    # toggleField
+    ####################################################################################################################
 
     /**
      * @param $field_id
@@ -273,318 +290,315 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-	public function toggleFieldAction($field_id, $is_enabled)
-	{
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
-		$field_manager->setFieldEnabledById($field_id, $is_enabled);
+    public function toggleFieldAction($field_id, $is_enabled)
+    {
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
+        $field_manager->setFieldEnabledById($field_id, $is_enabled);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 
 
-	####################################################################################################################
-	# list-categories
-	####################################################################################################################
+    ####################################################################################################################
+    # list-categories
+    ####################################################################################################################
 
-	public function listCategoriesAction()
-	{
-		$data = array();
+    public function listCategoriesAction()
+    {
+        $data = array();
 
-		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		$ticket_cats = $this->container->getSystemService('ticket_categories');
-		$flat_array = $ticket_cats->getFlatArray();
+        $ticket_cats = $this->container->getSystemService('ticket_categories');
+        $flat_array = $ticket_cats->getFlatArray();
 
-		$cats = array();
-		foreach ($flat_array as $row) {
-			$cats[] = $row['object'];
-		}
+        $cats = array();
+        foreach ($flat_array as $row) {
+            $cats[] = $row['object'];
+        }
 
-		$data['categories']     = $this->getApiData($cats, false);
-		$data['default_id']     = $ticket_cats->count() ? $ticket_cats->getDefaultCategory()->getId() : 0;
-		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
-		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
-		$data['enabled']        = $field_manager->isCategoryEnabled();
+        $data['categories']     = $this->getApiData($cats, false);
+        $data['default_id']     = $ticket_cats->count() ? $ticket_cats->getDefaultCategory()->getId() : 0;
+        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
+        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
+        $data['enabled']        = $field_manager->isCategoryEnabled();
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
+
+    ####################################################################################################################
+    # save-categories
+    ####################################################################################################################
+
+    public function saveCategoriesAction()
+    {
+        $structure  = $this->in->getArrayValue('categories');
 
-	####################################################################################################################
-	# save-categories
-	####################################################################################################################
+        #------------------------------
+        # Save structure
+        #------------------------------
+
+        $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketCategory');
+        $recs = $proc->getRecords($structure);
+        $recs = $proc->saveRecords($recs, true);
+
+        // Save status
+        if (count($recs)) {
+            $this->settings->setSetting('core.use_ticket_category', $this->in->getBoolInt('enabled'));
+        } else {
+            $this->settings->setSetting('core.use_ticket_category', '0');
+        }
 
-	public function saveCategoriesAction()
-	{
-		$structure  = $this->in->getArrayValue('categories');
+        #------------------------------
+        # Save default
+        #------------------------------
 
-		#------------------------------
-		# Save structure
-		#------------------------------
+        $default_id = $this->in->getString('default_id');
 
-		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketCategory');
-		$recs = $proc->getRecords($structure);
-		$recs = $proc->saveRecords($recs, true);
+        if (isset($recs[$default_id])) {
+            // Get id from $recs since the id might've been one
+            // generated on the client
+            $id = $recs[$default_id]->id;
+        } else {
+            $id = '0';
+        }
 
-		// Save status
-		if (count($recs)) {
-			$this->settings->setSetting('core.use_ticket_category', $this->in->getBoolInt('enabled'));
-		} else {
-			$this->settings->setSetting('core.use_ticket_category', '0');
-		}
+        $this->settings->setSetting('core.default_ticket_cat', $id);
 
-		#------------------------------
-		# Save default
-		#------------------------------
+        #------------------------------
+        # Save validation settings
+        #------------------------------
 
-		$default_id = $this->in->getString('default_id');
+        $this->settings->setSetting('core_tickets.field_validation_ticket_cat_user_required', $this->in->getBoolInt('user_required'));
+        $this->settings->setSetting('core_tickets.field_validation_ticket_cat_agent_required', $this->in->getBoolInt('agent_required'));
 
-		if (isset($recs[$default_id])) {
-			// Get id from $recs since the id might've been one
-			// generated on the client
-			$id = $recs[$default_id]->id;
-		} else {
-			$id = '0';
-		}
+        return $this->createSuccessResponse();
+    }
 
-		$this->settings->setSetting('core.default_ticket_cat', $id);
+    ####################################################################################################################
+    # list-products
+    ####################################################################################################################
 
-		#------------------------------
-		# Save validation settings
-		#------------------------------
+    public function listProductsAction()
+    {
+        $data = array();
 
-		$this->settings->setSetting('core_tickets.field_validation_ticket_cat_user_required', $this->in->getBoolInt('user_required'));
-		$this->settings->setSetting('core_tickets.field_validation_ticket_cat_agent_required', $this->in->getBoolInt('agent_required'));
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		return $this->createSuccessResponse();
-	}
+        $ticket_prods = $this->container->getSystemService('products');
+        $flat_array = $ticket_prods->getFlatArray();
 
-	####################################################################################################################
-	# list-products
-	####################################################################################################################
+        $cats = array();
+        foreach ($flat_array as $row) {
+            $cats[] = $row['object'];
+        }
 
-	public function listProductsAction()
-	{
-		$data = array();
+        $data['products']       = $this->getApiData($cats, false);
+        $data['default_id']     = $ticket_prods->count() ? $ticket_prods->getDefaultProduct()->getId() : 0;
+        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
+        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
+        $data['enabled']        = $field_manager->isProductEnabled();
 
-		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+        return $this->createApiResponse($data);
+    }
 
-		$ticket_prods = $this->container->getSystemService('products');
-		$flat_array = $ticket_prods->getFlatArray();
+    ####################################################################################################################
+    # save-products
+    ####################################################################################################################
 
-		$cats = array();
-		foreach ($flat_array as $row) {
-			$cats[] = $row['object'];
-		}
+    public function saveProductsAction()
+    {
+        $structure  = $this->in->getArrayValue('products');
 
-		$data['products']       = $this->getApiData($cats, false);
-		$data['default_id']     = $ticket_prods->count() ? $ticket_prods->getDefaultProduct()->getId() : 0;
-		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
-		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
-		$data['enabled']        = $field_manager->isProductEnabled();
+        #------------------------------
+        # Save structure
+        #------------------------------
 
-		return $this->createApiResponse($data);
-	}
+        $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:Product');
+        $recs = $proc->getRecords($structure);
+        $recs = $proc->saveRecords($recs, true);
 
+        // Save status
+        if (count($recs)) {
+            $this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
+        } else {
+            $this->settings->setSetting('core.use_product', '0');
+        }
 
-	####################################################################################################################
-	# save-products
-	####################################################################################################################
+        #------------------------------
+        # Save default
+        #------------------------------
 
-	public function saveProductsAction()
-	{
-		$structure  = $this->in->getArrayValue('products');
+        $default_id = $this->in->getString('default_id');
 
-		#------------------------------
-		# Save structure
-		#------------------------------
+        if (isset($recs[$default_id])) {
+            // Get id from $recs since the id might've been one
+            // generated on the client
+            $id = $recs[$default_id]->id;
+        } else {
+            $id = '0';
+        }
 
-		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:Product');
-		$recs = $proc->getRecords($structure);
-		$recs = $proc->saveRecords($recs, true);
+        $this->settings->setSetting('core.default_prod_id', $id);
 
-		// Save status
-		if (count($recs)) {
-			$this->settings->setSetting('core.use_product', $this->in->getBoolInt('enabled'));
-		} else {
-			$this->settings->setSetting('core.use_product', '0');
-		}
+        #------------------------------
+        # Save validation settings
+        #------------------------------
 
-		#------------------------------
-		# Save default
-		#------------------------------
+        $this->settings->setSetting('core_tickets.field_validation_ticket_prod_user_required', $this->in->getBoolInt('user_required'));
+        $this->settings->setSetting('core_tickets.field_validation_ticket_prod_agent_required', $this->in->getBoolInt('agent_required'));
 
-		$default_id = $this->in->getString('default_id');
+        return $this->createSuccessResponse();
+    }
 
-		if (isset($recs[$default_id])) {
-			// Get id from $recs since the id might've been one
-			// generated on the client
-			$id = $recs[$default_id]->id;
-		} else {
-			$id = '0';
-		}
 
-		$this->settings->setSetting('core.default_prod_id', $id);
+    ####################################################################################################################
+    # list-workflows
+    ####################################################################################################################
 
-		#------------------------------
-		# Save validation settings
-		#------------------------------
+    public function listWorkflowsAction()
+    {
+        $data = array();
 
-		$this->settings->setSetting('core_tickets.field_validation_ticket_prod_user_required', $this->in->getBoolInt('user_required'));
-		$this->settings->setSetting('core_tickets.field_validation_ticket_prod_agent_required', $this->in->getBoolInt('agent_required'));
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		return $this->createSuccessResponse();
-	}
+        $ticket_works = $this->container->getSystemService('ticket_workflows');
 
+        $data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
+        $data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
+        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
+        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
+        $data['enabled']        = $field_manager->isWorkflowEnabled();
 
-	####################################################################################################################
-	# list-workflows
-	####################################################################################################################
+        return $this->createApiResponse($data);
+    }
 
-	public function listWorkflowsAction()
-	{
-		$data = array();
 
-		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+    ####################################################################################################################
+    # save-workflows
+    ####################################################################################################################
 
-		$ticket_works = $this->container->getSystemService('ticket_workflows');
+    public function saveWorkflowsAction()
+    {
+        $structure  = $this->in->getArrayValue('workflows');
 
-		$data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
-		$data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
-		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
-		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
-		$data['enabled']        = $field_manager->isWorkflowEnabled();
+        #------------------------------
+        # Save structure
+        #------------------------------
 
-		return $this->createApiResponse($data);
-	}
+        $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketWorkflow');
+        $proc->disableHierarchy();
 
+        $recs = $proc->getRecords($structure);
+        $recs = $proc->saveRecords($recs, true);
 
-	####################################################################################################################
-	# save-workflows
-	####################################################################################################################
+        // Save status
+        if (count($recs)) {
+            $this->settings->setSetting('core.use_ticket_workflow', $this->in->getBoolInt('enabled'));
+        } else {
+            $this->settings->setSetting('core.use_ticket_workflow', '0');
+        }
 
-	public function saveWorkflowsAction()
-	{
-		$structure  = $this->in->getArrayValue('workflows');
+        #------------------------------
+        # Save default
+        #------------------------------
 
-		#------------------------------
-		# Save structure
-		#------------------------------
+        $default_id = $this->in->getString('default_id');
 
-		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketWorkflow');
-		$proc->disableHierarchy();
+        if (isset($recs[$default_id])) {
+            // Get id from $recs since the id might've been one
+            // generated on the client
+            $id = $recs[$default_id]->id;
+        } else {
+            $id = '0';
+        }
 
-		$recs = $proc->getRecords($structure);
-		$recs = $proc->saveRecords($recs, true);
+        $this->settings->setSetting('core.default_ticket_work', $id);
 
-		// Save status
-		if (count($recs)) {
-			$this->settings->setSetting('core.use_ticket_workflow', $this->in->getBoolInt('enabled'));
-		} else {
-			$this->settings->setSetting('core.use_ticket_workflow', '0');
-		}
+        #------------------------------
+        # Save validation settings
+        #------------------------------
 
-		#------------------------------
-		# Save default
-		#------------------------------
+        $this->settings->setSetting('core_tickets.field_validation_ticket_work_user_required', $this->in->getBoolInt('user_required'));
+        $this->settings->setSetting('core_tickets.field_validation_ticket_work_agent_required', $this->in->getBoolInt('agent_required'));
 
-		$default_id = $this->in->getString('default_id');
+        return $this->createSuccessResponse();
+    }
 
-		if (isset($recs[$default_id])) {
-			// Get id from $recs since the id might've been one
-			// generated on the client
-			$id = $recs[$default_id]->id;
-		} else {
-			$id = '0';
-		}
+    ####################################################################################################################
+    # list-priorities
+    ####################################################################################################################
 
-		$this->settings->setSetting('core.default_ticket_work', $id);
+    public function listPrioritiesAction()
+    {
+        $data = array();
 
-		#------------------------------
-		# Save validation settings
-		#------------------------------
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		$this->settings->setSetting('core_tickets.field_validation_ticket_work_user_required', $this->in->getBoolInt('user_required'));
-		$this->settings->setSetting('core_tickets.field_validation_ticket_work_agent_required', $this->in->getBoolInt('agent_required'));
+        $ticket_pris = $this->container->getSystemService('ticket_priorities');
 
-		return $this->createSuccessResponse();
-	}
+        $data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
+        $data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
+        $data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
+        $data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
+        $data['enabled']        = $field_manager->isPriorityEnabled();
 
+        return $this->createApiResponse($data);
+    }
 
-	####################################################################################################################
-	# list-priorities
-	####################################################################################################################
+    ####################################################################################################################
+    # save-priorities
+    ####################################################################################################################
 
-	public function listPrioritiesAction()
-	{
-		$data = array();
+    public function savePrioritiesAction()
+    {
+        $structure  = $this->in->getArrayValue('priorities');
 
-		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+        #------------------------------
+        # Save structure
+        #------------------------------
 
-		$ticket_pris = $this->container->getSystemService('ticket_priorities');
+        $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority', array('priority'));
+        $proc->disableHierarchy();
 
-		$data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
-		$data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
-		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
-		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
-		$data['enabled']        = $field_manager->isPriorityEnabled();
+        $recs = $proc->getRecords($structure);
+        $recs = $proc->saveRecords($recs, true);
 
-		return $this->createApiResponse($data);
-	}
+        // Save status
+        if (count($recs)) {
+            $this->settings->setSetting('core.use_ticket_priority', $this->in->getBoolInt('enabled'));
+        } else {
+            $this->settings->setSetting('core.use_ticket_priority', '0');
+        }
 
+        #------------------------------
+        # Save default
+        #------------------------------
 
-	####################################################################################################################
-	# save-priorities
-	####################################################################################################################
+        $default_id = $this->in->getString('default_id');
 
-	public function savePrioritiesAction()
-	{
-		$structure  = $this->in->getArrayValue('priorities');
+        if (isset($recs[$default_id])) {
+            // Get id from $recs since the id might've been one
+            // generated on the client
+            $id = $recs[$default_id]->id;
+        } else {
+            $id = '0';
+        }
 
-		#------------------------------
-		# Save structure
-		#------------------------------
+        $this->settings->setSetting('core.default_ticket_pri', $id);
 
-		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority', array('priority'));
-		$proc->disableHierarchy();
+        #------------------------------
+        # Save validation settings
+        #------------------------------
 
-		$recs = $proc->getRecords($structure);
-		$recs = $proc->saveRecords($recs, true);
+        $this->settings->setSetting('core_tickets.field_validation_ticket_pri_user_required', $this->in->getBoolInt('user_required'));
+        $this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
 
-		// Save status
-		if (count($recs)) {
-			$this->settings->setSetting('core.use_ticket_priority', $this->in->getBoolInt('enabled'));
-		} else {
-			$this->settings->setSetting('core.use_ticket_priority', '0');
-		}
-
-		#------------------------------
-		# Save default
-		#------------------------------
-
-		$default_id = $this->in->getString('default_id');
-
-		if (isset($recs[$default_id])) {
-			// Get id from $recs since the id might've been one
-			// generated on the client
-			$id = $recs[$default_id]->id;
-		} else {
-			$id = '0';
-		}
-
-		$this->settings->setSetting('core.default_ticket_pri', $id);
-
-		#------------------------------
-		# Save validation settings
-		#------------------------------
-
-		$this->settings->setSetting('core_tickets.field_validation_ticket_pri_user_required', $this->in->getBoolInt('user_required'));
-		$this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
-
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

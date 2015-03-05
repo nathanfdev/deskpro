@@ -39,9 +39,9 @@
  */
 
 if (version_compare(PHP_VERSION, '5.4', '>=')) {
-	$__olde = error_reporting(E_ALL ^ E_STRICT);
+    $__olde = error_reporting(E_ALL ^ E_STRICT);
 } else {
-	$__olde = error_reporting(E_ALL);
+    $__olde = error_reporting(E_ALL);
 }
 require __DIR__.'/StaticReflectionProperty_Real.php';
 error_reporting($__olde);

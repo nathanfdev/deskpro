@@ -36,28 +36,28 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1375876072 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Insert default value for new agent_chat.view_transcripts permission");
-		$copy = $this->container->getDb()->fetchAll("
-			SELECT usergroup_id, person_id
-			FROM permissions
-			WHERE name = 'agent_chat.use'
-		");
+    public function run()
+    {
+        $this->out("Insert default value for new agent_chat.view_transcripts permission");
+        $copy = $this->container->getDb()->fetchAll("
+            SELECT usergroup_id, person_id
+            FROM permissions
+            WHERE name = 'agent_chat.use'
+        ");
 
-		$insert = array();
+        $insert = array();
 
-		foreach ($copy as $r) {
-			$insert[] = array(
-				'usergroup_id' => $r['usergroup_id'] ?: null,
-				'person_id'    => $r['person_id'] ?: null,
-				'value'        => 1,
-				'name'         => 'agent_chat.view_transcripts'
-			);
-		}
+        foreach ($copy as $r) {
+            $insert[] = array(
+                'usergroup_id' => $r['usergroup_id'] ?: null,
+                'person_id'    => $r['person_id'] ?: null,
+                'value'        => 1,
+                'name'         => 'agent_chat.view_transcripts'
+            );
+        }
 
-		if ($insert) {
-			$this->container->getDb()->batchInsert('permissions', $insert, true);
-		}
-	}
+        if ($insert) {
+            $this->container->getDb()->batchInsert('permissions', $insert, true);
+        }
+    }
 }

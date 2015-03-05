@@ -7,6 +7,8 @@
  * Specifies that all child elements must match to evaluate to true.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_ProtectionRuleConditionType.
  */
 class EWSType_ProtectionRuleAndType extends EWSType
 {

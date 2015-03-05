@@ -38,44 +38,44 @@ use Application\DeskPRO\Settings\Settings;
 
 class ChatSetup
 {
-	/**
-	 * @var \Application\DeskPRO\Settings\Settings
-	 */
+    /**
+     * @var \Application\DeskPRO\Settings\Settings
+     */
 
-	private $settings;
+    private $settings;
 
-	/**
-	 * @param \Application\DeskPRO\Settings\Settings $settings
-	 */
+    /**
+     * @param \Application\DeskPRO\Settings\Settings $settings
+     */
 
-	public function __construct(Settings $settings)
-	{
-		$this->settings = $settings;
-	}
+    public function __construct(Settings $settings)
+    {
+        $this->settings = $settings;
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getChatInfo()
-	{
-		$chat_online = ChatAvailableCheck::getAvailableTime();
-		$chat_online = (bool)$chat_online;
+    public function getChatInfo()
+    {
+        $chat_online = ChatAvailableCheck::getAvailableTime();
+        $chat_online = (bool)$chat_online;
 
-		$chat_enabled = (bool) $this->settings->get('core.apps_chat');
+        $chat_enabled = (bool) $this->settings->get('core.apps_chat');
 
-		return array(
-			'chat_online'  => $chat_online,
-			'chat_enabled' => $chat_enabled,
-		);
-	}
+        return array(
+            'chat_online'  => $chat_online,
+            'chat_enabled' => $chat_enabled,
+        );
+    }
 
-	/**
-	 * @param int $is_enabled
-	 */
+    /**
+     * @param int $is_enabled
+     */
 
-	public function setChatEnabled($is_enabled = 1)
-	{
-		$this->settings->setSetting('core.apps_chat', (int) $is_enabled);
-	}
+    public function setChatEnabled($is_enabled = 1)
+    {
+        $this->settings->setSetting('core.apps_chat', (int) $is_enabled);
+    }
 }

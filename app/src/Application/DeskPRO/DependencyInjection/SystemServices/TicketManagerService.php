@@ -39,9 +39,10 @@ use Application\DeskPRO\Tickets\TicketManager;
 
 class TicketManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$s = new TicketManager($container);
-		return $s;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $s = new TicketManager($container);
+
+        return $s;
+    }
 }

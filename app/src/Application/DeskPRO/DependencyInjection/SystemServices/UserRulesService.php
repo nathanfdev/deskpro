@@ -39,9 +39,10 @@ use Application\DeskPRO\UserRules\UserRules;
 
 class UserRulesService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new UserRules($container->getEm());
+
         return $x;
-	}
+    }
 }

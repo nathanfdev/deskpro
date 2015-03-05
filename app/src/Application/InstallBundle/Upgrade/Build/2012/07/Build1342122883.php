@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1342122883 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Clear permission cache");
-		$this->execMutateSql("TRUNCATE TABLE permissions_cache");
-	}
+    public function run()
+    {
+        $this->out("Clear permission cache");
+        $this->execMutateSql("TRUNCATE TABLE permissions_cache");
+    }
 }

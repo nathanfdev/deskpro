@@ -39,39 +39,39 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EditAppType extends AbstractType
 {
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array                $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('app_id', 'text', array('required' => true));
-		$builder->add('app_secret', 'text', array('required' => true));
-		$builder->add('name', 'text', array('required' => true));
-		$builder->add('icon_url', 'text', array('required' => false));
-		$builder->add('logo_url', 'text', array('required' => false));
-	}
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('app_id', 'text', array('required' => true));
+        $builder->add('app_secret', 'text', array('required' => true));
+        $builder->add('name', 'text', array('required' => true));
+        $builder->add('icon_url', 'text', array('required' => false));
+        $builder->add('logo_url', 'text', array('required' => false));
+    }
 
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				'data_class'         => 'Application\\DeskPRO\\Facebook\\EditApp',
-				'cascade_validation' => true,
-			)
-		);
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                'data_class'         => 'Application\\DeskPRO\\Facebook\\EditApp',
+                'cascade_validation' => true,
+            )
+        );
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'app';
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'app';
+    }
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340223910 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add sys_name to custom_def_feedback table");
-		$this->execMutateSql("ALTER TABLE custom_def_feedback ADD sys_name VARCHAR(100) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add sys_name to custom_def_feedback table");
+        $this->execMutateSql("ALTER TABLE custom_def_feedback ADD sys_name VARCHAR(100) DEFAULT NULL");
+    }
 }

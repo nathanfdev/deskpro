@@ -26,13 +26,13 @@ dp_load_config();
 #------------------------------
 
 if (!defined('DP_CHATSTATUS_AUTH')) {
-	echo "DP_CHATSTATUS_AUTH_UNDEFINED";
-	exit(1);
+    echo "DP_CHATSTATUS_AUTH_UNDEFINED";
+    exit(1);
 }
 
 if (!isset($_GET['auth']) || $_GET['auth'] != DP_CHATSTATUS_AUTH) {
-	echo "DP_CHATSTATUS_AUTH_INVALID";
-	exit(1);
+    echo "DP_CHATSTATUS_AUTH_INVALID";
+    exit(1);
 }
 
 #------------------------------
@@ -41,17 +41,17 @@ if (!isset($_GET['auth']) || $_GET['auth'] != DP_CHATSTATUS_AUTH) {
 
 $trigger_file = dp_get_data_dir() . '/chat_is_available.trigger';
 if (isset($_GET['is_chat_available']) && $_GET['is_chat_available']) {
-	if (!file_put_contents($trigger_file, time())) {
-		echo "DP_CHATSTATUS_FAIL_AVAILABLE";
-		exit;
-	}
-	@chmod($trigger_File, 0777);
-	echo "DP_CHATSTATUS_WROTE_AVAILABLE";
+    if (!file_put_contents($trigger_file, time())) {
+        echo "DP_CHATSTATUS_FAIL_AVAILABLE";
+        exit;
+    }
+    @chmod($trigger_File, 0777);
+    echo "DP_CHATSTATUS_WROTE_AVAILABLE";
 } else {
-	if (file_exists($trigger_file) && !unlink($trigger_file)) {
-		echo "DP_CHATSTATUS_FAILED_UNAVAILABLE";
-		exit;
-	}
+    if (file_exists($trigger_file) && !unlink($trigger_file)) {
+        echo "DP_CHATSTATUS_FAILED_UNAVAILABLE";
+        exit;
+    }
 
-	echo "DP_CHATSTATUS_WROTE_UNAVAILABLE";
+    echo "DP_CHATSTATUS_WROTE_UNAVAILABLE";
 }

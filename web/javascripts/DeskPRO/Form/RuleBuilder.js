@@ -352,6 +352,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 			ruleHandlerObj = Orb.getNamespacedObject(ruleHandlerName);
 			ruleHandler = new ruleHandlerObj({
 				ruleBuilder: this,
+				tpl: rule_tpl,
 				rowEl: row,
 				rowId: rowId,
 				opMenu: row.find('select.op')

@@ -39,37 +39,37 @@ namespace Application\DeskPRO\Dpql\Renderer\Values;
  */
 class Text extends AbstractValues
 {
-	/**
-	 * Renders a null value.
-	 *
-	 * @return string
-	 */
-	protected function _renderNull()
-	{
-		return 'None';
-	}
+    /**
+     * Renders a null value.
+     *
+     * @return string
+     */
+    protected function _renderNull()
+    {
+        return 'None';
+    }
 
-	/**
-	 * Renders a boolean value.
-	 *
-	 * @param boolean $value
-	 *
-	 * @return string
-	 */
-	protected function _renderBoolean($value)
-	{
-		return ($value ? 'Y' : 'N');
-	}
+    /**
+     * Renders a boolean value.
+     *
+     * @param boolean $value
+     *
+     * @return string
+     */
+    protected function _renderBoolean($value)
+    {
+        return ($value ? 'Y' : 'N');
+    }
 
-	/**
-	 * Escapes the value for direct output.
-	 *
-	 * @param string $value
-	 *
-	 * @return string
-	 */
-	public function escapeValue($value)
-	{
-		return $value;
-	}
+    /**
+     * Escapes the value for direct output.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function escapeValue($value)
+    {
+        return $value;
+    }
 }

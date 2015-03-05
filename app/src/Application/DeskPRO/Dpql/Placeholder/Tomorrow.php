@@ -42,18 +42,18 @@ use Application\DeskPRO\Dpql;
  */
 class Tomorrow extends AbstractDateRange
 {
-	/**
-	 * Gets the date range components (printable, start, end).
-	 *
-	 * @return string[int]
-	 */
-	protected function _getDateRange()
-	{
-		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('+1 day', new \DateTimeZone($tz));
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
+     */
+    protected function _getDateRange()
+    {
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('+1 day', new \DateTimeZone($tz));
 
-		$day = $date->format('Y-m-d');
+        $day = $date->format('Y-m-d');
 
-		return array($day, "$day 00:00:00", "$day 23:59:59");
-	}
+        return array($day, "$day 00:00:00", "$day 23:59:59");
+    }
 }

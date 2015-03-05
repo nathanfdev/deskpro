@@ -39,30 +39,30 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 abstract class CustomFieldTypeAbstract extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		#------------------------------
-		# Basic fields
-		#------------------------------
+        #------------------------------
+        # Basic fields
+        #------------------------------
 
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add('description', 'textarea', array('required' => false));
-		$builder->add('default_value', 'text', array('required' => false));
-		$builder->add('handler_class', 'hidden', array('required' => true));
-		$builder->add('validation_type', 'hidden', array('required' => false));
-		$builder->add('agent_validation_type', 'hidden', array('required' => false));
-		$builder->add('agent_validation_resolve', 'hidden', array('required' => false));
+        $builder->add('title', 'text', array('required' => true));
+        $builder->add('description', 'textarea', array('required' => false));
+        $builder->add('default_value', 'text', array('required' => false));
+        $builder->add('handler_class', 'hidden', array('required' => true));
+        $builder->add('validation_type', 'hidden', array('required' => false));
+        $builder->add('agent_validation_type', 'hidden', array('required' => false));
+        $builder->add('agent_validation_resolve', 'hidden', array('required' => false));
 
-		$builder->add('required', 'checkbox', array('required' => false));
-		$builder->add('custom_css_classname', 'text', array('required' => false));
+        $builder->add('required', 'checkbox', array('required' => false));
+        $builder->add('custom_css_classname', 'text', array('required' => false));
 
-	    $builder->add('is_enabled', 'checkbox', array('required' => false));
-	    $builder->add('is_agent_field', 'checkbox', array('required' => false));
+        $builder->add('is_enabled', 'checkbox', array('required' => false));
+        $builder->add('is_agent_field', 'checkbox', array('required' => false));
 
-		$this->buildCustomFieldForm($builder, $options);
+        $this->buildCustomFieldForm($builder, $options);
     }
 
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options) {}
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options) {}
 
     public function getName()
     {

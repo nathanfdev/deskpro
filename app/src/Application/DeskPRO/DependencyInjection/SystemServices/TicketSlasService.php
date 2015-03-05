@@ -39,9 +39,10 @@ use Application\DeskPRO\Tickets\TicketSlas;
 
 class TicketSlasService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new TicketSlas($container->getEm());
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new TicketSlas($container->getEm());
+
+        return $x;
+    }
 }

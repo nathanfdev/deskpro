@@ -39,58 +39,59 @@ use Orb\Log\Logger as OrbLogger;
 
 class OrbLoggerAdapterHandler extends AbstractHandler
 {
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	private $orb_logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    private $orb_logger;
 
-	/**
-	 * @var array
-	 */
-	private static $pri_map = array(
-		100 => 'DEBUG',
-		200 => 'INFO',
-		250 => 'NOTICE',
-		300 => 'WARN',
-		400 => 'ERR',
-		500 => 'CRIT',
-		550 => 'ALERT',
-		600 => 'EMERG',
-	);
+    /**
+     * @var array
+     */
+    private static $pri_map = array(
+        100 => 'DEBUG',
+        200 => 'INFO',
+        250 => 'NOTICE',
+        300 => 'WARN',
+        400 => 'ERR',
+        500 => 'CRIT',
+        550 => 'ALERT',
+        600 => 'EMERG',
+    );
 
-	public function __construct(OrbLogger $logger)
-	{
-		$this->orb_logger = $logger;
-	}
+    public function __construct(OrbLogger $logger)
+    {
+        $this->orb_logger = $logger;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isHandling(array $record)
-	{
-		if (!$this->orb_logger->isEnabled()) {
-			return false;
-		}
-		if (!count($this->orb_logger->getWriterChain())) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isHandling(array $record)
+    {
+        if (!$this->orb_logger->isEnabled()) {
+            return false;
+        }
+        if (!count($this->orb_logger->getWriterChain())) {
+            return false;
+        }
 
-	public function handle(array $record)
-	{
-		if (!$this->isHandling($record)) {
-			return false;
-		}
+        return true;
+    }
 
-		if (!isset(self::$pri_map[$record['level']])) {
-			$pri = 'NOTICE';
-		} else {
-			$pri = self::$pri_map[$record['level']];
-		}
+    public function handle(array $record)
+    {
+        if (!$this->isHandling($record)) {
+            return false;
+        }
 
-		$this->orb_logger->log($record['message'], $pri);
+        if (!isset(self::$pri_map[$record['level']])) {
+            $pri = 'NOTICE';
+        } else {
+            $pri = self::$pri_map[$record['level']];
+        }
 
-		return false;
-	}
+        $this->orb_logger->log($record['message'], $pri);
+
+        return false;
+    }
 }

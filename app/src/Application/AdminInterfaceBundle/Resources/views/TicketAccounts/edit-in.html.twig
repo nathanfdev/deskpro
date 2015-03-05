@@ -22,6 +22,7 @@
 				<option value="imap">IMAP</option>
 				<option value="pop3">POP3</option>
 				<option value="gmail">GMail or Google Apps</option>
+				<option value="office365">Office365</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
@@ -195,6 +196,34 @@
 					<tr>
 						<th>Password</th>
 						<td><input type="password" class="form-control" name="title" ng-model="form.in_gmail_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{#############}
+		{# Office365 #}
+		{#############}
+
+		<div class="ng-hide" ng-show="form.incoming_type == 'office365'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="100">Email Address</th>
+						<td>
+							<span ng-show="form.address">{{ ng_var('form.address') }}</span>
+							<span ng-hide="form.address">Enter your email address above</span>
+						</td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.in_office365_account.password" style="width: 50%;" /></td>
 					</tr>
 					<tr>
 						<th>&nbsp;</th>

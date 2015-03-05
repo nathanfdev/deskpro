@@ -51,119 +51,117 @@ use Orb\Validator\StringEmail;
  */
 class SetCcs extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('add_emails', 'remove_emails', 'add_org_managers');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('add_emails', 'remove_emails', 'add_org_managers');
 
+        return $options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		#------------------------------
-		# Add org managers
-		#------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        #------------------------------
+        # Add org managers
+        #------------------------------
 
-		if ($this->getActionOption('add_org_managers') && $ticket->organization) {
-			$managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
-			foreach ($managers AS $manager) {
-				if (!$ticket->hasParticipantPerson($manager)) {
-					$context->getLogger()->debug(sprintf("[SetCcs] Adding org manager %d %s %s", $manager->id, $manager->getDisplayName(), $manager->primary_email->email));
-					$ticket->addParticipantPerson($manager);
-				}
-			}
-		}
+        if ($this->getActionOption('add_org_managers') && $ticket->organization) {
+            $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
+            foreach ($managers AS $manager) {
+                if (!$ticket->hasParticipantPerson($manager)) {
+                    $context->getLogger()->debug(sprintf("[SetCcs] Adding org manager %d %s %s", $manager->id, $manager->getDisplayName(), $manager->primary_email->email));
+                    $ticket->addParticipantPerson($manager);
+                }
+            }
+        }
 
-		#------------------------------
-		# Add people
-		#------------------------------
+        #------------------------------
+        # Add people
+        #------------------------------
 
-		$account_manager = $this->getContainer()->getEmailAccountManager();
-		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-		if ($this->getActionOption('add_emails')) {
-			foreach ($this->getActionOption('add_emails') as $email) {
-				$email = trim($email);
+        $account_manager = $this->getContainer()->getEmailAccountManager();
+        $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
+        if ($this->getActionOption('add_emails')) {
+            foreach ($this->getActionOption('add_emails') as $email) {
+                $email = trim($email);
 
-				if (!$email) continue;
-				if ($ticket->hasParticipantEmailAddress($email)) {
-					continue;
-				}
-				if (!StringEmail::isValueValid($email)) {
-					$context->getLogger()->debug(sprintf("[SetCcs] Skipping %s because invalid email", $email));
-					continue;
-				}
-				if ($account_manager->findAccountForEmailAddress($email)) {
-					$context->getLogger()->debug(sprintf("[SetCcs] Skipping %s because email is an email account", $email));
-					continue;
-				}
+                if (!$email) continue;
+                if ($ticket->hasParticipantEmailAddress($email)) {
+                    continue;
+                }
+                if (!StringEmail::isValueValid($email)) {
+                    $context->getLogger()->debug(sprintf("[SetCcs] Skipping %s because invalid email", $email));
+                    continue;
+                }
+                if ($account_manager->findAccountForEmailAddress($email)) {
+                    $context->getLogger()->debug(sprintf("[SetCcs] Skipping %s because email is an email account", $email));
+                    continue;
+                }
 
-				$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
-				if ($person) {
-					$context->getLogger()->debug(sprintf("[SetCcs] Adding user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));
-					$ticket->addParticipantPerson($person);
-				} else {
-					if ($reg_closed) {
-						$context->getLogger()->debug(sprintf("[SetCcs] Unknown user and reg is closed, skipping %s", $email));
-						continue;
-					}
-					$person_processor = new PersonFromEmailProcessor();
+                $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
+                if ($person) {
+                    $context->getLogger()->debug(sprintf("[SetCcs] Adding user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));
+                    $ticket->addParticipantPerson($person);
+                } else {
+                    if ($reg_closed) {
+                        $context->getLogger()->debug(sprintf("[SetCcs] Unknown user and reg is closed, skipping %s", $email));
+                        continue;
+                    }
+                    $person_processor = new PersonFromEmailProcessor();
 
-					$eml = new EmailAddress();
-					$eml->email = $email;
-					$person = $person_processor->createPerson($eml, true);
+                    $eml = new EmailAddress();
+                    $eml->email = $email;
+                    $person = $person_processor->createPerson($eml, true);
 
-					if ($person) {
-						$context->getLogger()->debug(sprintf("[SetCcs] Adding NEW user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));
-						$ticket->addParticipantPerson($person);
-					}
-				}
-			}
-		}
+                    if ($person) {
+                        $context->getLogger()->debug(sprintf("[SetCcs] Adding NEW user %d %s %s", $person->id, $person->getDisplayName(), $person->primary_email->email));
+                        $ticket->addParticipantPerson($person);
+                    }
+                }
+            }
+        }
 
-		#------------------------------
-		# Remove people
-		#------------------------------
+        #------------------------------
+        # Remove people
+        #------------------------------
 
-		if ($this->getActionOption('remove_emails')) {
-			foreach ($this->getActionOption('remove_emails') as $email) {
-				$email = trim($email);
+        if ($this->getActionOption('remove_emails')) {
+            foreach ($this->getActionOption('remove_emails') as $email) {
+                $email = trim($email);
 
-				foreach ($ticket->participants as $p) {
-					if ($p->person->findEmailAddress($email)) {
-						$context->getLogger()->debug(sprintf("[SetCcs] Removing user %d %s %s", $p->person->id, $p->person->getDisplayName(), $p->person->primary_email->email));
-						$ticket->removeParticipantPerson($p->person);
-					}
-				}
-			}
-		}
-	}
+                foreach ($ticket->participants as $p) {
+                    if ($p->person->findEmailAddress($email)) {
+                        $context->getLogger()->debug(sprintf("[SetCcs] Removing user %d %s %s", $p->person->id, $p->person->getDisplayName(), $p->person->primary_email->email));
+                        $ticket->removeParticipantPerson($p->person);
+                    }
+                }
+            }
+        }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
+            return array('cc');
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-			return array('cc');
-		}
+        return array();
+    }
 
-		return array();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

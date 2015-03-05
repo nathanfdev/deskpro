@@ -34,21 +34,19 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
  */
 class ArticleCategories extends BasicTreeCategoryPermission
 {
-	protected function getCategoryPermissionEntity()
-	{
-		return 'DeskPRO:ArticleCategoryPermission';
-	}
+    protected function getCategoryPermissionEntity()
+    {
+        return 'DeskPRO:ArticleCategoryPermission';
+    }
 
-	protected function getCategoryEntity()
-	{
-		return 'DeskPRO:ArticleCategory';
-	}
+    protected function getCategoryEntity()
+    {
+        return 'DeskPRO:ArticleCategory';
+    }
 }

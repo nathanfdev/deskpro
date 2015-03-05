@@ -36,52 +36,51 @@ namespace Application\ApiBundle\Controller;
 
 class ReportsTicketSatisfactionController extends AbstractController
 {
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction($page)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
-		 */
+    public function listAction($page)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
+         */
 
-		$reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
-		$html_vars                   = $reports_ticket_satisfaction->getVarsForFeedHtmlView($page);
+        $reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
+        $html_vars                   = $reports_ticket_satisfaction->getVarsForFeedHtmlView($page);
 
-		return $this->createApiResponse(
-			array(
-				 'page'        => $html_vars['page'],
-				 'num_pages'   => $html_vars['num_pages'],
-				 'html'        => $this->renderView(
-					 'ReportsInterfaceBundle:TicketSatisfaction:results-feed.html.twig',
-					 $html_vars
-				 ),
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'page'        => $html_vars['page'],
+                 'num_pages'   => $html_vars['num_pages'],
+                 'html'        => $this->renderView(
+                     'ReportsInterfaceBundle:TicketSatisfaction:results-feed.html.twig',
+                     $html_vars
+                 ),
+            )
+        );
+    }
 
-	####################################################################################################################
-	# summary
-	####################################################################################################################
+    ####################################################################################################################
+    # summary
+    ####################################################################################################################
 
-	public function summaryAction($date)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
-		 */
+    public function summaryAction($date)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
+         */
 
-		$reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
-		$html_vars                   = $reports_ticket_satisfaction->getVarsForSummaryHtmlView($date);
+        $reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
+        $html_vars                   = $reports_ticket_satisfaction->getVarsForSummaryHtmlView($date);
 
-
-		return $this->createApiResponse(
-			array(
-				 'html' => $this->renderView(
-					 'ReportsInterfaceBundle:TicketSatisfaction:results-summary.html.twig',
-					 $html_vars
-				 ),
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'html' => $this->renderView(
+                     'ReportsInterfaceBundle:TicketSatisfaction:results-summary.html.twig',
+                     $html_vars
+                 ),
+            )
+        );
+    }
 }

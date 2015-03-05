@@ -38,74 +38,74 @@ use Application\DeskPRO\DBAL\Connection;
 
 class Build1353057097 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Ensure one department exists and correct bad departments");
-		$count = $this->container->getDb()->count('departments', array('is_tickets_enabled' => 1));
+    public function run()
+    {
+        $this->out("Ensure one department exists and correct bad departments");
+        $count = $this->container->getDb()->count('departments', array('is_tickets_enabled' => 1));
 
-		if (!$count) {
-			// Insert default department
-			$this->container->getDb()->insert('departments', array(
-				'title' => 'Default',
-				'is_tickets_enabled' => 1
-			));
+        if (!$count) {
+            // Insert default department
+            $this->container->getDb()->insert('departments', array(
+                'title' => 'Default',
+                'is_tickets_enabled' => 1
+            ));
 
-			$default_department = $this->container->getDb()->lastInsertId();
+            $default_department = $this->container->getDb()->lastInsertId();
 
-			// Give all agents access
-			$agent_ids = $this->container->getDb()->fetchAllCol("
-				SELECT id
-				FROM people
-				WHERE is_agent = 1
-			");
+            // Give all agents access
+            $agent_ids = $this->container->getDb()->fetchAllCol("
+                SELECT id
+                FROM people
+                WHERE is_agent = 1
+            ");
 
-			$batch = array();
-			foreach ($agent_ids as $aid) {
-				$batch[] = array(
-					'department_id' => $default_department,
-					'person_id'     => $aid,
-					'app'           => 'tickets',
-					'name'          => 'full',
-					'value'         => 1,
-				);
-			}
+            $batch = array();
+            foreach ($agent_ids as $aid) {
+                $batch[] = array(
+                    'department_id' => $default_department,
+                    'person_id'     => $aid,
+                    'app'           => 'tickets',
+                    'name'          => 'full',
+                    'value'         => 1,
+                );
+            }
 
-			$this->container->getDb()->batchInsert('department_permissions', $batch);
+            $this->container->getDb()->batchInsert('department_permissions', $batch);
 
-			// Give 'everyone' access too
-			$this->container->getDb()->insert('department_permissions', array(
-				'department_id' => $default_department,
-				'usergroup_id'  => 1,
-				'app'           => 'tickets',
-				'name'          => 'full',
-				'value'         => 1,
-			));
-		} else {
-			$default_department = $this->container->getEm()->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
-			$default_department = $default_department->id;
-		}
+            // Give 'everyone' access too
+            $this->container->getDb()->insert('department_permissions', array(
+                'department_id' => $default_department,
+                'usergroup_id'  => 1,
+                'app'           => 'tickets',
+                'name'          => 'full',
+                'value'         => 1,
+            ));
+        } else {
+            $default_department = $this->container->getEm()->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
+            $default_department = $default_department->id;
+        }
 
-		// Correct bad tickets
-		$chat_deps = $this->container->getDb()->fetchAllCol("
-			SELECT id
-			FROM departments
-			WHERE is_chat_enabled = 1
-		");
+        // Correct bad tickets
+        $chat_deps = $this->container->getDb()->fetchAllCol("
+            SELECT id
+            FROM departments
+            WHERE is_chat_enabled = 1
+        ");
 
-		if ($chat_deps) {
-			$this->container->getDb()->executeUpdate("
-				UPDATE tickets
-				SET department_id = ?
-				WHERE department_id IN (?) OR department_id IS NULL
-			", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
-			$this->container->getDb()->executeUpdate("
-				UPDATE tickets_search_active
-				SET department_id = ?
-				WHERE department_id IN (?) OR department_id IS NULL
-			", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
-		}
+        if ($chat_deps) {
+            $this->container->getDb()->executeUpdate("
+                UPDATE tickets
+                SET department_id = ?
+                WHERE department_id IN (?) OR department_id IS NULL
+            ", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            $this->container->getDb()->executeUpdate("
+                UPDATE tickets_search_active
+                SET department_id = ?
+                WHERE department_id IN (?) OR department_id IS NULL
+            ", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+        }
 
-		// Clean permissions too
-		\Application\DeskPRO\People\PermissionUtil::cleanPermissions();
-	}
+        // Clean permissions too
+        \Application\DeskPRO\People\PermissionUtil::cleanPermissions();
+    }
 }

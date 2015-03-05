@@ -36,68 +36,68 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358261212 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add new Twitter notifications");
+    public function run()
+    {
+        $this->out("Add new Twitter notifications");
 
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_dm.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.alert'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_dm.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.email'
-		");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_dm.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.alert'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_dm.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.email'
+        ");
 
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_reply.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.alert'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_reply.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.email'
-		");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_reply.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.alert'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_reply.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.email'
+        ");
 
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_mention.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.alert'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_mention.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.email'
-		");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_mention.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.alert'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_mention.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.email'
+        ");
 
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_retweet.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.alert'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.tweet_new_retweet.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.tweet_reply.email'
-		");
-	}
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_retweet.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.alert'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.tweet_new_retweet.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.tweet_reply.email'
+        ");
+    }
 }

@@ -36,62 +36,62 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355915880 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Copy default transports to gateways without defined transports");
+    public function run()
+    {
+        $this->out("Copy default transports to gateways without defined transports");
 
-		$missing_gateway_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id
-			FROM email_gateways
-			WHERE linked_transport_id IS NULL
-		");
+        $missing_gateway_ids = $this->container->getDb()->fetchAllCol("
+            SELECT id
+            FROM email_gateways
+            WHERE linked_transport_id IS NULL
+        ");
 
-		if (!$missing_gateway_ids) {
-			return;
-		}
+        if (!$missing_gateway_ids) {
+            return;
+        }
 
-		$first_id = $this->container->getDb()->fetchColumn("
-			SELECT linked_transport_id
-			FROM email_gateways
-			WHERE linked_transport_id IS NOT NULL
-			ORDER BY id ASC
-			LIMIT 1
-		");
+        $first_id = $this->container->getDb()->fetchColumn("
+            SELECT linked_transport_id
+            FROM email_gateways
+            WHERE linked_transport_id IS NOT NULL
+            ORDER BY id ASC
+            LIMIT 1
+        ");
 
-		if (!$first_id) {
-			$first_id = $this->container->getDb()->fetchColumn("
-				SELECT id
-				FROM email_transports
-				WHERE match_type = 'all'
-				ORDER BY id ASC
-				LIMIT 1
-			");
-		}
+        if (!$first_id) {
+            $first_id = $this->container->getDb()->fetchColumn("
+                SELECT id
+                FROM email_transports
+                WHERE match_type = 'all'
+                ORDER BY id ASC
+                LIMIT 1
+            ");
+        }
 
-		if (!$first_id) {
-			return;
-		}
+        if (!$first_id) {
+            return;
+        }
 
-		$trans_info = $this->container->getDb()->fetchAssoc("
-			SELECT *
-			FROM email_transports
-			WHERE id = ?
-		", array($first_id));
-		unset($trans_info['id']);
+        $trans_info = $this->container->getDb()->fetchAssoc("
+            SELECT *
+            FROM email_transports
+            WHERE id = ?
+        ", array($first_id));
+        unset($trans_info['id']);
 
-		foreach ($missing_gateway_ids as $gid) {
+        foreach ($missing_gateway_ids as $gid) {
 
-			if ($trans_info['match_type'] == 'all') {
-				$trans_info['match_type'] = 'exact';
-				$trans_info['match_pattern'] = $this->container->getDb()->fetchColumn("SELECT match_pattern FROM email_gateway_addresses WHERE email_gateway_id = ?", array($gid));
-			}
+            if ($trans_info['match_type'] == 'all') {
+                $trans_info['match_type'] = 'exact';
+                $trans_info['match_pattern'] = $this->container->getDb()->fetchColumn("SELECT match_pattern FROM email_gateway_addresses WHERE email_gateway_id = ?", array($gid));
+            }
 
-			$this->container->getDb()->insert('email_transports', $trans_info);
-			$new_id = $this->container->getDb()->lastInsertId();
+            $this->container->getDb()->insert('email_transports', $trans_info);
+            $new_id = $this->container->getDb()->lastInsertId();
 
-			$this->container->getDb()->update('email_gateways', array(
-				'linked_transport_id' => $new_id
-			), array('id' => $gid));
-		}
-	}
+            $this->container->getDb()->update('email_gateways', array(
+                'linked_transport_id' => $new_id
+            ), array('id' => $gid));
+        }
+    }
 }

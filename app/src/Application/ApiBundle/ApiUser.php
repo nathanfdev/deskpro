@@ -36,28 +36,28 @@ namespace Application\ApiBundle;
 
 class ApiUser
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    public $person;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Session
-	 */
-	public $session;
+    /**
+     * @var \Application\DeskPRO\Entity\Session
+     */
+    public $session;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\ApiKey
-	 */
-	public $api_key;
+    /**
+     * @var \Application\DeskPRO\Entity\ApiKey
+     */
+    public $api_key;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\ApiToken
-	 */
-	public $api_token;
+    /**
+     * @var \Application\DeskPRO\Entity\ApiToken
+     */
+    public $api_token;
 
-	/**
-	 * @var string
-	 */
-	public $request_token;
+    /**
+     * @var string
+     */
+    public $request_token;
 }

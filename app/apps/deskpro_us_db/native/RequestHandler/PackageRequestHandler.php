@@ -41,49 +41,49 @@ use deskpro_us_db\Usersource\AppOptionsMapper;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
-	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-				break;
-			default:
-				throw $context->createNotFoundException();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function handleApiPackageRequest(ApiPackageRequestContext $context)
+    {
+        switch ($context->getAction()) {
+            case 'test-settings':
+                return $this->testSettingsAction($context);
+                break;
+            default:
+                throw $context->createNotFoundException();
+        }
+    }
 
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
-	{
-		$username = $context->getIn()->getString('username');
-		$password = $context->getIn()->getString('password');
-		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function testSettingsAction(ApiPackageRequestContext $context)
+    {
+        $username = $context->getIn()->getString('username');
+        $password = $context->getIn()->getString('password');
+        $options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
-		if (defined('DPC_IS_CLOUD')) {
-			if ($app_id = $context->getIn()->getString('app_id')) {
-				$app = $context->getContainer()->getAppManager()->getApp($app_id);
-				$options['password_php'] = $app->getSetting('php_code');
-			} else {
-				$options['password_php'] = '';
-			}
-		}
+        if (defined('DPC_IS_CLOUD')) {
+            if ($app_id = $context->getIn()->getString('app_id')) {
+                $app = $context->getContainer()->getAppManager()->getApp($app_id);
+                $options['password_php'] = $app->getSetting('php_code');
+            } else {
+                $options['password_php'] = '';
+            }
+        }
 
-		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
-		$tester->test($username, $password);
+        $tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
+        $tester->test($username, $password);
 
-		$result_data = array(
-			'log'        => $tester->getLog(),
-			'raw_data'   => $tester->getRawData(),
-			'is_valid'   => $tester->isValid(),
-		);
+        $result_data = array(
+            'log'        => $tester->getLog(),
+            'raw_data'   => $tester->getRawData(),
+            'is_valid'   => $tester->isValid(),
+        );
 
-		return $context->createJsonResponse($result_data);
-	}
+        return $context->createJsonResponse($result_data);
+    }
 }

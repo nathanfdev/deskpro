@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349716682 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add is_agent_field to custom_def_* tables");
-		$this->execMutateSql("ALTER TABLE custom_def_article ADD is_agent_field TINYINT(1) NOT NULL");
-		$this->execMutateSql("ALTER TABLE custom_def_feedback ADD is_agent_field TINYINT(1) NOT NULL");
-		$this->execMutateSql("ALTER TABLE custom_def_organizations ADD is_agent_field TINYINT(1) NOT NULL");
-		$this->execMutateSql("ALTER TABLE custom_def_people ADD is_agent_field TINYINT(1) NOT NULL");
-		$this->execMutateSql("ALTER TABLE custom_def_ticket ADD is_agent_field TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add is_agent_field to custom_def_* tables");
+        $this->execMutateSql("ALTER TABLE custom_def_article ADD is_agent_field TINYINT(1) NOT NULL");
+        $this->execMutateSql("ALTER TABLE custom_def_feedback ADD is_agent_field TINYINT(1) NOT NULL");
+        $this->execMutateSql("ALTER TABLE custom_def_organizations ADD is_agent_field TINYINT(1) NOT NULL");
+        $this->execMutateSql("ALTER TABLE custom_def_people ADD is_agent_field TINYINT(1) NOT NULL");
+        $this->execMutateSql("ALTER TABLE custom_def_ticket ADD is_agent_field TINYINT(1) NOT NULL");
+    }
 }

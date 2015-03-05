@@ -35,159 +35,161 @@ namespace Orb\Util;
 
 class CompositeCaller
 {
-	/**
-	 * @var array
-	 */
-	private $_objects        = array();
+    /**
+     * @var array
+     */
+    private $_objects        = array();
 
-	/**
-	 * @var array
-	 */
-	private $_object_to_tag  = array();
+    /**
+     * @var array
+     */
+    private $_object_to_tag  = array();
 
-	/**
-	 * @var array
-	 */
-	private $_tag_to_objects = array();
-
-
-	/**
-	 * Add an object to the composite collection
-	 *
-	 * @param mixed        $object
-	 * @param string|null  $tag
-	 */
-	public function addObject($object, $tag = null)
-	{
-		$id = spl_object_hash($object);
-		$this->_objects[$id] = $object;
-
-		if ($tag !== null) {
-			if (!isset($this->_tag_to_objects[$tag])) {
-				$this->_tag_to_objects[$tag] = array();
-			}
-			$this->_tag_to_objects[$tag][$id] = $object;
-			$this->_object_to_tag[$id] = $tag;
-		}
-	}
+    /**
+     * @var array
+     */
+    private $_tag_to_objects = array();
 
 
-	/**
-	 * Count number of objects
-	 *
-	 * @param  string|null $for_tag
-	 * @return int
-	 */
-	public function countObjects($for_tag = null)
-	{
-		if ($for_tag !== null) {
-			if (isset($this->_tag_to_objects[$for_tag])) {
-				return count($this->_tag_to_objects[$for_tag]);
-			}
-			return 0;
-		}
+    /**
+     * Add an object to the composite collection
+     *
+     * @param mixed       $object
+     * @param string|null $tag
+     */
+    public function addObject($object, $tag = null)
+    {
+        $id = spl_object_hash($object);
+        $this->_objects[$id] = $object;
 
-		return count($this->_objects);
-	}
-
-
-	/**
-	 * Get objects
-	 *
-	 * @param string|null $for_tag
-	 * @return array
-	 */
-	public function getObjects($for_tag = null)
-	{
-		if ($for_tag !== null) {
-			if (isset($this->_tag_to_objects[$for_tag])) {
-				return $this->_tag_to_objects[$for_tag];
-			}
-			return array();
-		}
-
-		return $this->_objects;
-	}
+        if ($tag !== null) {
+            if (!isset($this->_tag_to_objects[$tag])) {
+                $this->_tag_to_objects[$tag] = array();
+            }
+            $this->_tag_to_objects[$tag][$id] = $object;
+            $this->_object_to_tag[$id] = $tag;
+        }
+    }
 
 
-	/**
-	 * Remove an object
-	 *
-	 * @param mixed $object
-	 */
-	public function removeObject($object)
-	{
-		$id = spl_object_hash($object);
-		unset($this->_objects[$id]);
+    /**
+     * Count number of objects
+     *
+     * @param  string|null $for_tag
+     * @return int
+     */
+    public function countObjects($for_tag = null)
+    {
+        if ($for_tag !== null) {
+            if (isset($this->_tag_to_objects[$for_tag])) {
+                return count($this->_tag_to_objects[$for_tag]);
+            }
 
-		if (isset($this->_object_to_tag[$id])) {
-			$tag = $this->_object_to_tag[$id];
-			unset($this->_object_to_tag[$tag]);
-			unset($this->_tag_to_objects[$tag][$id]);
+            return 0;
+        }
 
-			if (empty($this->_tag_to_objects[$tag])) {
-				unset($this->_tag_to_objects[$tag]);
-			}
-		}
-	}
+        return count($this->_objects);
+    }
 
 
-	/**
-	 * Remove all objects with a certain tag
-	 *
-	 * @param string $tag
-	 */
-	public function removeTaggedObjects($tag)
-	{
-		if (!isset($this->_tag_to_objects[$tag])) {
-			return;
-		}
+    /**
+     * Get objects
+     *
+     * @param  string|null $for_tag
+     * @return array
+     */
+    public function getObjects($for_tag = null)
+    {
+        if ($for_tag !== null) {
+            if (isset($this->_tag_to_objects[$for_tag])) {
+                return $this->_tag_to_objects[$for_tag];
+            }
 
-		foreach ($this->_tag_to_objects[$tag] as $object) {
-			$id = spl_object_hash($object);
+            return array();
+        }
 
-			unset($this->_objects[$id]);
-			unset($this->_object_to_tag[$id]);
-		}
-
-		$this->_tag_to_objects = array();
-	}
+        return $this->_objects;
+    }
 
 
-	/**
-	 * Call a method on all objects
-	 *
-	 * @param string       $method
-	 * @param array        $args
-	 * @param string|null  $for_tag
-	 * @param bool         $collect_exceptions  True to collect exceptions to the return array rather than throwing
-	 * @throws \Exception Re-throws any exception that happens unless $collect_exceptions is true
-	 * @return array
-	 */
-	public function callMethod($method, $args, $for_tag = null, $collect_exceptions = false)
-	{
-		$objects = $this->getObjects($for_tag);
+    /**
+     * Remove an object
+     *
+     * @param mixed $object
+     */
+    public function removeObject($object)
+    {
+        $id = spl_object_hash($object);
+        unset($this->_objects[$id]);
 
-		$ret_vals = array();
-		foreach ($objects as $obj) {
-			$exception = null;
-			try {
-				$ret = call_user_func_array(array($obj, $method), $args);
-			} catch (\Exception $e) {
-				if (!$collect_exceptions) {
-					throw $e;
-				}
+        if (isset($this->_object_to_tag[$id])) {
+            $tag = $this->_object_to_tag[$id];
+            unset($this->_object_to_tag[$tag]);
+            unset($this->_tag_to_objects[$tag][$id]);
 
-				$exception = $e;
-				$ret = null;
-			}
-			$ret_vals[] = array(
-				'object'    => $obj,
-				'return'    => $ret,
-				'exception' => $exception,
-			);
-		}
+            if (empty($this->_tag_to_objects[$tag])) {
+                unset($this->_tag_to_objects[$tag]);
+            }
+        }
+    }
 
-		return $ret_vals;
-	}
+
+    /**
+     * Remove all objects with a certain tag
+     *
+     * @param string $tag
+     */
+    public function removeTaggedObjects($tag)
+    {
+        if (!isset($this->_tag_to_objects[$tag])) {
+            return;
+        }
+
+        foreach ($this->_tag_to_objects[$tag] as $object) {
+            $id = spl_object_hash($object);
+
+            unset($this->_objects[$id]);
+            unset($this->_object_to_tag[$id]);
+        }
+
+        $this->_tag_to_objects = array();
+    }
+
+
+    /**
+     * Call a method on all objects
+     *
+     * @param  string      $method
+     * @param  array       $args
+     * @param  string|null $for_tag
+     * @param  bool        $collect_exceptions True to collect exceptions to the return array rather than throwing
+     * @throws \Exception  Re-throws any exception that happens unless $collect_exceptions is true
+     * @return array
+     */
+    public function callMethod($method, $args, $for_tag = null, $collect_exceptions = false)
+    {
+        $objects = $this->getObjects($for_tag);
+
+        $ret_vals = array();
+        foreach ($objects as $obj) {
+            $exception = null;
+            try {
+                $ret = call_user_func_array(array($obj, $method), $args);
+            } catch (\Exception $e) {
+                if (!$collect_exceptions) {
+                    throw $e;
+                }
+
+                $exception = $e;
+                $ret = null;
+            }
+            $ret_vals[] = array(
+                'object'    => $obj,
+                'return'    => $ret,
+                'exception' => $exception,
+            );
+        }
+
+        return $ret_vals;
+    }
 }

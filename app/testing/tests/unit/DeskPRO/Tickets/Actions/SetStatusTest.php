@@ -7,56 +7,56 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetStatusTest extends \DpUnitTestCase
 {
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$ticket->status = 'awaiting_agent';
-		$exec   = new ExecutorContext();
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $ticket->status = 'awaiting_agent';
+        $exec   = new ExecutorContext();
 
-		$action = new SetStatus(array('status' => 'awaiting_user'));
+        $action = new SetStatus(array('status' => 'awaiting_user'));
 
-		$action->applyAction($ticket, $exec);
+        $action->applyAction($ticket, $exec);
 
-		$this->assertEquals('awaiting_user', $ticket->getStatusCode());
-	}
+        $this->assertEquals('awaiting_user', $ticket->getStatusCode());
+    }
 
-	public function testSet2()
-	{
-		$ticket = new Ticket();
-		$ticket->status = 'awaiting_agent';
-		$exec   = new ExecutorContext();
+    public function testSet2()
+    {
+        $ticket = new Ticket();
+        $ticket->status = 'awaiting_agent';
+        $exec   = new ExecutorContext();
 
-		$action = new SetStatus(array('status' => 'hidden.deleted'));
+        $action = new SetStatus(array('status' => 'hidden.deleted'));
 
-		$action->applyAction($ticket, $exec);
+        $action->applyAction($ticket, $exec);
 
-		$this->assertEquals('hidden.deleted', $ticket->getStatusCode());
-	}
+        $this->assertEquals('hidden.deleted', $ticket->getStatusCode());
+    }
 
-	/**
-	 * @expectedException \Orb\Util\CheckedOptionsException
-	 */
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$ticket->status = 'awaiting_agent';
+    /**
+     * @expectedException \Orb\Util\CheckedOptionsException
+     */
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $ticket->status = 'awaiting_agent';
 
-		$exec = new ExecutorContext();
+        $exec = new ExecutorContext();
 
-		$action = new SetStatus(array('status' => 'asdadasdasdsad'));
+        $action = new SetStatus(array('status' => 'asdadasdasdsad'));
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-	public function testNoop2()
-	{
-		$ticket = new Ticket();
-		$ticket->status = 'awaiting_agent';
+    public function testNoop2()
+    {
+        $ticket = new Ticket();
+        $ticket->status = 'awaiting_agent';
 
-		$exec = new ExecutorContext();
+        $exec = new ExecutorContext();
 
-		$action = new SetStatus(array('status' => 'awaiting_agent'));
+        $action = new SetStatus(array('status' => 'awaiting_agent'));
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 }

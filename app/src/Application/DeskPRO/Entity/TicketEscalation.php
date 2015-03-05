@@ -53,197 +53,198 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketEscalation extends DomainObject
 {
-	const EVENT_TYPE_TIME_OPEN                  = 'time.open';
-	const EVENT_TYPE_TIME_USER_WAITING          = 'time.user_waiting';
-	const EVENT_TYPE_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
-	const EVENT_TYPE_TIME_AGENT_WAITING         = 'time.agent_waiting';
-	const EVENT_TYPE_TIME_RESOLVED              = 'time.resolved';
+    const EVENT_TYPE_TIME_OPEN                  = 'time.open';
+    const EVENT_TYPE_TIME_USER_WAITING          = 'time.user_waiting';
+    const EVENT_TYPE_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
+    const EVENT_TYPE_TIME_AGENT_WAITING         = 'time.agent_waiting';
+    const EVENT_TYPE_TIME_RESOLVED              = 'time.resolved';
 
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $title = '';
+    /**
+     * @var string
+     */
+    protected $title = '';
 
-	/**
-	 * @var bool
-	 */
-	protected $is_enabled = true;
+    /**
+     * @var bool
+     */
+    protected $is_enabled = true;
 
-	/**
-	 * @var string
-	 */
-	protected $event_trigger;
+    /**
+     * @var string
+     */
+    protected $event_trigger;
 
-	/**
-	 * @var int
-	 */
-	protected $event_trigger_time;
+    /**
+     * @var int
+     */
+    protected $event_trigger_time;
 
-	/**
-	 * @var array
-	 */
-	protected $terms = array();
+    /**
+     * @var array
+     */
+    protected $terms = array();
 
-	/**
-	 * @var array
-	 */
-	protected $terms_any = array();
+    /**
+     * @var array
+     */
+    protected $terms_any = array();
 
-	/**
-	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
-	 */
-	protected $actions;
+    /**
+     * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
+     */
+    protected $actions;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_last_run = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_last_run = null;
 
-	public function __construct()
-	{
-		$this->actions = new TriggerActions();
-		$this->date_created = new \DateTime();
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function __construct()
+    {
+        $this->actions = new TriggerActions();
+        $this->date_created = new \DateTime();
+    }
 
 
-	/**
-	 * Gets the relevant time field on ticket for a particular ticket trigger.
-	 * For example, 'EVENT_TYPE_TIME_USER_WAITING' is dependant on ticket.date_user_waiting
-	 *
-	 * @return string
-	 */
-	public function getTicketTimeField()
-	{
-		switch ($this->event_trigger) {
-			case self::EVENT_TYPE_TIME_OPEN:
-				return 'date_created';
-
-			case self::EVENT_TYPE_TIME_USER_WAITING:
-			case self::EVENT_TYPE_TIME_TOTAL_USER_WAITING:
-				return 'date_user_waiting';
-
-			case self::EVENT_TYPE_TIME_AGENT_WAITING:
-				return 'date_agent_waiting';
-				break;
-
-			case self::EVENT_TYPE_TIME_RESOLVED:
-				return 'date_resolved';
-		}
-
-		return null;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
+    /**
+     * Gets the relevant time field on ticket for a particular ticket trigger.
+     * For example, 'EVENT_TYPE_TIME_USER_WAITING' is dependant on ticket.date_user_waiting
+     *
+     * @return string
+     */
+    public function getTicketTimeField()
+    {
+        switch ($this->event_trigger) {
+            case self::EVENT_TYPE_TIME_OPEN:
+                return 'date_created';
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		$data['terms']     = $this->terms;
-		$data['terms_any'] = $this->terms_any;
-		$data['actions']   = $this->actions->exportToArray();
-		return $data;
-	}
-	
+            case self::EVENT_TYPE_TIME_USER_WAITING:
+            case self::EVENT_TYPE_TIME_TOTAL_USER_WAITING:
+                return 'date_user_waiting';
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+            case self::EVENT_TYPE_TIME_AGENT_WAITING:
+                return 'date_agent_waiting';
+                break;
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketEscalation';
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+            case self::EVENT_TYPE_TIME_RESOLVED:
+                return 'date_resolved';
+        }
 
-		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_escalations'
-		));
+        return null;
+    }
 
-		$metadata->mapField(array(
-			'id'         => true,
-			'columnName' => 'id',
-			'fieldName'  => 'id',
-			'type'       => 'integer',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'title',
-			'fieldName'  => 'title',
-			'type'       => 'string',
-			'length'     => 255,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'event_trigger',
-			'fieldName'  => 'event_trigger',
-			'type'       => 'string',
-			'length'     => 50,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'event_trigger_time',
-			'fieldName'  => 'event_trigger_time',
-			'type'       => 'integer',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'is_enabled',
-			'fieldName'  => 'is_enabled',
-			'type'       => 'boolean',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'terms',
-			'fieldName'  => 'terms',
-			'type'       => 'json_array',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'terms_any',
-			'fieldName'  => 'terms_any',
-			'type'       => 'json_array',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'actions',
-			'fieldName'  => 'actions',
-			'type'       => 'dp_json_obj',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_created',
-			'columnName' => 'date_created',
-			'type'       => 'datetime',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_last_run',
-			'columnName' => 'date_last_run',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-	}
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+        $data['terms']     = $this->terms;
+        $data['terms_any'] = $this->terms_any;
+        $data['actions']   = $this->actions->exportToArray();
+
+        return $data;
+    }
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketEscalation';
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+
+        $metadata->setPrimaryTable(array(
+            'name' => 'ticket_escalations'
+        ));
+
+        $metadata->mapField(array(
+            'id'         => true,
+            'columnName' => 'id',
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'title',
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'event_trigger',
+            'fieldName'  => 'event_trigger',
+            'type'       => 'string',
+            'length'     => 50,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'event_trigger_time',
+            'fieldName'  => 'event_trigger_time',
+            'type'       => 'integer',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'is_enabled',
+            'fieldName'  => 'is_enabled',
+            'type'       => 'boolean',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'terms',
+            'fieldName'  => 'terms',
+            'type'       => 'json_array',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'terms_any',
+            'fieldName'  => 'terms_any',
+            'type'       => 'json_array',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'actions',
+            'fieldName'  => 'actions',
+            'type'       => 'dp_json_obj',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_created',
+            'columnName' => 'date_created',
+            'type'       => 'datetime',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_last_run',
+            'columnName' => 'date_last_run',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+    }
 }

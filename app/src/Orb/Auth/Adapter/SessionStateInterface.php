@@ -42,11 +42,11 @@ use Orb\Auth\StateHandler\StateHandlerInterface;
  */
 interface SessionStateInterface extends AdapterInterface
 {
-	/**
-	 * Sets the state handler.
-	 *
-	 * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-	 * @return void
-	 */
-	public function setStateHandler(StateHandlerInterface $state);
+    /**
+     * Sets the state handler.
+     *
+     * @param  Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
+     * @return void
+     */
+    public function setStateHandler(StateHandlerInterface $state);
 }

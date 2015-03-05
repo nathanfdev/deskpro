@@ -7,6 +7,8 @@
  * Represents an Accept reply to a meeting request.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_WellKnownResponseObjectType.
  */
 class EWSType_AcceptItemType extends EWSType
 {
@@ -87,6 +89,33 @@ class EWSType_AcceptItemType extends EWSType
     public $ItemClass;
 
     /**
+     * Identifies the delegate in a delegate access scenario.
+     *
+     * @since Exchange 2007 SP1
+     *
+     * @var EWSType_SingleRecipientType
+     */
+    public $ReceivedBy;
+
+    /**
+     * Identifies the principal in a delegate access scenario.
+     *
+     * @since Exchange 2007 SP1
+     *
+     * @var EWSType_SingleRecipientType
+     */
+    public $ReceivedRepresenting;
+
+    /**
+     * Identifies the item to which the response object refers.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_ItemIdType
+     */
+    public $ReferenceItemId;
+
+    /**
      * Identifies the sender of an item.
      *
      * @since Exchange 2007
@@ -114,31 +143,4 @@ class EWSType_AcceptItemType extends EWSType
      * @var EWSType_ArrayOfRecipientsType
      */
     public $ToRecipients;
-
-    /**
-     * Identifies the delegate in a delegate access scenario.
-     *
-     * @since Exchange 2007 SP1
-     *
-     * @var EWSType_SingleRecipientType
-     */
-    public $ReceivedBy;
-
-    /**
-     * Identifies the principal in a delegate access scenario.
-     *
-     * @since Exchange 2007 SP1
-     *
-     * @var EWSType_SingleRecipientType
-     */
-    public $ReceivedRepresenting;
-
-    /**
-     * Identifies the item to which the response object refers.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_ItemIdType
-     */
-    public $ReferenceItemId;
 }

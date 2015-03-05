@@ -38,10 +38,6 @@ namespace DeskPRO\Kernel;
 if (!defined('DP_ROOT')) exit('No access');
 
 use Application\DeskPRO\Entity\SendmailQueue;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Orb\Util\Web;
 
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
@@ -54,80 +50,80 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
  */
 class FailedSendmailJob extends LoaderAbstract
 {
-	public function runAction()
-	{
-		$auth = defined('DPC_SAVE_FAILED_MAIL_AUTH') ? DPC_SAVE_FAILED_MAIL_AUTH : null;
-		if (!$auth || !isset($_GET[$auth])) {
-			echo 'DP_FAIL_AUTH';
-			exit;
-		}
+    public function runAction()
+    {
+        $auth = defined('DPC_SAVE_FAILED_MAIL_AUTH') ? DPC_SAVE_FAILED_MAIL_AUTH : null;
+        if (!$auth || !isset($_GET[$auth])) {
+            echo 'DP_FAIL_AUTH';
+            exit;
+        }
 
-		if (!isset($_FILES['mailfile']) || !empty($_FILES['mailfile']['error']) || empty($_FILES['mailfile']['tmp_name'])) {
-			echo "DP_MAILFILE_INVALID";
-			exit(1);
-		}
+        if (!isset($_FILES['mailfile']) || !empty($_FILES['mailfile']['error']) || empty($_FILES['mailfile']['tmp_name'])) {
+            echo "DP_MAILFILE_INVALID";
+            exit(1);
+        }
 
-		#------------------------------
-		# Parse out the headers/data
-		# from the payload so we can fetch the subject/addresses bit
-		#------------------------------
+        #------------------------------
+        # Parse out the headers/data
+        # from the payload so we can fetch the subject/addresses bit
+        #------------------------------
 
-		$data = '';
-		$mode = 0; // 0 = headers, 1 = data
-		$fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
+        $data = '';
+        $mode = 0; // 0 = headers, 1 = data
+        $fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
 
-		while (!feof($fp)) {
-			$l = fgets($fp);
-			if ($l == "\n") {
-				$mode++;
-			} elseif ($mode == 1) {
-				$data .= $l;
-			}
+        while (!feof($fp)) {
+            $l = fgets($fp);
+            if ($l == "\n") {
+                $mode++;
+            } elseif ($mode == 1) {
+                $data .= $l;
+            }
 
-			if ($mode > 1) {
-				break;
-			}
-		}
-		fclose($fp);
+            if ($mode > 1) {
+                break;
+            }
+        }
+        fclose($fp);
 
-		// $data may include a header of <DP_SMTP_DEBUG>...</DP_SMTP_DEBUG>
-		$debug_data = '';
-		$m = null;
+        // $data may include a header of <DP_SMTP_DEBUG>...</DP_SMTP_DEBUG>
+        $debug_data = '';
+        $m = null;
 
-		if (preg_match('#\s*<DP_SMTP_DEBUG>(.*?)</DP_SMTP_DEBUG>\s*#s', $data, $m)) {
-			$debug_data = trim($m[1]);
-			$data = substr($data, strlen($m[0]));
-		}
+        if (preg_match('#\s*<DP_SMTP_DEBUG>(.*?)</DP_SMTP_DEBUG>\s*#s', $data, $m)) {
+            $debug_data = trim($m[1]);
+            $data = substr($data, strlen($m[0]));
+        }
 
-		$data = @json_decode($data, true);
-		if (!$data) {
-			echo 'DP_BAD_MAILFILE';
-			exit;
-		}
+        $data = @json_decode($data, true);
+        if (!$data) {
+            echo 'DP_BAD_MAILFILE';
+            exit;
+        }
 
-		#------------------------------
-		# Save it
-		#------------------------------
+        #------------------------------
+        # Save it
+        #------------------------------
 
-		$container = $this->bootFullSystem();
-		$blob = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
+        $container = $this->bootFullSystem();
+        $blob = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
 
-		$email = new SendmailQueue();
-		$email->blob         = $blob;
-		$email->subject      = $data['subject'];
-		$email->to_address   = array_merge($data['to_addresses'], $data['cc_addresses'], $data['bcc_addresses']);
-		$email->from_address = $data['from_addresses'];
-		$email->attempts     = 4;
+        $email = new SendmailQueue();
+        $email->blob         = $blob;
+        $email->subject      = $data['subject'];
+        $email->to_address   = array_merge($data['to_addresses'], $data['cc_addresses'], $data['bcc_addresses']);
+        $email->from_address = $data['from_addresses'];
+        $email->attempts     = 4;
 
-		if ($debug_data) {
-			$email->appendLog($debug_data);
-		}
+        if ($debug_data) {
+            $email->appendLog($debug_data);
+        }
 
-		$container->getEm()->persist($email);
-		$container->getEm()->flush($email);
+        $container->getEm()->persist($email);
+        $container->getEm()->flush($email);
 
-		echo "DP_ACCEPT: {$email->id}";
-	}
+        echo "DP_ACCEPT: {$email->id}";
+    }
 }
 
 $x = new FailedSendmailJob();

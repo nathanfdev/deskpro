@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1353936778 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add SLA completion time tracking");
-		$this->execMutateSql("ALTER TABLE ticket_slas ADD completed_time_taken INT DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add SLA completion time tracking");
+        $this->execMutateSql("ALTER TABLE ticket_slas ADD completed_time_taken INT DEFAULT NULL");
+    }
 }

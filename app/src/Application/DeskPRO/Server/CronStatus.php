@@ -39,127 +39,127 @@ use Orb\Util\Strings;
 
 class CronStatus
 {
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var \DateTime
-	 */
-	private $last_run_ts;
+    /**
+     * @var \DateTime
+     */
+    private $last_run_ts;
 
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getLastRunTimestamp()
-	{
-		if ($this->last_run_ts !== null) {
-			return $this->last_run_ts;
-		}
-
-		$this->last_run_ts = $this->db->fetchColumn("
-			SELECT value
-			FROM settings
-			WHERE name = ?
-		", array('core.last_cron_run'));
-
-		if (!$this->last_run_ts) {
-			$this->last_run_ts = 0;
-		}
-
-		return $this->last_run_ts;
-	}
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+    }
 
 
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getLastRunDate()
-	{
-		$ts = $this->getLastRunTimestamp();
-		if (!$ts) {
-			return null;
-		}
+    /**
+     * @return int
+     */
+    public function getLastRunTimestamp()
+    {
+        if ($this->last_run_ts !== null) {
+            return $this->last_run_ts;
+        }
 
-		$date = new \DateTime("@$ts");
-		return $date;
-	}
+        $this->last_run_ts = $this->db->fetchColumn("
+            SELECT value
+            FROM settings
+            WHERE name = ?
+        ", array('core.last_cron_run'));
 
+        if (!$this->last_run_ts) {
+            $this->last_run_ts = 0;
+        }
 
-	/**
-	 * Get how long it's been since the last cron
-	 *
-	 * @return int
-	 */
-	public function getSecsSinceLastRun()
-	{
-		$now = time();
-		$last = $this->getLastRunTimestamp();
-		return $now - $last;
-	}
+        return $this->last_run_ts;
+    }
 
 
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastRunDate()
+    {
+        $ts = $this->getLastRunTimestamp();
+        if (!$ts) {
+            return null;
+        }
 
-	/**
-	 * Based on the last time cron was run, guess if there's a problem.
-	 *
-	 * @return bool
-	 */
-	public function guessIsProblem()
-	{
-		return $this->getSecsSinceLastRun() > 300;
-	}
+        $date = new \DateTime("@$ts");
+
+        return $date;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getCronBootErrors()
-	{
-		// Check for error db record
-		$error_message = $this->db->fetchColumn("SELECT data FROM install_data WHERE build = 1 AND name = 'cron_run_errors'");
-		if (!$error_message) {
-			// Check for a logged message
-			if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
-				$error_message = file_get_contents(dp_get_log_dir().'/cron-boot-errors.log');
-			}
-		}
+    /**
+     * Get how long it's been since the last cron
+     *
+     * @return int
+     */
+    public function getSecsSinceLastRun()
+    {
+        $now = time();
+        $last = $this->getLastRunTimestamp();
 
-		if ($error_message) {
-			$split = explode('###', $error_message);
-			$codes_string = array_pop($split);
-			$codes_string = trim($codes_string);
+        return $now - $last;
+    }
 
-			$ini_path = Strings::extractRegexMatch('#^ini_path:(.*?)$#m', $codes_string, 1);
+    /**
+     * Based on the last time cron was run, guess if there's a problem.
+     *
+     * @return bool
+     */
+    public function guessIsProblem()
+    {
+        return $this->getSecsSinceLastRun() > 300;
+    }
 
-			$error_codes = array();
-			if (preg_match_all('#^error:(.*?)$#m', $codes_string, $m, \PREG_PATTERN_ORDER)) {
-				$error_codes = $m[1];
-			}
 
-			$web_ini_path = \Orb\Util\Env::getPhpIniPath();
-			$is_zendserver = false;
-			if ($web_ini_path) {
-				$is_zendserver = strpos($web_ini_path, 'ZendServer') !== false;
-			}
+    /**
+     * @return array
+     */
+    public function getCronBootErrors()
+    {
+        // Check for error db record
+        $error_message = $this->db->fetchColumn("SELECT data FROM install_data WHERE build = 1 AND name = 'cron_run_errors'");
+        if (!$error_message) {
+            // Check for a logged message
+            if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
+                $error_message = file_get_contents(dp_get_log_dir().'/cron-boot-errors.log');
+            }
+        }
 
-			return array(
-				'error_codes'   => $error_codes,
-				'ini_path'      => $ini_path,
-				'is_zendserver' => $is_zendserver,
-				'web_ini_path'  => $web_ini_path,
-				'data_dir'      => dp_get_data_dir(),
-				'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log') . "\n\n\n" . @file_get_contents(dp_get_log_dir() . '/cli-phperr.log')
-			);
-		}
+        if ($error_message) {
+            $split = explode('###', $error_message);
+            $codes_string = array_pop($split);
+            $codes_string = trim($codes_string);
 
-		return null;
-	}
+            $ini_path = Strings::extractRegexMatch('#^ini_path:(.*?)$#m', $codes_string, 1);
+
+            $error_codes = array();
+            if (preg_match_all('#^error:(.*?)$#m', $codes_string, $m, \PREG_PATTERN_ORDER)) {
+                $error_codes = $m[1];
+            }
+
+            $web_ini_path = \Orb\Util\Env::getPhpIniPath();
+            $is_zendserver = false;
+            if ($web_ini_path) {
+                $is_zendserver = strpos($web_ini_path, 'ZendServer') !== false;
+            }
+
+            return array(
+                'error_codes'   => $error_codes,
+                'ini_path'      => $ini_path,
+                'is_zendserver' => $is_zendserver,
+                'web_ini_path'  => $web_ini_path,
+                'data_dir'      => dp_get_data_dir(),
+                'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log') . "\n\n\n" . @file_get_contents(dp_get_log_dir() . '/cli-phperr.log')
+            );
+        }
+
+        return null;
+    }
 }

@@ -34,97 +34,97 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class CustomDefAbstract extends AbstractEntityRepository
 {
-	public static function getCacheId($id)
-	{
-		$str = 'customdef' . md5(get_called_class()) . '_' . $id;
-		return $str;
-	}
+    public static function getCacheId($id)
+    {
+        $str = 'customdef' . md5(get_called_class()) . '_' . $id;
 
-	/**
-	 * @return array
-	 */
-	public function getFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			ORDER BY f.display_order ASC, f.title
-		");
+        return $str;
+    }
 
-		return $q->execute();
-	}
+    /**
+     * @return array
+     */
+    public function getFields()
+    {
+        $q = $this->_em->createQuery("
+            SELECT f
+            FROM {$this->_entityName} f INDEX BY f.id
+            ORDER BY f.display_order ASC, f.title
+        ");
 
-	public function getEnabledFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.is_enabled = true
-			ORDER BY f.display_order ASC, f.title
-		");
+        return $q->execute();
+    }
 
-		return $q->execute();
-	}
+    public function getEnabledFields()
+    {
+        $q = $this->_em->createQuery("
+            SELECT f
+            FROM {$this->_entityName} f INDEX BY f.id
+            WHERE f.is_enabled = true
+            ORDER BY f.display_order ASC, f.title
+        ");
 
-	public function getEnabledUserFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.is_enabled = true AND f.is_agent_field = false
-			ORDER BY f.display_order ASC, f.title
-		");
+        return $q->execute();
+    }
 
-		return $q->execute();
-	}
+    public function getEnabledUserFields()
+    {
+        $q = $this->_em->createQuery("
+            SELECT f
+            FROM {$this->_entityName} f INDEX BY f.id
+            WHERE f.is_enabled = true AND f.is_agent_field = false
+            ORDER BY f.display_order ASC, f.title
+        ");
 
-	/**
-	 * @return array
-	 */
-	public function getTopFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.parent IS NULL
-			ORDER BY f.display_order ASC, f.title
-		");
+        return $q->execute();
+    }
 
-		return $q->execute();
-	}
+    /**
+     * @return array
+     */
+    public function getTopFields()
+    {
+        $q = $this->_em->createQuery("
+            SELECT f
+            FROM {$this->_entityName} f INDEX BY f.id
+            WHERE f.parent IS NULL
+            ORDER BY f.display_order ASC, f.title
+        ");
 
-	public function getEnabledTopFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.parent IS NULL AND f.is_enabled = true
-			ORDER BY f.display_order ASC, f.title
-		");
+        return $q->execute();
+    }
 
-		return $q->execute();
-	}
+    public function getEnabledTopFields()
+    {
+        $q = $this->_em->createQuery("
+            SELECT f
+            FROM {$this->_entityName} f INDEX BY f.id
+            WHERE f.parent IS NULL AND f.is_enabled = true
+            ORDER BY f.display_order ASC, f.title
+        ");
 
-	/**
-	 * @param array $display_orders
-	 */
-	public function updateDisplayOrders(array $display_orders)
-	{
-		$display_orders = array_values($display_orders);
+        return $q->execute();
+    }
 
-		$db = $this->_em->getConnection();
-		$db->beginTransaction();
+    /**
+     * @param array $display_orders
+     */
+    public function updateDisplayOrders(array $display_orders)
+    {
+        $display_orders = array_values($display_orders);
 
-		$x = 0;
-		foreach ($display_orders as $tr_id) {
-			$x += 10;
-			$db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
-		}
+        $db = $this->_em->getConnection();
+        $db->beginTransaction();
 
-		$db->commit();
-	}
+        $x = 0;
+        foreach ($display_orders as $tr_id) {
+            $x += 10;
+            $db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+        }
+
+        $db->commit();
+    }
 }

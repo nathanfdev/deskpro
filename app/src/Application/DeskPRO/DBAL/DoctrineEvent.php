@@ -36,80 +36,75 @@ namespace Application\DeskPRO\DBAL;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher;
 
 /**
  * This connects some of the Doctrine events to the symfony event dispatcher
  */
 class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
 {
-	/**
-	 * @var mixed
-	 */
-	protected $doctrine_event;
+    /**
+     * @var mixed
+     */
+    protected $doctrine_event;
 
-	/**
-	 * @var string
-	 */
-	protected $event_type;
+    /**
+     * @var string
+     */
+    protected $event_type;
 
-	/**
-	 * @var mixed
-	 */
-	protected $entity;
+    /**
+     * @var mixed
+     */
+    protected $entity;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $entity_manager;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $entity_manager;
 
-	public function __construct($event_type, $doctrine_event)
-	{
-		$this->event_type     = $event_type;
-		$this->doctrine_event = $doctrine_event;
-		$this->entity_manager = $doctrine_event->getEntityManager();
-		$this->entity         = null;
+    public function __construct($event_type, $doctrine_event)
+    {
+        $this->event_type     = $event_type;
+        $this->doctrine_event = $doctrine_event;
+        $this->entity_manager = $doctrine_event->getEntityManager();
+        $this->entity         = null;
 
-		if ($doctrine_event instanceof LifecycleEventArgs OR $doctrine_event instanceof PreUpdateEventArgs) {
-			$this->entity = $doctrine_event->getEntity();
-		}
-	}
+        if ($doctrine_event instanceof LifecycleEventArgs OR $doctrine_event instanceof PreUpdateEventArgs) {
+            $this->entity = $doctrine_event->getEntity();
+        }
+    }
 
+    /**
+     * The entity, or null if the event type doesnt have an entity
+     *
+     * @return mixed
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
 
-	/**
-	 * The entity, or null if the event type doesnt have an entity
-	 *
-	 * @return mixed
-	 */
-	public function getEntity()
-	{
-		return $this->entity;
-	}
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getEntityManager()
+    {
+        return $this->entity_manager;
+    }
 
+    /**
+     * @return string
+     */
+    public function getEventType()
+    {
+        return $this->event_type;
+    }
 
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getEntityManager()
-	{
-		return $this->entity_manager;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getEventType()
-	{
-		return $this->event_type;
-	}
-
-
-	/**
-	 * @return mixed
-	 */
-	public function getDoctrineEvent()
-	{
-		return $this->doctrine_event;
-	}
+    /**
+     * @return mixed
+     */
+    public function getDoctrineEvent()
+    {
+        return $this->doctrine_event;
+    }
 }

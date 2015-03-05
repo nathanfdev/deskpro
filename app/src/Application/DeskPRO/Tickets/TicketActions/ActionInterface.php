@@ -43,57 +43,53 @@ use Application\DeskPRO\Entity\Ticket;
  */
 interface ActionInterface
 {
-	/**
-	 * Apply the action to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return void
-	 */
-	public function apply(Ticket $ticket);
+    /**
+     * Apply the action to the ticket
+     *
+     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @return void
+     */
+    public function apply(Ticket $ticket);
 
+    /**
+     * Merge this action into another, and return the new merged action.
+     *
+     * For example, if a property is set, then the "other" action would overwrite the
+     * "this" action, so you could just return "other"
+     *
+     * But if you were adding a value to a collection, then you could merge the two collections
+     * together so the new action had new items from both actions.
+     *
+     * @param  ActionInterface $action
+     * @return ActionInterface
+     */
+    public function merge(ActionInterface $other_action);
 
-	/**
-	 * Merge this action into another, and return the new merged action.
-	 *
-	 * For example, if a property is set, then the "other" action would overwrite the
-	 * "this" action, so you could just return "other"
-	 *
-	 * But if you were adding a value to a collection, then you could merge the two collections
-	 * together so the new action had new items from both actions.
-	 *
-	 * @param ActionInterface $action
-	 * @return ActionInterface
-	 */
-	public function merge(ActionInterface $other_action);
+    /**
+     * Get a text description of the action
+     *
+     * @return string
+     */
+    public function getDescription($as_html = true);
 
+    /**
+     * @param  array $metadata
+     * @return mixed
+     */
+    public function setMetaData(array $metadata);
 
-	/**
-	 * Get a text description of the action
-	 *
-	 * @return string
-	 */
-	public function getDescription($as_html = true);
+    /**
+     * @return array
+     */
+    public function getMetaData();
 
+    /**
+     * @return bool
+     */
+    public function doPrepend();
 
-	/**
-	 * @param array $metadata
-	 * @return mixed
-	 */
-	public function setMetaData(array $metadata);
-
-
-	/**
-	 * @return array
-	 */
-	public function getMetaData();
-
-	/**
-	 * @return bool
-	 */
-	public function doPrepend();
-
-	/**
-	 * @return string
-	 */
-	public function getActionName();
+    /**
+     * @return string
+     */
+    public function getActionName();
 }

@@ -49,124 +49,132 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SendUserEmail extends AbstractEmailAction
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users', 'headers');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users', 'headers');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getLogger()->debug("[SendUserEmail] Begin");
-		$start_time = microtime(true);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getLogger()->debug("[SendUserEmail] Begin");
+        $start_time = microtime(true);
 
-		try {
-			$from_account = $this->getFromEmailAccountOption($ticket, $context);
-		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
-			return;
-		}
+        try {
+            $from_account = $this->getFromEmailAccountOption($ticket, $context);
+        } catch (\InvalidArgumentException $e) {
+            $context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
 
-		try {
-			$template = $this->getEmailTemplateOption($ticket, $context, false);
-		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
-			return;
-		}
+            return;
+        }
 
-		#-------------------------
-		# Vars
-		#-------------------------
+        try {
+            $template = $this->getEmailTemplateOption($ticket, $context, false);
+        } catch (\InvalidArgumentException $e) {
+            $context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
 
-		$default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
+            return;
+        }
 
-		#-------------------------
-		# Send emails
-		#-------------------------
+        #-------------------------
+        # Vars
+        #-------------------------
 
-		$build = TicketEmailBuilder::createFromContainer($this->getContainer())
-			->setTicket($ticket)
-			->setToPerson($ticket->person)
-			->setUserMode()
-			->setTemplateName($template)
-			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
-			->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
-			->setLogger($context->getLogger())
-			->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
-			->setFromEmailAccount($from_account);
+        $default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
 
-		if ($this->getActionOption('do_cc_users')) {
-			$build->enableUserCc();
-		}
+        #-------------------------
+        # Send emails
+        #-------------------------
 
-		// If this is from a user reply, then mark the email as auto and handle disable auto setting
-		if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
-			$context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
-			$build->setIsAuto();
+        $build = TicketEmailBuilder::createFromContainer($this->getContainer())
+            ->setTicket($ticket)
+            ->setToPerson($ticket->person)
+            ->setUserMode()
+            ->setTemplateName($template)
+            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
+            ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
+            ->setLogger($context->getLogger())
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
+            ->setFromEmailAccount($from_account);
 
-			if ($context->getVars()->has('ticket_email')) {
-				/** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
-				$ticket_email = $context->getVars()->get('ticket_email');
-				if ($ticket_email->is_bounce) {
-					$context->getLogger()->info("Skipping email because is_bounce = true");
-					return;
-				}
-			}
+        if ($this->getActionOption('do_cc_users')) {
+            $build->enableUserCc();
+        }
 
-			if ($ticket->person->disable_autoresponses) {
-				$context->getLogger()->info("Skipping email because user is marked as an auto-responder");
-				return;
-			}
+        // If this is from a user reply, then mark the email as auto and handle disable auto setting
+        if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
+            $context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
+            $build->setIsAuto();
 
-			foreach($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
-				if ($m->person->disable_autoresponses) {
-					$context->getLogger()->info(sprintf("Skipping email because user #%d %s on message #%d is an auto-responder", $m->person->id, $m->person->getDisplayContact(), $m->id));
-					return;
-				}
-			}
-		}
+            if ($context->getVars()->has('ticket_email')) {
+                /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
+                $ticket_email = $context->getVars()->get('ticket_email');
+                if ($ticket_email->is_bounce) {
+                    $context->getLogger()->info("Skipping email because is_bounce = true");
 
-		$ticket_email = $build->buildTicketEmail();
+                    return;
+                }
+            }
 
-		try {
-			$ticket_email->send($default_vars);
-			$this->recordEmailTicketLog($ticket_email, $ticket, $context);
-		} catch (\Exception $e) {
-			$context->getLogger()->error(
-				sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
-				array('exception' => $e)
-			);
+            if ($ticket->person->disable_autoresponses) {
+                $context->getLogger()->info("Skipping email because user is marked as an auto-responder");
 
-			throw $e;
-		}
+                return;
+            }
 
-		$context->getLogger()->info(sprintf("[SendUserEmail] Sent message in %.3fs", microtime(true)-$start_time));
-	}
+            foreach($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
+                if ($m->person->disable_autoresponses) {
+                    $context->getLogger()->info(sprintf("Skipping email because user #%d %s on message #%d is an auto-responder", $m->person->id, $m->person->getDisplayContact(), $m->id));
+
+                    return;
+                }
+            }
+        }
+
+        $ticket_email = $build->buildTicketEmail();
+
+        try {
+            $ticket_email->send($default_vars);
+            $this->recordEmailTicketLog($ticket_email, $ticket, $context);
+        } catch (\Exception $e) {
+            $context->getLogger()->error(
+                sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+                array('exception' => $e)
+            );
+
+            throw $e;
+        }
+
+        $context->getLogger()->info(sprintf("[SendUserEmail] Sent message in %.3fs", microtime(true)-$start_time));
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-			$context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
+            $context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
 
-		if ($context->getVars()->get('mute_user_emails')) {
-			$context->getLogger()->debug("[SendUserEmail] mute_user_emails = true");
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        if ($context->getVars()->get('mute_user_emails')) {
+            $context->getLogger()->debug("[SendUserEmail] mute_user_emails = true");
+
+            return true;
+        }
+
+        return false;
+    }
 }

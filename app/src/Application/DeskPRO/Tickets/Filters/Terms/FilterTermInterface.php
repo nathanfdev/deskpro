@@ -42,8 +42,8 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 interface FilterTermInterface
 {
-	/**
-	 * @return FilterQuery|null
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null);
+    /**
+     * @return FilterQuery|null
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null);
 }

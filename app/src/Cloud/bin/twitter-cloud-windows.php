@@ -26,14 +26,14 @@
 \**************************************************************************/
 
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run using the command line interface of PHP\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run using the command line interface of PHP\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-	echo "This script is designed for Windows only. twitter-cloud.php can be run directly on Linux.\n";
-	exit(2);
+    echo "This script is designed for Windows only. twitter-cloud.php can be run directly on Linux.\n";
+    exit(2);
 }
 
 ini_set('display_errors', true);
@@ -54,8 +54,8 @@ $php_path = dp_get_php_path(true);
 $php_path = str_replace('php-win.exe', 'php.exe', $php_path);
 
 if (class_exists('\COM', false)) {
-	$shell = new \COM("WScript.Shell");
-	$shell->Run("$php_path $file", 0, false);
+    $shell = new \COM("WScript.Shell");
+    $shell->Run("$php_path $file", 0, false);
 } else {
-	pclose(popen("start \"dptwittercloud\" /MIN $php_path $file", "r"));
+    pclose(popen("start \"dptwittercloud\" /MIN $php_path $file", "r"));
 }

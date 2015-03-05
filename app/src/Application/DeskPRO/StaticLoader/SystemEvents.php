@@ -43,22 +43,22 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class SystemEvents
 {
-	/** @var EventDispatcher */
-	protected $event_dispatcher;
+    /** @var EventDispatcher */
+    protected $event_dispatcher;
 
-	public function __construct($event_dispatcher)
-	{
-		$this->event_dispatcher = $event_dispatcher;
-	}
+    public function __construct($event_dispatcher)
+    {
+        $this->event_dispatcher = $event_dispatcher;
+    }
 
-	public function addNoPhraseEventListener()
-	{
-		$listener = new CallbackListener(function ($ev) {
-			if (strpos($ev->phrase_name, 'obj_') !== 0) {
-				$ev->return = "[{$ev->phrase_name}]";
-			}
-		});
+    public function addNoPhraseEventListener()
+    {
+        $listener = new CallbackListener(function ($ev) {
+            if (strpos($ev->phrase_name, 'obj_') !== 0) {
+                $ev->return = "[{$ev->phrase_name}]";
+            }
+        });
 
-		$this->event_dispatcher->addListener('DeskPRO_onTranslateNoPhrase', $listener);
-	}
+        $this->event_dispatcher->addListener('DeskPRO_onTranslateNoPhrase', $listener);
+    }
 }

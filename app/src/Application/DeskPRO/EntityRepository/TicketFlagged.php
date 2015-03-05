@@ -41,72 +41,71 @@ use Orb\Util\Arrays;
 
 class TicketFlagged extends AbstractEntityRepository
 {
-	public function getFlagForTicket($ticket, Entity\Person $person)
-	{
-		$color = App::getDb()->fetchColumn("
-			SELECT color
-			FROM tickets_flagged
-			WHERE ticket_id = ? AND person_id = ?
-		", array($ticket->id, $person->id));
+    public function getFlagForTicket($ticket, Entity\Person $person)
+    {
+        $color = App::getDb()->fetchColumn("
+            SELECT color
+            FROM tickets_flagged
+            WHERE ticket_id = ? AND person_id = ?
+        ", array($ticket->id, $person->id));
 
-		return $color;
-	}
+        return $color;
+    }
 
-	public function getFlagsForTickets($tickets, Entity\Person $person)
-	{
-		$ids = Arrays::flattenToIndex($tickets, 'id');
+    public function getFlagsForTickets($tickets, Entity\Person $person)
+    {
+        $ids = Arrays::flattenToIndex($tickets, 'id');
 
-		if (!$ids) return array();
+        if (!$ids) return array();
+        return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT ticket_id, color
+            FROM tickets_flagged
+            WHERE ticket_id IN(?) AND person_id = ?
+        ", array($ids, $person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
+    }
 
-		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-			SELECT ticket_id, color
-			FROM tickets_flagged
-			WHERE ticket_id IN(?) AND person_id = ?
-		", array($ids, $person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
-	}
+    public function getCountsForPerson(Entity\Person $person)
+    {
+        $assigned_perm_part = "tickets.agent_id = {$person['id']}";
+        if ($person->getAgentTeamIds()) {
+            $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (" . implode(',', $person->getAgentTeamIds()) . "))";
+        }
 
-	public function getCountsForPerson(Entity\Person $person)
-	{
-		$assigned_perm_part = "tickets.agent_id = {$person['id']}";
-		if ($person->getAgentTeamIds()) {
-			$assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (" . implode(',', $person->getAgentTeamIds()) . "))";
-		}
+        $where_perm = array();
 
-		$where_perm = array();
+        if ($person->getDisallowedDepartments()) {
+            $where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
+        }
 
-		if ($person->getDisallowedDepartments()) {
-			$where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
-		}
+        if (!$person->hasPerm('agent_tickets.view_unassigned')) {
+            $where_perm[] = 'tickets.agent_id IS NOT NULL';
+        }
 
-		if (!$person->hasPerm('agent_tickets.view_unassigned')) {
-			$where_perm[] = 'tickets.agent_id IS NOT NULL';
-		}
+        if (!$person->hasPerm('agent_tickets.view_others')) {
+            $part = array();
+            $part[] = "tickets.agent_id = {$person['id']}";
+            if ($person->getAgentTeamIds()) {
+                $part[] = "tickets.agent_team_id IN (" . implode(',', $person->getAgentTeamIds()) . ")";
+            }
+            if ($person->hasPerm('agent_tickets.view_unassigned')) {
+                $part[] = 'tickets.agent_id IS NULL';
+            }
 
-		if (!$person->hasPerm('agent_tickets.view_others')) {
-			$part = array();
-			$part[] = "tickets.agent_id = {$person['id']}";
-			if ($person->getAgentTeamIds()) {
-				$part[] = "tickets.agent_team_id IN (" . implode(',', $person->getAgentTeamIds()) . ")";
-			}
-			if ($person->hasPerm('agent_tickets.view_unassigned')) {
-				$part[] = 'tickets.agent_id IS NULL';
-			}
+            $where_perm[] = '(' . implode(' OR ', $part) . ')';
+        }
 
-			$where_perm[] = '(' . implode(' OR ', $part) . ')';
-		}
+        if ($where_perm) {
+            $where_perm = '(' . implode(' AND ', $where_perm) . ')';
+        } else {
+            $where_perm = '1';
+        }
 
-		if ($where_perm) {
-			$where_perm = '(' . implode(' AND ', $where_perm) . ')';
-		} else {
-			$where_perm = '1';
-		}
-
-		return App::getDb()->fetchAllKeyValue("
-			SELECT tickets_flagged.color, COUNT(*)
-			FROM tickets_flagged
-			LEFT JOIN tickets ON (tickets.id = tickets_flagged.ticket_id)
-			WHERE tickets_flagged.person_id = ? AND tickets.status != 'hidden' AND $where_perm
-			GROUP BY tickets_flagged.color
-		", array($person['id']));
-	}
+        return App::getDb()->fetchAllKeyValue("
+            SELECT tickets_flagged.color, COUNT(*)
+            FROM tickets_flagged
+            LEFT JOIN tickets ON (tickets.id = tickets_flagged.ticket_id)
+            WHERE tickets_flagged.person_id = ? AND tickets.status != 'hidden' AND $where_perm
+            GROUP BY tickets_flagged.color
+        ", array($person['id']));
+    }
 }

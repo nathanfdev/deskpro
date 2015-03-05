@@ -40,33 +40,35 @@ use Doctrine\DBAL\Types\Type;
 
 class DpObjectType extends ObjectType
 {
-	public function getSQLDeclaration(array $fieldDeclaration, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
     {
         return 'LONGBLOB';
     }
 
-	public function convertToPHPValue($value, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
-	{
-		try {
-			if ($value === null) {
-				return null;
-			}
+    public function convertToPHPValue($value, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+    {
+        try {
+            if ($value === null) {
+                return null;
+            }
 
-			$value = (is_resource($value)) ? stream_get_contents($value) : $value;
-			$val = @unserialize($value);
-			if ($val === false && $value !== 'b:0;') {
-				throw ConversionException::conversionFailed($value, $this->getName());
-			}
-			return $val;
-		} catch (ConversionException $e) {
-			$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
-			return array();
-		}
-	}
+            $value = (is_resource($value)) ? stream_get_contents($value) : $value;
+            $val = @unserialize($value);
+            if ($val === false && $value !== 'b:0;') {
+                throw ConversionException::conversionFailed($value, $this->getName());
+            }
 
-	public function getName()
-	{
-		return Type::OBJECT;
-	}
+            return $val;
+        } catch (ConversionException $e) {
+            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+
+            return array();
+        }
+    }
+
+    public function getName()
+    {
+        return Type::OBJECT;
+    }
 }

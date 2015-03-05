@@ -34,7 +34,6 @@
 
 namespace Application\AgentBundle;
 
-use Application\DeskPRO\App;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -42,96 +41,94 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class FragmentRouter
 {
-	/** @var array */
-	protected $paths = array();
-	/** @var array */
-	protected $non_unique = array();
+    /** @var array */
+    protected $paths = array();
+    /** @var array */
+    protected $non_unique = array();
 
-	/** @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface */
-	protected $generator;
-	
-	public function __construct(UrlGeneratorInterface $generator)
-	{
-		$this->generator = $generator;
-	}
+    /** @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface */
+    protected $generator;
 
-	public function compile($js_classname = null)
-	{
-		if (!$js_classname) {
-			$js_classname = 'window.DeskPRO_FragmentRouter';
-		}
+    public function __construct(UrlGeneratorInterface $generator)
+    {
+        $this->generator = $generator;
+    }
 
-		$js = array();
-		$js[] = "$js_classname = {\n\n";
+    public function compile($js_classname = null)
+    {
+        if (!$js_classname) {
+            $js_classname = 'window.DeskPRO_FragmentRouter';
+        }
 
-		$js[] = "\tbaseUrl: '',\n\n";
-		$js[] = "\tfragments: " . json_encode($this->generator->getFragmentInforArray()) . ",\n\n";
+        $js = array();
+        $js[] = "$js_classname = {\n\n";
 
-		$js[] = <<<EOF
-	setBaseUrl: function(baseUrl) {
-		this.baseUrl = baseUrl.replace(/\/$/, '');
-	},
+        $js[] = "\tbaseUrl: '',\n\n";
+        $js[] = "\tfragments: " . json_encode($this->generator->getFragmentInforArray()) . ",\n\n";
 
-	hasFragment: function(fragment_name) {
-		if (this.fragments[fragment_name] !== undefined) {
-			return true;
-		}
+        $js[] = <<<EOF
+    setBaseUrl: function (baseUrl) {
+        this.baseUrl = baseUrl.replace(/\/$/, '');
+    },
 
-		return false;
-	},
+    hasFragment: function (fragment_name) {
+        if (this.fragments[fragment_name] !== undefined) {
+            return true;
+        }
 
-	getFragmentPattern: function(fragment_name) {
-		if (!this.hasFragment(fragment_name)) return '';
+        return false;
+    },
 
-		return this.fragments[fragment_name]['pattern'] || '';
-	},
+    getFragmentPattern: function (fragment_name) {
+        if (!this.hasFragment(fragment_name)) return '';
+        return this.fragments[fragment_name]['pattern'] || '';
+    },
 
-	getFragmentType: function(fragment_name) {
-		if (!this.hasFragment(fragment_name)) return '';
+    getFragmentType: function (fragment_name) {
+        if (!this.hasFragment(fragment_name)) return '';
+        return this.fragments[fragment_name]['type'] || '';
+    },
 
-		return this.fragments[fragment_name]['type'] || '';
-	},
+    getUrl: function (fragment_name, args) {
+        var pattern = this.getFragmentPattern(fragment_name);
 
-	getUrl: function(fragment_name, args) {
-		var pattern = this.getFragmentPattern(fragment_name);
+        var matches = pattern.match(/\{(.*?)\}/g);
+        var m = null;
+        var val = null;
+        for (var i = 0; i < matches.length; i++) {
+            m = matches[i];
+            if (args[i] === undefined) {
+                console.warn('Fragment %s was not provided with enough args: %o', fragment_name, args);
+                break;
+            }
 
-		var matches = pattern.match(/\{(.*?)\}/g);
-		var m = null;
-		var val = null;
-		for (var i = 0; i < matches.length; i++) {
-			m = matches[i];
-			if (args[i] === undefined) {
-				console.warn('Fragment %s was not provided with enough args: %o', fragment_name, args);
-				break;
-			}
+            var val = args[i];
+            if (typeof val == 'function') {
+                val = val();
+            }
 
-			var val = args[i];
-			if (typeof val == 'function') {
-				val = val();
-			}
+            pattern = pattern.replace(m+'', args[i]);
+        }
 
-			pattern = pattern.replace(m+'', args[i]);
-		}
+        return this.baseUrl + pattern;
+    },
 
-		return this.baseUrl + pattern;
-	},
+    getUrlNamedArgs: function (fragment_name, args) {
+        var pattern = this.getFragmentPattern(fragment_name);
 
-	getUrlNamedArgs: function(fragment_name, args) {
-		var pattern = this.getFragmentPattern(fragment_name);
+        Object.each(args, function (v,k) {
+            if (typeof v == 'function') {
+                v = v();
+            }
 
-		Object.each(args, function(v,k) {
-			if (typeof v == 'function') {
-				v = v();
-			}
+            pattern = pattern.replace('{' + k + '}', v);
+        });
 
-			pattern = pattern.replace('{' + k + '}', v);
-		});
-
-		return this.baseUrl + pattern;
-	}
+        return this.baseUrl + pattern;
+    }
 }
 EOF;
 
-		return implode('', $js);
-	}
+        return implode('', $js);
+    }
 }

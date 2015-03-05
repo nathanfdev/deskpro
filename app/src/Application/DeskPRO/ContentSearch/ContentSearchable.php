@@ -39,22 +39,22 @@ namespace Application\DeskPRO\ContentSearch;
  */
 interface ContentSearchable
 {
-	/**
-	 * Get the unique ID for this item
-	 */
-	public function getSearchId();
+    /**
+     * Get the unique ID for this item
+     */
+    public function getSearchId();
 
-	/**
-	 * Get a normalized string that we should insert into the search database
-	 *
-	 * @return string
-	 */
-	public function getSearchContent();
+    /**
+     * Get a normalized string that we should insert into the search database
+     *
+     * @return string
+     */
+    public function getSearchContent();
 
-	/**
-	 * Get an array of k=>v pairs of additional content we sholud insert into the search database.
-	 * 
-	 * @return array
-	 */
-	public function getSearchAttributes();
+    /**
+     * Get an array of k=>v pairs of additional content we sholud insert into the search database.
+     *
+     * @return array
+     */
+    public function getSearchAttributes();
 }

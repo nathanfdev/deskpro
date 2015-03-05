@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1345637958 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add chat_conversations.total_to_ended");
-		$this->execMutateSql("ALTER TABLE chat_conversations ADD total_to_ended INT NOT NULL");
-		$this->execMutateSql("UPDATE chat_conversations SET total_to_ended = UNIX_TIMESTAMP(date_ended) - UNIX_TIMESTAMP(date_created)");
-	}
+    public function run()
+    {
+        $this->out("Add chat_conversations.total_to_ended");
+        $this->execMutateSql("ALTER TABLE chat_conversations ADD total_to_ended INT NOT NULL");
+        $this->execMutateSql("UPDATE chat_conversations SET total_to_ended = UNIX_TIMESTAMP(date_ended) - UNIX_TIMESTAMP(date_created)");
+    }
 }

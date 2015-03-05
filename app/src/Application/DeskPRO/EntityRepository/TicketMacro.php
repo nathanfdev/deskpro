@@ -34,27 +34,26 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 class TicketMacro extends AbstractEntityRepository
 {
-	public function getMacros()
-	{
-		return $this->_em->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMacro m
-			ORDER BY m.title ASC
-		")->execute();
-	}
+    public function getMacros()
+    {
+        return $this->_em->createQuery("
+            SELECT m
+            FROM DeskPRO:TicketMacro m
+            ORDER BY m.title ASC
+        ")->execute();
+    }
 
-	public function getMacrosForPerson(Entity\Person $person)
-	{
-		return $this->_em->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMacro m
-			WHERE (m.person = ?0 OR m.is_global = 1) AND m.is_enabled = true
-			ORDER BY m.title ASC
-		")->execute(array($person));
-	}
+    public function getMacrosForPerson(Entity\Person $person)
+    {
+        return $this->_em->createQuery("
+            SELECT m
+            FROM DeskPRO:TicketMacro m
+            WHERE (m.person = ?0 OR m.is_global = 1) AND m.is_enabled = true
+            ORDER BY m.title ASC
+        ")->execute(array($person));
+    }
 }

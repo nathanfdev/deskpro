@@ -1,13 +1,13 @@
 define [
-	'Reports/Main/Ctrl/Base'
+  'Reports/Main/Ctrl/Base'
 ], (
-	ReportsBaseCtrl
+  ReportsBaseCtrl
 ) ->
-	class Reports_Main_Ctrl_MainPage extends ReportsBaseCtrl
-		@CTRL_ID   = 'Reports_Main_Ctrl_MainPage'
-		@DEPS      = ['$rootScope', 'AppState']
+  class Reports_Main_Ctrl_MainPage extends ReportsBaseCtrl
+    @CTRL_ID   = 'Reports_Main_Ctrl_MainPage'
+    @DEPS      = ['$rootScope', 'AppState']
 
-		init: ->
-			return
+    init: ->
+      return
 
-	Reports_Main_Ctrl_MainPage.EXPORT_CTRL()
+  Reports_Main_Ctrl_MainPage.EXPORT_CTRL()

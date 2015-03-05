@@ -41,57 +41,57 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
-	/**
-	 * @var FilterChangeDetector
-	 */
-	private $filter_change_detector;
+    /**
+     * @var FilterChangeDetector
+     */
+    private $filter_change_detector;
 
-	/**
-	 * @var Connection
-	 */
-	private $db;
-
-
-	/**
-	 * @param Connection           $db
-	 * @param FilterChangeDetector $filter_change_detector
-	 */
-	public function __construct(Connection $db, FilterChangeDetector $filter_change_detector)
-	{
-		$this->db = $db;
-		$this->filter_change_detector = $filter_change_detector;
-	}
+    /**
+     * @var Connection
+     */
+    private $db;
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
+    /**
+     * @param Connection           $db
+     * @param FilterChangeDetector $filter_change_detector
+     */
+    public function __construct(Connection $db, FilterChangeDetector $filter_change_detector)
+    {
+        $this->db = $db;
+        $this->filter_change_detector = $filter_change_detector;
+    }
 
-		$change_set = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
-		$client_messages = $change_set->getListUpdateClientMessages();
 
-		$rows = array();
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($context->getEventType() == 'noop') {
+            return;
+        }
 
-		foreach ($client_messages as $cm) {
-			$rows[] = array(
-				'channel'           => $cm->channel,
-				'auth'              => $cm->auth,
-				'data'              => serialize($cm->data),
-				'created_by_client' => $cm->created_by_client ?: '',
-				'for_client'        => $cm->for_client ?: null,
-				'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
-				'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
-			);
-		}
+        $change_set = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
+        $client_messages = $change_set->getListUpdateClientMessages();
 
-		if ($rows) {
-			$this->db->batchInsert('client_messages', $rows);
-		}
-	}
+        $rows = array();
+
+        foreach ($client_messages as $cm) {
+            $rows[] = array(
+                'channel'           => $cm->channel,
+                'auth'              => $cm->auth,
+                'data'              => serialize($cm->data),
+                'created_by_client' => $cm->created_by_client ?: '',
+                'for_client'        => $cm->for_client ?: null,
+                'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
+                'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
+            );
+        }
+
+        if ($rows) {
+            $this->db->batchInsert('client_messages', $rows);
+        }
+    }
 }

@@ -38,121 +38,128 @@ use Symfony\Component\HttpFoundation\Cookie as BaseCookie;
 
 class Cookie extends BaseCookie
 {
-	const EXPIRE_NEVER = 'never';
-	const EXPIRE_DELETE = 'delete';
+    const EXPIRE_NEVER = 'never';
+    const EXPIRE_DELETE = 'delete';
 
-	public static function makeDeleteCookie($name)
-	{
-		return new self($name, '', 'delete');
-	}
-
-	public static function makeCookie($name, $value, $expire, $httpOnly = false, $secure = false)
-	{
-		return new self($name, $value, $expire, null, null, $secure, $httpOnly);
-	}
-
-	public function __construct($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false)
+    public static function makeDeleteCookie($name)
     {
-		if ($path === null) {
-			$path = App::getSetting('core.cookie_path');
-			if (!$path) {
-				$path = '/';
-			}
-		}
+        return new self($name, '', 'delete');
+    }
 
-		if ($domain === null) {
-			$domain = App::getSetting('core.cookie_domain');
-			if (!$domain) {
-				$domain = null;
-			}
-		}
+    public static function makeCookie($name, $value, $expire, $httpOnly = false, $secure = false)
+    {
+        return new self($name, $value, $expire, null, null, $secure, $httpOnly);
+    }
 
-		if ($expire === self::EXPIRE_NEVER) {
-			$expire = '+5 years';
-		} elseif ($expire === self::EXPIRE_DELETE) {
-			$expire = '-1 week';
-		}
+    public function __construct($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false)
+    {
+        if ($path === null) {
+            $path = App::getSetting('core.cookie_path');
+            if (!$path) {
+                $path = '/';
+            }
+        }
 
-	    parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly);
-	}
+        if ($domain === null) {
+            $domain = App::getSetting('core.cookie_domain');
+            if (!$domain) {
+                $domain = null;
+            }
+        }
 
-	public function __toString()
-	{
-		$str = urlencode($this->getName()).'=';
+        if ($expire === self::EXPIRE_NEVER) {
+            $expire = '+5 years';
+        } elseif ($expire === self::EXPIRE_DELETE) {
+            $expire = '-1 week';
+        }
 
-		if ('' === (string) $this->getValue()) {
-			$str .= 'deleted; expires='.gmdate("D, d-M-Y H:i:s T", time() - 31536001);
-		} else {
-			$str .= urlencode($this->getValue());
+        parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    }
 
-			if ($this->getExpiresTime() !== 0) {
-				$str .= '; expires='.gmdate("D, d-M-Y H:i:s T", $this->getExpiresTime());
-			}
-		}
+    public function __toString()
+    {
+        $str = urlencode($this->getName()).'=';
 
-		if (null !== $this->path) {
-			$str .= '; path='.$this->path;
-		}
+        if ('' === (string) $this->getValue()) {
+            $str .= 'deleted; expires='.gmdate("D, d-M-Y H:i:s T", time() - 31536001);
+        } else {
+            $str .= urlencode($this->getValue());
 
-		if (null !== $this->getDomain()) {
-			$str .= '; domain='.$this->getDomain();
-		}
+            if ($this->getExpiresTime() !== 0) {
+                $str .= '; expires='.gmdate("D, d-M-Y H:i:s T", $this->getExpiresTime());
+            }
+        }
 
-		if (true === $this->isSecure()) {
-			$str .= '; secure';
-		}
+        if (null !== $this->path) {
+            $str .= '; path='.$this->path;
+        }
 
-		if (true === $this->isHttpOnly()) {
-			$str .= '; httponly';
-		}
+        if (null !== $this->getDomain()) {
+            $str .= '; domain='.$this->getDomain();
+        }
 
-		return $str;
-	}
+        if (true === $this->isSecure()) {
+            $str .= '; secure';
+        }
 
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-		return $this;
-	}
+        if (true === $this->isHttpOnly()) {
+            $str .= '; httponly';
+        }
 
-	public function setExpire($expire)
-	{
-		$this->expire = $expire;
-		return $this;
-	}
+        return $str;
+    }
 
-	public function setHttpOnly($httpOnly)
-	{
-		$this->httpOnly = $httpOnly;
-		return $this;
-	}
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
 
-	public function setName($name)
-	{
-		$this->name = $name;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setPath($path)
-	{
-		$this->path = $path;
-		return $this;
-	}
+    public function setExpire($expire)
+    {
+        $this->expire = $expire;
 
-	public function setSecure($secure)
-	{
-		$this->secure = $secure;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setValue($value)
-	{
-		$this->value = $value;
-		return $this;
-	}
+    public function setHttpOnly($httpOnly)
+    {
+        $this->httpOnly = $httpOnly;
 
-	public function send()
-	{
-		header('Set-Cookie: ' . $this->__toString(), false);
-	}
+        return $this;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    public function setSecure($secure)
+    {
+        $this->secure = $secure;
+
+        return $this;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    public function send()
+    {
+        header('Set-Cookie: ' . $this->__toString(), false);
+    }
 }

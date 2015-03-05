@@ -38,8 +38,8 @@ use Application\DeskPRO\BlobStorage\Blob;
 
 interface WriteStreamInterface
 {
-	/**
-	 * @return resource
-	 */
-	public function getBlobWriteStream(Blob $blob);
+    /**
+     * @return resource
+     */
+    public function getBlobWriteStream(Blob $blob);
 }

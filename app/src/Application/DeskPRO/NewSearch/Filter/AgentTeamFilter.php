@@ -11,11 +11,13 @@ class AgentTeamFilter extends AbstractFilter
         $teamIds = $this->person->getHelper('Agent')->getTeamIds();
 
         if (!empty($teamIds)) {
-			$filter = new Filter\Terms('agent_team', $teamIds);
-			return $filter->toArray();
+            $filter = new Filter\Terms('agent_team', $teamIds);
+
+            return $filter->toArray();
         } else {
-			$filter = new Filter\Terms('agent_team', array(-1));
-			return $filter->toArray();
-		}
+            $filter = new Filter\Terms('agent_team', array(-1));
+
+            return $filter->toArray();
+        }
     }
-} 
+}

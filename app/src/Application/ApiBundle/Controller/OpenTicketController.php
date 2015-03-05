@@ -42,103 +42,103 @@ use Application\DeskPRO\Entity\TicketMessage;
 
 class OpenTicketController extends AbstractController
 {
-	public function preAction($action, $arguments = null)
-	{
-		return null;
-	}
+    public function preAction($action, $arguments = null)
+    {
+        return null;
+    }
 
-	public function newTicketMessageAction()
-	{
-		$ticket_manager = $this->container->getTicketManager();
+    public function newTicketMessageAction()
+    {
+        $ticket_manager = $this->container->getTicketManager();
 
-		if (!\Orb\Validator\StringEmail::isValueValid($this->in->getString('email')) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->in->getString('email'))) {
-			return $this->createApiErrorResponse('invalid_email', 'The email address supplied is invalid');
-		}
-		if (!$this->in->getString('subject')) {
-			return $this->createApiErrorResponse('invalid_subject', 'The subject was empty');
-		}
-		if (!$this->in->getString('message')) {
-			return $this->createApiErrorResponse('invalid_message', 'The message was empty');
-		}
+        if (!\Orb\Validator\StringEmail::isValueValid($this->in->getString('email')) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->in->getString('email'))) {
+            return $this->createApiErrorResponse('invalid_email', 'The email address supplied is invalid');
+        }
+        if (!$this->in->getString('subject')) {
+            return $this->createApiErrorResponse('invalid_subject', 'The subject was empty');
+        }
+        if (!$this->in->getString('message')) {
+            return $this->createApiErrorResponse('invalid_message', 'The message was empty');
+        }
 
-		if ($tac = $this->in->getString('tac')) {
-			$ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($tac);
+        if ($tac = $this->in->getString('tac')) {
+            $ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($tac);
 
-			if (!$ticket || !$ticket->getProperty('allow_send_reply_service')) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-			}
+            if (!$ticket || !$ticket->getProperty('allow_send_reply_service')) {
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            }
 
-			$ticket_manager->markAsManaged($ticket);
+            $ticket_manager->markAsManaged($ticket);
 
-			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
-			if (!$person) {
-				$person = Person::newContactPerson(array(
-					'email' => $this->in->getString('email'),
-					'name'  => $this->in->getString('name')
-				));
-				$this->em->persist($person);
-			}
+            $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+            if (!$person) {
+                $person = Person::newContactPerson(array(
+                    'email' => $this->in->getString('email'),
+                    'name'  => $this->in->getString('name')
+                ));
+                $this->em->persist($person);
+            }
 
-			$context = $ticket_manager->createUserExecutorContext($ticket->person, 'newreply', 'api');
+            $context = $ticket_manager->createUserExecutorContext($ticket->person, 'newreply', 'api');
 
-		} else {
-			// Not allowed to create new tickets using this service
-			if (!$this->apikey && !$this->api_token && !dp_get_config('allow_open_ticket_create')) {
-				$response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
-				$response->headers->add(array(
-					'WWW-Authenticate' => 'Basic realm="API"'
-				));
+        } else {
+            // Not allowed to create new tickets using this service
+            if (!$this->apikey && !$this->api_token && !dp_get_config('allow_open_ticket_create')) {
+                $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
+                $response->headers->add(array(
+                    'WWW-Authenticate' => 'Basic realm="API"'
+                ));
 
-				return $response;
-			}
+                return $response;
+            }
 
-			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
-			if (!$person) {
-				$person = Person::newContactPerson(array(
-					'email' => $this->in->getString('email'),
-					'name'  => $this->in->getString('name')
-				));
-				$this->em->persist($person);
-			}
+            $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+            if (!$person) {
+                $person = Person::newContactPerson(array(
+                    'email' => $this->in->getString('email'),
+                    'name'  => $this->in->getString('name')
+                ));
+                $this->em->persist($person);
+            }
 
-			$ticket = $ticket_manager->createTicket();
-			$ticket['creation_system']  = Ticket::CREATED_WEB_API;
-			$ticket['person']  = $person;
-			$ticket['subject'] = $this->in->getString('subject');
-			$ticket->setProperty('allow_send_reply_service', true);
+            $ticket = $ticket_manager->createTicket();
+            $ticket['creation_system']  = Ticket::CREATED_WEB_API;
+            $ticket['person']  = $person;
+            $ticket['subject'] = $this->in->getString('subject');
+            $ticket->setProperty('allow_send_reply_service', true);
 
-			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
-			$ticket->getTicketLogger()->recordExtra('suppress_agent_notify', true);
+            $ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+            $ticket->getTicketLogger()->recordExtra('suppress_agent_notify', true);
 
-			if ($my_tac = $this->in->getString('my_tac')) {
-				$ticket->setProperty('send_reply_tac', $my_tac);
-			}
-			if ($reply_service_url = $this->in->getString('my_reply_service')) {
-				$ticket->setProperty('send_reply_service', $reply_service_url);
-			}
+            if ($my_tac = $this->in->getString('my_tac')) {
+                $ticket->setProperty('send_reply_tac', $my_tac);
+            }
+            if ($reply_service_url = $this->in->getString('my_reply_service')) {
+                $ticket->setProperty('send_reply_service', $reply_service_url);
+            }
 
-			$context = $ticket_manager->createUserExecutorContext($ticket->person, 'newticket', 'api');
-		}
+            $context = $ticket_manager->createUserExecutorContext($ticket->person, 'newticket', 'api');
+        }
 
-		$message_html = $this->in->getHtmlCore('message');
+        $message_html = $this->in->getHtmlCore('message');
 
-		$ticket_message = new TicketMessage();
-		$ticket_message['person']  = $person;
-		$ticket_message->setMessageHtml($message_html);
+        $ticket_message = new TicketMessage();
+        $ticket_message['person']  = $person;
+        $ticket_message->setMessageHtml($message_html);
 
-		$ticket->addMessage($ticket_message);
-		$ticket['status'] = 'awaiting_agent';
+        $ticket->addMessage($ticket_message);
+        $ticket['status'] = 'awaiting_agent';
 
-		$this->em->persist($ticket);
-		$this->em->persist($ticket_message);
+        $this->em->persist($ticket);
+        $this->em->persist($ticket_message);
 
-		$ticket_manager->saveTicket($ticket, $context);
+        $ticket_manager->saveTicket($ticket, $context);
 
-		$this->em->flush();
+        $this->em->flush();
 
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'tac' => $ticket->getAccessCode()
-		));
-	}
+        return $this->createJsonResponse(array(
+            'success' => true,
+            'tac' => $ticket->getAccessCode()
+        ));
+    }
 }

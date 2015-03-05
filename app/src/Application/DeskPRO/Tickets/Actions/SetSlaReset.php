@@ -51,75 +51,75 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetSlaReset extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('sla_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('sla_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$sla_ids = $this->getActionOption('sla_ids');
-		$sla_ids = array_combine($sla_ids, $sla_ids);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $sla_ids = $this->getActionOption('sla_ids');
+        $sla_ids = array_combine($sla_ids, $sla_ids);
 
-		foreach ($ticket->ticket_slas as $ticket_sla) {
-			if (!isset($sla_ids[-1]) && !isset($sla_ids[$ticket_sla->sla->id])) {
-				continue;
-			}
+        foreach ($ticket->ticket_slas as $ticket_sla) {
+            if (!isset($sla_ids[-1]) && !isset($sla_ids[$ticket_sla->sla->id])) {
+                continue;
+            }
 
-			$calc = $ticket_sla->sla->getCalculator();
+            $calc = $ticket_sla->sla->getCalculator();
 
-			$ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
-			$ticket_sla->fail_date = $calc->calculateFailDate($ticket);
-			$ticket_sla->sla_status = TicketSla::STATUS_OK;
-			if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
-				if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
-					$ticket_sla->sla_status = TicketSla::STATUS_FAIL;
-				}
-			} else if ($ticket_sla->sla_status == 'ok') {
-				if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
-					$ticket_sla->sla_status = TicketSla::STATUS_WARNING;
-				}
-			}
+            $ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
+            $ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+            $ticket_sla->sla_status = TicketSla::STATUS_OK;
+            if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
+                if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
+                    $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
+                }
+            } elseif ($ticket_sla->sla_status == 'ok') {
+                if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
+                    $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
+                }
+            }
 
-			$completed_date = $calc->calculateCompletedDate($ticket);
-			if ($completed_date) {
-				$ticket_sla->setIsCompleted(true, $completed_date);
-			} else {
-				$ticket_sla->setIsCompleted(false, $completed_date);
-			}
-			$this->getContainer()->getEm()->persist($ticket_sla);
-			$this->getContainer()->getEm()->flush($ticket_sla);
-		}
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
-			return array('slas');
-		}
-
-		return null;
-	}
+            $completed_date = $calc->calculateCompletedDate($ticket);
+            if ($completed_date) {
+                $ticket_sla->setIsCompleted(true, $completed_date);
+            } else {
+                $ticket_sla->setIsCompleted(false, $completed_date);
+            }
+            $this->getContainer()->getEm()->persist($ticket_sla);
+            $this->getContainer()->getEm()->flush($ticket_sla);
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
+            return array('slas');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

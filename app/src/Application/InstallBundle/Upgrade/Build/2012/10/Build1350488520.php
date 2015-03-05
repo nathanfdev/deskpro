@@ -36,88 +36,88 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350488520 extends AbstractBuild
 {
-	/** @var array  */
-	protected $deps = array();
-	/** @var array  */
-	protected $id_map = array();
+    /** @var array  */
+    protected $deps = array();
+    /** @var array  */
+    protected $id_map = array();
 
-	public function run()
-	{
-		$this->out("Copying out chat departments that are also ticket departments");
+    public function run()
+    {
+        $this->out("Copying out chat departments that are also ticket departments");
 
-		$this->deps = $this->container->getDb()->fetchAllKeyed("
-			SELECT * FROM departments
-			ORDER BY id ASC
-		", array(), 'id');
+        $this->deps = $this->container->getDb()->fetchAllKeyed("
+            SELECT * FROM departments
+            ORDER BY id ASC
+        ", array(), 'id');
 
-		$proc_deps = $this->container->getDb()->fetchAllCol("
-			SELECT id FROM departments
-			WHERE is_tickets_enabled = 1 AND is_chat_enabled = 1
-			ORDER BY id ASC
-		");
+        $proc_deps = $this->container->getDb()->fetchAllCol("
+            SELECT id FROM departments
+            WHERE is_tickets_enabled = 1 AND is_chat_enabled = 1
+            ORDER BY id ASC
+        ");
 
-		foreach ($proc_deps as $dep_id) {
-			$this->container->getDb()->beginTransaction();
-			try {
-				$dep = $this->deps[$dep_id];
-				$this->handleDep($dep);
-				$this->container->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->container->getDb()->rollback();
-				throw $e;
-			}
-		}
+        foreach ($proc_deps as $dep_id) {
+            $this->container->getDb()->beginTransaction();
+            try {
+                $dep = $this->deps[$dep_id];
+                $this->handleDep($dep);
+                $this->container->getDb()->commit();
+            } catch (\Exception $e) {
+                $this->container->getDb()->rollback();
+                throw $e;
+            }
+        }
 
-		// Now update those deps so they arent chat anymore
-		$this->container->getDb()->executeUpdate("
-			UPDATE departments
-			SET is_chat_enabled = 0
-			WHERE is_tickets_enabled = 1 AND is_chat_enabled = 1
-		");
-	}
+        // Now update those deps so they arent chat anymore
+        $this->container->getDb()->executeUpdate("
+            UPDATE departments
+            SET is_chat_enabled = 0
+            WHERE is_tickets_enabled = 1 AND is_chat_enabled = 1
+        ");
+    }
 
-	protected function handleDep(array $dep)
-	{
-		$new_dep = $dep;
-		unset($new_dep['id']);
-		unset($new_dep['is_tickets_enabled']);
+    protected function handleDep(array $dep)
+    {
+        $new_dep = $dep;
+        unset($new_dep['id']);
+        unset($new_dep['is_tickets_enabled']);
 
-		if ($new_dep['parent_id']) {
-			if (!isset($this->id_map[$new_dep['parent_id']])) {
-				$parent_dep = $this->deps[$new_dep['parent_id']];
-				$this->handleDep($parent_dep);
-			}
+        if ($new_dep['parent_id']) {
+            if (!isset($this->id_map[$new_dep['parent_id']])) {
+                $parent_dep = $this->deps[$new_dep['parent_id']];
+                $this->handleDep($parent_dep);
+            }
 
-			$new_dep['parent_id'] = $this->id_map[$new_dep['parent_id']];
-		}
+            $new_dep['parent_id'] = $this->id_map[$new_dep['parent_id']];
+        }
 
-		// Insert new department
-		$this->container->getDb()->insert('departments', $new_dep);
-		$new_dep['id'] = $this->container->getDb()->lastInsertId();
+        // Insert new department
+        $this->container->getDb()->insert('departments', $new_dep);
+        $new_dep['id'] = $this->container->getDb()->lastInsertId();
 
-		$this->id_map[$dep['id']] = $new_dep['id'];
+        $this->id_map[$dep['id']] = $new_dep['id'];
 
-		// Copy permissions
-		$perms = $this->container->getDb()->fetchAll("
-			SELECT usergroup_id, person_id
-			FROM department_permissions
-			WHERE app = 'chat' AND department_id = ?
-		", array($dep['id']));
+        // Copy permissions
+        $perms = $this->container->getDb()->fetchAll("
+            SELECT usergroup_id, person_id
+            FROM department_permissions
+            WHERE app = 'chat' AND department_id = ?
+        ", array($dep['id']));
 
-		foreach ($perms as $p) {
-			$this->container->getDb()->insert('department_permissions', array(
-				'department_id' => $new_dep['id'],
-				'usergroup_id'  => $p['usergroup_id'],
-				'person_id'     => $p['person_id'],
-				'app'           => 'chat',
-			));
-		}
+        foreach ($perms as $p) {
+            $this->container->getDb()->insert('department_permissions', array(
+                'department_id' => $new_dep['id'],
+                'usergroup_id'  => $p['usergroup_id'],
+                'person_id'     => $p['person_id'],
+                'app'           => 'chat',
+            ));
+        }
 
-		// Update chats
-		$this->container->getDb()->executeQuery("
-			UPDATE chat_conversations
-			SET department_id = ?
-			WHERE department_id = ?
-		", array($new_dep['id'], $dep['id']));
-	}
+        // Update chats
+        $this->container->getDb()->executeQuery("
+            UPDATE chat_conversations
+            SET department_id = ?
+            WHERE department_id = ?
+        ", array($new_dep['id'], $dep['id']));
+    }
 }

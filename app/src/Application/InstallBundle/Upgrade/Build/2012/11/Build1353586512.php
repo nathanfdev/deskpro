@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1353586512 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adjust SLA application types");
-		$this->execMutateSql("ALTER TABLE slas ADD apply_type VARCHAR(25) NOT NULL");
-		$this->execMutateSql("UPDATE slas SET apply_type = CASE
-			WHEN apply_all = 1 THEN 'all'
-			WHEN apply_priority_id IS NOT NULL THEN 'priority'
-			WHEN apply_trigger_id IS NOT NULL THEN 'criteria'
-			WHEN allow_agent_manual = 1 THEN 'manual'
-			ELSE 'people_orgs'
-			END
-		");
-		$this->execMutateSql("ALTER TABLE slas DROP apply_all, DROP allow_agent_manual");
-	}
+    public function run()
+    {
+        $this->out("Adjust SLA application types");
+        $this->execMutateSql("ALTER TABLE slas ADD apply_type VARCHAR(25) NOT NULL");
+        $this->execMutateSql("UPDATE slas SET apply_type = CASE
+            WHEN apply_all = 1 THEN 'all'
+            WHEN apply_priority_id IS NOT NULL THEN 'priority'
+            WHEN apply_trigger_id IS NOT NULL THEN 'criteria'
+            WHEN allow_agent_manual = 1 THEN 'manual'
+            ELSE 'people_orgs'
+            END
+        ");
+        $this->execMutateSql("ALTER TABLE slas DROP apply_all, DROP allow_agent_manual");
+    }
 }

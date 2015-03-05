@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Translate;
 
-use Application\DeskPRO\App;
 use Orb\Util\Util;
 
 /**
@@ -44,46 +43,47 @@ use Orb\Util\Util;
  */
 class ObjectPhraseNamer
 {
-	public function getPhraseName($object, $property = null)
-	{
-		$id = null;
-		if (method_exists($object, 'getId')) {
-			$id = $object->getId();
-		} elseif ($object instanceof \ArrayAccess AND isset($object['id'])) {
-			$id = $object['id'];
-		}
+    public function getPhraseName($object, $property = null)
+    {
+        $id = null;
+        if (method_exists($object, 'getId')) {
+            $id = $object->getId();
+        } elseif ($object instanceof \ArrayAccess AND isset($object['id'])) {
+            $id = $object['id'];
+        }
 
-		if ($id) {
-			$baseclass = Util::getBaseClassname($object);
-			$prefix = 'obj_' . strtolower($baseclass) . '.';
-			$name = $prefix . $id;
-			if ($property) {
-				$name .= '_' . $property;
-			}
-			return $name;
-		}
+        if ($id) {
+            $baseclass = Util::getBaseClassname($object);
+            $prefix = 'obj_' . strtolower($baseclass) . '.';
+            $name = $prefix . $id;
+            if ($property) {
+                $name .= '_' . $property;
+            }
 
-		return null;
-	}
+            return $name;
+        }
 
-	public function getPhraseDefault($object, $property = null)
-	{
-		if ($object instanceof \ArrayAccess) {
-			if ($property === null) {
-				if (isset($object['full_title'])) {
-					return $object['full_title'];
-				} elseif (isset($object['title'])) {
-					return $object['title'];
-				} elseif (isset($object['name'])) {
-					return $object['title'];
-				}
-			}
+        return null;
+    }
 
-			if (isset($object[$property])) {
-				return $object[$property];
-			}
-		}
+    public function getPhraseDefault($object, $property = null)
+    {
+        if ($object instanceof \ArrayAccess) {
+            if ($property === null) {
+                if (isset($object['full_title'])) {
+                    return $object['full_title'];
+                } elseif (isset($object['title'])) {
+                    return $object['title'];
+                } elseif (isset($object['name'])) {
+                    return $object['title'];
+                }
+            }
 
-		return null;
-	}
+            if (isset($object[$property])) {
+                return $object[$property];
+            }
+        }
+
+        return null;
+    }
 }

@@ -45,49 +45,49 @@ use \Symfony\Component\Templating\Storage\StringStorage;
  */
 class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
 {
-	public function evaluate(Storage $template, array $parameters = array())
-	{
-		$OUTPUT = $this->_preProcess($template, $parameters);
-		$__template__ = $template;
+    public function evaluate(Storage $template, array $parameters = array())
+    {
+        $OUTPUT = $this->_preProcess($template, $parameters);
+        $__template__ = $template;
 
-		extract($parameters, EXTR_SKIP);
-		$view = $this;
+        extract($parameters, EXTR_SKIP);
+        $view = $this;
 
-		ob_start();
+        ob_start();
 
-		if ($__template__ instanceof FileStorage) {
-			extract($parameters);
-			$view = $this;
-			require $__template__;
-		} elseif ($__template__ instanceof StringStorage) {
-			eval('; ?>'.$__template__.'<?php ;');
-		}
+        if ($__template__ instanceof FileStorage) {
+            extract($parameters);
+            $view = $this;
+            require $__template__;
+        } elseif ($__template__ instanceof StringStorage) {
+            eval('; ?>'.$__template__.'<?php ;');
+        }
 
-		ob_end_clean();
+        ob_end_clean();
 
-		if (!isset($OUTPUT)) {
-			$OUTPUT = '';
-		}
+        if (!isset($OUTPUT)) {
+            $OUTPUT = '';
+        }
 
-		return $this->_postProcess($OUTPUT);
-	}
+        return $this->_postProcess($OUTPUT);
+    }
 
-	protected function _preProcess(Storage $template, array $parameters = array())
-	{
-		return '';
-	}
+    protected function _preProcess(Storage $template, array $parameters = array())
+    {
+        return '';
+    }
 
-	protected function _postProcess($OUTPUT)
-	{
-		if (is_array($OUTPUT)) {
-			$OUTPUT = implode('', $OUTPUT);
-		}
+    protected function _postProcess($OUTPUT)
+    {
+        if (is_array($OUTPUT)) {
+            $OUTPUT = implode('', $OUTPUT);
+        }
 
-		return (string)$OUTPUT;
-	}
+        return (string)$OUTPUT;
+    }
 
-	public function supports($name)
-	{
-		return false !== strpos($name, '.phpv');
-	}
+    public function supports($name)
+    {
+        return false !== strpos($name, '.phpv');
+    }
 }

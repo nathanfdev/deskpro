@@ -38,23 +38,23 @@ use Doctrine\ORM\EntityManager;
 
 class UsergroupEdit
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup
-	 */
-	public $group;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup
+     */
+    public $group;
 
-	public function __construct(Usergroup $user_group)
-	{
-		$this->group = $user_group;
-	}
+    public function __construct(Usergroup $user_group)
+    {
+        $this->group = $user_group;
+    }
 
-	/**
-	 * @param EntityManager $em
-	 */
+    /**
+     * @param EntityManager $em
+     */
 
-	public function save(EntityManager $em)
-	{
-		$em->persist($this->group);
-		$em->flush();
-	}
+    public function save(EntityManager $em)
+    {
+        $em->persist($this->group);
+        $em->flush();
+    }
 }

@@ -39,18 +39,18 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class ArticleFieldsManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$m = new FieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
-				'entity_name'        => 'DeskPRO:CustomDefArticle',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
-				'data_entity_name'   => 'DeskPRO:CustomDataArticle',
-			)
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $m = new FieldManager(
+            $container->get('doctrine.orm.entity_manager'),
+            array(
+                'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
+                'entity_name'        => 'DeskPRO:CustomDefArticle',
+                'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
+                'data_entity_name'   => 'DeskPRO:CustomDataArticle',
+            )
+        );
 
-		return $m;
-	}
+        return $m;
+    }
 }

@@ -45,38 +45,39 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckApiKey extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('api_key_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('api_key_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		$api_key = $context->getVars()->get('via_api_key');
-		$id = $options->get('api_key_id');
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+        $api_key = $context->getVars()->get('via_api_key');
+        $id = $options->get('api_key_id');
 
-		if (!$api_key || !$id) {
-			return false;
-		}
+        if (!$api_key || !$id) {
+            return false;
+        }
 
-		if ('not' === $this->getTermOperator() && (int) $id !== (int) $api_key) {
-			return true;
-		}
-		
-		if ('is' === $this->getTermOperator() && (int) $id === (int) $api_key) {
-			return true;
-		}
+        if ('not' === $this->getTermOperator() && (int) $id !== (int) $api_key) {
+            return true;
+        }
 
-		return false;
-	}
+        if ('is' === $this->getTermOperator() && (int) $id === (int) $api_key) {
+            return true;
+        }
+
+        return false;
+    }
 }

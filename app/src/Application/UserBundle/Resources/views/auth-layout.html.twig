@@ -1,0 +1,137 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% set authManager = app.authenticationManager %}
+{% set _block_login = block('auth_login') %}
+{% set _block_reset = block('auth_reset') %}
+{% set _block_register = block('auth_register') %}
+
+
+{% block breadcrumb %}
+	{% if _block_register %}
+		<li>
+			<span class="dp-divider">{{ language_arrow('right') }}</span>
+			<a href="{{ path('user_register') }}">{{ phrase('user.profile.register') }}</a>
+		</li>
+	{% else %}
+		<li>
+			<span class="dp-divider">{{ language_arrow('right') }}</span>
+			<a href="{{ path('user_register') }}">{{ phrase('user.general.log_in') }}</a>
+		</li>
+	{% endif %}
+{% endblock %}
+
+
+{% block head %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#user_type_exist').on('click', function() {
+				window.location.href = '{{ url_full('user_login', {return: return}) }}';
+			});
+			$('#user_type_new').on('click', function() {
+				window.location.href = '{{ url_full('user_register', {return: return}) }}';
+			});
+			$('#user_type_exist_pass').on('click', function() {
+				window.location.href = '{{ url_full('user_login_resetpass', {return: return}) }}';
+			});
+		});
+	</script>
+{% endblock %}
+
+
+{% block content %}
+
+	<div class="dp-register-page">
+
+		{% if from_ticket.id %}
+			<div class="dp-alert dp-alert-success">
+				<p>
+					{{ phrase('user.profile.explain_register_for_online_tickets') }}
+				<p>
+			</div>
+		{% endif %}
+
+		{% if app.session.get('submitted_feedback')|length %}
+			<div class="dp-alert dp-alert-success">
+				<p>
+					{{ phrase('user.profile.explain_login_feedback') }}
+				<p>
+			</div>
+		{% endif %}
+
+		{% if app.session.get('login_validate_comments') %}
+			<div class="dp-alert dp-alert-error">
+				{{ phrase('user.profile.explain_login_comment') }}
+			</div>
+		{% endif %}
+
+		{% if app.session.getFlash('login_failed') %}
+			{% set login_failure = app.session.getFlash('login_failed') %}
+			<div class="dp-alert dp-alert-error">
+				{{ phrase('user.profile.login_error') }}
+			</div>
+		{% endif %}
+
+		{#####################################################################}
+		{% if authManager.isAuthVisible %}
+			<section class="dp-well">
+				<header>
+					{% if authManager.hasLoginIconUsersources %}
+						<div class="dp-connect-with">
+							{% if authManager.isLoginFormVisible %}
+								{{ phrase('user.profile.or_connect_with') }}
+							{% else %}
+								{{ phrase('user.profile.connect_with') }}
+							{% endif %}
+							{% for usersource in authManager.getLoginIconUsersources %}
+								{{ render_usersource(usersource, 'login_pull_btn') }}
+							{% endfor %}
+						</div>
+					{% endif %}
+					<label>
+						<h3>
+							<input type="radio" name="user_type" id="user_type_exist" {% if _block_login %}checked="checked"{% endif %} />
+							{{ phrase('user.profile.im_already_registered') }}
+						</h3>
+					</label>
+				</header>
+
+				<article id="user_type_exist_form" class="dp-well dp-well-light" {% if not _block_login %}style="display:none"{% endif %}>
+					{{ _block_login|raw }}
+				</article>
+			</section>
+		{% endif %}
+
+		{% if authManager.isForgotPasswordVisible %}
+			<section class="dp-well">
+				<header>
+					<label>
+						<h3>
+							<input type="radio" name="user_type" id="user_type_exist_pass" {% if _block_reset %}checked="checked"{% endif %} />
+							{{ phrase('user.profile.ive_lost_password') }}
+						</h3>
+					</label>
+				</header>
+				<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if not _block_reset %}style="display:none"{% endif %}>
+					{{ _block_reset|raw }}
+				</article>
+			</section>
+		{% endif %}
+
+		{% if authManager.isRegistrationFormVisible %}
+			<section class="dp-well">
+				<header>
+					<label>
+						<h3>
+							<input type="radio" name="user_type" id="user_type_new" {% if _block_register %}checked="checked"{% endif %} />
+							{{ phrase('user.profile.im_new_user') }}
+						</h3>
+					</label>
+				</header>
+				<article id="user_type_new_form" class="dp-well dp-well-light" {% if not _block_register %}style="display:none"{% endif %}>
+					{{ _block_register|raw }}
+				</article>
+			</section>
+		{% endif %}
+
+	</div>
+
+{% endblock %}

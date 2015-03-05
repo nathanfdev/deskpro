@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1343807531 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add ticket_message_templates.department_id");
-		$this->execMutateSql("ALTER TABLE ticket_message_templates ADD department_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE ticket_message_templates ADD CONSTRAINT FK_8C28E2ECAE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL");
-		$this->execMutateSql("CREATE INDEX IDX_8C28E2ECAE80F5DF ON ticket_message_templates (department_id)");
-	}
+    public function run()
+    {
+        $this->out("Add ticket_message_templates.department_id");
+        $this->execMutateSql("ALTER TABLE ticket_message_templates ADD department_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE ticket_message_templates ADD CONSTRAINT FK_8C28E2ECAE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL");
+        $this->execMutateSql("CREATE INDEX IDX_8C28E2ECAE80F5DF ON ticket_message_templates (department_id)");
+    }
 }

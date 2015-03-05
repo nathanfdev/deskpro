@@ -40,42 +40,38 @@ namespace Orb\Util;
  */
 class ChainCaller
 {
-	/** @var arrayApplication\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
-	protected $_objects = array();
+    /** @var arrayApplication\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
+    protected $_objects = array();
 
-	/**
-	 * Add a new object to the chain.
-	 * 
-	 * @param array $object
-	 */
-	public function addObject($object)
-	{
-		$this->_objects[] = $object;
-	}
+    /**
+     * Add a new object to the chain.
+     *
+     * @param array $object
+     */
+    public function addObject($object)
+    {
+        $this->_objects[] = $object;
+    }
 
-	
-	
-	/**
-	 * Get all objects in the chain.
-	 *
-	 * @return array
-	 */
-	public function getObjects()
-	{
-		return $this->_objects;
-	}
+    /**
+     * Get all objects in the chain.
+     *
+     * @return array
+     */
+    public function getObjects()
+    {
+        return $this->_objects;
+    }
 
-	
+    /**
+     * Magic method calls each object in the chain.
+     */
+    public function __call($name, $arguments)
+    {
+        foreach ($this->_objects as $obj) {
+            $value = call_user_func_array(array($obj, $name), $arguments);
+        }
 
-	/**
-	 * Magic method calls each object in the chain.
-	 */
-	public function __call($name, $arguments)
-	{
-		foreach ($this->_objects as $obj) {
-			$value = call_user_func_array(array($obj, $name), $arguments);
-		}
-
-		return $value;
-	}
+        return $value;
+    }
 }

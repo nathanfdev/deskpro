@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1375454624 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix for login_log.user_agent being too short, add login_log.via_cookie");
-		$this->execMutateSql("ALTER TABLE login_log ADD via_cookie TINYINT(1) NOT NULL, CHANGE user_agent user_agent VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Fix for login_log.user_agent being too short, add login_log.via_cookie");
+        $this->execMutateSql("ALTER TABLE login_log ADD via_cookie TINYINT(1) NOT NULL, CHANGE user_agent user_agent VARCHAR(255) NOT NULL");
+    }
 }

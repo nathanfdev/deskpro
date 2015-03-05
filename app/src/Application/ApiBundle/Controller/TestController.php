@@ -40,81 +40,81 @@ use Application\DeskPRO\App;
  */
 class TestController extends AbstractController
 {
-	public function preAction($action, $arguments = null)
-	{
-		if ($action == 'testAction' || $action == 'aboutAction') {
-			return null;
-		}
+    public function preAction($action, $arguments = null)
+    {
+        if ($action == 'testAction' || $action == 'aboutAction') {
+            return null;
+        }
 
-		return parent::preAction($action, $arguments);
-	}
-
-
-	/**
-	 * This action simply returns a message to indicate that the API is working
-	 *
-	 * @depreciated
-	 */
-	public function testAction()
-	{
-		$request = $this->container->getRequest();
-
-		$api_url = App::getSetting('core.deskpro_url');
-		$api_url .= 'index.php/';
-
-		// If this call is secure, then we know https works and the client
-		// requested it specifically, so return the same protocol
-		if ($request->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
-			$api_url = preg_replace('#^http://#', 'https://', $api_url);
-		}
-
-		return $this->createApiResponse(array(
-			'success'     => true,
-			'api_version' => DP_BUILD_TIME,
-			'api_url'     => $api_url
-		));
-	}
+        return parent::preAction($action, $arguments);
+    }
 
 
-	/**
-	 * This returns info about the helpdesk. It's meant to verify the existence of DeskPRO (eg mobile app)
-	 * and give the API endpoint.
-	 */
-	public function discoverAction()
-	{
-		$request = $this->container->getRequest();
+    /**
+     * This action simply returns a message to indicate that the API is working
+     *
+     * @depreciated
+     */
+    public function testAction()
+    {
+        $request = $this->container->getRequest();
 
-		$data = array();
-		$data['helpdesk_url'] = App::getSetting('core.deskpro_url');
-		$data['helpdesk_url'] = str_replace('/index.php', '', $data['helpdesk_url']);
-		$data['helpdesk_url'] = rtrim($data['helpdesk_url'], '/') . '/';
+        $api_url = App::getSetting('core.deskpro_url');
+        $api_url .= 'index.php/';
 
-		$url_info = @parse_url($data['helpdesk_url']);
-		$data['helpdesk_path'] = @$url_info['path'];
+        // If this call is secure, then we know https works and the client
+        // requested it specifically, so return the same protocol
+        if ($request->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
+            $api_url = preg_replace('#^http://#', 'https://', $api_url);
+        }
 
-		$data['api_url'] = $data['helpdesk_url'] . '/index.php/api/';
-
-		// If this request itself is secure then we know ssl works
-		// so we sholud prefer it
-		if ($request->isSecure()) {
-			$data['api_url'] = preg_replace('#^http://#', 'https', $data['api_url']);
-		}
-
-		$url_info = @parse_url($data['api_url']);
-		$data['api_path'] = @$url_info['path'];
-
-		$data['api_version'] = DP_BUILD_TIME;
-
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse(array(
+            'success'     => true,
+            'api_version' => DP_BUILD_TIME,
+            'api_url'     => $api_url
+        ));
+    }
 
 
-	/**
-	 * Another test action to indicate the POST API is working
-	 */
-	public function postTestAction()
-	{
-		$message = isset($_POST['message']) ? $_POST['message'] : 'Post works!';
-		return $this->createApiResponse(array('message' => $message));
-	}
+    /**
+     * This returns info about the helpdesk. It's meant to verify the existence of DeskPRO (eg mobile app)
+     * and give the API endpoint.
+     */
+    public function discoverAction()
+    {
+        $request = $this->container->getRequest();
+
+        $data = array();
+        $data['helpdesk_url'] = App::getSetting('core.deskpro_url');
+        $data['helpdesk_url'] = str_replace('/index.php', '', $data['helpdesk_url']);
+        $data['helpdesk_url'] = rtrim($data['helpdesk_url'], '/') . '/';
+
+        $url_info = @parse_url($data['helpdesk_url']);
+        $data['helpdesk_path'] = @$url_info['path'];
+
+        $data['api_url'] = $data['helpdesk_url'] . '/index.php/api/';
+
+        // If this request itself is secure then we know ssl works
+        // so we sholud prefer it
+        if ($request->isSecure()) {
+            $data['api_url'] = preg_replace('#^http://#', 'https', $data['api_url']);
+        }
+
+        $url_info = @parse_url($data['api_url']);
+        $data['api_path'] = @$url_info['path'];
+
+        $data['api_version'] = DP_BUILD_TIME;
+
+        return $this->createApiResponse($data);
+    }
+
+    /**
+     * Another test action to indicate the POST API is working
+     */
+    public function postTestAction()
+    {
+        $message = isset($_POST['message']) ? $_POST['message'] : 'Post works!';
+
+        return $this->createApiResponse(array('message' => $message));
+    }
 }

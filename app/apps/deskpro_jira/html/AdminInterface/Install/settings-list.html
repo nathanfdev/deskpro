@@ -1,77 +1,49 @@
 <div class="form-group">
 	<div class="col-lg-4">
-		<h3>Base URL</h3>
+		<h3>{{ definitions.url.label }}</h3>
 	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_url" />
+	<div class="col-lg-8" dp-error-class="jira_form.url">
+		<input type="url" name="url" class="form-control" ng-model="setting_values.url"
+               placeholder="https://example.atlassian.net" required />
 		<span class="help-block">
-			<span ng-class="errors.jira_url && 'text-danger'">URL to your JIRA installation.</span>
+			<span>{{ definitions.url.description }}</span>
 		</span>
 	</div>
 </div>
 
 <div class="form-group">
 	<div class="col-lg-4">
-		<h3>Your JIRA Username</h3>
+		<h3>{{ definitions.consumer_key.label }}</h3>
 	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_username" />
+	<div class="col-lg-8" dp-error-class="jira_form.consumer_key">
+		<input type="text" name="consumer_key" class="form-control" ng-model="setting_values.consumer_key"
+                required />
 		<span class="help-block">
-			<span ng-class="errors.jira_username && 'text-danger'">Enter your JIRA username.</span>
+			<span>{{ definitions.consumer_key.description }}</span>
 		</span>
 	</div>
 </div>
 
 <div class="form-group">
-	<div class="col-lg-4">
-		<h3>Your JIRA Password</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="password" class="form-control" ng-model="setting_values.jira_password" />
+    <div class="col-lg-4">
+        <h3>{{ definitions.private_key.label }}</h3>
+    </div>
+    <div class="col-lg-8" dp-error-class="jira_form.private_key">
+        <textarea class="form-control" name="private_key" ng-model="setting_values.private_key" required></textarea>
 		<span class="help-block">
-			<span ng-class="errors.jira_password && 'text-danger'">Enter your JIRA password.</span>
+			<span>{{ definitions.private_key.description }}</span>
 		</span>
-	</div>
+    </div>
 </div>
 
 <div class="form-group">
-	<div class="col-lg-4">
-		<h3>Default Project</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_default_project" />
+    <div class="col-lg-4">
+        <h3>{{ definitions.public_key.label }}</h3>
+    </div>
+    <div class="col-lg-8">
+        <textarea class="form-control" readonly="readonly">{{ definitions.public_key.default }}</textarea>
 		<span class="help-block">
-			<span ng-class="errors.jira_default_project && 'text-danger'">
-				Enter the key for the default project to use. The key is the unique uppercase string that is used to identify a project.
-			</span>
+			<span>{{ definitions.public_key.description }}</span>
 		</span>
-	</div>
-</div>
-
-<div class="form-group">
-	<div class="col-lg-4">
-		<h3>Default Tags</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_default_tags" />
-		<span class="help-block">
-			<span ng-class="errors.jira_default_tags && 'text-danger'">
-				Enter tags to add by default when creating new JIRA tickets (optional).
-			</span>
-		</span>
-	</div>
-</div>
-
-<div class="form-group">
-	<div class="col-lg-4">
-		<h3>Default Priority</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_default_priority" />
-		<span class="help-block">
-			<span ng-class="errors.jira_default_priority && 'text-danger'">
-				Enter priority to add by default when creating new JIRA tickets (optional).
-			</span>
-		</span>
-	</div>
+    </div>
 </div>

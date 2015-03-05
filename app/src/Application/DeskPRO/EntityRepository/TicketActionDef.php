@@ -34,22 +34,21 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
 class TicketActionDef extends AbstractEntityRepository
 {
-	public function getActions($index_by_type = false)
-	{
-		$matches = $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:TicketActionDef a
-		")->execute();
+    public function getActions($index_by_type = false)
+    {
+        $matches = $this->_em->createQuery("
+            SELECT a
+            FROM DeskPRO:TicketActionDef a
+        ")->execute();
 
-		if ($index_by_type) {
-			$matches = Arrays::keyFromData($matches, 'event_type');
-		}
+        if ($index_by_type) {
+            $matches = Arrays::keyFromData($matches, 'event_type');
+        }
 
-		return $matches;
-	}
+        return $matches;
+    }
 }

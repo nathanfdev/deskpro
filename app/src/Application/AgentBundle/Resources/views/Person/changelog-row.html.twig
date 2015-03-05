@@ -4,7 +4,9 @@
             data-log-id="{{ entry.id }}"
             >
         <div class="info">
-            {% if entry.person %}
+	        {% if entry.api_key %}
+		        by API Key: {{ entry.api_key }},
+            {% elseif entry.person %}
                 by <a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': entry.person.id}) }}">{{ entry.person.display_name }}</a>,
             {% endif %}
             <time class="timeago" title="{{ entry.timestamp|date('c', 'UTC') }}">{{ entry.timestamp|date('fulltime') }}</time>

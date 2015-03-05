@@ -46,168 +46,169 @@ use Doctrine\DBAL\Connection;
  */
 class EntityManager extends UnprivateEntityManager
 {
-	/** @var array */
-	protected $_delayedInsert = array();
-	/** @var array */
-	protected $_delayedUpdate = array();
+    /** @var array */
+    protected $_delayedInsert = array();
+    /** @var array */
+    protected $_delayedUpdate = array();
 
-	protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
-	{
-		parent::__construct($conn, $config, $eventManager);
+    protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
+    {
+        parent::__construct($conn, $config, $eventManager);
 
-		$this->unitOfWork = new UnitOfWork($this);
-		$this->proxyFactory = new ProxyFactory(
-			$this,
-			$config->getProxyDir(),
-			$config->getProxyNamespace(),
-			$config->getAutoGenerateProxyClasses()
-		);
-	}
+        $this->unitOfWork = new UnitOfWork($this);
+        $this->proxyFactory = new ProxyFactory(
+            $this,
+            $config->getProxyDir(),
+            $config->getProxyNamespace(),
+            $config->getAutoGenerateProxyClasses()
+        );
+    }
 
-	public function clearRepositoryCache()
-	{
-		$this->repositories = array();
-	}
+    public function clearRepositoryCache()
+    {
+        $this->repositories = array();
+    }
 
-	public function persist($entity)
-	{
-		if (dp_get_config('debug.em_persist_log')) {
-			static $logger = null;
+    public function persist($entity)
+    {
+        if (dp_get_config('debug.em_persist_log')) {
+            static $logger = null;
 
-			if ($logger === null) {
-				$logger = new \Orb\Log\Logger();
-				$wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/em-persist.log', 'a');
-				$logger->addWriter($wr);
-			}
+            if ($logger === null) {
+                $logger = new \Orb\Log\Logger();
+                $wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/em-persist.log', 'a');
+                $logger->addWriter($wr);
+            }
 
-			$type  = get_class($entity);
-			$id    = isset($entity['id']) ? $entity['id'] : '0';
-			$trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace(debug_backtrace());
-			$logger->logDebug("Persist: $type :: $id\n$trace\n\n");
-		}
+            $type  = get_class($entity);
+            $id    = isset($entity['id']) ? $entity['id'] : '0';
+            $trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace(debug_backtrace());
+            $logger->logDebug("Persist: $type :: $id\n$trace\n\n");
+        }
 
-		if ($entity instanceof DomainObject) {
-			if ($entity->_isNoPersist()) {
-				$e = new \InvalidArgumentException("Entity marked as no persist: " . get_class($entity) . " (id: " . $entity->getId());
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
-				return;
-			}
-		}
+        if ($entity instanceof DomainObject) {
+            if ($entity->_isNoPersist()) {
+                $e = new \InvalidArgumentException("Entity marked as no persist: " . get_class($entity) . " (id: " . $entity->getId());
+                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
 
-		if (isset($entity->_dp_object_translatable)) {
-			$entity->_dp_object_translatable->_dpTranslatePersistChanges();
-		}
+                return;
+            }
+        }
 
-		parent::persist($entity);
-	}
+        if (isset($entity->_dp_object_translatable)) {
+            $entity->_dp_object_translatable->_dpTranslatePersistChanges();
+        }
 
-	/**
-	 * Sets an entity to be insert after the next flush call completes.
-	 * This is mostly useful when trying to insert an entity in a pre/post-update
-	 * event, where the managed entities are already setup. This only works
-	 * when inserting an entity.
-	 *
-	 * @param $entity
-	 */
-	public function delayedInsert($entity)
-	{
-		$oid = spl_object_hash($entity);
+        parent::persist($entity);
+    }
+
+    /**
+     * Sets an entity to be insert after the next flush call completes.
+     * This is mostly useful when trying to insert an entity in a pre/post-update
+     * event, where the managed entities are already setup. This only works
+     * when inserting an entity.
+     *
+     * @param $entity
+     */
+    public function delayedInsert($entity)
+    {
+        $oid = spl_object_hash($entity);
 
         if (!isset($this->_delayedInsert[$oid])) {
-			$this->_delayedInsert[$oid] = $entity;
+            $this->_delayedInsert[$oid] = $entity;
         }
-	}
+    }
 
-	/**
-	 * When you need to update another entity in a pre/post-update event, the entity
-	 * cannot be updated directly as it may not be saved. This method takes the code
-	 * to do the update and delays it until after the flush completes and immediately
-	 * does the update.
-	 *
-	 * @param callable $closure
-	 * @param string|null $unique_key
-	 */
-	public function delayedUpdate(\Closure $closure, $unique_key = null)
-	{
-		if ($unique_key) {
-			$this->_delayedUpdate[$unique_key] = $closure;
-		} else {
-			$this->_delayedUpdate[] = $closure;
-		}
-	}
+    /**
+     * When you need to update another entity in a pre/post-update event, the entity
+     * cannot be updated directly as it may not be saved. This method takes the code
+     * to do the update and delays it until after the flush completes and immediately
+     * does the update.
+     *
+     * @param callable    $closure
+     * @param string|null $unique_key
+     */
+    public function delayedUpdate(\Closure $closure, $unique_key = null)
+    {
+        if ($unique_key) {
+            $this->_delayedUpdate[$unique_key] = $closure;
+        } else {
+            $this->_delayedUpdate[] = $closure;
+        }
+    }
 
-	/**
-	 * Flush the current changeset.
-	 *
-	 * Note that $entity here is DISCARDED.
-	 * - Using vanilla Doctrine, specifying an $entity here forces a flush of just
-	 * one entity changeset but results in the rest of changeset being discarded!
-	 * - This feature is poorly documented either way so I dont know if it's a bug or
-	 * by design. But to make it more explicit, this argument is ignored.
-	 * - If you truly want this behaviour, then use flushSpecificChangeset().
-	 *
-	 * @param null $entity
-	 */
-	public function flush($entity = null /* note: arg is ignored, see phpdoc comment */)
-	{
-		if ($this->_delayedInsert) {
-			foreach ($this->_delayedInsert AS $persist) {
-				$this->persist($persist);
-			}
-			$this->_delayedInsert = array();
-		}
-		if ($this->_delayedUpdate) {
-			foreach ($this->_delayedUpdate AS $closure) {
-				$closure($this);
-			}
-			$this->_delayedUpdate = array();
-		}
+    /**
+     * Flush the current changeset.
+     *
+     * Note that $entity here is DISCARDED.
+     * - Using vanilla Doctrine, specifying an $entity here forces a flush of just
+     * one entity changeset but results in the rest of changeset being discarded!
+     * - This feature is poorly documented either way so I dont know if it's a bug or
+     * by design. But to make it more explicit, this argument is ignored.
+     * - If you truly want this behaviour, then use flushSpecificChangeset().
+     *
+     * @param null $entity
+     */
+    public function flush($entity = null /* note: arg is ignored, see phpdoc comment */)
+    {
+        if ($this->_delayedInsert) {
+            foreach ($this->_delayedInsert AS $persist) {
+                $this->persist($persist);
+            }
+            $this->_delayedInsert = array();
+        }
+        if ($this->_delayedUpdate) {
+            foreach ($this->_delayedUpdate AS $closure) {
+                $closure($this);
+            }
+            $this->_delayedUpdate = array();
+        }
 
-		parent::flush(null);
+        parent::flush(null);
 
-		$flush_again = false;
+        $flush_again = false;
 
-		if ($this->_delayedInsert) {
-			foreach ($this->_delayedInsert AS $persist) {
-				$this->persist($persist);
-			}
-			$this->_delayedInsert = array();
-			$flush_again = true;
-		}
+        if ($this->_delayedInsert) {
+            foreach ($this->_delayedInsert AS $persist) {
+                $this->persist($persist);
+            }
+            $this->_delayedInsert = array();
+            $flush_again = true;
+        }
 
-		if ($this->_delayedUpdate) {
-			foreach ($this->_delayedUpdate AS $closure) {
-				$closure($this);
-			}
-			$this->_delayedUpdate = array();
-			$flush_again = true;
-		}
+        if ($this->_delayedUpdate) {
+            foreach ($this->_delayedUpdate AS $closure) {
+                $closure($this);
+            }
+            $this->_delayedUpdate = array();
+            $flush_again = true;
+        }
 
-		if ($flush_again) {
-			$this->flush();
-		}
-	}
+        if ($flush_again) {
+            $this->flush();
+        }
+    }
 
-	/**
-	 * @param $entity
-	 */
-	public function flushSpecificChangeset($entity)
-	{
-		parent::flush($entity);
-	}
+    /**
+     * @param $entity
+     */
+    public function flushSpecificChangeset($entity)
+    {
+        parent::flush($entity);
+    }
 
-	public function clearNot($class_name)
-	{
-		if (!is_array($class_name)) {
-			$skip = array($class_name);
-		} else {
-			$skip = $class_name;
-		}
+    public function clearNot($class_name)
+    {
+        if (!is_array($class_name)) {
+            $skip = array($class_name);
+        } else {
+            $skip = $class_name;
+        }
 
-		foreach ($this->unitOfWork->getIdentityMap() AS $class => $entity_name) {
-			if (!in_array($class, $skip)) {
-				$this->unitOfWork->clear($class);
-			}
-		}
-	}
+        foreach ($this->unitOfWork->getIdentityMap() AS $class => $entity_name) {
+            if (!in_array($class, $skip)) {
+                $this->unitOfWork->clear($class);
+            }
+        }
+    }
 }

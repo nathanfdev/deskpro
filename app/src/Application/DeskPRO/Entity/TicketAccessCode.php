@@ -50,113 +50,113 @@ use Orb\Util\Util;
  */
 class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var int
-	 */
-	protected $auth;
+    /**
+     * @var int
+     */
+    protected $auth;
 
-	public function __construct()
-	{
-		$len = Ticket::TAC_AUTHCODE_LEN;
-		$this->auth = Strings::random($len, Strings::CHARS_KEY);
-	}
+    public function __construct()
+    {
+        $len = Ticket::TAC_AUTHCODE_LEN;
+        $this->auth = Strings::random($len, Strings::CHARS_KEY);
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	/**
-	 * Encodes the ticket ID and the auth into a single string.
-	 *
-	 * @return string
-	 */
-	public function getAccessCode()
-	{
-		$str = Util::baseEncode($this->id, 'letters');
-		$str .= $this->auth;
-
-		return $str;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * Get the Message-ID field for an email regarding this ticket, witht he
-	 * embedded TAC code.
-	 *
-	 * @return string
-	 */
-	public function getUniqueEmailMessageId()
-	{
-		$uid = 'TAC-' . $this->getAccessCode() . '.';
-		$uid .= uniqid('', true) . '-' . App::getSetting('core.site_id');
-		$uid .= '@' . md5(App::getSetting('core.site_url', 'deskpro'));
+    /**
+     * Encodes the ticket ID and the auth into a single string.
+     *
+     * @return string
+     */
+    public function getAccessCode()
+    {
+        $str = Util::baseEncode($this->id, 'letters');
+        $str .= $this->auth;
 
-		return $uid;
-	}
+        return $str;
+    }
 
 
-	/**
-	 * Decoes an access code into a ticket id and the standalone code. You can look
-	 * up the record later to verify, get the user etc.
-	 *
-	 * @param  $access_code
-	 * @return array
-	 */
-	public static function decodeAccessCode($access_code)
-	{
-		$len = Ticket::TAC_AUTHCODE_LEN;
+    /**
+     * Get the Message-ID field for an email regarding this ticket, witht he
+     * embedded TAC code.
+     *
+     * @return string
+     */
+    public function getUniqueEmailMessageId()
+    {
+        $uid = 'TAC-' . $this->getAccessCode() . '.';
+        $uid .= uniqid('', true) . '-' . App::getSetting('core.site_id');
+        $uid .= '@' . md5(App::getSetting('core.site_url', 'deskpro'));
 
-		if (strlen($access_code) < ($len+1)) return false;
-
-		$matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
-		if (!$matches) return false;
-
-		list (, $access_code_id, $auth) = $matches;
-
-		$access_code_id = Util::baseDecode($access_code_id, 'letters');
-
-		return array(
-			'access_code_id' => $access_code_id,
-			'auth'           => $auth
-		);
-	}
+        return $uid;
+    }
 
 
+    /**
+     * Decoes an access code into a ticket id and the standalone code. You can look
+     * up the record later to verify, get the user etc.
+     *
+     * @param  $access_code
+     * @return array
+     */
+    public static function decodeAccessCode($access_code)
+    {
+        $len = Ticket::TAC_AUTHCODE_LEN;
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+        if (strlen($access_code) < ($len+1)) return false;
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketAccessCode';
-		$metadata->setPrimaryTable(array( 'name' => 'ticket_access_codes', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+        $matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
+        if (!$matches) return false;
+
+        list (, $access_code_id, $auth) = $matches;
+
+        $access_code_id = Util::baseDecode($access_code_id, 'letters');
+
+        return array(
+            'access_code_id' => $access_code_id,
+            'auth'           => $auth
+        );
+    }
+
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketAccessCode';
+        $metadata->setPrimaryTable(array( 'name' => 'ticket_access_codes', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

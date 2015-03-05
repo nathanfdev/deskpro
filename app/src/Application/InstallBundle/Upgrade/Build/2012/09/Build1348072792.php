@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348072792 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add visitors.session_landing_page");
-		$this->execMutateSql("ALTER TABLE visitors ADD session_landing_page VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add visitors.session_landing_page");
+        $this->execMutateSql("ALTER TABLE visitors ADD session_landing_page VARCHAR(255) NOT NULL");
+    }
 }

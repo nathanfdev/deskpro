@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350927847 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Links between departments and email_gateways");
-		$this->execMutateSql("ALTER TABLE departments ADD department_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D4AE80F5DF FOREIGN KEY (department_id) REFERENCES email_gateways (id) ON DELETE SET NULL");
-		$this->execMutateSql("ALTER TABLE email_gateways ADD department_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE email_gateways ADD CONSTRAINT FK_D0C64232AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Links between departments and email_gateways");
+        $this->execMutateSql("ALTER TABLE departments ADD department_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D4AE80F5DF FOREIGN KEY (department_id) REFERENCES email_gateways (id) ON DELETE SET NULL");
+        $this->execMutateSql("ALTER TABLE email_gateways ADD department_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE email_gateways ADD CONSTRAINT FK_D0C64232AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL");
+    }
 }

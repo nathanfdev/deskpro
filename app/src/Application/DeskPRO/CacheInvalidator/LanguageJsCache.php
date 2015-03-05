@@ -34,48 +34,47 @@
 
 namespace Application\DeskPRO\CacheInvalidator;
 
-use Application\DeskPRO\App;
 
 class LanguageJsCache
 {
-	/** @var string */
-	protected $_cache_dir = '';
+    /** @var string */
+    protected $_cache_dir = '';
 
-	public function __construct($cache_dir = null)
-	{
-		if (!$cache_dir) {
-			$cache_dir = dp_get_tmp_dir();
-		}
+    public function __construct($cache_dir = null)
+    {
+        if (!$cache_dir) {
+            $cache_dir = dp_get_tmp_dir();
+        }
 
-		$this->_cache_dir = $cache_dir;
-	}
+        $this->_cache_dir = $cache_dir;
+    }
 
-	public function invalidateAll()
-	{
-		$cache_dir = $this->_cache_dir;
-		if (is_dir($cache_dir)) {
-			$res = @glob("$cache_dir/agent-lang-*.cache");
-			if ($res) {
-				foreach ($res AS $file) {
-					@unlink($file);
-				}
-			}
+    public function invalidateAll()
+    {
+        $cache_dir = $this->_cache_dir;
+        if (is_dir($cache_dir)) {
+            $res = @glob("$cache_dir/agent-lang-*.cache");
+            if ($res) {
+                foreach ($res AS $file) {
+                    @unlink($file);
+                }
+            }
 
-			$res = @glob("$cache_dir/user-lang-*.cache");
-			if ($res) {
-				foreach ($res AS $file) {
-					@unlink($file);
-				}
-			}
-		}
-	}
+            $res = @glob("$cache_dir/user-lang-*.cache");
+            if ($res) {
+                foreach ($res AS $file) {
+                    @unlink($file);
+                }
+            }
+        }
+    }
 
-	public function invalidateLanguage($id)
-	{
-		$cache_dir = $this->_cache_dir;
-		if (is_dir($cache_dir)) {
-			@unlink("$cache_dir/agent-lang-$id.cache");
-			@unlink("$cache_dir/user-lang-$id.cache");
-		}
-	}
+    public function invalidateLanguage($id)
+    {
+        $cache_dir = $this->_cache_dir;
+        if (is_dir($cache_dir)) {
+            @unlink("$cache_dir/agent-lang-$id.cache");
+            @unlink("$cache_dir/user-lang-$id.cache");
+        }
+    }
 }

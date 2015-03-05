@@ -40,42 +40,43 @@ use Application\DeskPRO\Search\Indexer\Document;
 
 class Article extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:Article';
+    const ENTITY_NAME = 'DeskPRO:Article';
 
-	public function objectToDocument($article)
-	{
-		if ($article->status != 'published') {
-			$data = array();
-			$data['id'] = $article['id'];
-			$data['content_type'] = 'article';
-			$data['remove'] = true;
+    public function objectToDocument($article)
+    {
+        if ($article->status != 'published') {
+            $data = array();
+            $data['id'] = $article['id'];
+            $data['content_type'] = 'article';
+            $data['remove'] = true;
 
-			$doc = Document::newFromArray($data);
-			return $doc;
-		}
+            $doc = Document::newFromArray($data);
 
-		$data = array();
-		$data['id'] = $article['id'];
-		$data['content_type'] = 'article';
-		$data['content'] = $article['title'] . "\n" . $article['content'] . "\n";
+            return $doc;
+        }
 
-		foreach ($article->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
-		}
+        $data = array();
+        $data['id'] = $article['id'];
+        $data['content_type'] = 'article';
+        $data['content'] = $article['title'] . "\n" . $article['content'] . "\n";
 
-		$x = 0;
-		foreach ($article->categories as $c) {
-			$k = 'category_id';
-			if ($x++) {
-				$k .= '_' . $x;
-			}
+        foreach ($article->getLabelManager()->getLabelsArray() as $label) {
+            $label = MysqlAdapter::encodeLabel($label);
+            $data['content'] .= " $label ";
+        }
 
-			$data[$k] = $c->id;
-		}
+        $x = 0;
+        foreach ($article->categories as $c) {
+            $k = 'category_id';
+            if ($x++) {
+                $k .= '_' . $x;
+            }
 
-		$doc = Document::newFromArray($data);
+            $data[$k] = $c->id;
+        }
 
-		return $doc;
-	}
+        $doc = Document::newFromArray($data);
+
+        return $doc;
+    }
 }

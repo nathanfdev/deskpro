@@ -1,14 +1,3 @@
-<tr ng-if="!all_locked_perms">
-    <td width="100%">
-        <span class="title">
-            {{ phrase('adm.agents.perm_toggle_all') }}
-        </span>
-    </td>
-    <td>
-        <input
-            dp-slider-switch
-            ng-model="EditCtrl.all_perms.{{ type }}.{{ section }}"
-            ng-change="EditCtrl.changeAllPerms('{{ type }}', '{{ section }}')"
-            />
-    </td>
-</tr>
+<div class="toggle-all-button" ng-show="dp_tabs_state['{{ tab }}']">
+	<em ng-click="EditCtrl.all_perms.{{ type }}.{{ section }} = !EditCtrl.all_perms.{{ type }}.{{ section }}; EditCtrl.changeAllPerms('{{ type }}', '{{ section }}');">Toggle All</em>
+</div>

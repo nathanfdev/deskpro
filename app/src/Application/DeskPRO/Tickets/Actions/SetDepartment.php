@@ -47,82 +47,82 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetDepartment extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('department_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('department_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_dep_id = $this->getActionOption('department_id');
-		$dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_dep_id = $this->getActionOption('department_id');
+        $dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
 
-		if (!$dep) {
-			return;
-		}
+        if (!$dep) {
+            return;
+        }
 
-		$context->getLogger()->debug(sprintf('[SetDepartment] Setting %d %s', $dep->id, $dep->title));
-		$ticket->department = $dep;
+        $context->getLogger()->debug(sprintf('[SetDepartment] Setting %d %s', $dep->id, $dep->title));
+        $ticket->department = $dep;
 
-		// Tmp hack until can figure out why this isn't persisted on at least one server
-		// IIS, PHP 5.4.24, WinCache 1.3.4.0
-		if (isset(App::$container)) { // if is to prevent this during testing
-			App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
-			App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
-		}
-	}
+        // Tmp hack until can figure out why this isn't persisted on at least one server
+        // IIS, PHP 5.4.24, WinCache 1.3.4.0
+        if (isset(App::$container)) { // if is to prevent this during testing
+            App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+            App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+        }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_dep_id    = $this->getActionOption('department_id');
+        $ticket_dep_id = $ticket->department ? $ticket->department->id : 0;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_dep_id    = $this->getActionOption('department_id');
-		$ticket_dep_id = $ticket->department ? $ticket->department->id : 0;
+        if ($ticket_dep_id == $set_dep_id) {
+            $context->getLogger()->debug('[SetDepartment] Skipping, department is the same');
 
-		if ($ticket_dep_id == $set_dep_id) {
-			$context->getLogger()->debug('[SetDepartment] Skipping, department is the same');
-			return true;
-		}
+            return true;
+        }
 
-		$dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
-		if (!$dep) {
-			$context->getLogger()->debug('[SetDepartment] Unknown department id: ' . $set_dep_id);
-			return true;
-		}
+        $dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
+        if (!$dep) {
+            $context->getLogger()->debug('[SetDepartment] Unknown department id: ' . $set_dep_id);
 
-		return false;
-	}
+            return true;
+        }
 
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
-			return array('department');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
+            return array('department');
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

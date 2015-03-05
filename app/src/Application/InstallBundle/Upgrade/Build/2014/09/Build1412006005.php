@@ -36,8 +36,8 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1412006005 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->execMutateSql("ALTER TABLE permissions_cache CHANGE usergroup_key usergroup_key VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->execMutateSql("ALTER TABLE permissions_cache CHANGE usergroup_key usergroup_key VARCHAR(255) NOT NULL");
+    }
 }

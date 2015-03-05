@@ -41,17 +41,16 @@ use Orb\Input\Cleaner\Cleaner;
  */
 interface CleanerPlugin
 {
-	/**
-	 * Array of typename=>methodname
-	 * @return array
-	 */
-	public function getCleanerTypes();
+    /**
+     * Array of typename=>methodname
+     * @return array
+     */
+    public function getCleanerTypes();
 
-	/**
-	 * @return string
-	 */
-	public function getCleanerId();
+    /**
+     * @return string
+     */
+    public function getCleanerId();
 
-
-	public function cleanValue($value, $type, array $options, Cleaner $cleaner);
+    public function cleanValue($value, $type, array $options, Cleaner $cleaner);
 }

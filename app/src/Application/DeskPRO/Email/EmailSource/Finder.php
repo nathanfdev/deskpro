@@ -38,116 +38,116 @@ use Doctrine\ORM\EntityManager;
 
 class Finder
 {
-	/**
-	 * @var \Application\DeskPRO\Email\EmailSource\FinderFilter
-	 */
-	private $filter;
+    /**
+     * @var \Application\DeskPRO\Email\EmailSource\FinderFilter
+     */
+    private $filter;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-
-	/**
-	 * @param EntityManager $em
-	 * @param FinderFilter $filter
-	 */
-	public function __construct(EntityManager $em, FinderFilter $filter)
-	{
-		$this->em     = $em;
-		$this->filter = $filter;
-	}
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
 
-	/**
-	 * @return array
-	 */
-	public function getPageInfo()
-	{
-		$q = $this->getQb();
-		$q->select('COUNT(s)');
-
-		$count     = (int)$q->getQuery()->getSingleScalarResult();
-		$num_pages = ceil($count / $this->filter->getPerPage());
-
-		return array(
-			'count'     => $count,
-			'num_pages' => $num_pages
-		);
-	}
+    /**
+     * @param EntityManager $em
+     * @param FinderFilter  $filter
+     */
+    public function __construct(EntityManager $em, FinderFilter $filter)
+    {
+        $this->em     = $em;
+        $this->filter = $filter;
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailSource[]
-	 */
-	public function getResults()
-	{
-		$q = $this->getQb();
-		$q->select('s, acct')
-		  ->orderBy('s.id', 'DESC')
-		  ->setMaxResults($this->filter->getPerPage())
-		  ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
+    /**
+     * @return array
+     */
+    public function getPageInfo()
+    {
+        $q = $this->getQb();
+        $q->select('COUNT(s)');
 
-		return $q->getQuery()->execute();
-	}
+        $count     = (int)$q->getQuery()->getSingleScalarResult();
+        $num_pages = ceil($count / $this->filter->getPerPage());
+
+        return array(
+            'count'     => $count,
+            'num_pages' => $num_pages
+        );
+    }
 
 
-	/**
-	 * @return \Doctrine\ORM\QueryBuilder
-	 */
-	private function getQb()
-	{
-		$q = $this->em->createQueryBuilder();
-		$q->from('DeskPRO:EmailSource', 's')
-		  ->leftJoin('s.email_account', 'acct');
+    /**
+     * @return \Application\DeskPRO\Entity\EmailSource[]
+     */
+    public function getResults()
+    {
+        $q = $this->getQb();
+        $q->select('s, acct')
+          ->orderBy('s.id', 'DESC')
+          ->setMaxResults($this->filter->getPerPage())
+          ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
 
-		if ($opt = $this->filter->getStatuses()) {
-			$q->andWhere('s.status IN (:statuses)');
-			$q->setParameter('statuses', $opt);
-		}
+        return $q->getQuery()->execute();
+    }
 
-		if ($opt = $this->filter->getAccount()) {
-			$q->andWhere('s.email_account = :email_account');
-			$q->setParameter('email_account', $opt);
-		}
 
-		$d1 = $this->filter->getDateStart();
-		$d2 = $this->filter->getDateEnd();
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function getQb()
+    {
+        $q = $this->em->createQueryBuilder();
+        $q->from('DeskPRO:EmailSource', 's')
+          ->leftJoin('s.email_account', 'acct');
 
-		if ($d1 && $d2) {
-			if ($d2 < $d1) {
-				$tmp = $d2;
-				$d2 = $d1;
-				$d1 = $tmp;
-			}
+        if ($opt = $this->filter->getStatuses()) {
+            $q->andWhere('s.status IN (:statuses)');
+            $q->setParameter('statuses', $opt);
+        }
 
-			$q->andWhere("s.date_created BETWEEN :date1 AND :date2");
-			$q->setParameter('date1', $d1);
-			$q->setParameter('date2', $d2);
-		} else if ($d1) {
-			$q->andWhere("s.date_created >= :date1");
-			$q->setParameter('date1', $d1);
-		} else if ($d2) {
-			$q->andWhere("s.date_created <= :date2");
-			$q->setParameter('date2', $d1);
-		}
+        if ($opt = $this->filter->getAccount()) {
+            $q->andWhere('s.email_account = :email_account');
+            $q->setParameter('email_account', $opt);
+        }
 
-		if ($opt = $this->filter->getFrom()) {
-			$q->andWhere('s.header_from LIKE :from');
-			$q->setParameter('from', "%$opt%");
-		}
+        $d1 = $this->filter->getDateStart();
+        $d2 = $this->filter->getDateEnd();
 
-		if ($opt = $this->filter->getTo()) {
-			$q->andWhere('s.header_to LIKE :to');
-			$q->setParameter('to', "%$opt%");
-		}
+        if ($d1 && $d2) {
+            if ($d2 < $d1) {
+                $tmp = $d2;
+                $d2 = $d1;
+                $d1 = $tmp;
+            }
 
-		if ($opt = $this->filter->getSubject()) {
-			$q->andWhere('s.header_subject LIKE :subject');
-			$q->setParameter('subject', "%$opt%");
-		}
+            $q->andWhere("s.date_created BETWEEN :date1 AND :date2");
+            $q->setParameter('date1', $d1);
+            $q->setParameter('date2', $d2);
+        } elseif ($d1) {
+            $q->andWhere("s.date_created >= :date1");
+            $q->setParameter('date1', $d1);
+        } elseif ($d2) {
+            $q->andWhere("s.date_created <= :date2");
+            $q->setParameter('date2', $d1);
+        }
 
-		return $q;
-	}
+        if ($opt = $this->filter->getFrom()) {
+            $q->andWhere('s.header_from LIKE :from');
+            $q->setParameter('from', "%$opt%");
+        }
+
+        if ($opt = $this->filter->getTo()) {
+            $q->andWhere('s.header_to LIKE :to');
+            $q->setParameter('to', "%$opt%");
+        }
+
+        if ($opt = $this->filter->getSubject()) {
+            $q->andWhere('s.header_subject LIKE :subject');
+            $q->setParameter('subject', "%$opt%");
+        }
+
+        return $q;
+    }
 }

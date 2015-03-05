@@ -39,67 +39,67 @@ namespace Application\DeskPRO;
  */
 class InstanceAbility
 {
-	public function canUseSsl()
-	{
-		static $has_ssl;
+    public function canUseSsl()
+    {
+        static $has_ssl;
 
-		if ($has_ssl === null) {
-			$has_ssl = extension_loaded('openssl');
-		}
+        if ($has_ssl === null) {
+            $has_ssl = extension_loaded('openssl');
+        }
 
-		return $has_ssl;
-	}
+        return $has_ssl;
+    }
 
-	public function canUseFacebookAuth()
-	{
-		return $this->canUseSsl();
-	}
+    public function canUseFacebookAuth()
+    {
+        return $this->canUseSsl();
+    }
 
-	public function canUseTwitterAuth()
-	{
-		return $this->canUseSsl();
-	}
+    public function canUseTwitterAuth()
+    {
+        return $this->canUseSsl();
+    }
 
-	public function canUseGoogleAuth()
-	{
-		return $this->canUseSsl();
-	}
+    public function canUseGoogleAuth()
+    {
+        return $this->canUseSsl();
+    }
 
-	public function canUseSecurePop3()
-	{
-		return $this->canUseSsl();
-	}
+    public function canUseSecurePop3()
+    {
+        return $this->canUseSsl();
+    }
 
-	public function canUseSecureSmtp()
-	{
-		return $this->canUseSsl();
-	}
+    public function canUseSecureSmtp()
+    {
+        return $this->canUseSsl();
+    }
 
-	public function canUseGoogleApps()
-	{
-		return $this->canUseSsl();
-	}
+    public function canUseGoogleApps()
+    {
+        return $this->canUseSsl();
+    }
 
-	public function isWindows()
-	{
-		if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
-			return true;
-		}
+    public function isWindows()
+    {
+        if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function isIis()
-	{
-		if ($this->isWindows() && strpos(strtolower(@$_SERVER['SERVER_SOFTWARE'] ?: ''), "iis") !== false) {
-			return true;
-		}
+    public function isIis()
+    {
+        if ($this->isWindows() && strpos(strtolower(@$_SERVER['SERVER_SOFTWARE'] ?: ''), "iis") !== false) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function __call($method, array $args = array())
-	{
-		return false;
-	}
+    public function __call($method, array $args = array())
+    {
+        return false;
+    }
 }

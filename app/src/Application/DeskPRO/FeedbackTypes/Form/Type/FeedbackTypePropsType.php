@@ -40,38 +40,38 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FeedbackTypePropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add(
-			'usergroups',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Usergroup',
-				 'required'      => false,
-				 'expanded'      => true,
-				 'multiple'      => true,
-				 'property'      => 'title',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('u')->where(
-						 'u.is_agent_group = false AND u.is_enabled = true'
-					 );
-				 }
-			)
-		);
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('title', 'text', array('required' => true));
+        $builder->add(
+            'usergroups',
+            'entity',
+            array(
+                 'class'         => 'DeskPRO:Usergroup',
+                 'required'      => false,
+                 'expanded'      => true,
+                 'multiple'      => true,
+                 'property'      => 'title',
+                 'query_builder' => function (EntityRepository $er) {
+                     return $er->createQueryBuilder('u')->where(
+                         'u.is_agent_group = false AND u.is_enabled = true'
+                     );
+                 }
+            )
+        );
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'feedback_type';
-	}
+    public function getName()
+    {
+        return 'feedback_type';
+    }
 }

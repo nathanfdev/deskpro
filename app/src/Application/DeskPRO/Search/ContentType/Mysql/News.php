@@ -40,36 +40,37 @@ use Application\DeskPRO\Search\Indexer\Document;
 
 class News extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:News';
+    const ENTITY_NAME = 'DeskPRO:News';
 
-	public function objectToDocument($news)
-	{
-		if ($news->status != 'published') {
-			$data = array();
-			$data['id'] = $news['id'];
-			$data['content_type'] = 'news';
-			$data['remove'] = true;
+    public function objectToDocument($news)
+    {
+        if ($news->status != 'published') {
+            $data = array();
+            $data['id'] = $news['id'];
+            $data['content_type'] = 'news';
+            $data['remove'] = true;
 
-			$doc = Document::newFromArray($data);
-			return $doc;
-		}
+            $doc = Document::newFromArray($data);
 
-		$data = array();
-		$data['id'] = $news['id'];
-		$data['content_type'] = 'news';
-		$data['content'] = $news['title'] . "\n" . $news['content'] . "\n";
+            return $doc;
+        }
 
-		foreach ($news->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
-		}
+        $data = array();
+        $data['id'] = $news['id'];
+        $data['content_type'] = 'news';
+        $data['content'] = $news['title'] . "\n" . $news['content'] . "\n";
 
-		if ($news->category) {
-			$data['category_id'] = $news->category->id;
-		}
+        foreach ($news->getLabelManager()->getLabelsArray() as $label) {
+            $label = MysqlAdapter::encodeLabel($label);
+            $data['content'] .= " $label ";
+        }
 
-		$doc = Document::newFromArray($data);
+        if ($news->category) {
+            $data['category_id'] = $news->category->id;
+        }
 
-		return $doc;
-	}
+        $doc = Document::newFromArray($data);
+
+        return $doc;
+    }
 }

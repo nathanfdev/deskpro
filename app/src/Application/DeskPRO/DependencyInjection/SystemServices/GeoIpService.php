@@ -38,19 +38,19 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class GeoIpService
 {
-	public static function create(DeskproContainer $container)
-	{
-		if (dp_get_config('disable_geoip')) {
-			$geoip = new \Orb\GeoIp\GeoIpNull();
-		} else {
-			if (function_exists('geoip_db_avail')) {
-				$geoip = new \Orb\GeoIp\GeoIpExtension();
-			} else {
-				$geoip = new \Orb\GeoIp\GeoIpPhp();
-				$geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
-			}
-		}
+    public static function create(DeskproContainer $container)
+    {
+        if (dp_get_config('disable_geoip')) {
+            $geoip = new \Orb\GeoIp\GeoIpNull();
+        } else {
+            if (function_exists('geoip_db_avail')) {
+                $geoip = new \Orb\GeoIp\GeoIpExtension();
+            } else {
+                $geoip = new \Orb\GeoIp\GeoIpPhp();
+                $geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
+            }
+        }
 
-		return $geoip;
-	}
+        return $geoip;
+    }
 }

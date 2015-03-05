@@ -34,199 +34,194 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 class TicketLog extends AbstractEntityRepository
 {
-	/**
-	 * @param Entity\Ticket $ticket
-	 * @param array $options
-	 * @return array
-	 */
-	public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
-	{
-		#------------------------------
-		# Get logs
-		#------------------------------
+    /**
+     * @param  Entity\Ticket $ticket
+     * @param  array         $options
+     * @return array
+     */
+    public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
+    {
+        #------------------------------
+        # Get logs
+        #------------------------------
 
-		if (!isset($options['order_dir'])) {
-			$options['order_dir'] = 'DESC';
-		}
+        if (!isset($options['order_dir'])) {
+            $options['order_dir'] = 'DESC';
+        }
 
-		$params = array('ticket_id' => $ticket->getId());
+        $params = array('ticket_id' => $ticket->getId());
 
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('log, p')
-			->from('DeskPRO:TicketLog', 'log')
-			->leftJoin('log.person', 'p')
-			->andWhere('log.ticket = :ticket_id')
-			->andWhere('log.action_type NOT IN (\'trigger\')');
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('log, p')
+            ->from('DeskPRO:TicketLog', 'log')
+            ->leftJoin('log.person', 'p')
+            ->andWhere('log.ticket = :ticket_id')
+            ->andWhere('log.action_type NOT IN (\'trigger\')');
 
-		if ($options['order_dir'] == 'ASC') {
-			$qb->orderBy('log.date_created', 'ASC');
-		} else {
-			$qb->orderBy('log.date_created', 'DESC');
-		}
+        if ($options['order_dir'] == 'ASC') {
+            $qb->orderBy('log.date_created', 'ASC');
+        } else {
+            $qb->orderBy('log.date_created', 'DESC');
+        }
 
-		if (!empty($options['since_id'])) {
-			$qb->andWhere('log.id > :since_id');
-			$params['since_id'] = $options['since_id'];
-		}
+        if (!empty($options['since_id'])) {
+            $qb->andWhere('log.id > :since_id');
+            $params['since_id'] = $options['since_id'];
+        }
 
-		if (!empty($options['types'])) {
-			$qb->andWhere('log.action_type IN (:types)');
-			$params['types'] = $options['types'];
-		}
+        if (!empty($options['types'])) {
+            $qb->andWhere('log.action_type IN (:types)');
+            $params['types'] = $options['types'];
+        }
 
-		$query = $qb->getQuery();
-		$raw_ticket_logs = $query->execute($params);
+        $query = $qb->getQuery();
+        $raw_ticket_logs = $query->execute($params);
 
-		$ticket_logs = array();
-		foreach ($raw_ticket_logs as $l) {
-			$ticket_logs[$l->getId()] = $l;
-		}
-		unset($raw_ticket_logs);
+        $ticket_logs = array();
+        foreach ($raw_ticket_logs as $l) {
+            $ticket_logs[$l->getId()] = $l;
+        }
+        unset($raw_ticket_logs);
 
-		return $ticket_logs;
-	}
+        return $ticket_logs;
+    }
 
+    /**
+     * @param $ticket_logs
+     * @return array
+     */
+    public function groupTicketLogs($ticket_logs)
+    {
+        #------------------------------
+        # Group them
+        #------------------------------
 
-	/**
-	 * @param $ticket_logs
-	 * @return array
-	 */
-	public function groupTicketLogs($ticket_logs)
-	{
-		#------------------------------
-		# Group them
-		#------------------------------
+        // Need another one to make sure all of the children are here as well
+        $pids = array(0);
+        $cids = array(0);
+        foreach ($ticket_logs as $l) {
+            if (!$l->parent) {
+                $pids[] = $l->getId();
+            } else {
+                $cids[] = $l->getId();
+            }
+        }
 
-		// Need another one to make sure all of the children are here as well
-		$pids = array(0);
-		$cids = array(0);
-		foreach ($ticket_logs as $l) {
-			if (!$l->parent) {
-				$pids[] = $l->getId();
-			} else {
-				$cids[] = $l->getId();
-			}
-		}
+        // And group children under their parent row
+        $return = array();
 
-		// And group children under their parent row
-		$return = array();
+        foreach ($ticket_logs as $log) {
+            if ($log->parent) {
+                $pid = $log->parent->getId();
 
-		foreach ($ticket_logs as $log) {
-			if ($log->parent) {
-				$pid = $log->parent->getId();
+                if (!isset($ticket_logs[$pid])) {
+                    continue;
+                }
 
-				if (!isset($ticket_logs[$pid])) {
-					continue;
-				}
+                if (!isset($return[$pid])) {
+                    $return[$pid] = $ticket_logs[$pid];
+                }
 
-				if (!isset($return[$pid])) {
-					$return[$pid] = $ticket_logs[$pid];
-				}
+                $return[$pid]->grouped[] = $log;
+            } else {
+                $return[$log->getId()] = $log;
+            }
+        }
 
-				$return[$pid]->grouped[] = $log;
-			} else {
-				$return[$log->getId()] = $log;
-			}
-		}
+        return $return;
+    }
 
-		return $return;
-	}
+    /**
+     * @param $ticket_logs
+     * @param $filter_type
+     * @return array
+     */
+    public function filterTicketLogs($ticket_logs, $filter_type)
+    {
+        static $type_map = array(
+            'message'  => array('message_removed', 'message_edit', 'message_created'),
+            'note'     => array('message_note_created'),
+            'notif'    => array('agent_notify', 'user_notify'),
+            'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
+            'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
+            'triggers' => array('executed_triggers'),
+            'status'   => array('status'),
+        );
 
+        if (!isset($type_map[$filter_type])) {
+            return array();
+        }
 
-	/**
-	 * @param $ticket_logs
-	 * @param $filter_type
-	 * @return array
-	 */
-	public function filterTicketLogs($ticket_logs, $filter_type)
-	{
-		static $type_map = array(
-			'message'  => array('message_removed', 'message_edit', 'message_created'),
-			'note'     => array('message_note_created'),
-			'notif'    => array('agent_notify', 'user_notify'),
-			'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
-			'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
-			'triggers' => array('executed_triggers'),
-			'status'   => array('status'),
-		);
+        $types = $type_map[$filter_type];
 
-		if (!isset($type_map[$filter_type])) {
-			return array();
-		}
+        $return = array();
 
-		$types = $type_map[$filter_type];
+        foreach ($ticket_logs as $log) {
+            if (in_array($log->action_type, $types)) {
+                $return[$log->id] = $log;
+            }
+        }
 
-		$return = array();
+        return $return;
+    }
 
-		foreach ($ticket_logs as $log) {
-			if (in_array($log->action_type, $types)) {
-				$return[$log->id] = $log;
-			}
-		}
+    /**
+     * @param $ticket_logs
+     * @return array
+     */
+    public function countTicketLogTypes($ticket_logs)
+    {
+        $counts = array('all' => 0);
 
-		return $return;
-	}
+        $type_map = array(
+            'message'  => array('message_removed', 'message_edit', 'message_created'),
+            'note'     => array('message_note_created'),
+            'notif'    => array('agent_notify', 'user_notify'),
+            'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
+            'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
+            'triggers' => array('executed_triggers'),
+            'status'   => array('status'),
+        );
 
+        foreach ($ticket_logs as $log) {
+            $counts['all']++;
 
-	/**
-	 * @param $ticket_logs
-	 * @return array
-	 */
-	public function countTicketLogTypes($ticket_logs)
-	{
-		$counts = array('all' => 0);
+            foreach ($type_map as $t => $types) {
+                if (in_array($log->action_type, $types)) {
+                    if (!isset($counts[$t])) $counts[$t] = 0;
+                    $counts[$t]++;
+                }
+            }
+        }
 
-		$type_map = array(
-			'message'  => array('message_removed', 'message_edit', 'message_created'),
-			'note'     => array('message_note_created'),
-			'notif'    => array('agent_notify', 'user_notify'),
-			'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
-			'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
-			'triggers' => array('executed_triggers'),
-			'status'   => array('status'),
-		);
-
-		foreach ($ticket_logs as $log) {
-			$counts['all']++;
-
-			foreach ($type_map as $t => $types) {
-				if (in_array($log->action_type, $types)) {
-					if (!isset($counts[$t])) $counts[$t] = 0;
-					$counts[$t]++;
-				}
-			}
-		}
-
-		return $counts;
-	}
-
+        return $counts;
+    }
 
     public function getLogsForAgent(Entity\Person $agent, array $options = array())
     {
-		$qb = $qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('log')
-			->from('DeskPRO:TicketLog', 'log INDEX BY log.id')
-			->where('log.person = :person')
-			->orderBy('log.date_created', 'ASC');
+        $qb = $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('log')
+            ->from('DeskPRO:TicketLog', 'log INDEX BY log.id')
+            ->where('log.person = :person')
+            ->orderBy('log.date_created', 'ASC');
 
-		$params = array();
-		$params['person'] = $agent;
+        $params = array();
+        $params['person'] = $agent;
 
-		if (!empty($options['types'])) {
-			$qb->andWhere('log.action_type IN (:types)');
-			$params['types'] = $options['types'];
-		}
+        if (!empty($options['types'])) {
+            $qb->andWhere('log.action_type IN (:types)');
+            $params['types'] = $options['types'];
+        }
 
-		if(!empty($options['date_range'])) {
-			$qb->andWhere('log.date_created BETWEEN :date_start AND :date_end');
-			$params['date_start'] = $options['date_range']['start'];
-			$params['date_end']   = $options['date_range']['end'];
-		}
+        if(!empty($options['date_range'])) {
+            $qb->andWhere('log.date_created BETWEEN :date_start AND :date_end');
+            $params['date_start'] = $options['date_range']['start'];
+            $params['date_end']   = $options['date_range']['end'];
+        }
 
         return $qb->getQuery()->execute($params);
     }

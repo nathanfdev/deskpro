@@ -39,43 +39,43 @@ use DeskPRO\Kernel\License;
 
 class AgentsController extends BaseAgentsController
 {
-	/**
-	 * @param int $num
-	 * @return Response|null
-	 */
-	protected function preNewAgent($num)
-	{
-		$current_agents = $this->db->fetchColumn("
-			SELECT COUNT(*)
-			FROM people
-			WHERE is_agent = 1 AND is_deleted = 0
-		");
+    /**
+     * @param  int           $num
+     * @return Response|null
+     */
+    protected function preNewAgent($num)
+    {
+        $current_agents = $this->db->fetchColumn("
+            SELECT COUNT(*)
+            FROM people
+            WHERE is_agent = 1 AND is_deleted = 0
+        ");
 
-		$max_agents = License::getLicense()->getMaxAgents();
+        $max_agents = License::getLicense()->getMaxAgents();
 
-		$set = $current_agents + $num;
-		if ($set > $max_agents) {
-			$tmpdata = new \Application\DeskPRO\Entity\TmpData();
-			$tmpdata->setType('dpc_set_plan');
-			$tmpdata->setData('by_person', $this->person->getId());
-			$tmpdata->setData('set_plan', $set);
-			$tmpdata->date_expire = new \DateTime('+30 minutes');
+        $set = $current_agents + $num;
+        if ($set > $max_agents) {
+            $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+            $tmpdata->setType('dpc_set_plan');
+            $tmpdata->setData('by_person', $this->person->getId());
+            $tmpdata->setData('set_plan', $set);
+            $tmpdata->date_expire = new \DateTime('+30 minutes');
 
-			$this->em->persist($tmpdata);
-			$this->em->flush();
+            $this->em->persist($tmpdata);
+            $this->em->flush();
 
-			$url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
+            $url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
 
-			try {
-				$client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
-				$client->setMethod(\Zend\Http\Request::METHOD_GET);
-				$client->setUri($url);
-				$client->send();
-			} catch (\Exception $e) {
-				throw $this->createNotFoundException();
-			}
-		}
+            try {
+                $client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
+                $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                $client->setUri($url);
+                $client->send();
+            } catch (\Exception $e) {
+                throw $this->createNotFoundException();
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

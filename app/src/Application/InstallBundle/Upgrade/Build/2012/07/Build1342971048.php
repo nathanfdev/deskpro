@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1342971048 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add old_ptac");
-		$this->execMutateSql("ALTER TABLE tickets_deleted ADD old_ptac VARCHAR(80) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add old_ptac");
+        $this->execMutateSql("ALTER TABLE tickets_deleted ADD old_ptac VARCHAR(80) NOT NULL");
+    }
 }

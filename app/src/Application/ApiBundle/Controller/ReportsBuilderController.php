@@ -40,276 +40,276 @@ use Application\DeskPRO\Reports\ReportEdit;
 
 class ReportsBuilderController extends AbstractController
 {
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
+    public function listAction()
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
 
-		return $this->createApiResponse(array(
-			'reports' => $reports_builder->getAll()
-		));
-	}
-
-
-	####################################################################################################################
-	# list custom reports
-	####################################################################################################################
-
-	public function listCustomAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
-
-		return $this->createApiResponse(array(
-			 'reports' => $reports_builder->getCustomReports()
-		));
-	}
+        return $this->createApiResponse(array(
+            'reports' => $reports_builder->getAll()
+        ));
+    }
 
 
-	####################################################################################################################
-	# list built-in reports
-	####################################################################################################################
+    ####################################################################################################################
+    # list custom reports
+    ####################################################################################################################
 
-	public function listBuiltInAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
+    public function listCustomAction()
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
 
-		return $this->createApiResponse(array(
-			'reports' => $reports_builder->getBuiltInReports()
-		));
-	}
-
-
-	####################################################################################################################
-	# get group params
-	####################################################################################################################
-
-	public function getGroupParamsAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
-
-		return $this->createApiResponse($reports_builder->getGroupParams());
-	}
+        return $this->createApiResponse(array(
+             'reports' => $reports_builder->getCustomReports()
+        ));
+    }
 
 
-	####################################################################################################################
-	# get report
-	####################################################################################################################
+    ####################################################################################################################
+    # list built-in reports
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
-		$report          = $reports_builder->getById($id);
+    public function listBuiltInAction()
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
 
-		if (!$report) {
-			throw $this->createNotFoundException();
-		}
-
-		$rendered_result = $reports_builder->getRenderedResult($id);
-		$query_parts     = $reports_builder->getQueryParts($id, false);
-
-		return $this->createApiResponse(array(
-			'rendered_result' => $rendered_result,
-			'query_parts'     => $query_parts,
-			'report'          => $this->getApiData($report),
-			'type'            => $report->is_custom ? 'custom' : 'builtIn',
-		));
-	}
+        return $this->createApiResponse(array(
+            'reports' => $reports_builder->getBuiltInReports()
+        ));
+    }
 
 
-	####################################################################################################################
-	# save report
-	####################################################################################################################
+    ####################################################################################################################
+    # get group params
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
+    public function getGroupParamsAction()
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
 
-		if ($id) {
-			$report = $reports_builder->getById($id);
-			if (!$report) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$report = $reports_builder->createNew();
-		}
-
-		if (!$report->is_custom) {
-			throw ValidationException::create('you can edit only custom report');
-		}
-
-		if ($error = $reports_builder->getErrors($id, 'from_request')) {
-			return $this->createApiResponse(array('error' => $error));
-		} else {
-
-			$postData = $this->in->getAll('req');
-			$report_edit = new ReportEdit($report);
-
-			$form = $this->createForm(new ReportType(), $report_edit, array('cascade_validation' => true));
-			$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'report'), true);
-
-			if ($form->isValid()) {
-				$report_edit->save($this->em);
-			} else {
-				return $this->createApiValidationErrorResponse(
-					$this->container->getValidator()->validate($report)
-				);
-			}
-
-			$reports_builder->saveQuery($report, 'from_request');
-			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
-
-			return $this->createApiResponse(array(
-				 'success'         => true,
-				 'id'              => $report->id,
-				 'rendered_result' => $rendered_result,
-			));
-		}
-	}
+        return $this->createApiResponse($reports_builder->getGroupParams());
+    }
 
 
-	####################################################################################################################
-	# clone report
-	####################################################################################################################
+    ####################################################################################################################
+    # get report
+    ####################################################################################################################
 
-	public function cloneAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
-		$report          = $reports_builder->getById($id);
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
+        $report          = $reports_builder->getById($id);
 
-		if (!$report) {
-			throw $this->createNotFoundException();
-		}
+        if (!$report) {
+            throw $this->createNotFoundException();
+        }
 
-		$new_report              = $reports_builder->createNew();
-		$new_report->title       = $this->in->getString('title') ?: $report->title;
-		$new_report->description = $this->in->getString('description') ?: $report->description;
-		$new_report->query       = $report->query;
+        $rendered_result = $reports_builder->getRenderedResult($id);
+        $query_parts     = $reports_builder->getQueryParts($id, false);
 
-		$parts = $this->in->getArrayValue('parts');
-		if ($parts) {
-			$query = Display::getQueryStringFromParts($parts);
-			if ($query) {
-				$new_report->query = $query;
-			}
-		}
-
-		$this->em->getConnection()->beginTransaction();
-
-		try {
-			$this->em->persist($new_report);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch(\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-
-		return $this->createApiResponse(array(
-			'success' => true,
-			'id'      => $new_report->id
-		));
-	}
+        return $this->createApiResponse(array(
+            'rendered_result' => $rendered_result,
+            'query_parts'     => $query_parts,
+            'report'          => $this->getApiData($report),
+            'type'            => $report->is_custom ? 'custom' : 'builtIn',
+        ));
+    }
 
 
-	####################################################################################################################
-	# delete report
-	####################################################################################################################
+    ####################################################################################################################
+    # save report
+    ####################################################################################################################
 
-	public function deleteAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
-		$report          = $reports_builder->getById($id);
+    public function saveAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
 
-		if (!$report) {
-			throw $this->createNotFoundException();
-		}
+        if ($id) {
+            $report = $reports_builder->getById($id);
+            if (!$report) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $report = $reports_builder->createNew();
+        }
 
-		if (!$report->is_custom) {
-			throw ValidationException::create('you can delete only custom report');
-		}
+        if (!$report->is_custom) {
+            throw ValidationException::create('you can edit only custom report');
+        }
 
-		$reports_builder->remove($report);
+        if ($error = $reports_builder->getErrors($id, 'from_request')) {
+            return $this->createApiResponse(array('error' => $error));
+        } else {
 
-		return $this->createSuccessResponse(array('id' => $id));
-	}
+            $postData = $this->in->getAll('req');
+            $report_edit = new ReportEdit($report);
 
+            $form = $this->createForm(new ReportType(), $report_edit, array('cascade_validation' => true));
+            $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'report'), true);
 
-	####################################################################################################################
-	# test report
-	####################################################################################################################
+            if ($form->isValid()) {
+                $report_edit->save($this->em);
+            } else {
+                return $this->createApiValidationErrorResponse(
+                    $this->container->getValidator()->validate($report)
+                );
+            }
 
-	public function testAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
+            $reports_builder->saveQuery($report, 'from_request');
+            $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
 
-		if ($error = $reports_builder->getErrors($id, 'from_request')) {
-			return $this->createApiResponse(array('error' => $error));
-		} else {
-			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
-
-			return $this->createApiResponse(array(
-				'rendered_result' => $rendered_result,
-			));
-		}
-	}
-
-
-	####################################################################################################################
-	# parse
-	####################################################################################################################
-
-	public function parseAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
-
-		return $this->createApiResponse($reports_builder->parseInput());
-	}
+            return $this->createApiResponse(array(
+                 'success'         => true,
+                 'id'              => $report->id,
+                 'rendered_result' => $rendered_result,
+            ));
+        }
+    }
 
 
-	####################################################################################################################
-	# download
-	####################################################################################################################
+    ####################################################################################################################
+    # clone report
+    ####################################################################################################################
 
-	public function downloadAction($id, $type)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
-		 */
-		$reports_builder = $this->container->getSystemService('reports_builder');
+    public function cloneAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
+        $report          = $reports_builder->getById($id);
 
-		return $reports_builder->outputDownloadContent($id, $type);
-	}
+        if (!$report) {
+            throw $this->createNotFoundException();
+        }
+
+        $new_report              = $reports_builder->createNew();
+        $new_report->title       = $this->in->getString('title') ?: $report->title;
+        $new_report->description = $this->in->getString('description') ?: $report->description;
+        $new_report->query       = $report->query;
+
+        $parts = $this->in->getArrayValue('parts');
+        if ($parts) {
+            $query = Display::getQueryStringFromParts($parts);
+            if ($query) {
+                $new_report->query = $query;
+            }
+        }
+
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+            $this->em->persist($new_report);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch(\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
+
+        return $this->createApiResponse(array(
+            'success' => true,
+            'id'      => $new_report->id
+        ));
+    }
+
+
+    ####################################################################################################################
+    # delete report
+    ####################################################################################################################
+
+    public function deleteAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
+        $report          = $reports_builder->getById($id);
+
+        if (!$report) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$report->is_custom) {
+            throw ValidationException::create('you can delete only custom report');
+        }
+
+        $reports_builder->remove($report);
+
+        return $this->createSuccessResponse(array('id' => $id));
+    }
+
+
+    ####################################################################################################################
+    # test report
+    ####################################################################################################################
+
+    public function testAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
+
+        if ($error = $reports_builder->getErrors($id, 'from_request')) {
+            return $this->createApiResponse(array('error' => $error));
+        } else {
+            $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+
+            return $this->createApiResponse(array(
+                'rendered_result' => $rendered_result,
+            ));
+        }
+    }
+
+
+    ####################################################################################################################
+    # parse
+    ####################################################################################################################
+
+    public function parseAction()
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
+
+        return $this->createApiResponse($reports_builder->parseInput());
+    }
+
+
+    ####################################################################################################################
+    # download
+    ####################################################################################################################
+
+    public function downloadAction($id, $type)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+         */
+        $reports_builder = $this->container->getSystemService('reports_builder');
+
+        return $reports_builder->outputDownloadContent($id, $type);
+    }
 }

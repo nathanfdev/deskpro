@@ -9,7 +9,7 @@ define [
 		init: ->
 			@options_data = null
 
-		getOptionsForTypes: (types = [], typesData = null) ->
+		getOptionsForTypes: (types = [], typesData = null, mode) ->
 			set_options = []
 
 			#------------------------------
@@ -213,6 +213,23 @@ define [
 			})
 
 			#------------------------------
+			# JIRA Actions
+			#------------------------------
+
+			if @options_data?.jira_settings?.enabled
+				options = []
+
+				options.push({
+					title: 'Add Comment to linked JIRA issues',
+					value: 'AddJIRAComment'
+				})
+
+				set_options.push({
+					title: 'JIRA Actions',
+					subOptions: options
+				})
+
+			#------------------------------
 			# Trigger Control
 			#------------------------------
 
@@ -241,6 +258,11 @@ define [
 			options.push({
 				title: 'Set Trigger Variable',
 				value: 'ModSetUserVar'
+			})
+
+			options.push({
+				title: 'Ticket Log',
+				value: 'TicketLogText'
 			})
 
 			set_options.push({
@@ -474,71 +496,69 @@ define [
 			@loadDataPromise = null
 
 		loadDataOptions: ->
-			if @options_data
-				defer = @.$q.defer()
-				defer.resolve(@options_data)
-				return defer.promise
-			else
-				if not @loadDataPromise
-					@loadDataPromise = @Api.sendDataGet({
-						'agents':          '/agents'
-						'agent_teams':     '/agent_teams',
-						'ticket_deps':     '/ticket_deps',
-						'ticket_cats':     '/ticket_cats',
-						'ticket_prods':    '/ticket_prods',
-						'ticket_pris':     '/ticket_pris',
-						'ticket_works':    '/ticket_works',
-						'ticket_fields':   '/ticket_fields',
-						'user_fields':     '/user_fields',
-						'org_fields':      '/org_fields',
-						'ticket_slas':     '/ticket_slas',
-						'email_accounts':  '/email_accounts',
-						'usergroups':      '/user_groups',
-						'langs':           '/langs',
-						'email_tpls':      '/email-templates-info',
-						round_robin:       '/round_robin/settings',
-						round_robins:      '/round_robin',
-						tasks:             '/tasks/settings'
-						contextual_fields: '/custom_fields'
-					}).then( (result) =>
-						data = result.data
-						options_data = {}
-						options_data['agents']           = data.agents.agents
-						options_data['agent_teams']      = data.agent_teams.agent_teams
-						options_data['ticket_deps']      = data.ticket_deps.departments
-						options_data['ticket_cats']      = data.ticket_cats.categories
-						options_data['ticket_pris']      = data.ticket_pris.priorities
-						options_data['ticket_works']     = data.ticket_works.workflows
-						options_data['ticket_prods']     = data.ticket_prods?.products
-						options_data['ticket_fields']    = data.ticket_fields?.custom_fields
-						options_data['org_fields']       = data.org_fields?.custom_fields
-						options_data['user_fields']      = data.user_fields?.custom_fields
-						options_data['ticket_slas']      = data.ticket_slas?.slas
-						options_data['email_accounts']   = data.email_accounts.email_accounts
-						options_data['usergroups']       = data.usergroups.groups
-						options_data['langs']            = data.langs?.languages
-						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
-						options_data['round_robin']      = data.round_robin
-						options_data['round_robins']     = data.round_robins
-						options_data['tasks']            = data.tasks
-						options_data['contextual_fields']= data.contextual_fields
+			if not @loadDataPromise
+				@loadDataPromise = @Api.sendDataGet({
+					'agents':          '/agents'
+					'agent_teams':     '/agent_teams',
+					'ticket_deps':     '/ticket_deps',
+					'ticket_cats':     '/ticket_cats',
+					'ticket_prods':    '/ticket_prods',
+					'ticket_pris':     '/ticket_pris',
+					'ticket_works':    '/ticket_works',
+					'ticket_fields':   '/ticket_fields',
+					'user_fields':     '/user_fields',
+					'org_fields':      '/org_fields',
+					'ticket_slas':     '/ticket_slas',
+					'email_accounts':  '/email_accounts',
+					'usergroups':      '/user_groups',
+					'langs':           '/langs',
+					'email_tpls':      '/email-templates-info',
+					round_robin:       '/round_robin/settings',
+					round_robins:      '/round_robin',
+					tasks:             '/tasks/settings'
+					contextual_fields: '/custom_fields'
+					'jira_settings':   '/apps/jira'
+				}).then( (result) =>
+					data = result.data
+					options_data = {}
+					options_data['agents']           = data.agents.agents
+					options_data['agent_teams']      = data.agent_teams.agent_teams
+					options_data['ticket_deps']      = data.ticket_deps.departments
+					options_data['ticket_cats']      = data.ticket_cats.categories
+					options_data['ticket_pris']      = data.ticket_pris.priorities
+					options_data['ticket_works']     = data.ticket_works.workflows
+					options_data['ticket_prods']     = data.ticket_prods?.products
+					options_data['ticket_fields']    = data.ticket_fields?.custom_fields
+					options_data['org_fields']       = data.org_fields?.custom_fields
+					options_data['user_fields']      = data.user_fields?.custom_fields
+					options_data['ticket_slas']      = data.ticket_slas?.slas
+					options_data['email_accounts']   = data.email_accounts.email_accounts
+					options_data['usergroups']       = data.usergroups.groups
+					options_data['langs']            = data.langs?.languages
+					options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+					options_data['round_robin']      = data.round_robin
+					options_data['round_robins']     = data.round_robins
+					options_data['tasks']            = data.tasks
+					options_data['contextual_fields']= data.contextual_fields
+					options_data['jira_settings']    = data.jira_settings
 
-						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
+					options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
-						@options_data = options_data
+					@options_data = options_data
 
-						if @options_data?.ticket_fields
-							for f in @options_data.ticket_fields
-								@initFieldGetter('SetTicketField', f)
-						if @options_data?.contextual_fields
-							for f in @options_data.contextual_fields
-								@initFieldGetter('SetTicketContextualField', f)
-						if @options_data?.user_fields
-							for f in @options_data.user_fields
-								@initFieldGetter('SetUserField', f)
-					)
+					if @options_data?.ticket_fields
+						for f in @options_data.ticket_fields
+							@initFieldGetter 'SetTicketField', f, true
+					if @options_data?.contextual_fields
+						for f in @options_data.contextual_fields
+							@initFieldGetter 'SetTicketContextualField', f, true
+					if @options_data?.user_fields
+						for f in @options_data.user_fields
+							@initFieldGetter 'SetUserField', f, true
+				)
 
-				return @loadDataPromise
+			@loadDataPromise
+
 
 		getSetAgent: (options = {}) ->
 			options.propName = 'agent_id'
@@ -820,6 +840,7 @@ define [
 			return def
 
 		getSetDeleted: (options = {}) ->
+			options.icon = 'fa-chain-broken'
 			def = @getStandardIs(options)
 			return def
 
@@ -912,6 +933,12 @@ define [
 					}
 			}
 
+		getTicketLogText: (options = {}) ->
+			options.propName = 'message'
+			options.placeholder = 'Enter text here to add to the ticket log';
+			def = @getStandardInput(options)
+			return def
+
 		getSendUserEmail: (options = {}) ->
 			me = @
 			return {
@@ -954,6 +981,16 @@ define [
 							, ->
 								$scope.is_creating = false
 							)
+
+					$scope.editTemplate = ->
+						$modal.open({
+							templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+							controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+							resolve: {
+								templateName: ->
+									return $scope.model.template
+							}
+						})
 				]
 
 				getDataFormatter: ->
@@ -1049,6 +1086,16 @@ define [
 							, ->
 								$scope.is_creating = false
 							)
+
+					$scope.editTemplate = ->
+						$modal.open({
+							templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+							controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+							resolve: {
+								templateName: ->
+									return $scope.model.template
+							}
+						})
 				]
 
 				getDataFormatter: ->
@@ -1148,6 +1195,16 @@ define [
 						, ->
 							$scope.is_creating = false
 						)
+
+				$scope.editTemplate = ->
+					$modal.open({
+						templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+						controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+						resolve: {
+							templateName: ->
+								return $scope.model.template
+						}
+					})
 			]
 
 			getDataFormatter: ->
@@ -1414,3 +1471,24 @@ define [
 							}
 					}
 			}
+
+		getAddJIRAComment: (options = {}) ->
+			me = @
+			getTemplate: -> me.dpTemplateManager.get 'OptionBuilder/type-actions-addagentreply.html'
+			getData: -> me.loadDataOptions()
+			getDataFormatter: ->
+				getViewValue: (value = {}, data) ->
+					opt = value.options || {}
+					by_agent_id = (opt.by_agent_id || data.agents[0].id) + ""
+
+					type: 'AddJIRAComment',
+					text: opt.note_text || '',
+					by_assigned_agent: opt.by_assigned_agent || false,
+					by_agent_id: by_agent_id
+
+				getValue: (model = {}, data) ->
+					type: 'AddJIRAComment'
+					options:
+						note_text: model.text
+						by_assigned_agent: model.by_assigned_agent || false
+						by_agent_id: parseInt(model.by_agent_id || 0) || 0

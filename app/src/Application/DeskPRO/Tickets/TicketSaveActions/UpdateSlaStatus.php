@@ -39,17 +39,17 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class UpdateSlaStatus implements TicketSaveActionInterface
 {
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($context->getEventType() == 'noop') {
+            return;
+        }
 
-		$this->ticket->updateWorstSlaStatus();
-	}
+        $this->ticket->updateWorstSlaStatus();
+    }
 }

@@ -35,126 +35,147 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Entity\TicketMessage;
 
 class PreProcessor extends AbstractGatewayProcessor
 {
-	/** @var string|null */
-	protected $error = null;
-	/** @var string */
-	protected $error_type = 'rejected';
-	/** @var array|null */
-	protected $source_info = null;
+    /** @var string|null */
+    protected $error = null;
+    /** @var string */
+    protected $error_type = 'rejected';
+    /** @var array|null */
+    protected $source_info = null;
 
-	public function run()
-	{
-		#------------------------------
-		# Empty From
-		#------------------------------
+    public function run()
+    {
+        #------------------------------
+        # Empty From
+        #------------------------------
 
-		$from = $this->reader->getFromAddress()->getEmail();
-		if (!$from) {
-			$this->error = EmailSource::ERR_FROM_MISSING;
-			return;
-		}
+        $from = $this->reader->getFromAddress()->getEmail();
+        if (!$from) {
+            $this->error = EmailSource::ERR_FROM_MISSING;
 
-		#------------------------------
-		# Invalid From
-		#------------------------------
+            return;
+        }
 
-		$validator = new \Orb\Validator\StringEmail();
+        #------------------------------
+        # Dupe Detection
+        #------------------------------
 
-		if (!$validator->isValid($from)) {
-			$this->error = EmailSource::ERR_FROM_INVALID;
-			$this->source_info = array();
-			$this->source_info[] = "Read from address: " . $from;
-			$this->source_info[] = "Errors:\n\n" . $validator->getErrorsDebug();
-			return;
-		}
+        if ($id = $this->reader->getId()) {
+            if ($old = $this->getEm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
+                /** @var $old TicketMessage */
+                $this->source_info[] = 'Ticket ID: '. $old->message->ticket['id'];
+                $this->source_info[] = 'Email Message ID: '. $id;
+                return $this->error = EmailSource::ERR_DUPE;
+            }
+        }
 
-		#------------------------------
-		# From is a know gateway address
-		#------------------------------
+        #------------------------------
+        # Invalid From
+        #------------------------------
 
-		$account_manager = App::$container->getEmailAccountManager();
-		if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
-			$this->error = EmailSource::ERR_FROM_GATEWAY;
-			$this->source_info[] = "Read from address: " . $from;
-			$this->source_info[] = "Matched account: " . $found_account->id;
-			$this->source_info[] = "Account addresses: " . implode(', ', $found_account->getAllAddresses());
-			return;
-		}
+        $validator = new \Orb\Validator\StringEmail();
 
-		#------------------------------
-		# From is a banned address
-		#------------------------------
+        if (!$validator->isValid($from)) {
+            $this->error = EmailSource::ERR_FROM_INVALID;
+            $this->source_info = array();
+            $this->source_info[] = "Read from address: " . $from;
+            $this->source_info[] = "Errors:\n\n" . $validator->getErrorsDebug();
 
-		$match = null;
-		if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
-			$this->error = EmailSource::ERR_FROM_BANNED;
-			$this->source_info[] = "Read from address: " . $from;
-			$this->source_info[] = "Matched banned email: " . $match;
-			return;
-		}
+            return;
+        }
 
-		#------------------------------
-		# Check for empty message
-		#------------------------------
+        #------------------------------
+        # From is a know gateway address
+        #------------------------------
 
-		$subj = trim($this->reader->getSubject()->getSubject());
-		$message = trim($this->reader->getBodyHtml()->getBody());
-		$message2 = trim($this->reader->getBodyText()->getBody());
-		$attach = $this->reader->getAttachments();
+        $account_manager = App::$container->getEmailAccountManager();
+        if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
+            $this->error = EmailSource::ERR_FROM_GATEWAY;
+            $this->source_info[] = "Read from address: " . $from;
+            $this->source_info[] = "Matched account: " . $found_account->id;
+            $this->source_info[] = "Account addresses: " . implode(', ', $found_account->getAllAddresses());
 
-		if (!$subj && !$message && !$message2 && !$attach) {
-			$this->error = EmailSource::ERR_EMPTY;
-			return;
-		}
+            return;
+        }
 
-		#------------------------------
-		# Check if date is older than start_date_limit
-		# on the account
-		#------------------------------
+        #------------------------------
+        # From is a banned address
+        #------------------------------
 
-		if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
-			if ($email_date < $this->account->date_read_start) {
-				$this->error = EmailSource::ERR_DATE_LIMIT;
-				$this->source_info[] = "Gateway date limit: " . $this->account->date_read_start->format(\DateTime::RFC2822);
-				$this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
-				return;
-			}
-		}
+        $match = null;
+        if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
+            $this->error = EmailSource::ERR_FROM_BANNED;
+            $this->source_info[] = "Read from address: " . $from;
+            $this->source_info[] = "Matched banned email: " . $match;
 
-		unset($subj, $message, $message2, $attach);
-	}
+            return;
+        }
 
-	public function isValid()
-	{
-		return $this->error === null;
-	}
+        #------------------------------
+        # Check for empty message
+        #------------------------------
 
-	/**
-	 * 'error' or 'rejected'
-	 * @return string
-	 */
-	public function getErrorType()
-	{
-		return $this->error_type;
-	}
+        $subj = trim($this->reader->getSubject()->getSubject());
+        $message = trim($this->reader->getBodyHtml()->getBody());
+        $message2 = trim($this->reader->getBodyText()->getBody());
+        $attach = $this->reader->getAttachments();
 
-	public function getErrorCode()
-	{
-		return $this->error;
-	}
+        if (!$subj && !$message && !$message2 && !$attach) {
+            $this->error = EmailSource::ERR_EMPTY;
 
-	public function getSourceInfo()
-	{
-		if (!$this->source_info) {
-			return null;
-		}
+            return;
+        }
 
-		if (!is_array($this->source_info)) {
-			$this->source_info = array($this->source_info);
-		}
-		return $this->source_info;
-	}
+        #------------------------------
+        # Check if date is older than start_date_limit
+        # on the account
+        #------------------------------
+
+        if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+            if ($email_date < $this->account->date_read_start) {
+                $this->error = EmailSource::ERR_DATE_LIMIT;
+                $this->source_info[] = "Gateway date limit: " . $this->account->date_read_start->format(\DateTime::RFC2822);
+                $this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
+
+                return;
+            }
+        }
+
+        unset($subj, $message, $message2, $attach);
+    }
+
+    public function isValid()
+    {
+        return $this->error === null;
+    }
+
+    /**
+     * 'error' or 'rejected'
+     * @return string
+     */
+    public function getErrorType()
+    {
+        return $this->error_type;
+    }
+
+    public function getErrorCode()
+    {
+        return $this->error;
+    }
+
+    public function getSourceInfo()
+    {
+        if (!$this->source_info) {
+            return null;
+        }
+
+        if (!is_array($this->source_info)) {
+            $this->source_info = array($this->source_info);
+        }
+
+        return $this->source_info;
+    }
 }

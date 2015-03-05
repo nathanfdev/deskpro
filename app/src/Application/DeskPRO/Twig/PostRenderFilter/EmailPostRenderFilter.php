@@ -37,58 +37,59 @@ use Orb\Util\Strings;
 
 class EmailPostRenderFilter extends AbstractPostRenderFilter
 {
-	public function process($name, $code)
-	{
-		$m = null;
-		if (!preg_match_all('#<style[^>]*>(.*?)</style>#s', $code, $m, \PREG_PATTERN_ORDER)) {
-			return $code;
-		}
+    public function process($name, $code)
+    {
+        $m = null;
+        if (!preg_match_all('#<style[^>]*>(.*?)</style>#s', $code, $m, \PREG_PATTERN_ORDER)) {
+            return $code;
+        }
 
-		$orig_code = $code;
+        $orig_code = $code;
 
-		// Separate out subject
-		$parts = explode('___DP___SUBJECT___SEP___', $code, 2);
-		$subj = null;
-		if (count($parts) == 2) {
-			$subj = trim($parts[0]);
-			$code = trim($parts[1]);
-		}
+        // Separate out subject
+        $parts = explode('___DP___SUBJECT___SEP___', $code, 2);
+        $subj = null;
+        if (count($parts) == 2) {
+            $subj = trim($parts[0]);
+            $code = trim($parts[1]);
+        }
 
-		// Dont run emog on messages, only on the email template
-		// This takes out email messages and replaces them with tokens until we're done
-		$save_blocks = array();
-		$code = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function($m) use (&$save_blocks) {
-			$rand = uniqid('DPBLOCK', true);
-			$save_blocks[$rand] = $m[0];
-			return $rand;
-		}, $code);
+        // Dont run emog on messages, only on the email template
+        // This takes out email messages and replaces them with tokens until we're done
+        $save_blocks = array();
+        $code = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function ($m) use (&$save_blocks) {
+            $rand = uniqid('DPBLOCK', true);
+            $save_blocks[$rand] = $m[0];
 
-		$css = implode("\n", $m[1]);
-		foreach ($m[0] as $find) {
-			$code = str_replace($find, '', $code);
-		}
+            return $rand;
+        }, $code);
 
-		$code = Strings::preDomDocument($code);
-		$emog = new \Emogrifier($code, $css);
-		$code = $emog->emogrify();
-		$code = Strings::postDomDocument($code);
+        $css = implode("\n", $m[1]);
+        foreach ($m[0] as $find) {
+            $code = str_replace($find, '', $code);
+        }
 
-		foreach ($save_blocks as $id => $block) {
-			$code = str_replace($id, $block, $code);
-		}
+        $code = Strings::preDomDocument($code);
+        $emog = new \Emogrifier($code, $css);
+        $code = $emog->emogrify();
+        $code = Strings::postDomDocument($code);
 
-		if (!$code) {
-			return $orig_code;
-		}
+        foreach ($save_blocks as $id => $block) {
+            $code = str_replace($id, $block, $code);
+        }
 
-		if ($subj) {
-			$code = $subj . '___DP___SUBJECT___SEP___' . $code;
-		}
+        if (!$code) {
+            return $orig_code;
+        }
 
-		if (strpos($name,'DeskPRO:emails_user:') === 0) {
-			$code = str_replace('DP_TOP_MARK', 'DP_TOP_MARK DP_USER_EMAIL', $code);
-		}
+        if ($subj) {
+            $code = $subj . '___DP___SUBJECT___SEP___' . $code;
+        }
 
-		return $code;
-	}
+        if (strpos($name,'DeskPRO:emails_user:') === 0) {
+            $code = str_replace('DP_TOP_MARK', 'DP_TOP_MARK DP_USER_EMAIL', $code);
+        }
+
+        return $code;
+    }
 }

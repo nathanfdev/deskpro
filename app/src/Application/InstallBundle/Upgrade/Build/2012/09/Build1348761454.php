@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348761454 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets.creation_system_option");
-		$this->execMutateSql("ALTER TABLE tickets ADD creation_system_option VARCHAR(1000) NOT NULL, CHANGE creation_system creation_system VARCHAR(100) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add tickets.creation_system_option");
+        $this->execMutateSql("ALTER TABLE tickets ADD creation_system_option VARCHAR(1000) NOT NULL, CHANGE creation_system creation_system VARCHAR(100) NOT NULL");
+    }
 }

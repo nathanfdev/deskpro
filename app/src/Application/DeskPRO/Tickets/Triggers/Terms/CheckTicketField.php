@@ -46,33 +46,34 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckTicketField extends AbstractCheckCustomField
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('field_id', 'value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value');
+
+        return $options;
+    }
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return array()
-	 */
-	function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return $ticket->custom_data ?: array();
-	}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return array()
+     */
+    public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return $ticket->custom_data ?: array();
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTermType()
-	{
-		return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
-	}
+    /**
+     * @return string
+     */
+    public function getTermType()
+    {
+        return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
+    }
 }

@@ -40,8 +40,9 @@ require_once 'PHP/ParserGenerator.php';
 $me = new PHP_ParserGenerator();
 $me->main(); // this calls exit so need to hack around that with a shutdown function
 
-function shutdown_function() {
-	$prefixCode = '/**************************************************************************\
+function shutdown_function()
+{
+    $prefixCode = '/**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
@@ -65,7 +66,7 @@ function shutdown_function() {
 | looking for great developers to join us: http://www.deskpro.com/jobs/    |
 |                                                                          |
 | ~ Thanks, Everyone at Team DeskPRO                                       |
-		\**************************************************************************/
+        \**************************************************************************/
 
 /**
  * DeskPRO

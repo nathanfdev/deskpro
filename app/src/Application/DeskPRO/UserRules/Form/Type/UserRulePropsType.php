@@ -41,43 +41,43 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UserRulePropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$transformer = new EmailPatternsDataTransformer();
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $transformer = new EmailPatternsDataTransformer();
 
-		$builder->add(
-			$builder->create('email_patterns', 'text')
-				->addModelTransformer($transformer)
-		);
+        $builder->add(
+            $builder->create('email_patterns', 'text')
+                ->addModelTransformer($transformer)
+        );
 
-		$builder->add(
-			'add_usergroup',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Usergroup',
-				 'required'      => false,
-				 'multiple'      => false,
-				 'property'      => 'title',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('u')->where(
-						 'u.is_agent_group = 0 AND u.sys_name IS NULL'
-					 );
-				 }
-			)
-		);
-	}
+        $builder->add(
+            'add_usergroup',
+            'entity',
+            array(
+                 'class'         => 'DeskPRO:Usergroup',
+                 'required'      => false,
+                 'multiple'      => false,
+                 'property'      => 'title',
+                 'query_builder' => function (EntityRepository $er) {
+                     return $er->createQueryBuilder('u')->where(
+                         'u.is_agent_group = 0 AND u.sys_name IS NULL'
+                     );
+                 }
+            )
+        );
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\UserRule',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\UserRule',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'user_rule';
-	}
+    public function getName()
+    {
+        return 'user_rule';
+    }
 }

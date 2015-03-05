@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358548231 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adjust Twitter index");
-		$this->execMutateSql("ALTER TABLE twitter_statuses DROP FOREIGN KEY FK_553D9D8D72A1C5CA");
-		$this->execMutateSql("ALTER TABLE twitter_statuses ADD CONSTRAINT FK_553D9D8D72A1C5CA FOREIGN KEY (retweet_id) REFERENCES twitter_statuses (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Adjust Twitter index");
+        $this->execMutateSql("ALTER TABLE twitter_statuses DROP FOREIGN KEY FK_553D9D8D72A1C5CA");
+        $this->execMutateSql("ALTER TABLE twitter_statuses ADD CONSTRAINT FK_553D9D8D72A1C5CA FOREIGN KEY (retweet_id) REFERENCES twitter_statuses (id) ON DELETE CASCADE");
+    }
 }

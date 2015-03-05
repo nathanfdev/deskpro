@@ -41,18 +41,18 @@ use Application\DeskPRO\JobQueue\SupervisorRules\ReservedTimeoutRule;
 
 class JobSupervisorService
 {
-	/**
-	 * @param DeskproContainer $container
-	 * @return JobSupervisor
-	 */
-	public static function create(DeskproContainer $container)
-	{
-		$conn = $container->get('doctrine.dbal.default_connection');
+    /**
+     * @param  DeskproContainer $container
+     * @return JobSupervisor
+     */
+    public static function create(DeskproContainer $container)
+    {
+        $conn = $container->get('doctrine.dbal.default_connection');
 
-		$supervisor = new JobSupervisor($conn);
-		$supervisor->addRule(new ProcessingTimeoutRule($conn));
-		$supervisor->addRule(new ReservedTimeoutRule($conn));
+        $supervisor = new JobSupervisor($conn);
+        $supervisor->addRule(new ProcessingTimeoutRule($conn));
+        $supervisor->addRule(new ReservedTimeoutRule($conn));
 
-		return $supervisor;
-	}
+        return $supervisor;
+    }
 }

@@ -43,11 +43,11 @@ use Orb\Util\Strings;
  */
 class JobSupervisorException extends \LogicException
 {
-	public function __construct($message, $code = 1550, \Exception $previous = null)
-	{
-		if (!Strings::startsWith('Job Supervisor', $message)) {
-			$message = "Job Supervisor: $message";
-		}
-		parent::__construct($message, $code, $previous);
-	}
+    public function __construct($message, $code = 1550, \Exception $previous = null)
+    {
+        if (!Strings::startsWith('Job Supervisor', $message)) {
+            $message = "Job Supervisor: $message";
+        }
+        parent::__construct($message, $code, $previous);
+    }
 }

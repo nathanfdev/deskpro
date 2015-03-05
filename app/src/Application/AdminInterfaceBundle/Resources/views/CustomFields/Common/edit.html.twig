@@ -167,11 +167,11 @@
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.text.user_validation" value="required" /> Require the user to provide a value</label>
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.text.user_validation" value="regex" /> Match regular expression</label>
 										<p ng-show="EditCtrl.form.text.user_validation == 'required'">
-											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.user_min_length" style="width: 50px;" />
-											Max characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.user_max_length" style="width: 50px;" />
+											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.min_length" style="width: 50px;" />
+											Max characters: <input type="text" class="form-control" ng-model="EditCtrl.form.text.max_length" style="width: 50px;" />
 										</p>
 										<p ng-show="EditCtrl.form.text.user_validation == 'regex'">
-											<input type="text" class="form-control" ng-model="EditCtrl.form.text.user_regex" style="width: 50%;" placeholder="Enter pattern here" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.text.regex" style="width: 50%;" placeholder="Enter pattern here" />
 										</p>
 									</div>
 								</div>

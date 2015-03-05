@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340824498 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add original_phrase to phrases");
-		$this->execMutateSql("ALTER TABLE phrases ADD original_phrase LONGTEXT NOT NULL");
+    public function run()
+    {
+        $this->out("Add original_phrase to phrases");
+        $this->execMutateSql("ALTER TABLE phrases ADD original_phrase LONGTEXT NOT NULL");
 
-		$this->out("Add base_filepath and drop language_package from languages");
-		$this->execMutateSql("ALTER TABLE languages ADD base_filepath VARCHAR(255) DEFAULT NULL, DROP language_package");
-	}
+        $this->out("Add base_filepath and drop language_package from languages");
+        $this->execMutateSql("ALTER TABLE languages ADD base_filepath VARCHAR(255) DEFAULT NULL, DROP language_package");
+    }
 }

@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056722 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Drop old search tables");
-		$db->exec("DROP TABLE IF EXISTS tickets_search_active, tickets_search_message, tickets_search_message_active, tickets_search_subject");
-	}
+        $this->out("Drop old search tables");
+        $db->exec("DROP TABLE IF EXISTS tickets_search_active, tickets_search_message, tickets_search_message_active, tickets_search_subject");
+    }
 }

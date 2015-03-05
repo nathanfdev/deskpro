@@ -45,154 +45,154 @@ use Application\DeskPRO\People\PersonContextInterface;
  */
 class FeedbackMerge implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Feedback
-	 */
-	protected $feedback;
+    /**
+     * @var \Application\DeskPRO\Entity\Feedback
+     */
+    protected $feedback;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Feedback
-	 */
-	protected $other_feedback;
+    /**
+     * @var \Application\DeskPRO\Entity\Feedback
+     */
+    protected $other_feedback;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @throws \InvalidArgumentException
-	 * @param \Application\DeskPRO\Entity\Person $person_performer
-	 * @param \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
-	 * @param \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
-	 */
-	public function __construct(Person $person_performer, Feedback $feedback, Feedback $other_feedback)
-	{
-		$this->em = App::getOrm();
+    /**
+     * @throws \InvalidArgumentException
+     * @param  \Application\DeskPRO\Entity\Person   $person_performer
+     * @param  \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
+     * @param  \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
+     */
+    public function __construct(Person $person_performer, Feedback $feedback, Feedback $other_feedback)
+    {
+        $this->em = App::getOrm();
 
-		$this->feedback = $feedback;
-		$this->other_feedback = $other_feedback;
-		$this->setPersonContext($person_performer);
+        $this->feedback = $feedback;
+        $this->other_feedback = $other_feedback;
+        $this->setPersonContext($person_performer);
 
-		if ($feedback->getId() == $other_feedback->getId()) {
-			throw new \InvalidArgumentException("You cannot merge an feedback with itself");
-		}
-	}
+        if ($feedback->getId() == $other_feedback->getId()) {
+            throw new \InvalidArgumentException("You cannot merge an feedback with itself");
+        }
+    }
 
-	public function setPersonContext(Person $person)
-	{
-		$this->person = $person;
-	}
+    public function setPersonContext(Person $person)
+    {
+        $this->person = $person;
+    }
 
-	public function checkPersonPermission()
-	{
-		return true;
-	}
+    public function checkPersonPermission()
+    {
+        return true;
+    }
 
-	public function merge()
-	{
-		if (!$this->checkPersonPermission()) {
-			throw new \DomainException('User does not have permission to merge these tickets');
-		}
+    public function merge()
+    {
+        if (!$this->checkPersonPermission()) {
+            throw new \DomainException('User does not have permission to merge these tickets');
+        }
 
-		$this->em->beginTransaction();
+        $this->em->beginTransaction();
 
-		try {
+        try {
 
-			$this->mergeProps();
-			$this->mergeVotes();
-			$this->mergeComments();
-			$this->mergeDescription();
-			$this->em->persist($this->feedback);
-			$this->em->flush();
+            $this->mergeProps();
+            $this->mergeVotes();
+            $this->mergeComments();
+            $this->mergeDescription();
+            $this->em->persist($this->feedback);
+            $this->em->flush();
 
-			$this->em->remove($this->other_feedback);
-			$this->em->flush();
+            $this->em->remove($this->other_feedback);
+            $this->em->flush();
 
-			$this->em->commit();
+            $this->em->commit();
 
-		} catch (\Exception $e) {
-			$this->em->rollback();
+        } catch (\Exception $e) {
+            $this->em->rollback();
 
-			throw $e;
-		}
+            throw $e;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected function mergeProps()
-	{
-		if (!$this->feedback->category && $this->other_feedback->category) {
-			$this->feedback->category = $this->other_feedback->category;
-		}
-		$this->feedback->view_count = $this->feedback->view_count + $this->other_feedback->view_count;
-	}
+    protected function mergeProps()
+    {
+        if (!$this->feedback->category && $this->other_feedback->category) {
+            $this->feedback->category = $this->other_feedback->category;
+        }
+        $this->feedback->view_count = $this->feedback->view_count + $this->other_feedback->view_count;
+    }
 
-	protected function mergeVotes()
-	{
-		$votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->feedback->id);
-		$other_votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->other_feedback->id);
+    protected function mergeVotes()
+    {
+        $votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->feedback->id);
+        $other_votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->other_feedback->id);
 
-		$finished_votes = $votes;
+        $finished_votes = $votes;
 
-		// Votes are ordered by id
-		// Create a map of users and visitors so we can easily match conflicts
-		$map_fn = function(&$map, $field) use ($votes) {
-			foreach ($votes as $id => $v) {
-				if (isset($v[$field]) && $v[$field]) {
-					$map[$v[$field]] = $id;
-				}
-			}
-		};
+        // Votes are ordered by id
+        // Create a map of users and visitors so we can easily match conflicts
+        $map_fn = function (&$map, $field) use ($votes) {
+            foreach ($votes as $id => $v) {
+                if (isset($v[$field]) && $v[$field]) {
+                    $map[$v[$field]] = $id;
+                }
+            }
+        };
 
-		$map_votes_person  = array();
-		$map_votes_visitor = array();
+        $map_votes_person  = array();
+        $map_votes_visitor = array();
 
-		$map_fn($map_votes_person, 'person_id');
-		$map_fn($map_votes_visitor, 'visitor_id');
+        $map_fn($map_votes_person, 'person_id');
+        $map_fn($map_votes_visitor, 'visitor_id');
 
-		// Now go over all other votes to add them or merge them
-		foreach ($other_votes as $v) {
-			if ($v['person_id'] && isset($map_votes_person[$v['person_id']])) {
-				// person already voted
-				$this->em->remove($v);
-			} elseif ($v['visitor_id'] && isset($map_votes_visitor[$v['visitor_id']])) {
-				// same visitor voted
-				$this->em->remove($v);
-			} else {
-				// Move the vote over
-				$this->feedback->addRating($v);
-				$this->em->persist($v);
-				$finished_votes[] = $v;
-			}
-		}
+        // Now go over all other votes to add them or merge them
+        foreach ($other_votes as $v) {
+            if ($v['person_id'] && isset($map_votes_person[$v['person_id']])) {
+                // person already voted
+                $this->em->remove($v);
+            } elseif ($v['visitor_id'] && isset($map_votes_visitor[$v['visitor_id']])) {
+                // same visitor voted
+                $this->em->remove($v);
+            } else {
+                // Move the vote over
+                $this->feedback->addRating($v);
+                $this->em->persist($v);
+                $finished_votes[] = $v;
+            }
+        }
 
-		$this->feedback->recalculateVoteStats($finished_votes);
-	}
+        $this->feedback->recalculateVoteStats($finished_votes);
+    }
 
-	public function mergeComments()
-	{
-		foreach ($this->other_feedback->comments as $comment) {
-			$comment->feedback = $this->feedback;
-			$this->em->persist($comment);
-		}
-	}
+    public function mergeComments()
+    {
+        foreach ($this->other_feedback->comments as $comment) {
+            $comment->feedback = $this->feedback;
+            $this->em->persist($comment);
+        }
+    }
 
-	public function mergeDescription()
-	{
-		$comment = new FeedbackComment();
+    public function mergeDescription()
+    {
+        $comment = new FeedbackComment();
 
-		$comment->person = $this->other_feedback->person;
-		$comment->content = $this->other_feedback->content;
-		$comment->date_created = $this->other_feedback->date_created;
+        $comment->person = $this->other_feedback->person;
+        $comment->content = $this->other_feedback->content;
+        $comment->date_created = $this->other_feedback->date_created;
 
-		$this->feedback->addComment($comment);
+        $this->feedback->addComment($comment);
 
-		$this->em->persist($comment);
-	}
+        $this->em->persist($comment);
+    }
 }

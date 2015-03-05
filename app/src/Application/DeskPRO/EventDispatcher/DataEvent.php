@@ -43,53 +43,49 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class DataEvent extends Event
 {
-	/**
-	 * @var array
-	 */
-	protected $data = array();
+    /**
+     * @var array
+     */
+    protected $data = array();
 
-	public function __construct($data = array())
-	{
-		$this->data = $data;
-	}
+    public function __construct($data = array())
+    {
+        $this->data = $data;
+    }
 
+    /**
+     * @param  $name
+     * @return array
+     */
+    public function __get($name)
+    {
+        return $this->data[$name];
+    }
 
-	/**
-	 * @param  $name
-	 * @return array
-	 */
-	public function __get($name)
-	{
-		return $this->data[$name];
-	}
+    /**
+     * @param  $name
+     * @param  $value
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        $this->data[$name] = $value;
+    }
 
+    /**
+     * @param  $name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->data[$name]);
+    }
 
-	/**
-	 * @param  $name
-	 * @param  $value
-	 * @return void
-	 */
-	public function __set($name, $value)
-	{
-		$this->data[$name] = $value;
-	}
-
-
-	/**
-	 * @param  $name
-	 * @return bool
-	 */
-	public function __isset($name)
-	{
-		return isset($this->data[$name]);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getData()
-	{
-		return $this->data;
-	}
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }

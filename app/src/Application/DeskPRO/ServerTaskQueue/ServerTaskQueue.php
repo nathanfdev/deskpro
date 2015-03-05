@@ -37,29 +37,29 @@ use Doctrine\ORM\EntityManager;
 
 class ServerTaskQueue
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getInfo()
-	{
-		$tasks            = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks(0);
-		$show_task_status = count($tasks) > 0;
+    public function getInfo()
+    {
+        $tasks            = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks(0);
+        $show_task_status = count($tasks) > 0;
 
-		return array(
-			'show_task_status' => $show_task_status,
-			'tasks'            => $this->em->getRepository('DeskPRO:TaskQueue')->getAllTasks()
-		);
-	}
+        return array(
+            'show_task_status' => $show_task_status,
+            'tasks'            => $this->em->getRepository('DeskPRO:TaskQueue')->getAllTasks()
+        );
+    }
 }

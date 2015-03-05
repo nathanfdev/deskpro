@@ -43,10 +43,10 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 interface TriggerTermInterface
 {
-	/**
-	 * @param  Ticket $ticket
-	 * @param  ExecutorContextInterface $context
-	 * @return bool
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context);
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return bool
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context);
 }

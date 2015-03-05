@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351077714 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add title prefix for people");
-		$this->execMutateSql("ALTER TABLE people ADD title_prefix VARCHAR(50) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add title prefix for people");
+        $this->execMutateSql("ALTER TABLE people ADD title_prefix VARCHAR(50) NOT NULL");
+    }
 }

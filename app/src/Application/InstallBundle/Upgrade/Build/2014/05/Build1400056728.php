@@ -39,82 +39,82 @@ use Application\InstallBundle\Upgrade\Build\Helper201405\LayoutUpgrader;
 
 class Build1400056728 extends AbstractBuild
 {
-	public function run()
-	{
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/LayoutGenerator.php';
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/LayoutUpgrader.php';
+    public function run()
+    {
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/LayoutGenerator.php';
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/LayoutUpgrader.php';
 
-		$this->out("Upgrade ticket layouts");
+        $this->out("Upgrade ticket layouts");
 
-		$em = $this->container->getEm();
-		$db = $this->container->getDb();
-		$db->exec("DELETE FROM ticket_layouts");
+        $em = $this->container->getEm();
+        $db = $this->container->getDb();
+        $db->exec("DELETE FROM ticket_layouts");
 
-		// Hack: Later upgrade modifies departments table
-		// but we're using entities below, which means doctrine will try to
-		// use the new schema before its been upgraded
-		try {
-			$db->exec("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-		} catch (\Exception $e) {}
+        // Hack: Later upgrade modifies departments table
+        // but we're using entities below, which means doctrine will try to
+        // use the new schema before its been upgraded
+        try {
+            $db->exec("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
+        } catch (\Exception $e) {}
 
-		#------------------------------
-		# Get current layouts
-		#------------------------------
+        #------------------------------
+        # Get current layouts
+        #------------------------------
 
-		$old_layouts = array();
+        $old_layouts = array();
 
-		$data = $this->getUpgradeData('201404', 'ticket_page_display') ?: array();
-		foreach ($data as $r) {
-			if (!isset($old_layouts[$r['department_id']])) {
-				$old_layouts[$r['department_id'] ?: 0] = array();
-			}
-			$old_layouts[$r['department_id'] ?: 0][$r['zone']] = unserialize($r['data']);
-		}
+        $data = $this->getUpgradeData('201404', 'ticket_page_display') ?: array();
+        foreach ($data as $r) {
+            if (!isset($old_layouts[$r['department_id']])) {
+                $old_layouts[$r['department_id'] ?: 0] = array();
+            }
+            $old_layouts[$r['department_id'] ?: 0][$r['zone']] = unserialize($r['data']);
+        }
 
-		$dep_ids = array_keys($old_layouts);
-		$deps = array();
-		if ($dep_ids) {
-			$deps = $em->getRepository('DeskPRO:Department')->getByIds($dep_ids);
-		}
+        $dep_ids = array_keys($old_layouts);
+        $deps = array();
+        if ($dep_ids) {
+            $deps = $em->getRepository('DeskPRO:Department')->getByIds($dep_ids);
+        }
 
-		#------------------------------
-		# Upgrade layouts
-		#------------------------------
+        #------------------------------
+        # Upgrade layouts
+        #------------------------------
 
-		if (!isset($old_layouts[0])) {
-			$this->out("No default layout exists, generating one");
-			$gen = new LayoutGenerator($this->container);
-			$layout = $gen->getTicketLayout();
-			$layout->department = null;
-			$em->persist($layout);
-			$em->flush();
-		}
+        if (!isset($old_layouts[0])) {
+            $this->out("No default layout exists, generating one");
+            $gen = new LayoutGenerator($this->container);
+            $layout = $gen->getTicketLayout();
+            $layout->department = null;
+            $em->persist($layout);
+            $em->flush();
+        }
 
-		foreach ($old_layouts as $dep_id => $old) {
-			if ($dep_id && !isset($deps[$dep_id])) {
-				$this->out("Skipping layout for dep $dep_id because department does not exist");
-				continue;
-			}
+        foreach ($old_layouts as $dep_id => $old) {
+            if ($dep_id && !isset($deps[$dep_id])) {
+                $this->out("Skipping layout for dep $dep_id because department does not exist");
+                continue;
+            }
 
-			$form_new  = !empty($old['create']) ? $old['create'] : array();
-			$form_view = !empty($old['view']) ? $old['view'] : array();
-			$form_edit = !empty($old['modify']) ? $old['modify'] : array();
+            $form_new  = !empty($old['create']) ? $old['create'] : array();
+            $form_view = !empty($old['view']) ? $old['view'] : array();
+            $form_edit = !empty($old['modify']) ? $old['modify'] : array();
 
-			$this->out("Upgrading layout for dep $dep_id ...");
+            $this->out("Upgrading layout for dep $dep_id ...");
 
-			$up = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
-			$layout = $up->getTicketLayout();
+            $up = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
+            $layout = $up->getTicketLayout();
 
-			if ($dep_id) {
-				$layout->department = $deps[$dep_id];
-			}
+            if ($dep_id) {
+                $layout->department = $deps[$dep_id];
+            }
 
-			$em->persist($layout);
-			$em->flush();
-		}
+            $em->persist($layout);
+            $em->flush();
+        }
 
-		try {
-			$db->exec("ALTER TABLE departments DROP avatar_blob_id");
-		} catch (\Exception $e) {}
-	}
+        try {
+            $db->exec("ALTER TABLE departments DROP avatar_blob_id");
+        } catch (\Exception $e) {}
+    }
 }

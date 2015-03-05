@@ -44,23 +44,23 @@ use Application\DeskPRO\Entity\ApiKey;
  */
 class AdminManagePermission implements PermissionStrategyInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function userHasPermission(ApiUser $api_user, $context_info = null)
-	{
-		// The API key itself has the correct flag set
-		if ($api_user->api_key) {
-			if ($api_user->api_key->isFlagSet(ApiKey::FLAG_ADMIN_MANAGE)) {
-				return true;
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    {
+        // The API key itself has the correct flag set
+        if ($api_user->api_key) {
+            if ($api_user->api_key->isFlagSet(ApiKey::FLAG_ADMIN_MANAGE)) {
+                return true;
+            }
+        }
 
-		// This is a logged-in session
-		if ($api_user->session && $api_user->person && $api_user->person->can_admin) {
-			return true;
-		}
+        // This is a logged-in session
+        if ($api_user->session && $api_user->person && $api_user->person->can_admin) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

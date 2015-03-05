@@ -39,11 +39,11 @@ use Application\DeskPRO\Groups\PermissionsLoader;
 
 class PermissionsLoaderService extends BaseRepositoryService
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		return new PermissionsLoader($container->getDb());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        return new PermissionsLoader($container->getDb());
+    }
 }

@@ -1,6 +1,6 @@
 $("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"icon-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
 
-{% if associatedIssues|length > 0 %}	
+{% if associatedIssues|length > 0 %}
 	$("#" + pageMeta.baseId + "_tasks_wrap_tab").after('<li class="off" data-tab-for="#' + pageMeta.baseId + '_jira_wrap" id="' + pageMeta.baseId + '_jira_wrap_tab">JIRA (<span id="' + pageMeta.baseId + '_jira_count">{{ associatedIssues|length }}</span>)</li>');
 
 	$("#" + pageMeta.baseId + "_tasks_wrap").after('<article id="' + pageMeta.baseId + '_jira_wrap" style="display: none;" class=""><div style="width: 100%; text-align: center;"><img src="/web/images/spinners/loading-big-circle.gif"/><br/>Please wait while we fetch the latest JIRA activities on this ticket.</div></article>');
@@ -11,7 +11,7 @@ $("*[data-action='export-jira']").on("click", function(){
 		destroyOnClose: true,
 		contentMethod: 'ajax',
 		contentAjax: { url: BASE_URL + 'agent/jira/export/' + pageMeta.ticket_id },
-		onOverlayOpened: function() {	
+		onOverlayOpened: function() {
 			selectProject("{{ app.getSetting('core.apps_jira.defaultProject') }}");
 		}
 	});
@@ -27,7 +27,7 @@ $("#" + pageMeta.baseId + "_jira_wrap_tab").click(function() {
 
 });
 
-function format(state) 
+function format(state)
 {
 	var originalOption = state.element;
 

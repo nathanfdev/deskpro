@@ -42,58 +42,58 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class TicketSearchUpdater
 {
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	private $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    private $ticket;
 
-	/**
-	 * Cols from TicketSearchActive::getFieldNames. Defined here just as a micro-opt.
-	 * @var string
-	 */
-	private static $cols = "
-		`id`, `ref`, `language_id`, `department_id`, `category_id`, `workflow_id`, `priority_id`, `product_id`,
-		`person_id`, `person_email_id`, `agent_id`, `agent_team_id`, `organization_id`, `creation_system`,
-		`creation_system_option`, `status`, `is_hold`, `urgency`, `feedback_rating`, `date_feedback_rating`,
-		`date_created`, `date_resolved`, `date_first_agent_assign`, `date_first_agent_reply`, `date_last_agent_reply`,
-		`date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `date_status`, `total_user_waiting`,
-		`total_to_first_reply`, `subject`, `original_subject`
-	";
+    /**
+     * Cols from TicketSearchActive::getFieldNames. Defined here just as a micro-opt.
+     * @var string
+     */
+    private static $cols = "
+        `id`, `ref`, `language_id`, `department_id`, `category_id`, `workflow_id`, `priority_id`, `product_id`,
+        `person_id`, `person_email_id`, `agent_id`, `agent_team_id`, `organization_id`, `creation_system`,
+        `creation_system_option`, `status`, `is_hold`, `urgency`, `feedback_rating`, `date_feedback_rating`,
+        `date_created`, `date_resolved`, `date_first_agent_assign`, `date_first_agent_reply`, `date_last_agent_reply`,
+        `date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `date_status`, `total_user_waiting`,
+        `total_to_first_reply`, `subject`, `original_subject`
+    ";
 
-	public function __construct(Connection $db, Ticket $ticket)
-	{
-		$this->db = $db;
-		$this->ticket = $ticket;
-	}
+    public function __construct(Connection $db, Ticket $ticket)
+    {
+        $this->db = $db;
+        $this->ticket = $ticket;
+    }
 
-	/**
-	 * Remove the ticket from search tables
-	 */
-	public function remove()
-	{
-		$this->db->delete('tickets_search_active', array('id' => $this->ticket->getOriginalId()));
-	}
+    /**
+     * Remove the ticket from search tables
+     */
+    public function remove()
+    {
+        $this->db->delete('tickets_search_active', array('id' => $this->ticket->getOriginalId()));
+    }
 
-	/**
-	 * Update or add ticket to search tables
-	 */
-	public function update()
-	{
-		if (!$this->ticket->isArchived()) {
-			$cols = self::$cols;
-			$data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", array($this->ticket->id));
-			if ($data && $data['status'] != 'archived') {
-				$this->db->replace('tickets_search_active', $data);
-			} else {
-				$this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
-			}
-		} else {
-			$this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
-		}
-	}
+    /**
+     * Update or add ticket to search tables
+     */
+    public function update()
+    {
+        if (!$this->ticket->isArchived()) {
+            $cols = self::$cols;
+            $data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", array($this->ticket->id));
+            if ($data && $data['status'] != 'archived') {
+                $this->db->replace('tickets_search_active', $data);
+            } else {
+                $this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
+            }
+        } else {
+            $this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
+        }
+    }
 }

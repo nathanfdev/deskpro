@@ -8,72 +8,73 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetPriorityTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withTicketPriorities()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withTicketPriorities()->get();
 
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$ticket->priority = $this->getMockContainer()->getTicketPriorities()->getById(1);
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$action = new SetPriority(array('priority_id' => 55));
-		$action->setContainer($this->getMockContainer());
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $ticket->priority = $this->getMockContainer()->getTicketPriorities()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetPriority(array('priority_id' => 55));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\TicketPriority', $ticket->priority);
-		$this->assertEquals(55, $ticket->priority->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetNull()
-	{
-		$ticket = new Ticket();
-		$ticket->priority = $this->getMockContainer()->getTicketPriorities()->getById(1);
-		$exec   = new ExecutorContext();
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\TicketPriority', $ticket->priority);
+        $this->assertEquals(55, $ticket->priority->id);
+    }
 
-		$action = new SetPriority(array('priority_id' => 0));
-		$action->setContainer($this->getMockContainer());
+    public function testSetNull()
+    {
+        $ticket = new Ticket();
+        $ticket->priority = $this->getMockContainer()->getTicketPriorities()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetPriority(array('priority_id' => 0));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertNull($ticket->priority);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->priority = $this->getMockContainer()->getTicketPriorities()->getById(55);
+        $this->assertNull($ticket->priority);
+    }
 
-		$exec = new ExecutorContext();
+    public function testNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->priority = $this->getMockContainer()->getTicketPriorities()->getById(55);
 
-		$action = new SetPriority(array('priority_id' => 55));
-		$action->setContainer($this->container);
+        $exec = new ExecutorContext();
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $action = new SetPriority(array('priority_id' => 55));
+        $action->setContainer($this->container);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-		$action = new SetPriority(array('priority_id' => 200));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$this->assertNull($ticket->priority);
-	}
+        $action = new SetPriority(array('priority_id' => 200));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertNull($ticket->priority);
+    }
 }

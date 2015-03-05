@@ -190,7 +190,7 @@
 {% endif %}
 
 {% if 'person_label' not in no_show_fields %}
-<div class="builder-type" title="{{ phrase('agent.general.labels') }}" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-term-triggers="label,labelled,labels">
+<div class="builder-type" title="{{ phrase('agent.general.labels') }}" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="people" data-term-triggers="label,labelled,labels">
 	<div class="builder-op">
 		<select name="op" class="op">
 			<option value="is">{{ phrase('agent.general.is') }}</option>

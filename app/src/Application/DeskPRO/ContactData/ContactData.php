@@ -33,28 +33,26 @@
 
 namespace Application\DeskPRO\ContactData;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Orb\Util\Strings;
 
 class ContactData
 {
-	/** @var array */
-	protected static $instances = array();
+    /** @var array */
+    protected static $instances = array();
 
-	public static function getHandler($typename)
-	{
-		if (isset(self::$instances[$typename])) {
-			return self::$instances[$typename];
-		}
+    public static function getHandler($typename)
+    {
+        if (isset(self::$instances[$typename])) {
+            return self::$instances[$typename];
+        }
 
-		$classname = 'Application\\DeskPRO\\ContactData\\' . ucfirst(Strings::underscoreToCamelCase($typename));
-		if (!class_exists($classname)) {
-			throw new \InvalidArgumentException("`$typename` is not a valid type");
-		}
+        $classname = 'Application\\DeskPRO\\ContactData\\' . ucfirst(Strings::underscoreToCamelCase($typename));
+        if (!class_exists($classname)) {
+            throw new \InvalidArgumentException("`$typename` is not a valid type");
+        }
 
-		self::$instances[$typename] = new $classname();
+        self::$instances[$typename] = new $classname();
 
-		return self::$instances[$typename];
-	}
+        return self::$instances[$typename];
+    }
 }

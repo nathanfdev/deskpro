@@ -39,11 +39,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 interface ActionApplicatorInterface
 {
-	/**
-	 * @param ActionInterface $action
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function apply(ActionInterface $action, Ticket $ticket, ExecutorContextInterface $context);
+    /**
+     * @param  ActionInterface          $action
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function apply(ActionInterface $action, Ticket $ticket, ExecutorContextInterface $context);
 }

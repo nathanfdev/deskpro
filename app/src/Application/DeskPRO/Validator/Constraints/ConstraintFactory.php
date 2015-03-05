@@ -50,35 +50,35 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
  */
 class ConstraintFactory
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function __construct(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
 
-	/**
-	 * @return AgentTeamValidator
-	 */
-	public function getAgentTeamValidator()
-	{
-		return new AgentTeamValidator($this->container->getAgentData());
-	}
+    /**
+     * @return AgentTeamValidator
+     */
+    public function getAgentTeamValidator()
+    {
+        return new AgentTeamValidator($this->container->getAgentData());
+    }
 
 
-	/**
-	 * @return AgentGroupValidator
-	 */
-	public function getAgentGroupValidator()
-	{
-		return new AgentGroupValidator($this->container->getDataService('Usergroup'));
-	}
+    /**
+     * @return AgentGroupValidator
+     */
+    public function getAgentGroupValidator()
+    {
+        return new AgentGroupValidator($this->container->getDataService('Usergroup'));
+    }
 }

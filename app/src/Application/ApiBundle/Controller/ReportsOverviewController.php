@@ -35,46 +35,46 @@ namespace Application\ApiBundle\Controller;
 
 class ReportsOverviewController extends AbstractController
 {
-	####################################################################################################################
-	# get data (for specified type)
-	####################################################################################################################
+    ####################################################################################################################
+    # get data (for specified type)
+    ####################################################################################################################
 
-	public function getDataAction($type)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Overview $reports_overview
-		 */
+    public function getDataAction($type)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Overview $reports_overview
+         */
 
-		$reports_overview = $this->container->getSystemService('reports_overview');
-		$reports_overview->setPerson($this->person);
+        $reports_overview = $this->container->getSystemService('reports_overview');
+        $reports_overview->setPerson($this->person);
 
-		return $this->createApiResponse($reports_overview->getOverviewData($type));
-	}
+        return $this->createApiResponse($reports_overview->getOverviewData($type));
+    }
 
 
-	####################################################################################################################
-	# get statistics (for specified type)
-	####################################################################################################################
+    ####################################################################################################################
+    # get statistics (for specified type)
+    ####################################################################################################################
 
-	public function getStatsAction($type)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Overview $reports_overview
-		 */
+    public function getStatsAction($type)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Overview $reports_overview
+         */
 
-		$reports_overview = $this->container->getSystemService('reports_overview');
-		$reports_overview->setPerson($this->person);
+        $reports_overview = $this->container->getSystemService('reports_overview');
+        $reports_overview->setPerson($this->person);
 
-		$grouping_field = $this->in->getString('grouping_field');
-		$options        = array(
-			'date_choice' => $this->in->getString('date_choice'),
-			'sla_id'      => $this->in->getString('sla_id'),
-		);
+        $grouping_field = $this->in->getString('grouping_field');
+        $options        = array(
+            'date_choice' => $this->in->getString('date_choice'),
+            'sla_id'      => $this->in->getString('sla_id'),
+        );
 
-		try {
-			return $this->createApiResponse($reports_overview->getStats($type, $grouping_field, $options));
-		} catch(\InvalidArgumentException $e) {
-			return $this->createApiResponse($reports_overview->getStats($type, 'department'));
-		}
-	}
+        try {
+            return $this->createApiResponse($reports_overview->getStats($type, $grouping_field, $options));
+        } catch(\InvalidArgumentException $e) {
+            return $this->createApiResponse($reports_overview->getStats($type, 'department'));
+        }
+    }
 }

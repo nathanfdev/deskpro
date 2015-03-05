@@ -36,22 +36,23 @@ namespace Orb\Validator;
 
 class NotEmpty extends AbstractValidator
 {
-	/**
-	 * Check $value to see if its valid.
-	 *
-	 * @return bool
-	 */
-	protected function checkIsValid($value)
-	{
-		if (is_string($value)) {
-			$value = trim($value);
-		}
+    /**
+     * Check $value to see if its valid.
+     *
+     * @return bool
+     */
+    protected function checkIsValid($value)
+    {
+        if (is_string($value)) {
+            $value = trim($value);
+        }
 
-		if (empty($value)) {
-			$this->addError('empty');
-			return false;
-		}
+        if (empty($value)) {
+            $this->addError('empty');
 
-		return true;
-	}
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\DependencyInjection;
 
-use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -45,53 +44,53 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class CoreExtension extends Extension
 {
-	public function load(array $config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-		$definition = new Definition('Application\\ApiBundle\\Request\\RequestAuth');
-		$definition->setScope('request');
-		$definition->setArguments(array(
-			new Reference('doctrine.orm.entity_manager'),
-			new Reference('request')
-		));
-		$container->setDefinition('deskpro.api.request_auth', $definition);
+        $definition = new Definition('Application\\ApiBundle\\Request\\RequestAuth');
+        $definition->setScope('request');
+        $definition->setArguments(array(
+            new Reference('doctrine.orm.entity_manager'),
+            new Reference('request')
+        ));
+        $container->setDefinition('deskpro.api.request_auth', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
-		$definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
-		$definition->setFactoryMethod('getAuditManager');
-		$container->setDefinition('deskpro.auditlog.manager', $definition);
+        $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
+        $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
+        $definition->setFactoryMethod('getAuditManager');
+        $container->setDefinition('deskpro.auditlog.manager', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditDoctrineListener');
-		$definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
-		$definition->setFactoryMethod('getAuditListener');
-		$definition->setArguments(array(new Reference('deskpro.auditlog.manager')));
-		$definition->addTag('doctrine.event_subscriber');
-		$container->setDefinition('deskpro.auditlog.doctrine_listener', $definition);
+        $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditDoctrineListener');
+        $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
+        $definition->setFactoryMethod('getAuditListener');
+        $definition->setArguments(array(new Reference('deskpro.auditlog.manager')));
+        $definition->addTag('doctrine.event_subscriber');
+        $container->setDefinition('deskpro.auditlog.doctrine_listener', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditWriter\\AuditDbWriter');
-		$definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
-		$definition->setFactoryMethod('getAuditDbWriter');
-		$definition->addTag('deskpro.auditlog.writers');
-		$container->setDefinition('deskpro.auditlog.writer.db', $definition);
+        $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditWriter\\AuditDbWriter');
+        $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
+        $definition->setFactoryMethod('getAuditDbWriter');
+        $definition->addTag('deskpro.auditlog.writers');
+        $container->setDefinition('deskpro.auditlog.writer.db', $definition);
 
-	    $container
-		    ->register('kernel.listener.controller_post_action', 'Application\\ApiBundle\\Event\\LogApiCallListener')
-		    ->addTag('kernel.event_listener', array(
-			    'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction')
-		    )
-	    ;
+        $container
+            ->register('kernel.listener.controller_post_action', 'Application\\ApiBundle\\Event\\LogApiCallListener')
+            ->addTag('kernel.event_listener', array(
+                'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction')
+            )
+        ;
     }
 
-	public function getXsdValidationBasePath()
-	{
-		return null;
-	}
+    public function getXsdValidationBasePath()
+    {
+        return null;
+    }
 
-	public function getNamespace()
-	{
-		return null;
-	}
+    public function getNamespace()
+    {
+        return null;
+    }
 
-	public function getAlias()
+    public function getAlias()
     {
         return 'deskpro_api_core';
     }

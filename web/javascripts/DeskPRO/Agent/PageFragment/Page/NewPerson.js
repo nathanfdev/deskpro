@@ -10,9 +10,22 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		this.allowDupe = true;
 	},
 
+	initScope: function() {
+		var self = this;
+		this.$scope = DeskPRO_Window.$scope.$new();
+		this.$q = DeskPRO_Window.$q;
+		this.$timeout = DeskPRO_Window.$timeout;
+
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
+			self.wrapper.data('$ngControllerController', self);
+			$compile(self.wrapper.contents())(self.$scope);
+		}]);
+	},
+
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
+		this.initScope();
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
@@ -37,12 +50,16 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			self.updateUi();
 		});
 
-//        DeskPRO_Window.util.fileupload(el, {
-//            uploadTemplate: $('.template-upload', el),
-//            downloadTemplate: $('.template-download', el),
-//            url: BASE_URL + 'agent/misc/parse-vcard'
-//        });
-        
+		this.getEl('set_password').on('change', function(){
+			var $div = $(this).parent().next('div');
+			$(this).prop('checked') ? $div.show() : $div.hide();
+		});
+
+		var $passwordInput = this.getEl('set_password_input');
+		this.getEl('set_password_trigger').find('input[name="newperson[set_password_radio]"]').on('change', function(){
+			$(this).prop('checked') && 'set' === $(this).val() ? $passwordInput.show() : $passwordInput.hide();
+		});
+
         var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
         
         console.log(wrapper);
@@ -160,7 +177,14 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                         }
                 });
             } else {
-                var formData = this.form.serializeArray();
+	            var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
+	            $('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', this.form).each(function(){
+					var name = $(this).attr('name');
+					var val  = $(this).val();
+					if (name && val !== null) {
+						formData[$(this).attr('name')] = $(this).val();
+					}
+	            });
 
 		$.ajax({
 			url: BASE_URL + 'agent/people/new/save',

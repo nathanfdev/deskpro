@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349105801 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set ticket_triggers.date_created");
+    public function run()
+    {
+        $this->out("Set ticket_triggers.date_created");
 
-		$ts = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.install_timestamp'");
-		if (!$ts) {
-			$ts = time();
-		}
+        $ts = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.install_timestamp'");
+        if (!$ts) {
+            $ts = time();
+        }
 
-		$date = date('Y-m-d H:i:s', $ts);
+        $date = date('Y-m-d H:i:s', $ts);
 
-		$this->execMutateSql("ALTER TABLE ticket_triggers ADD date_created DATETIME NOT NULL");
-		$this->execMutateSql("UPDATE ticket_triggers SET date_created = '$date'");
-	}
+        $this->execMutateSql("ALTER TABLE ticket_triggers ADD date_created DATETIME NOT NULL");
+        $this->execMutateSql("UPDATE ticket_triggers SET date_created = '$date'");
+    }
 }

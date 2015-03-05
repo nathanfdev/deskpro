@@ -38,10 +38,10 @@ use Doctrine\ORM\EntityManager;
 
 class FeedbackTypes
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
+    protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackCategory[]
@@ -49,77 +49,76 @@ class FeedbackTypes
 
     protected $feedback_types;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * Loads feedback statuses data from the database
-	 */
+    /**
+     * Loads feedback statuses data from the database
+     */
 
-	private function preload()
-	{
-		if ($this->feedback_types !== null) {
+    private function preload()
+    {
+        if ($this->feedback_types !== null) {
+            return;
+        }
 
-			return;
-		}
-
-		$this->feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getAll();
-	}
+        $this->feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getAll();
+    }
 
 
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
+    /**
+     * Resets this repository so the next time data is requested form it, it will
+     * be queried again.
+     */
 
-	public function reset()
-	{
-		$this->feedback_types = null;
-	}
+    public function reset()
+    {
+        $this->feedback_types = null;
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\FeedbackCategory
-	 */
+    /**
+     * @param  int                                          $id
+     * @return \Application\DeskPRO\Entity\FeedbackCategory
+     */
 
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:FeedbackCategory')->get($id);
-	}
+    public function getById($id)
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackCategory')->get($id);
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
-	 *
-	 * @return array
-	 */
+    /**
+     * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
+     *
+     * @return array
+     */
 
-	public function getNonAgentUserGroups($feedback_type)
-	{
-		if (is_int($feedback_type)) {
+    public function getNonAgentUserGroups($feedback_type)
+    {
+        if (is_int($feedback_type)) {
 
-			$feedback_type = $this->getById($feedback_type);
-		}
+            $feedback_type = $this->getById($feedback_type);
+        }
 
-		return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), false);
-	}
+        return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), false);
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
-	 *
-	 * @return array
-	 */
+    /**
+     * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
+     *
+     * @return array
+     */
 
-	public function getAgentUserGroups($feedback_type)
-	{
-		if (is_int($feedback_type)) {
+    public function getAgentUserGroups($feedback_type)
+    {
+        if (is_int($feedback_type)) {
 
-			$feedback_type = $this->getById($feedback_type);
-		}
+            $feedback_type = $this->getById($feedback_type);
+        }
 
-		return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), true);
-	}
+        return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), true);
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\FeedbackCategory[]
@@ -132,51 +131,51 @@ class FeedbackTypes
         return $this->feedback_types;
     }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function count()
-	{
-		$this->preload();
+    public function count()
+    {
+        $this->preload();
 
-		return count($this->feedback_types);
-	}
+        return count($this->feedback_types);
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\FeedbackCategory
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\FeedbackCategory
+     */
 
-	public function createNew()
-	{
-		return FeedbackCategory::createFeedbackCategory();
-	}
+    public function createNew()
+    {
+        return FeedbackCategory::createFeedbackCategory();
+    }
 
-	/**
-	 * @param array $newOrders
-	 */
+    /**
+     * @param array $newOrders
+     */
 
-	public function updateDisplayOrders($newOrders)
-	{
-		$x = 10;
+    public function updateDisplayOrders($newOrders)
+    {
+        $x = 10;
 
-		$feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getByIds($newOrders);
+        $feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getByIds($newOrders);
 
-		foreach ($newOrders as $id) {
+        foreach ($newOrders as $id) {
 
-			if (!isset($feedback_types[$id])) {
+            if (!isset($feedback_types[$id])) {
 
-				continue;
-			}
+                continue;
+            }
 
-			$feedback_type                = $feedback_types[$id];
-			$feedback_type->display_order = $x;
+            $feedback_type                = $feedback_types[$id];
+            $feedback_type->display_order = $x;
 
-			$this->em->persist($feedback_type);
+            $this->em->persist($feedback_type);
 
-			$x += 10;
-		}
+            $x += 10;
+        }
 
-		$this->em->flush();
-	}
+        $this->em->flush();
+    }
 }

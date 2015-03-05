@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,49 +43,49 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ApiKeyType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('note', 'text', array('required' => true));
-		$builder->add(
-			'person',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Person',
-				 'required'      => false,
-				 'multiple'      => false,
-				 'property'      => 'display_name',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('p')->where(
-						 'p.is_agent = true AND p.is_deleted = false'
-					 );
-				 }
-			)
-		);
-		$builder->add('flags', 'choice', array(
-			'choices' => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE),
-			'multiple' => true, // an array
-			'required' => false,
-		));
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('note', 'text', array('required' => true));
+        $builder->add(
+            'person',
+            'entity',
+            array(
+                 'class'         => 'DeskPRO:Person',
+                 'required'      => false,
+                 'multiple'      => false,
+                 'property'      => 'display_name',
+                 'query_builder' => function (EntityRepository $er) {
+                     return $er->createQueryBuilder('p')->where(
+                         'p.is_agent = true AND p.is_deleted = false'
+                     );
+                 }
+            )
+        );
+        $builder->add('flags', 'choice', array(
+            'choices' => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE),
+            'multiple' => true, // an array
+            'required' => false,
+        ));
 
-		// cleanup extra data
-		$builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event){
-			$data = $event->getData();
-			$form = $event->getForm();
-			$event->setData(array_intersect_key($data, $form->all()));
-		});
-	}
+        // cleanup extra data
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            $form = $event->getForm();
+            $event->setData(array_intersect_key($data, $form->all()));
+        });
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\ApiKey',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\ApiKey',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'api_key';
-	}
+    public function getName()
+    {
+        return 'api_key';
+    }
 }

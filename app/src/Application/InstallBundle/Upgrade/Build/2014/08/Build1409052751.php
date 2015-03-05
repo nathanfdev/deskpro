@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1409052751 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add downloads.date_updated");
-		$this->execMutateSql("ALTER TABLE downloads ADD date_updated DATETIME NOT NULL");
-		$this->execMutateSql("UPDATE downloads SET date_updated = IFNULL(date_published, date_created)");
-	}
+    public function run()
+    {
+        $this->out("Add downloads.date_updated");
+        $this->execMutateSql("ALTER TABLE downloads ADD date_updated DATETIME NOT NULL");
+        $this->execMutateSql("UPDATE downloads SET date_updated = IFNULL(date_published, date_created)");
+    }
 }

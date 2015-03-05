@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -48,10 +46,11 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		if (!dp_get_config('debug.dev')) {
-			$output->write("Dev mode is not enabled.");
-			return 0;
-		}
+        if (!dp_get_config('debug.dev')) {
+            $output->write("Dev mode is not enabled.");
+
+            return 0;
+        }
 
         $packages = array('user', 'agent', 'admin');
 

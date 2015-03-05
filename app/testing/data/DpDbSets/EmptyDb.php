@@ -33,18 +33,16 @@
 
 namespace DpDbSets;
 
-use Application\DeskPRO\ORM\EntityManager;
-use Orb\Util\Util;
 
 class EmptyDb extends AbstractDbSet
 {
-	/**
-	 * Nothing. The Fresh DB doesn't add any additional data.
-	 *
-	 * @return int
-	 */
-	protected function installSet()
-	{
-		return 0;
-	}
+    /**
+     * Nothing. The Fresh DB doesn't add any additional data.
+     *
+     * @return int
+     */
+    protected function installSet()
+    {
+        return 0;
+    }
 }

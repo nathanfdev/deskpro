@@ -39,27 +39,27 @@ namespace Application\DeskPRO\Translate;
  */
 class SystemLanguage extends \Application\DeskPRO\Entity\Language
 {
-	/** @var SystemLanguage|null */
-	protected static $instance = null;
-	public static function getInstance()
-	{
-		if (self::$instance !== null) return self::$instance;
+    /** @var SystemLanguage|null */
+    protected static $instance = null;
+    public static function getInstance()
+    {
+        if (self::$instance !== null) return self::$instance;
 
-		self::$instance = new self();
+        self::$instance = new self();
 
-		return self::$instance;
-	}
+        return self::$instance;
+    }
 
-	protected function __construct()
-	{
-		$this->id            = 0;
-		$this->sys_name      = 'default';
-		$this->lang_code     = 'eng';
-		$this->locale        = 'en_US';
-		$this->title         = "English";
-		$this->base_filepath = DP_ROOT.'/languages/default';
-		$this->has_user      = true;
-		$this->has_admin     = true;
-		$this->has_agent     = true;
-	}
+    protected function __construct()
+    {
+        $this->id            = 0;
+        $this->sys_name      = 'default';
+        $this->lang_code     = 'eng';
+        $this->locale        = 'en_US';
+        $this->title         = "English";
+        $this->base_filepath = DP_ROOT.'/languages/default';
+        $this->has_user      = true;
+        $this->has_admin     = true;
+        $this->has_agent     = true;
+    }
 }

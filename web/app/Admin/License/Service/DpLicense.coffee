@@ -71,7 +71,10 @@ define ->
 					timeout: 25000,
 					cache: false
 				}).then((x) ->
-					d.resolve(x.data, x)
+					if x.data?.error_code
+						d.reject(x.data, x)
+					else
+						d.resolve(x.data, x)
 				, (x) ->
 					d.reject(x.data, x)
 				)

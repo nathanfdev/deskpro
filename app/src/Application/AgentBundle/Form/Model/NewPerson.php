@@ -40,113 +40,120 @@ use Application\DeskPRO\Entity\Person;
 
 class NewPerson
 {
-	/** @var string */
-	public $name;
-	/** @var string */
-	public $email;
+    /** @var string */
+    public $name;
+    /** @var string */
+    public $email;
 
-	/** @var int */
-	public $organization_id;
-	/** @var string */
-	public $organization_position;
+    /** @var int */
+    public $organization_id;
+    /** @var string */
+    public $organization_position;
 
-	/** @var string */
-	public $new_organization;
+    /** @var string */
+    public $new_organization;
 
-	/** @var array */
-	public $labels = array();
-	/** @var array */
-	public $usergroup_ids = array();
-	/** @var array */
-	public $custom_fields = array();
+    /** @var array */
+    public $labels = array();
+    /** @var array */
+    public $usergroup_ids = array();
+    /** @var array */
+    public $custom_fields = array();
 
-	/** @var string */
-	public $timezone;
+    /** @var string */
+    public $timezone;
 
-	/** @var Person */
-	protected $_person;
+    /** @var string */
+    public $password;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
+    /** @var Person */
+    protected $_person;
 
-	public function __construct(Person $person_context)
-	{
-		$this->_person_context = $person_context;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $_em;
 
-		$this->_em = App::getOrm();
-	}
+    public function __construct(Person $person_context)
+    {
+        $this->_person_context = $person_context;
 
-	public function setCustomFieldForm(array $form)
-	{
-		$this->custom_fields = isset($form['newperson_custom_fields']) ? $form['newperson_custom_fields'] : array();
-	}
+        $this->_em = App::getOrm();
+    }
 
-	public function save()
-	{
-		$this->_em->beginTransaction();
+    public function setCustomFieldForm(array $form)
+    {
+        $this->custom_fields = isset($form['newperson_custom_fields']) ? $form['newperson_custom_fields'] : array();
+    }
 
-		$person = new Person();
-		$person->getLabelManager()->setLabelsArray($this->labels);
+    public function save()
+    {
+        $this->_em->beginTransaction();
 
-		if ($this->name) {
-			$person->name = $this->name;
-		}
+        $person = new Person();
+        $person->getLabelManager()->setLabelsArray($this->labels);
 
-		if ($this->email) {
-			$person->setEmail($this->email, true);
-		}
+        if ($this->name) {
+            $person->name = $this->name;
+        }
 
-		if ($this->timezone) {
-			$person->timezone = $this->timezone;
-		}
+        if ($this->email) {
+            $person->setEmail($this->email, true);
+        }
 
-		if ($this->organization_id) {
-			$org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
-			if ($org) {
-				$person->organization = $org;
-				$person->organization_position = $this->organization_position;
-			}
-		} elseif ($this->new_organization) {
-			$org = new Organization();
-			$org->name = $this->new_organization;
-			$this->_em->persist($org);
+        if ($this->timezone) {
+            $person->timezone = $this->timezone;
+        }
 
-			$person->organization = $org;
-			$person->organization_position = $this->organization_position;
+        if ($this->password) {
+            $person->setPassword($this->password);
+        }
 
-		}
+        if ($this->organization_id) {
+            $org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
+            if ($org) {
+                $person->organization = $org;
+                $person->organization_position = $this->organization_position;
+            }
+        } elseif ($this->new_organization) {
+            $org = new Organization();
+            $org->name = $this->new_organization;
+            $this->_em->persist($org);
 
-		foreach ($this->usergroup_ids as $ug_id) {
-			$ug = $this->_em->find('DeskPRO:Usergroup', $ug_id);
-			if ($ug_id) {
-				$person->usergroups->add($ug);
-			}
-		}
+            $person->organization = $org;
+            $person->organization_position = $this->organization_position;
 
-		$person->creation_system = Person::CREATED_WEB_AGENT;
+        }
 
-		$this->_em->persist($person);
-		$this->_em->flush();
+        foreach ($this->usergroup_ids as $ug_id) {
+            $ug = $this->_em->find('DeskPRO:Usergroup', $ug_id);
+            if ($ug_id) {
+                $person->usergroups->add($ug);
+            }
+        }
 
-		if ($this->custom_fields) {
-			$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-			foreach ($user_field_defs as $field_def) {
-				foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
-					$person->setCustomData($info[0], $info[1], $info[2]);
-				}
-			}
-		}
+        $person->creation_system = Person::CREATED_WEB_AGENT;
 
-		$this->_em->flush();
-		$this->_em->commit();
+        $this->_em->persist($person);
+        $this->_em->flush();
 
-		$this->_person = $person;
-	}
+        if ($this->custom_fields) {
+            $user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+            foreach ($user_field_defs as $field_def) {
+                foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
+                    $person->setCustomData($info[0], $info[1], $info[2]);
+                }
+            }
+        }
 
-	public function getPerson()
-	{
-		return $this->_person;
-	}
+        $this->_em->flush();
+        $this->_em->commit();
+
+        $this->_person = $person;
+    }
+
+    public function getPerson()
+    {
+        return $this->_person;
+    }
 }

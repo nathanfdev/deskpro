@@ -36,10 +36,10 @@ namespace Application\ApiBundle\Form\CustomField\Type;
 
 class TextareaFieldType extends TextFieldType
 {
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextareaField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextareaField',
+        );
+    }
 }

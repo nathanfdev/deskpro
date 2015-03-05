@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
@@ -41,6 +40,6 @@ use Application\DeskPRO\Entity;
  */
 class FeedbackFields extends AbstractFields
 {
-	const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefFeedback';
-	const ENTITY_NAME  = 'DeskPRO:CustomDefFeedback';
+    const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefFeedback';
+    const ENTITY_NAME  = 'DeskPRO:CustomDefFeedback';
 }

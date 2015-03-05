@@ -1,4 +1,4 @@
 define ->
-	class AppState
-		constructor: (@Api) ->
-			return
+  class AppState
+    constructor: (@Api) ->
+      return

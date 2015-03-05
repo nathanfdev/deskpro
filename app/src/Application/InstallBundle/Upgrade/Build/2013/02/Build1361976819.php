@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361976819 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add sessions.useragent and sessions.ip_address");
-		$this->execMutateSql("ALTER TABLE sessions ADD user_agent VARCHAR(255) DEFAULT NULL, ADD ip_address VARCHAR(80) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add sessions.useragent and sessions.ip_address");
+        $this->execMutateSql("ALTER TABLE sessions ADD user_agent VARCHAR(255) DEFAULT NULL, ADD ip_address VARCHAR(80) DEFAULT NULL");
+    }
 }

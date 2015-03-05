@@ -45,32 +45,33 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckOrgId extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		if ($this->getTermOperator() == 'isset') {
-			if ($ticket->organization) return true;
-			else return false;
-		} elseif ($this->getTermOperator() == 'not_isset') {
-			if (!$ticket->organization) return true;
-			else return false;
-		}
+        if ($this->getTermOperator() == 'isset') {
+            if ($ticket->organization) return true;
+            else return false;
+        } elseif ($this->getTermOperator() == 'not_isset') {
+            if (!$ticket->organization) return true;
+            else return false;
+        }
 
-		return $this->isEntityMatch($ticket, $context, 'organization', 'id', $options['id']);
-	}
+        return $this->isEntityMatch($ticket, $context, 'organization', 'id', $options['id']);
+    }
 }

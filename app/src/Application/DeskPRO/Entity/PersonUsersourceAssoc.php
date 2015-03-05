@@ -43,94 +43,92 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * The usersource that this scraper is attached to
-	 *
-	 * @var Usersource
-	 */
-	protected $usersource;
+    /**
+     * The usersource that this scraper is attached to
+     *
+     * @var Usersource
+     */
+    protected $usersource;
 
-	/**
-	 * The remote users unique ID. This should not change, so it's smart if this is a system
-	 * ID such as a UserID.
-	 *
-	 * @var string
-	 */
-	protected $identity;
+    /**
+     * The remote users unique ID. This should not change, so it's smart if this is a system
+     * ID such as a UserID.
+     *
+     * @var string
+     */
+    protected $identity;
 
-	/**
-	 * The remote users friendly ID. This is what will be displayed in various interfaces.
-	 * This should rarely change, like a username. Since we use $identity, we can handle
-	 * if this changes.
-	 *
-	 * @var string
-	 */
-	protected $identity_friendly;
+    /**
+     * The remote users friendly ID. This is what will be displayed in various interfaces.
+     * This should rarely change, like a username. Since we use $identity, we can handle
+     * if this changes.
+     *
+     * @var string
+     */
+    protected $identity_friendly;
 
-	/**
-	 * Any raw data returned from the user auth adapter, it might contain useful information
-	 * such as auth keys (eg: in twitter or facebook).
-	 *
-	 * @var array
-	 */
-	protected $data = array();
+    /**
+     * Any raw data returned from the user auth adapter, it might contain useful information
+     * such as auth keys (eg: in twitter or facebook).
+     *
+     * @var array
+     */
+    protected $data = array();
 
-	/**
-	 * When the record was first created in the system
-	 *
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * When the record was first created in the system
+     *
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct()
-	{
-		$this->setModelField('date_created', new \DateTime());
-	}
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonUsersourceAssoc';
-		$metadata->setPrimaryTable(array(
-			'name' => 'person_usersource_assoc',
-			'indexes' => array(
-				'identity_idx' => array('columns' => array('identity'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'identity', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity', ));
-		$metadata->mapField(array( 'fieldName' => 'identity_friendly', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity_friendly', ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'usersource', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usersource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usersource_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonUsersourceAssoc';
+        $metadata->setPrimaryTable(array(
+            'name' => 'person_usersource_assoc',
+            'indexes' => array(
+                'identity_idx' => array('columns' => array('identity'))
+            )
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'identity', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity', ));
+        $metadata->mapField(array( 'fieldName' => 'identity_friendly', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity_friendly', ));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'usersource', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usersource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usersource_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

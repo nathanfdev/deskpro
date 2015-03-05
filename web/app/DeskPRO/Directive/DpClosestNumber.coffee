@@ -1,5 +1,5 @@
 define ['DeskPRO/Util/Numbers'], (Numbers) ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -26,26 +26,26 @@ define ['DeskPRO/Util/Numbers'], (Numbers) ->
     # </select>
     # (Will render with option 10)
     ###
-	DeskPRO_Directive_DpClosestNumber = [ ->
-		return {
-			restrict: 'A',
-			require: 'ngModel',
-			link: (scope, iElement, iAttrs, ngModel) ->
+  DeskPRO_Directive_DpClosestNumber = [ ->
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: (scope, iElement, iAttrs, ngModel) ->
 
-				valuesExpr = if iAttrs.numberValues? && iAttrs.numberValues then iAttrs.numberValues else null
+        valuesExpr = if iAttrs.numberValues? && iAttrs.numberValues then iAttrs.numberValues else null
 
-				getValues = ->
-					if valuesExpr
-						values = scope.$eval(valuesExpr).map((n) -> parseInt(n))
-					else
-						values = []
-						iElement.find('option').each(-> values.push(parseInt(this.value)))
-					return values
+        getValues = ->
+          if valuesExpr
+            values = scope.$eval(valuesExpr).map((n) -> parseInt(n))
+          else
+            values = []
+            iElement.find('option').each(-> values.push(parseInt(this.value)))
+          return values
 
-				ngModel.$formatters.push( (modelValue) ->
-					return Numbers.closest(modelValue, getValues())
-				)
-		}
-	]
+        ngModel.$formatters.push( (modelValue) ->
+          return Numbers.closest(modelValue, getValues())
+        )
+    }
+  ]
 
-	return DeskPRO_Directive_DpClosestNumber
+  return DeskPRO_Directive_DpClosestNumber

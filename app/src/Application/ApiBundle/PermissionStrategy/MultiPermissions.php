@@ -38,64 +38,64 @@ use Application\ApiBundle\ApiUser;
 
 class MultiPermissions implements PermissionStrategyInterface
 {
-	/**
-	 * Array of type => array(PermissionStrategyInterface)
-	 * @var array
-	 */
-	private $perms = array();
+    /**
+     * Array of type => array(PermissionStrategyInterface)
+     * @var array
+     */
+    private $perms = array();
 
-	/**
-	 * @var Callback
-	 */
-	private $fn = null;
+    /**
+     * @var Callback
+     */
+    private $fn = null;
 
-	/**
-	 * @param null|Callback $fn  Optionally a callback that returns the type name to apply for a check
-	 */
-	public function __construct($fn = null)
-	{
-		$this->fn = $fn;
-	}
-
-
-	/**
-	 * @param PermissionStrategyInterface $p
-	 * @param string $type
-	 */
-	public function addPermissionStrategy(PermissionStrategyInterface $p, $type = 'default')
-	{
-		if (!isset($this->perms[$type])) {
-			$this->perms[$type] = array();
-		}
-		$this->perms[$type][] = $p;
-	}
+    /**
+     * @param null|Callback $fn Optionally a callback that returns the type name to apply for a check
+     */
+    public function __construct($fn = null)
+    {
+        $this->fn = $fn;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function userHasPermission(ApiUser $api_user, $context_info = null)
-	{
-		if ($this->fn) {
-			$type = $this->fn($context_info);
-		} else {
-			if (!empty($context_info['type'])) {
-				$type = $context_info['type'];
-			} else {
-				$type = 'default';
-			}
-		}
+    /**
+     * @param PermissionStrategyInterface $p
+     * @param string                      $type
+     */
+    public function addPermissionStrategy(PermissionStrategyInterface $p, $type = 'default')
+    {
+        if (!isset($this->perms[$type])) {
+            $this->perms[$type] = array();
+        }
+        $this->perms[$type][] = $p;
+    }
 
-		if (!isset($this->perms[$type])) {
-			return true;
-		}
 
-		foreach ($this->perms[$type] as $p) {
-			if (!$p->userHasPermission($api_user, $context_info)) {
-				return false;
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    {
+        if ($this->fn) {
+            $type = $this->fn($context_info);
+        } else {
+            if (!empty($context_info['type'])) {
+                $type = $context_info['type'];
+            } else {
+                $type = 'default';
+            }
+        }
 
-		return true;
-	}
+        if (!isset($this->perms[$type])) {
+            return true;
+        }
+
+        foreach ($this->perms[$type] as $p) {
+            if (!$p->userHasPermission($api_user, $context_info)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

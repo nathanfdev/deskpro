@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351089837 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Insert new default triggers to set 'From' name");
-		$this->execMutateSql("
-			INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `is_enabled`, `terms`, `actions`, `sys_name`, `run_order`, `date_created`, `event_trigger_options`, `terms_any`)
-			VALUES
-				(NULL, '', 'update.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:10:26', 'a:0:{}', 'a:0:{}'),
-				(NULL, '', 'update.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:12:46', 'a:0:{}', 'a:0:{}'),
-				(NULL, '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-				(NULL, '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-				(NULL, '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-				(NULL, '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}');
-		");
-	}
+    public function run()
+    {
+        $this->out("Insert new default triggers to set 'From' name");
+        $this->execMutateSql("
+            INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `is_enabled`, `terms`, `actions`, `sys_name`, `run_order`, `date_created`, `event_trigger_options`, `terms_any`)
+            VALUES
+                (NULL, '', 'update.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:10:26', 'a:0:{}', 'a:0:{}'),
+                (NULL, '', 'update.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:12:46', 'a:0:{}', 'a:0:{}'),
+                (NULL, '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+                (NULL, '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+                (NULL, '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+                (NULL, '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}');
+        ");
+    }
 }

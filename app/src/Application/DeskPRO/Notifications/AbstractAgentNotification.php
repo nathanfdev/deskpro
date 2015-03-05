@@ -40,137 +40,137 @@ use Application\DeskPRO\Entity\Person;
 
 abstract class AbstractAgentNotification
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var array
-	 */
-	protected $notify_list;
+    /**
+     * @var array
+     */
+    protected $notify_list;
 
-	/**
-	 * @var string
-	 */
-	protected $client = 'sys';
+    /**
+     * @var string
+     */
+    protected $client = 'sys';
 
-	abstract public function shouldSendBrowserNotification(Person $person);
-	abstract public function shouldSendEmailNotification(Person $person);
-	abstract public function send();
+    abstract public function shouldSendBrowserNotification(Person $person);
+    abstract public function shouldSendEmailNotification(Person $person);
+    abstract public function send();
 
-	public function __construct()
-	{
-		$this->em = App::getOrm();
-	}
+    public function __construct()
+    {
+        $this->em = App::getOrm();
+    }
 
-	public function setCreatedClient($client)
-	{
-		$this->client = $client;
-	}
+    public function setCreatedClient($client)
+    {
+        $this->client = $client;
+    }
 
-	/**
-	 * Build a list of agents to email and browser notify.
-	 *
-	 * Returns an array with two sub-arrays of agent_id=>agent:
-	 * - (array) 'email': agent_id=>Person
-	 * - (array) 'browser': agent_id=>Person
-	 *
-	 * @return array
-	 */
-	public function getNotifyList()
-	{
-		if ($this->notify_list) {
-			return $this->notify_list;
-		}
-		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+    /**
+     * Build a list of agents to email and browser notify.
+     *
+     * Returns an array with two sub-arrays of agent_id=>agent:
+     * - (array) 'email': agent_id=>Person
+     * - (array) 'browser': agent_id=>Person
+     *
+     * @return array
+     */
+    public function getNotifyList()
+    {
+        if ($this->notify_list) {
+            return $this->notify_list;
+        }
+        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
-		$online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
+        $online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
 
-		$send_browser = array();
-		$send_email   = array();
+        $send_browser = array();
+        $send_email   = array();
 
-		foreach ($online_ids as $aid) {
-			if (!isset($agents[$aid])) {
-				continue;
-			}
-			$agent = $agents[$aid];
-			if ($this->shouldSendBrowserNotification($agent)) {
-				$send_browser[$aid] = $agent;
-			}
-		}
+        foreach ($online_ids as $aid) {
+            if (!isset($agents[$aid])) {
+                continue;
+            }
+            $agent = $agents[$aid];
+            if ($this->shouldSendBrowserNotification($agent)) {
+                $send_browser[$aid] = $agent;
+            }
+        }
 
-		foreach ($agents as $agent) {
-			if ($this->shouldSendEmailNotification($agent)) {
-				$send_email[$agent->getId()] = $agent;
-			}
-		}
+        foreach ($agents as $agent) {
+            if ($this->shouldSendEmailNotification($agent)) {
+                $send_email[$agent->getId()] = $agent;
+            }
+        }
 
-		$this->notify_list = array(
-			'email' => $send_email,
-			'browser' => $send_browser
-		);
+        $this->notify_list = array(
+            'email' => $send_email,
+            'browser' => $send_browser
+        );
 
-		return $this->notify_list;
-	}
-
-
-	/**
-	 * Send an email notification to agents from the build list
-	 *
-	 * @param string $tpl
-	 * @param array $vars
-	 */
-	public function sendEmailNotifications($tpl, array $vars)
-	{
-		$notify_list = $this->getNotifyList();
-
-		if (!$notify_list['email']) {
-			return;
-		}
-
-		foreach	($notify_list['email'] as $agent) {
-			$message = App::getMailer()->createMessage();
-			$message->setTemplate($tpl, $vars);
-			$message->setToPerson($agent);
-			App::getMailer()->send($message);
-		}
-	}
+        return $this->notify_list;
+    }
 
 
-	/**
-	 * Send a browser notification to agents from the built list.
-	 *
-	 * $vars should include a 'notify_data' array that'll be data in the client message. This should at least
-	 * include a notify_type.
-	 *
-	 * @param string $tpl The template to display in the browser for the notification
-	 * @param array $vars Vars used in the template, and a notify_data to be inserted into the client message data
-	 */
-	public function sendBrowserNotifications($tpl, array $vars)
-	{
-		$notify_list = $this->getNotifyList();
+    /**
+     * Send an email notification to agents from the build list
+     *
+     * @param string $tpl
+     * @param array  $vars
+     */
+    public function sendEmailNotifications($tpl, array $vars)
+    {
+        $notify_list = $this->getNotifyList();
 
-		if (!$notify_list['browser']) {
-			return;
-		}
+        if (!$notify_list['email']) {
+            return;
+        }
 
-		foreach	($notify_list['browser'] as $agent) {
-			$tpl_line = App::getTemplating()->render($tpl, $vars);
+        foreach	($notify_list['email'] as $agent) {
+            $message = App::getMailer()->createMessage();
+            $message->setTemplate($tpl, $vars);
+            $message->setToPerson($agent);
+            App::getMailer()->send($message);
+        }
+    }
 
-			$data = $vars['notify_data'];
-			$data['row'] = $tpl_line;
 
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'agent-notify.' . $data['notify_type'],
-				'data' => $data,
-				'for_person'        => $agent,
-				'created_by_client' => $this->client
-			));
-			$this->em->persist($cm);
-		}
+    /**
+     * Send a browser notification to agents from the built list.
+     *
+     * $vars should include a 'notify_data' array that'll be data in the client message. This should at least
+     * include a notify_type.
+     *
+     * @param string $tpl  The template to display in the browser for the notification
+     * @param array  $vars Vars used in the template, and a notify_data to be inserted into the client message data
+     */
+    public function sendBrowserNotifications($tpl, array $vars)
+    {
+        $notify_list = $this->getNotifyList();
 
-		$this->em->flush();
-	}
+        if (!$notify_list['browser']) {
+            return;
+        }
+
+        foreach	($notify_list['browser'] as $agent) {
+            $tpl_line = App::getTemplating()->render($tpl, $vars);
+
+            $data = $vars['notify_data'];
+            $data['row'] = $tpl_line;
+
+            $cm = new ClientMessage();
+            $cm->fromArray(array(
+                'channel' => 'agent-notify.' . $data['notify_type'],
+                'data' => $data,
+                'for_person'        => $agent,
+                'created_by_client' => $this->client
+            ));
+            $this->em->persist($cm);
+        }
+
+        $this->em->flush();
+    }
 }

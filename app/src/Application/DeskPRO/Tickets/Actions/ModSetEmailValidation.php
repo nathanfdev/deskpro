@@ -44,11 +44,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class ModSetEmailValidation extends AbstractAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getVars()->set('enable_email_validation', $this->getActionOption('enable_validation'));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getVars()->set('enable_email_validation', $this->getActionOption('enable_validation'));
+    }
 }

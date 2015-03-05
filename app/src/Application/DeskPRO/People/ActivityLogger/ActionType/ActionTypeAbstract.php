@@ -34,40 +34,39 @@
 
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
 abstract class ActionTypeAbstract implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return void
-	 */
-	public function setPersonContext(Person $person)
-	{
-		$this->person;
-	}
+    /**
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @return void
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person;
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function getPersonContext()
-	{
-		return $this->person;
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function getPersonContext()
+    {
+        return $this->person;
+    }
 
-	
-	/**
-	 * Get a plain array of details that'll be stored in the databaes
-	 * @return array
-	 */
-	abstract public function getDetails();
+
+    /**
+     * Get a plain array of details that'll be stored in the databaes
+     * @return array
+     */
+    abstract public function getDetails();
 }

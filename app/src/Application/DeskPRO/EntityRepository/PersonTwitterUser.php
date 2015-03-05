@@ -34,20 +34,18 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class PersonTwitterUser extends AbstractEntityRepository
 {
-	public function getVerifiedPersonForTwitterUser($twitter_user_id)
-	{
-		$result = $this->getEntityManager()->createQuery("
-			SELECT t, p
-			FROM DeskPRO:PersonTwitterUser t
-			INNER JOIN t.person p
-			WHERE t.twitter_user_id = ?0
-				AND t.is_verified = true
-		")->setParameters(array($twitter_user_id))->getOneOrNullResult();
+    public function getVerifiedPersonForTwitterUser($twitter_user_id)
+    {
+        $result = $this->getEntityManager()->createQuery("
+            SELECT t, p
+            FROM DeskPRO:PersonTwitterUser t
+            INNER JOIN t.person p
+            WHERE t.twitter_user_id = ?0
+                AND t.is_verified = true
+        ")->setParameters(array($twitter_user_id))->getOneOrNullResult();
 
-		return $result ? $result->person : null;
-	}
+        return $result ? $result->person : null;
+    }
 }

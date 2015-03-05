@@ -39,61 +39,58 @@ use Orb\Log\Logger;
 
 abstract class AbstractTableOverviewStat implements Loggable
 {
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    protected $logger;
 
-	/**
-	 * Gets a id => array(info) array of titles. Titles can have children.
-	 *
-	 * @abstract
-	 * @return mixed
-	 */
-	abstract function getTitles();
+    /**
+     * Gets a id => array(info) array of titles. Titles can have children.
+     *
+     * @abstract
+     * @return mixed
+     */
+    abstract public function getTitles();
 
-	/**
-	 * Gets an id => xxx of counts.
-	 *
-	 * @abstract
-	 * @return mixed
-	 */
-	abstract function getValues();
+    /**
+     * Gets an id => xxx of counts.
+     *
+     * @abstract
+     * @return mixed
+     */
+    abstract public function getValues();
 
+    /**
+     * @param \Orb\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
-	/**
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    /**
+     * @return \Orb\Log\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 
+    /**
+     * @return int
+     */
+    public function getMax()
+    {
+        if (!$this->getValues()) {
+            return 1;
+        }
 
-	/**
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+        $max = max($this->getValues());
 
+        if ($max < 3) {
+            $max = 3;
+        }
 
-	/**
-	 * @return int
-	 */
-	public function getMax()
-	{
-		if (!$this->getValues()) {
-			return 1;
-		}
-
-		$max = max($this->getValues());
-
-		if ($max < 3) {
-			$max = 3;
-		}
-
-		return $max;
-	}
+        return $max;
+    }
 }

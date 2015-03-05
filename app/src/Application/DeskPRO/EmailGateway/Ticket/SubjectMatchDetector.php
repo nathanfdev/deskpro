@@ -49,267 +49,306 @@ use Orb\Util\Strings;
  */
 class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterface, Loggable
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $_found_person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $_found_person = null;
 
-	/**
-	 * @var int
-	 */
-	protected $_time_cutoff = 0;
+    /**
+     * @var int
+     */
+    protected $_time_cutoff = 0;
 
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    protected $logger;
 
-	/**
-	 * @var bool
-	 */
-	protected $is_bounce_mode = false;
+    /**
+     * @var bool
+     */
+    protected $is_bounce_mode = false;
 
-
-	/**
-	 * Enable bounce mode if the message is or is suspected ot be a bounced message.
-	 * This will look for PTAC/TAC 'headers' in the body text.
-	 */
-	public function enableBouncedMode()
-	{
-		$this->is_bounce_mode = true;
-	}
+    /**
+     * @var bool
+     */
+    protected $enable_exact_subject = false;
 
 
-	/**
-	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
-	 */
-	public function __construct($time_cutoff = 7776000 /* 90 days */)
-	{
-		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
-	}
+    /**
+     * Enable bounce mode if the message is or is suspected ot be a bounced message.
+     * This will look for PTAC/TAC 'headers' in the body text.
+     */
+    public function enableBouncedMode()
+    {
+        $this->is_bounce_mode = true;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findExistingTicket(AbstractReader $reader)
-	{
-		$ticket = $this->_findExistingTicket($reader, $reader->getSubject()->getSubjectUtf8());
-
-		if (!$ticket && $this->is_bounce_mode) {
-			if ($reader->getOriginalSubject()) {
-				$ticket = $this->_findExistingTicket($reader, $reader->getOriginalSubject()->getSubjectUtf8());
-			}
-		}
-
-		if (!$ticket && $this->is_bounce_mode && $body = $reader->getBodyText()->getBody()) {
-			$body_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $body);
-			if ($body_subject) {
-				$ticket = $this->_findExistingTicket($reader, $body_subject);
-			}
-		}
-
-		return $ticket;
-	}
+    /**
+     * When enabled, this will try to match exact subjects. Usually we only try
+     * matching when there's a reply prefix (like RE:) because that indicates it's a reply.
+     * But in some cases (e.g., automated systems) you might want to connect all emails
+     * with the same subject.
+     *
+     * Before:
+     *        These match:  "I love DeskPRO" and "RE: I love DeskPRO"   -> 1 ticket with 1 reply
+     *        These DONT:   "I love DeskPRO" and "I love DeskPRO"       -> 2 separate tickets
+     *
+     * With this setting:
+     *        These match:  "I love DeskPRO" and "RE: I love DeskPRO"   -> 1 ticket with 1 reply (no change)
+     *   These also match:  "I love DeskPRO" and "I love DeskPRO"       -> 1 ticket with 1 reply
+     */
+    public function enableExactSubjectMatching()
+    {
+        $this->enable_exact_subject = true;
+    }
 
 
-	public function _findExistingTicket(AbstractReader $reader, $subject)
-	{
-		$ticket = $this->_findExistingTicketStandard($reader, $subject);
-		if (!$ticket) {
-			$ticket = $this->_findExistingTicketExtra($reader, $subject);
-		}
-
-		return $ticket;
-	}
+    /**
+     * @param int $time_cutoff Max age of a ticket before the subject match wont work
+     */
+    public function __construct($time_cutoff = 7776000 /* 90 days */)
+    {
+        $this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
+    }
 
 
-	/**
-	 * Tries to find a subject by stripping off standard subject prefixes.
-	 *
-	 * @param AbstractReader $reader
-	 * @param $subject
-	 * @return null
-	 */
-	public function _findExistingTicketStandard(AbstractReader $reader, $subject)
-	{
-		$this->getLogger()->logDebug("[SubjectMatchDetector] (Standard) Finding ticket");
+    /**
+     * {@inheritDoc}
+     */
+    public function findExistingTicket(AbstractReader $reader)
+    {
+        $ticket = $this->_findExistingTicket($reader, $reader->getSubject()->getSubjectUtf8());
 
-		$this->_found_person = null;
+        if (!$ticket && $this->is_bounce_mode) {
+            if ($reader->getOriginalSubject()) {
+                $ticket = $this->_findExistingTicket($reader, $reader->getOriginalSubject()->getSubjectUtf8());
+            }
+        }
 
-		$subject = trim($subject);
-		$subject_orig = $subject;
+        if (!$ticket && $this->is_bounce_mode && $body = $reader->getBodyText()->getBody()) {
+            $body_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $body);
+            if ($body_subject) {
+                $ticket = $this->_findExistingTicket($reader, $body_subject);
+            }
+        }
 
-		// Common prefixes
-		// Also including FW|FWDxxx here to catch cases where a user uses fwd to reply to an email they just sent.
-		if (!preg_match('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', $subject)) {
-			return null;
-		}
-
-		// Strip off Re: prefix (and alternatives in some other langs)
-		// The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
-		$last_subject = $subject_orig;
-		$ticket_ids = array();
-		while (true) {
-			$subject_re   = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($last_subject));
-			$subject_re   = trim($subject_re);
-
-			if ($subject_re == $last_subject || !$subject_re) {
-				break;
-			}
-
-			$last_subject = $subject_re;
-
-			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
-
-			// Now lets try to find it...
-			$ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
-				SELECT id
-				FROM tickets
-				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
-				ORDER BY id DESC
-				LIMIT 20
-			", array($subject_re, $subject_re, $this->_time_cutoff)));
-		}
-
-		$ticket_ids = Arrays::removeFalsey($ticket_ids);
-
-		if (!$ticket_ids) {
-			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
-			return null;
-		}
-
-		$this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
-
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-		$from = $reader->getFromAddress()->getEmail();
-
-		foreach ($tickets as $ticket) {
-			if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
-				$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id . " " . $p->getDisplayContact());
-				$this->_found_person = $p;
-				return $ticket;
-			}
-		}
-
-		$this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
-
-		return null;
-	}
-
-	/**
-	 * Tries to find a subject by stripping off anything before a colon (ie non-standard prefixes)
-	 *
-	 * @param AbstractReader $reader
-	 * @param $subject
-	 * @return null
-	 */
-	public function _findExistingTicketExtra(AbstractReader $reader, $subject)
-	{
-		$this->getLogger()->logDebug("[SubjectMatchDetector] (Extra) Finding ticket");
-
-		$this->_found_person = null;
-
-		$subject = trim($subject);
-		$subject_orig = $subject;
-
-		if (strpos($subject, ':') === false) {
-			return null;
-		}
-
-		// Strip off Re: prefix (and alternatives in some other langs)
-		// The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
-		$last_subject = $subject_orig;
-		$ticket_ids = array();
-		while (true) {
-			$subject_re   = preg_replace('#^.*?:\s*#i', '', trim($last_subject));
-			$subject_re   = trim($subject_re);
-
-			if ($subject_re == $last_subject || !$subject_re) {
-				break;
-			}
-
-			$last_subject = $subject_re;
-
-			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
-
-			// Now lets try to find it...
-			$ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
-				SELECT id
-				FROM tickets
-				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
-				ORDER BY id DESC
-				LIMIT 20
-			", array($subject_re, $subject_re, $this->_time_cutoff)));
-		}
-
-		$ticket_ids = Arrays::removeFalsey($ticket_ids);
-
-		if (!$ticket_ids) {
-			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
-			return null;
-		}
-
-		$this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
-
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-		$from = $reader->getFromAddress()->getEmail();
-
-		foreach ($tickets as $ticket) {
-			if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
-				$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id);
-				$this->_found_person = $p;
-				return $ticket;
-			}
-		}
-
-		$this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
-
-		return null;
-	}
+        return $ticket;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		if ($this->_found_person) {
-			return $this->_found_person;
-		}
+    public function _findExistingTicket(AbstractReader $reader, $subject)
+    {
+        $ticket = $this->_findExistingTicketStandard($reader, $subject);
+        if (!$ticket) {
+            $ticket = $this->_findExistingTicketExtra($reader, $subject);
+        }
 
-		return null;
-	}
+        return $ticket;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		return false;
-	}
+    /**
+     * Tries to find a subject by stripping off standard subject prefixes.
+     *
+     * @param  AbstractReader $reader
+     * @param $subject
+     * @return null
+     */
+    public function _findExistingTicketStandard(AbstractReader $reader, $subject)
+    {
+        $this->getLogger()->logDebug("[SubjectMatchDetector] (Standard) Finding ticket");
 
+        $this->_found_person = null;
 
-	/**
-	 * Set the logger
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+        $subject = trim($subject);
+        $subject_orig = $subject;
 
+        // Common prefixes
+        // Also including FW|FWDxxx here to catch cases where a user uses fwd to reply to an email they just sent.
+        $common_prefix_re = '#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i';
 
-	/**
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger()
-	{
-		if (!$this->logger) {
-			$this->logger = new Logger();
-		}
+        $ticket_ids = array();
 
-		return $this->logger;
-	}
+        if ($this->enable_exact_subject) {
+            $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: ' . $subject);
+            $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
+                ORDER BY id DESC
+                LIMIT 20
+            ", array($subject, $subject, $this->_time_cutoff)));
+        }
+
+        // handle prefixes
+        if (preg_match($common_prefix_re, $subject)) {
+            // Strip off Re: prefix (and alternatives in some other langs)
+            // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
+            $last_subject = $subject_orig;
+
+            while (true) {
+                $subject_re = preg_replace($common_prefix_re, '', trim($last_subject));
+                $subject_re = trim($subject_re);
+
+                if ($subject_re == $last_subject || !$subject_re) {
+                    break;
+                }
+
+                $last_subject = $subject_re;
+
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+
+                // Now lets try to find it...
+                $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
+                    SELECT id
+                    FROM tickets
+                    WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
+                    ORDER BY id DESC
+                    LIMIT 20
+                ", array($subject_re, $subject_re, $this->_time_cutoff)));
+            }
+        }
+
+        $ticket_ids = Arrays::removeFalsey($ticket_ids);
+
+        if (!$ticket_ids) {
+            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
+
+            return null;
+        }
+
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
+
+        $tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+        $from = $reader->getFromAddress()->getEmail();
+
+        foreach ($tickets as $ticket) {
+            if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id . " " . $p->getDisplayContact());
+                $this->_found_person = $p;
+
+                return $ticket;
+            }
+        }
+
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
+
+        return null;
+    }
+
+    /**
+     * Tries to find a subject by stripping off anything before a colon (ie non-standard prefixes)
+     *
+     * @param  AbstractReader $reader
+     * @param $subject
+     * @return null
+     */
+    public function _findExistingTicketExtra(AbstractReader $reader, $subject)
+    {
+        $this->getLogger()->logDebug("[SubjectMatchDetector] (Extra) Finding ticket");
+
+        $this->_found_person = null;
+
+        $subject = trim($subject);
+        $subject_orig = $subject;
+
+        if (strpos($subject, ':') === false) {
+            return null;
+        }
+
+        // Strip off Re: prefix (and alternatives in some other langs)
+        // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
+        $last_subject = $subject_orig;
+        $ticket_ids = array();
+        while (true) {
+            $subject_re   = preg_replace('#^.*?:\s*#i', '', trim($last_subject));
+            $subject_re   = trim($subject_re);
+
+            if ($subject_re == $last_subject || !$subject_re) {
+                break;
+            }
+
+            $last_subject = $subject_re;
+
+            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+
+            // Now lets try to find it...
+            $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
+                ORDER BY id DESC
+                LIMIT 20
+            ", array($subject_re, $subject_re, $this->_time_cutoff)));
+        }
+
+        $ticket_ids = Arrays::removeFalsey($ticket_ids);
+
+        if (!$ticket_ids) {
+            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
+
+            return null;
+        }
+
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
+
+        $tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+        $from = $reader->getFromAddress()->getEmail();
+
+        foreach ($tickets as $ticket) {
+            if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id);
+                $this->_found_person = $p;
+
+                return $ticket;
+            }
+        }
+
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
+    {
+        if ($this->_found_person) {
+            return $this->_found_person;
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
+    {
+        return false;
+    }
+
+    /**
+     * Set the logger
+     * @param \Orb\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @return \Orb\Log\Logger
+     */
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            $this->logger = new Logger();
+        }
+
+        return $this->logger;
+    }
 }

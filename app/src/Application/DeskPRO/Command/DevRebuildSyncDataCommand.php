@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DataSync\AbstractDataSync;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,60 +40,66 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevRebuildSyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dpdev:rebuild-sync-data');
-		$this->addOption('rebuild', null, InputOption::VALUE_REQUIRED, 'Rebuilds the specified sync data type');
-		$this->addOption('rebuild-all', null, InputOption::VALUE_NONE, 'Rebuilds all sync data');
-		$this->addOption('list', null, InputOption::VALUE_NONE, 'Lists the available sync data');
-	}
+    protected function configure()
+    {
+        $this->setName('dpdev:rebuild-sync-data');
+        $this->addOption('rebuild', null, InputOption::VALUE_REQUIRED, 'Rebuilds the specified sync data type');
+        $this->addOption('rebuild-all', null, InputOption::VALUE_NONE, 'Rebuilds all sync data');
+        $this->addOption('list', null, InputOption::VALUE_NONE, 'Lists the available sync data');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		if (!dp_get_config('debug.dev')) {
-			$output->write("Dev mode is not enabled");
-			return 1;
-		}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!dp_get_config('debug.dev')) {
+            $output->write("Dev mode is not enabled");
 
-		if ($input->getOption('rebuild-all')) {
-			$output->writeln("Rebuilding all sync data...");
-			$start = microtime(true);
+            return 1;
+        }
 
-			$classes = AbstractDataSync::getAvailableSyncClasses();
-			foreach ($classes AS $name => $class) {
-				/* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
-				$sync = new $class();
-				$sync->writeToBase();
-				$output->writeln(sprintf("\tRebuilt %s data.", $name));
-			}
+        if ($input->getOption('rebuild-all')) {
+            $output->writeln("Rebuilding all sync data...");
+            $start = microtime(true);
 
-			$end = microtime(true);
-			$output->writeln(sprintf("Done (%.4fs)", $end - $start));
-			return 0;
-		} else if ($input->getOption('rebuild')) {
-			$name = $input->getOption('rebuild');
-			$classes = AbstractDataSync::getAvailableSyncClasses();
+            $classes = AbstractDataSync::getAvailableSyncClasses();
+            foreach ($classes AS $name => $class) {
+                /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
+                $sync = new $class();
+                $sync->writeToBase();
+                $output->writeln(sprintf("\tRebuilt %s data.", $name));
+            }
 
-			if (isset($classes[$name])) {
-				$class = $classes[$name];
+            $end = microtime(true);
+            $output->writeln(sprintf("Done (%.4fs)", $end - $start));
 
-				/* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
-				$sync = new $class();
-				$sync->writeToBase();
-				$output->writeln(sprintf("Rebuilt %s data.", $name));
-				return 0;
-			} else {
-				$output->writeln(sprintf("Could not find %s data.", $name));
-				return 1;
-			}
-		} else if ($input->getOption('list')) {
-			$names = array_keys(AbstractDataSync::getAvailableSyncClasses());
+            return 0;
+        } elseif ($input->getOption('rebuild')) {
+            $name = $input->getOption('rebuild');
+            $classes = AbstractDataSync::getAvailableSyncClasses();
 
-			$output->writeln(sprintf("Available sync data options:\n\t%s", implode("\n\t", $names)));
-			return 0;
-		} else {
-			$output->writeln("Use --help to see available commands");
-			return 0;
-		}
-	}
+            if (isset($classes[$name])) {
+                $class = $classes[$name];
+
+                /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
+                $sync = new $class();
+                $sync->writeToBase();
+                $output->writeln(sprintf("Rebuilt %s data.", $name));
+
+                return 0;
+            } else {
+                $output->writeln(sprintf("Could not find %s data.", $name));
+
+                return 1;
+            }
+        } elseif ($input->getOption('list')) {
+            $names = array_keys(AbstractDataSync::getAvailableSyncClasses());
+
+            $output->writeln(sprintf("Available sync data options:\n\t%s", implode("\n\t", $names)));
+
+            return 0;
+        } else {
+            $output->writeln("Use --help to see available commands");
+
+            return 0;
+        }
+    }
 }

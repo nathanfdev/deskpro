@@ -38,16 +38,16 @@ use Application\DeskPRO\App;
 
 class FeedbackFetcher extends AbstractFetcher
 {
-	const TYPENAME = 'feedback';
+    const TYPENAME = 'feedback';
 
-	/**
-	 * Returns an array of entities identified by $related_ids, that the user is able to see.
-	 *
-	 * @param array $related_ids
-	 * @return array
-	 */
-	function getEntities(array $related_ids)
-	{
-		return App::getEntityRepository('DeskPRO:Feedback')->getByIdsWithContext($related_ids, $this->person);
-	}
+    /**
+     * Returns an array of entities identified by $related_ids, that the user is able to see.
+     *
+     * @param  array $related_ids
+     * @return array
+     */
+    public function getEntities(array $related_ids)
+    {
+        return App::getEntityRepository('DeskPRO:Feedback')->getByIdsWithContext($related_ids, $this->person);
+    }
 }

@@ -36,50 +36,50 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354547865 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add task assignment/completed notifications");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_self.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_self.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_team.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_team.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_complete.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_complete.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-	}
+    public function run()
+    {
+        $this->out("Add task assignment/completed notifications");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_assign_self.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.chat_message.email'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_assign_self.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.chat_message.email'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_assign_team.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.chat_message.email'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_assign_team.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.chat_message.email'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_complete.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.chat_message.email'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_complete.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.chat_message.email'
+        ");
+    }
 }

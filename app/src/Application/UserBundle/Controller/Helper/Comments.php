@@ -35,66 +35,63 @@
 namespace Application\UserBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments;
 
 class Comments
 {
-	/** @var string ? **/
-	protected $entity;
-	/** @var string */
-	protected $page_url;
-	/** @var \Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
-	protected $adapter;
+    /** @var string ? **/
+    protected $entity;
+    /** @var string */
+    protected $page_url;
+    /** @var \Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
+    protected $adapter;
 
-	/**
-	 * Creates a new instance of this comments helper using the adapter
-	 * defined in settings. Or returns null if no adapter is set
-	 *
-	 * @param  $page_url
-	 * @param  $entity
-	 * @return Comments
-	 */
-	public static function create($entity)
-	{
-		if (App::getSetting('core.comments_adapter') == 'disqus') {
-			$adapter = 'DisqusComments';
-		} elseif (App::getSetting('core.comments_adapter') == 'facebook') {
-			$adapter = 'FacebookComments';
-		} else {
-			return null;
-		}
+    /**
+     * Creates a new instance of this comments helper using the adapter
+     * defined in settings. Or returns null if no adapter is set
+     *
+     * @param  $page_url
+     * @param  $entity
+     * @return Comments
+     */
+    public static function create($entity)
+    {
+        if (App::getSetting('core.comments_adapter') == 'disqus') {
+            $adapter = 'DisqusComments';
+        } elseif (App::getSetting('core.comments_adapter') == 'facebook') {
+            $adapter = 'FacebookComments';
+        } else {
+            return null;
+        }
 
-		return new self($adapter, $entity);
-	}
+        return new self($adapter, $entity);
+    }
 
-	/**
-	 * @param string $adapter  A comment adapter, or a string of an base adapter classname
-	 * @param string $page_url The permalink to the page
-	 * @param Entity $entity   The entity we're adding comments to
-	 */
-	public function __construct($adapter, $entity)
-	{
-		$this->entity = $entity;
+    /**
+     * @param string $adapter  A comment adapter, or a string of an base adapter classname
+     * @param string $page_url The permalink to the page
+     * @param Entity $entity   The entity we're adding comments to
+     */
+    public function __construct($adapter, $entity)
+    {
+        $this->entity = $entity;
 
-		if (is_string($adapter)) {
-			$class = 'Application\\UserBundle\\Controller\\Helper\\CommentsAdapter\\' . $adapter;
-			$adapter = new $class($entity);
-		}
+        if (is_string($adapter)) {
+            $class = 'Application\\UserBundle\\Controller\\Helper\\CommentsAdapter\\' . $adapter;
+            $adapter = new $class($entity);
+        }
 
-		$this->adapter = $adapter;
-	}
+        $this->adapter = $adapter;
+    }
 
-
-
-	/**
-	 * Get the HTML block from the adapter
-	 *
-	 * @return string
-	 */
-	public function getHtml()
-	{
-		return $this->adapter->getHtml();
-	}
+    /**
+     * Get the HTML block from the adapter
+     *
+     * @return string
+     */
+    public function getHtml()
+    {
+        return $this->adapter->getHtml();
+    }
 }

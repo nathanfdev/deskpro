@@ -40,95 +40,95 @@ use Application\DeskPRO\Entity\Ticket;
 
 class LanguageAction extends AbstractAction implements PermissionableAction
 {
-	/** @var int */
-	protected $language_id;
+    /** @var int */
+    protected $language_id;
 
-	public function __construct($language)
-	{
-		$this->language_id = $language;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$ticket['language_id'] = $this->language_id;
-	}
+    public function __construct($language)
+    {
+        $this->language_id = $language;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		if ($ticket->getLanguageId() == $this->language_id) {
-			return true;
-		}
-
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return false;
-		}
-
-		return true;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $ticket['language_id'] = $this->language_id;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket['language_id'] == $this->language_id) {
-			return array();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        if ($ticket->getLanguageId() == $this->language_id) {
+            return true;
+        }
 
-		return array(
-			array('action' => 'language', 'language_id' => $this->language_id)
-		);
-	}
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return false;
+        }
 
-
-	/**
-	 * Get the language id
-	 *
-	 * @return int
-	 */
-	public function getLanguageId()
-	{
-		return $this->language_id;
-	}
+        return true;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket['language_id'] == $this->language_id) {
+            return array();
+        }
+
+        return array(
+            array('action' => 'language', 'language_id' => $this->language_id)
+        );
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
+    /**
+     * Get the language id
+     *
+     * @return int
+     */
+    public function getLanguageId()
+    {
+        return $this->language_id;
+    }
 
-		$names = App::getDataService('Language')->getTitles();
-		if (!isset($names[$this->language_id])) {
-			$name = "<error>Unknown #{$this->language_id}</error>";
-		} else {
-			$name = $as_html ? htmlspecialchars($names[$this->language_id]) : $names[$this->language_id];
-		}
 
-		return $tr->phrase('agent.tickets.set_language_action', array('language' => $name));
-	}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+
+        $names = App::getDataService('Language')->getTitles();
+        if (!isset($names[$this->language_id])) {
+            $name = "<error>Unknown #{$this->language_id}</error>";
+        } else {
+            $name = $as_html ? htmlspecialchars($names[$this->language_id]) : $names[$this->language_id];
+        }
+
+        return $tr->phrase('agent.tickets.set_language_action', array('language' => $name));
+    }
 }

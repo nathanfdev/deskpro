@@ -41,181 +41,183 @@ use Orb\Util\Arrays;
 
 class FeedbackCollection
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Feedback[]
-	 */
-	protected $feedbacks;
+    /**
+     * @var \Application\DeskPRO\Entity\Feedback[]
+     */
+    protected $feedbacks;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomDataFeedback[]
-	 */
-	protected $feedback_data;
+    /**
+     * @var \Application\DeskPRO\Entity\CustomDataFeedback[]
+     */
+    protected $feedback_data;
 
-	/**
-	 * @var \Application\DeskPRO\CustomFields\FeedbackFieldManager
-	 */
-	protected $feedback_fm;
+    /**
+     * @var \Application\DeskPRO\CustomFields\FeedbackFieldManager
+     */
+    protected $feedback_fm;
 
-	/**
-	 * @var \Application\DeskPRO\Feedback\UserCategory[]
-	 */
-	protected $user_cats = array();
+    /**
+     * @var \Application\DeskPRO\Feedback\UserCategory[]
+     */
+    protected $user_cats = array();
 
-	public function __construct(array $feedbacks, EntityManager $em, FeedbackFieldManager $feedback_fm)
-	{
-		$feedbacks = Arrays::keyFromData($feedbacks, 'id');
+    public function __construct(array $feedbacks, EntityManager $em, FeedbackFieldManager $feedback_fm)
+    {
+        $feedbacks = Arrays::keyFromData($feedbacks, 'id');
 
-		$this->feedbacks = $feedbacks;
-		$this->em = $em;
-		$this->feedback_fm = $feedback_fm;
-	}
-
-
-	/**
-	 * Get the full array of feedback
-	 *
-	 * @return \Application\DeskPRO\Entity\Feedback[]
-	 */
-	public function getFeedback()
-	{
-		return $this->feedbacks;
-	}
+        $this->feedbacks = $feedbacks;
+        $this->em = $em;
+        $this->feedback_fm = $feedback_fm;
+    }
 
 
-	/**
-	 * Get an array of display data which includes feedback and all associated data with it.
-	 *
-	 * @return array
-	 */
-	public function getDisplayArray()
-	{
-		$data = array();
-
-		foreach ($this->feedbacks as $feedback) {
-			$data[$feedback->getId()] = $this->getDisplayArrayForFeedback($feedback);
-		}
-
-		return $data;
-	}
+    /**
+     * Get the full array of feedback
+     *
+     * @return \Application\DeskPRO\Entity\Feedback[]
+     */
+    public function getFeedback()
+    {
+        return $this->feedbacks;
+    }
 
 
-	/**
-	 * Get a display array for a feedback
-	 *
-	 * @param \Application\DeskPRO\Entity\Feedback $feedback
-	 * @return array
-	 */
-	public function getDisplayArrayForFeedback(Feedback $feedback)
-	{
-		$custom_data = $this->getDataForFeedback($feedback);
-		$user_category = $this->getUserCategory($feedback);
+    /**
+     * Get an array of display data which includes feedback and all associated data with it.
+     *
+     * @return array
+     */
+    public function getDisplayArray()
+    {
+        $data = array();
 
-		$data = array(
-			'feedback'      => $feedback,
-			'custom_data'   => $custom_data,
-			'user_category' => $user_category
-		);
+        foreach ($this->feedbacks as $feedback) {
+            $data[$feedback->getId()] = $this->getDisplayArrayForFeedback($feedback);
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
 
-	/**
-	 * Get an array of all custom data on feedback
-	 *
-	 * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
-	 */
-	public function getCustomData()
-	{
-		if ($this->feedback_data !== null) {
-			return $this->feedback_data;
-		}
+    /**
+     * Get a display array for a feedback
+     *
+     * @param  \Application\DeskPRO\Entity\Feedback $feedback
+     * @return array
+     */
+    public function getDisplayArrayForFeedback(Feedback $feedback)
+    {
+        $custom_data = $this->getDataForFeedback($feedback);
+        $user_category = $this->getUserCategory($feedback);
 
-		$this->feedback_data = array();
+        $data = array(
+            'feedback'      => $feedback,
+            'custom_data'   => $custom_data,
+            'user_category' => $user_category
+        );
 
-		if ($this->feedbacks) {
-			$ids = array_keys($this->feedbacks);
-
-			$results = $this->em->createQuery("
-				SELECT d
-				FROM DeskPRO:CustomDataFeedback d
-				LEFT JOIN d.field AS field
-				WHERE d.feedback IN (?0)
-			")->setParameter(0, $ids)->execute();
-
-			foreach ($results as $data) {
-				if (!isset($this->feedback_data[$data->feedback->getId()])) {
-					$this->feedback_data[$data->feedback->getId()] = array();
-				}
-
-				$this->feedback_data[$data->feedback->getId()][$data->field->getId()] = $data;
-			}
-		}
-
-		return $this->feedback_data;
-	}
+        return $data;
+    }
 
 
-	/**
-	 * Get data for a specific feedback
-	 *
-	 * @param \Application\DeskPRO\Entity\Feedback $feedback
-	 * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
-	 */
-	public function getDataForFeedback(Feedback $feedback)
-	{
-		$all_data = $this->getCustomData();
+    /**
+     * Get an array of all custom data on feedback
+     *
+     * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
+     */
+    public function getCustomData()
+    {
+        if ($this->feedback_data !== null) {
+            return $this->feedback_data;
+        }
 
-		return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : array();
-	}
+        $this->feedback_data = array();
+
+        if ($this->feedbacks) {
+            $ids = array_keys($this->feedbacks);
+
+            $results = $this->em->createQuery("
+                SELECT d
+                FROM DeskPRO:CustomDataFeedback d
+                LEFT JOIN d.field AS field
+                WHERE d.feedback IN (?0)
+            ")->setParameter(0, $ids)->execute();
+
+            foreach ($results as $data) {
+                if (!isset($this->feedback_data[$data->feedback->getId()])) {
+                    $this->feedback_data[$data->feedback->getId()] = array();
+                }
+
+                $this->feedback_data[$data->feedback->getId()][$data->field->getId()] = $data;
+            }
+        }
+
+        return $this->feedback_data;
+    }
 
 
-	/**
-	 * Get the user category title
-	 *
-	 * @param \Application\DeskPRO\Entity\Feedback $feedback
-	 * @return \Application\DeskPRO\Feedback\UserCategory|null
-	 */
-	public function getUserCategory(Feedback $feedback)
-	{
-		if (array_key_exists($feedback->getId(), $this->user_cats)) {
-			return $this->user_cats[$feedback->getId()];
-		}
+    /**
+     * Get data for a specific feedback
+     *
+     * @param  \Application\DeskPRO\Entity\Feedback             $feedback
+     * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
+     */
+    public function getDataForFeedback(Feedback $feedback)
+    {
+        $all_data = $this->getCustomData();
 
-		$cat_field = $this->feedback_fm->getUserCategoryField();
-		if (!$cat_field) {
-			$this->user_cats[$feedback->getId()] = null;
-			return null;
-		}
+        return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : array();
+    }
 
-		$options = $this->feedback_fm->getFieldChildren($cat_field);
-		$options = Arrays::keyFromData($options, 'id');
 
-		$custom_data = $this->getDataForFeedback($feedback);
-		$chosen = null;
-		foreach ($options as $opt) {
-			if (isset($custom_data[$opt->getId()])) {
-				$chosen = $opt;
-			}
-		}
+    /**
+     * Get the user category title
+     *
+     * @param  \Application\DeskPRO\Entity\Feedback            $feedback
+     * @return \Application\DeskPRO\Feedback\UserCategory|null
+     */
+    public function getUserCategory(Feedback $feedback)
+    {
+        if (array_key_exists($feedback->getId(), $this->user_cats)) {
+            return $this->user_cats[$feedback->getId()];
+        }
 
-		if (!$chosen) {
-			$this->user_cats[$feedback->getId()] = null;
-			return null;
-		}
+        $cat_field = $this->feedback_fm->getUserCategoryField();
+        if (!$cat_field) {
+            $this->user_cats[$feedback->getId()] = null;
 
-		if ($chosen->getOption('parent_id')) {
-			$chosen_parent = $options[$chosen->getOption('parent_id')];
-			$this->user_cats[$feedback->getId()] = new UserCategory($chosen_parent, $chosen);
-		} else {
-			$this->user_cats[$feedback->getId()] = new UserCategory($chosen);
-		}
+            return null;
+        }
 
-		return $this->user_cats[$feedback->getId()];
-	}
+        $options = $this->feedback_fm->getFieldChildren($cat_field);
+        $options = Arrays::keyFromData($options, 'id');
+
+        $custom_data = $this->getDataForFeedback($feedback);
+        $chosen = null;
+        foreach ($options as $opt) {
+            if (isset($custom_data[$opt->getId()])) {
+                $chosen = $opt;
+            }
+        }
+
+        if (!$chosen) {
+            $this->user_cats[$feedback->getId()] = null;
+
+            return null;
+        }
+
+        if ($chosen->getOption('parent_id')) {
+            $chosen_parent = $options[$chosen->getOption('parent_id')];
+            $this->user_cats[$feedback->getId()] = new UserCategory($chosen_parent, $chosen);
+        } else {
+            $this->user_cats[$feedback->getId()] = new UserCategory($chosen);
+        }
+
+        return $this->user_cats[$feedback->getId()];
+    }
 }

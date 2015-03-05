@@ -40,88 +40,88 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class SmtpConfig implements AccountConfigInterface
 {
-	/**
-	 * @var string
-	 */
-	public $host;
+    /**
+     * @var string
+     */
+    public $host;
 
-	/**
-	 * Default SMTP port is 25, secure 465
-	 * @var int
-	 */
-	public $port = 25;
+    /**
+     * Default SMTP port is 25, secure 465
+     * @var int
+     */
+    public $port = 25;
 
-	/**
-	 * @var string
-	 */
-	public $user;
+    /**
+     * @var string
+     */
+    public $user;
 
-	/**
-	 * @var string
-	 */
-	public $password;
+    /**
+     * @var string
+     */
+    public $password;
 
-	/**
-	 * 'ssl' or 'tls'
-	 * @var null|string
-	 */
-	public $secure_mode = null;
+    /**
+     * 'ssl' or 'tls'
+     * @var null|string
+     */
+    public $secure_mode = null;
 
-	/**
-	 * @var string
-	 */
-	public $helo_string = '';
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array(
-			'host'        => $this->host,
-			'port'        => $this->port,
-			'user'        => $this->user,
-			'password'    => $this->password,
-			'secure_mode' => $this->secure_mode,
-			'helo_string' => $this->helo_string
-		);
-	}
+    /**
+     * @var string
+     */
+    public $helo_string = '';
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data as $k => $v) {
-			$obj->$k = $v;
-		}
-
-		return $obj;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'smtp';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array(
+            'host'        => $this->host,
+            'port'        => $this->port,
+            'user'        => $this->user,
+            'password'    => $this->password,
+            'secure_mode' => $this->secure_mode,
+            'helo_string' => $this->helo_string
+        );
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $k => $v) {
+            $obj->$k = $v;
+        }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('host', new Constraints\NotBlank());
-		$metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
-		$metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-			'choices' => array('none', 'ssl', 'tls')
-		)));
-	}
+        return $obj;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'smtp';
+    }
+
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
+        $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
+            'choices' => array('none', 'ssl', 'tls')
+        )));
+    }
 }

@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
@@ -45,543 +46,515 @@ use Symfony\Component\HttpFoundation\Request;
 
 class NewTicketController extends AbstractController
 {
-	################################################################################
-	# new-ticket
-	################################################################################
+    ################################################################################
+    # new-ticket
+    ################################################################################
 
-	/**
-	 * Create a new ticket
-	 */
+    /**
+     * Create a new ticket
+     */
     public function newAction($format = 'normal', $for_department_id = 0)
     {
-	    /** @var Request $request */
-	    $request = $this->get('request');
-		if (!$this->person->hasPerm('core.tickets_submit_check')) {
-			return $this->renderLoginOrPermissionError($this->generateUrl('user_tickets_new'));
-		}
+        /** @var Request $request */
+        $request = $this->get('request');
+        if (!$this->person->hasPerm('core.tickets_submit_check')) {
+            return $this->renderLoginOrPermissionError($this->generateUrl('user_tickets_new'));
+        }
 
-		$interface = Entity\Ticket::CREATED_WEB_PERSON_PORTAL;
-		if ($format == 'iframe') {
-			$interface = Entity\Ticket::CREATED_WEB_PERSON_EMBED;
-		}
+        $interface = Entity\Ticket::CREATED_WEB_PERSON_PORTAL;
+        if ($format == 'iframe') {
+            $interface = Entity\Ticket::CREATED_WEB_PERSON_EMBED;
+        }
 
-		$website_url = App::getRequest()->getUri();
-		if (!empty($GLOBALS['DP_WEBSITE_URL'])) {
-			$website_url = $GLOBALS['DP_WEBSITE_URL'];
-		}
+        $website_url = App::getRequest()->getUri();
+        if (!empty($GLOBALS['DP_WEBSITE_URL'])) {
+            $website_url = $GLOBALS['DP_WEBSITE_URL'];
+        }
 
-	    $ticket = new Entity\Ticket();
-		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
-			$interface,
-			$this->person,
-			$ticket
-		);
-		$newticket->setPersonContext($this->person);
+        $ticket = new Entity\Ticket();
+        $newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
+            $interface,
+            $this->person,
+            $ticket
+        );
+        $newticket->setPersonContext($this->person);
 
-		$hide_name_field  = false;
-		$hide_email_field = false;
-		if ($this->in->getString('default_user_name')) {
-			$newticket->person->name = $this->in->getString('default_user_name');
-			$hide_name_field = true;
-		}
-		if ($this->in->getString('default_user_email')) {
-			$newticket->person->email = $this->in->getString('default_user_email');
-			$hide_email_field = true;
-		}
+        $hide_name_field  = false;
+        $hide_email_field = false;
+        if ($this->in->getString('default_user_name')) {
+            $newticket->person->name = $this->in->getString('default_user_name');
+            $hide_name_field = true;
+        }
+        if ($this->in->getString('default_user_email')) {
+            $newticket->person->email = $this->in->getString('default_user_email');
+            $hide_email_field = true;
+        }
 
-		if ($website_url) {
-			$newticket->creation_system_option = $website_url;
-		}
+        if ($website_url) {
+            $newticket->creation_system_option = $website_url;
+        }
 
-		if ($this->search_query && !$this->request->isPost()) {
-			$newticket->ticket->subject = $this->search_query;
-		}
+        if ($this->search_query && !$this->request->isPost()) {
+            $newticket->ticket->subject = $this->search_query;
+        }
 
-		$newticket_formtype = new NewTicketType($this->person);
+        $newticket_formtype = new NewTicketType($this->person);
 
-		/** @var \Symfony\Component\Form\Form $form */
-		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+        /** @var \Symfony\Component\Form\Form $form */
+        $form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$set_dep_id = null;
-		if ($this->in->getUint('set_dep_id')) {
-			$for_department_id = $this->in->getUint('set_dep_id');
-		}
+        $set_dep_id = null;
+        if ($this->in->getUint('set_dep_id')) {
+            $for_department_id = $this->in->getUint('set_dep_id');
+        }
 
-		// Check if user only has access to a single dep
-		if (!$for_department_id) {
-			$deps = $this->container->getDataService('Department')->getPersonDepartments($this->person, 'tickets');
-			if (count($deps) == 1) {
-				$first = Arrays::getFirstItem($deps);
-				if (count($first->children) == 1) {
-					$set_dep_id = Arrays::getFirstItem($first->children)->id;
-				}
-			}
-		}
+        // Check if user only has access to a single dep
+        if (!$for_department_id) {
+            $deps = $this->container->getDataService('Department')->getPersonDepartments($this->person, 'tickets');
+            if (count($deps) == 1) {
+                $first = Arrays::getFirstItem($deps);
+                if (count($first->children) == 1) {
+                    $set_dep_id = Arrays::getFirstItem($first->children)->id;
+                }
+            }
+        }
 
-		if ($for_department_id) {
-			$newticket->ticket->department_id = $for_department_id;
-			$set_dep_id = $newticket->ticket->department_id;
-		}
+        if ($for_department_id) {
+            $newticket->ticket->department_id = $for_department_id;
+            $set_dep_id = $newticket->ticket->department_id;
+        }
 
-		$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
-		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+        $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+        $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 
-		if ($newticket->ticket->department_id) {
-			$default_page = $layouts->getLayout($newticket->ticket->department_id);
-		} else {
-			$default_page = $layouts->getDefaultLayout();
-		}
+        if ($newticket->ticket->department_id) {
+            $default_page = $layouts->getLayout($newticket->ticket->department_id);
+        } else {
+            $default_page = $layouts->getDefaultLayout();
+        }
 
-		$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::NEW_TICKET);
+        $default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::NEW_TICKET);
 
-		if ($default_page) {
-			$page_data_field_ids = array();
-			foreach ($default_page as $field) {
-				$page_data_field_ids[] = $field->getId();
-			}
-		} else {
-			$page_data_field_ids = array();
-		}
+        if ($default_page) {
+            $page_data_field_ids = array();
+            foreach ($default_page as $field) {
+                $page_data_field_ids[] = $field->getId();
+            }
+        } else {
+            $page_data_field_ids = array();
+        }
 
-		$unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
+        $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
-		$captcha = null;
-		if (isset($unique_items['captcha']) && empty($this->person->id)) {
-			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
-		}
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $captcha = null;
+        $force_captcha = false;
+        $isLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
 
-		$errors = array();
-		$error_fields = array();
+        if ($isLimited || (isset($unique_items['captcha']) && empty($this->person->id))) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+        }
 
-		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
-		if ($captcha) {
-			$validator->setCaptcha($captcha);
-		}
+        if ($isLimited) {
+            $force_captcha = true;
+            unset($unique_items['captcha']);
+            if (false !== $k = array_search('captcha', $page_data_field_ids)) {
+                unset($page_data_field_ids[$k]);
+            }
+        }
 
-		// Custom fields
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
-		$custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
+        $errors = array();
+        $error_fields = array();
 
-		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
-		$fm = $this->container->getSystemService('TicketFieldsManager');
-		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
-			if (empty($_REQUEST['newticket_custom_ticket_fields']) || !is_array($_REQUEST['newticket_custom_ticket_fields'])) {
-				$_REQUEST['newticket_custom_ticket_fields'] = array();
-			}
-			$field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
-			$field_form_data = $fm->createFieldDataFromArray($field_data);
-			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
-		} else {
-			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
-		}
+        $validator = new \Application\UserBundle\Validator\NewTicketValidator();
+        if ($captcha) {
+            $validator->setCaptcha($captcha);
+        }
 
-		/** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
-		$ufm = $this->container->getSystemService('PersonFieldsManager');
-		if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
-			if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
-				$_REQUEST['newticket_custom_user_fields'] = array();
-			}
-			$field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
-			$field_form_data = $ufm->createFieldDataFromArray($field_data);
-			$custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
-		} else {
-			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
-		}
+        // Custom fields
+        // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+        // So dont remove it even though it looks like it's not used! :-)
+        $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
+        $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
 
-	    // specific user custom fields (but can be used for any sort of custom fields)
-	    $manager = $this->container->getCustomFieldManager();
-	    $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person, $default_page);
-	    if ($org = $this->person->organization) {
-		    $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org, $default_page));
-	    }
+        /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+        $fm = $this->container->getSystemService('TicketFieldsManager');
+        if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
+            if (empty($_REQUEST['newticket_custom_ticket_fields']) || !is_array($_REQUEST['newticket_custom_ticket_fields'])) {
+                $_REQUEST['newticket_custom_ticket_fields'] = array();
+            }
+            $field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
+            $field_form_data = $fm->createFieldDataFromArray($field_data);
+            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
+        } else {
+            $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
+        }
 
-		$captcha_html = '';
-		if ($captcha) {
-			$captcha_html = $captcha->getHtml();
-		}
+        /** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
+        $ufm = $this->container->getSystemService('PersonFieldsManager');
+        if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
+            if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
+                $_REQUEST['newticket_custom_user_fields'] = array();
+            }
+            $field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+            $field_form_data = $ufm->createFieldDataFromArray($field_data);
+            $custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
+        } else {
+            $custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
+        }
 
-		if ($request->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+        // specific user custom fields (but can be used for any sort of custom fields)
+        $manager = $this->container->getCustomFieldManager();
+        $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person);
+        if ($org = $this->person->organization) {
+            $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org));
+        }
 
-			if (!$this->consumeRequest('newticket')) {
-				return $this->redirectRoute('user');
-			}
+        $captcha_html = '';
+        if ($captcha) {
+            $captcha_html = $captcha->getHtml();
+        }
 
-			$form->handleRequest($request);
-			if (!$request->request->has($new_custom_fields_form->getName())) {
-				$request->request->set($new_custom_fields_form->getName(), array());
-			}
-			$new_custom_fields_form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
-			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
-			$newticket->ticket->attach_ids_authed = true;
-			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
-			$newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            if (!$this->consumeRequest('newticket')) {
+                return $this->redirectRoute('user');
+            }
 
-			if ($newticket->ticket->department_id) {
-				$layout_page = $layouts->getLayout($newticket->ticket->department_id);
-				$layout_page = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
-			} else {
-				$layout_page = $default_page;
-			}
+            $form->handleRequest($request);
 
-			$validator->setLayout($layout_page);
+            $newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+            $newticket->ticket->attach_ids_authed = true;
+            $newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
+            $newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
 
-			$trap_fail = false;
-			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
-				$trap_fail = true;
-			}
+            if ($newticket->ticket->department_id) {
+                $layout_page = $layouts->getLayout($newticket->ticket->department_id);
+                $layout_page = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
+            } else {
+                $layout_page = $default_page;
+            }
 
-			if ($new_custom_fields_form->isValid() && $validator->isValid($newticket) && !$trap_fail) {
-				try {
-					$ticket = $newticket->save();
+            $validator->setLayout($layout_page);
 
-				} catch (DuplicateTicketException $e) {
-					// Double submit detected, just continue on
-					$ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
+            $trap_fail = false;
+            if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+                $trap_fail = true;
+            }
 
-					if (!$ticket) {
-						throw $this->createNotFoundException();
-					}
-				}
-				$manager->flush($new_custom_fields_form);
-				$person = $ticket['person'];
+            if ($validator->isValid($newticket) && !$trap_fail) {
+                try {
+                    $ticket = $newticket->save();
+                    $rateLimit->saveAction(RateLimit::ACT_SUBMIT_TICKET);
 
-				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
+                    if (!$request->request->has($new_custom_fields_form->getName())) {
+                        $request->request->set($new_custom_fields_form->getName(), array());
+                    }
+                    $new_custom_fields_form->handleRequest($this->get('request'));
+                    if ($new_custom_fields_form->isValid()) {
+                        $manager->flush($new_custom_fields_form);
+                    }
 
-				// Its no longer a preticket, so we can delete the record
-				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
-					$preticket = $this->em->find('DeskPRO:PreticketContent', $preticket_id);
+                } catch (DuplicateTicketException $e) {
+                    // Double submit detected, just continue on
+                    $ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
 
-					// Must be same user
-					if ($preticket) {
-						if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-							$preticket = null;
-						}
-					}
+                    if (!$ticket) {
+                        throw $this->createNotFoundException();
+                    }
+                }
+                $manager->flush($new_custom_fields_form);
+                $person = $ticket['person'];
 
-					if ($preticket) {
-						$this->em->remove($preticket);
-						$this->em->flush();
-					}
-				}
+                $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
-				if ($ticket->person_email_validating) {
-					$this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
-					$this->session->save();
-				}
+                // Its no longer a preticket, so we can delete the record
+                if ($preticket_id = $this->in->getUint('preticket_status_id')) {
+                    $preticket = $this->em->find('DeskPRO:PreticketContent', $preticket_id);
 
-				// Require login means we need to ask the user to log in now
-				if ($newticket->require_login) {
+                    // Must be same user
+                    if ($preticket) {
+                        if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+                            $preticket = null;
+                        }
+                    }
 
-					$this->session->setFlash('new_ticket_login', 1);
-					$this->session->save();
+                    if ($preticket) {
+                        $this->em->remove($preticket);
+                        $this->em->flush();
+                    }
+                }
 
-					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket->id))));
+                if ($ticket->person_email_validating) {
+                    $this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
+                    $this->session->save();
+                }
 
-				// New users are always sent back to home with flash message.
-				} elseif ($person->isNewPerson() || !$person->is_user) {
+                // Require login means we need to ask the user to log in now
+                if ($newticket->require_login) {
 
-					$go = 'front';
+                    $this->session->setFlash('new_ticket_login', 1);
+                    $this->session->save();
 
-				// Existing users are redirected to the ticket if they're using a validated email address.
-				// Otherwise they're sent back to the homepage just like an unregistered user is
-				} else {
-					if ($ticket->person_email_validating || $ticket->person->id != $this->person->id) {
-						$go = 'front';
-					} else {
-						$go = 'ticket';
-					}
-				}
+                    return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket->id))));
 
-				if ($this->in->getString('redirect_after')) {
-					return $this->redirect($this->in->getString('redirect_after'));
-				} elseif ($format == 'iframe') {
-					return $this->redirectRoute('user_tickets_new_thanks_simple', array('ticket_ref' => $ticket['public_id']));
-				} else {
-					if ($go == 'front') {
-						if ($ticket->person_email_validating) {
-							$this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
-						} else {
-							$this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
-						}
-						$this->session->setFlash('new_ticket', $ticket->getPublicId());
+                // New users are always sent back to home with flash message.
+                } elseif ($person->isNewPerson() || !$person->is_user) {
 
-						$this->session->save();
+                    $go = 'front';
 
-						return $this->redirectRoute('user');
-					} else {
-						return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
-					}
-				}
-			} else {
-				$errors = $validator->getErrors(true);
-				$error_fields = $validator->getErrorGroups(true);
-			}
-		} else {
-			if (($newticketData = $this->get('request')->get('newticket')) && is_array($newticketData)) {
-				// need to iterate over children as form locked by mapped 'person' child
-				foreach ($newticketData as $name => $value) {
-					try {
-						$form->get($name)->setData($value);
-					} catch (OutOfBoundsException $e) {}
-				}
-			}
-		}
+                // Existing users are redirected to the ticket if they're using a validated email address.
+                // Otherwise they're sent back to the homepage just like an unregistered user is
+                } else {
+                    if ($ticket->person_email_validating || $ticket->person->id != $this->person->id) {
+                        $go = 'front';
+                    } else {
+                        $go = 'ticket';
+                    }
+                }
 
-		$tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
-		$redirect_after = '';
-		if ($format == 'iframe') {
-			$tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
-			$redirect_after = $this->in->getString('redirect_after');
-		}
+                if ($this->in->getString('redirect_after')) {
+                    return $this->redirect($this->in->getString('redirect_after'));
+                } elseif ($format == 'iframe') {
+                    return $this->redirectRoute('user_tickets_new_thanks_simple', array('ticket_ref' => $ticket['public_id']));
+                } else {
+                    if ($go == 'front') {
+                        if ($ticket->person_email_validating) {
+                            $this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
+                        } else {
+                            $this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
+                        }
+                        $this->session->setFlash('new_ticket', $ticket->getPublicId());
 
-		return $this->render($tpl, array(
-			'set_dep_id'            => $set_dep_id,
-			'all_items'             => $unique_items,
+                        $this->session->save();
 
-			'newticket'             => $newticket,
-			'newticket_formtype'    => $newticket_formtype,
-			'form'                  => $form->createView(),
-			'custom_fields'         => $custom_fields,
-			'custom_user_fields'    => $custom_user_fields,
-			'ticket_display_js'     => $ticket_display_js,
+                        return $this->redirectRoute('user');
+                    } else {
+                        return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
+                    }
+                }
+            } else {
+                $errors = $validator->getErrors(true);
+                $error_fields = $validator->getErrorGroups(true);
+            }
+        } else {
+            if (($newticketData = $this->get('request')->get('newticket')) && is_array($newticketData)) {
+                // need to iterate over children as form locked by mapped 'person' child
+                foreach ($newticketData as $name => $value) {
+                    try {
+                        $form->get($name)->setData($value);
+                    } catch (OutOfBoundsException $e) {}
+                }
+            }
+        }
 
-			'captcha_html'          => $captcha_html,
-			'errors'                => $errors,
-			'error_fields'          => $error_fields,
+        $tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
+        $redirect_after = '';
+        if ($format == 'iframe') {
+            $tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
+            $redirect_after = $this->in->getString('redirect_after');
+        }
 
-			'page_data_field_ids'   => $page_data_field_ids,
+        return $this->render($tpl, array(
+            'set_dep_id'            => $set_dep_id,
+            'all_items'             => $unique_items,
 
-			'redirect_after'        => $redirect_after,
-			'website_url'           => $website_url,
+            'newticket'             => $newticket,
+            'newticket_formtype'    => $newticket_formtype,
+            'form'                  => $form->createView(),
+            'custom_fields'         => $custom_fields,
+            'custom_user_fields'    => $custom_user_fields,
+            'ticket_display_js'     => $ticket_display_js,
 
-			'hide_name_field'       => $hide_name_field,
-			'hide_email_field'      => $hide_email_field,
+            'captcha_html'          => $captcha_html,
+            'errors'                => $errors,
+            'error_fields'          => $error_fields,
 
-			'new_custom_fields' => $new_custom_fields_form->createView(),
-		));
+            'page_data_field_ids'   => $page_data_field_ids,
+
+            'redirect_after'        => $redirect_after,
+            'website_url'           => $website_url,
+
+            'hide_name_field'       => $hide_name_field,
+            'hide_email_field'      => $hide_email_field,
+
+            'new_custom_fields' => $new_custom_fields_form->createView(),
+            'force_captcha'     => $force_captcha,
+        ));
     }
 
-	/**
-	 * Saves a users form in the database incase they abandon the form
-	 */
-	public function saveStatusAction()
-	{
-		$id = $this->in->getUint('preticket_status_id');
+    /**
+     * Saves a users form in the database incase they abandon the form
+     */
+    public function saveStatusAction()
+    {
+        return $this->createJsonResponse(array(
+            'preticket_status_id' => 0
+        ));
+    }
 
-		$preticket = null;
-		if ($id) {
-			$preticket = $this->em->find('DeskPRO:PreticketContent', $id);
+    public function contentSolvedRedirectAction()
+    {
+        $id = $this->in->getUint('preticket_status_id');
 
-			// Must be same user
-			if ($preticket) {
-				if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-					$preticket = null;
-				}
-			}
-		}
+        $preticket = null;
+        if ($id) {
+            $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
 
-		if (!$preticket) {
-			$preticket = Entity\PreticketContent::newForPerson($this->person, true);
-		}
+            // Must be same user
+            if ($preticket) {
+                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+                    $preticket = null;
+                }
+            }
+        }
 
-		$form_data = $_POST;
-		unset($form_data['preticket_status_id']);
+        $url = $this->in->getString('url');
+        if (!$url) {
+            $url = $this->get('router')->generate('user');
+        }
 
-		if (!empty($form_data['newticket']['ticket']['subject'])) {
-			$preticket->subject = $form_data['newticket']['ticket']['subject'];
-		}
-		if (!empty($form_data['newticket']['ticket']['message'])) {
-			$preticket->message = $form_data['newticket']['ticket']['message'];
-		}
-		if (!empty($form_data['newticket']['ticket']['department_id'])) {
-			$preticket->department_id = $form_data['newticket']['ticket']['department_id'];
-		}
-		if (!empty($form_data['newticket']['person']['email'])) {
-			$preticket->email = $form_data['newticket']['person']['email'];
-		}
-		if (!empty($form_data['newticket']['person']['name'])) {
-			$preticket->name = $form_data['newticket']['person']['name'];
-		}
+        $content_type = $this->in->getString('content_type');
+        $content_id   = $this->in->getString('content_id');
 
-		$preticket->data = $form_data;
+        // Invalid preticket or content
+        if (!$preticket || !$content_type || !$content_id) {
+            return $this->redirect($url);
+        }
 
-		$this->em->beginTransaction();
-		$this->em->persist($preticket);
-		$this->em->flush();
-		$this->em->commit();
+        $preticket->is_solved    = true;
+        $preticket->object_type = $content_type;
+        $preticket->object_id   = $content_id;
 
-		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
+        $this->em->beginTransaction();
+        $this->em->persist($preticket);
+        $this->em->flush();
+        $this->em->commit();
 
-		$this->session->set('preticket_id', $preticket->getId());
+        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
-		return $this->createJsonResponse(array(
-			'preticket_status_id' => $preticket->id
-		));
-	}
+        $this->session->remove('preticket_id');
 
-	public function contentSolvedRedirectAction()
-	{
-		$id = $this->in->getUint('preticket_status_id');
+        return $this->redirect($url);
+    }
 
-		$preticket = null;
-		if ($id) {
-			$preticket = $this->em->find('DeskPRO:PreticketContent', $id);
+    public function contentSolvedSaveAction()
+    {
+        $id = $this->in->getUint('preticket_status_id');
 
-			// Must be same user
-			if ($preticket) {
-				if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-					$preticket = null;
-				}
-			}
-		}
+        $preticket = null;
+        if ($id) {
+            $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
 
-		$url = $this->in->getString('url');
-		if (!$url) {
-			$url = $this->get('router')->generate('user');
-		}
+            // Must be same user
+            if ($preticket) {
+                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+                    $preticket = null;
+                }
+            }
+        }
 
-		$content_type = $this->in->getString('content_type');
-		$content_id   = $this->in->getString('content_id');
+        $content_type = $this->in->getString('content_type');
+        $content_id   = $this->in->getString('content_id');
 
-		// Invalid preticket or content
-		if (!$preticket || !$content_type || !$content_id) {
-			return $this->redirect($url);
-		}
+        // Invalid preticket or content
+        if (!$preticket || !$content_type || !$content_id) {
+            return $this->createJsonResponse(array('invalid_details' => 1));
+        }
 
-		$preticket->is_solved    = true;
-		$preticket->object_type = $content_type;
-		$preticket->object_id   = $content_id;
+        if ($this->in->getBool('add_unsolved')) {
+            $unsolved = $preticket->unsolved_content;
+            $unsolved[] = array($content_type, $content_id);
 
-		$this->em->beginTransaction();
-		$this->em->persist($preticket);
-		$this->em->flush();
-		$this->em->commit();
+            $preticket->unsolved_content = $unsolved;
+        } else {
+            $preticket->is_solved    = true;
+            $preticket->object_type = $content_type;
+            $preticket->object_id   = $content_id;
+        }
 
-		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
+        // Mark content as helpful while we're at it
+        try {
+            $save_rating = new \Application\DeskPRO\Publish\SaveRating($this->person);
+            $save_rating->save($content_type, $content_id, 1);
+        } catch (\Exception $e) {}
 
-		$this->session->remove('preticket_id');
+        $this->em->beginTransaction();
+        $this->em->persist($preticket);
+        $this->em->flush();
+        $this->em->commit();
 
-		return $this->redirect($url);
-	}
+        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
-	public function contentSolvedSaveAction()
-	{
-		$id = $this->in->getUint('preticket_status_id');
+        return $this->createJsonResponse(array('success' => 1));
+    }
 
-		$preticket = null;
-		if ($id) {
-			$preticket = $this->em->find('DeskPRO:PreticketContent', $id);
+    ################################################################################
+    # thanks
+    ################################################################################
 
-			// Must be same user
-			if ($preticket) {
-				if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-					$preticket = null;
-				}
-			}
-		}
+    public function thanksAction($ticket_ref)
+    {
+        $ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
-		$content_type = $this->in->getString('content_type');
-		$content_id   = $this->in->getString('content_id');
+        // Must exist, and match the ref n the session (so theres no info leak)
+        if (!$ticket OR $ticket['ref'] != $this->session->get('submitted_ticket')) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
 
-		// Invalid preticket or content
-		if (!$preticket || !$content_type || !$content_id) {
-			return $this->createJsonResponse(array('invalid_details' => 1));
-		}
+        return $this->render('UserBundle:NewTicket:thanks.html.twig', array(
+            'ticket' => $ticket
+        ));
+    }
 
-		if ($this->in->getBool('add_unsolved')) {
-			$unsolved = $preticket->unsolved_content;
-			$unsolved[] = array($content_type, $content_id);
+    /**
+     * Standard thanks page after a user submits a tikcet from an embedded iframe,
+     * and the webmaster didnt supply an after-redirection URL
+     *
+     * @param $ticket_ref
+     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function simpleThanksAction()
+    {
+        return $this->render('UserBundle:NewTicket:thanks-simple.html.twig', array(
 
-			$preticket->unsolved_content = $unsolved;
-		} else {
-			$preticket->is_solved    = true;
-			$preticket->object_type = $content_type;
-			$preticket->object_id   = $content_id;
-		}
+        ));
+    }
 
-		// Mark content as helpful while we're at it
-		try {
-			$save_rating = new \Application\DeskPRO\Publish\SaveRating($this->person);
-			$save_rating->save($content_type, $content_id, 1);
-		} catch (\Exception $e) {}
+    public function newFinishLoginAction($ticket_id)
+    {
+        if ($this->person->isGuest()) {
+            $return_url = $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket_id));
 
-		$this->em->beginTransaction();
-		$this->em->persist($preticket);
-		$this->em->flush();
-		$this->em->commit();
+            return $this->redirectRoute('user_login', array('return' => $return_url));
+        }
 
-		$GLOBALS['DP_SET_SKIP_CACHE'] = true;
+        $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+        if (!$ticket) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
 
-		return $this->createJsonResponse(array('success' => 1));
-	}
+        if ($ticket->person->id != $this->person->id) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
 
-	################################################################################
-	# thanks
-	################################################################################
+        $ticket->status = 'awaiting_agent';
+        $this->em->getConnection()->beginTransaction();
 
-	public function thanksAction($ticket_ref)
-	{
-		$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+        try {
+            $this->em->persist($ticket);
+            $this->em->flush();
 
-		// Must exist, and match the ref n the session (so theres no info leak)
-		if (!$ticket OR $ticket['ref'] != $this->session->get('submitted_ticket')) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+            $this->em->getConnection()->commit();
 
-		return $this->render('UserBundle:NewTicket:thanks.html.twig', array(
-			'ticket' => $ticket
-		));
-	}
+            $GLOBALS['DP_SET_SKIP_CACHE'] = true;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
 
-	/**
-	 * Standard thanks page after a user submits a tikcet from an embedded iframe,
-	 * and the webmaster didnt supply an after-redirection URL
-	 *
-	 * @param $ticket_ref
-	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
-	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-	 */
-	public function simpleThanksAction()
-	{
-		return $this->render('UserBundle:NewTicket:thanks-simple.html.twig', array(
-
-		));
-	}
-
-	public function newFinishLoginAction($ticket_id)
-	{
-		if ($this->person->isGuest()) {
-			$return_url = $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket_id));
-			return $this->redirectRoute('user_login', array('return' => $return_url));
-		}
-
-		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-		if (!$ticket) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
-		if ($ticket->person->id != $this->person->id) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
-		$ticket->status = 'awaiting_agent';
-		$this->em->getConnection()->beginTransaction();
-
-		try {
-			$this->em->persist($ticket);
-			$this->em->flush();
-
-			$this->em->getConnection()->commit();
-
-			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-
-		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
-	}
+        return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+    }
 }

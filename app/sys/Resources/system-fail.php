@@ -1,6 +1,6 @@
 <?php
 if (!isset($__fail_code)) {
-	return;
+    return;
 }
 
 $__fail_code = (int)$__fail_code;

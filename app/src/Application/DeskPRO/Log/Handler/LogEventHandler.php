@@ -28,28 +28,27 @@
 namespace Application\DeskPRO\Log\Handler;
 
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LogEvent;
 
 class LogEventHandler extends DBHandler
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function isHandling(array $record)
-	{
-		return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function isHandling(array $record)
+    {
+        return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent;
+    }
 
-	/**
-	 * @param array $record
-	 */
-	protected function write(array $record)
-	{
-		/** @var LogEvent $entity */
-		$entity = $record['context']['_entity'];
-		$entity->prepare();
+    /**
+     * @param array $record
+     */
+    protected function write(array $record)
+    {
+        /** @var LogEvent $entity */
+        $entity = $record['context']['_entity'];
+        $entity->prepare();
 
-		parent::write($record);
-	}
-} 
+        parent::write($record);
+    }
+}

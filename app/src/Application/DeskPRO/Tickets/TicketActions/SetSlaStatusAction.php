@@ -42,119 +42,120 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class SetSlaStatusAction extends AbstractAction
 {
-	/** @var string */
-	protected $sla_status;
-	/** @var int */
-	protected $sla_id;
+    /** @var string */
+    protected $sla_status;
+    /** @var int */
+    protected $sla_id;
 
-	public function __construct($sla_status, $sla_id)
-	{
-		$this->sla_status = $sla_status;
-		$this->sla_id = $sla_id;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		if ($this->sla_id) {
-			$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
-			if (!$sla) {
-				return;
-			}
-
-			$ticket_sla = $ticket->hasSla($sla);
-			if (!$ticket_sla) {
-				return;
-			}
-
-			$ticket_slas = array($ticket_sla);
-		} else {
-			$ticket_slas = $ticket->ticket_slas;
-		}
-
-		foreach ($ticket_slas AS $ticket_sla) {
-			$ticket_sla->setSlaStatus($this->sla_status, false);
-		}
-	}
+    public function __construct($sla_status, $sla_id)
+    {
+        $this->sla_status = $sla_status;
+        $this->sla_id = $sla_id;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'set_sla_status', 'sla_status' => $this->sla_status, 'sla_id' => $this->sla_id)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        if ($this->sla_id) {
+            $sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
+            if (!$sla) {
+                return;
+            }
+
+            $ticket_sla = $ticket->hasSla($sla);
+            if (!$ticket_sla) {
+                return;
+            }
+
+            $ticket_slas = array($ticket_sla);
+        } else {
+            $ticket_slas = $ticket->ticket_slas;
+        }
+
+        foreach ($ticket_slas AS $ticket_sla) {
+            $ticket_sla->setSlaStatus($this->sla_status, false);
+        }
+    }
 
 
-	/**
-	 * @return integer
-	 */
-	public function getSlaStatus()
-	{
-		return $this->sla_status;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'set_sla_status', 'sla_status' => $this->sla_status, 'sla_id' => $this->sla_id)
+        );
+    }
 
 
-	/**
-	 * @return integer
-	 */
-	public function getSlaId()
-	{
-		return $this->sla_id;
-	}
+    /**
+     * @return integer
+     */
+    public function getSlaStatus()
+    {
+        return $this->sla_status;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * @return integer
+     */
+    public function getSlaId()
+    {
+        return $this->sla_id;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         $tr = App::getTranslator();
 
-		// todo: phrase
-		switch ($this->sla_status) {
-			case 'ok':
-				$value = 'OK';
-				break;
-			case 'warning':
-				$value = 'Warning';
-				break;
-			case 'fail':
-				$value = 'Failed';
-				break;
-			default: $value = '';
-		}
+        // todo: phrase
+        switch ($this->sla_status) {
+            case 'ok':
+                $value = 'OK';
+                break;
+            case 'warning':
+                $value = 'Warning';
+                break;
+            case 'fail':
+                $value = 'Failed';
+                break;
+            default: $value = '';
+        }
 
-		if ($this->sla_id) {
-			$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
-			return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
-				'sla_status' => $value,
-				'sla' => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>')
-			));
-		} else {
-			return $tr->phrase('agent.tickets.set_sla_status_action', array(
-				'sla_status' => $value
-			));
-		}
-	}
+        if ($this->sla_id) {
+            $sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
+
+            return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
+                'sla_status' => $value,
+                'sla' => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>')
+            ));
+        } else {
+            return $tr->phrase('agent.tickets.set_sla_status_action', array(
+                'sla_status' => $value
+            ));
+        }
+    }
 }

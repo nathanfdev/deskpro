@@ -39,157 +39,161 @@ namespace Application\DeskPRO\Dpql;
  */
 class Compiler
 {
-	/**
-	 * @var \Application\DeskPRO\Dpql\Lexer|null
-	 */
-	protected $_lexer;
+    /**
+     * @var \Application\DeskPRO\Dpql\Lexer|null
+     */
+    protected $_lexer;
 
-	/**
-	 * @var \Application\DeskPRO\Dpql\Parser|null
-	 */
-	protected $_parser;
+    /**
+     * @var \Application\DeskPRO\Dpql\Parser|null
+     */
+    protected $_parser;
 
-	/**
-	 * @param \Application\DeskPRO\Dpql\Lexer|null $lexer
-	 * @param \Application\DeskPRO\Dpql\Parser|null $parser
-	 */
-	public function __construct(Lexer $lexer = null, Parser $parser = null)
-	{
-		if (!$lexer) $lexer = new Lexer();
-		if (!$parser) $parser = new Parser();
+    /**
+     * @param \Application\DeskPRO\Dpql\Lexer|null  $lexer
+     * @param \Application\DeskPRO\Dpql\Parser|null $parser
+     */
+    public function __construct(Lexer $lexer = null, Parser $parser = null)
+    {
+        if (!$lexer) $lexer = new Lexer();
+        if (!$parser) $parser = new Parser();
 
-		$this->_lexer = $lexer;
-		$this->_parser = $parser;
-	}
+        $this->_lexer = $lexer;
+        $this->_parser = $parser;
+    }
 
-	/**
-	 * Compiles the given DPQL string to a statement object
-	 *
-	 * @param string $input
-	 * @param array $placeholders
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Display
-	 */
-	public function compile($input, array $placeholders = array())
-	{
-		$input = $this->replacePlaceholders($input, $placeholders);
-		$statement = $this->lexAndParse($input);
-		$statement->prepare();
+    /**
+     * Compiles the given DPQL string to a statement object
+     *
+     * @param string $input
+     * @param array  $placeholders
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Display
+     */
+    public function compile($input, array $placeholders = array())
+    {
+        $input = $this->replacePlaceholders($input, $placeholders);
+        $statement = $this->lexAndParse($input);
+        $statement->prepare();
 
-		return $statement;
-	}
+        return $statement;
+    }
 
-	/**
-	 * Lexes and parses a DPQL string. Only ensures that it's syntactically valid.
-	 *
-	 * @param string $input
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Display
-	 */
-	public function lexAndParse($input)
-	{
-		$this->_lexer->setInput($input);
+    /**
+     * Lexes and parses a DPQL string. Only ensures that it's syntactically valid.
+     *
+     * @param string $input
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Display
+     */
+    public function lexAndParse($input)
+    {
+        $this->_lexer->setInput($input);
 
-		while ($this->_lexer->yylex()) {
-			$this->_parser->line = $this->_lexer->line;
-			$this->_parser->doParse($this->_lexer->token, $this->_lexer->value);
-		}
-		$this->_parser->doParse(0, 0);
+        while ($this->_lexer->yylex()) {
+            $this->_parser->line = $this->_lexer->line;
+            $this->_parser->doParse($this->_lexer->token, $this->_lexer->value);
+        }
+        $this->_parser->doParse(0, 0);
 
-		return $this->_parser->getResult();
-	}
+        return $this->_parser->getResult();
+    }
 
-	public function replacePlaceholders($input, array $placeholders = array())
-	{
-		$repository = \Application\DeskPRO\App::getEntityRepository('DeskPRO:ReportBuilder');
+    public function replacePlaceholders($input, array $placeholders = array())
+    {
+        $repository = \Application\DeskPRO\App::getEntityRepository('DeskPRO:ReportBuilder');
 
-		$groupParams = $repository->getReportGroupParams();
+        $groupParams = $repository->getReportGroupParams();
 
-		$input = preg_replace_callback(
-			'/%(\d+):DATE_GROUP%/',
-			function ($match) use ($placeholders, $groupParams) {
-				if (isset($placeholders[$match[1]])) {
-					$value = strval($placeholders[$match[1]]);
-					if (isset($groupParams['dates'][$value])) {
-						return $groupParams['dates'][$value][1];
-					}
-				}
+        $input = preg_replace_callback(
+            '/%(\d+):DATE_GROUP%/',
+            function ($match) use ($placeholders, $groupParams) {
+                if (isset($placeholders[$match[1]])) {
+                    $value = strval($placeholders[$match[1]]);
+                    if (isset($groupParams['dates'][$value])) {
+                        return $groupParams['dates'][$value][1];
+                    }
+                }
 
-				$first = reset($groupParams['dates']);
-				return $first[1];
-			},
-			$input
-		);
+                $first = reset($groupParams['dates']);
 
-		$input = preg_replace_callback(
-			'/%(\d+):FIELD_GROUP:([^:%]+)(:([^%]+))?%/',
-			function ($match) use ($placeholders, $groupParams) {
-				$type = $match[2];
-				$table = isset($match[4]) ? $match[4] : $type;
+                return $first[1];
+            },
+            $input
+        );
 
-				if (isset($placeholders[$match[1]])) {
-					$value = strval($placeholders[$match[1]]);
-					if (isset($groupParams['fields'][$type][$value])) {
-						return sprintf($groupParams['fields'][$type][$value][1], $table);
-					}
-				}
+        $input = preg_replace_callback(
+            '/%(\d+):FIELD_GROUP:([^:%]+)(:([^%]+))?%/',
+            function ($match) use ($placeholders, $groupParams) {
+                $type = $match[2];
+                $table = isset($match[4]) ? $match[4] : $type;
 
-				if (isset($groupParams['fields'][$type])) {
-					$first = reset($groupParams['fields'][$type]);
-					return sprintf($first[1], $table);
-				}
+                if (isset($placeholders[$match[1]])) {
+                    $value = strval($placeholders[$match[1]]);
+                    if (isset($groupParams['fields'][$type][$value])) {
+                        return sprintf($groupParams['fields'][$type][$value][1], $table);
+                    }
+                }
 
-				return 'NULL';
-			},
-			$input
-		);
+                if (isset($groupParams['fields'][$type])) {
+                    $first = reset($groupParams['fields'][$type]);
 
-		$input = preg_replace_callback(
-			'/%(\d+):STATUS_GROUP:([^:%]+)(:([^%]+))?%/',
-			function ($match) use ($placeholders, $groupParams) {
-				$type = $match[2];
-				$table = isset($match[4]) ? $match[4] : $type;
+                    return sprintf($first[1], $table);
+                }
 
-				if (isset($placeholders[$match[1]])) {
-					$value = strval($placeholders[$match[1]]);
-					if (isset($groupParams['statuses'][$type][$value])) {
-						return sprintf($groupParams['statuses'][$type][$value][1], $table);
-					}
-				}
+                return 'NULL';
+            },
+            $input
+        );
 
-				if (isset($groupParams['statuses'][$type])) {
-					$first = reset($groupParams['statuses'][$type]);
-					return sprintf($first[1], $table);
-				}
+        $input = preg_replace_callback(
+            '/%(\d+):STATUS_GROUP:([^:%]+)(:([^%]+))?%/',
+            function ($match) use ($placeholders, $groupParams) {
+                $type = $match[2];
+                $table = isset($match[4]) ? $match[4] : $type;
 
-				return '1';
-			},
-			$input
-		);
+                if (isset($placeholders[$match[1]])) {
+                    $value = strval($placeholders[$match[1]]);
+                    if (isset($groupParams['statuses'][$type][$value])) {
+                        return sprintf($groupParams['statuses'][$type][$value][1], $table);
+                    }
+                }
 
-		$input = preg_replace_callback(
-			'/%(\d+):ORDER_GROUP:([^:%]+)(:([^%]+))?%/',
-			function ($match) use ($placeholders, $groupParams) {
-				$type = $match[2];
-				$table = isset($match[4]) ? $match[4] : $type;
+                if (isset($groupParams['statuses'][$type])) {
+                    $first = reset($groupParams['statuses'][$type]);
 
-				if (isset($placeholders[$match[1]])) {
-					$value = strval($placeholders[$match[1]]);
-					if (isset($groupParams['orders'][$type][$value])) {
-						return sprintf($groupParams['orders'][$type][$value][1], $table);
-					}
-				}
+                    return sprintf($first[1], $table);
+                }
 
-				if (isset($groupParams['orders'][$type])) {
-					$first = reset($groupParams['orders'][$type]);
-					return sprintf($first[1], $table);
-				}
+                return '1';
+            },
+            $input
+        );
 
-				return 'NULL';
-			},
-			$input
-		);
+        $input = preg_replace_callback(
+            '/%(\d+):ORDER_GROUP:([^:%]+)(:([^%]+))?%/',
+            function ($match) use ($placeholders, $groupParams) {
+                $type = $match[2];
+                $table = isset($match[4]) ? $match[4] : $type;
 
-		return $input;
-	}
+                if (isset($placeholders[$match[1]])) {
+                    $value = strval($placeholders[$match[1]]);
+                    if (isset($groupParams['orders'][$type][$value])) {
+                        return sprintf($groupParams['orders'][$type][$value][1], $table);
+                    }
+                }
+
+                if (isset($groupParams['orders'][$type])) {
+                    $first = reset($groupParams['orders'][$type]);
+
+                    return sprintf($first[1], $table);
+                }
+
+                return 'NULL';
+            },
+            $input
+        );
+
+        return $input;
+    }
 }

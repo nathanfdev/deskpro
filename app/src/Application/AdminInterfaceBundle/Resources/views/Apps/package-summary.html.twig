@@ -17,9 +17,9 @@
 					<i class="fa fa-dropbox"></i> Install App
 				</a>
                 <a ng-if="!Ctrl.pack.native_name" class="btn btn-default"
-                   href="{{ path('admin_apps_download_package', {name: 'example_crm_link'}) }}"
-                   download><i class="fa fa-download"></i>
-                    Download .zip
+                   href="{{ '{{ "' ~ path('admin_apps_download_package', {name: '0000'}) ~ '".replace("0000", Ctrl.pack.name) }}'}}"
+                   download>
+	                <i class="fa fa-download"></i> Download .zip
                 </a>
 				<button ng-show="Ctrl.startDelete && !Ctrl.pack.native_name" type="button" class="btn btn-danger" ng-click="Ctrl.startDelete()">
 					<i class="fa fa-trash-o"></i> Remove App Package

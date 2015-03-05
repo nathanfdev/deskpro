@@ -25,73 +25,95 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputArgument;
+use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
+use Exception;
 
-class ExportCommand extends ContainerAwareCommand
+/**
+ * Export command
+ * Read and parse an external data and save it locally
+ *
+ * Class ExportCommand
+ * @package Application\ImportBundle\Command
+ */
+class ExportCommand extends AbstractExportCommand
 {
-	/** @var ProgressBar */
-	protected $progress_bar;
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
-	{
-		$this->setName('dp:export:run');
-		$this->setHelp('The actual export process');
-		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-		$this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:export:run');
+        $this->setHelp('The actual export process');
+        $this->addOption(
+            'output-path',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'The path to the directory where the files should be exported'
+        );
 
+        parent::configure();
+    }
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
+        $config = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
+        $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
-		
-		if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
-			$logger->err('You must supply an "input-path" argument while using CSV exporter');
-		}
-		
-		$this->progress_bar = $this->getHelperSet()->get('progress');
-		
-		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
-		
-		$generator_config = $factory->createGeneratorConfig();
-		
-		$generator_config->progress_bar	= $this->progress_bar;
-		$generator_config->output	= $output;
-		$generator_config->mode		= 'live';
-		
-		$output->setVerbosity(3);
-		
-		$generator = $factory->createGenerator($generator_config, $logger);
-		
-		$generator->generateJson();
-	}
+        if ($config->isDryRun() === false && ! $config->getOutputPath()) {
+            throw new Exception('Output path must be specified');
+        }
+        if ($config->needInputPath()) {
+            if ( ! $config->getInputPath()) {
+                throw new Exception('Input path must be specified');
+            }
+            if ($config->getInputPath() === $config->getOutputPath()) {
+                throw new Exception('Output path must be different from input path');
+            }
+        }
+
+        $logger    = $this->createLogger($config, $output);
+        $generator = $this->createGenerator($config, $output, $logger);
+
+        try {
+            $generator->generate();
+            $output->writeln('');
+            $output->writeln(sprintf(
+                'Done. Exporting was successful. Look at the log file `%s` to see details.',
+                $config->getLogPath()
+            ));
+
+        } catch (Generator\GeneratorException $e) {
+            $output->writeln('');
+            $output->writeln('');
+            foreach ($e->getExceptions() as $exception) {
+                /** @var Generator\Validator\ValidatorConstraintException $exception */
+                $logger->critical($exception);
+            }
+            if ($config->isVerbose() === false) {
+                $output->writeln(sprintf(
+                    'An error has occurred while exporting. Look at the log file `%s` to see details.',
+                    $config->getLogPath()
+                ));
+            }
+
+        } catch (Exception $e) {
+            $output->writeln('');
+            $output->writeln('');
+            $logger->critical($e->getMessage());
+            $output->writeln(sprintf(
+                'An error has occurred while importing. Look at the log file `%s` to see details.',
+                $config->getLogPath()
+            ));
+        }
+    }
 }

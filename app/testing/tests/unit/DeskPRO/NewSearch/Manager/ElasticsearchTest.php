@@ -51,4 +51,4 @@ class ElasticsearchTest extends \DpUnitTestCase
         $this->assertEmpty($results[1]);
         $this->assertFalse($results[2]);
     }
-} 
+}

@@ -7,6 +7,8 @@
  * Describes a relative monthly recurrence pattern.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_IntervalRecurrencePatternBaseType.
  */
 class EWSType_RelativeMonthlyRecurrencePatternType extends EWSType
 {

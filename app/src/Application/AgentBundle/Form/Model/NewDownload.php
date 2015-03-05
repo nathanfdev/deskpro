@@ -41,119 +41,123 @@ use Orb\Util\Web;
 
 class NewDownload
 {
-	/** @var string */
-	public $title = '';
-	/** @var int */
-	public $category_id;
-	/** @var string */
-	public $status;
-	/** @var string */
-	public $content = '';
+    /** @var string */
+    public $title = '';
+    /** @var int */
+    public $category_id;
+    /** @var string */
+    public $status;
+    /** @var string */
+    public $content = '';
 
-	/** @var string|null */
-	public $fileurl = null;
-	/** @var string|null */
-	public $filename = null;
-	/** @var int|null */
-	public $filesize = null;
+    /** @var string|null */
+    public $fileurl = null;
+    /** @var string|null */
+    public $filename = null;
+    /** @var int|null */
+    public $filesize = null;
 
-	/** @var string */
-	public $slug;
-	/** @var string */
-	public $labels_json;
-	/** @var array */
-	public $labels = array();
+    /** @var string */
+    public $slug;
+    /** @var string */
+    public $labels_json;
+    /** @var array */
+    public $labels = array();
 
-	/** @var int|null */
-	public $attach = null;
+    /** @var int|null */
+    public $attach = null;
 
-	/** @var Download */
-	protected $_download;
+    /** @var Download */
+    protected $_download;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $_em;
 
-	public function __construct(Person $person_context)
-	{
-		$this->_person_context = $person_context;
+    public function __construct(Person $person_context)
+    {
+        $this->_person_context = $person_context;
 
-		$this->_em = App::getOrm();
-	}
+        $this->_em = App::getOrm();
+    }
 
-	public function save()
-	{
-		$this->_em->beginTransaction();
+    public function save()
+    {
+        $this->_em->beginTransaction();
 
-		$download = new Download();
-		$download->person  = $this->_person_context;
-		$download->title   = $this->title;
-		$download->content = $this->content ?: '';
-		$download->setStatusCode($this->status);
+        $download = new Download();
+        $download->person  = $this->_person_context;
+        $download->title   = $this->title;
 
-		if ($download->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-			$download->setStatusCode('hidden.validating');
-		}
+        $download->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
-		$cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
-		$download->category = $cat;
+        $download->setStatusCode($this->status);
 
-		if ($this->attach) {
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-			$download->blob = $blob;
+        if ($download->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
+            $download->setStatusCode('hidden.validating');
+        }
 
-			if (!$download->title) {
-				$download->title = $blob->filename;
-			}
+        $cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
+        $download->category = $cat;
 
-			$blob->filename = $download->title;
-			$this->_em->persist($blob);
-		} else {
-			$fileurl  = $this->fileurl;
-			$filesize = $this->filesize;
-			$filename = $this->filename;
+        if ($this->attach) {
+            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+            $download->blob = $blob;
 
-			if (!$filename) {
-				$filename = Web::getUrlFileName($fileurl);
-				if (!$filename) {
-					$filename = '';
-				}
-			}
-			if (!$filesize) {
-				$filesize = Web::getUrlFileSize($fileurl);
-				if (!$filesize) {
-					$filesize = 0;
-				}
-			}
+            if (!$download->title) {
+                $download->title = $blob->filename;
+            }
 
-			$download->setFileUrl(
-				$fileurl,
-				$filesize,
-				$filename
-			);
+            $blob->filename = $download->title;
+            $this->_em->persist($blob);
+        } else {
+            $fileurl  = $this->fileurl;
+            $filesize = $this->filesize;
+            $filename = $this->filename;
 
-			if (!$download->title) {
-				$download->title = $download->getFileName();
-			}
-		}
+            if (!$filename) {
+                $filename = Web::getUrlFileName($fileurl);
+                if (!$filename) {
+                    $filename = '';
+                }
+            }
+            if (!$filesize) {
+                $filesize = Web::getUrlFileSize($fileurl);
+                if (!$filesize) {
+                    $filesize = 0;
+                }
+            }
 
-		$this->_em->persist($download);
+            $download->setFileUrl(
+                $fileurl,
+                $filesize,
+                $filename
+            );
 
-		$this->_em->flush();
+            if (!$download->title) {
+                $download->title = $download->getFileName();
+            }
+        }
 
-		if ($this->labels) {
-			$download->getLabelManager()->setLabelsArray($this->labels, $this->_em);
-		}
+        $this->_em->persist($download);
 
-		$this->_em->flush();
-		$this->_em->commit();
+        $this->_em->flush();
 
-		$this->_download = $download;
-	}
+        if ($this->labels) {
+            $download->getLabelManager()->setLabelsArray($this->labels, $this->_em);
+        }
 
-	public function getDownload()
-	{
-		return $this->_download;
-	}
+        $this->_em->flush();
+        $this->_em->commit();
+
+        $this->_download = $download;
+    }
+
+    public function getDownload()
+    {
+        return $this->_download;
+    }
 }

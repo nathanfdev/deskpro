@@ -38,30 +38,30 @@ use Application\DeskPRO\Entity\Usergroup;
 
 class Build1404985598 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
-		$em = $this->container->getEm();
+    public function run()
+    {
+        $db = $this->container->getDb();
+        $em = $this->container->getEm();
 
-		$db->update('usergroups', array('title' => '[Custom] All Permissions'), array('title' => 'All Permissions'));
-		$db->update('usergroups', array('title' => '[Custom] All Non-Destructive Permissions'), array('title' => 'All Non-Destructive Permissions'));
+        $db->update('usergroups', array('title' => '[Custom] All Permissions'), array('title' => 'All Permissions'));
+        $db->update('usergroups', array('title' => '[Custom] All Non-Destructive Permissions'), array('title' => 'All Non-Destructive Permissions'));
 
-		$g = new Usergroup();
-		$g->title          = 'All Permissions';
-		$g->note           = 'Special agent group which always has all permissions enabled.';
-		$g->is_agent_group = true;
-		$g->sys_name       = 'agent_all_perms';
-		$g->is_enabled     = true;
-		$em->persist($g);
+        $g = new Usergroup();
+        $g->title          = 'All Permissions';
+        $g->note           = 'Special agent group which always has all permissions enabled.';
+        $g->is_agent_group = true;
+        $g->sys_name       = 'agent_all_perms';
+        $g->is_enabled     = true;
+        $em->persist($g);
 
-		$g = new Usergroup();
-		$g->title          = 'All Non-Destructive Permissions';
-		$g->note           = 'Special agent group which always has all permissions enabled except those that can be desctructive (e.g., deleting).';
-		$g->is_agent_group = true;
-		$g->sys_name       = 'agent_all_safe_perms';
-		$g->is_enabled     = true;
-		$em->persist($g);
+        $g = new Usergroup();
+        $g->title          = 'All Non-Destructive Permissions';
+        $g->note           = 'Special agent group which always has all permissions enabled except those that can be desctructive (e.g., deleting).';
+        $g->is_agent_group = true;
+        $g->sys_name       = 'agent_all_safe_perms';
+        $g->is_enabled     = true;
+        $em->persist($g);
 
-		$em->flush();
-	}
+        $em->flush();
+    }
 }

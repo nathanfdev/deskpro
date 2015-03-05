@@ -39,87 +39,96 @@ namespace Application\ApiBundle\Controller;
  */
 class DocsController extends AbstractController
 {
-	public function preAction($action, $arguments = null)
-	{
-		return null;
-	}
+    protected function init()
+    {
+        $this->em       = $this->get('doctrine.orm.entity_manager');
+        $this->db       = $this->get('database_connection');
+        $this->in       = $this->get('deskpro.core.input_reader');
+        $this->cleaner  = $this->get('deskpro.core.input_cleaner');
+        $this->settings = $this->get('deskpro.core.settings');
+    }
 
-	####################################################################################################################
-	# about
-	####################################################################################################################
+    public function preAction($action, $arguments = null)
+    {
+        return null;
+    }
 
-	public function aboutAction()
-	{
-		return $this->render('ApiBundle:SwaggerUi:about.html.twig');
-	}
+    ####################################################################################################################
+    # about
+    ####################################################################################################################
 
-	####################################################################################################################
-	# api
-	####################################################################################################################
+    public function aboutAction()
+    {
+        return $this->render('ApiBundle:SwaggerUi:about.html.twig');
+    }
 
-	public function apiAction()
-	{
-		return $this->render('ApiBundle:SwaggerUi:api.html.twig');
-	}
+    ####################################################################################################################
+    # api
+    ####################################################################################################################
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    public function apiAction()
+    {
+        return $this->render('ApiBundle:SwaggerUi:api.html.twig');
+    }
 
-	public function listAction()
-	{
-		return $this->serveResource('deskpro-api');
-	}
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
+    public function listAction()
+    {
+        return $this->serveResource('deskpro-api');
+    }
 
-	public function getAction($id)
-	{
-		return $this->serveResource($id);
-	}
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
 
-	####################################################################################################################
-	# get-agents-for-key
-	####################################################################################################################
+    public function getAction($id)
+    {
+        return $this->serveResource($id);
+    }
 
-	public function getAgentsForKeyAction()
-	{
-		$apikey = $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($this->in->getString('key'));
-		if ($apikey) {
-			if ($apikey->isFlagSet('super')) {
-				$agents = $this->container->getAgentData()->getNames();
-			} else {
-				$agents = array();
-				$agents[$apikey->person->id] = $apikey->person->getDisplayName();
-			}
-			$default_id = $apikey->person ? $apikey->person->id : 0;
-		} else {
-			$agents = array();
-			$default_id = 0;
-		}
+    ####################################################################################################################
+    # get-agents-for-key
+    ####################################################################################################################
 
-		return $this->createJsonResponse(array(
-			'names'      => $agents,
-			'default_id' => $default_id,
-		));
-	}
+    public function getAgentsForKeyAction()
+    {
+        $apikey = $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($this->in->getString('key'));
+        if ($apikey) {
+            if ($apikey->isFlagSet('super')) {
+                $agents = $this->container->getAgentData()->getNames();
+            } else {
+                $agents = array();
+                $agents[$apikey->person->id] = $apikey->person->getDisplayName();
+            }
+            $default_id = $apikey->person ? $apikey->person->id : 0;
+        } else {
+            $agents = array();
+            $default_id = 0;
+        }
 
-	####################################################################################################################
+        return $this->createJsonResponse(array(
+            'names'      => $agents,
+            'default_id' => $default_id,
+        ));
+    }
 
-	private function getResourcePath($res)
-	{
-		return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/' . ltrim($res, '/') . '.json';
-	}
+    ####################################################################################################################
 
-	private function serveResource($res)
-	{
-		$path = $this->getResourcePath($res);
-		if (!file_exists($path)) {
-			throw $this->createNotFoundException();
-		}
+    private function getResourcePath($res)
+    {
+        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/' . ltrim($res, '/') . '.json';
+    }
 
-		return $this->createJsonResponse(file_get_contents($path));
-	}
+    private function serveResource($res)
+    {
+        $path = $this->getResourcePath($res);
+        if (!file_exists($path)) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->createJsonResponse(file_get_contents($path));
+    }
 }

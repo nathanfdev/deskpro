@@ -36,22 +36,22 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1370440436 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add object_lang.ref_type and object_lang.ref_id");
-		$this->execMutateSql("ALTER TABLE object_lang ADD ref_type VARCHAR(100) DEFAULT NULL, ADD ref_id INT DEFAULT NULL");
-		$this->execMutateSql("CREATE INDEX prop_ref_type ON object_lang (ref_type, ref_id)");
+    public function run()
+    {
+        $this->out("Add object_lang.ref_type and object_lang.ref_id");
+        $this->execMutateSql("ALTER TABLE object_lang ADD ref_type VARCHAR(100) DEFAULT NULL, ADD ref_id INT DEFAULT NULL");
+        $this->execMutateSql("CREATE INDEX prop_ref_type ON object_lang (ref_type, ref_id)");
 
-		$default_lang_id = $this->container->getDb()->fetchColumn("
-			SELECT value
-			FROM settings
-			WHERE name = 'core.default_language_id'
-		");
-		if (!$default_lang_id) {
-			$default_lang_id = 1;
-		}
+        $default_lang_id = $this->container->getDb()->fetchColumn("
+            SELECT value
+            FROM settings
+            WHERE name = 'core.default_language_id'
+        ");
+        if (!$default_lang_id) {
+            $default_lang_id = 1;
+        }
 
-		$this->out("Setting language_id to $default_lang_id on articles");
-		$this->execMutateSql("UPDATE articles SET language_id = $default_lang_id WHERE language_id IS NULL");
-	}
+        $this->out("Setting language_id to $default_lang_id on articles");
+        $this->execMutateSql("UPDATE articles SET language_id = $default_lang_id WHERE language_id IS NULL");
+    }
 }

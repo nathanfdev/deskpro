@@ -40,62 +40,63 @@ use Application\DeskPRO\TicketLayout;
 
 class LayoutGenerator
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function __construct(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
-	/**
-	 * @return TicketLayoutEntity
-	 */
-	public function getTicketLayout()
-	{
-		$ticket_layout = new TicketLayoutEntity();
-		$ticket_layout->is_enabled = true;
-		$ticket_layout->user_layout = $this->getLayout('user');
-		$ticket_layout->agent_layout = $this->getLayout('agent');
-		return $ticket_layout;
-	}
+    /**
+     * @return TicketLayoutEntity
+     */
+    public function getTicketLayout()
+    {
+        $ticket_layout = new TicketLayoutEntity();
+        $ticket_layout->is_enabled = true;
+        $ticket_layout->user_layout = $this->getLayout('user');
+        $ticket_layout->agent_layout = $this->getLayout('agent');
 
-	private function getLayout($type)
-	{
-		$layout = new TicketLayout\Layout();
-		$layout->add(new TicketLayout\LayoutField('user_name'));
-		$layout->add(new TicketLayout\LayoutField('user_email'));
-		$layout->add(new TicketLayout\LayoutField('department'));
+        return $ticket_layout;
+    }
 
-		if ($this->container->getSetting('core.use_ticket_category')) {
-			$layout->add(new TicketLayout\LayoutField('category'));
-		}
-		if ($this->container->getSetting('core.use_ticket_priority')) {
-			$layout->add(new TicketLayout\LayoutField('priority'));
-		}
-		if ($this->container->getSetting('core.use_ticket_workflow')) {
-			$layout->add(new TicketLayout\LayoutField('workflow'));
-		}
-		if ($this->container->getSetting('core.use_product')) {
-			$layout->add(new TicketLayout\LayoutField('product'));
-		}
+    private function getLayout($type)
+    {
+        $layout = new TicketLayout\Layout();
+        $layout->add(new TicketLayout\LayoutField('user_name'));
+        $layout->add(new TicketLayout\LayoutField('user_email'));
+        $layout->add(new TicketLayout\LayoutField('department'));
 
-		foreach ($this->container->getTicketFieldManager()->getFields() as $f) {
-			if ($type == 'agent' || !$f->is_agent_field) {
-				$layout->add(new TicketLayout\LayoutField('ticket_field', $f->id));
-			}
-		}
+        if ($this->container->getSetting('core.use_ticket_category')) {
+            $layout->add(new TicketLayout\LayoutField('category'));
+        }
+        if ($this->container->getSetting('core.use_ticket_priority')) {
+            $layout->add(new TicketLayout\LayoutField('priority'));
+        }
+        if ($this->container->getSetting('core.use_ticket_workflow')) {
+            $layout->add(new TicketLayout\LayoutField('workflow'));
+        }
+        if ($this->container->getSetting('core.use_product')) {
+            $layout->add(new TicketLayout\LayoutField('product'));
+        }
 
-		$layout->add(new TicketLayout\LayoutField('subject'));
-		$layout->add(new TicketLayout\LayoutField('message'));
-		$layout->add(new TicketLayout\LayoutField('attach'));
+        foreach ($this->container->getTicketFieldManager()->getFields() as $f) {
+            if ($type == 'agent' || !$f->is_agent_field) {
+                $layout->add(new TicketLayout\LayoutField('ticket_field', $f->id));
+            }
+        }
 
-		return $layout;
-	}
+        $layout->add(new TicketLayout\LayoutField('subject'));
+        $layout->add(new TicketLayout\LayoutField('message'));
+        $layout->add(new TicketLayout\LayoutField('attach'));
+
+        return $layout;
+    }
 }

@@ -1,5 +1,6 @@
 @import "lib.less";
-@import "../../app/bower_components/intl-tel-input/build/css/intlTelInput.css";
+@import "../../bower_components/intl-tel-input/build/css/intlTelInput.css";
+@import "../../bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css";
 @import "dropdown.less";
 
 * {
@@ -3291,54 +3292,65 @@ z-index: 2;
 
 
 .person-search-box {
+  position: absolute;
+  z-index: 40001;
+
+  .loading-el {
+	display: none;
 	position: absolute;
-	overflow: hidden;
-	.drop-shadow(0, 0, 5px, 0.2);
-	z-index: 40001;
+	top: -19px;
+	right: 6px;
+  }
 
-	.right {
-		float: none;
-		position: absolute;
-		top: 0;
-		right: 0;
-		z-index: 1;
-		text-shadow: none;
-		background-color: #fff;
-		padding-left: 45px;
-	}
-	.status-pill {
-		float: right;
-		top: 4px;
-		right: 0;
-		text-shadow: none !important;
-		margin: 0 6px 0 6px;
+  &.loading .loading-el {
+	display: block;
+  }
 
-		&.awaiting_agent {
-			padding-right: 4px;
-		}
-		label {
-			text-shadow: none !important;
-		}
-	}
 
-	time {
-		font-size: 10px;
-		color: #A4A5A5;
-		line-height: 100%;
-		position: relative;
-		top: 1px;
-	}
+
+  .right {
+	  float: none;
+	  position: absolute;
+	  top: 0;
+	  right: 0;
+	  z-index: 1;
+	  text-shadow: none;
+	  background-color: #fff;
+	  padding-left: 45px;
+  }
+  .status-pill {
+	  float: right;
+	  top: 4px;
+	  right: 0;
+	  text-shadow: none !important;
+	  margin: 0 6px 0 6px;
+
+	  &.awaiting_agent {
+		  padding-right: 4px;
+	  }
+	  label {
+		  text-shadow: none !important;
+	  }
+  }
+
+  time {
+	  font-size: 10px;
+	  color: #A4A5A5;
+	  line-height: 100%;
+	  position: relative;
+	  top: 1px;
+  }
 }
 
 .person-search-box section {
-	background-color: #fff;
-	box-shadow: 3px 1px 7px 0px rgba(120, 120, 120, 0.8);
-	border: 1px solid #B4B6B8;
-	border-top: none;
+  background-color: #fff;
+  box-shadow: 3px 1px 7px 0px rgba(120, 120, 120, 0.8);
+  border: 1px solid #B4B6B8;
+  border-top: none;
 
-	z-index: 40000;
-	.border-radius(0, 0, 6px, 6px);
-	overflow: hidden;
+  z-index: 40000;
+  .border-radius(0, 0, 6px, 6px);
+  overflow: hidden;
 }
 
 .person-search-box ul li {
@@ -4405,6 +4417,12 @@ blockquote {
 	}
 }
 
+.table-list {
+  .customfield.Choice label {
+	display: block;
+  }
+}
+
 .char-down {
 	position: relative;
 	top: -1px;
@@ -4563,12 +4581,13 @@ blockquote {
 .dp-stickytip {
 	position: absolute;
 	background-color: #fff;
-	border: 1px solid #888;
+	border: 1px solid #b1b3b7;
+	border-radius: 3px;
 	padding: 0;
 	.rounded(2px);
 	z-index: 10000;
 
-	max-width: 400px;
+	max-width: 425px;
 
 	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
 	box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
@@ -4588,17 +4607,69 @@ blockquote {
 		font-size: 11px;
 	}
 
-	.previewtext-row {
-		line-height: 130%;
-		margin: 8px;
-		overflow: auto;
-
+	header {
+		background: #eff0f3;
+		border-bottom: 1px solid #d0d3d7;
+		padding-left: 5px;
 		cite {
+			display: block;
+			line-height: 25px;
 			font-style: normal;
 			text-decoration: none;
 			font-weight: bold;
 			margin-right: 15px;
-			display: inline-block;
+			img {
+				vertical-align: text-bottom;
+			}
+		}
+	}
+
+	article {
+		padding: 8px;
+
+		.preview-text, .content-text {
+			line-height: 130%;
+			overflow: auto;
+		}
+	}
+
+	footer {
+		background: #eff0f3;
+		border: none;
+		ul.actions {
+			border-top: 1px solid #d0d3d7;
+			display: block;
+            white-space: nowrap;
+			li {
+				background: #eff0f3;
+				font-size: 11px;
+				padding: 1px 5px;
+				margin: 0;
+				border-left: 1px solid #d0d3d7;
+                display: inline-block;
+
+				&:first-child {
+					border-left: none;
+				}
+				&:after {
+					content: "";
+					display: table;
+					clear: both;
+				}
+
+				a {
+					color: #929399;
+					&:hover {
+						text-decoration: none;
+						color: #505154;
+					}
+
+					i {
+						position: relative;
+						right: -3px;
+					}
+				}
+			}
 		}
 	}
 }

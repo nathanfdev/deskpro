@@ -38,24 +38,24 @@ use Doctrine\ORM\EntityManager;
 
 class ReportEdit
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\ReportBuilder
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\ReportBuilder
+     */
 
-	public $report;
+    public $report;
 
-	public function __construct(ReportBuilder $report)
-	{
-		$this->report = $report;
-	}
+    public function __construct(ReportBuilder $report)
+    {
+        $this->report = $report;
+    }
 
-	/**
-	 * @param EntityManager $em
-	 */
+    /**
+     * @param EntityManager $em
+     */
 
-	public function save(EntityManager $em)
-	{
-		$em->persist($this->report);
-		$em->flush();
-	}
+    public function save(EntityManager $em)
+    {
+        $em->persist($this->report);
+        $em->flush();
+    }
 }

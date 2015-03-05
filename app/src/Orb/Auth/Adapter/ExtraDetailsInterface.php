@@ -39,8 +39,8 @@ namespace Orb\Auth\Adapter;
  */
 interface ExtraDetailsInterface
 {
-	/**
-	 * @return array
-	 */
-	public function getExtraDetails();
+    /**
+     * @return array
+     */
+    public function getExtraDetails();
 }

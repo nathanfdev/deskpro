@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350649188 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set tickets.date_agent_waiting time");
-		$this->execMutateSql("
-			UPDATE tickets
-			SET date_agent_waiting = date_status
-			WHERE status = 'awaiting_user' AND date_agent_waiting IS NULL
-		");
-	}
+    public function run()
+    {
+        $this->out("Set tickets.date_agent_waiting time");
+        $this->execMutateSql("
+            UPDATE tickets
+            SET date_agent_waiting = date_status
+            WHERE status = 'awaiting_user' AND date_agent_waiting IS NULL
+        ");
+    }
 }

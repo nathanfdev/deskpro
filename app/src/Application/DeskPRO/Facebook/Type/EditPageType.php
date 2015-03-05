@@ -39,47 +39,47 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EditPageType extends AbstractType
 {
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array                $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('app', new EditAppType());
-		$builder->add('graph_id', 'text', array('required' => true));
-		$builder->add('user_graph_id', 'text', array('required' => true));
-		$builder->add('page_token', 'text', array('required' => true));
-		$builder->add('user_token', 'text', array('required' => true));
-		$builder->add('name', 'text', array('required' => true));
-		$builder->add('picture_url', 'text', array('required' => true));
-		$builder->add('import_wall_posts', 'checkbox', array('required' => false));
-		$builder->add('disable_own_wall_posts', 'checkbox', array('required' => false));
-		$builder->add('import_direct_messages', 'checkbox', array('required' => false));
-		$builder->add('is_enabled', 'hidden', array('required' => false));
-		$builder->add('is_connected', 'hidden', array('required' => false));
-		$builder->add('is_tested', 'hidden', array('required' => false));
-	}
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('app', new EditAppType());
+        $builder->add('graph_id', 'text', array('required' => true));
+        $builder->add('user_graph_id', 'text', array('required' => true));
+        $builder->add('page_token', 'text', array('required' => true));
+        $builder->add('user_token', 'text', array('required' => true));
+        $builder->add('name', 'text', array('required' => true));
+        $builder->add('picture_url', 'text', array('required' => true));
+        $builder->add('import_wall_posts', 'checkbox', array('required' => false));
+        $builder->add('disable_own_wall_posts', 'checkbox', array('required' => false));
+        $builder->add('import_direct_messages', 'checkbox', array('required' => false));
+        $builder->add('is_enabled', 'hidden', array('required' => false));
+        $builder->add('is_connected', 'hidden', array('required' => false));
+        $builder->add('is_tested', 'hidden', array('required' => false));
+    }
 
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				'data_class'         => 'Application\\DeskPRO\\Facebook\\EditPage',
-				'cascade_validation' => true,
-			)
-		);
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                'data_class'         => 'Application\\DeskPRO\\Facebook\\EditPage',
+                'cascade_validation' => true,
+            )
+        );
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'page';
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'page';
+    }
 }

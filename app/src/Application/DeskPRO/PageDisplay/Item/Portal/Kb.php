@@ -48,69 +48,69 @@ use Application\DeskPRO\App;
  */
 class Kb extends PortalItemAbstract implements CacheableItem
 {
-	public function getCacheOptions()
-	{
-		return array('tags' => array('articles'));
-	}
+    public function getCacheOptions()
+    {
+        return array('tags' => array('articles'));
+    }
 
-	public function init()
-	{
-		if (!$this->hasOption('show_cat_switcher')) {
-			$this->setOption('show_cat_switcher', true);
-		}
-	}
+    public function init()
+    {
+        if (!$this->hasOption('show_cat_switcher')) {
+            $this->setOption('show_cat_switcher', true);
+        }
+    }
 
-	public function checkPermission()
-	{
-		return $this->person_context->hasPerm('articles.use');
-	}
+    public function checkPermission()
+    {
+        return $this->person_context->hasPerm('articles.use');
+    }
 
-	public function getHtml()
-	{
-		if ($this->section == 'portal') {
-			return $this->getContentHtml();
-		} else {
-			return $this->getSidebarHtml();
-		}
-	}
+    public function getHtml()
+    {
+        if ($this->section == 'portal') {
+            return $this->getContentHtml();
+        } else {
+            return $this->getSidebarHtml();
+        }
+    }
 
-	public function getContentHtml()
-	{
-		$html = $this->renderForward(
-			'UserBundle:Articles:browse',
-			array(),
-			array('_partial' => 'portal')
-		);
+    public function getContentHtml()
+    {
+        $html = $this->renderForward(
+            'UserBundle:Articles:browse',
+            array(),
+            array('_partial' => 'portal')
+        );
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function getSidebarHtml()
-	{
-		$category = null;
-		if ($this->getOption('category_id')) {
-			$category = App::findEntity('DeskPRO:ArticleCategory', $this->getOption('category_id'));
-		}
+    public function getSidebarHtml()
+    {
+        $category = null;
+        if ($this->getOption('category_id')) {
+            $category = App::findEntity('DeskPRO:ArticleCategory', $this->getOption('category_id'));
+        }
 
-		$articles = App::getEntityRepository('DeskPRO:Article')->getNewest(
-			$this->getValueOption('num_articles', 10),
-			$category
-		);
+        $articles = App::getEntityRepository('DeskPRO:Article')->getNewest(
+            $this->getValueOption('num_articles', 10),
+            $category
+        );
 
-		$html = $this->renderView('UserBundle:Portal:kb-sidebar.html.twig', array(
-			'articles' => $articles,
-			'block_title' => $this->getOption('block_title'),
-		));
+        $html = $this->renderView('UserBundle:Portal:kb-sidebar.html.twig', array(
+            'articles' => $articles,
+            'block_title' => $this->getOption('block_title'),
+        ));
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function getJsAssets()
-	{
-		if ($this->section == 'portal') {
-			return array('javascripts/DeskPRO/User/ElementHandler/PortalKb.js');
-		}
+    public function getJsAssets()
+    {
+        if ($this->section == 'portal') {
+            return array('javascripts/DeskPRO/User/ElementHandler/PortalKb.js');
+        }
 
-		return array();
-	}
+        return array();
+    }
 }

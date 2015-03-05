@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class CustomDefChat extends CustomDefAbstract
 {
 

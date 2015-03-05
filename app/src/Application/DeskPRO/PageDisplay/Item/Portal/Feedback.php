@@ -49,71 +49,71 @@ use Application\DeskPRO\App;
  */
 class Feedback extends PortalItemAbstract implements CacheableItem
 {
-	public function getCacheOptions()
-	{
-		$opt = array(
-			'tags' => array('feedback')
-		);
+    public function getCacheOptions()
+    {
+        $opt = array(
+            'tags' => array('feedback')
+        );
 
-		if ($this->section == 'sidebar') {
-			$opt['lifetime'] = 1800;
-		}
+        if ($this->section == 'sidebar') {
+            $opt['lifetime'] = 1800;
+        }
 
-		return $opt;
-	}
+        return $opt;
+    }
 
-	public function checkPermission()
-	{
-		return $this->person_context->hasPerm('feedback.use');
-	}
+    public function checkPermission()
+    {
+        return $this->person_context->hasPerm('feedback.use');
+    }
 
-	public function getHtml()
-	{
-		if ($this->section == 'portal') {
-			return $this->getContentHtml();
-		} else {
-			return $this->getSidebarHtml();
-		}
-	}
+    public function getHtml()
+    {
+        if ($this->section == 'portal') {
+            return $this->getContentHtml();
+        } else {
+            return $this->getSidebarHtml();
+        }
+    }
 
-	public function getContentHtml()
-	{
-		$html = $this->renderForward(
-			'UserBundle:Feedback:filter',
-			array('status' => $this->getOption('status', 'new'), 'slug' => ''),
-			array('_partial' => 'portal')
-		);
+    public function getContentHtml()
+    {
+        $html = $this->renderForward(
+            'UserBundle:Feedback:filter',
+            array('status' => $this->getOption('status', 'new'), 'slug' => ''),
+            array('_partial' => 'portal')
+        );
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function getSidebarHtml()
-	{
-		$category = null;
-		if ($this->getOption('category_id')) {
-			$category = App::findEntity('DeskPRO:FeedbackCategory', $this->getOption('category_id'));
-		}
+    public function getSidebarHtml()
+    {
+        $category = null;
+        if ($this->getOption('category_id')) {
+            $category = App::findEntity('DeskPRO:FeedbackCategory', $this->getOption('category_id'));
+        }
 
-		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getNewest(
-			$this->getOption('status', 'new'),
-			$this->getValueOption('num_articles', 5),
-			$category
-		);
+        $feedback = App::getEntityRepository('DeskPRO:Feedback')->getNewest(
+            $this->getOption('status', 'new'),
+            $this->getValueOption('num_articles', 5),
+            $category
+        );
 
-		$html = $this->renderView('UserBundle:Portal:feedback-sidebar.html.twig', array(
-			'feedback' => $feedback,
-			'block_title' => $this->getOption('block_title'),
-		));
+        $html = $this->renderView('UserBundle:Portal:feedback-sidebar.html.twig', array(
+            'feedback' => $feedback,
+            'block_title' => $this->getOption('block_title'),
+        ));
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function getJsAssets()
-	{
-		if ($this->section == 'portal') {
-			return array('javascripts/DeskPRO/User/ElementHandler/Feedback.js');
-		}
+    public function getJsAssets()
+    {
+        if ($this->section == 'portal') {
+            return array('javascripts/DeskPRO/User/ElementHandler/Feedback.js');
+        }
 
-		return array();
-	}
+        return array();
+    }
 }

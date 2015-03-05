@@ -36,25 +36,25 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354009912 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Recreate log_items table");
-		$this->execMutateSql("DROP TABLE IF EXISTS log_items");
-		$this->execMutateSql("
-			CREATE TABLE `log_items` (
-				`id` int(11) NOT NULL AUTO_INCREMENT,
-				`log_name` varchar(50) NOT NULL,
-				`session_name` varchar(100) DEFAULT NULL,
-				`flag` varchar(50) DEFAULT NULL,
-				`priority` int(11) NOT NULL,
-				`priority_name` varchar(25) NOT NULL,
-				`message` longtext NOT NULL,
-				`data` longblob COMMENT '(DC2Type:array)',
-				`date_created` datetime NOT NULL,
-				PRIMARY KEY (`id`),
-				KEY `log_name_idx` (`log_name`,`session_name`),
-				KEY `flag_idx` (`flag`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8
-		");
-	}
+    public function run()
+    {
+        $this->out("Recreate log_items table");
+        $this->execMutateSql("DROP TABLE IF EXISTS log_items");
+        $this->execMutateSql("
+            CREATE TABLE `log_items` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `log_name` varchar(50) NOT NULL,
+                `session_name` varchar(100) DEFAULT NULL,
+                `flag` varchar(50) DEFAULT NULL,
+                `priority` int(11) NOT NULL,
+                `priority_name` varchar(25) NOT NULL,
+                `message` longtext NOT NULL,
+                `data` longblob COMMENT '(DC2Type:array)',
+                `date_created` datetime NOT NULL,
+                PRIMARY KEY (`id`),
+                KEY `log_name_idx` (`log_name`,`session_name`),
+                KEY `flag_idx` (`flag`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        ");
+    }
 }

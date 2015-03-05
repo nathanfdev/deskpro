@@ -39,50 +39,48 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class EmailPatternsDataTransformer implements DataTransformerInterface
 {
-	/**
-	 * Transforms an array representation of email_patterns to a string representation
-	 *
-	 * @param  array $email_patterns_array
-	 *
-	 * @return string
-	 */
+    /**
+     * Transforms an array representation of email_patterns to a string representation
+     *
+     * @param array $email_patterns_array
+     *
+     * @return string
+     */
 
-	public function transform($email_patterns_array)
-	{
-		return implode("\n", $email_patterns_array);
-	}
+    public function transform($email_patterns_array)
+    {
+        return implode("\n", $email_patterns_array);
+    }
 
+    /**
+     * Transforms email_patterns string (email_patterns from from) to an array representation
+     * This array representation is used inside UserRule entity
+     *
+     * @param string $email_patterns_string
+     *
+     * @return array
+     */
 
-	/**
-	 * Transforms email_patterns string (email_patterns from from) to an array representation
-	 * This array representation is used inside UserRule entity
-	 *
-	 * @param  string $email_patterns_string
-	 *
-	 * @return array
-	 */
+    public function reverseTransform($email_patterns_string)
+    {
+        if (!$email_patterns_string) {
+            return array();
+        }
 
-	public function reverseTransform($email_patterns_string)
-	{
-		if (!$email_patterns_string) {
+        $items = array();
 
-			return array();
-		}
+        $patterns = Strings::standardEol($email_patterns_string);
+        $patterns = explode("\n", $patterns);
 
-		$items = array();
+        foreach ($patterns as $p) {
 
-		$patterns = Strings::standardEol($email_patterns_string);
-		$patterns = explode("\n", $patterns);
+            $p       = Strings::utf8_strtolower($p);
+            $items[] = trim($p);
+        }
 
-		foreach ($patterns as $p) {
+        $items = Arrays::removeFalsey($items);
 
-			$p       = Strings::utf8_strtolower($p);
-			$items[] = trim($p);
-		}
-
-		$items = Arrays::removeFalsey($items);
-
-		return $items;
-	}
+        return $items;
+    }
 
 }

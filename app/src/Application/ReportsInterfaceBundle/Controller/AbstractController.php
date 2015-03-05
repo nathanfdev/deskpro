@@ -33,77 +33,77 @@
 
 namespace Application\ReportsInterfaceBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
-	/**
-	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person;
+    /**
+     * The currently logged in person.
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    public $person;
 
-	protected function init()
-	{
-		parent::init();
-		$this->person = $this->session->getPerson();
-	}
+    protected function init()
+    {
+        parent::init();
+        $this->person = $this->session->getPerson();
+    }
 
-	/**
-	 * Check if the global request token check is required for the request
-	 */
-	public function requireRequestToken($action, $arguments = null)
-	{
-		if ($this->request->getMethod() == 'POST') {
-			return true;
-		}
+    /**
+     * Check if the global request token check is required for the request
+     */
+    public function requireRequestToken($action, $arguments = null)
+    {
+        if ($this->request->getMethod() == 'POST') {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Force a login
-	 */
-	public function preAction($action, $arguments = null)
-	{
-		if (!$this->_userHasPermissions()) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array('error' => 'session_expired');
-				return $this->createJsonResponse($data, 403);
-			}
+    /**
+     * Force a login
+     */
+    public function preAction($action, $arguments = null)
+    {
+        if (!$this->_userHasPermissions()) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array('error' => 'session_expired');
 
-			return $this->redirectRoute('agent');
-		}
+                return $this->createJsonResponse($data, 403);
+            }
 
-		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'invalid_request_token',
-					'redirect_login' => $this->generateUrl('agent_login')
-				);
+            return $this->redirectRoute('agent');
+        }
 
-				return $this->createJsonResponse($data, 403);
-			} else {
-				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
-			}
-		}
+        if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array(
+                    'error' => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login')
+                );
 
-		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
-			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-				'ip' => dp_get_user_ip_address()
-			));
-		}
+                return $this->createJsonResponse($data, 403);
+            } else {
+                return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
+            }
+        }
 
-		return null;
-	}
+        if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+                'ip' => dp_get_user_ip_address()
+            ));
+        }
 
-	protected function _userHasPermissions()
-	{
-		if ($this->person->is_agent && $this->person->can_reports) {
-			return true;
-		}
+        return null;
+    }
 
-		return false;
-	}
+    protected function _userHasPermissions()
+    {
+        if ($this->person->is_agent && $this->person->can_reports) {
+            return true;
+        }
+
+        return false;
+    }
 }

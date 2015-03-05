@@ -127,13 +127,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self._resetForX();
 		});
 
-		this.addEvent('deactivate', function() {
-			this._resetForX();
-		}, this);
-
 		var messageEl = this.getEl('message');
 		var subjectEl = this.getEl('subject');
-		var appliedMsgTpl = null;
 		var sig = $.trim(self.getEl('signature_value').val());
 
 		messageEl.on('keydown', function() {
@@ -141,67 +136,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 		subjectEl.on('keydown', function() {
 			subjectEl.addClass('editted');
-		});
-		this.getEl('message_template').on('change', function() {
-			var id = $(this).val();
-
-			if (appliedMsgTpl == id) {
-				return;
-			}
-
-			if (!id) {
-				if (!messageEl.hasClass('editted')) {
-					self.setMessageText('');
-				}
-				if (!subjectEl.hasClass('editted')) {
-					subjectEl.val('');
-				}
-				return;
-			}
-
-			appliedMsgTpl = id;
-
-			$.ajax({
-				url: BASE_URL + 'agent/tickets/get-message-template/'+id+'.json',
-				type: 'GET',
-				cache: false,
-				dataType: 'json',
-				success: function(data) {
-					if (messageEl.hasClass('editted')) {
-						var msgCmp = data.message.replace(/(\r\n|\n|\r)/gm, " ");
-						var valCmp = messageEl.val().replace(/(\r\n|\n|\r)/gm, " ");
-						if (valCmp.indexOf(msgCmp) === -1) {
-							self.insertMessageText(data.message);
-						}
-					} else {
-						var val = data.message;
-
-						if (sig) {
-							val += "\n\n";
-							val += sig;
-						}
-
-						self.setMessageText(val);
-					}
-
-					if (subjectEl.hasClass('editted')) {
-						if (subjectEl.val().indexOf(data.subject) === -1) {
-							subjectEl.insertAtCaret(data.subject);
-						}
-					} else {
-						subjectEl.val(data.subject);
-					}
-				}
-			});
-		});
-
-		// This is so the select2 box has proper width for the longest template title
-		var w = this.getEl('message_template').width() + 55;
-		if (w > 350) w = 350;
-		this.getEl('message_template').css('width', w);
-		this.getEl('message_template_holder').css({
-			visibility: 'visible',
-			display: 'none'
 		});
 
 		window.setTimeout(function() {
@@ -253,10 +187,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		};
 
-		var tplHolder = this.getEl('message_template_holder');
-		var tplSel = this.getEl('message_template');
-		var tplSelOrig = this.getEl('message_template_orig');
-
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
@@ -277,30 +207,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 
 			var depId = depSel.val();
-			var opts = tplSelOrig.find('option.department_' + depId +', option.department_0').clone();
-			if (opts[0]) {
-
-				var selected = tplSel.val();
-
-				tplSel.empty();
-				tplSel.append('<option value="0" selected="selected">Blank</option>');
-				tplSel.append(opts);
-				tplHolder.show();
-				self.getEl('message_template_holder_row').show();
-
-				var selectedOpt = tplSel.find('[value="'+selected+'"]');
-
-				if (selectedOpt[0]) {
-					tplSel.select2('val', selected);
-				} else {
-					tplSel.select2('val', 0);
-					tplSel.change();
-				}
-			} else {
-				tplSel.empty();
-				tplHolder.hide();
-				self.getEl('message_template_holder_row').hide();
-			}
 
 			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
 
@@ -308,7 +214,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		depSel.on('change', function(ev) {
-			self._updateFields();
+			self.getCustomFields();
 		});
 
 		$('.ticket-field select', this.wrapper).on('change', function() {
@@ -678,6 +584,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		if (this.pauseSend) {
 			window.setTimeout(this.submit.bind(this), 250);
+			return;
 		}
 
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
@@ -1037,6 +944,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			depId = this.getEl('dep').val() || 0,
 			self = this;
 
+		self._updateFields();
+
 		if (!personId || !parseInt(personId)) {
 			return;
 		}
@@ -1047,7 +956,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				var $cont = $('.ticket-field', self.wrapper).parent();
+				var $cont = self.getEl('fields_container');
 				$('.ticket-field.custom-field', self.wrapper).remove();
 				$cont.append(html);
 				self._updateFields(); // trigger update fields
@@ -1187,19 +1096,20 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				defaultIsHtml: true,
 				inlineHiddenPosition: this.getEl('is_html_reply'),
 				callback: function(obj) {
-					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
-					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){
+					var $translations = self.getEl('editor_translations');
+					obj.addBtnFirst('dp_attach', $translations.data('attach-description'), function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', $translations.data('snippets-description'), function(){
 						self.openSnippetsViewer();
 					});
 					obj.addBtnSeparatorAfter('dp_attach');
 					obj.addBtnSeparatorAfter('dp_snippets');
 
 					var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
-					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+					snippetBtn.addClass('snippets').find('a').text($translations.data('snippets-title'));
 
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
-					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+					attachBtn.find('a').text($translations.data('attach-title')).append('<input type="file" class="file" name="file-upload" />');
 				}
 			});
 			this.getEl('is_html_reply').val(1);
@@ -1259,9 +1169,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					lastH = ed.height();
 					self.doScrollBottom = true;
 					window.setTimeout(function() {
-						if (self.page) {
-							self.page.updateUi();
-						}
+						self.updateUi();
 					}, 50);
 				}
 			});
@@ -1303,13 +1211,70 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
 							self.pauseSend = true
 							$.ajax({
-								url: BASE_URL + 'agent/tickets/0/get-snippet/' + snippetId,
-								dataType: 'text',
-								data: {person_id: personId},
+								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
+								dataType: 'json',
 								complete: function () {
 									self.pauseSend = false;
 								},
 								success: function (data) {
+
+									var snippet = data.snippet;
+									var ticketLangId = self.getEl('value_form').find('.language_id').val();
+									var snippetId = snippet.id;
+									var snippetCode = snippet.snippet;
+
+									var agentText;
+									var defaultText;
+									var wantText;
+									var useText;
+									var result;
+
+									Array.each(snippetCode, function(info) {
+										if (info.value) {
+											if (info.language_id == ticketLangId) {
+												wantText = info.value;
+											}
+											if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+												agentText = info.value;
+											}
+											if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+												defaultText = info.value;
+											}
+											useText = info.value;
+										}
+									});
+
+
+									if (wantText) {
+										useText = wantText;
+									} else if (agentText) {
+										useText = agentText;
+									} else if (defaultText) {
+										useText = defaultText;
+									}
+
+									try {
+										var tpl = twig({
+											data: useText,
+											strict_variables: true
+										});
+										result = tpl.render({
+											ticket: {
+												person: self.meta.person_api_data
+											}
+										}, {
+											strict_variables: true
+										});
+										if (!result) {
+											result = useText;
+										}
+									} catch(e) {
+										console.log("Snippet render failed: %o", e);
+										result = useText;
+									}
+
+									var data = result;
+
 									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 									data = $('<div>' + data + '</div>');
 
@@ -1372,6 +1337,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var self = this;
 
+
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			positionMode: this.meta.isPopover ? 'over' : 'side',
 			onBeforeOpen: function() {
@@ -1381,7 +1347,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			},
 			onSnippetClick: function(info) {
-
 				var ticketLangId = self.getEl('value_form').find('.language_id').val();
 				if (!ticketLangId) {
 					ticketLangId = info.language_id == DESKPRO_DEFAULT_LANG_ID;

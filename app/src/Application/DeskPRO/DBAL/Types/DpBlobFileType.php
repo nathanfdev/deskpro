@@ -42,23 +42,23 @@ use Doctrine\DBAL\Types\BlobType;
  */
 class DpBlobFileType extends BlobType
 {
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-	{
-		return 'LONGBLOB';
-	}
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        return 'LONGBLOB';
+    }
 
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        return ($value === null) ? null : $value;
+    }
 
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        return ($value === null) ? null : $value;
+    }
 
-	public function getName()
-	{
-		return 'dpblob_file';
-	}
+    public function getName()
+    {
+        return 'dpblob_file';
+    }
 }

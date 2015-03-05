@@ -41,18 +41,18 @@ use Application\DeskPRO\App;
  */
 class DbErrorLogger extends Logger
 {
-	public function __construct()
-	{
-		parent::__construct();
-		DbErrorLoggerQueue::initQueue();
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        DbErrorLoggerQueue::initQueue();
+    }
 
-	public function logItem(\Orb\Log\LogItem $log_item)
-	{
-		if (!App::getDb()->isTransactionActive()) {
-			parent::logItem($log_item);
-		} else {
-			DbErrorLoggerQueue::getInstance()->add($this, $log_item);
-		}
-	}
+    public function logItem(\Orb\Log\LogItem $log_item)
+    {
+        if (!App::getDb()->isTransactionActive()) {
+            parent::logItem($log_item);
+        } else {
+            DbErrorLoggerQueue::getInstance()->add($this, $log_item);
+        }
+    }
 }

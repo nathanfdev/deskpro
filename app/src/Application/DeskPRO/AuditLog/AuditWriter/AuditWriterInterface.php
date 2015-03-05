@@ -35,11 +35,11 @@ namespace Application\DeskPRO\AuditLog\AuditWriter;
 
 interface AuditWriterInterface
 {
-	/**
-	 * Write a log entry
-	 *
-	 * @param \Application\DeskPRO\Entity\AuditLog[] $log
-	 * @return void
-	 */
-	public function writeLogs(array $logs);
+    /**
+     * Write a log entry
+     *
+     * @param  \Application\DeskPRO\Entity\AuditLog[] $log
+     * @return void
+     */
+    public function writeLogs(array $logs);
 }

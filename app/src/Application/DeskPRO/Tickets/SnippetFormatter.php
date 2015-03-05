@@ -40,79 +40,79 @@ use Application\DeskPRO\Twig\Environment as Twig_Environment;
 
 class SnippetFormatter implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Twig\Environment
-	 */
-	protected $twig;
+    /**
+     * @var \Application\DeskPRO\Twig\Environment
+     */
+    protected $twig;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
 
-	/**
-	 * @var array
-	 */
-	protected $extra_vars;
+    /**
+     * @var array
+     */
+    protected $extra_vars;
 
-	public function __construct(Twig_Environment $twig)
-	{
-		$this->twig = $twig;
-	}
+    public function __construct(Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+    }
 
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
 
-	public function getVars(Ticket $ticket)
-	{
-		$data = $this->extra_vars;
-		$data['ticket'] = $ticket->toApiData();
+    public function getVars(Ticket $ticket)
+    {
+        $data = $this->extra_vars;
+        $data['ticket'] = $ticket->toApiData();
 
-		if (isset($data['ticket']['person'])) {
-			$data['user'] = $data['ticket']['person'];
-		}
+        if (isset($data['ticket']['person'])) {
+            $data['user'] = $data['ticket']['person'];
+        }
 
-		if (isset($data['ticket']['agent'])) {
-			$data['agent'] = $data['ticket']['agent'];
-		}
+        if (isset($data['ticket']['agent'])) {
+            $data['agent'] = $data['ticket']['agent'];
+        }
 
-		if (isset($data['ticket']['agent_team'])) {
-			$data['agent_team'] = $data['ticket']['agent_team'];
-		}
+        if (isset($data['ticket']['agent_team'])) {
+            $data['agent_team'] = $data['ticket']['agent_team'];
+        }
 
-		if ($this->person_context) {
-			$data['me'] = $this->person_context->toApiData();
-		}
+        if ($this->person_context) {
+            $data['me'] = $this->person_context->toApiData();
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function addVar($name, $value)
-	{
-		$this->extra_vars[$name] = $value;
-	}
+    public function addVar($name, $value)
+    {
+        $this->extra_vars[$name] = $value;
+    }
 
-	public function formatSnippet($snippet, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
+    public function formatSnippet($snippet, Ticket $ticket)
+    {
+        $data = $this->getVars($ticket);
 
-		try {
-			return $this->twig->renderStringTemplate($snippet->snippet, $data);
-		} catch (\Exception $e) {
-			return $snippet->snippet;
-		}
-	}
+        try {
+            return $this->twig->renderStringTemplate($snippet->snippet, $data);
+        } catch (\Exception $e) {
+            return $snippet->snippet;
+        }
+    }
 
-	public function formatText($text, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
+    public function formatText($text, Ticket $ticket)
+    {
+        $data = $this->getVars($ticket);
 
-		try {
-			return $this->twig->renderStringTemplate($text, $data);
-		} catch (\Exception $e) {
-			return $text;
-		}
-	}
+        try {
+            return $this->twig->renderStringTemplate($text, $data);
+        } catch (\Exception $e) {
+            return $text;
+        }
+    }
 }

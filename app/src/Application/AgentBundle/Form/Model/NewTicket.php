@@ -45,398 +45,398 @@ use Doctrine\ORM\EntityManager;
 
 class NewTicket
 {
-	/** @var \Application\AgentBundle\Form\Model\NewTicketPerson */
-	public $person;
-
-	/** @var string */
-	public $subject;
-	/** @var string */
-	public $notify_template = '';
-	/** @var string */
-	public $message;
-	/** @var bool */
-	public $is_html_reply;
-	/** @var int */
-	public $department_id;
-	/** @var string */
-	public $status;
-	/** @var int */
-	public $agent_id;
-	/** @var int */
-	public $agent_team_id;
-	/** @var int */
-	public $category_id = 0;
-	/** @var int */
-	public $priority_id = 0;
-	/** @var int */
-	public $workflow_id = 0;
-	/** @var int */
-	public $product_id = 0;
-
-	/** @var string */
-	public $billing_type = '';
-	/** @var int */
-	public $billing_amount = 0;
-	/** @var int */
-	public $billing_hours = 0;
-	/** @var int */
-	public $billing_minutes = 0;
-	/** @var int */
-	public $billing_seconds = 0;
-	/** @var string */
-	public $billing_comment = '';
-
-	/** @var array */
-	public $add_cc_person = array();
-	/** @var array */
-	public $add_cc_newpeople = array();
-	/** @var array */
-	public $add_cc_newperson = array();
-	/** @var array */
-	public $attach = array();
-	/** @var array */
-	public $ticket_fields = array();
-
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $_ticket;
-
-	/**
-	 * @var \Application\DeskPRO\Tickets\TicketManager
-	 */
-	protected $_ticket_manager;
-
-	/**
-	 * @var callable
-	 */
-	protected $_pre_save_callback;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $_person_context;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	public $exist_ticket;
-
-	protected $_blob_inline_ids = array();
-	public $suppress_user_notify = false;
-
-	public function __construct(EntityManager $em, Person $person_context)
-	{
-		$this->_em = $em;
-		$this->_person_context = $person_context;
-
-		// TODO
-		$this->_ticket_manager = App::$container->getTicketManager();
-
-		$this->person = new NewTicketPerson();
-	}
-
-
-	/**
-	 * @return Ticket
-	 */
-	public function getMockTicket()
-	{
-		$t = new Ticket();
-
-		if ($this->department_id) {
-			$t->setDepartmentId($this->department_id);
-		}
-		if ($this->workflow_id) {
-			$t->setWorkflowId($this->workflow_id);
-		}
-		if ($this->product_id) {
-			$t->setProductId($this->product_id);
-		}
-		if ($this->priority_id) {
-			$t->setPriorityId($this->priority_id);
-		}
-		if ($this->category_id) {
-			$t->setCategoryId($this->category_id);
-		}
-		if ($this->status) {
-			$t->setStatus($this->status);
-		}
-		return $t;
-	}
-
-	public function setValuesFromTicket(Ticket $ticket)
-	{
-		$this->exist_ticket  = $ticket;
-		$this->department_id = $ticket->getDepartmentId();
-		$this->workflow_id   = $ticket->getWorkflowId();
-		$this->product_id    = $ticket->getProductId();
-		$this->priority_id   = $ticket->getPriorityId();
-		$this->category_id   = $ticket->getCategoryId();
-		$this->status        = $ticket->status;
-
-		$field_manager = App::getSystemService('ticket_fields_manager');
-		$custom_fields = $field_manager->createFormArrayForObject($ticket);
-
-		$this->ticket_fields = $custom_fields;
-	}
-
-	/**
-	 * @param callable $callback
-	 */
-	public function setPreSaveCallback($callback)
-	{
-		$this->_pre_save_callback = $callback;
-	}
-
-	/**
-	 * @throws \Exception
-	 * @return \Application\DeskPRO\Entity\Ticket
-	 */
-	public function save()
-	{
-		$this->_em->getConnection()->beginTransaction();
-		try {
-			$res = $this->_save();
-			$this->_em->getConnection()->commit();
-
-			return $res;
-		} catch (\Exception $e) {
-			$this->_em->getConnection()->rollback();
-			throw $e;
-		}
-	}
-
-	public function setBlobInlineIds(array $ids)
-	{
-		$this->_blob_inline_ids = $ids;
-	}
-
-	protected function _save()
-	{
-		#------------------------------
-		# The user owner
-		#------------------------------
-
-		if ($this->person->id) {
-			$person = $this->_em->find('DeskPRO:Person', $this->person->id);
-		} else {
-			$person = App::getSystemService('UsersourceManager')->findPersonByEmail($this->person->email_address);
-		}
-
-		if (!$person) {
-			$person = new Person();
-			$email_obj = $person->addEmailAddressString($this->person->email_address);
-			$person->primary_email = $email_obj;
-		}
-
-		if ($this->person->organization) {
-			$org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($this->person->organization);
-			if (!$org) {
-				$org = new Organization();
-				$org['name'] = $this->person->organization;
-				$this->_em->persist($org);
-			}
-			$person->organization = $org;
-
-			if ($this->person->organization_position) {
-				$person['organization_position'] = $this->person->organization_position;
-			}
-		}
-
-		if (!$person->name && $this->person->name) {
-			$person->name = $this->person->name;
-		}
-
-		if ($this->person->language_id) {
-			$person->setLanguageId($this->person->language_id);
-		}
-
-		$this->_em->persist($person);
-		$this->_em->flush();
-
-		#------------------------------
-		# Participants
-		#------------------------------
-
-		$add_cc_peopleids = $this->add_cc_person;
-		$add_cc_people = $this->add_cc_newpeople;
-
-		foreach ($this->add_cc_newperson as $info) {
-			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($info['email'])) {
-				continue;
-			}
-
-			$check_exist = $this->_em->getRepository('DeskPRO:Person')->findOneByEmail($info['email']);
-			if ($check_exist) {
-				$add_cc_people[] = $check_exist;
-			} else {
-				// New person, coming right up
-				$new_cc_person = Person::newContactPerson(array(
-					'email' => $info['email'],
-					'name' => !empty($info['name']) ? $info['name'] : ''
-				));
-				$this->_em->persist($new_cc_person);
-
-				$add_cc_people[] = $new_cc_person;
-			}
-		}
-
-		foreach ($add_cc_people as $p) {
-			$this->_em->persist($p);
-		}
-
-		$add_cc_people = array_merge(
-			$add_cc_people,
-			$this->_em->getRepository('DeskPRO:Person')->getByIds($add_cc_peopleids)
-		);
-
-		$this->_em->flush();
-
-		#------------------------------
-		# Ticket
-		#------------------------------
-
-		// Ticket props
-		$ticket = $this->_ticket_manager->createTicket();
-
-		$ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
-
-		$ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
-		$ticket['language'] = $person->getRealLanguage();
-
-		if ($this->suppress_user_notify) {
-			$ticket_context->getVars()->set('mute_user_emails', true);
-		}
-
-		$this->_email = $person->findEmailAddress($this->person->email_address);
-		if ($this->_email) {
-			$ticket->person_email = $this->_email;
-		}
-
-		$standard = array(
-			'subject', 'status', 'agent_id', 'agent_team_id',
-			'department_id', 'category_id', 'priority_id', 'workflow_id',
-			'product_id', 'notify_template'
-		);
-		if (!$this->status) {
-			$this->status = 'awaiting_agent';
-		}
-
-		foreach ($standard as $k) {
-			$ticket[$k] = $this->$k;
-		}
-
-		$ticket->person = $person;
-
-
-		#------------------------------
-		# Message
-		#------------------------------
-
-		// Message
-		$message = new TicketMessage();
-		$message->person = $this->_person_context;
-		$message->setVisitorFromRequest();
-
-		$message_text = $this->message;
-		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-		$message_text = $formatter->formatText($message_text, $ticket);
-
-		if ($this->is_html_reply) {
-			$message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
-			$message_text = \Orb\Util\Strings::trimHtml($message_text);
-			$message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
-			$message->message = $message_text;
-		} else {
-			$message->setMessageText($message_text);
-		}
-
-		// Message Attachments
-		foreach ($this->attach as $blob_id) {
-
-			$blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$message->addAttachment($attach);
-			$ticket->addAttachment($attach);
-		}
-
-		foreach ($this->_blob_inline_ids as $blob_id) {
-			$blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-			$attach->is_inline = true;
-
-			$message->addAttachment($attach);
-			$ticket->addAttachment($attach);
-		}
-
-		$message->convertEmbeddedImagesToInlineAttach();
-
-		$ticket->addMessage($message);
-
-		switch ($this->billing_type) {
-			case 'amount':
-				$ticket->addCharge($this->_person_context, null, floatval($this->billing_amount), $this->billing_comment);
-				break;
-
-			case 'time':
-				$time = (
-					3600 * $this->billing_hours
-					+ 60 * $this->billing_minutes
-					+ $this->billing_seconds
-				);
-				$ticket->addCharge($this->_person_context, $time, null, $this->billing_comment);
-		}
-
-		$this->_em->persist($ticket);
-
-		if ($this->_pre_save_callback) {
-			call_user_func_array($this->_pre_save_callback, array($ticket, $message, $person));
-		}
-
-		$field_manager = App::getSystemService('ticket_fields_manager');
-		$post_custom_fields = $this->ticket_fields;
-		if (!empty($post_custom_fields)) {
-			$field_manager->saveFormToObject($post_custom_fields, $ticket);
-		}
-
-		foreach ($add_cc_people as $add_cc_person) {
-			if ($add_cc_person->getId() != $ticket->person->getId()) {
-				$part = $ticket->addParticipantPerson($add_cc_person);
-				if ($part) {
-					$this->_em->persist($part);
-				}
-			}
-		}
-
-		$this->_em->persist($ticket);
-		$this->_em->persist($message);
-
-		$this->_ticket_manager->saveTicket($ticket, $ticket_context);
-
-		$this->_ticket = $ticket;
-
-		return $this->_ticket;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Ticket
-	 */
-	public function getTicket()
-	{
-		return $this->_ticket;
-	}
+    /** @var \Application\AgentBundle\Form\Model\NewTicketPerson */
+    public $person;
+
+    /** @var string */
+    public $subject;
+    /** @var string */
+    public $notify_template = '';
+    /** @var string */
+    public $message;
+    /** @var bool */
+    public $is_html_reply;
+    /** @var int */
+    public $department_id;
+    /** @var string */
+    public $status;
+    /** @var int */
+    public $agent_id;
+    /** @var int */
+    public $agent_team_id;
+    /** @var int */
+    public $category_id = 0;
+    /** @var int */
+    public $priority_id = 0;
+    /** @var int */
+    public $workflow_id = 0;
+    /** @var int */
+    public $product_id = 0;
+
+    /** @var string */
+    public $billing_type = '';
+    /** @var int */
+    public $billing_amount = 0;
+    /** @var int */
+    public $billing_hours = 0;
+    /** @var int */
+    public $billing_minutes = 0;
+    /** @var int */
+    public $billing_seconds = 0;
+    /** @var string */
+    public $billing_comment = '';
+
+    /** @var array */
+    public $add_cc_person = array();
+    /** @var array */
+    public $add_cc_newpeople = array();
+    /** @var array */
+    public $add_cc_newperson = array();
+    /** @var array */
+    public $attach = array();
+    /** @var array */
+    public $ticket_fields = array();
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $_em;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $_ticket;
+
+    /**
+     * @var \Application\DeskPRO\Tickets\TicketManager
+     */
+    protected $_ticket_manager;
+
+    /**
+     * @var callable
+     */
+    protected $_pre_save_callback;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $_person_context;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    public $exist_ticket;
+
+    protected $_blob_inline_ids = array();
+    public $suppress_user_notify = false;
+
+    public function __construct(EntityManager $em, Person $person_context)
+    {
+        $this->_em = $em;
+        $this->_person_context = $person_context;
+
+        // TODO
+        $this->_ticket_manager = App::$container->getTicketManager();
+
+        $this->person = new NewTicketPerson();
+    }
+
+
+    /**
+     * @return Ticket
+     */
+    public function getMockTicket()
+    {
+        $t = new Ticket();
+
+        if ($this->department_id) {
+            $t->setDepartmentId($this->department_id);
+        }
+        if ($this->workflow_id) {
+            $t->setWorkflowId($this->workflow_id);
+        }
+        if ($this->product_id) {
+            $t->setProductId($this->product_id);
+        }
+        if ($this->priority_id) {
+            $t->setPriorityId($this->priority_id);
+        }
+        if ($this->category_id) {
+            $t->setCategoryId($this->category_id);
+        }
+        if ($this->status) {
+            $t->setStatus($this->status);
+        }
+
+        return $t;
+    }
+
+    public function setValuesFromTicket(Ticket $ticket)
+    {
+        $this->exist_ticket  = $ticket;
+        $this->department_id = $ticket->getDepartmentId();
+        $this->workflow_id   = $ticket->getWorkflowId();
+        $this->product_id    = $ticket->getProductId();
+        $this->priority_id   = $ticket->getPriorityId();
+        $this->category_id   = $ticket->getCategoryId();
+        $this->status        = $ticket->status;
+
+        $field_manager = App::getSystemService('ticket_fields_manager');
+        $custom_fields = $field_manager->createFormArrayForObject($ticket);
+
+        $this->ticket_fields = $custom_fields;
+    }
+
+    /**
+     * @param callable $callback
+     */
+    public function setPreSaveCallback($callback)
+    {
+        $this->_pre_save_callback = $callback;
+    }
+
+    /**
+     * @throws \Exception
+     * @return \Application\DeskPRO\Entity\Ticket
+     */
+    public function save()
+    {
+        $this->_em->getConnection()->beginTransaction();
+        try {
+            $res = $this->_save();
+            $this->_em->getConnection()->commit();
+
+            return $res;
+        } catch (\Exception $e) {
+            $this->_em->getConnection()->rollback();
+            throw $e;
+        }
+    }
+
+    public function setBlobInlineIds(array $ids)
+    {
+        $this->_blob_inline_ids = $ids;
+    }
+
+    protected function _save()
+    {
+        #------------------------------
+        # The user owner
+        #------------------------------
+
+        if ($this->person->id) {
+            $person = $this->_em->find('DeskPRO:Person', $this->person->id);
+        } else {
+            $person = App::getSystemService('UsersourceManager')->findPersonByEmail($this->person->email_address);
+        }
+
+        if (!$person) {
+            $person = new Person();
+            $email_obj = $person->addEmailAddressString($this->person->email_address);
+            $person->primary_email = $email_obj;
+        }
+
+        if ($this->person->organization) {
+            $org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($this->person->organization);
+            if (!$org) {
+                $org = new Organization();
+                $org['name'] = $this->person->organization;
+                $this->_em->persist($org);
+            }
+            $person->organization = $org;
+
+            if ($this->person->organization_position) {
+                $person['organization_position'] = $this->person->organization_position;
+            }
+        }
+
+        if (!$person->name && $this->person->name) {
+            $person->name = $this->person->name;
+        }
+
+        if ($this->person->language_id) {
+            $person->setLanguageId($this->person->language_id);
+        }
+
+        $this->_em->persist($person);
+        $this->_em->flush();
+
+        #------------------------------
+        # Participants
+        #------------------------------
+
+        $add_cc_peopleids = $this->add_cc_person;
+        $add_cc_people = $this->add_cc_newpeople;
+
+        foreach ($this->add_cc_newperson as $info) {
+            if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($info['email'])) {
+                continue;
+            }
+
+            $check_exist = $this->_em->getRepository('DeskPRO:Person')->findOneByEmail($info['email']);
+            if ($check_exist) {
+                $add_cc_people[] = $check_exist;
+            } else {
+                // New person, coming right up
+                $new_cc_person = Person::newContactPerson(array(
+                    'email' => $info['email'],
+                    'name' => !empty($info['name']) ? $info['name'] : ''
+                ));
+                $this->_em->persist($new_cc_person);
+
+                $add_cc_people[] = $new_cc_person;
+            }
+        }
+
+        foreach ($add_cc_people as $p) {
+            $this->_em->persist($p);
+        }
+
+        $add_cc_people = array_merge(
+            $add_cc_people,
+            $this->_em->getRepository('DeskPRO:Person')->getByIds($add_cc_peopleids)
+        );
+
+        $this->_em->flush();
+
+        #------------------------------
+        # Ticket
+        #------------------------------
+
+        // Ticket props
+        $ticket = $this->_ticket_manager->createTicket();
+
+        $ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
+
+        $ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
+        $ticket['language'] = $person->getRealLanguage();
+
+        if ($this->suppress_user_notify) {
+            $ticket_context->getVars()->set('mute_user_emails', true);
+        }
+
+        $this->_email = $person->findEmailAddress($this->person->email_address);
+        if ($this->_email) {
+            $ticket->person_email = $this->_email;
+        }
+
+        $standard = array(
+            'subject', 'status', 'agent_id', 'agent_team_id',
+            'department_id', 'category_id', 'priority_id', 'workflow_id',
+            'product_id', 'notify_template'
+        );
+        if (!$this->status) {
+            $this->status = 'awaiting_agent';
+        }
+
+        foreach ($standard as $k) {
+            $ticket[$k] = $this->$k;
+        }
+
+        $ticket->person = $person;
+
+
+        #------------------------------
+        # Message
+        #------------------------------
+
+        // Message
+        $message = new TicketMessage();
+        $message->person = $this->_person_context;
+        $message->setVisitorFromRequest();
+
+        $message_text = $this->message;
+        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $message_text = $formatter->formatText($message_text, $ticket);
+
+        if ($this->is_html_reply) {
+            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+            $message_text = \Orb\Util\Strings::trimHtml($message_text);
+            $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+            $message->message = $message_text;
+        } else {
+            $message->setMessageText($message_text);
+        }
+
+        // Message Attachments
+        foreach ($this->attach as $blob_id) {
+
+            $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
+
+            $attach = new TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $this->_person_context;
+
+            $message->addAttachment($attach);
+            $ticket->addAttachment($attach);
+        }
+
+        foreach ($this->_blob_inline_ids as $blob_id) {
+            $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
+
+            $attach = new TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $this->_person_context;
+            $attach->is_inline = true;
+
+            $message->addAttachment($attach);
+            $ticket->addAttachment($attach);
+        }
+
+        $message->convertEmbeddedImagesToInlineAttach();
+
+        $ticket->addMessage($message);
+
+        switch ($this->billing_type) {
+            case 'amount':
+                $ticket->addCharge($this->_person_context, null, floatval($this->billing_amount), $this->billing_comment);
+                break;
+
+            case 'time':
+                $time = (
+                    3600 * $this->billing_hours
+                    + 60 * $this->billing_minutes
+                    + $this->billing_seconds
+                );
+                $ticket->addCharge($this->_person_context, $time, null, $this->billing_comment);
+        }
+
+        $this->_em->persist($ticket);
+
+        if ($this->_pre_save_callback) {
+            call_user_func_array($this->_pre_save_callback, array($ticket, $message, $person));
+        }
+
+        $field_manager = App::getSystemService('ticket_fields_manager');
+        $post_custom_fields = $this->ticket_fields;
+        if (!empty($post_custom_fields)) {
+            $field_manager->saveFormToObject($post_custom_fields, $ticket);
+        }
+
+        foreach ($add_cc_people as $add_cc_person) {
+            if ($add_cc_person->getId() != $ticket->person->getId()) {
+                $part = $ticket->addParticipantPerson($add_cc_person);
+                if ($part) {
+                    $this->_em->persist($part);
+                }
+            }
+        }
+
+        $this->_em->persist($ticket);
+        $this->_em->persist($message);
+
+        $this->_ticket_manager->saveTicket($ticket, $ticket_context);
+
+        $this->_ticket = $ticket;
+
+        return $this->_ticket;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Ticket
+     */
+    public function getTicket()
+    {
+        return $this->_ticket;
+    }
 }

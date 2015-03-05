@@ -1,0 +1,78 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}<h3 class="modal-title">Status Codes</h3>{% endblock %}
+{% block modal_body %}
+    <div style="max-height: 500px; overflow: auto;">
+        <h3>Status: Complete</h3>
+        <p>
+            This status means that the email was fuly processed by the system. The email was converted into a new ticket or ticket reply.
+        </p>
+
+        <h3>Status: Rejected</h3>
+        <p>
+            This status means the email was rejected for some reason. Rejections are completely normal. The most common type of rejection
+            will be for duplicate messages or banned email addresses.
+        </p>
+        <p>
+            Here is a list of common rejections:
+        </p>
+        <ul>
+            <li>from_missing: {{ phrase('adm.email_status.error_from_missing') }}</li>
+            <li>from_invalid: {{ phrase('adm.email_status.error_from_invalid') }}</li>
+            <li>from_gateway_address: {{ phrase('adm.email_status.error_from_gateway_address') }}</li>
+            <li>from_banned: {{ phrase('adm.email_status.error_from_banned') }}</li>
+            <li>from_disabled_user: {{ phrase('adm.email_status.error_from_disabled_user') }}</li>
+            <li>subject_missing: {{ phrase('adm.email_status.error_subject_missing') }}</li>
+            <li>message_missing: {{ phrase('adm.email_status.error_message_missing') }}</li>
+            <li>message_too_big: {{ phrase('adm.email_status.error_message_too_big') }}</li>
+            <li>empty: {{ phrase('adm.email_status.error_empty') }}</li>
+            <li>duplicate_message: {{ phrase('adm.email_status.error_duplicate_message') }}</li>
+            <li>autoresponder: {{ phrase('adm.email_status.error_autoresponder') }}</li>
+            <li>spam: {{ phrase('adm.email_status.error_spam') }}</li>
+            <li>require_reg: {{ phrase('adm.email_status.error_require_reg') }}</li>
+            <li>obj_closed: {{ phrase('adm.email_status.error_obj_closed') }}</li>
+            <li>obj_deleted: {{ phrase('adm.email_status.error_obj_deleted') }}</li>
+            <li>obj_unknown: {{ phrase('adm.email_status.error_obj_unknown') }}</li>
+            <li>auth_invalid: {{ phrase('adm.email_status.error_auth_invalid') }}</li>
+            <li>auth_missing: {{ phrase('adm.email_status.error_auth_missing') }}</li>
+            <li>deskpro_email: {{ phrase('adm.email_status.error_deskpro_email') }}</li>
+            <li>perm_insufficient: {{ phrase('adm.email_status.error_perm_insufficient') }}</li>
+            <li>invalid_fwd: {{ phrase('adm.email_status.error_invalid_fwd') }}</li>
+            <li>invalid_fwd_email: {{ phrase('adm.email_status.error_invalid_fwd_email') }}</li>
+            <li>missing_marker: {{ phrase('adm.email_status.error_missing_marker') }}</li>
+            <li>agent_bounce: {{ phrase('adm.email_status.error_agent_bounce') }}</li>
+            <li>date_limit: {{ phrase('adm.email_status.error_date_limit') }}</li>
+            <li>invalid_address: {{ phrase('adm.email_status.error_invalid_address') }}</li>
+        </ul>
+
+        <h3>Status: Error</h3>
+        <p>
+            This status means the message was NOT processed because some kind of error. Errors are uncommon and should always
+            be investigated.
+        </p>
+        <ul>
+            <li>server_error: {{ phrase('adm.email_status.error_server_error') }}</li>
+            <li>timeout: {{ phrase('adm.email_status.error_timeout') }}</li>
+        </ul>
+
+        <h3>Status: Pending</h3>
+        <p>
+            This status means an email has been saved into the system and is waiting to be processed. Pending messages should
+            only stay in the system for at most 15 minutes. If your database has many pending emails or pending emails are
+            not being processed, then there is likely a problem.
+        </p>
+
+        <h3>Status: Processing</h3>
+        <p>
+            This status means an email is currently being processed.
+        </p>
+
+        <h3>Status: Retry</h3>
+        <p>
+            This status means an email failed to process but is being retried. This can happen automatically when the system
+            detects a temporary processing error.
+        </p>
+    </div>
+{% endblock %}
+{% block modal_footer %}
+    <button class="btn btn-default" ng-click="dismiss()">Okay</button>
+{% endblock %}

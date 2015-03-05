@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -47,76 +46,76 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class BanEmail extends DomainObject
 {
-	/**
-	 * The banned email address
-	 *
-	 * @var string
-	 */
+    /**
+     * The banned email address
+     *
+     * @var string
+     */
 
-	protected $banned_email;
+    protected $banned_email;
 
-	/**
-	 * True if this is a pattern rather than a specific address
-	 *
-	 * @var bool
-	 */
+    /**
+     * True if this is a pattern rather than a specific address
+     *
+     * @var bool
+     */
 
-	protected $is_pattern = false;
+    protected $is_pattern = false;
 
-	/**
-	 * @return BanEmail
-	 */
+    /**
+     * @return BanEmail
+     */
 
-	public static function createEmailBan()
-	{
-		return new self();
-	}
+    public static function createEmailBan()
+    {
+        return new self();
+    }
 
-	/**
-	 * @param string $email
-	 */
+    /**
+     * @param string $email
+     */
 
-	public function setBannedEmail($email)
-	{
-		if (strpos($email, '*') !== false) {
+    public function setBannedEmail($email)
+    {
+        if (strpos($email, '*') !== false) {
 
-			$this['is_pattern'] = true;
-		}
+            $this['is_pattern'] = true;
+        }
 
-		$this->setModelField('banned_email', $email);
-	}
+        $this->setModelField('banned_email', $email);
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanEmail';
-		$metadata->setPrimaryTable(array('name' => 'ban_emails',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'banned_email',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'banned_email',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'is_pattern',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'is_pattern',
-			)
-		);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanEmail';
+        $metadata->setPrimaryTable(array('name' => 'ban_emails',));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'banned_email',
+                 'type'       => 'string',
+                 'length'     => 255,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'banned_email',
+                 'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'is_pattern',
+                 'type'       => 'boolean',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'is_pattern',
+            )
+        );
+    }
 }

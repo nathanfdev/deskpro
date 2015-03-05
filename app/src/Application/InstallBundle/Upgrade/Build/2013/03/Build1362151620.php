@@ -36,23 +36,23 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1362151620 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set a few system triggers as uneditable");
-		$this->execMutateSql("ALTER TABLE ticket_triggers ADD is_uneditable TINYINT(1) NOT NULL");
-		$this->execMutateSql("
-			UPDATE ticket_triggers
-			SET is_uneditable = 1
-			WHERE sys_name IN (
-				'auto_close.warn_user',
-				'response.reply_confirm',
-				'newticket_confirm.web_agent',
-				'newticket_confirm.email_user',
-				'newticket_confirm.web_user',
-				'newticket_confirm.web_user',
-				'email_validation.web',
-				'email_validation.widget'
-			)
-		");
-	}
+    public function run()
+    {
+        $this->out("Set a few system triggers as uneditable");
+        $this->execMutateSql("ALTER TABLE ticket_triggers ADD is_uneditable TINYINT(1) NOT NULL");
+        $this->execMutateSql("
+            UPDATE ticket_triggers
+            SET is_uneditable = 1
+            WHERE sys_name IN (
+                'auto_close.warn_user',
+                'response.reply_confirm',
+                'newticket_confirm.web_agent',
+                'newticket_confirm.email_user',
+                'newticket_confirm.web_user',
+                'newticket_confirm.web_user',
+                'email_validation.web',
+                'email_validation.widget'
+            )
+        ");
+    }
 }

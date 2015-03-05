@@ -35,43 +35,43 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DpCategoryBuilderType extends CollectionType
 {
-	const EVENT_MANAGE = 'manage';
+    const EVENT_MANAGE = 'manage';
 
-	/**
-	 * @var ResizeFormListener
-	 */
-	protected $listener;
+    /**
+     * @var ResizeFormListener
+     */
+    protected $listener;
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->addEventSubscriber(new ResizeFormListener(
-			$options['type'],
-			$options['options'],
-			$options['allow_add'],
-			$options['allow_delete'],
-			$options['delete_empty'],
-			$options['persister']
-		));
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addEventSubscriber(new ResizeFormListener(
+            $options['type'],
+            $options['options'],
+            $options['allow_add'],
+            $options['allow_delete'],
+            $options['delete_empty'],
+            $options['persister']
+        ));
+    }
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		parent::setDefaultOptions($resolver);
-		$resolver
-			->setRequired(array('persister'))
-			->addAllowedTypes(array(
-				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-			));
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+        $resolver
+            ->setRequired(array('persister'))
+            ->addAllowedTypes(array(
+                'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
+            ));
+    }
 
-	public function getName()
-	{
-		return 'dp_category_builder';
-	}
-} 
+    public function getName()
+    {
+        return 'dp_category_builder';
+    }
+}

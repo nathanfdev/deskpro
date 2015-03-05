@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1401186434 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Remove stale agent templates");
-		$db->executeUpdate("
-			DELETE FROM templates
-			WHERE name LIKE 'AgentBundle:%'
-		");
-	}
+        $this->out("Remove stale agent templates");
+        $db->executeUpdate("
+            DELETE FROM templates
+            WHERE name LIKE 'AgentBundle:%'
+        ");
+    }
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1374854426 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add login_log.note");
-		$this->execMutateSql("ALTER TABLE login_log ADD note VARCHAR(1000) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add login_log.note");
+        $this->execMutateSql("ALTER TABLE login_log ADD note VARCHAR(1000) NOT NULL");
+    }
 }

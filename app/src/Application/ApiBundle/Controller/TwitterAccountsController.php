@@ -40,123 +40,123 @@ use Application\DeskPRO\TwitterAccounts\TwitterAccountEdit;
 
 class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
-		 */
-		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
+    public function listAction()
+    {
+        /**
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+         */
+        $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
-		return $this->createApiResponse(array(
-			'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray()
-		));
-	}
+        return $this->createApiResponse(array(
+            'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray()
+        ));
+    }
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
-		 */
-		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
-		$twitter_account  = $twitter_accounts->getWithUserById($id);
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+         */
+        $twitter_accounts = $this->container->getSystemService('twitter_accounts');
+        $twitter_account  = $twitter_accounts->getWithUserById($id);
 
-		if (!$twitter_account) {
-			throw $this->createNotFoundException();
-		}
+        if (!$twitter_account) {
+            throw $this->createNotFoundException();
+        }
 
-		$returnedData               = $twitter_account;
-		$returnedData['all_agents'] = $twitter_accounts->getAllAgents();
+        $returnedData               = $twitter_account;
+        $returnedData['all_agents'] = $twitter_accounts->getAllAgents();
 
-		return $this->createApiResponse(array(
-			'twitter_account' => $returnedData
-		));
-	}
+        return $this->createApiResponse(array(
+            'twitter_account' => $returnedData
+        ));
+    }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
-		 */
-		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
+    public function saveAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+         */
+        $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
-		if ($id) {
-			$twitter_account = $twitter_accounts->getById($id);
-			if (!$twitter_account) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$twitter_account = $twitter_accounts->createNew();
-		}
+        if ($id) {
+            $twitter_account = $twitter_accounts->getById($id);
+            if (!$twitter_account) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $twitter_account = $twitter_accounts->createNew();
+        }
 
-		$postData = $this->in->getAll('post');
+        $postData = $this->in->getAll('post');
 
-		$twitter_account_edit = new TwitterAccountEdit($twitter_account);
+        $twitter_account_edit = new TwitterAccountEdit($twitter_account);
 
-		$form = $this->createForm(new TwitterAccountType(), $twitter_account_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'twitter_account'), true);
+        $form = $this->createForm(new TwitterAccountType(), $twitter_account_edit, array('cascade_validation' => true));
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'twitter_account'), true);
 
-		if ($form->isValid()) {
-			$twitter_account_edit->save($this->em);
-		} else {
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
-		}
+        if ($form->isValid()) {
+            $twitter_account_edit->save($this->em);
+        } else {
+            throw ValidationException::create($this->getFormValidationErrorsString($form));
+        }
 
-		return $this->createApiResponse(array(
-			'success' => true,
-			'id'      => $twitter_account->id,
-		));
-	}
+        return $this->createApiResponse(array(
+            'success' => true,
+            'id'      => $twitter_account->id,
+        ));
+    }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
-		 */
-		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
-		$twitter_account  = $twitter_accounts->getById($id);
+    public function removeAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+         */
+        $twitter_accounts = $this->container->getSystemService('twitter_accounts');
+        $twitter_account  = $twitter_accounts->getById($id);
 
-		if (!$twitter_account) {
-			throw $this->createNotFoundException();
-		}
+        if (!$twitter_account) {
+            throw $this->createNotFoundException();
+        }
 
-		$old_id = $twitter_account->id;
+        $old_id = $twitter_account->id;
 
-		$this->db->beginTransaction();
+        $this->db->beginTransaction();
 
-		try {
-			$this->em->remove($twitter_account);
-			$this->em->flush();
-			$this->db->commit();
-		} catch(\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
+        try {
+            $this->em->remove($twitter_account);
+            $this->em->flush();
+            $this->db->commit();
+        } catch(\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 }

@@ -39,142 +39,109 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new UserTypePermission(UserTypePermission::AGENT);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new UserTypePermission(UserTypePermission::AGENT);
+    }
 
-	/**
-	 * get settings
-	 */
-	public function getSettingsAction($type)
-	{
-		$rep = $this->rep();
-		if (!$rep::valid($type)) {
-			throw new NotFoundHttpException;
-		}
+    public function listDefinitionsAction()
+    {
+        return $this->createApiResponse($this->rep()->getAllDefinitions());
+    }
 
-		return $this->createApiResponse(array(
-			'agent_can_create' => (bool) $this->settings->get(sprintf('labels.%s.agent_can_create', $type), false),
-		));
-	}
+    ####################################################################################################################
+    # update
+    ####################################################################################################################
 
-	/**
-	 * get settings
-	 */
-	public function setSettingsAction($type)
-	{
-		$rep = $this->rep();
-		if (!$rep::valid($type)) {
-			throw new NotFoundHttpException;
-		}
+    public function updateDefinitionAction()
+    {
+        if (!$old = $this->in->getArrayValue('old')) {
+            throw new NotFoundHttpException;
+        }
 
-		$this->settings->setSetting(
-			sprintf('labels.%s.agent_can_create', $type),
-			$this->in->getBool('agent_can_create')
-		);
-		return $this->getSettingsAction($type);
-	}
+        if (!$new = $this->in->getArrayValue('new')) {
+            throw new NotFoundHttpException;
+        }
 
-	public function listDefinitionsAction()
-	{
-		return $this->createApiResponse($this->rep()->getAllDefinitions());
-	}
+        if (!isset($new['label_type']) || !isset($new['label']) || !isset($new['color'])) {
+            throw new NotFoundHttpException;
+        }
 
-	####################################################################################################################
-	# update
-	####################################################################################################################
+        $label = trim($new['label']);
+        $type = trim($new['label_type']);
+        $rep = $this->rep();
+        $rep->renameLabelDef($old['label'], $label, $new['color'], $type);
+        $rep->updateColorForLabel($type, $label, $new['color']);
 
-	public function updateDefinitionAction()
-	{
-		if (!$old = $this->in->getArrayValue('old')) {
-			throw new NotFoundHttpException;
-		}
+        return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
+    }
 
-		if (!$new = $this->in->getArrayValue('new')) {
-			throw new NotFoundHttpException;
-		}
+    ####################################################################################################################
+    # create
+    ####################################################################################################################
 
-		if (!isset($new['label_type']) || !isset($new['label']) || !isset($new['color'])) {
-			throw new NotFoundHttpException;
-		}
+    public function createDefinitionAction()
+    {
+        $rep = $this->rep();
+        if (!$label = $this->in->getString('label')) {
+            throw new NotFoundHttpException;
+        }
 
-		$label = trim($new['label']);
-		$type = trim($new['label_type']);
-		$rep = $this->rep();
-		$rep->renameLabelDef($old['label'], $label, $new['color'], $type);
-		$rep->updateColorForLabel($type, $label, $new['color']);
+        if ((!$type = $this->in->getString('label_type')) || !$rep::valid($type)) {
+            throw new NotFoundHttpException;
+        }
 
-		return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
-	}
+        $color = $this->in->getString('color');
 
-	####################################################################################################################
-	# create
-	####################################################################################################################
+        if (!$definition = $rep->getDefinition($type, $label)) {
+            $definition = new \Application\DeskPRO\Entity\LabelDef();
+            // primary key
+            $definition['label_type'] = $type;
+            $definition['label'] = trim($label);
+            $this->em->persist($definition);
 
-	public function createDefinitionAction()
-	{
-		$rep = $this->rep();
-		if (!$label = $this->in->getString('label')) {
-			throw new NotFoundHttpException;
-		}
+        } else {
+            $rep->renameLabelDef($definition['label'], trim($label), $color, $type);
+        }
 
-		if ((!$type = $this->in->getString('label_type')) || !$rep::valid($type)) {
-			throw new NotFoundHttpException;
-		}
+        $definition['label'] = trim($label);
+        $definition['color'] = $color;
+        $rep->updateDefinitionUsages($definition);
+        $rep->updateColorForLabel($type, $label, $color);
+        $this->em->flush();
 
-		$color = $this->in->getString('color');
-
-		if (!$definition = $rep->getDefinition($type, $label)) {
-			$definition = new \Application\DeskPRO\Entity\LabelDef();
-			// primary key
-			$definition['label_type'] = $type;
-			$definition['label'] = trim($label);
-			$this->em->persist($definition);
-
-		} else {
-			$rep->renameLabelDef($definition['label'], trim($label), $color, $type);
-		}
-
-		$definition['label'] = trim($label);
-		$definition['color'] = $color;
-		$rep->updateDefinitionUsages($definition);
-		$rep->updateColorForLabel($type, $label, $color);
-		$this->em->flush();
-
-		return $this->createApiResponse($definition->toApiData());
-	}
+        return $this->createApiResponse($definition->toApiData());
+    }
 
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	public function deleteDefinitionAction()
-	{
-		$label = $this->in->getString('label');
-		$type = $this->in->getString('label_type');
-		try {
-			if (!$definition = $this->rep()->getDefinition($type, $label)) {
-				throw $this->createNotFoundException();
-			}
-			$this->rep()->deleteDefinition($definition);
-		}
-		catch (\Exception $e) {
-			throw $this->createNotFoundException();
-		}
+    public function deleteDefinitionAction()
+    {
+        $label = $this->in->getString('label');
+        $type = $this->in->getString('label_type');
+        try {
+            if (!$definition = $this->rep()->getDefinition($type, $label)) {
+                throw $this->createNotFoundException();
+            }
+            $this->rep()->deleteDefinition($definition);
+        } catch (\Exception $e) {
+            throw $this->createNotFoundException();
+        }
 
-		return $this->createApiResponse(array(), 200);
-	}
+        return $this->createApiResponse(array(), 200);
+    }
 
-	/**
-	 * @return LabelDef
-	 */
-	protected function rep()
-	{
-		return $this->em->getRepository('DeskPRO:LabelDef');
-	}
+    /**
+     * @return LabelDef
+     */
+    protected function rep()
+    {
+        return $this->em->getRepository('DeskPRO:LabelDef');
+    }
 }

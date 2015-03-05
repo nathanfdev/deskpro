@@ -35,16 +35,16 @@ namespace Application\ApiBundle\Controller;
 
 class ProfileController extends AbstractController
 {
-	public function saveInhelpStateAction($id, $state)
-	{
-		//TODO refactor+test
-		$this->db->replace('people_prefs', array(
-			'person_id'   => $this->person->getId(),
-			'name'        => 'inhelp.' . $id,
-			'value_str'   => $state,
-			'value_array' => 'N;',
-		));
+    public function saveInhelpStateAction($id, $state)
+    {
+        //TODO refactor+test
+        $this->db->replace('people_prefs', array(
+            'person_id'   => $this->person->getId(),
+            'name'        => 'inhelp.' . $id,
+            'value_str'   => $state,
+            'value_array' => 'N;',
+        ));
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

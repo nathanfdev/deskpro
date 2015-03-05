@@ -223,6 +223,7 @@ DeskPRO.Agent.RteEditor = {
 					url: autosaveUrl,
 					type: 'post',
 					data: newData,
+					dpIsPolling: true,
 					complete: function() {
 						saveFnRunning = false;
 						textarea.data('autosave-running', null);

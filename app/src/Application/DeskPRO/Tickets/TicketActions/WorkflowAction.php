@@ -40,98 +40,98 @@ use Application\DeskPRO\Entity\Ticket;
 
 class WorkflowAction extends AbstractAction implements PermissionableAction
 {
-	/** @var int */
-	protected $workflow_id;
+    /** @var int */
+    protected $workflow_id;
 
-	public function __construct($workflow)
-	{
-		$this->workflow_id = $workflow;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$ticket['workflow_id'] = $this->workflow_id;
-	}
+    public function __construct($workflow)
+    {
+        $this->workflow_id = $workflow;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket['workflow_id'] == $this->workflow_id) {
-			return array();
-		}
-
-		return array(
-			array('action' => 'workflow', 'workflow_id' => $this->workflow_id)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $ticket['workflow_id'] = $this->workflow_id;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		if ($ticket->getWorkflowId() == $this->workflow_id) {
-			return true;
-		}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket['workflow_id'] == $this->workflow_id) {
+            return array();
+        }
 
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return false;
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * Get the workflow id
-	 *
-	 * @return int
-	 */
-	public function getWorkflowId()
-	{
-		return $this->workflow_id;
-	}
+        return array(
+            array('action' => 'workflow', 'workflow_id' => $this->workflow_id)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        if ($ticket->getWorkflowId() == $this->workflow_id) {
+            return true;
+        }
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return false;
+        }
 
-		if ($this->workflow_id == 0) {
-			return $tr->phrase('agent.tickets.remove_workflow_action');
-		} else {
-			$names = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames();
-			if (!isset($names[$this->workflow_id])) {
-				$name = "<error>Unknown #{$this->workflow_id}</error>";
-			} else {
-				$name = $as_html ? htmlspecialchars($names[$this->workflow_id]) : $names[$this->workflow_id];
-			}
+        return true;
+    }
 
-			return $tr->phrase('agent.tickets.set_workflow_action', array('workflow' => $name));
-		}
-	}
+
+    /**
+     * Get the workflow id
+     *
+     * @return int
+     */
+    public function getWorkflowId()
+    {
+        return $this->workflow_id;
+    }
+
+
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+
+        if ($this->workflow_id == 0) {
+            return $tr->phrase('agent.tickets.remove_workflow_action');
+        } else {
+            $names = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames();
+            if (!isset($names[$this->workflow_id])) {
+                $name = "<error>Unknown #{$this->workflow_id}</error>";
+            } else {
+                $name = $as_html ? htmlspecialchars($names[$this->workflow_id]) : $names[$this->workflow_id];
+            }
+
+            return $tr->phrase('agent.tickets.set_workflow_action', array('workflow' => $name));
+        }
+    }
 }

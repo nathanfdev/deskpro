@@ -38,8 +38,8 @@ use Application\DeskPRO\BlobStorage\Blob;
 
 interface ReadStreamInterface
 {
-	/**
-	 * @return resource
-	 */
-	public function getBlobReadStream(Blob $blob);
+    /**
+     * @return resource
+     */
+    public function getBlobReadStream(Blob $blob);
 }

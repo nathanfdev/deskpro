@@ -38,66 +38,66 @@ use Application\DeskPRO\App;
 
 class TicketsStatus extends AbstractTableOverviewStat
 {
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
+    /**
+     * @var int[]
+     */
+    protected $values = null;
 
 
-	/**
-	 * @return string[]
-	 */
-	public function getTitles()
-	{
-		$s = array(
-			'awaiting_agent' => 'Awaiting Agent',
-			'awaiting_user'  => 'Awaiting User',
-			'resolved'       => 'Resolved',
-			'archived'       => 'Archived',
-			'hidden'         => 'Hidden'
-		);
+    /**
+     * @return string[]
+     */
+    public function getTitles()
+    {
+        $s = array(
+            'awaiting_agent' => 'Awaiting Agent',
+            'awaiting_user'  => 'Awaiting User',
+            'resolved'       => 'Resolved',
+            'archived'       => 'Archived',
+            'hidden'         => 'Hidden'
+        );
 
-		$return = array();
-		foreach ($s as $k => $v) {
-			$return[$k] = $v;
-			$return[$k . '_hold'] = $v . ' (On Hold)';
-		}
+        $return = array();
+        foreach ($s as $k => $v) {
+            $return[$k] = $v;
+            $return[$k . '_hold'] = $v . ' (On Hold)';
+        }
 
-		return $return;
-	}
+        return $return;
+    }
 
 
-	/**
-	 * @return int[]
-	 */
-	public function getValues()
-	{
-		if ($this->values !== null) {
-			return $this->values;
-		}
+    /**
+     * @return int[]
+     */
+    public function getValues()
+    {
+        if ($this->values !== null) {
+            return $this->values;
+        }
 
-		$sql = "
-			SELECT tickets.status, COUNT(*)
-			FROM tickets AS tickets WHERE is_hold = 0
-			GROUP BY tickets.status
-		";
+        $sql = "
+            SELECT tickets.status, COUNT(*)
+            FROM tickets AS tickets WHERE is_hold = 0
+            GROUP BY tickets.status
+        ";
 
-		$this->logger->logDebug("[TicketsStatus] $sql");
-		$this->logger->startTimer('TicketsStatus');
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('TicketsStatus');
+        $this->logger->logDebug("[TicketsStatus] $sql");
+        $this->logger->startTimer('TicketsStatus');
+        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->logger->logTotalTime('TicketsStatus');
 
-		$sql = "
-			SELECT CONCAT(tickets.status, '_hold'), COUNT(*)
-			FROM tickets AS tickets WHERE is_hold = 1
-			GROUP BY tickets.status
-		";
+        $sql = "
+            SELECT CONCAT(tickets.status, '_hold'), COUNT(*)
+            FROM tickets AS tickets WHERE is_hold = 1
+            GROUP BY tickets.status
+        ";
 
-		$this->logger->logDebug("[TicketsStatus w hold] $sql");
-		$this->logger->startTimer('TicketsStatus_w_hold');
-		$this->values = array_merge($this->values, App::getDb()->fetchAllKeyValue($sql));
-		$this->logger->logTotalTime('TicketsStatus_w_hold');
+        $this->logger->logDebug("[TicketsStatus w hold] $sql");
+        $this->logger->startTimer('TicketsStatus_w_hold');
+        $this->values = array_merge($this->values, App::getDb()->fetchAllKeyValue($sql));
+        $this->logger->logTotalTime('TicketsStatus_w_hold');
 
-		return $this->values;
-	}
+        return $this->values;
+    }
 }

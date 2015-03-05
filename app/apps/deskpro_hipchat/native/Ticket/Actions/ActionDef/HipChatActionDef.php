@@ -38,46 +38,46 @@ use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;
 
 class HipChatActionDef extends AbstractActionDef
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTitle()
-	{
-		return 'Announce to HipChat';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getTitle()
+    {
+        return 'Announce to HipChat';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTriggerActionClass()
-	{
-		return 'deskpro_hipchat\\Ticket\\Actions\\HipChatAction';
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getActionBuilderTemplate()
-	{
-		return 'Apps:deskpro_hipchat:type-actions-input.html';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getTriggerActionClass()
+    {
+        return 'deskpro_hipchat\\Ticket\\Actions\\HipChatAction';
+    }
 
 
-	/**
-	 * Makes sure 'room' key is set, and adds 'app_id'
-	 *
-	 * @param array $options
-	 * @return array
-	 */
-	public function processActionBuilderOptions(array $options)
-	{
-		if (!isset($options['room'])) {
-			$options['room'] = '';
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getActionBuilderTemplate()
+    {
+        return 'Apps:deskpro_hipchat:type-actions-input.html';
+    }
 
-		$options['app_id'] = $this->getActionDef()->app->id;
 
-		return $options;
-	}
+    /**
+     * Makes sure 'room' key is set, and adds 'app_id'
+     *
+     * @param  array $options
+     * @return array
+     */
+    public function processActionBuilderOptions(array $options)
+    {
+        if (!isset($options['room'])) {
+            $options['room'] = '';
+        }
+
+        $options['app_id'] = $this->getActionDef()->app->id;
+
+        return $options;
+    }
 }

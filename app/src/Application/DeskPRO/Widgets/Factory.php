@@ -34,18 +34,17 @@ namespace Application\DeskPRO\Widgets;
  * @subpackage Widgets
  */
 
-use Application\DeskPRO\Entity;
 
 class Factory
 {
-	public static function createHandlersForWidgets($widgets, $context, array $options = array())
-	{
-		$handlers = array();
+    public static function createHandlersForWidgets($widgets, $context, array $options = array())
+    {
+        $handlers = array();
 
-		foreach ($widgets as $w) {
-			$handlers[$w['id']] = $w->getHandler($options);
-		}
+        foreach ($widgets as $w) {
+            $handlers[$w['id']] = $w->getHandler($options);
+        }
 
-		return $handlers;
-	}
+        return $handlers;
+    }
 }

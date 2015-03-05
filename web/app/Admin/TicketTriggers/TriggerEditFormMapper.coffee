@@ -1,6 +1,6 @@
 define ->
 	class Admin_TicketTriggers_TriggerEditFormMapper
-		getFormFromModel: (model) ->
+		getFormFromModel: (model, appTriggerEvents) ->
 			form = {}
 			form.title = model.title || ''
 
@@ -8,6 +8,7 @@ define ->
 				form.typeForm = {
 					by_user: false,
 					by_agent: false,
+					by_app: false,
 					by_agent_mode: {
 						web: false,
 						email: false,
@@ -19,7 +20,8 @@ define ->
 						form: false,
 						email: false,
 						api: false
-					}
+					},
+					by_app_mode: {}
 				}
 
 				if model.by_agent_mode.length
@@ -30,10 +32,15 @@ define ->
 					form.typeForm.by_user = true
 					for x in model.by_user_mode
 						form.typeForm.by_user_mode[x] = true
+				if model.by_app_mode.length
+					form.typeForm.by_app = true
+					for x in model.by_app_mode
+						form.typeForm.by_app_mode[x] = true
 			else
 				form.typeForm = {
 					by_user: true,
 					by_agent: true,
+					by_app: false,
 					by_agent_mode: {
 						web: true,
 						email: true,
@@ -45,7 +52,8 @@ define ->
 						form: true,
 						email: true,
 						api: true
-					}
+					},
+					by_app_mode: {}
 				}
 
 			form.flags = {}

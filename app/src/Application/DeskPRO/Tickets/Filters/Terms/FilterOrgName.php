@@ -44,26 +44,28 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterOrgName extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('name');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
 
-		$query = $this->getStringMatchQuery('org.name', $options['name']);
-		$query->addJoin('tickets.organization', 'organizations', 'org', 'org.id = tickets.organization_id');
-		return $query;
-	}
+        $query = $this->getStringMatchQuery('org.name', $options['name']);
+        $query->addJoin('tickets.organization', 'organizations', 'org', 'org.id = tickets.organization_id');
+
+        return $query;
+    }
 }

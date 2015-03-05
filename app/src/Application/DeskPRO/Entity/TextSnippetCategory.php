@@ -43,93 +43,93 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
-	const TPYE_TICKET  = 'tickets';
-	const TPYE_CHAT    = 'chat';
+    const TPYE_TICKET  = 'tickets';
+    const TPYE_CHAT    = 'chat';
 
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * The type of snippets this cat contains
-	 *
-	 * @var string
-	 */
-	protected $typename;
+    /**
+     * The type of snippets this cat contains
+     *
+     * @var string
+     */
+    protected $typename;
 
-	/**
-	 * Who created the cat
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * Who created the cat
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 * Everyone can see it?
-	 *
-	 * @var bool
-	 */
-	protected $is_global = false;
+    /**
+     * Everyone can see it?
+     *
+     * @var bool
+     */
+    protected $is_global = false;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function getPermType()
-	{
-		if ($this->is_global) {
-			return 'global';
-		} else {
-			return 'me';
-		}
-	}
-
-
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		$data['title'] = array();
-
-		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
-			$title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
-			$data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
-		}
-
-		return $data;
-	}
+    public function getPermType()
+    {
+        if ($this->is_global) {
+            return 'global';
+        } else {
+            return 'me';
+        }
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+        $data['title'] = array();
 
-	public function getObjectTranslatable()
-	{
-		return ObjectTranslatable::loadObjectTranslatable($this);
-	}
+        foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+            $title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
+            $data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+        }
 
-	public static function loadObjectTranslatableMetadata()
-	{
-		return array('fields' => array('title'));
-	}
+        return $data;
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TextSnippetCategory';
-		$metadata->setPrimaryTable(array( 'name' => 'text_snippet_categories', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', ));
-		$metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 
-		ObjectTranslatable::loadEntityMetadata($metadata);
-	}
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public function getObjectTranslatable()
+    {
+        return ObjectTranslatable::loadObjectTranslatable($this);
+    }
+
+    public static function loadObjectTranslatableMetadata()
+    {
+        return array('fields' => array('title'));
+    }
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TextSnippetCategory';
+        $metadata->setPrimaryTable(array( 'name' => 'text_snippet_categories', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', ));
+        $metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+
+        ObjectTranslatable::loadEntityMetadata($metadata);
+    }
 }

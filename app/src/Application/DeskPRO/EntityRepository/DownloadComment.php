@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class DownloadComment extends CommentAbstract
 {
-	const FIELD = 'download';
+    const FIELD = 'download';
 }

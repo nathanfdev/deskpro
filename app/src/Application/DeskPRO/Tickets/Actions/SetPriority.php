@@ -46,78 +46,78 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetPriority extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('priority_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('priority_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_pri_id = $this->getActionOption('priority_id');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_pri_id = $this->getActionOption('priority_id');
 
-		if ($set_pri_id) {
-			$pri = $this->getContainer()->getTicketPriorities()->getById($set_pri_id);
-			if (!$pri) {
-				return;
-			}
-		} else {
-			$pri = null;
-		}
+        if ($set_pri_id) {
+            $pri = $this->getContainer()->getTicketPriorities()->getById($set_pri_id);
+            if (!$pri) {
+                return;
+            }
+        } else {
+            $pri = null;
+        }
 
-		$ticket->priority = $pri;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_pri_id    = $this->getActionOption('priority_id');
-		$ticket_pri_id = $ticket->priority ? $ticket->priority->id : 0;
-
-		if ($ticket_pri_id == $set_pri_id) {
-			return true;
-		}
-
-		if ($set_pri_id) {
-			$pri = $this->getContainer()->getTicketPriorities()->getById($set_pri_id);
-			if (!$pri) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+        $ticket->priority = $pri;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_pri_id    = $this->getActionOption('priority_id');
+        $ticket_pri_id = $ticket->priority ? $ticket->priority->id : 0;
 
-		return null;
-	}
+        if ($ticket_pri_id == $set_pri_id) {
+            return true;
+        }
+
+        if ($set_pri_id) {
+            $pri = $this->getContainer()->getTicketPriorities()->getById($set_pri_id);
+            if (!$pri) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

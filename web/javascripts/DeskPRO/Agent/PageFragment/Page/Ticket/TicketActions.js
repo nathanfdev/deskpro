@@ -305,8 +305,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			success: function(data) {
 				this._initMacroOverlay();
 
-				console.log(data);
-
 				var ul = overlayEl.find('ul.actions-list');
 				ul.empty();
 

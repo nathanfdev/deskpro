@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1339602652 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Inserting new system archive filters");
-		$this->execMutateSql("ALTER TABLE worker_jobs ADD last_start_date DATETIME DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Inserting new system archive filters");
+        $this->execMutateSql("ALTER TABLE worker_jobs ADD last_start_date DATETIME DEFAULT NULL");
+    }
 }

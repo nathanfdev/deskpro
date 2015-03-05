@@ -36,8 +36,8 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 class Nav extends Template
 {
-	protected function init()
-	{
-		$this->setOption('tpl', 'UserBundle:Portal:nav-' . $this->section . '.html.twig');
-	}
+    protected function init()
+    {
+        $this->setOption('tpl', 'UserBundle:Portal:nav-' . $this->section . '.html.twig');
+    }
 }

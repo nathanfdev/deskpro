@@ -44,51 +44,51 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 {
 
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Task
-	 */
-	protected $task;
+    /**
+     * @var \Application\DeskPRO\Entity\Task
+     */
+    protected $task;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE);
-		$metadata->setDiscriminatorColumn(array(
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE);
+        $metadata->setDiscriminatorColumn(array(
             'name' => 'assoc_type',
             'type' => 'string',
             'length' => '50',
         ));
-		$metadata->setDiscriminatorMap(array(
-			'person' => 'TaskAssociatedPerson',
-			'ticket' => 'TaskAssociatedTicket',
-			'organization' => 'TaskAssociatedOrganization',
-			//'deal' => 'TaskAssociatedDeal',
-		));
-		$metadata->setPrimaryTable(array( 'name' => 'task_associations', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+        $metadata->setDiscriminatorMap(array(
+            'person' => 'TaskAssociatedPerson',
+            'ticket' => 'TaskAssociatedTicket',
+            'organization' => 'TaskAssociatedOrganization',
+            //'deal' => 'TaskAssociatedDeal',
+        ));
+        $metadata->setPrimaryTable(array( 'name' => 'task_associations', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

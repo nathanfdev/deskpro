@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352307078 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Automatically clean up ticket locks");
-		$this->execMutateSql("CREATE INDEX date_locked_idx ON tickets (date_locked)");
-		$this->execMutateSql("
-			INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
-			VALUES ('cleanup_ticket_locks', 'cleanup', 'Cleanup Ticket Locks', 'Cleans up ticket locks', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\CleanupTicketLocks', X'613A303A7B7D', '900', NULL, NULL)
-		");
-	}
+    public function run()
+    {
+        $this->out("Automatically clean up ticket locks");
+        $this->execMutateSql("CREATE INDEX date_locked_idx ON tickets (date_locked)");
+        $this->execMutateSql("
+            INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+            VALUES ('cleanup_ticket_locks', 'cleanup', 'Cleanup Ticket Locks', 'Cleans up ticket locks', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\CleanupTicketLocks', X'613A303A7B7D', '900', NULL, NULL)
+        ");
+    }
 }

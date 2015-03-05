@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1368197815 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct sendmail_queue.blob_id FK");
-		$this->execMutateSql("ALTER TABLE sendmail_queue DROP FOREIGN KEY FK_DDB369C2ED3E8EA5");
-		$this->execMutateSql("ALTER TABLE sendmail_queue ADD CONSTRAINT FK_DDB369C2ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Correct sendmail_queue.blob_id FK");
+        $this->execMutateSql("ALTER TABLE sendmail_queue DROP FOREIGN KEY FK_DDB369C2ED3E8EA5");
+        $this->execMutateSql("ALTER TABLE sendmail_queue ADD CONSTRAINT FK_DDB369C2ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
+    }
 }

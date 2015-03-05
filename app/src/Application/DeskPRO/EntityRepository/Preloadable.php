@@ -36,8 +36,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 interface Preloadable
 {
-	/**
-	 * Preloads entities.
-	 */
-	public function preload();
+    /**
+     * Preloads entities.
+     */
+    public function preload();
 }

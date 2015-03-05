@@ -39,139 +39,141 @@ use Doctrine\ORM\Query;
 
 class BanEmail extends AbstractEntityRepository
 {
-	/** @var array */
-	protected $counts = array();
+    /** @var array */
+    protected $counts = array();
 
-	/**
-	 * Get a list of emails suitable for display
-	 */
+    /**
+     * Get a list of emails suitable for display
+     */
 
-	public function getList($from = 0, $limit = 20, $search_phrase = '', $wildcard = false)
-	{
-		$where = '1';
-		$params = array();
+    public function getList($from = 0, $limit = 20, $search_phrase = '', $wildcard = false)
+    {
+        $where = '1';
+        $params = array();
 
-		if (!empty($search_phrase)) {
-			$where .= " AND banned_email LIKE :search";
-			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
-		}
+        if (!empty($search_phrase)) {
+            $where .= " AND banned_email LIKE :search";
+            $params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+        }
 
-		if ($wildcard) {
-			$where .= ' AND banned_email LIKE "%\%%"';
-		}
+        if ($wildcard) {
+            $where .= ' AND banned_email LIKE "%\%%"';
+        }
 
-		$list = App::getDb()->fetchAllCol(sprintf("
-			SELECT banned_email
-			FROM ban_emails
-			WHERE %s
-			ORDER BY banned_email ASC
-			LIMIT %d, %d
-		", $where, $from, $limit), $params);
-		$this->counts[$search_phrase] = count($list);
+        $list = App::getDb()->fetchAllCol(sprintf("
+            SELECT banned_email
+            FROM ban_emails
+            WHERE %s
+            ORDER BY banned_email ASC
+            LIMIT %d, %d
+        ", $where, $from, $limit), $params);
+        $this->counts[$search_phrase] = count($list);
 
-		return $list;
-	}
+        return $list;
+    }
 
-	/**
-	 * @param int $per_page
-	 * @param string $search_phrase
-	 * @param bool $wildcard
-	 * @return int
-	 */
-	public function getPageCount($per_page = 20, $search_phrase = '', $wildcard = false)
-	{
-		return ceil($this->getCount($search_phrase, $wildcard) / $per_page);
-	}
+    /**
+     * @param  int    $per_page
+     * @param  string $search_phrase
+     * @param  bool   $wildcard
+     * @return int
+     */
+    public function getPageCount($per_page = 20, $search_phrase = '', $wildcard = false)
+    {
+        return ceil($this->getCount($search_phrase, $wildcard) / $per_page);
+    }
 
-	public function getPatterns($reload = false)
-	{
-		static $list;
+    public function getPatterns($reload = false)
+    {
+        static $list;
 
-		if ($reload || !$list) {
-			$list = App::getDb()->fetchAllCol("
-				SELECT banned_email
-				FROM ban_emails
-				WHERE is_pattern = 1
-				ORDER BY banned_email ASC
-			");
-		}
+        if ($reload || !$list) {
+            $list = App::getDb()->fetchAllCol("
+                SELECT banned_email
+                FROM ban_emails
+                WHERE is_pattern = 1
+                ORDER BY banned_email ASC
+            ");
+        }
 
-		return $list;
-	}
+        return $list;
+    }
 
-	/**
-	 * Check if an email address is banned
-	 *
-	 * @param $email
-	 * @return bool
-	 */
-	public function isEmailBanned($email, &$match = null)
-	{
-		$email = strtolower(trim($email));
+    /**
+     * Check if an email address is banned
+     *
+     * @param $email
+     * @return bool
+     */
+    public function isEmailBanned($email, &$match = null)
+    {
+        $email = strtolower(trim($email));
 
-		$banned_email = App::getDb()->fetchColumn("
-			SELECT banned_email
-			FROM ban_emails
-			WHERE banned_email = ?
-		", array($email));
+        $banned_email = App::getDb()->fetchColumn("
+            SELECT banned_email
+            FROM ban_emails
+            WHERE banned_email = ?
+        ", array($email));
 
-		if ($banned_email) {
-			$match = $banned_email;
-			return true;
-		}
+        if ($banned_email) {
+            $match = $banned_email;
 
-		$patterns = $this->getPatterns();
-		foreach ($patterns as $pattern) {
-			if (\Orb\Util\Strings::isStarMatch($pattern, $email)) {
-				$match = $pattern;
-				return true;
-			}
-		}
+            return true;
+        }
 
-		return false;
-	}
+        $patterns = $this->getPatterns();
+        foreach ($patterns as $pattern) {
+            if (\Orb\Util\Strings::isStarMatch($pattern, $email)) {
+                $match = $pattern;
 
-	/**
-	 * @param string $search_phrase
-	 * @param bool $wildcard
-	 * @return int
-	 */
-	public function getCount($search_phrase = '', $wildcard = false)
-	{
-		if (is_string($search_phrase) && isset($this->counts[$search_phrase])) {
-			return $this->counts[$search_phrase];
-		}
+                return true;
+            }
+        }
 
-		$where = '1';
-		$params = array();
+        return false;
+    }
 
-		if (!empty($search_phrase)) {
-			$where .= " AND banned_email LIKE :search";
-			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
-		}
+    /**
+     * @param  string $search_phrase
+     * @param  bool   $wildcard
+     * @return int
+     */
+    public function getCount($search_phrase = '', $wildcard = false)
+    {
+        if (is_string($search_phrase) && isset($this->counts[$search_phrase])) {
+            return $this->counts[$search_phrase];
+        }
 
-		if ($wildcard) {
-			$where .= ' AND banned_email LIKE "%\%%"';
-		}
+        $where = '1';
+        $params = array();
 
-		$count = App::getDb()->countWithPlaceholders('ban_emails', $where, $params);
+        if (!empty($search_phrase)) {
+            $where .= " AND banned_email LIKE :search";
+            $params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+        }
 
-		return $this->counts[$search_phrase] = (int) $count;
-	}
+        if ($wildcard) {
+            $where .= ' AND banned_email LIKE "%\%%"';
+        }
 
-	public function removeAll()
-	{
-		App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
-	}
+        $count = App::getDb()->countWithPlaceholders('ban_emails', $where, $params);
 
-	/**
-	 * complete list of email bans
-	 * @return array
-	 */
-	public function getAll()
-	{
-		return $this->_em->createQuery(
-			'SELECT e.banned_email FROM DeskPRO:BanEmail e'
-		)->execute(array(), Query::HYDRATE_SCALAR);
-	}
+        return $this->counts[$search_phrase] = (int) $count;
+    }
+
+    public function removeAll()
+    {
+        App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
+    }
+
+    /**
+     * complete list of email bans
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->_em->createQuery(
+            'SELECT e.banned_email FROM DeskPRO:BanEmail e'
+        )->execute(array(), Query::HYDRATE_SCALAR);
+    }
 }

@@ -39,23 +39,23 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ReportPropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add('description', 'text', array('required' => false));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('title', 'text', array('required' => true));
+        $builder->add('description', 'text', array('required' => false));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'report';
-	}
+    public function getName()
+    {
+        return 'report';
+    }
 }

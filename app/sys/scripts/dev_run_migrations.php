@@ -42,63 +42,63 @@ if (!defined('DP_ROOT')) exit('No access');
  */
 class RunMigrations
 {
-	public function run()
-	{
-		if (isset($_REQUEST['run'])) {
-			$this->runMigrations();
-		} else {
-			$this->runIntro();
-		}
-	}
+    public function run()
+    {
+        if (isset($_REQUEST['run'])) {
+            $this->runMigrations();
+        } else {
+            $this->runIntro();
+        }
+    }
 
-	public function runIntro()
-	{
-		echo "<html><title>Run Migrations</title><body>";
-		echo "<h1>Run Migrations</h1>";
-		echo "<p>This will run through the developer migration scripts to bring your database up to the latest schema version.</p>";
-		echo "<p>Running migrations may take some time. For simple changes, it will take around 10 seconds.</p>";
-		echo "<p>You can also run migrations from the command-line:<br /><code>php app/cmd.php dpdev:do-migrations</code></p>";
+    public function runIntro()
+    {
+        echo "<html><title>Run Migrations</title><body>";
+        echo "<h1>Run Migrations</h1>";
+        echo "<p>This will run through the developer migration scripts to bring your database up to the latest schema version.</p>";
+        echo "<p>Running migrations may take some time. For simple changes, it will take around 10 seconds.</p>";
+        echo "<p>You can also run migrations from the command-line:<br /><code>php app/cmd.php dpdev:do-migrations</code></p>";
 
-		$url = $_SERVER['PHP_SELF'] . '?' . (!empty($_SERVER['QUERY_STRING']) ? str_replace('&', '&amp;', $_SERVER['QUERY_STRING']) : '') . '&amp;run';
+        $url = $_SERVER['PHP_SELF'] . '?' . (!empty($_SERVER['QUERY_STRING']) ? str_replace('&', '&amp;', $_SERVER['QUERY_STRING']) : '') . '&amp;run';
 
-		echo "<p>When you are ready to proceed, click the button below.<br /><a href=\"$url\">Click here to run the migration scripts now</a></p>";
+        echo "<p>When you are ready to proceed, click the button below.<br /><a href=\"$url\">Click here to run the migration scripts now</a></p>";
 
-		echo "</body></html>";
-	}
+        echo "</body></html>";
+    }
 
-	public function runMigrations()
-	{
-		global $DP_CONFIG;
-		require DP_CONFIG_FILE;
+    public function runMigrations()
+    {
+        global $DP_CONFIG;
+        require DP_CONFIG_FILE;
 
-		if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-			$DP_CONFIG = array();
-		}
+        if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
+            $DP_CONFIG = array();
+        }
 
-		if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
-		if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
-		if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
-		if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
-		if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
+        if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
+        if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
+        if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
+        if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
+        if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
 
-		$env = 'dev';
-		$debug = true;
+        $env = 'dev';
+        $debug = true;
 
-		require DP_ROOT . '/sys/KernelBooter.php';
-		$app = \DeskPRO\Kernel\KernelBooter::getCliApp($env, $debug);
+        require DP_ROOT . '/sys/KernelBooter.php';
+        $app = \DeskPRO\Kernel\KernelBooter::getCliApp($env, $debug);
 
-		$argv = $_SERVER['argv'];
-		array_shift($argv); // remove cron.php
-		array_unshift($argv, 'cmd.php', 'dpdev:do-migration', '--no-interaction');
-		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
+        $argv = $_SERVER['argv'];
+        array_shift($argv); // remove cron.php
+        array_unshift($argv, 'cmd.php', 'dpdev:do-migration', '--no-interaction');
+        $input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
-		$output = new \Symfony\Component\Console\Output\StreamOutput(fopen('php://output', 'w'), \Symfony\Component\Console\Output\StreamOutput::VERBOSITY_VERBOSE, null, $formatter = null);
+        $output = new \Symfony\Component\Console\Output\StreamOutput(fopen('php://output', 'w'), \Symfony\Component\Console\Output\StreamOutput::VERBOSITY_VERBOSE, null, $formatter = null);
 
-		header('Content-Type: text/plain');
-		header('Content-Disposition: inline; filename=migration.txt');
+        header('Content-Type: text/plain');
+        header('Content-Disposition: inline; filename=migration.txt');
 
-		$app->run($input, $output);
-	}
+        $app->run($input, $output);
+    }
 }
 
 $file_loader = new RunMigrations();

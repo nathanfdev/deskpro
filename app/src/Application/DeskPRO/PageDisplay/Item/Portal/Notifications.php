@@ -40,24 +40,24 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
  */
 class Notifications extends PortalItemAbstract
 {
-	public function getHtml()
-	{
-		if ($this->person_context->isGuest()) {
-			return '';
-		}
-		
-		$html = $this->renderView('UserBundle:Portal:notifications-topsection.html.twig', array(
-			'section' => $this->section,
-			'options' => $this->options
-		));
+    public function getHtml()
+    {
+        if ($this->person_context->isGuest()) {
+            return '';
+        }
 
-		return $html;
-	}
+        $html = $this->renderView('UserBundle:Portal:notifications-topsection.html.twig', array(
+            'section' => $this->section,
+            'options' => $this->options
+        ));
 
-	public function getJsAssets()
-	{
-		return array(
-			'javascripts/DeskPRO/User/ElementHandler/Notifications.js'
-		);
-	}
+        return $html;
+    }
+
+    public function getJsAssets()
+    {
+        return array(
+            'javascripts/DeskPRO/User/ElementHandler/Notifications.js'
+        );
+    }
 }

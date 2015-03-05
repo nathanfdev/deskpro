@@ -39,12 +39,12 @@ use Application\DeskPRO\People\PersonEditManager;
 
 class PersonEditManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$s = new PersonEditManager(
-			$container->get('doctrine.orm.entity_manager')
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $s = new PersonEditManager(
+            $container->get('doctrine.orm.entity_manager')
+        );
 
-		return $s;
-	}
+        return $s;
+    }
 }

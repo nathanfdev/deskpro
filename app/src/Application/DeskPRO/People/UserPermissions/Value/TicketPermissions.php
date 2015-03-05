@@ -36,17 +36,17 @@ namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class TicketPermissions implements PermissionValueInterface
 {
-	/** @var bool  */
-	public $use                       = false;
-	/** @var bool  */
-	public $reopen_resolved           = false;
-	/** @var bool  */
-	public $reopen_resolved_createnew = false;
+    /** @var bool  */
+    public $use                       = false;
+    /** @var bool  */
+    public $reopen_resolved           = false;
+    /** @var bool  */
+    public $reopen_resolved_createnew = false;
 
-	public function getNames()
-	{
-		return array(
-			'use', 'reopen_resolved', 'reopen_resolved_createnew',
-		);
-	}
+    public function getNames()
+    {
+        return array(
+            'use', 'reopen_resolved', 'reopen_resolved_createnew',
+        );
+    }
 }

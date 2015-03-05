@@ -50,55 +50,56 @@ use Orb\Util\CheckedOptionsArray;
  */
 class AddAgentNote extends AbstractContainerAwareAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('by_agent_id');
-		$options->addRequiredNames('note_text');
-		$options->addValidNames('by_assigned_agent');
-		$options->addValidNames('no_formatter');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('by_agent_id');
+        $options->addRequiredNames('note_text');
+        $options->addValidNames('by_assigned_agent');
+        $options->addValidNames('no_formatter');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$agent = null;
-		if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
-			$agent = $ticket->agent;
-		}
-		if (!$agent) {
-			$agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
-		}
+        return $options;
+    }
 
-		if (!$agent) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $agent = null;
+        if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
+            $agent = $ticket->agent;
+        }
+        if (!$agent) {
+            $agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
+        }
 
-		$em = $this->getContainer()->getEm();
+        if (!$agent) {
+            return;
+        }
 
-		$message = new TicketMessage();
-		$message->person = $agent;
-		$message->date_created = new \DateTime('+1 second');
-		$message['is_agent_note'] = true;
+        $em = $this->getContainer()->getEm();
 
-		$note_text = $this->getActionOption('note_text');
+        $message = new TicketMessage();
+        $message->person = $agent;
+        $message->date_created = new \DateTime('+1 second');
+        $message['is_agent_note'] = true;
 
-		if (!$this->getActionOption('no_formatter')) {
-			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
-			$formatter->addVar('user_vars', $context->getUserVars());
-			$note_text = $formatter->formatText($note_text, $ticket);
-		}
+        $note_text = $this->getActionOption('note_text');
 
-		$message->setMessage($note_text);
+        if (!$this->getActionOption('no_formatter')) {
+            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter->addVar('user_vars', $context->getUserVars());
+            $note_text = $formatter->formatText($note_text, $ticket);
+        }
 
-		$ticket->addMessage($message);
-		$em->persist($message);
-		$em->flush($message);
-	}
+        $message->setMessage($note_text);
+
+        $ticket->addMessage($message);
+        $em->persist($message);
+        $em->flush($message);
+    }
 }

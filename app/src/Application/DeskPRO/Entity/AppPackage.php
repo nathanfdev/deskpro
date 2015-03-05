@@ -53,6 +53,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property bool   $is_single
  * @property bool   $is_custom
  * @property array  $tags
+ * @property array  $trigger_events
  * @property array  $settings_def
  * @property AppAsset[] $assets
  * @property array  $scopes
@@ -131,6 +132,11 @@ class AppPackage extends DomainObject
 	 * @var array
 	 */
 	protected $tags = array();
+
+	/**
+	 * @var array
+	 */
+	protected $trigger_events = array();
 
 	/**
 	 * @var array
@@ -259,21 +265,22 @@ class AppPackage extends DomainObject
 	public function getManifest()
 	{
 		return array(
-			'package_name' => $this['name'],
-			'title' => $this['title'],
-			'description' => $this['description'],
-			'tags' => $this['tags'],
-			'api_version' => $this['api_version'],
-			'version' => $this['version'],
-			'version_name' => $this['version_name'],
-			'is_single' => (bool) $this['is_single'],
-			'is_native' => null !== $this['native_name'],
-			'author' => array(
-				'name' => $this['author_name'],
+			'package_name'   => $this['name'],
+			'title'          => $this['title'],
+			'description'    => $this['description'],
+			'tags'           => $this['tags'],
+			'api_version'    => $this['api_version'],
+			'version'        => $this['version'],
+			'version_name'   => $this['version_name'],
+			'is_single'      => (bool) $this['is_single'],
+			'is_native'      => null !== $this['native_name'],
+			'author'         => array(
+				'name'  => $this['author_name'],
 				'email' => $this['author_email'],
-				'link' => $this['author_link'],
+				'link'  => $this['author_link'],
 			),
-			'settings_def' => $this['settings_def']
+			'trigger_events' => $this['trigger_events'],
+			'settings_def'   => $this['settings_def']
 		);
 	}
 
@@ -293,6 +300,7 @@ class AppPackage extends DomainObject
 		$data['author_link']       = $this->author_link;
 		$data['version']           = $this->version;
 		$data['version_name']      = $this->version_name;
+		$data['trigger_events']    = $this->trigger_events;
 		$data['settings_def']      = $this->settings_def;
 		$data['api_version']       = $this->api_version;
 		$data['is_single']         = $this->is_single;
@@ -420,6 +428,13 @@ class AppPackage extends DomainObject
 			'columnName' => 'tags',
 			'fieldName'  => 'tags',
 			'type'       => 'simple_array',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'trigger_events',
+			'fieldName'  => 'trigger_events',
+			'type'       => 'json_array',
 			'nullable'   => false,
 		));
 

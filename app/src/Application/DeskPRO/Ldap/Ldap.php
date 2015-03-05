@@ -36,27 +36,29 @@ namespace Application\DeskPRO\Ldap;
 
 class Ldap extends \Zend\Ldap\Ldap
 {
-	/**
-	 * Custom version to support multiple %s placeholders in custom account filter format
-	 *
-	 * @param $acctname
-	 * @return string
-	 */
-	protected function _getAccountFilter($acctname)
-	{
-		$this->_splitName($acctname, $dname, $aname);
-		$accountFilterFormat = $this->_getAccountFilterFormat();
-		$aname = \Zend\Ldap\Filter\AbstractFilter::escapeValue($aname);
+    /**
+     * Custom version to support multiple %s placeholders in custom account filter format
+     *
+     * @param $acctname
+     * @return string
+     */
+    protected function _getAccountFilter($acctname)
+    {
+        $this->_splitName($acctname, $dname, $aname);
+        $accountFilterFormat = $this->_getAccountFilterFormat();
+        $aname = \Zend\Ldap\Filter\AbstractFilter::escapeValue($aname);
 
-		if ($accountFilterFormat) {
-			$count_args = substr_count($accountFilterFormat, '%s');
-			$args = array_fill(0, $count_args, $aname);
-			return vsprintf($accountFilterFormat, $args);
-		}
+        if ($accountFilterFormat) {
+            $count_args = substr_count($accountFilterFormat, '%s');
+            $args = array_fill(0, $count_args, $aname);
 
-		if (!$this->_getBindRequiresDn()) {
-			return sprintf("(&(objectClass=user)(sAMAccountName=%s))", $aname);
-		}
-		return sprintf("(&(objectClass=posixAccount)(uid=%s))", $aname);
-	}
+            return vsprintf($accountFilterFormat, $args);
+        }
+
+        if (!$this->_getBindRequiresDn()) {
+            return sprintf("(&(objectClass=user)(sAMAccountName=%s))", $aname);
+        }
+
+        return sprintf("(&(objectClass=posixAccount)(uid=%s))", $aname);
+    }
 }

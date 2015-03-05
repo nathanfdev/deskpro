@@ -44,158 +44,159 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
  */
 class StatusAction extends AbstractAction implements PermissionableAction
 {
-	/** @var string */
-	protected $status;
+    /** @var string */
+    protected $status;
 
-	/**
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	protected $tracker;
+    /**
+     * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+     */
+    protected $tracker;
 
-	public function __construct($status, TicketChangeTracker $tracker = null)
-	{
-		$this->setStatus($status);
-		$this->tracker = $tracker;
-	}
+    public function __construct($status, TicketChangeTracker $tracker = null)
+    {
+        $this->setStatus($status);
+        $this->tracker = $tracker;
+    }
 
-	public function setStatus($status)
-	{
-		if (!in_array($status, array(
-			'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-			'hidden.spam', 'hidden.validating', 'hidden.deleted'
-		))) {
-			throw new \InvalidArgumentException("Invalid status `$status`");
-		}
-		$this->status = $status;
-	}
+    public function setStatus($status)
+    {
+        if (!in_array($status, array(
+            'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
+            'hidden.spam', 'hidden.validating', 'hidden.deleted'
+        ))) {
+            throw new \InvalidArgumentException("Invalid status `$status`");
+        }
+        $this->status = $status;
+    }
 
-	/**
-	 * True to stop processing actions after this one
-	 *
-	 * @return bool
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		// No change, sure they can apply no change
-		if ($ticket->getStatusCode() == $this->status) {
-			return true;
-		}
+    /**
+     * True to stop processing actions after this one
+     *
+     * @return bool
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        // No change, sure they can apply no change
+        if ($ticket->getStatusCode() == $this->status) {
+            return true;
+        }
 
-		if (($this->status == 'hidden.deleted' || $this->status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-			return false;
-		}
-		if ($this->status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
-			return false;
-		}
-		if ($this->status == 'awaiting_user' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
-			return false;
-		}
-		if ($this->status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) {
-			return false;
-		}
+        if (($this->status == 'hidden.deleted' || $this->status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+            return false;
+        }
+        if ($this->status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
+            return false;
+        }
+        if ($this->status == 'awaiting_user' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
+            return false;
+        }
+        if ($this->status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		if (strpos($this->status, '.') !== false) {
-			list ($status, $hidden_status) = explode('.', $this->status, 2);
-		} else {
-			$status = $this->status;
-			$hidden_status = null;
-		}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        if (strpos($this->status, '.') !== false) {
+            list ($status, $hidden_status) = explode('.', $this->status, 2);
+        } else {
+            $status = $this->status;
+            $hidden_status = null;
+        }
 
-		if ($hidden_status) {
-			$ticket->setHiddenStatus($hidden_status);
-		} else {
-			$ticket->setStatus($status);
-		}
+        if ($hidden_status) {
+            $ticket->setHiddenStatus($hidden_status);
+        } else {
+            $ticket->setStatus($status);
+        }
 
-		if ($this->getMetaData('is_preview')) {
-			return;
-		}
+        if ($this->getMetaData('is_preview')) {
+            return;
+        }
 
-		if ($ticket->hidden_status == 'deleted') {
-			$delete_person = null;
-			if ($this->tracker && $this->tracker->getPersonPerformer()) {
-				$delete_person = $this->tracker->getPersonPerformer();
-			} elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'agent' && App::getCurrentPerson()) {
-				$delete_person = App::getCurrentPerson();
-			}
+        if ($ticket->hidden_status == 'deleted') {
+            $delete_person = null;
+            if ($this->tracker && $this->tracker->getPersonPerformer()) {
+                $delete_person = $this->tracker->getPersonPerformer();
+            } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'agent' && App::getCurrentPerson()) {
+                $delete_person = App::getCurrentPerson();
+            }
 
-			if ($delete_person) {
-				App::getDb()->executeUpdate("
-					INSERT INTO tickets_deleted
-						(ticket_id, by_person_id, new_ticket_id, date_created, reason, old_ptac)
-					VALUES
-						(?, ?, 0, ?, '', ?)
-					ON DUPLICATE KEY UPDATE
-						by_person_id = VALUES(by_person_id),
-						new_ticket_id = VALUES(new_ticket_id),
-						reason = VALUES(reason),
-						old_ptac = VALUES(old_ptac)
-				", array($ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth));
-			}
+            if ($delete_person) {
+                App::getDb()->executeUpdate("
+                    INSERT INTO tickets_deleted
+                        (ticket_id, by_person_id, new_ticket_id, date_created, reason, old_ptac)
+                    VALUES
+                        (?, ?, 0, ?, '', ?)
+                    ON DUPLICATE KEY UPDATE
+                        by_person_id = VALUES(by_person_id),
+                        new_ticket_id = VALUES(new_ticket_id),
+                        reason = VALUES(reason),
+                        old_ptac = VALUES(old_ptac)
+                ", array($ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth));
+            }
 
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
-		} else {
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
-		}
-	}
-
-
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket->getStatusCode() == $this->status) {
-			return array();
-		}
-
-		return array(
-			array('action' => 'status', 'status' => $this->status)
-		);
-	}
+            App::getOrm()->persist($ticket);
+            App::getOrm()->flush();
+        } else {
+            App::getOrm()->persist($ticket);
+            App::getOrm()->flush();
+        }
+    }
 
 
-	/**
-	 * Get the full status (stauts.hidden_status)
-	 *
-	 * @return string
-	 */
-	public function getFullStatus()
-	{
-		return $this->status;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket->getStatusCode() == $this->status) {
+            return array();
+        }
+
+        return array(
+            array('action' => 'status', 'status' => $this->status)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get the full status (stauts.hidden_status)
+     *
+     * @return string
+     */
+    public function getFullStatus()
+    {
+        return $this->status;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         $tr = App::getTranslator();
-		return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status))));
-	}
+
+        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status))));
+    }
 }

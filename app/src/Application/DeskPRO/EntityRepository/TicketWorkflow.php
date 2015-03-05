@@ -34,39 +34,36 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class TicketWorkflow extends AbstractEntityRepository
 {
-	public function getAll()
-	{
-		$works = $this->getEntityManager()->createQuery("
-			SELECT w
-			FROM DeskPRO:TicketWorkflow w
-			ORDER BY w.display_order ASC
-		")->execute();
+    public function getAll()
+    {
+        $works = $this->getEntityManager()->createQuery("
+            SELECT w
+            FROM DeskPRO:TicketWorkflow w
+            ORDER BY w.display_order ASC
+        ")->execute();
 
-		return $works;
-	}
+        return $works;
+    }
 
+    public function getNames($for_ids = null)
+    {
+        if ($for_ids) {
+            $works = $this->getByIds($for_ids);
+        } else {
+            $works = $this->getEntityManager()->createQuery("
+                SELECT w
+                FROM DeskPRO:TicketWorkflow w
+                ORDER BY w.display_order ASC
+            ")->execute();
+        }
 
-	public function getNames($for_ids = null)
-	{
-		if ($for_ids) {
-			$works = $this->getByIds($for_ids);
-		} else {
-			$works = $this->getEntityManager()->createQuery("
-				SELECT w
-				FROM DeskPRO:TicketWorkflow w
-				ORDER BY w.display_order ASC
-			")->execute();
-		}
+        $ret = array();
+        foreach ($works as $w) {
+            $ret[$w->getId()] = $w->getTitle();
+        }
 
-		$ret = array();
-		foreach ($works as $w) {
-			$ret[$w->getId()] = $w->getTitle();
-		}
-
-		return $ret;
-	}
+        return $ret;
+    }
 }

@@ -35,7 +35,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,100 +42,103 @@ use Symfony\Component\Finder\Finder;
 
 class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setDefinition(array())->setName('dpdev:phrase-check');
-		$this->addArgument('langfiles', InputArgument::REQUIRED, 'Which language files to scan (e.g., agent or agent-emails)');
-	}
+    protected function configure()
+    {
+        $this->setDefinition(array())->setName('dpdev:phrase-check');
+        $this->addArgument('langfiles', InputArgument::REQUIRED, 'Which language files to scan (e.g., agent or agent-emails)');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		#------------------------------
-		# Get phrases to check
-		#------------------------------
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        #------------------------------
+        # Get phrases to check
+        #------------------------------
 
-		$check_phrases = array();
+        $check_phrases = array();
 
-		$opt_files = $input->getArgument('langfiles');
+        $opt_files = $input->getArgument('langfiles');
 
-		if (!preg_match('#^(admin|agent|user)#', $opt_files)) {
-			$output->writeln("<error>Invalid langfiles argument.</error>");
-			return 1;
-		}
+        if (!preg_match('#^(admin|agent|user)#', $opt_files)) {
+            $output->writeln("<error>Invalid langfiles argument.</error>");
 
-		if (strpos($opt_files, '-') === false) {
-			$col = Finder::create()->files()->name('*.php')->in(DP_ROOT.'/languages/default/'.$opt_files);
-			foreach ($col as $f) {
-				/** @var \SplFileInfo $f */
-				$file_phrases = include($f->getRealPath());
-				$file_phrases = array_keys($file_phrases);
-				$check_phrases = array_merge($check_phrases, $file_phrases);
-			}
-		} else {
-			$opt_files = str_replace('-', DIRECTORY_SEPARATOR, $opt_files) . '.php';
-			if (!is_file(DP_ROOT.'/languages/default/'.$opt_files)) {
-				$output->writeln("<error>Invalid langfiles argument.</error>");
-				return 1;
-			}
+            return 1;
+        }
 
-			$check_phrases = include($opt_files);
-			$check_phrases = array_keys($check_phrases);
-		}
+        if (strpos($opt_files, '-') === false) {
+            $col = Finder::create()->files()->name('*.php')->in(DP_ROOT.'/languages/default/'.$opt_files);
+            foreach ($col as $f) {
+                /** @var \SplFileInfo $f */
+                $file_phrases = include($f->getRealPath());
+                $file_phrases = array_keys($file_phrases);
+                $check_phrases = array_merge($check_phrases, $file_phrases);
+            }
+        } else {
+            $opt_files = str_replace('-', DIRECTORY_SEPARATOR, $opt_files) . '.php';
+            if (!is_file(DP_ROOT.'/languages/default/'.$opt_files)) {
+                $output->writeln("<error>Invalid langfiles argument.</error>");
 
-		#------------------------------
-		# Now check the files
-		#------------------------------
+                return 1;
+            }
 
-		$admin_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/AdminInterfaceBundle',
-		))->getIterator());
+            $check_phrases = include($opt_files);
+            $check_phrases = array_keys($check_phrases);
+        }
 
-		$agent_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/AgentBundle',
-		))->getIterator());
+        #------------------------------
+        # Now check the files
+        #------------------------------
 
-		$user_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/UserBundle',
-		))->getIterator());
+        $admin_list = iterator_to_array(Finder::create()->files()->in(array(
+            DP_ROOT.'/src/Application/AdminInterfaceBundle',
+        ))->getIterator());
 
-		$other_list = iterator_to_array(Finder::create()->files()->in(array(
-			DP_ROOT.'/src/Application/DeskPRO',
-			DP_ROOT.'/src/Application/InstallBundle',
-		))->getIterator());
+        $agent_list = iterator_to_array(Finder::create()->files()->in(array(
+            DP_ROOT.'/src/Application/AgentBundle',
+        ))->getIterator());
 
-		foreach ($check_phrases as $phrase) {
-			$search_lists = array();
+        $user_list = iterator_to_array(Finder::create()->files()->in(array(
+            DP_ROOT.'/src/Application/UserBundle',
+        ))->getIterator());
 
-			if (strpos($phrase, 'admin.') === 0) {
-				$search_lists[] = $admin_list;
-			} elseif (strpos($phrase, 'agent.') === 0) {
-				$search_lists[] = $agent_list;
-				$search_lists[] = $admin_list;
-			} else {
-				$search_lists[] = $user_list;
-			}
+        $other_list = iterator_to_array(Finder::create()->files()->in(array(
+            DP_ROOT.'/src/Application/DeskPRO',
+            DP_ROOT.'/src/Application/InstallBundle',
+        ))->getIterator());
 
-			$search_lists[] = $other_list;
+        foreach ($check_phrases as $phrase) {
+            $search_lists = array();
 
-			$found = false;
-			foreach ($search_lists as $list) {
-				foreach ($list as $f) {
-					/** @var \SplFileInfo $f */
-					$content = file_get_contents($f->getRealPath());
+            if (strpos($phrase, 'admin.') === 0) {
+                $search_lists[] = $admin_list;
+            } elseif (strpos($phrase, 'agent.') === 0) {
+                $search_lists[] = $agent_list;
+                $search_lists[] = $admin_list;
+            } else {
+                $search_lists[] = $user_list;
+            }
 
-					if (strpos($content, $phrase) !== false) {
-						$found = true;
-						break 2;
-					}
-				}
-			}
+            $search_lists[] = $other_list;
 
-			if (!$found) {
-				echo "* " . $phrase . "\n";
-			}
-		}
+            $found = false;
+            foreach ($search_lists as $list) {
+                foreach ($list as $f) {
+                    /** @var \SplFileInfo $f */
+                    $content = file_get_contents($f->getRealPath());
 
-		echo "\n";
-		return 0;
+                    if (strpos($content, $phrase) !== false) {
+                        $found = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$found) {
+                echo "* " . $phrase . "\n";
+            }
+        }
+
+        echo "\n";
+
+        return 0;
     }
 }

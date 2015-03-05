@@ -33,31 +33,29 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader\Item;
 
-use Application\DeskPRO\App;
-
 class Header
 {
-	/** @var string */
-	public $name;
-	/** @var string */
-	public $header_parts;
+    /** @var string */
+    public $name;
+    /** @var string */
+    public $header_parts;
 
-	public function getName()
-	{
-		return $this->name;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function getHeader()
-	{
-		if (!$this->header_parts) {
-			return null;
-		}
+    public function getHeader()
+    {
+        if (!$this->header_parts) {
+            return null;
+        }
 
-		return $this->header_parts[0];
-	}
+        return $this->header_parts[0];
+    }
 
-	public function getAllParts()
-	{
-		return $this->header_parts;
-	}
+    public function getAllParts()
+    {
+        return $this->header_parts;
+    }
 }

@@ -42,88 +42,89 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class AddSlaAction extends AbstractAction
 {
-	/** @var array */
-	protected $sla_ids = array();
+    /** @var array */
+    protected $sla_ids = array();
 
-	public function __construct($sla_id)
-	{
-		$this->sla_ids = (array)$sla_id;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		if (!$this->sla_ids) {
-			return;
-		}
-
-		foreach ($this->sla_ids AS $sla_id) {
-			$sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
-			if ($sla) {
-				$ticket->addSla($sla);
-			}
-		}
-	}
+    public function __construct($sla_id)
+    {
+        $this->sla_ids = (array)$sla_id;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'add_sla', 'sla_ids' => $this->sla_ids)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        if (!$this->sla_ids) {
+            return;
+        }
+
+        foreach ($this->sla_ids AS $sla_id) {
+            $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
+            if ($sla) {
+                $ticket->addSla($sla);
+            }
+        }
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getSlaIds()
-	{
-		return $this->sla_ids;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'add_sla', 'sla_ids' => $this->sla_ids)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		$this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
-		$this->sla_ids = array_unique($this->sla_ids);
-		return $this;
-	}
+    /**
+     * @return array
+     */
+    public function getSlaIds()
+    {
+        return $this->sla_ids;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
-		$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        $this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
+        $this->sla_ids = array_unique($this->sla_ids);
 
-		$titles = array();
-		foreach ($slas AS $sla) {
-			$titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
-		}
+        return $this;
+    }
 
-		foreach ($this->sla_ids as $id) {
-			if (!isset($titles[$id])) {
-				$titles[$id] = "<error>Unknown #$id</error>";
-			}
-		}
 
-		return $tr->phrase('agent.tickets.add_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
-	}
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+        $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
+
+        $titles = array();
+        foreach ($slas AS $sla) {
+            $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
+        }
+
+        foreach ($this->sla_ids as $id) {
+            if (!isset($titles[$id])) {
+                $titles[$id] = "<error>Unknown #$id</error>";
+            }
+        }
+
+        return $tr->phrase('agent.tickets.add_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
+    }
 }

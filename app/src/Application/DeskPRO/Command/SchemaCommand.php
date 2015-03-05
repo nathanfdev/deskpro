@@ -40,52 +40,52 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SchemaCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:schema');
-		$this->addOption('update', null, InputOption::VALUE_NONE, "Runs the various changes to bring schema up to date");
-	}
+    protected function configure()
+    {
+        $this->setName('dp:schema');
+        $this->addOption('update', null, InputOption::VALUE_NONE, "Runs the various changes to bring schema up to date");
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		set_time_limit(0);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        set_time_limit(0);
 
-		$do_execute = $input->getOption('update');
+        $do_execute = $input->getOption('update');
 
-		$schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
-		if ($schemadiff) {
-			foreach ($schemadiff as $line) {
-				$output->writeln($line . ";");
+        $schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
+        if ($schemadiff) {
+            foreach ($schemadiff as $line) {
+                $output->writeln($line . ";");
 
-				if ($do_execute) {
-					$t1 = microtime(true);
+                if ($do_execute) {
+                    $t1 = microtime(true);
 
-					try {
-						App::getDb()->exec($line);
+                    try {
+                        App::getDb()->exec($line);
 
-						$t2 = microtime(true);
-						$output->writeln(sprintf("<info>-> Okay (%.4fs)</info>", $t2-$t1));
-					} catch (\Exception $e) {
-						$output->writeln("<warning>Error: Update failed: {$e->getMessage()}</warning>");
-						$output->writeln("<warning>Retry with FOREIGN_KEY_CHECKS off...</warning>");
+                        $t2 = microtime(true);
+                        $output->writeln(sprintf("<info>-> Okay (%.4fs)</info>", $t2-$t1));
+                    } catch (\Exception $e) {
+                        $output->writeln("<warning>Error: Update failed: {$e->getMessage()}</warning>");
+                        $output->writeln("<warning>Retry with FOREIGN_KEY_CHECKS off...</warning>");
 
-						// If it failed, log the error and force it with FK checks off
-						try {
-							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
-							App::getDb()->exec($line);
-							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
-							$t2 = microtime(true);
-							$output->writeln(sprintf("<info>-> Retry okay (%.4fs)</info>", $t2-$t1));
-						} catch (\Exception $e) {
-							$output->writeln("<warning>-> Retry failed: {$e->getMessage()}</warning>");
-							$output->writeln("Aborting...");
-							break;
-						}
-					}
-				}
-			}
-		} else {
-			$output->writeln("<info>No corrections required</info>");
-		}
-	}
+                        // If it failed, log the error and force it with FK checks off
+                        try {
+                            App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
+                            App::getDb()->exec($line);
+                            App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
+                            $t2 = microtime(true);
+                            $output->writeln(sprintf("<info>-> Retry okay (%.4fs)</info>", $t2-$t1));
+                        } catch (\Exception $e) {
+                            $output->writeln("<warning>-> Retry failed: {$e->getMessage()}</warning>");
+                            $output->writeln("Aborting...");
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            $output->writeln("<info>No corrections required</info>");
+        }
+    }
 }

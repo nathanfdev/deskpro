@@ -47,179 +47,180 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketActionDef extends DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $action_name;
+    /**
+     * @var string
+     */
+    protected $action_name;
 
-	/**
-	 * @var string
-	 */
-	protected $def_class = null;
+    /**
+     * @var string
+     */
+    protected $def_class = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\AppInstance
-	 */
-	protected $app;
+    /**
+     * @var \Application\DeskPRO\Entity\AppInstance
+     */
+    protected $app;
 
-	/**
-	 * @var array
-	 */
-	protected $settings = null;
+    /**
+     * @var array
+     */
+    protected $settings = null;
 
-	/**
-	 * @var \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
-	 */
-	private $_def;
-
-
-	/**
-	 * Set settings
-	 *
-	 * @param array $settings
-	 */
-	public function setSettings(array $settings = null)
-	{
-		if (!$settings) {
-			$this->setModelField('settings', null);
-		} else {
-			$this->setModelField('settings', $settings);
-		}
-	}
+    /**
+     * @var \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
+     */
+    private $_def;
 
 
-	/**
-	 * Override because we need to unset the cached $_def if a setting changed.
-	 *
-	 * @param string $field
-	 * @param mixed $value
-	 */
-	protected function setModelField($field, $value)
-	{
-		$this->_def = null;
-		return parent::setModelField($field, $value);
-	}
+    /**
+     * Set settings
+     *
+     * @param array $settings
+     */
+    public function setSettings(array $settings = null)
+    {
+        if (!$settings) {
+            $this->setModelField('settings', null);
+        } else {
+            $this->setModelField('settings', $settings);
+        }
+    }
 
 
-	/**
-	 * Get settings
-	 *
-	 * @return array
-	 */
-	public function getSettings()
-	{
-		return $this->settings ? $this->settings : array();
-	}
+    /**
+     * Override because we need to unset the cached $_def if a setting changed.
+     *
+     * @param string $field
+     * @param mixed  $value
+     */
+    protected function setModelField($field, $value)
+    {
+        $this->_def = null;
+
+        return parent::setModelField($field, $value);
+    }
 
 
-	/**
-	 * @param string $name
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	public function getSetting($name, $default = null)
-	{
-		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
-	}
+    /**
+     * Get settings
+     *
+     * @return array
+     */
+    public function getSettings()
+    {
+        return $this->settings ? $this->settings : array();
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
-	 */
-	public function getDef()
-	{
-		if ($this->_def) {
-			return $this->_def;
-		}
-
-		$class = $this->def_class;
-		$this->_def = new $class($this);
-
-		return $this->_def;
-	}
+    /**
+     * @param  string $name
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getSetting($name, $default = null)
+    {
+        return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = array();
-		$data['id']               = $this->id;
-		$data['action_name']      = $this->action_name;
-		$data['def_class']        = $this->def_class;
-		$data['app']              = $this->app ? $this->app->toApiData(false, false) : null;
-		$data['settings']         = $this->settings ?: array();
-		$data['action_title']     = $this->getDef()->getTitle();
-		$data['action_class']     = $this->getDef()->getTriggerActionClass();
-		$data['macro_class']      = $this->getDef()->getMacroActionClass();
-		$data['builder_template'] = $this->getDef()->getActionBuilderTemplate();
+    /**
+     * @return \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
+     */
+    public function getDef()
+    {
+        if ($this->_def) {
+            return $this->_def;
+        }
 
-		return $data;
-	}
+        $class = $this->def_class;
+        $this->_def = new $class($this);
+
+        return $this->_def;
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = array();
+        $data['id']               = $this->id;
+        $data['action_name']      = $this->action_name;
+        $data['def_class']        = $this->def_class;
+        $data['app']              = $this->app ? $this->app->toApiData(false, false) : null;
+        $data['settings']         = $this->settings ?: array();
+        $data['action_title']     = $this->getDef()->getTitle();
+        $data['action_class']     = $this->getDef()->getTriggerActionClass();
+        $data['macro_class']      = $this->getDef()->getMacroActionClass();
+        $data['builder_template'] = $this->getDef()->getActionBuilderTemplate();
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketActionDef';
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        return $data;
+    }
 
-		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_actions_def',
-			'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name')))
-		));
 
-		$metadata->mapField(array(
-			'fieldName'  => 'id',
-			'columnName' => 'id',
-			'type'       => 'integer',
-			'id'         => true,
-			'nullable'   => false,
-		));
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-		$metadata->mapField(array(
-			'fieldName'  => 'action_name',
-			'columnName' => 'action_name',
-			'type'       => 'string',
-			'length'     => 50,
-			'nullable'   => false,
-		));
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketActionDef';
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-		$metadata->mapField(array(
-			'fieldName'  => 'def_class',
-			'columnName' => 'def_class',
-			'type'       => 'string',
-			'length'     => 255,
-			'nullable'   => true,
-		));
+        $metadata->setPrimaryTable(array(
+            'name' => 'ticket_actions_def',
+            'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name')))
+        ));
 
-		$metadata->mapField(array(
-			'fieldName'  => 'settings',
-			'columnName' => 'settings',
-			'type'       => 'json_array',
-			'nullable'   => true,
-		));
-		
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'app',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
-			'joinColumns'  => array(array(
-				'name'                 => 'app_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'cascade',
-			))
-		));
-	}
+        $metadata->mapField(array(
+            'fieldName'  => 'id',
+            'columnName' => 'id',
+            'type'       => 'integer',
+            'id'         => true,
+            'nullable'   => false,
+        ));
+
+        $metadata->mapField(array(
+            'fieldName'  => 'action_name',
+            'columnName' => 'action_name',
+            'type'       => 'string',
+            'length'     => 50,
+            'nullable'   => false,
+        ));
+
+        $metadata->mapField(array(
+            'fieldName'  => 'def_class',
+            'columnName' => 'def_class',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => true,
+        ));
+
+        $metadata->mapField(array(
+            'fieldName'  => 'settings',
+            'columnName' => 'settings',
+            'type'       => 'json_array',
+            'nullable'   => true,
+        ));
+
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'app',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
+            'joinColumns'  => array(array(
+                'name'                 => 'app_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'cascade',
+            ))
+        ));
+    }
 }

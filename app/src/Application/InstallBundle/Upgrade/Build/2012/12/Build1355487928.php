@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355487928 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Twitter module updates");
-		$this->execMutateSql("ALTER TABLE twitter_accounts_statuses ADD action_agent_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE twitter_accounts_statuses ADD CONSTRAINT FK_7728CEC7E3C3016D FOREIGN KEY (action_agent_id) REFERENCES people (id) ON DELETE SET NULL");
-		$this->execMutateSql("CREATE INDEX IDX_7728CEC7E3C3016D ON twitter_accounts_statuses (action_agent_id)");
-		$this->execMutateSql("ALTER TABLE twitter_statuses_urls ADD display_url VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Twitter module updates");
+        $this->execMutateSql("ALTER TABLE twitter_accounts_statuses ADD action_agent_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE twitter_accounts_statuses ADD CONSTRAINT FK_7728CEC7E3C3016D FOREIGN KEY (action_agent_id) REFERENCES people (id) ON DELETE SET NULL");
+        $this->execMutateSql("CREATE INDEX IDX_7728CEC7E3C3016D ON twitter_accounts_statuses (action_agent_id)");
+        $this->execMutateSql("ALTER TABLE twitter_statuses_urls ADD display_url VARCHAR(255) NOT NULL");
+    }
 }

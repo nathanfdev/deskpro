@@ -38,56 +38,56 @@ use Application\DeskPRO\App;
 
 class Blob extends AbstractEntityRepository
 {
-	/**
-	 * Get a blob by a combined ID/authcode
-	 *
-	 * @returb \Application\DeskPRO\Entity\Blob
-	 */
-	public function getByAuthId($auth_id)
-	{
-		if (strpos($auth_id, '-') === false) {
-			return $this->getByAuthCode($auth_id);
-		}
+    /**
+     * Get a blob by a combined ID/authcode
+     *
+     * @returb \Application\DeskPRO\Entity\Blob
+     */
+    public function getByAuthId($auth_id)
+    {
+        if (strpos($auth_id, '-') === false) {
+            return $this->getByAuthCode($auth_id);
+        }
 
-		list($blob_id, $authcode) = explode('-', $auth_id, 2);
-		$blob = App::findEntity('DeskPRO:Blob', $blob_id);
-		if ($blob && $blob->getAuthId() != $authcode) {
-			$blob = null;
-		}
+        list($blob_id, $authcode) = explode('-', $auth_id, 2);
+        $blob = App::findEntity('DeskPRO:Blob', $blob_id);
+        if ($blob && $blob->getAuthId() != $authcode) {
+            $blob = null;
+        }
 
-		return $blob;
-	}
+        return $blob;
+    }
 
-	/**
-	 * @param string $auth_code
-	 *
-	 * @return \Application\DeskPRO\Entity\Blob|null
-	 */
-	public function getByAuthCode($auth_code)
-	{
-		return $this->getEntityManager()->createQuery('
-			SELECT b
-			FROM DeskPRO:Blob b
-			WHERE b.authcode = ?0
-		')->setParameters(array($auth_code))->getOneOrNullResult();
-	}
+    /**
+     * @param string $auth_code
+     *
+     * @return \Application\DeskPRO\Entity\Blob|null
+     */
+    public function getByAuthCode($auth_code)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT b
+            FROM DeskPRO:Blob b
+            WHERE b.authcode = ?0
+        ')->setParameters(array($auth_code))->getOneOrNullResult();
+    }
 
-	public function getByAuthCodes($auth_codes)
-	{
-		$auth_codes = (array)$auth_codes;
-		if (!$auth_codes) {
-			return array();
-		}
+    public function getByAuthCodes($auth_codes)
+    {
+        $auth_codes = (array)$auth_codes;
+        if (!$auth_codes) {
+            return array();
+        }
 
-		return $this->getEntityManager()->createQuery("
-			SELECT b
-			FROM DeskPRO:Blob b INDEX BY b.id
-			WHERE b.authcode IN(?0)
-		")->execute(array($auth_codes));
-	}
+        return $this->getEntityManager()->createQuery("
+            SELECT b
+            FROM DeskPRO:Blob b INDEX BY b.id
+            WHERE b.authcode IN(?0)
+        ")->execute(array($auth_codes));
+    }
 
-	public function getSystemBlob($sys_name)
-	{
-		return $this->findOneBy(array('sys_name' => $sys_name));
-	}
+    public function getSystemBlob($sys_name)
+    {
+        return $this->findOneBy(array('sys_name' => $sys_name));
+    }
 }

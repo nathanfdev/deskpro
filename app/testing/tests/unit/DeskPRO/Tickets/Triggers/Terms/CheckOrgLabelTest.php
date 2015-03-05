@@ -9,106 +9,109 @@ require_once 'AbstractEntityCheckTest.php';
 
 class CheckOrgLabelTest extends AbstractEntityCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param $object
-	 * @return Ticket
-	 */
-	public function createTicket($id, $object)
-	{
-		$org = new Organization();
+    /**
+     * @param  int    $id
+     * @param $object
+     * @return Ticket
+     */
+    public function createTicket($id, $object)
+    {
+        if ($object === null) {
+            // no test for nulls
+            return null;
+        }
 
-		$bogus = new LabelOrganization();
-		$bogus->label = "bogus";
+        $org = new Organization();
 
-		$org->labels->add($bogus);
-		$org->labels->add($object);
+        $bogus = new LabelOrganization();
+        $bogus->label = "bogus";
 
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->organization = $org;
+        $org->labels->add($bogus);
+        $org->labels->add($object);
 
-		return $ticket;
-	}
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->organization = $org;
 
-	/**
-	 * Checks 'is label' on a ticket without an org
-	 */
-	public function testNoOrgIsLabel()
-	{
-		$ticket = new Ticket();
-		$ticket->id = 10;
+        return $ticket;
+    }
 
-		$checker = $this->createChecker('is', array('labels' => array('label')));
-		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+    /**
+     * Checks 'is label' on a ticket without an org
+     */
+    public function testNoOrgIsLabel()
+    {
+        $ticket = new Ticket();
+        $ticket->id = 10;
 
-		$checker = $this->createChecker('is', array('labels' => array('label', 'label2')));
-		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $checker = $this->createChecker('is', array('labels' => array('label')));
+        $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-		$checker = $this->createChecker('contains', array('labels' => array('label')));
-		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $checker = $this->createChecker('is', array('labels' => array('label', 'label2')));
+        $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-		$checker = $this->createChecker('contains', array('labels' => array('label', 'label2')));
-		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
-	}
+        $checker = $this->createChecker('contains', array('labels' => array('label')));
+        $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
+        $checker = $this->createChecker('contains', array('labels' => array('label', 'label2')));
+        $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+    }
 
-	/**
-	 * Check 'not label' on a ticket without an org
-	 */
-	public function testNoOrgNotLabel()
-	{
-		$ticket = new Ticket();
-		$ticket->id = 10;
+    /**
+     * Check 'not label' on a ticket without an org
+     */
+    public function testNoOrgNotLabel()
+    {
+        $ticket = new Ticket();
+        $ticket->id = 10;
 
-		$checker = $this->createChecker('not', array('labels' => array('label')));
-		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $checker = $this->createChecker('not', array('labels' => array('label')));
+        $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-		$checker = $this->createChecker('not', array('labels' => array('label', 'label2')));
-		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $checker = $this->createChecker('not', array('labels' => array('label', 'label2')));
+        $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-		$checker = $this->createChecker('notcontains', array('labels' => array('label')));
-		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+        $checker = $this->createChecker('notcontains', array('labels' => array('label')));
+        $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-		$checker = $this->createChecker('notcontains', array('labels' => array('label', 'label2')));
-		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
-	}
+        $checker = $this->createChecker('notcontains', array('labels' => array('label', 'label2')));
+        $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckOrgLabel';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckOrgLabel';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'labels';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'labels';
-	}
+    /**
+     * The entity class we are checking
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'Application\DeskPRO\Entity\LabelOrganization';
+    }
 
-	/**
-	 * The entity class we are checking
-	 * @return string
-	 */
-	public function getEntityClass()
-	{
-		return 'Application\DeskPRO\Entity\LabelOrganization';
-	}
+    /**
+     * @param  int    $id
+     * @return object
+     */
+    public function createEntityObject($id)
+    {
+        $object = new LabelOrganization();
+        $object->label = $id;
 
-	/**
-	 * @param int $id
-	 * @return object
-	 */
-	public function createEntityObject($id)
-	{
-		$object = new LabelOrganization();
-		$object->label = $id;
-
-		return $object;
-	}
+        return $object;
+    }
 }

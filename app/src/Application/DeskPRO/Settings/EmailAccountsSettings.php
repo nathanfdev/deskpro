@@ -30,62 +30,96 @@ namespace Application\DeskPRO\Settings;
 
 class EmailAccountsSettings
 {
-	const PREFIX = 'core.emails';
+    const PREFIX = 'core.emails';
 
-	/**
-	 * @var Settings
-	 */
-	protected $settings;
+    /**
+     * @var Settings
+     */
+    protected $settings;
 
-	/** @var array  */
-	protected $values = array(
-		'attach_agent_maxsize'   => 26214400,
-		'attach_agent_must_exts' => array(),
-		'attach_agent_not_exts'  => array(),
-		'attach_user_maxsize'    => 26214400,
-		'attach_user_must_exts'  => array(),
-		'attach_user_not_exts'   => array(),
-	);
+    /** @var array  */
+    protected $values = array(
+        'attach_agent_maxsize'   => 26214400,
+        'attach_agent_must_exts' => array(),
+        'attach_agent_not_exts'  => array(),
+        'attach_user_maxsize'    => 26214400,
+        'attach_user_must_exts'  => array(),
+        'attach_user_not_exts'   => array(),
+        'sendemail_attach_maxsize' => 7340032,
 
-	public function __construct(Settings $settings)
-	{
-		$this->settings = $settings;
-	}
+        'rate_count'    => 15,
+        'rate_time'     => 600,
+        'rate_locktime' => 900,
+    );
 
-	public function toArray()
-	{
-		$data = array();
-		foreach ($this->values as $k => $v) {
-			$storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
+    protected $other_values = array(
+        'core_tickets.enable_dupe_checking' => true,
+        'core_tickets.enable_exact_subject_matching' => false,
+    );
 
-			if (is_int($v)) {
-				$storedValue = (int) $storedValue;
-			} elseif (is_array($v)) {
-				$storedValue = $storedValue ? explode(',', $storedValue) : $v;
-			}
+    public function __construct(Settings $settings)
+    {
+        $this->settings = $settings;
+    }
 
-			$data[$k] = $this->values[$k] = $storedValue ?: $v;
-		}
+    public function toArray()
+    {
+        $data = array();
+        foreach ($this->values as $k => $v) {
+            if ($k == 'sendemail_attach_maxsize') {
+                $storedValue = $this->settings->get('core.sendemail_attach_maxsize');
+            } else {
+                $storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
+            }
 
-		return $data;
-	}
+            if (is_int($v)) {
+                $storedValue = (int) $storedValue;
+            } elseif (is_array($v)) {
+                $storedValue = $storedValue ? explode(',', $storedValue) : $v;
+            }
 
-	public function fromArray(array $data = array())
-	{
-		foreach ($data as $k => $v) {
-			if (!array_key_exists($k, $this->values)) {
-				continue;
-			}
+            $data[$k] = $this->values[$k] = $storedValue ?: $v;
+        }
 
-			$storeValue = $v;
-			if (is_int($this->values[$k])) {
-				$storeValue = $v = (int) $v;
-			} elseif (is_array($this->values[$k])) {
-				$v = (array) $v;
-				$storeValue = implode(',', $v);
-			}
-			$this->values[$k] = $v;
-			$this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
-		}
-	}
-} 
+        foreach ($this->other_values as $k => $v) {
+            $data[str_replace('.', '_', $k)] = (bool)$this->settings->get($k);
+        }
+
+        return $data;
+    }
+
+    public function fromArray(array $data = array())
+    {
+        foreach ($data as $k => $v) {
+            if (!array_key_exists($k, $this->values)) {
+                continue;
+            }
+
+            $storeValue = $v;
+            if (is_int($this->values[$k])) {
+                $storeValue = $v = (int) $v;
+            } elseif (is_array($this->values[$k])) {
+                $v = (array) $v;
+                $storeValue = implode(',', $v);
+            }
+            $this->values[$k] = $v;
+
+            if ($k == 'sendemail_attach_maxsize') {
+                $this->settings->setSetting('core.sendemail_attach_maxsize', (int)$storeValue ?: null);
+            } else {
+                $this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
+            }
+        }
+
+        foreach ($data as $k => $v) {
+            $k = str_replace('core_tickets_', 'core_tickets.', $k);
+            if (!isset($this->other_values[$k])) {
+                continue;
+            }
+
+            $v = (int)((bool)$v);
+            $this->settings->setSetting($k, $v);
+            $this->other_values[$k] = $v;
+        }
+    }
+}

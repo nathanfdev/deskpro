@@ -14,7 +14,7 @@ var DpErrorLog = {
 		}
 	},
 
-	logError: function(message, trace, script, line) {
+	logError: function(message, trace, script, line, force) {
 
 		if (window.DP_LOADED_TIME) {
 			var timeUsing = ((new Date()).getTime() / 1000) - window.DP_LOADED_TIME;
@@ -22,36 +22,38 @@ var DpErrorLog = {
 			var timeUsing = 0;
 		}
 
-		if (!message || message == 'false' || message.indexOf('Error connecting to extension') !== -1 || message.indexOf('flashBridge') !== -1) {
-			return;
-		}
+		if (!force) {
+			if (!message || message == 'false' || message.indexOf('Error connecting to extension') !== -1 || message.indexOf('flashBridge') !== -1) {
+				return;
+			}
 
-		// Some errors made by browser extensions that we catch
-		if (message.indexOf('Automation server') !== -1) {
-			return;
-		}
+			// Some errors made by browser extensions that we catch
+			if (message.indexOf('Automation server') !== -1) {
+				return;
+			}
 
-		if (trace && trace == '?() in :0') {
-			// not a usefu message
-			return;
-		}
+			if (trace && trace == '?() in :0') {
+				// not a usefu message
+				return;
+			}
 
-		if (!line || line == 0 || line === '0') {
-			return;
-		}
+			if (!line || line == 0 || line === '0') {
+				return;
+			}
 
-		// Scripts of resource:// are extensions, so we dont want to log those
-		if (script && script.indexOf('resource://') === 0) {
-			return;
-		}
+			// Scripts of resource:// are extensions, so we dont want to log those
+			if (script && script.indexOf('resource://') === 0) {
+				return;
+			}
 
-		if (parseInt(line) == 1 && script.indexOf('/agent/') != -1) {
-			return;
-		}
+			if (parseInt(line) == 1 && script.indexOf('/agent/') != -1) {
+				return;
+			}
 
-		// Send max 5 per session
-		if (this.logCount++ > 5) {
-			return;
+			// Send max 5 per session
+			if (this.logCount++ > 5) {
+				return;
+			}
 		}
 
 		message += ' (timeUsing: ' + timeUsing + ')';

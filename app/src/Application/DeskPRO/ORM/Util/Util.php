@@ -44,53 +44,52 @@ use Doctrine\ORM\Tools\SchemaTool;
  */
 class Util
 {
-	private function __construct() { /* Static class, no instances */ }
+    private function __construct() { /* Static class, no instances */ }
 
 
 
-	/**
-	 * Checks to see if $collection is a valid PersistentCollection, and if it's
-	 * been initialized yet.
-	 *
-	 * @param mixed $collection
-	 * @return bool
-	 */
-	public static function isCollectionInitialized($collection)
-	{
-		if ($collection instanceof PersistentCollection AND $collection->isInitialized()) {
-			return true;
-		}
+    /**
+     * Checks to see if $collection is a valid PersistentCollection, and if it's
+     * been initialized yet.
+     *
+     * @param  mixed $collection
+     * @return bool
+     */
+    public static function isCollectionInitialized($collection)
+    {
+        if ($collection instanceof PersistentCollection AND $collection->isInitialized()) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
+    /**
+     * @param  \Application\DeskPRO\ORM\EntityManager $em
+     * @return array
+     */
+    public static function getUpdateSchemaSql(EntityManager $em = null)
+    {
+        if ($em === null) {
+            $em = App::getOrm();
+        }
 
-	/**
-	 * @param \Application\DeskPRO\ORM\EntityManager $em
-	 * @return array
-	 */
-	public static function getUpdateSchemaSql(EntityManager $em = null)
-	{
-		if ($em === null) {
-			$em = App::getOrm();
-		}
+        $metadata = $em->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($em);
 
-		$metadata = $em->getMetadataFactory()->getAllMetadata();
-		$tool = new SchemaTool($em);
+        $arr = $tool->getUpdateSchemaSql($metadata, true);
+        $lines = array();
+        foreach ($arr as $a) {
+            // Doctrine doesnt seem to detect this properly and always thinks this is needed
+            if ($a != 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
+                if (strpos($a, 'CREATE TABLE') !== false) {
+                    $a .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
+                }
 
-		$arr = $tool->getUpdateSchemaSql($metadata, true);
-		$lines = array();
-		foreach ($arr as $a) {
-			// Doctrine doesnt seem to detect this properly and always thinks this is needed
-			if ($a != 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
-				if (strpos($a, 'CREATE TABLE') !== false) {
-					$a .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
-				}
+                $lines[] = $a;
+            }
+        }
 
-				$lines[] = $a;
-			}
-		}
-
-		return $lines;
-	}
+        return $lines;
+    }
 }

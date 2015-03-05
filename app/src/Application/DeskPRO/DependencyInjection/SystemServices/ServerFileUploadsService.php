@@ -39,9 +39,10 @@ use Application\DeskPRO\ServerFileUploads\ServerFileUploads;
 
 class ServerFileUploadsService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ServerFileUploads($container->getEm());
+
         return $x;
-	}
+    }
 }

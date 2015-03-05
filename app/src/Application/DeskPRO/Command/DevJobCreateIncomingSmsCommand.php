@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,26 +40,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevJobCreateIncomingSmsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dpdev:job:create-incoming-sms')
-			->setDescription('Creates an incoming job and puts it in the queue')
-			->addArgument('message', InputOption::VALUE_REQUIRED, 'The text message', 'Hello World')
-			->addOption('to', null, InputOption::VALUE_OPTIONAL, 'To Number', '+11111111111')
-			->addOption('from', null, InputOption::VALUE_OPTIONAL, 'From Number', '+12222222222')
-		;
-	}
+    protected function configure()
+    {
+        $this->setName('dpdev:job:create-incoming-sms')
+            ->setDescription('Creates an incoming job and puts it in the queue')
+            ->addArgument('message', InputOption::VALUE_REQUIRED, 'The text message', 'Hello World')
+            ->addOption('to', null, InputOption::VALUE_OPTIONAL, 'To Number', '+11111111111')
+            ->addOption('from', null, InputOption::VALUE_OPTIONAL, 'From Number', '+12222222222')
+        ;
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		/** @var \Application\DeskPRO\JobQueue\JobQueue $queue */
-		$queue = $this->getContainer()->getSystemService('job_queue');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        /** @var \Application\DeskPRO\JobQueue\JobQueue $queue */
+        $queue = $this->getContainer()->getSystemService('job_queue');
 
-		$queue->add(IncomingSmsProcessor::JOB_TYPE, array(
-				'message' => $input->getArgument('message'),
-				'to_number' => $input->getOption('to'),
-				'from_number' => $input->getOption('from')
-			)
-		);
-	}
+        $queue->add(IncomingSmsProcessor::JOB_TYPE, array(
+                'message' => $input->getArgument('message'),
+                'to_number' => $input->getOption('to'),
+                'from_number' => $input->getOption('from')
+            )
+        );
+    }
 }

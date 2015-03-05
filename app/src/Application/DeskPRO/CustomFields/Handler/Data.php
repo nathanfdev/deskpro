@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * A field that doesnt have any user-editable form field. It's used by API's or other features to store
@@ -43,40 +42,41 @@ use Application\DeskPRO\Entity;
  */
 class Data extends HandlerAbstract
 {
-	public function getFormField($data = null)
-	{
-		$setData = null;
-		if ($data AND !empty($data['value'])) {
-			$setData = $data['value'];
-		}
+    public function getFormField($data = null)
+    {
+        $setData = null;
+        if ($data AND !empty($data['value'])) {
+            $setData = $data['value'];
+        }
 
-		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array('required' => false));
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array('required' => false));
 
-		return $field;
-	}
+        return $field;
+    }
 
-	function getDataFromForm(array $form_data)
-	{
-		if (isset($form_data[$this->getFormFieldName()])) {
-			return array(
-				array($this->field_def->getId(), 'input', $form_data[$this->getFormFieldName()])
-			);
-		}
-		return array();
-	}
+    public function getDataFromForm(array $form_data)
+    {
+        if (isset($form_data[$this->getFormFieldName()])) {
+            return array(
+                array($this->field_def->getId(), 'input', $form_data[$this->getFormFieldName()])
+            );
+        }
 
-	public function getSearchCapabilities()
-	{
-		return array('is', 'not', 'contains', 'notcontains');
-	}
+        return array();
+    }
 
-	public function getFilterCapabilities()
-	{
-		return array('is', 'not');
-	}
+    public function getSearchCapabilities()
+    {
+        return array('is', 'not', 'contains', 'notcontains');
+    }
 
-	public function getSearchType()
-	{
-		return 'input';
-	}
+    public function getFilterCapabilities()
+    {
+        return array('is', 'not');
+    }
+
+    public function getSearchType()
+    {
+        return 'input';
+    }
 }

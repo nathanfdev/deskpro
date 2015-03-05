@@ -33,36 +33,34 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader\Item;
 
-use Application\DeskPRO\App;
-
 class BodyHtml
 {
-	/** @var array  */
-	public $raw_parts = array();
-	/** @var string */
-	public $body;
-	/** @var string */
-	public $body_utf8;
-	/** @var string */
-	public $original_charset;
+    /** @var array  */
+    public $raw_parts = array();
+    /** @var string */
+    public $body;
+    /** @var string */
+    public $body_utf8;
+    /** @var string */
+    public $original_charset;
 
-	public function getRawParts()
-	{
-		return $this->raw_parts;
-	}
+    public function getRawParts()
+    {
+        return $this->raw_parts;
+    }
 
-	public function getBody()
-	{
-		return $this->body;
-	}
+    public function getBody()
+    {
+        return $this->body;
+    }
 
-	public function getBodyUtf8()
-	{
-		return $this->body_utf8;
-	}
+    public function getBodyUtf8()
+    {
+        return $this->body_utf8;
+    }
 
-	public function getOriginalCharset()
-	{
-		return $this->original_charset;
-	}
+    public function getOriginalCharset()
+    {
+        return $this->original_charset;
+    }
 }

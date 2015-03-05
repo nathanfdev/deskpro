@@ -38,130 +38,128 @@ use Orb\Util\Strings;
 
 class LayoutCollection implements \Countable, \IteratorAggregate
 {
-	/**
-	 * Array of layouts keyed by some unique key
-	 *
-	 * @var Layout[]
-	 */
-	private $layouts;
+    /**
+     * Array of layouts keyed by some unique key
+     *
+     * @var Layout[]
+     */
+    private $layouts;
 
-	/**
-	 * Adds a layout to the collection
-	 *
-	 * @param Layout $layout   The layout to add
-	 * @param string $key      The layout key, or null
-	 * @throws \OutOfBoundsException
-	 */
-	public function addLayout($layout, $key)
-	{
-		if (isset($this->layouts[$key])) {
-			throw new \OutOfBoundsException();
-		}
+    /**
+     * Adds a layout to the collection
+     *
+     * @param  Layout                $layout The layout to add
+     * @param  string                $key    The layout key, or null
+     * @throws \OutOfBoundsException
+     */
+    public function addLayout($layout, $key)
+    {
+        if (isset($this->layouts[$key])) {
+            throw new \OutOfBoundsException();
+        }
 
-		if ($key === null) {
-			$key = '0';
-		}
+        if ($key === null) {
+            $key = '0';
+        }
 
-		$this->layouts[$key] = $layout;
-	}
-
-
-	/**
-	 * @param string $key
-	 * @return bool
-	 */
-	public function hasLayout($key)
-	{
-		return isset($this->layouts[$key]);
-	}
+        $this->layouts[$key] = $layout;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function hasDefaultLayout()
-	{
-		return isset($this->layouts[0]);
-	}
+    /**
+     * @param  string $key
+     * @return bool
+     */
+    public function hasLayout($key)
+    {
+        return isset($this->layouts[$key]);
+    }
 
 
-	/**
-	 * @param string $key
-	 * @return Layout
-	 * @throws \InvalidArgumentException
-	 */
-	public function getLayout($key)
-	{
-		if (isset($this->layouts[$key])) {
-			return $this->layouts[$key];
-		} else if (isset($this->layouts[0])) {
-			return $this->layouts[0];
-		}
-
-		throw new \InvalidArgumentException("No layout exists");
-	}
+    /**
+     * @return bool
+     */
+    public function hasDefaultLayout()
+    {
+        return isset($this->layouts[0]);
+    }
 
 
-	/**
-	 * @return Layout
-	 * @throws \InvalidArgumentException
-	 */
-	public function getDefaultLayout()
-	{
-		if (!isset($this->layouts[0])) {
-			throw new \InvalidArgumentException("No default layout exists");
-		}
+    /**
+     * @param  string                    $key
+     * @return Layout
+     * @throws \InvalidArgumentException
+     */
+    public function getLayout($key)
+    {
+        if (isset($this->layouts[$key])) {
+            return $this->layouts[$key];
+        } elseif (isset($this->layouts[0])) {
+            return $this->layouts[0];
+        }
 
-		return $this->layouts[0];
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function compileJsObj()
-	{
-		$js = "(function() {\n";
-		$js .= "\tvar layoutMap = {\n";
-
-		$layout_codes = array();
-		foreach ($this->layouts as $k => $layout) {
-			$k_str = "'$k'";
-
-			$code = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
-			$bit_js ="\t\t{$k_str}: {$code}";
-			$layout_codes[] = $bit_js;
-		}
-
-		$js .= implode(",\n", $layout_codes) . "\n";
-		$js .= "\t};\n";
-
-		$js .= "\treturn {\n";
-		$js .= "\t\tgetLayout: function(id) {\n";
-		$js .= "\t\t\treturn layoutMap[id+''] || layoutMap['0'] || null;\n";
-		$js .= "\t\t}\n";
-		$js .= "\t};\n";
-
-		$js .= "})()";
-
-		return $js;
-	}
+        throw new \InvalidArgumentException("No layout exists");
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->layouts);
-	}
+    /**
+     * @return Layout
+     * @throws \InvalidArgumentException
+     */
+    public function getDefaultLayout()
+    {
+        if (!isset($this->layouts[0])) {
+            throw new \InvalidArgumentException("No default layout exists");
+        }
+
+        return $this->layouts[0];
+    }
 
 
-	/**
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->layouts);
-	}
+    /**
+     * @return string
+     */
+    public function compileJsObj()
+    {
+        $js = "(function () {\n";
+        $js .= "\tvar layoutMap = {\n";
+
+        $layout_codes = array();
+        foreach ($this->layouts as $k => $layout) {
+            $k_str = "'$k'";
+
+            $code = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
+            $bit_js ="\t\t{$k_str}: {$code}";
+            $layout_codes[] = $bit_js;
+        }
+
+        $js .= implode(",\n", $layout_codes) . "\n";
+        $js .= "\t};\n";
+
+        $js .= "\treturn {\n";
+        $js .= "\t\tgetLayout: function (id) {\n";
+        $js .= "\t\t\treturn layoutMap[id+''] || layoutMap['0'] || null;\n";
+        $js .= "\t\t}\n";
+        $js .= "\t};\n";
+
+        $js .= "})()";
+
+        return $js;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->layouts);
+    }
+
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->layouts);
+    }
 }

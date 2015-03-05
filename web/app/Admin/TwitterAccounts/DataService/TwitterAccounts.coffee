@@ -1,120 +1,120 @@
 define [
-	'Admin/Main/DataService/BaseListEdit',
-	'Admin/TwitterAccounts/TwitterAccountEditFormMapper'
+  'Admin/Main/DataService/BaseListEdit',
+  'Admin/TwitterAccounts/TwitterAccountEditFormMapper'
 ], (
-	BaseListEdit,
-	TwitterAccountEditFormMapper
+  BaseListEdit,
+  TwitterAccountEditFormMapper
 )  ->
-	class Admin_TwitterAccounts_DataService_TwitterAccounts extends BaseListEdit
-		@$inject = ['Api', '$q']
+  class Admin_TwitterAccounts_DataService_TwitterAccounts extends BaseListEdit
+    @$inject = ['Api', '$q']
 
-		_doLoadList: ->
-			deferred = @$q.defer()
+    _doLoadList: ->
+      deferred = @$q.defer()
 
-			@Api.sendGet('/twitter_accounts').success( (data) =>
+      @Api.sendGet('/twitter_accounts').success( (data) =>
 
-				models = data.twitter_accounts
-				deferred.resolve(models)
-			, (data, status, headers, config) ->
-				deferred.reject()
-			)
+        models = data.twitter_accounts
+        deferred.resolve(models)
+      , (data, status, headers, config) ->
+        deferred.reject()
+      )
 
-			return deferred.promise
+      return deferred.promise
 
-		###
-    	# Remove a model
-    	#
-    	# @param {Integer} id twitter_account id
-    	# @return {promise}
-		###
-		deleteTwitterAccountById: (id) ->
+    ###
+      # Remove a model
+      #
+      # @param {Integer} id twitter_account id
+      # @return {promise}
+    ###
+    deleteTwitterAccountById: (id) ->
 
-			promise = @Api.sendDelete('/twitter_accounts/' + id).then(=>
-				@removeListModelById(id)
-			)
+      promise = @Api.sendDelete('/twitter_accounts/' + id).then(=>
+        @removeListModelById(id)
+      )
 
-			return promise
+      return promise
 
-		###
-			 # Get the form mapper
-			 #
-			 # @return {TwitterAccountEditFormMapper}
-		###
-		getFormMapper: ->
+    ###
+       # Get the form mapper
+       #
+       # @return {TwitterAccountEditFormMapper}
+    ###
+    getFormMapper: ->
 
-			if @formMapper then return @formMapper
-			@formMapper = new TwitterAccountEditFormMapper()
-			return @formMapper
+      if @formMapper then return @formMapper
+      @formMapper = new TwitterAccountEditFormMapper()
+      return @formMapper
 
-		###
-    	# Get all data needed for the edit page
-    	#
-    	# @param {Integer} id twitter_account id
-    	# @return {promise}
-		###
-		loadEditTwitterAccountData: (id) ->
+    ###
+      # Get all data needed for the edit page
+      #
+      # @param {Integer} id twitter_account id
+      # @return {promise}
+    ###
+    loadEditTwitterAccountData: (id) ->
 
-			deferred = @$q.defer()
+      deferred = @$q.defer()
 
-			if id
+      if id
 
-				@Api.sendGet('/twitter_accounts/' + id).then( (result) =>
+        @Api.sendGet('/twitter_accounts/' + id).then( (result) =>
 
-					data = {}
-					data.twitter_account = result.data.twitter_account
-					data.all_agents = result.data.twitter_account.all_agents
+          data = {}
+          data.twitter_account = result.data.twitter_account
+          data.all_agents = result.data.twitter_account.all_agents
 
-					data.form = @getFormMapper().getFormFromModel(data)
+          data.form = @getFormMapper().getFormFromModel(data)
 
-					deferred.resolve(data)
-				, ->
-					deferred.reject()
-				)
+          deferred.resolve(data)
+        , ->
+          deferred.reject()
+        )
 
-			else
+      else
 
-				data = {}
-				data.twitter_account = {
-					id: null,
-					verified: false,
-					user: {
-						profile_image_url: '',
-						name: '',
-						screen_name: '',
-						agents: {}
-					}
-				}
+        data = {}
+        data.twitter_account = {
+          id: null,
+          verified: false,
+          user: {
+            profile_image_url: '',
+            name: '',
+            screen_name: '',
+            agents: {}
+          }
+        }
 
-				data.form = @getFormMapper().getFormFromModel(data)
+        data.form = @getFormMapper().getFormFromModel(data)
 
-				deferred.resolve(data)
+        deferred.resolve(data)
 
-			return deferred.promise
+      return deferred.promise
 
 
-		###
-    	# Saves a form model and merges model with list data
-    	#
-    	# @param {Object} model twitter_account model
- 				# @param {Object} formModel  The model representing the form
-    	# @return {promise}
-		###
-		saveFormModel: (model, formModel) ->
+    ###
+      # Saves a form model and merges model with list data
+      #
+      # @param {Object} model twitter_account model
+        # @param {Object} formModel  The model representing the form
+      # @return {promise}
+    ###
+    saveFormModel: (model, formModel) ->
 
-			mapper = @getFormMapper()
+      mapper = @getFormMapper()
 
-			postData = mapper.getPostDataFromForm(formModel)
+      postData = mapper.getPostDataFromForm(formModel)
 
-			if model.id
-				promise = @Api.sendPostJson('/twitter_accounts/' + model.id, {twitter_account: postData})
-			else
-				promise = @Api.sendPutJson('/twitter_accounts', {twitter_account: postData}).success( (data) ->
-					model.id = data.id
-				)
+      if model.id
+        promise = @Api.sendPostJson('/twitter_accounts/' + model.id, {twitter_account: postData})
+      else
+        promise = @Api.sendPutJson('/twitter_accounts', {twitter_account: postData}).success( (data) ->
+          model.id = data.id
+        )
 
-			promise.success(=>
-				mapper.applyFormToModel(model, formModel)
-				@mergeDataModel(model)
-			)
+      promise.success(=>
+        mapper.applyFormToModel(model, formModel)
+        @mergeDataModel(model)
+      )
 
-			return promise
+      return promise

@@ -48,105 +48,105 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetSlas extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('add_sla_ids', 'remove_sla_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('add_sla_ids', 'remove_sla_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$em = $this->getContainer()->getEm();
-		$ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $em = $this->getContainer()->getEm();
+        $ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
 
-		$cm_sender = new SlaClientMessageSender($this->getContainer()->getDb());
+        $cm_sender = new SlaClientMessageSender($this->getContainer()->getDb());
 
-		#--------------------
-		# Add SLAs
-		#--------------------
+        #--------------------
+        # Add SLAs
+        #--------------------
 
-		if ($add_sla_ids = $this->getActionOption('add_sla_ids')) {
-			foreach ($add_sla_ids as $sla_id) {
-				$sla = $ticket_slas->getById($sla_id);
-				if (!$sla) {
-					$context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, does not exist", $sla_id));
-					continue;
-				}
+        if ($add_sla_ids = $this->getActionOption('add_sla_ids')) {
+            foreach ($add_sla_ids as $sla_id) {
+                $sla = $ticket_slas->getById($sla_id);
+                if (!$sla) {
+                    $context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, does not exist", $sla_id));
+                    continue;
+                }
 
-				if ($ticket->hasSla($sla)) {
-					$context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, already on ticket", $sla_id));
-				} else {
-					$ticket_sla = $ticket->addSla($sla);
-					$em->persist($ticket_sla);
-					$context->getLogger()->debug(sprintf("[SetSlas] Add %d", $sla_id));
-					$cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
-				}
-			}
-		}
+                if ($ticket->hasSla($sla)) {
+                    $context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, already on ticket", $sla_id));
+                } else {
+                    $ticket_sla = $ticket->addSla($sla);
+                    $em->persist($ticket_sla);
+                    $context->getLogger()->debug(sprintf("[SetSlas] Add %d", $sla_id));
+                    $cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
+                }
+            }
+        }
 
-		#--------------------
-		# Remove SLAs
-		#--------------------
+        #--------------------
+        # Remove SLAs
+        #--------------------
 
-		if ($remove_sla_ids = $this->getActionOption('remove_sla_ids')) {
+        if ($remove_sla_ids = $this->getActionOption('remove_sla_ids')) {
 
-			$removed_ids = $context->getVars()->get('removed_slas', array());
+            $removed_ids = $context->getVars()->get('removed_slas', array());
 
-			foreach ($remove_sla_ids as $sla_id) {
-				$sla = $ticket_slas->getById($sla_id);
-				if (!$sla) {
-					$context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, does not exist", $sla_id));
-					continue;
-				}
+            foreach ($remove_sla_ids as $sla_id) {
+                $sla = $ticket_slas->getById($sla_id);
+                if (!$sla) {
+                    $context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, does not exist", $sla_id));
+                    continue;
+                }
 
-				$removed_ids[] = $sla->id;
+                $removed_ids[] = $sla->id;
 
-				if (!$ticket->hasSla($sla)) {
-					$context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, not on ticket", $sla_id));
-				} else {
-					$ticket_sla = $ticket->removeSla($sla);
-					$em->remove($ticket_sla);
-					$context->getLogger()->debug(sprintf("[SetSlas] Remove %d", $sla_id));
-					$cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
-				}
-			}
+                if (!$ticket->hasSla($sla)) {
+                    $context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, not on ticket", $sla_id));
+                } else {
+                    $ticket_sla = $ticket->removeSla($sla);
+                    $em->remove($ticket_sla);
+                    $context->getLogger()->debug(sprintf("[SetSlas] Remove %d", $sla_id));
+                    $cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
+                }
+            }
 
-			// These are saved so it can be used in ApplySlas.php
-			$context->getVars()->set('removed_slas', $removed_ids);
-		}
+            // These are saved so it can be used in ApplySlas.php
+            $context->getVars()->set('removed_slas', $removed_ids);
+        }
 
-		$cm_sender->sendQueue();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
-			return array('slas');
-		}
-
-		return null;
-	}
+        $cm_sender->sendQueue();
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
+            return array('slas');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }
 
 // xx bytes to prevent 4096 filesize (php bug)

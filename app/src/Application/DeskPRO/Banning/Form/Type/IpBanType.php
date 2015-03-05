@@ -39,24 +39,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class IpBanType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('ip_ban', new IpBanPropsType());
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('ip_ban', new IpBanPropsType());
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\Banning\\IpBanEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\Banning\\IpBanEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'ip_ban_edit';
-	}
+    public function getName()
+    {
+        return 'ip_ban_edit';
+    }
 
 }

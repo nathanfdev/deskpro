@@ -38,230 +38,229 @@ use Symfony\Component\Finder\Finder;
 
 class ChecksumChecker
 {
-	/**
-	 * @var array
-	 */
-	protected $checksums = null;
+    /**
+     * @var array
+     */
+    protected $checksums = null;
 
-	/**
-	 * @var string
-	 */
-	protected $base_dir;
+    /**
+     * @var string
+     */
+    protected $base_dir;
 
-	/**
-	 * @var \Symfony\Component\Finder\Finder
-	 */
-	protected $finder;
+    /**
+     * @var \Symfony\Component\Finder\Finder
+     */
+    protected $finder;
 
-	/**
-	 * @var array
-	 */
-	protected $file_list = null;
-
-
-	public function __construct($base_dir)
-	{
-		$this->base_dir = $base_dir;
-
-		$this->finder = new Finder();
-		$this->finder->files();
-		$this->finder->in($this->base_dir);
-		$this->finder->ignoreVCS(true);
-	}
+    /**
+     * @var array
+     */
+    protected $file_list = null;
 
 
-	/**
-	 * Instead of recursively scanning and finding files, you can optionally
-	 * set an array of specific paths.
-	 *
-	 * @param array $files
-	 */
-	public function setFileList(array $files)
-	{
-		$this->file_list = $files;
-	}
+    public function __construct($base_dir)
+    {
+        $this->base_dir = $base_dir;
+
+        $this->finder = new Finder();
+        $this->finder->files();
+        $this->finder->in($this->base_dir);
+        $this->finder->ignoreVCS(true);
+    }
 
 
-	/**
-	 * Ignore a filename
-	 *
-	 * @param string $file
-	 */
-	public function ignoreFilename($file)
-	{
-		$this->finder->notName($file);
-	}
+    /**
+     * Instead of recursively scanning and finding files, you can optionally
+     * set an array of specific paths.
+     *
+     * @param array $files
+     */
+    public function setFileList(array $files)
+    {
+        $this->file_list = $files;
+    }
 
 
-	/**
-	 * Ignore a directory
-	 *
-	 * @param string $dir
-	 */
-	public function ignoreDirectory($dir)
-	{
-		$this->finder->exclude($dir);
-	}
+    /**
+     * Ignore a filename
+     *
+     * @param string $file
+     */
+    public function ignoreFilename($file)
+    {
+        $this->finder->notName($file);
+    }
 
 
-	/**
-	 * Go through and load checks
-	 *
-	 * @param callback $progress_callback
-	 */
-	public function load($progress_callback = null)
-	{
-		$this->checksums = array();
-
-		$count = 0;
-		foreach ($this->getIterator() as $file) {
-			$count++;
-			$path = str_replace($this->base_dir, '', $file->getRealPath());
-
-			$file_contents = $this->normalizeFileString(file_get_contents($file->getRealPath()));
-
-			$hash = md5($file_contents);
-			$this->checksums[$path] = $hash;
-
-			if ($progress_callback) {
-				$progress_callback($count, $file, $hash);
-			}
-		}
-	}
+    /**
+     * Ignore a directory
+     *
+     * @param string $dir
+     */
+    public function ignoreDirectory($dir)
+    {
+        $this->finder->exclude($dir);
+    }
 
 
-	/**
-	 * @param string $file_contents
-	 * @return string
-	 */
-	protected function normalizeFileString($file_contents)
-	{
-		static $bom = null;
+    /**
+     * Go through and load checks
+     *
+     * @param callback $progress_callback
+     */
+    public function load($progress_callback = null)
+    {
+        $this->checksums = array();
 
-		if ($bom === null) {
-			$bom = pack('CCC', 0xEF, 0xBB, 0xBF);
-		}
+        $count = 0;
+        foreach ($this->getIterator() as $file) {
+            $count++;
+            $path = str_replace($this->base_dir, '', $file->getRealPath());
 
-		if (substr($file_contents, 0, 3) === $bom) {
-			$file_contents = substr($file_contents, 3);
-		}
+            $file_contents = $this->normalizeFileString(file_get_contents($file->getRealPath()));
 
-		$file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+            $hash = md5($file_contents);
+            $this->checksums[$path] = $hash;
 
-		return $file_contents;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->checksums);
-	}
+            if ($progress_callback) {
+                $progress_callback($count, $file, $hash);
+            }
+        }
+    }
 
 
-	/**
-	 * Get an array of filename => checksum for all found files
-	 *
-	 * @return array
-	 */
-	public function getChecksums()
-	{
-		if ($this->checksums === null) {
-			$this->load();
-		}
+    /**
+     * @param  string $file_contents
+     * @return string
+     */
+    protected function normalizeFileString($file_contents)
+    {
+        static $bom = null;
 
-		return $this->checksums;
-	}
+        if ($bom === null) {
+            $bom = pack('CCC', 0xEF, 0xBB, 0xBF);
+        }
 
+        if (substr($file_contents, 0, 3) === $bom) {
+            $file_contents = substr($file_contents, 3);
+        }
 
-	/**
-	 * Get an array of files
-	 *
-	 * @return array
-	 */
-	public function getFilesArray()
-	{
-		return array_keys($this->checksums);
-	}
+        $file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+
+        return $file_contents;
+    }
 
 
-	/**
-	 * Compare newly generated checksums (generated right now) with those in an array
-	 *
-	 * @param array $with_checksums
-	 */
-	public function compare(array $with_checksums)
-	{
-		$this->getChecksums();
-
-		$results = array(
-			'added' => array(),
-			'removed' => array(),
-			'changed' => array()
-		);
-
-		foreach ($this->checksums as $path => $checksum) {
-			if (!isset($with_checksums[$path])) {
-				$results['added'][] = $path;
-			} elseif ($checksum != $with_checksums[$path]) {
-				$results['changed'][] = $path;
-			}
-		}
-
-		$results['removed'] = array_diff(array_keys($with_checksums), array_keys($this->checksums));
-
-		return $results;
-	}
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->checksums);
+    }
 
 
-	/**
-	 * Same as compare() except it fetches checksums from a file
-	 *
-	 * @param $file
-	 * @throws \InvalidArgumentException
-	 */
-	public function compareWithDump($file)
-	{
-		if (!is_file($file)) {
-			throw new \InvalidArgumentException("File does not exist: `$file`");
-		}
+    /**
+     * Get an array of filename => checksum for all found files
+     *
+     * @return array
+     */
+    public function getChecksums()
+    {
+        if ($this->checksums === null) {
+            $this->load();
+        }
 
-		$checksums = require $file;
-
-		if (!is_array($checksums)) {
-			throw new \InvalidArgumentException("Dump file did not return checksum array");
-		}
-
-		return $this->compare($checksums);
-	}
+        return $this->checksums;
+    }
 
 
-	/**
-	 * @param $file
-	 */
-	public function dumpToFile($file)
-	{
-		$php = '<?php return ' . var_export($this->getChecksums(), true) . ";\n";
-		file_put_contents($file, $php);
-	}
+    /**
+     * Get an array of files
+     *
+     * @return array
+     */
+    public function getFilesArray()
+    {
+        return array_keys($this->checksums);
+    }
 
 
-	/**
-	 * @return \ArrayIterator|\Symfony\Component\Finder\Finder
-	 */
-	public function getIterator()
-	{
-		if ($this->file_list) {
-			$array = array();
-			foreach ($this->file_list as $f) {
-				$array[] = new \SplFileInfo($this->base_dir . $f);
-			}
+    /**
+     * Compare newly generated checksums (generated right now) with those in an array
+     *
+     * @param array $with_checksums
+     */
+    public function compare(array $with_checksums)
+    {
+        $this->getChecksums();
 
-			return new \ArrayIterator($array);
-		} else {
-			return $this->finder;
-		}
-	}
+        $results = array(
+            'added' => array(),
+            'removed' => array(),
+            'changed' => array()
+        );
+
+        foreach ($this->checksums as $path => $checksum) {
+            if (!isset($with_checksums[$path])) {
+                $results['added'][] = $path;
+            } elseif ($checksum != $with_checksums[$path]) {
+                $results['changed'][] = $path;
+            }
+        }
+
+        $results['removed'] = array_diff(array_keys($with_checksums), array_keys($this->checksums));
+
+        return $results;
+    }
+
+
+    /**
+     * Same as compare() except it fetches checksums from a file
+     *
+     * @param $file
+     * @throws \InvalidArgumentException
+     */
+    public function compareWithDump($file)
+    {
+        if (!is_file($file)) {
+            throw new \InvalidArgumentException("File does not exist: `$file`");
+        }
+
+        $checksums = require $file;
+
+        if (!is_array($checksums)) {
+            throw new \InvalidArgumentException("Dump file did not return checksum array");
+        }
+
+        return $this->compare($checksums);
+    }
+
+
+    /**
+     * @param $file
+     */
+    public function dumpToFile($file)
+    {
+        $php = '<?php return ' . var_export($this->getChecksums(), true) . ";\n";
+        file_put_contents($file, $php);
+    }
+
+    /**
+     * @return \ArrayIterator|\Symfony\Component\Finder\Finder
+     */
+    public function getIterator()
+    {
+        if ($this->file_list) {
+            $array = array();
+            foreach ($this->file_list as $f) {
+                $array[] = new \SplFileInfo($this->base_dir . $f);
+            }
+
+            return new \ArrayIterator($array);
+        } else {
+            return $this->finder;
+        }
+    }
 }

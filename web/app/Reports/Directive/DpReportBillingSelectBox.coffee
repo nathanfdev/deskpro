@@ -1,151 +1,151 @@
 define ->
-	###
+  ###
    # Description
    # -----------
- 		#
- 		#	Example View
- 		#	------------
- 		#	<dp-report-billing-select-box
- 		#				  value-to-decorate="scope.title"
- 		#				  possible-values="scope.some_object">
- 		#	</span>
- 		#
- 		#	Parameters
- 		#	------------
- 		# 1) 'value-to-decorate' (required parameter) - ...
- 		# 2) 'possible-values' (required parameter) - ...
+    #
+    # Example View
+    # ------------
+    # <dp-report-billing-select-box
+    #         value-to-decorate="scope.title"
+    #         possible-values="scope.some_object">
+    # </span>
+    #
+    # Parameters
+    # ------------
+    # 1) 'value-to-decorate' (required parameter) - ...
+    # 2) 'possible-values' (required parameter) - ...
    #
-	###
-	Reports_Directive_DpReportBillingSelectBox = ['$state', ($state) ->
-		return {
-			restrict: 'AE',
-			replace: true,
-			template: """
-				<a href="{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}">
-					<span ng-repeat="text in texts" style="margin-left: 5px">
-						<span style="vertical-align:middle;" ng-bind-html="text"></span>
-						<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2="{dropdownAutoWidth:true}" style="min-width:70px;" ng-change="changeLinkParams()">
-							<option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
-								{{ option.label }}
-							</option>
-						</select>
-					</span>
-				</a>
-			"""
-			link: (scope, element, attrs) ->
+  ###
+  Reports_Directive_DpReportBillingSelectBox = ['$state', ($state) ->
+    return {
+      restrict: 'AE',
+      replace: true,
+      template: """
+        <a href="{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}">
+          <span ng-repeat="text in texts" style="margin-left: 5px">
+            <span style="vertical-align:middle;" ng-bind-html="text"></span>
+            <select ng-if="options[$index]" ng-model="selected[$index]" ui-select2="{dropdownAutoWidth:true}" style="min-width:70px;" ng-change="changeLinkParams()">
+              <option ng-repeat="option in options[$index]" ng-value="option.value" ng-selected="selected[$parent.$index] == option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </span>
+        </a>
+      """
+      link: (scope, element, attrs) ->
 
-				###
+        ###
 
- 			Below variables will look like following
+      Below variables will look like following
 
- 			scope.texts = ['Number of tickets created','grouped by',' & ']
-				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
-																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
-																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
-				]
-				scope.selected = ['today', 'agent', 'department']
+      scope.texts = ['Number of tickets created','grouped by',' & ']
+        scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
+                                          [{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
+                                          [{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
+        ]
+        scope.selected = ['today', 'agent', 'department']
 
- 			###
+      ###
 
-				scope.texts = []
-				scope.options = []
-				scope.selected = []
-				scope.defaultLinkParams = ''
+        scope.texts = []
+        scope.options = []
+        scope.selected = []
+        scope.defaultLinkParams = ''
 
-				scope.$watch(attrs.possibleValues, (newVal) =>
+        scope.$watch(attrs.possibleValues, (newVal) =>
 
-					if typeof newVal == 'undefined' then return
-					valueToDecorate = scope.$eval(attrs.valueToDecorate)
-					if !valueToDecorate then return
+          if typeof newVal == 'undefined' then return
+          valueToDecorate = scope.$eval(attrs.valueToDecorate)
+          if !valueToDecorate then return
 
-					scope.reportId = scope.$eval(attrs.reportId)
-					buildDirectiveVariables(valueToDecorate)
-					scope.defaultLinkParams = scope.selected.join(',')
-				)
+          scope.reportId = scope.$eval(attrs.reportId)
+          buildDirectiveVariables(valueToDecorate)
+          scope.defaultLinkParams = scope.selected.join(',')
+        )
 
 
-				###
-				# This function builds directive by constructing it on 'the fly' using DOM operations
- 			# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
-				###
+        ###
+        # This function builds directive by constructing it on 'the fly' using DOM operations
+      # The reason for doing so - problems with inner directives that were compiled with $compile() functionality
+        ###
 
-				buildDirectiveVariables = (value) ->
+        buildDirectiveVariables = (value) ->
 
-					lastPiece = value
-					regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
+          lastPiece = value
+          regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
 
-					while match = regex.exec(value)
-						scope.texts.push(match[1])
-						collected = collectSelectOptions(match[3])
-						scope.options.push(collected.options)
-						scope.selected.push(collected.selected)
+          while match = regex.exec(value)
+            scope.texts.push(match[1])
+            collected = collectSelectOptions(match[3])
+            scope.options.push(collected.options)
+            scope.selected.push(collected.selected)
 
-						# case when text that continues after last select box
-						lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')
+            # case when text that continues after last select box
+            lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')
 
-					# finding icon for case we have it
-					lastPiece = lastPiece.replace('[', '').replace(']', '')
-					lastPiece = lastPiece.replace(/<chart:([a-z0-9_-]+)>/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>')
+          # finding icon for case we have it
+          lastPiece = lastPiece.replace('[', '').replace(']', '')
+          lastPiece = lastPiece.replace(/<chart:([a-z0-9_-]+)>/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>')
 
-					scope.texts.push(lastPiece)
+          scope.texts.push(lastPiece)
 
-				###
-				# Returning select box options that was rendered according to 'input' parameter
- 			###
+        ###
+        # Returning select box options that was rendered according to 'input' parameter
+      ###
 
-				collectSelectOptions = (input) ->
+        collectSelectOptions = (input) ->
 
-					possibleValues = scope.$eval(attrs.possibleValues)
-					choices = {}
-					extras = {}
-					options = []
+          possibleValues = scope.$eval(attrs.possibleValues)
+          choices = {}
+          extras = {}
+          options = []
 
-					# some regular expressions parsing...
+          # some regular expressions parsing...
 
-					if input.match(/^\d+:date group(.*)$/)
-						choices = possibleValues.dates
-						extrasMatch = RegExp.$1
-					else if input.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)
-						type = RegExp.$1
-						if typeof possibleValues.fields[type] != 'undefined'
-							choices = possibleValues.fields[type]
-							extrasMatch = RegExp.$2
-					else if input.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)
-						type = RegExp.$1
-						if typeof possibleValues.statuses[type] != 'undefined'
-							choices = possibleValues.statuses[type]
-							extrasMatch = RegExp.$2
-					else if input.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)
-						type = RegExp.$1
-						if typeof possibleValues.orders[type] != 'undefined'
-							choices = possibleValues.orders[type]
-							extrasMatch = RegExp.$2
+          if input.match(/^\d+:date group(.*)$/)
+            choices = possibleValues.dates
+            extrasMatch = RegExp.$1
+          else if input.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)
+            type = RegExp.$1
+            if typeof possibleValues.fields[type] != 'undefined'
+              choices = possibleValues.fields[type]
+              extrasMatch = RegExp.$2
+          else if input.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)
+            type = RegExp.$1
+            if typeof possibleValues.statuses[type] != 'undefined'
+              choices = possibleValues.statuses[type]
+              extrasMatch = RegExp.$2
+          else if input.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)
+            type = RegExp.$1
+            if typeof possibleValues.orders[type] != 'undefined'
+              choices = possibleValues.orders[type]
+              extrasMatch = RegExp.$2
 
-					# information about default group...
+          # information about default group...
 
-					if extrasMatch
-						regex = /,([a-zA-Z0-9_ ]+):([^,]+)/g
-						while match = regex.exec(extrasMatch)
-							extras[$.trim(match[1])] = $.trim(match[2])
+          if extrasMatch
+            regex = /,([a-zA-Z0-9_ ]+):([^,]+)/g
+            while match = regex.exec(extrasMatch)
+              extras[$.trim(match[1])] = $.trim(match[2])
 
-					# constructing selects...
+          # constructing selects...
 
-					for own key, value of choices
-						options.push({value: key, label: value[0]})
+          for own key, value of choices
+            options.push({value: key, label: value[0]})
 
-					return {
-						options: options
-						selected: (if extras.default then extras.default else options[0].value)
-					}
+          return {
+            options: options
+            selected: (if extras.default then extras.default else options[0].value)
+          }
 
-				###
- 			# Going to correponding route after changing selected options inside select box
-				###
+        ###
+      # Going to correponding route after changing selected options inside select box
+        ###
 
-				scope.changeLinkParams = () ->
-					linkParams = scope.selected.join(',')
-					$state.go('billing.view', {id: scope.reportId, params:linkParams})
-		}
-	]
+        scope.changeLinkParams = () ->
+          linkParams = scope.selected.join(',')
+          $state.go('billing.view', {id: scope.reportId, params:linkParams})
+    }
+  ]
 
-	return Reports_Directive_DpReportBillingSelectBox
+  return Reports_Directive_DpReportBillingSelectBox

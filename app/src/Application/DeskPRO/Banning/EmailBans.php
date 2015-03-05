@@ -38,11 +38,11 @@ use Doctrine\ORM\EntityManager;
 
 class EmailBans
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\BanEmail[]
@@ -50,125 +50,126 @@ class EmailBans
 
     protected $email_bans;
 
-	/**
-	 * @var int
-	 */
+    /**
+     * @var int
+     */
 
-	protected $per_page = 20;
+    protected $per_page = 20;
 
-	/**
-	 * @var int
-	 */
+    /**
+     * @var int
+     */
 
-	protected $from;
+    protected $from;
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
 
-	protected $search_phrase;
+    protected $search_phrase;
 
-	/**
-	 * filter wildcards only if true
-	 * @var bool
-	 */
-	protected $wildcard = false;
+    /**
+     * filter wildcards only if true
+     * @var bool
+     */
+    protected $wildcard = false;
 
-	/**
-	 * @param EntityManager $em
-	 */
+    /**
+     * @param EntityManager $em
+     */
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * @param int $per_page
-	 *
-	 * @return $this
-	 */
+    /**
+     * @param int $per_page
+     *
+     * @return $this
+     */
 
-	public function setPerPage($per_page)
-	{
-		$this->per_page = $per_page;
+    public function setPerPage($per_page)
+    {
+        $this->per_page = $per_page;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param int $page
-	 *
-	 * @return $this
-	 */
+    /**
+     * @param int $page
+     *
+     * @return $this
+     */
 
-	public function setPage($page)
-	{
-		if ($page == 0) {
+    public function setPage($page)
+    {
+        if ($page == 0) {
 
-			$page = 1;
-		}
+            $page = 1;
+        }
 
-		$this->from = ($page - 1) * $this->per_page;
+        $this->from = ($page - 1) * $this->per_page;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setWildcard($wildcard)
-	{
-		$this->wildcard = (bool) $wildcard;
-		return $this;
-	}
+    public function setWildcard($wildcard)
+    {
+        $this->wildcard = (bool) $wildcard;
 
-	/**
-	 * @param $search_phrase
-	 * @return $this
-	 */
-	public function setSearchPhrase($search_phrase)
-	{
-		$this->search_phrase = $search_phrase;
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Loads twitter accounts data from the database
-	 */
+    /**
+     * @param $search_phrase
+     * @return $this
+     */
+    public function setSearchPhrase($search_phrase)
+    {
+        $this->search_phrase = $search_phrase;
 
-	private function preload()
-	{
-		if ($this->email_bans !== null) {
+        return $this;
+    }
 
-			return;
-		}
+    /**
+     * Loads twitter accounts data from the database
+     */
 
-		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList(
-			$this->from,
-			$this->per_page,
-			$this->search_phrase,
-			$this->wildcard
-		);
-	}
+    private function preload()
+    {
+        if ($this->email_bans !== null) {
+            return;
+        }
+
+        $this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList(
+            $this->from,
+            $this->per_page,
+            $this->search_phrase,
+            $this->wildcard
+        );
+    }
 
 
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
+    /**
+     * Resets this repository so the next time data is requested form it, it will
+     * be queried again.
+     */
 
-	public function reset()
-	{
-		$this->email_bans = null;
-	}
+    public function reset()
+    {
+        $this->email_bans = null;
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\BanEmail
-	 */
+    /**
+     * @param  int                                  $id
+     * @return \Application\DeskPRO\Entity\BanEmail
+     */
 
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:BanEmail')->get($id);
-	}
+    public function getById($id)
+    {
+        return $this->em->getRepository('DeskPRO:BanEmail')->get($id);
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\BanEmail[]
@@ -181,58 +182,58 @@ class EmailBans
         return $this->email_bans;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getAllAsNestedArray()
-	{
-		$this->preload();
+    public function getAllAsNestedArray()
+    {
+        $this->preload();
 
-		$result = array();
+        $result = array();
 
-		foreach ($this->email_bans as $email_ban) {
+        foreach ($this->email_bans as $email_ban) {
 
-			$result[] = array('banned_email' => $email_ban);
-		}
+            $result[] = array('banned_email' => $email_ban);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function getPageCount()
-	{
-		return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase, $this->wildcard);
-	}
+    public function getPageCount()
+    {
+        return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase, $this->wildcard);
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getCount()
-	{
-		return $this->em->getRepository('DeskPRO:BanEmail')->getCount($this->search_phrase, $this->wildcard);
-	}
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+        return $this->em->getRepository('DeskPRO:BanEmail')->getCount($this->search_phrase, $this->wildcard);
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function count()
-	{
-		$this->preload();
+    public function count()
+    {
+        $this->preload();
 
-		return count($this->email_bans);
-	}
+        return count($this->email_bans);
+    }
 
-	/**
-	 * @return BanEmail
-	 */
+    /**
+     * @return BanEmail
+     */
 
-	public function createNew()
-	{
-		return BanEmail::createEmailBan();
-	}
+    public function createNew()
+    {
+        return BanEmail::createEmailBan();
+    }
 }

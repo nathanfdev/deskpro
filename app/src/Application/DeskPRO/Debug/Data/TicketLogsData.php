@@ -38,21 +38,21 @@ use Application\DeskPRO\Entity\Ticket;
 
 class TicketLogsData implements DataInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket;
 
-	public function __construct(Ticket $ticket)
-	{
-		$this->ticket = $ticket;
-	}
+    public function __construct(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+    }
 
-	public function getData()
-	{
-		$data = array();
-		$data['logs']     = App::getDb()->fetchAll("SELECT * FROM tickets_logs WHERE ticket_id = ? ORDER BY id ASC", array($this->ticket->id));
+    public function getData()
+    {
+        $data = array();
+        $data['logs']     = App::getDb()->fetchAll("SELECT * FROM tickets_logs WHERE ticket_id = ? ORDER BY id ASC", array($this->ticket->id));
 
-		return $data;
-	}
+        return $data;
+    }
 }

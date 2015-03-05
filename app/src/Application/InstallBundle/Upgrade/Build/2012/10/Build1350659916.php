@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350659916 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set app permissions");
-		$this->execMutateSql("UPDATE IGNORE department_permissions SET app = 'chat' WHERE app = ''");
-	}
+    public function run()
+    {
+        $this->out("Set app permissions");
+        $this->execMutateSql("UPDATE IGNORE department_permissions SET app = 'chat' WHERE app = ''");
+    }
 }

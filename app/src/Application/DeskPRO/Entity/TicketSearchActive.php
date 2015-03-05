@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -80,456 +79,456 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketSearchActive extends DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $ref = null;
+    /**
+     * @var string
+     */
+    protected $ref = null;
 
-	/**
-	 * @var int
-	 */
-	protected $language_id = null;
+    /**
+     * @var int
+     */
+    protected $language_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $department_id = null;
+    /**
+     * @var int
+     */
+    protected $department_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $category_id = null;
+    /**
+     * @var int
+     */
+    protected $category_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $workflow_id = null;
+    /**
+     * @var int
+     */
+    protected $workflow_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $priority_id = null;
+    /**
+     * @var int
+     */
+    protected $priority_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $product_id = null;
+    /**
+     * @var int
+     */
+    protected $product_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $person_id = null;
+    /**
+     * @var int
+     */
+    protected $person_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $person_email_id = null;
+    /**
+     * @var int
+     */
+    protected $person_email_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $agent_id = null;
+    /**
+     * @var int
+     */
+    protected $agent_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $agent_team_id = null;
+    /**
+     * @var int
+     */
+    protected $agent_team_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $organization_id = null;
+    /**
+     * @var int
+     */
+    protected $organization_id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $creation_system;
+    /**
+     * @var string
+     */
+    protected $creation_system;
 
-	/**
-	 * Optional information about the creation system. For example, source URL the ticket came from.
-	 *
-	 * @var string
-	 */
-	protected $creation_system_option = '';
+    /**
+     * Optional information about the creation system. For example, source URL the ticket came from.
+     *
+     * @var string
+     */
+    protected $creation_system_option = '';
 
-	/**
-	 * @var string
-	 */
-	protected $status;
+    /**
+     * @var string
+     */
+    protected $status;
 
-	/**
-	 * Is the ticket on hold?
-	 *
-	 * @var bool
-	 */
-	protected $is_hold = false;
+    /**
+     * Is the ticket on hold?
+     *
+     * @var bool
+     */
+    protected $is_hold = false;
 
-	/**
-	 * @var int
-	 */
-	protected $urgency = 1;
+    /**
+     * @var int
+     */
+    protected $urgency = 1;
 
-	/**
-	 * @var int
-	 */
-	protected $feedback_rating = null;
+    /**
+     * @var int
+     */
+    protected $feedback_rating = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_feedback_rating = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_feedback_rating = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_resolved;
+    /**
+     * @var \DateTime
+     */
+    protected $date_resolved;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_first_agent_assign = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_first_agent_assign = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_first_agent_reply = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_first_agent_reply = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_last_agent_reply = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_last_agent_reply = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_last_user_reply = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_last_user_reply = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_agent_waiting = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_agent_waiting = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_user_waiting = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_user_waiting = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_status = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_status = null;
 
-	/**
-	 * @var int
-	 */
-	protected $total_user_waiting = 0;
+    /**
+     * @var int
+     */
+    protected $total_user_waiting = 0;
 
-	/**
-	 * @var int
-	 */
-	protected $total_to_first_reply = 0;
+    /**
+     * @var int
+     */
+    protected $total_to_first_reply = 0;
 
-	/**
-	 * @var string
-	 */
-	protected $subject;
+    /**
+     * @var string
+     */
+    protected $subject;
 
-	/**
-	 * @var string
-	 */
-	protected $original_subject = '';
+    /**
+     * @var string
+     */
+    protected $original_subject = '';
 
-	/**
-	 * @return array
-	 */
-	public static function getFieldNames()
-	{
-		return array(
-			'id', 'ref', 'language_id', 'department_id', 'category_id',
-			'workflow_id', 'priority_id', 'product_id', 'person_id', 'person_email_id',
-			'agent_id', 'agent_team_id', 'organization_id', 'creation_system', 'creation_system_option',
-			'status', 'is_hold', 'urgency', 'feedback_rating', 'date_feedback_rating',
-			'date_created', 'date_resolved', 'date_first_agent_assign', 'date_first_agent_reply',
-			'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status',
-			'total_user_waiting', 'total_to_first_reply',
-			'subject', 'original_subject',
-		);
-	}
+    /**
+     * @return array
+     */
+    public static function getFieldNames()
+    {
+        return array(
+            'id', 'ref', 'language_id', 'department_id', 'category_id',
+            'workflow_id', 'priority_id', 'product_id', 'person_id', 'person_email_id',
+            'agent_id', 'agent_team_id', 'organization_id', 'creation_system', 'creation_system_option',
+            'status', 'is_hold', 'urgency', 'feedback_rating', 'date_feedback_rating',
+            'date_created', 'date_resolved', 'date_first_agent_assign', 'date_first_agent_reply',
+            'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status',
+            'total_user_waiting', 'total_to_first_reply',
+            'subject', 'original_subject',
+        );
+    }
 
-	/**
-	 * Given a ticket, get a raw database array we can copy into the search active table.
-	 *
-	 * @param Ticket $ticket
-	 * @return array
-	 */
-	public static function copyTicketDbArray(Ticket $ticket)
-	{
-		$db_array = array();
+    /**
+     * Given a ticket, get a raw database array we can copy into the search active table.
+     *
+     * @param  Ticket $ticket
+     * @return array
+     */
+    public static function copyTicketDbArray(Ticket $ticket)
+    {
+        $db_array = array();
 
-		foreach (self::getFieldNames() as $field) {
-			$prop = $field;
-			if (substr($prop, -3) == '_id') {
-				$prop = substr($prop, 0, -3);
-				$val = $ticket->$prop;
-			} else {
-				$val = $ticket->$field;
-			}
+        foreach (self::getFieldNames() as $field) {
+            $prop = $field;
+            if (substr($prop, -3) == '_id') {
+                $prop = substr($prop, 0, -3);
+                $val = $ticket->$prop;
+            } else {
+                $val = $ticket->$field;
+            }
 
-			if (is_object($val)) {
-				if ($val instanceof \DateTime) {
-					$db_array[$field] = $val->format('Y-m-d H:i:s');
-				} else {
-					$db_array[$field] = $val->id;
-				}
-			} else {
-				$db_array[$field] = $val;
-			}
-		}
+            if (is_object($val)) {
+                if ($val instanceof \DateTime) {
+                    $db_array[$field] = $val->format('Y-m-d H:i:s');
+                } else {
+                    $db_array[$field] = $val->id;
+                }
+            } else {
+                $db_array[$field] = $val;
+            }
+        }
 
-		return $db_array;
-	}
+        return $db_array;
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_NONE;
-		$metadata->setPrimaryTable(array(
-			'name'    => 'tickets_search_active',
-			'indexes' => array(
-				'date_created_idx' => array('columns' => array('date_created')),
-				'status_idx'       => array('columns' => array('status')),
-				'person_idx'       => array('columns' => array('person_id')),
-				'agent_idx'        => array('columns' => array('agent_id')),
-				'ref_idx'          => array('columns' => array('ref')),
-			)
-		));
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_NONE;
+        $metadata->setPrimaryTable(array(
+            'name'    => 'tickets_search_active',
+            'indexes' => array(
+                'date_created_idx' => array('columns' => array('date_created')),
+                'status_idx'       => array('columns' => array('status')),
+                'person_idx'       => array('columns' => array('person_id')),
+                'agent_idx'        => array('columns' => array('agent_id')),
+                'ref_idx'          => array('columns' => array('ref')),
+            )
+        ));
 
-		$metadata->mapField(array(
-			'columnName' => 'id',
-			'fieldName'  => 'id',
-			'type'       => 'integer',
-			'id'         => true,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'ref',
-			'fieldName'  => 'ref',
-			'type'       => 'string',
-			'length'     => 100,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'language_id',
-			'fieldName'  => 'language_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'department_id',
-			'fieldName'  => 'department_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'category_id',
-			'fieldName'  => 'category_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'workflow_id',
-			'fieldName'  => 'workflow_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'priority_id',
-			'fieldName'  => 'priority_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'product_id',
-			'fieldName'  => 'product_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'person_id',
-			'fieldName'  => 'person_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'person_email_id',
-			'fieldName'  => 'person_email_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'agent_id',
-			'fieldName'  => 'agent_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'agent_team_id',
-			'fieldName'  => 'agent_team_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'organization_id',
-			'fieldName'  => 'organization_id',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'sent_to_address',
-			'fieldName'  => 'sent_to_address',
-			'type'       => 'string',
-			'length'     => 200,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'creation_system',
-			'fieldName'  => 'creation_system',
-			'type'       => 'string',
-			'length'     => 100,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'creation_system_option',
-			'fieldName'  => 'creation_system_option',
-			'type'       => 'string',
-			'length'     => 1000,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'status',
-			'columnName' => 'status',
-			'type'       => 'string',
-			'length'     => 30,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'is_hold',
-			'columnName' => 'is_hold',
-			'type'       => 'boolean',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'urgency',
-			'columnName' => 'urgency',
-			'type'       => 'integer',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'feedback_rating',
-			'columnName' => 'feedback_rating',
-			'type'       => 'integer',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_feedback_rating',
-			'columnName' => 'date_feedback_rating',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_created',
-			'columnName' => 'date_created',
-			'type'       => 'datetime',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_resolved',
-			'columnName' => 'date_resolved',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_first_agent_assign',
-			'columnName' => 'date_first_agent_assign',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_first_agent_reply',
-			'columnName' => 'date_first_agent_reply',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_last_agent_reply',
-			'columnName' => 'date_last_agent_reply',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_last_user_reply',
-			'columnName' => 'date_last_user_reply',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_agent_waiting',
-			'columnName' => 'date_agent_waiting',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_user_waiting',
-			'columnName' => 'date_user_waiting',
-			'type'       => 'datetime',
-			'nullable'   => true,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_status',
-			'columnName' => 'date_status',
-			'type'       => 'datetime',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'total_user_waiting',
-			'columnName' => 'total_user_waiting',
-			'type'       => 'integer',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'total_to_first_reply',
-			'columnName' => 'total_to_first_reply',
-			'type'       => 'integer',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'subject',
-			'columnName' => 'subject',
-			'type'       => 'string',
-			'length'     => 255,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'original_subject',
-			'columnName' => 'original_subject',
-			'type'       => 'string',
-			'length'     => 255,
-			'nullable'   => false,
-		));
-	}
+        $metadata->mapField(array(
+            'columnName' => 'id',
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'id'         => true,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'ref',
+            'fieldName'  => 'ref',
+            'type'       => 'string',
+            'length'     => 100,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'language_id',
+            'fieldName'  => 'language_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'department_id',
+            'fieldName'  => 'department_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'category_id',
+            'fieldName'  => 'category_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'workflow_id',
+            'fieldName'  => 'workflow_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'priority_id',
+            'fieldName'  => 'priority_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'product_id',
+            'fieldName'  => 'product_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'person_id',
+            'fieldName'  => 'person_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'person_email_id',
+            'fieldName'  => 'person_email_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'agent_id',
+            'fieldName'  => 'agent_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'agent_team_id',
+            'fieldName'  => 'agent_team_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'organization_id',
+            'fieldName'  => 'organization_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'sent_to_address',
+            'fieldName'  => 'sent_to_address',
+            'type'       => 'string',
+            'length'     => 200,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'creation_system',
+            'fieldName'  => 'creation_system',
+            'type'       => 'string',
+            'length'     => 100,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'creation_system_option',
+            'fieldName'  => 'creation_system_option',
+            'type'       => 'string',
+            'length'     => 1000,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'status',
+            'columnName' => 'status',
+            'type'       => 'string',
+            'length'     => 30,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'is_hold',
+            'columnName' => 'is_hold',
+            'type'       => 'boolean',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'urgency',
+            'columnName' => 'urgency',
+            'type'       => 'integer',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'feedback_rating',
+            'columnName' => 'feedback_rating',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_feedback_rating',
+            'columnName' => 'date_feedback_rating',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_created',
+            'columnName' => 'date_created',
+            'type'       => 'datetime',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_resolved',
+            'columnName' => 'date_resolved',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_first_agent_assign',
+            'columnName' => 'date_first_agent_assign',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_first_agent_reply',
+            'columnName' => 'date_first_agent_reply',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_last_agent_reply',
+            'columnName' => 'date_last_agent_reply',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_last_user_reply',
+            'columnName' => 'date_last_user_reply',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_agent_waiting',
+            'columnName' => 'date_agent_waiting',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_user_waiting',
+            'columnName' => 'date_user_waiting',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_status',
+            'columnName' => 'date_status',
+            'type'       => 'datetime',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'total_user_waiting',
+            'columnName' => 'total_user_waiting',
+            'type'       => 'integer',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'total_to_first_reply',
+            'columnName' => 'total_to_first_reply',
+            'type'       => 'integer',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'subject',
+            'columnName' => 'subject',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'original_subject',
+            'columnName' => 'original_subject',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+        ));
+    }
 }

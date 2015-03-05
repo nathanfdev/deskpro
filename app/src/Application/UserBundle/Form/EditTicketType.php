@@ -45,96 +45,96 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class EditTicketType extends AbstractType
 {
-	/** @var Entity\Person */
-	protected $person;
-	/** @var array */
-	protected $ticket_options;
-	/** @var array */
-	protected $ticket_fields = array();
+    /** @var Entity\Person */
+    protected $person;
+    /** @var array */
+    protected $ticket_options;
+    /** @var array */
+    protected $ticket_fields = array();
 
-	public function __construct($person)
-	{
-		$this->person = $person;
-	}
+    public function __construct($person)
+    {
+        $this->person = $person;
+    }
 
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$ticket_builder = $builder->create('ticket', 'form');
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $ticket_builder = $builder->create('ticket', 'form');
 
-		#------------------------------
-		# Standard fields
-		#------------------------------
+        #------------------------------
+        # Standard fields
+        #------------------------------
 
-		$ticket_options = App::getApi('tickets')->getTicketOptions(App::getCurrentPerson());
+        $ticket_options = App::getApi('tickets')->getTicketOptions(App::getCurrentPerson());
 
-		$this->ticket_options = $ticket_options;
+        $this->ticket_options = $ticket_options;
 
-		$ticket_builder->add('subject', 'text');
+        $ticket_builder->add('subject', 'text');
 
-		if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
-			$ticket_builder->add('department_id', 'choice', array(
-				'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
-				'required' => false
-			));
-		}
+        if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
+            $ticket_builder->add('department_id', 'choice', array(
+                'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
+                'required' => false
+            ));
+        }
 
-		if (!empty($ticket_options['ticket_categories_hierarchy'])) {
-			$ticket_builder->add('category_id', 'choice', array(
-				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['ticket_categories_hierarchy'], 'id', 'title'),
-				'required' => false
-			));
-		}
+        if (!empty($ticket_options['ticket_categories_hierarchy'])) {
+            $ticket_builder->add('category_id', 'choice', array(
+                'choices' => Arrays::selectArrayFromHierarchy($ticket_options['ticket_categories_hierarchy'], 'id', 'title'),
+                'required' => false
+            ));
+        }
 
-		if (!empty($ticket_options['priorities'])) {
-			$ticket_builder->add('priority_id', 'choice', array(
-				'choices' => Arrays::unshiftAssocReturn($ticket_options['priorities'], '', ''),
-				'required' => false
-			));
-		}
+        if (!empty($ticket_options['priorities'])) {
+            $ticket_builder->add('priority_id', 'choice', array(
+                'choices' => Arrays::unshiftAssocReturn($ticket_options['priorities'], '', ''),
+                'required' => false
+            ));
+        }
 
-		if (!empty($ticket_options['products'])) {
-			$ticket_builder->add('product_id', 'choice', array(
-				'choices' => Arrays::unshiftAssocReturn($ticket_options['products'], '', ''),
-				'required' => false
-			));
-		}
+        if (!empty($ticket_options['products'])) {
+            $ticket_builder->add('product_id', 'choice', array(
+                'choices' => Arrays::unshiftAssocReturn($ticket_options['products'], '', ''),
+                'required' => false
+            ));
+        }
 
-		$ticket_builder->add('cc_emails', 'text', array('required' => false));
-		$ticket_builder->add('remove_ccs', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $ticket_builder->add('cc_emails', 'text', array('required' => false));
+        $ticket_builder->add('remove_ccs', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
 
-		$builder->add($ticket_builder);
+        $builder->add($ticket_builder);
 
-		#------------------------------
-		# Custom fields
-		#------------------------------
+        #------------------------------
+        # Custom fields
+        #------------------------------
 
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+        $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 
-		$ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
+        $ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
 
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
-		$this->ticket_fields = $custom_fields;
+        $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
+        $this->ticket_fields = $custom_fields;
 
-		$builder->add($ticket_fields_builder);
-	}
+        $builder->add($ticket_fields_builder);
+    }
 
-	public function getTicketOptions()
-	{
-		return $this->ticket_options;
-	}
+    public function getTicketOptions()
+    {
+        return $this->ticket_options;
+    }
 
-	public function getTicketFields()
-	{
-		return $this->ticket_fields;
-	}
+    public function getTicketFields()
+    {
+        return $this->ticket_fields;
+    }
 
-	public function getName()
-	{
-		return 'newticket';
-	}
+    public function getName()
+    {
+        return 'newticket';
+    }
 }

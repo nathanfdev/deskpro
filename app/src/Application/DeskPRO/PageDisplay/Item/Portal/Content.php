@@ -43,23 +43,23 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
  */
 class Content extends PortalItemAbstract
 {
-	public function getHtml()
-	{
-		$html = $this->getOption('html', '');
+    public function getHtml()
+    {
+        $html = $this->getOption('html', '');
 
-		if (!$this->getOption('no_wrapper')) {
-			$tpl = $this->getOption('custom_wrapper_tpl');
-			if (!$tpl) {
-				$tpl = 'UserBundle:Portal:content-' . $this->section . '.html.twig';
-			}
+        if (!$this->getOption('no_wrapper')) {
+            $tpl = $this->getOption('custom_wrapper_tpl');
+            if (!$tpl) {
+                $tpl = 'UserBundle:Portal:content-' . $this->section . '.html.twig';
+            }
 
-			$html = $this->renderView($tpl, array(
-				'html' => $html,
-				'section' => $this->section,
-				'options' => $this->options
-			));
-		}
+            $html = $this->renderView($tpl, array(
+                'html' => $html,
+                'section' => $this->section,
+                'options' => $this->options
+            ));
+        }
 
-		return $html;
-	}
+        return $html;
+    }
 }

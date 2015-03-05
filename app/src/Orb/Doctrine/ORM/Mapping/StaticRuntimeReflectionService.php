@@ -38,80 +38,83 @@ use Doctrine\Common\Persistence\Mapping\ReflectionService;
 
 class StaticRuntimeReflectionService implements ReflectionService
 {
-	/**
-	 * Return an array of the parent classes (not interfaces) for the given class.
-	 *
-	 * @param string $class
-	 * @return array
-	 */
-	public function getParentClasses($class)
-	{
-		return class_parents($class);
-	}
+    /**
+     * Return an array of the parent classes (not interfaces) for the given class.
+     *
+     * @param  string $class
+     * @return array
+     */
+    public function getParentClasses($class)
+    {
+        return class_parents($class);
+    }
 
-	/**
-	 * Return the shortname of a class.
-	 *
-	 * @param string $className
-	 * @return string
-	 */
-	public function getClassShortName($className)
-	{
-		if (($p = strrpos($className, '\\')) !== false) {
-			$className = substr($className, $p);
-		}
-		return $className;
-	}
+    /**
+     * Return the shortname of a class.
+     *
+     * @param  string $className
+     * @return string
+     */
+    public function getClassShortName($className)
+    {
+        if (($p = strrpos($className, '\\')) !== false) {
+            $className = substr($className, $p);
+        }
 
-	/**
-	 * Return the namespace of a class.
-	 *
-	 * @param string $className
-	 * @return string
-	 */
-	public function getClassNamespace($className)
-	{
-		$namespace = '';
-		if (($p = strrpos($className, '\\')) !== false) {
-			$namespace = substr($className, 0, $p);
-		}
-		return $namespace;
-	}
+        return $className;
+    }
 
-	/**
-	 * Return a reflection class instance or null
-	 *
-	 * @param string $class
-	 * @return \ReflectionClass|null
-	 */
-	public function getClass($class)
-	{
-		return new \ReflectionClass($class);
-	}
+    /**
+     * Return the namespace of a class.
+     *
+     * @param  string $className
+     * @return string
+     */
+    public function getClassNamespace($className)
+    {
+        $namespace = '';
+        if (($p = strrpos($className, '\\')) !== false) {
+            $namespace = substr($className, 0, $p);
+        }
 
-	/**
-	 * Return an accessible property (setAccessible(true)) or null.
-	 *
-	 * @param string $class
-	 * @param string $property
-	 * @return \ReflectionProperty|null
-	 */
-	public function getAccessibleProperty($class, $property)
-	{
-		$property = new StaticReflectionProperty($class, $property);
-		$property->setAccessible(true);
-		return $property;
-	}
+        return $namespace;
+    }
 
-	/**
-	 * Check if the class have a public method with the given name.
-	 *
-	 * @param mixed $class
-	 * @param mixed $method
-	 * @return bool
-	 */
-	public function hasPublicMethod($class, $method)
-	{
-		return method_exists($class, $method) && is_callable(array($class, $method));
-	}
+    /**
+     * Return a reflection class instance or null
+     *
+     * @param  string                $class
+     * @return \ReflectionClass|null
+     */
+    public function getClass($class)
+    {
+        return new \ReflectionClass($class);
+    }
+
+    /**
+     * Return an accessible property (setAccessible(true)) or null.
+     *
+     * @param  string                   $class
+     * @param  string                   $property
+     * @return \ReflectionProperty|null
+     */
+    public function getAccessibleProperty($class, $property)
+    {
+        $property = new StaticReflectionProperty($class, $property);
+        $property->setAccessible(true);
+
+        return $property;
+    }
+
+    /**
+     * Check if the class have a public method with the given name.
+     *
+     * @param  mixed $class
+     * @param  mixed $method
+     * @return bool
+     */
+    public function hasPublicMethod($class, $method)
+    {
+        return method_exists($class, $method) && is_callable(array($class, $method));
+    }
 }

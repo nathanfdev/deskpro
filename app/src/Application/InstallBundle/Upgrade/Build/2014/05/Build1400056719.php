@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056719 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Update ticket_filters table");
-		$db->exec("ALTER TABLE ticket_filters ADD display_order INT NOT NULL, CHANGE terms terms LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)';");
-	}
+        $this->out("Update ticket_filters table");
+        $db->exec("ALTER TABLE ticket_filters ADD display_order INT NOT NULL, CHANGE terms terms LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)';");
+    }
 }

@@ -36,8 +36,8 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1339765736 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("No changes - just setting core.deskpro_build_num setting");
-	}
+    public function run()
+    {
+        $this->out("No changes - just setting core.deskpro_build_num setting");
+    }
 }

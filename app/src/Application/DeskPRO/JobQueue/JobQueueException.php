@@ -43,11 +43,11 @@ use Orb\Util\Strings;
  */
 class JobQueueException extends \LogicException
 {
-	public function __construct($message, $code = 1545, \Exception $previous = null)
-	{
-		if (!Strings::startsWith('Job Queue', $message)) {
-			$message = "Job Queue: $message";
-		}
-		parent::__construct($message, $code, $previous);
-	}
+    public function __construct($message, $code = 1545, \Exception $previous = null)
+    {
+        if (!Strings::startsWith('Job Queue', $message)) {
+            $message = "Job Queue: $message";
+        }
+        parent::__construct($message, $code, $previous);
+    }
 }

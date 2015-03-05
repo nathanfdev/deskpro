@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1402577110 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set proper agent mode on default department triggers");
-		$this->execMutateSql("
-			UPDATE ticket_triggers
-			SET by_agent_mode = 'api,web'
-			WHERE department_id IS NOT NULL AND event_trigger = 'newticket'
-		");
-	}
+    public function run()
+    {
+        $this->out("Set proper agent mode on default department triggers");
+        $this->execMutateSql("
+            UPDATE ticket_triggers
+            SET by_agent_mode = 'api,web'
+            WHERE department_id IS NOT NULL AND event_trigger = 'newticket'
+        ");
+    }
 }

@@ -45,17 +45,17 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class ModSetUserVar extends AbstractAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$name = $this->getActionOption('name');
-		if (!$name) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $name = $this->getActionOption('name');
+        if (!$name) {
+            return;
+        }
 
-		$value = $this->getActionOption('value', 'VALUE');
-		$context->getUserVars()->set($name, $value);
-	}
+        $value = $this->getActionOption('value', 'VALUE');
+        $context->getUserVars()->set($name, $value);
+    }
 }

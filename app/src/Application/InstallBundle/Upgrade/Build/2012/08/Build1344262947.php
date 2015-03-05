@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1344262947 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Proper field type on settings");
-		$this->execMutateSql("ALTER TABLE `settings` CHANGE `value` `value` BLOB  NULL");
-	}
+    public function run()
+    {
+        $this->out("Proper field type on settings");
+        $this->execMutateSql("ALTER TABLE `settings` CHANGE `value` `value` BLOB  NULL");
+    }
 }

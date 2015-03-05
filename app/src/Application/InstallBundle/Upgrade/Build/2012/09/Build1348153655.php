@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348153655 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Re-insert archive_tickets worker job");
-		$this->execMutateSql("
-			REPLACE INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
-			VALUES ('archive_tickets', 'archive_tickets', 'Archive Tickets', 'Archives old tickets', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\ArchiveTickets', X'613A303A7B7D', 14400, NULL, NULL)
-		");
-	}
+    public function run()
+    {
+        $this->out("Re-insert archive_tickets worker job");
+        $this->execMutateSql("
+            REPLACE INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+            VALUES ('archive_tickets', 'archive_tickets', 'Archive Tickets', 'Archives old tickets', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\ArchiveTickets', X'613A303A7B7D', 14400, NULL, NULL)
+        ");
+    }
 }

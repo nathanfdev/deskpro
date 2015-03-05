@@ -39,12 +39,12 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class ChatSetupService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$m = new ChatSetup(
-			$container->get('deskpro.core.settings')
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $m = new ChatSetup(
+            $container->get('deskpro.core.settings')
+        );
 
-		return $m;
-	}
+        return $m;
+    }
 }

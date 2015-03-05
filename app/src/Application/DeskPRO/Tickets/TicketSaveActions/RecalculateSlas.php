@@ -43,46 +43,46 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterface
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var ActionApplicatorInterface
-	 */
-	private $action_applicator;
-
-
-
-	/**
-	 * @param EntityManager $em
-	 * @param ActionApplicatorInterface $action_applicator
-	 */
-	public function __construct(EntityManager $em, ActionApplicatorInterface $action_applicator)
-	{
-		$this->em = $em;
-		$this->action_applicator = $action_applicator;
-	}
+    /**
+     * @var ActionApplicatorInterface
+     */
+    private $action_applicator;
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
 
-		$cm_sender = new SlaClientMessageSender($this->em->getConnection());
-		if ($context->getPersonContext() && $context->getPersonContext()->getId()) {
-			$cm_sender->setPersonContext($context->getPersonContext());
-		}
+    /**
+     * @param EntityManager             $em
+     * @param ActionApplicatorInterface $action_applicator
+     */
+    public function __construct(EntityManager $em, ActionApplicatorInterface $action_applicator)
+    {
+        $this->em = $em;
+        $this->action_applicator = $action_applicator;
+    }
 
-		$proc = new SlaProcessor($this->em, $this->action_applicator, $cm_sender);
-		$proc->calculateSlas($ticket, $context);
-	}
+
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($context->getEventType() == 'noop') {
+            return;
+        }
+
+        $cm_sender = new SlaClientMessageSender($this->em->getConnection());
+        if ($context->getPersonContext() && $context->getPersonContext()->getId()) {
+            $cm_sender->setPersonContext($context->getPersonContext());
+        }
+
+        $proc = new SlaProcessor($this->em, $this->action_applicator, $cm_sender);
+        $proc->calculateSlas($ticket, $context);
+    }
 }

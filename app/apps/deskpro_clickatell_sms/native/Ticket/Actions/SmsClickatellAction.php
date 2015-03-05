@@ -39,35 +39,34 @@ use Orb\Sms\Provider\ClickatellSmsProvider;
 
 class SmsClickatellAction extends AbstractSmsAction
 {
-	/**
-	 * @var ClickatellSmsProvider
-	 */
-	private $clickatell_provider;
+    /**
+     * @var ClickatellSmsProvider
+     */
+    private $clickatell_provider;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getSmsProvider()
-	{
-		if ($this->clickatell_provider) {
-			return $this->clickatell_provider;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getSmsProvider()
+    {
+        if ($this->clickatell_provider) {
+            return $this->clickatell_provider;
+        }
 
-		$username = $this->getApp()->getSetting('username');
-		$password = $this->getApp()->getSetting('password');
-		$api_id = $this->getApp()->getSetting('api_id');
+        $username = $this->getApp()->getSetting('username');
+        $password = $this->getApp()->getSetting('password');
+        $api_id = $this->getApp()->getSetting('api_id');
 
-		$this->clickatell_provider = new ClickatellSmsProvider($username, $password, $api_id);
+        $this->clickatell_provider = new ClickatellSmsProvider($username, $password, $api_id);
 
-		return $this->clickatell_provider;
-	}
+        return $this->clickatell_provider;
+    }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFromPhoneNumber()
-	{
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFromPhoneNumber()
+    {
+        return null;
+    }
 }

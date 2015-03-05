@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\ContactData;
 
-use Application\DeskPRO\App;
-
 class Fax extends Phone
 {
 

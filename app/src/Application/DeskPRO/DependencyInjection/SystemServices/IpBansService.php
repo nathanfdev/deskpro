@@ -39,9 +39,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class IpBansService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new IpBans($container->getEm());
+
         return $x;
-	}
+    }
 }

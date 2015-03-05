@@ -39,71 +39,72 @@ use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterf
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
-	{
-		switch ($context->getAction()) {
-			case 'check-requirements':
-				return $this->checkRequirementsAction($context);
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-			default:
-				throw $context->createNotFoundException();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function handleApiPackageRequest(ApiPackageRequestContext $context)
+    {
+        switch ($context->getAction()) {
+            case 'check-requirements':
+                return $this->checkRequirementsAction($context);
+            case 'test-settings':
+                return $this->testSettingsAction($context);
+            default:
+                throw $context->createNotFoundException();
+        }
+    }
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function checkRequirementsAction(ApiPackageRequestContext $context)
-	{
-		return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
-	}
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function checkRequirementsAction(ApiPackageRequestContext $context)
+    {
+        return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+    }
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
-	{
-		$token = $context->getIn()->getString('api_token');
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function testSettingsAction(ApiPackageRequestContext $context)
+    {
+        $token = $context->getIn()->getString('api_token');
 
-		$error = false;
-		$client = null;
+        $error = false;
+        $client = null;
 
-		$log = array();
-		$log[] = 'token: ' . $token;
+        $log = array();
+        $log[] = 'token: ' . $token;
 
-		$tests = array();
-		$tests[] = function() use (&$log, $token) {
-			$log[] = 'Verifying HipChat API is accessible...';
+        $tests = array();
+        $tests[] = function () use (&$log, $token) {
+            $log[] = 'Verifying HipChat API is accessible...';
 
-			$api = new \HipChatApi($token);
-			try {
-				$api->get_rooms();
-				$log[] = 'Everything is ok';
-			} catch (\Exception $e) {
-				$log[] = $e->getMessage();
-				return array((string) $e->getCode(), 'API Exception');
-			}
-		};
+            $api = new \HipChatApi($token);
+            try {
+                $api->get_rooms();
+                $log[] = 'Everything is ok';
+            } catch (\Exception $e) {
+                $log[] = $e->getMessage();
 
-		foreach ($tests as $t) {
-			$error = $t();
-			if ($error) {
-				break;
-			}
-		}
+                return array((string) $e->getCode(), 'API Exception');
+            }
+        };
 
-		$result_data = array(
-			'log'        => implode("\n", $log),
-			'error'      => $error ? $error[1] : false,
-			'error_code' => $error ? $error[0] : false
-		);
+        foreach ($tests as $t) {
+            $error = $t();
+            if ($error) {
+                break;
+            }
+        }
 
-		return $context->createJsonResponse($result_data);
-	}
+        $result_data = array(
+            'log'        => implode("\n", $log),
+            'error'      => $error ? $error[1] : false,
+            'error_code' => $error ? $error[0] : false
+        );
+
+        return $context->createJsonResponse($result_data);
+    }
 }

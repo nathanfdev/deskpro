@@ -36,21 +36,21 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1341838420 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Ensure exisitng agents are not validating");
-		$this->execMutateSql("
-			UPDATE people
-			SET is_confirmed = 1, is_agent_confirmed = 1
-			WHERE is_agent = 1
-		");
+    public function run()
+    {
+        $this->out("Ensure exisitng agents are not validating");
+        $this->execMutateSql("
+            UPDATE people
+            SET is_confirmed = 1, is_agent_confirmed = 1
+            WHERE is_agent = 1
+        ");
 
-		$date_str = date('Y-m-d H:i:s');
-		$this->execMutateSql("
-			UPDATE people_emails
-			LEFT JOIN people ON (people.id = people_emails.person_id)
-			SET people_emails.is_validated = 1, people_emails.date_validated = '$date_str'
-			WHERE people.is_agent = 1 AND people_emails.is_validated = 0
-		");
-	}
+        $date_str = date('Y-m-d H:i:s');
+        $this->execMutateSql("
+            UPDATE people_emails
+            LEFT JOIN people ON (people.id = people_emails.person_id)
+            SET people_emails.is_validated = 1, people_emails.date_validated = '$date_str'
+            WHERE people.is_agent = 1 AND people_emails.is_validated = 0
+        ");
+    }
 }

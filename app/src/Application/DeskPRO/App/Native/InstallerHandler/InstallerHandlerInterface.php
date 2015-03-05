@@ -36,41 +36,41 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 interface InstallerHandlerInterface
 {
-	/**
-	 * @param InstallerContext $context
-	 * @param array $settings
-	 * @return array
-	 */
-	public function processSettings(InstallerContext $context, array $settings);
+    /**
+     * @param  InstallerContext $context
+     * @param  array            $settings
+     * @return array
+     */
+    public function processSettings(InstallerContext $context, array $settings);
 
-	/**
-	 * @param InstallerContext $context
-	 * @param array $settings
-	 * @return array
-	 */
-	public function validateSettings(InstallerContext $context, array $settings);
+    /**
+     * @param  InstallerContext $context
+     * @param  array            $settings
+     * @return array
+     */
+    public function validateSettings(InstallerContext $context, array $settings);
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function install(InstallerContext $context);
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function install(InstallerContext $context);
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function uninstall(InstallerContext $context);
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function uninstall(InstallerContext $context);
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function updateSettings(InstallerContext $context);
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function updateSettings(InstallerContext $context);
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function updatePackage(InstallerContext $context);
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function updatePackage(InstallerContext $context);
 }

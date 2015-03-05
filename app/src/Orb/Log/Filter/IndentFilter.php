@@ -44,21 +44,21 @@ use \Orb\Log\LogItem;
  */
 class IndentFilter extends \Orb\Filter\AbstractFilter
 {
-	public function filter($log_item)
-	{
-		if (!$log_item) return null;
+    public function filter($log_item)
+    {
+        if (!$log_item) return null;
 
-		$message = $log_item[LogItem::MESSAGE];
-		$m = null;
-		if (preg_match('#^((\-\-)+)#', $message, $m)) {
-			$len = strlen($m[1]);
-			$indent = $len / 2;
-			$message = trim(substr($message, $len));
+        $message = $log_item[LogItem::MESSAGE];
+        $m = null;
+        if (preg_match('#^((\-\-)+)#', $message, $m)) {
+            $len = strlen($m[1]);
+            $indent = $len / 2;
+            $message = trim(substr($message, $len));
 
-			$log_item['indent'] = $indent;
-			$log_item[LogItem::MESSAGE] = $message;
-		}
+            $log_item['indent'] = $indent;
+            $log_item[LogItem::MESSAGE] = $message;
+        }
 
-		return $log_item;
-	}
+        return $log_item;
+    }
 }

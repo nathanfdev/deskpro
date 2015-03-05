@@ -33,41 +33,39 @@
 
 namespace Application\DeskPRO\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 class BlobController extends AbstractController
 {
-	/**
-	 * Favicon
-	 */
-	public function faviconAction()
-	{
-		$favicon_id = $this->container->getSetting('core.favicon_blob_id');
-		$blob = null;
-		if ($favicon_id) {
-			$blob = $this->em->getRepository('DeskPRO:Blob')->find($favicon_id);
-		}
+    /**
+     * Favicon
+     */
+    public function faviconAction()
+    {
+        $favicon_id = $this->container->getSetting('core.favicon_blob_id');
+        $blob = null;
+        if ($favicon_id) {
+            $blob = $this->em->getRepository('DeskPRO:Blob')->find($favicon_id);
+        }
 
-		if ($blob) {
-			$response = $this->container->get('response');
-			$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
-			$response->setContent($file);
-		} else {
-			$file = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/favicon.ico');
+        if ($blob) {
+            $response = $this->container->get('response');
+            $file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+            $response->setContent($file);
+        } else {
+            $file = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/favicon.ico');
 
-			$response = $this->container->get('response');
-			$response->headers->set('Content-Length', strlen($file));
-			$response->setContent($file);
-		}
+            $response = $this->container->get('response');
+            $response->headers->set('Content-Length', strlen($file));
+            $response->setContent($file);
+        }
 
-		$response->headers->set('Content-Type', 'image/vnd.microsoft.icon; filename=favicon.ico');
-		$response->headers->set('Content-Disposition', 'inline; filename=favicon.ico');
-		$response->setExpires(date_create("+5 days"));
-		$response->setMaxAge(432000);
-		$response->setSharedMaxAge(432000);
-		$response->setPublic();
+        $response->headers->set('Content-Type', 'image/vnd.microsoft.icon; filename=favicon.ico');
+        $response->headers->set('Content-Disposition', 'inline; filename=favicon.ico');
+        $response->setExpires(date_create("+5 days"));
+        $response->setMaxAge(432000);
+        $response->setSharedMaxAge(432000);
+        $response->setPublic();
 
-		return $response;
-	}
+        return $response;
+    }
 }

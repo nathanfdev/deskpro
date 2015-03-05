@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1376561083 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add ticket_slas.is_completed_set");
-		$this->execMutateSql("ALTER TABLE ticket_slas ADD is_completed_set TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add ticket_slas.is_completed_set");
+        $this->execMutateSql("ALTER TABLE ticket_slas ADD is_completed_set TINYINT(1) NOT NULL");
+    }
 }

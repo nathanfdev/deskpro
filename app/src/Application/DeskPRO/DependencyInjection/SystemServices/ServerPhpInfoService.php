@@ -39,9 +39,10 @@ use Application\DeskPRO\ServerPhpInfo\ServerPhpInfo;
 
 class ServerPhpInfoService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ServerPhpInfo($container->getEm());
+
         return $x;
-	}
+    }
 }

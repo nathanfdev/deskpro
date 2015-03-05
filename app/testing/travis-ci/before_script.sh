@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DIR_ROOT=`pwd`
+
 sudo service elasticsearch status
 
 echo "Ensuring log files"
@@ -14,6 +16,13 @@ sudo chmod 0777 /var/log/selenium-hub.log
 sudo chmod 0777 /var/log/selenium-node.log
 sudo chmod 0777 /var/log/php_errors.log
 echo "--> Done"
+
+echo "Installing node modules"
+sudo npm install -g gulp bower protractor karma-cli
+sudo webdriver-manager update
+
+echo "Init project deps"
+$DIR_ROOT/app/bin/init-project.sh
 
 echo "Creating test database"
 mysql -e "CREATE DATABASE deskpro;"
@@ -58,29 +67,3 @@ echo "memory_limit = 1024M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php
 ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
 
 sudo service apache2 restart
-
-
-echo "Starting xvfb"
-export DISPLAY=:99
-/usr/bin/Xvfb :99 -ac -screen 0 1280x800x8 > /var/log/Xvfb.log 2>&1 &
-echo "--> Done"
-
-echo "Starting firefox"
-firefox > /var/log/firefox.log 2>&1 &
-echo "--> Done"
-
-echo "Downloading Selenium"
-wget -O /tmp/selenium-server-standalone-2.38.0.jar http://selenium.googlecode.com/files/selenium-server-standalone-2.38.0.jar
-echo "--> Done"
-
-echo "Starting Selenium Hub"
-java -mx256m -jar /tmp/selenium-server-standalone-2.38.0.jar -role hub > /var/log/selenium-hub.log 2>&1 &
-echo "."
-sleep 3
-echo "--> Done"
-
-echo "Starting Selenium Node"
-java -mx256m -jar /tmp/selenium-server-standalone-2.38.0.jar -role node -hub http://localhost:4444/grid/register > /var/log/selenium-node.log 2>&1 &
-echo "."
-sleep 3
-echo "--> Done"

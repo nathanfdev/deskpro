@@ -4,11 +4,11 @@
 <?php $failed = false ?>
 <h3>License Agreement</h3>
 <table class="bordered-table zebra-striped">
-	<tbody>
-		<tr>
-			<td>
-				<div style="height: 300px; overflow: auto;">
-					<pre style="font-family: monospace; border: none; margin: 0; padding: 0;">
+    <tbody>
+        <tr>
+            <td>
+                <div style="height: 300px; overflow: auto;">
+                    <pre style="font-family: monospace; border: none; margin: 0; padding: 0;">
 This document contains the End User License Agreement between DeskPRO Ltd.
 herein referred to as "the company", "we", "us", and "our",
 and the End User (herein referred to as "you", "your", "yours", etc.). By
@@ -165,42 +165,42 @@ understandings or prior agreements between you and DeskPRO Ltd.
 DeskPRO Ltd reserves the right to modify these terms at any time.
 
 This Agreement is governed by the laws of England and Wales.
-					</pre>
-				</div>
-			</td>
-		</tr>
-	</tbody>
+                    </pre>
+                </div>
+            </td>
+        </tr>
+    </tbody>
 </table>
 
 <div class="alert-message block-message warn" id="agreement_box">
-	<label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" tabindex="1" /> I agree to the above license agreement</label>
+    <label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" tabindex="1" /> I agree to the above license agreement</label>
 
-	<div class="alert-actions submit-area">
-		<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>" onclick="if (!$(this).hasClass('disabled')) { $(this).parent().addClass('clicked'); }">Go to step 2: Perform server checks</a>
-		<span class="next-loading"></span>
-	</div>
+    <div class="alert-actions submit-area">
+        <a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>" onclick="if (!$(this).hasClass('disabled')) { $(this).parent().addClass('clicked'); }">Go to step 2: Perform server checks</a>
+        <span class="next-loading"></span>
+    </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function() {
-	$('#accept_check').on('click', function() {
-		if (this.checked) {
-			$('#agreement_box').removeClass('warn').addClass('success');
-			$('#next_btn').removeClass('disabled');
-		} else {
-			$('#agreement_box').removeClass('success').addClass('warn');
-			$('#next_btn').addClass('disabled');
-		}
-	});
+$(document).ready(function () {
+    $('#accept_check').on('click', function () {
+        if (this.checked) {
+            $('#agreement_box').removeClass('warn').addClass('success');
+            $('#next_btn').removeClass('disabled');
+        } else {
+            $('#agreement_box').removeClass('success').addClass('warn');
+            $('#next_btn').addClass('disabled');
+        }
+    });
 
-	$('#next_btn').on('click', function(ev) {
-		if ($(this).hasClass('disabled')) {
-			ev.preventDefault();
-		}
-	});
+    $('#next_btn').on('click', function (ev) {
+        if ($(this).hasClass('disabled')) {
+            ev.preventDefault();
+        }
+    });
 
-	$('#stats_expand').click(function() {
-		$(this).text('Here is the data that will be submitted:').css({'border-bottom': 'none', 'cursor': 'default'});
-		$('#stats_list').show();
-	});
+    $('#stats_expand').click(function () {
+        $(this).text('Here is the data that will be submitted:').css({'border-bottom': 'none', 'cursor': 'default'});
+        $('#stats_list').show();
+    });
 });
 </script>

@@ -36,25 +36,25 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1353927062 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix bad validation triggers");
-		$this->execMutateSql("
-			UPDATE ticket_triggers
-			SET title = '', event_trigger = 'new.email.user', terms = 'a:0:{}', terms_any = 'a:0:{}'
-			WHERE sys_name = 'email_validation.email'
-		");
+    public function run()
+    {
+        $this->out("Fix bad validation triggers");
+        $this->execMutateSql("
+            UPDATE ticket_triggers
+            SET title = '', event_trigger = 'new.email.user', terms = 'a:0:{}', terms_any = 'a:0:{}'
+            WHERE sys_name = 'email_validation.email'
+        ");
 
-		$this->execMutateSql("
-			UPDATE ticket_triggers
-			SET title = '', event_trigger = 'new.web.user.portal', terms = 'a:0:{}', terms_any = 'a:0:{}'
-			WHERE sys_name = 'email_validation.web'
-		");
+        $this->execMutateSql("
+            UPDATE ticket_triggers
+            SET title = '', event_trigger = 'new.web.user.portal', terms = 'a:0:{}', terms_any = 'a:0:{}'
+            WHERE sys_name = 'email_validation.web'
+        ");
 
-		$this->execMutateSql("
-			UPDATE ticket_triggers
-			SET title = '', event_trigger = 'new.web.user.widget', terms = 'a:0:{}', terms_any = 'a:0:{}'
-			WHERE sys_name = 'email_validation.widget'
-		");
-	}
+        $this->execMutateSql("
+            UPDATE ticket_triggers
+            SET title = '', event_trigger = 'new.web.user.widget', terms = 'a:0:{}', terms_any = 'a:0:{}'
+            WHERE sys_name = 'email_validation.widget'
+        ");
+    }
 }

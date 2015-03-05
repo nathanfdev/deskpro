@@ -36,13 +36,13 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 interface PermissionValueInterface
 {
-	/**
-	 * @return array
-	 */
-	public function getNames();
+    /**
+     * @return array
+     */
+    public function getNames();
 
-	/**
-	 * @return array
-	 */
-	public function getDestructiveNames();
+    /**
+     * @return array
+     */
+    public function getDestructiveNames();
 }

@@ -36,20 +36,20 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358884209 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Remove incorrectly linked custom fields");
+    public function run()
+    {
+        $this->out("Remove incorrectly linked custom fields");
 
-		$types = array(
-			'custom_data_ticket' => 'custom_def_ticket',
-			'custom_data_person' => 'custom_def_people'
-		);
+        $types = array(
+            'custom_data_ticket' => 'custom_def_ticket',
+            'custom_data_person' => 'custom_def_people'
+        );
 
-		foreach ($types as $data_table => $def_table) {
-			$this->execMutateSql("
-				DELETE FROM `$data_table`
-				WHERE field_id NOT IN (SELECT id FROM `$def_table`)
-			");
-		}
-	}
+        foreach ($types as $data_table => $def_table) {
+            $this->execMutateSql("
+                DELETE FROM `$data_table`
+                WHERE field_id NOT IN (SELECT id FROM `$def_table`)
+            ");
+        }
+    }
 }

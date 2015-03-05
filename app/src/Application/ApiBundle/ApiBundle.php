@@ -39,26 +39,26 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	public function registerCommands(Application $application)
-	{
+    public function registerCommands(Application $application)
+    {
 
-	}
+    }
 
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
 
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
-	}
+        $container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
+        $container->addCompilerPass(new AuditWriterPass());
+    }
 
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 
-	public function getPath()
-	{
-		return __DIR__;
-	}
+    public function getPath()
+    {
+        return __DIR__;
+    }
 }

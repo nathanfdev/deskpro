@@ -42,52 +42,52 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class RecalculateSlaStatusAction extends AbstractAction
 {
-	public function __construct()
-	{
-	}
+    public function __construct()
+    {
+    }
 
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		// there's nothing to do here - this only shows up when editing an sla trigger
-		// and the cron process will handle it. This just means that there's always an action listed.
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        // there's nothing to do here - this only shows up when editing an sla trigger
+        // and the cron process will handle it. This just means that there's always an action listed.
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array();
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array();
+    }
 
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         $tr = App::getTranslator();
 
-		return $tr->phrase('agent.tickets.recalculate_sla_status_action');
-	}
+        return $tr->phrase('agent.tickets.recalculate_sla_status_action');
+    }
 }

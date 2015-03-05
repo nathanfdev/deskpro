@@ -10,29 +10,29 @@ $verify = new \Application\DeskPRO\Distribution\VerifyChecksums(150);
 echo "Will now check {$verify->countFiles()} files.\n\n";
 
 for ($i = 0; $i < $verify->countChunks(); $i++) {
-	$results = $verify->compareChunk($i);
+    $results = $verify->compareChunk($i);
 
-	if ($results['added']) {
-		foreach ($results['added'] as $f) {
-			echo "\n[UNKNOWN] $f";
-		}
-	}
-	if ($results['removed']) {
-		foreach ($results['removed'] as $f) {
-			echo "\n[MISSING] $f";
-		}
-	}
-	if ($results['changed']) {
-		foreach ($results['changed'] as $f) {
-			echo "\n[INVALID] $f";
-		}
-	}
+    if ($results['added']) {
+        foreach ($results['added'] as $f) {
+            echo "\n[UNKNOWN] $f";
+        }
+    }
+    if ($results['removed']) {
+        foreach ($results['removed'] as $f) {
+            echo "\n[MISSING] $f";
+        }
+    }
+    if ($results['changed']) {
+        foreach ($results['changed'] as $f) {
+            echo "\n[INVALID] $f";
+        }
+    }
 
-	if (!$results['added'] && !$results['removed'] && !$results['changed']) {
-		echo ".";
-	} else {
-		echo "\n";
-	}
+    if (!$results['added'] && !$results['removed'] && !$results['changed']) {
+        echo ".";
+    } else {
+        echo "\n";
+    }
 }
 
 echo "\n\n";

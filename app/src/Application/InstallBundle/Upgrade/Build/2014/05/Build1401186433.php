@@ -36,97 +36,98 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1401186433 extends AbstractBuild
 {
-	/** @var  array */
-	private $address_map;
-	/** @var  array */
-	private $email_account_ids;
+    /** @var  array */
+    private $address_map;
+    /** @var  array */
+    private $email_account_ids;
 
-	public function run()
-	{
-		$this->out("Correct filters");
-		$filters = $this->container->getDb()->fetchAll("
-			SELECT id, terms
-			FROM ticket_filters
-			WHERE sys_name IS NULL
-		");
+    public function run()
+    {
+        $this->out("Correct filters");
+        $filters = $this->container->getDb()->fetchAll("
+            SELECT id, terms
+            FROM ticket_filters
+            WHERE sys_name IS NULL
+        ");
 
-		if ($filters) {
-			$this->address_map = $this->_buildAddressMap();
-			$this->email_account_ids = $this->_buildAccountIds();
+        if ($filters) {
+            $this->address_map = $this->_buildAddressMap();
+            $this->email_account_ids = $this->_buildAccountIds();
 
-			foreach ($filters as $f) {
-				$this->_convertFilter($f);
-			}
-		}
-	}
+            foreach ($filters as $f) {
+                $this->_convertFilter($f);
+            }
+        }
+    }
 
-	private function _buildAddressMap()
-	{
-		$addresses = $this->getUpgradeData('201404', 'email_gateway_addresses');
-		$map = array();
-		foreach ($addresses as $a) {
-			$map[$a['id']] = $a['email_gateway_id'];
-		}
+    private function _buildAddressMap()
+    {
+        $addresses = $this->getUpgradeData('201404', 'email_gateway_addresses');
+        $map = array();
+        foreach ($addresses as $a) {
+            $map[$a['id']] = $a['email_gateway_id'];
+        }
 
-		return $map;
-	}
+        return $map;
+    }
 
-	private function _buildAccountIds()
-	{
-		$ids = $this->container->getDb()->fetchAllCol("SELECT id FROM email_accounts");
-		return array_combine($ids, $ids);
-	}
+    private function _buildAccountIds()
+    {
+        $ids = $this->container->getDb()->fetchAllCol("SELECT id FROM email_accounts");
 
-	private function _convertFilter(array $filter)
-	{
-		$terms = json_decode($filter['terms'], true);
-		if (!$terms) return;
+        return array_combine($ids, $ids);
+    }
 
-		$new_terms = array();
-		$fail = false;
+    private function _convertFilter(array $filter)
+    {
+        $terms = json_decode($filter['terms'], true);
+        if (!$terms) return;
 
-		foreach ($terms as $t) {
-			switch ($t['type']) {
-				case 'gateway_address':
-					$address_id = @$t['options']['gateway_address'];
-					if ($address_id && isset($this->address_map[$address_id])) {
-						$new_t = array(
-							'type' => 'email_account',
-							'op' => $t['op'],
-							'options' => array('email_account_ids' => array($this->address_map[$address_id]))
-						);
-						$new_terms[] = $new_t;
-					} else {
-						$fail = true;
-					}
-					break;
+        $new_terms = array();
+        $fail = false;
 
-				case 'gateway_account':
-					$acc_id = @$t['options']['gateway_account'];
-					if ($acc_id && isset($this->email_account_ids[$acc_id])) {
-						$new_t = array(
-							'type' => 'email_account',
-							'op' => $t['op'],
-							'options' => array('email_account_ids' => array($acc_id))
-						);
-						$new_terms[] = $new_t;
-					} else {
-						$fail = true;
-					}
-					break;
+        foreach ($terms as $t) {
+            switch ($t['type']) {
+                case 'gateway_address':
+                    $address_id = @$t['options']['gateway_address'];
+                    if ($address_id && isset($this->address_map[$address_id])) {
+                        $new_t = array(
+                            'type' => 'email_account',
+                            'op' => $t['op'],
+                            'options' => array('email_account_ids' => array($this->address_map[$address_id]))
+                        );
+                        $new_terms[] = $new_t;
+                    } else {
+                        $fail = true;
+                    }
+                    break;
 
-				default:
-					$new_terms[] = $t;
-					break;
-			}
-		}
+                case 'gateway_account':
+                    $acc_id = @$t['options']['gateway_account'];
+                    if ($acc_id && isset($this->email_account_ids[$acc_id])) {
+                        $new_t = array(
+                            'type' => 'email_account',
+                            'op' => $t['op'],
+                            'options' => array('email_account_ids' => array($acc_id))
+                        );
+                        $new_terms[] = $new_t;
+                    } else {
+                        $fail = true;
+                    }
+                    break;
 
-		if (empty($new_terms) || $fail) {
-			$this->container->getDb()->delete('ticket_filters', array('id' => $filter['id']));
-		} else {
-			$this->container->getDb()->update('ticket_filters', array(
-				'terms' => json_encode($new_terms)
-			), array('id' => $filter['id']));
-		}
-	}
+                default:
+                    $new_terms[] = $t;
+                    break;
+            }
+        }
+
+        if (empty($new_terms) || $fail) {
+            $this->container->getDb()->delete('ticket_filters', array('id' => $filter['id']));
+        } else {
+            $this->container->getDb()->update('ticket_filters', array(
+                'terms' => json_encode($new_terms)
+            ), array('id' => $filter['id']));
+        }
+    }
 }

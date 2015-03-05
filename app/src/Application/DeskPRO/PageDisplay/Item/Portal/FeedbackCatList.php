@@ -38,37 +38,37 @@ use Application\DeskPRO\App;
 
 class FeedbackCatList extends PortalItemAbstract implements CacheableItem
 {
-	public function getCacheOptions()
-	{
-		return array('tags' => array('feedback_cats'));
-	}
+    public function getCacheOptions()
+    {
+        return array('tags' => array('feedback_cats'));
+    }
 
-	public function init()
-	{
+    public function init()
+    {
 
-	}
+    }
 
-	public function checkPermission()
-	{
-		return $this->person_context->hasPerm('feedback.use');
-	}
+    public function checkPermission()
+    {
+        return $this->person_context->hasPerm('feedback.use');
+    }
 
-	public function getHtml()
-	{
-		$categories = App::getSystemService('publish_structure')->getFeedbackRootCategories();
-		$counts     = App::getSystemService('publish_structure')->getFeedbackCategoryCounts($this->person_context);
+    public function getHtml()
+    {
+        $categories = App::getSystemService('publish_structure')->getFeedbackRootCategories();
+        $counts     = App::getSystemService('publish_structure')->getFeedbackCategoryCounts($this->person_context);
 
-		$html = $this->renderView('UserBundle:Feedback:portal-cats-sidebar.html.twig', array(
-			'categories'  => $categories,
-			'counts'      => $counts,
-			'block_title' => $this->getOption('block_title'),
-		));
+        $html = $this->renderView('UserBundle:Feedback:portal-cats-sidebar.html.twig', array(
+            'categories'  => $categories,
+            'counts'      => $counts,
+            'block_title' => $this->getOption('block_title'),
+        ));
 
-		return $html;
-	}
+        return $html;
+    }
 
-	public function getJsAssets()
-	{
-		return array();
-	}
+    public function getJsAssets()
+    {
+        return array();
+    }
 }

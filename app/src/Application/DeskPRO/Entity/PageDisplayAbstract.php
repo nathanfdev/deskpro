@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
@@ -44,31 +43,31 @@ use Application\DeskPRO\Entity;
  */
 abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * The actual section within the page that this description applies (ex 'toptabs')
-	 *
-	 * @var string
-	 */
-	protected $section = 'default';
+    /**
+     * The actual section within the page that this description applies (ex 'toptabs')
+     *
+     * @var string
+     */
+    protected $section = 'default';
 
-	/**
-	 * This is a plain data array that is fed into the handler class
-	 * to reconstruct the display strcuture.
-	 *
-	 * @var array
-	 */
-	protected $data = array();
+    /**
+     * This is a plain data array that is fed into the handler class
+     * to reconstruct the display strcuture.
+     *
+     * @var array
+     */
+    protected $data = array();
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
