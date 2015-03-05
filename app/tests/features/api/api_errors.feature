@@ -8,9 +8,9 @@ Feature: API Errors
 
   Scenario: Request with a non-JSON body
     When I send a POST request to "/api/v2/sandbox_widgets" with body:
-        """
-        foo=bar
-        """
+    """
+    foo=bar
+    """
     Then the JSON node "code" should be equal to 400
     And the JSON node "message" should exist
     And the response status code should be 400

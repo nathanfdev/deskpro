@@ -52,20 +52,9 @@ class JsonBodyListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if (!self::isJson($request->getContent())) {
-            throw new BadRequestHttpException('Invalid JSON body');
-        }
-
         $request->setFormat('json', 'application/json');
         $request->attributes->set('_format', 'json');
         $request->attributes->set('media_type', 'json');
         $request->headers->set('Content-Type', 'application/json');
-    }
-
-    public static function isJson($string)
-    {
-        json_decode($string);
-
-        return (json_last_error() == JSON_ERROR_NONE);
     }
 }
