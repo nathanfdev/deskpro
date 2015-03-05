@@ -7,7 +7,10 @@
 	<title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
 
 	<!--[if lte IE 8]>
-	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';</script>
+	<script type="text/javascript">window.location = '/{{ path('
+	user;
+	')|ltrim(' / ') }}index.php?_sys=message&ie8_admin';
+	;</script>
 	<![endif]-->
 
 	<style type="text/css">
@@ -201,6 +204,9 @@
 {{ ng_tpl('AdminInterfaceBundle:Index:modal-network-error.html.twig') }}
 {{ ng_tpl('AdminInterfaceBundle:Index:modal-server-error.html.twig') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:daypicker.html.twig', 'template/datepicker/day.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:monthpicker.html.twig', 'template/datepicker/month.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:yearpicker.html.twig', 'template/datepicker/year.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:timepicker.html.twig', 'template/timepicker/timepicker.html') }}
 

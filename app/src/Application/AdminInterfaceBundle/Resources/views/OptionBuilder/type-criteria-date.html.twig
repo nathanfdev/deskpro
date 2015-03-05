@@ -19,7 +19,14 @@
 				<td width="100%" style="padding-left: 15px;">
 					<div ng-show="!model.use_relative">
 						<span ng-if="model.op == 'lte' || model.op == 'between'">
-							<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="model.date1" datepicker-options="{'show-weeks': false}" />
+							<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+							       datepicker-popup="dd MMMM yyyy"
+							       ng-model="model.date1"
+							       datepicker-options="{'show-weeks': false}"
+							       is-open="opened"
+							       ng-click="opened = true"
+							       ng-focus="opened = true"
+									/>
 						</span>
 						<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
 						<span ng-if="model.op == 'gte' || model.op == 'between'">
