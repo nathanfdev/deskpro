@@ -42,9 +42,17 @@ class Build1425653819 extends AbstractBuild
     {
         $this->out("Clean up web/ files");
 
-        $finder = Finder::create()
-            ->in(array(DP_WEB_ROOT.'/web/bower_components', DP_WEB_ROOT.'/web/node_modules'))
-            ->files()
+        $finder = Finder::create();
+
+        try {
+            $finder->in(DP_WEB_ROOT.'/web/bower_components');
+        } catch (\Exception $e) {}
+
+        try {
+            $finder->in(DP_WEB_ROOT.'/web/node_modules');
+        } catch (\Exception $e) {}
+
+        $finder->files()
             ->name('*.php')
             ->name('*.sh')
             ->name('*.bat');
