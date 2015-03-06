@@ -29,54 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @subpackage
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Symfony\Component\Finder\Finder;
 
-/**
- * Operations about Ticket urgencies
- *
- * @SWG\Resource(
- * 	resourcePath="/ticket_urgencies",
- * 	description="Operations about Ticket urgencies",
- * 	basePath="/api"
- * )
- */
-class TicketUrgenciesController extends AbstractController implements ProtectedControllerInterface
+class Build1425653819 extends AbstractBuild
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getPermissionStrategy()
+    public function run()
     {
-        return new AdminManagePermission();
-    }
+        $this->out("Clean up web/ files");
 
+        $finder = Finder::create()
+            ->in(array(DP_WEB_ROOT.'/web/bower_components', DP_WEB_ROOT.'/web/node_modules'))
+            ->files()
+            ->name('*.php')
+            ->name('*.sh')
+            ->name('*.bat');
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+        foreach ($finder as $f) {
+            /** @var $f \SplFileInfo */
+            $path = $f->getRealPath();
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @SWG\Api(
-     * 	path="/ticket_urgencies",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get list of ticket counted urgency",
-     * 		notes="",
-     *		type="array",
-     *  )
-     * )
-     */
-    public function listAction()
-    {
-        $counts = $this->em->getRepository('DeskPRO:Ticket')->countTicketsByUrgency();
-
-        return $this->createApiResponse(array('urgency_counts' => $counts));
+            if (@unlink($path)) {
+                $this->out("\tRemoved " . $path);
+            } else {
+                $this->out("\tFailed to remove " . $path);
+            }
+        }
     }
 }
