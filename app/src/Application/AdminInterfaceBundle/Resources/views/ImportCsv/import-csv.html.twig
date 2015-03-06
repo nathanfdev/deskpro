@@ -157,7 +157,7 @@
 									</optgroup>
 									<optgroup label="Custom Fields">
 										<option ng-repeat="field in fileUploadResults.custom_fields"
-												ng-value="field.id">
+												ng-value="'custom_' + field.id">
 											{{ ng_var('field.title') }}
 										</option>
 										<option value="new_custom">New Custom Field</option>
