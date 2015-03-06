@@ -2,6 +2,7 @@
 
 namespace DpBehat\Api;
 
+use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\Session;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -33,6 +34,22 @@ class AuthContext implements SnippetAcceptingContext
     }
 
     /**
+     * @Given a valid api key exists with the code :code and id :id for :who
+     */
+    public function aValidApiKeyExistsWithTheCodeAndIdForUser($code, $id, $who)
+    {
+        $key = new ApiKey();
+        $key->code = $code;
+        $key->person = $this->user_details->getWho($who);
+
+        $this->persistAndFlush($key);
+
+        if ($key->id != $id) {
+            throw new \Exception('expected id ('.$id.') is not correct. please check database.');
+        }
+    }
+
+    /**
      * @Given the agent session auth :session_id is valid for :who
      */
     public function theAgentSessionIsValidForPerson($session_id, $who)
@@ -50,7 +67,12 @@ class AuthContext implements SnippetAcceptingContext
         $session->setData($data);
         $session->setPerson($user);
 
-        $this->em->persist($session);
+        $this->persistAndFlush($session);
+    }
+
+    protected function persistAndFlush($entity)
+    {
+        $this->em->persist($entity);
         $this->em->flush();
     }
 }

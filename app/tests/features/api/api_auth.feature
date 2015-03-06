@@ -6,6 +6,7 @@ Feature: API Authentication
   Background:
     Given I install the api data set
 
+  @reinstall
   Scenario: I do not submit any auth credentials
     When I send a GET request to "/api/v2/me"
     Then the response status code should be 401
@@ -21,3 +22,12 @@ Feature: API Authentication
     Then the response status code should be 200
     And the JSON node "data.auth_method" should be equal to "agent_session"
     And the JSON node "data.person_id" should be equal to 2
+
+  @reinstall
+  Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
+    Given a valid api key exists with the code "XYZ" and id 1 for user
+    And I add Authorize header equal to "key 1:XYZ"
+    When I send a GET request to "/api/v2/me"
+    Then the response status code should be 200
+    And the JSON node "data.auth_method" should be equal to "api_key"
+    And the JSON node "data.person_id" should be equal to 3
