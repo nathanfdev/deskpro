@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\Helpers\Agent;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -82,8 +83,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
                 case 'key':
                     return new ApiKeySecurityToken('anon.', $authorize_val, $providerKey);
                 case 'token':
-                    // something
-                    break;
+                    return new ApiTokenSecurityToken('anon.', $authorize_val, $providerKey);
                 default:
                     $this->throwUnauthorized('Invalid Authorization header (type can be one of "key" or "token").');
             }
@@ -101,6 +101,10 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         if ($token instanceof ApiKeySecurityToken) {
             return $this->authenticateApiKey($token, $userProvider, $providerKey);
         }
+
+        if ($token instanceof ApiTokenSecurityToken) {
+            return $this->authenticateApiToken($token, $userProvider, $providerKey);
+        }
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)
@@ -112,6 +116,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         return
             $token instanceof AgentSessionSecurityToken
             || $token instanceof ApiKeySecurityToken
+            || $token instanceof ApiTokenSecurityToken
         ;
     }
 
@@ -123,11 +128,15 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     {
         $unauthorized_msg = 'Invalid API Key.';
 
-        /** @var \Application\DeskPRO\Entity\ApiKey $key_repo */
-        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key */
+        /** @var \Application\DeskPRO\Entity\ApiKey $key */
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
         $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
 
         if (!$key = $key_repo->findByKeyString($token->getCredentials())) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        if (!$key->person) {
             $this->throwUnauthorized($unauthorized_msg);
         }
 
@@ -136,6 +145,34 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $token->getCredentials(),
             $providerKey,
             $this->generateApiRolesForPerson($key->person)
+        );
+    }
+
+    protected function authenticateApiToken(
+        ApiTokenSecurityToken $token,
+        UserProviderInterface $user_provider,
+        $providerKey
+    )
+    {
+        $unauthorized_msg = 'Invalid API Token.';
+
+        /** @var \Application\DeskPRO\Entity\ApiToken $api_token */
+        /** @var \Application\DeskPRO\EntityRepository\ApiToken $token_repo */
+        $token_repo = $this->em->getRepository('DeskPRO:ApiToken');
+
+        if (!$api_token = $token_repo->findByTokenString($token->getCredentials())) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        if (!$api_token->person) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        return new ApiTokenSecurityToken(
+            $api_token->person,
+            $token->getCredentials(),
+            $providerKey,
+            $this->generateApiRolesForPerson($api_token->person)
         );
     }
 
@@ -167,12 +204,17 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized($unauthorized_msg);
         }
 
+        /** @var \Application\DeskPRO\Entity\Person $person */
         try {
             if (!$person = $user_provider->loadUserByUsername($person_id)) {
                 $this->throwUnauthorized($unauthorized_msg);
             }
         } catch (UsernameNotFoundException $e) {
             // we have the person id from the session, but we cant find a person object with it
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        if (!$person->can_agent && !$person->can_admin) {
             $this->throwUnauthorized($unauthorized_msg);
         }
 

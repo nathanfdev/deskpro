@@ -81,7 +81,7 @@ class ApiDb extends AbstractDbSet
             UserDetailsRepo::USER_LAST_NAME,
             UserDetailsRepo::USER_EMAIL,
             UserDetailsRepo::USER_PASS,
-            true,
+            false,
             false
         );
 

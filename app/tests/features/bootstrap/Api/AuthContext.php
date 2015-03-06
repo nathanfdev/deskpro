@@ -3,6 +3,7 @@
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -32,6 +33,23 @@ class AuthContext extends BaseContext
     {
         $this->em = $em;
         $this->user_details = $user_details;
+    }
+
+    /**
+     * @Given a valid api token exists with the code :token and id :id for :who
+     */
+    public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $id, $who)
+    {
+        $api_token = new ApiToken();
+        $api_token->token = $token;
+        $api_token->person = $this->user_details->getWho($who);
+        $api_token->scope = ApiToken::SCOPE_CLIENT;
+
+        $this->persistAndFlush($api_token);
+
+        if ($api_token->id != $id) {
+            throw new \Exception('expected id (' . $id . ') is not correct. please check database.');
+        }
     }
 
     /**
