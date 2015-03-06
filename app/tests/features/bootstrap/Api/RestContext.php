@@ -9,6 +9,8 @@ use Sanpi\Behatch\Context\BaseContext;
 
 class RestContext extends BaseContext
 {
+    protected $server_params = array();
+
     /**
      * Add an header element in a request
      *
@@ -16,7 +18,11 @@ class RestContext extends BaseContext
      */
     public function iAddHeaderEqualTo($name, $value)
     {
-        $this->getSession()->getDriver()->setRequestHeader($name, $value);
+        // we need to pass them as $_SERVER...
+        $name = str_replace('-', '_', strtoupper(trim($name)));
+        $name = 'HTTP_' . $name;
+
+        $this->server_params[$name] = trim($value);
     }
 
     /**
@@ -40,7 +46,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $client->request($method, $this->locatePath($url));
+        $client->request($method, $this->locatePath($url), array(), array(), $this->server_params);
         $client->followRedirects(true);
 
         return $this->getSession()->getPage();
@@ -73,7 +79,7 @@ class RestContext extends BaseContext
 
         parse_str(implode('&', $parameters), $parameters);
 
-        $client->request($method, $this->locatePath($url), $parameters);
+        $client->request($method, $this->locatePath($url), $parameters, array(), $this->server_params);
         $client->followRedirects(true);
 
         return $this->getSession()->getPage();
@@ -92,7 +98,7 @@ class RestContext extends BaseContext
         $client->followRedirects(false);
 
         $client->request($method, $this->locatePath($url),
-            array(), array(), array(), $body->getRaw());
+            array(), array(), $this->server_params, $body->getRaw());
         $client->followRedirects(true);
 
         return $this->getSession()->getPage();
