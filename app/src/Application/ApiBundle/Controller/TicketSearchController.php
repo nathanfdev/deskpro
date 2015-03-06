@@ -487,8 +487,19 @@ class TicketSearchController extends AbstractController
     }
 
     /**
-     * Get a map of filters.
-     */
+	 * Get a map of filters.
+     *
+     * @SWG\Api(
+     * 	path="/tickets/filters",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get a map of filters",
+     * 		notes="Find all ticket filters (system and custom)",
+     *		type="array",
+     *  )
+     * )
+     *
+	 */
     public function getFiltersAction()
     {
         $filters = $this->_getFiltersApi()->getFiltersForPerson($this->person);
@@ -510,6 +521,27 @@ class TicketSearchController extends AbstractController
      * Execute a filter and return results.
      *
      * @param int $filter_id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     *  path="/tickets/filters/{filter_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary=" Execute a filter and return results",
+     * 		notes="",
+     *		type="array",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="filter_id",
+     *				description="Filter ID should be executed",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function getFilterAction($filter_id)
     {
@@ -537,7 +569,18 @@ class TicketSearchController extends AbstractController
     }
 
     /**
-     * Get array of filters and counts
+	 * Get array of filters and counts
+     *
+     * @SWG\Api(
+     * 	path="/tickets/filters/count",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get array of filters and counts",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     *
      */
     public function getFilterCountsAction()
     {
@@ -557,7 +600,20 @@ class TicketSearchController extends AbstractController
         return App::getApi('tickets.filters');
     }
 
-
+	/**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/tickets/quick-stats",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Returns all today created or resolved tickets and tickets awaiting their agent",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     *
+     */
     public function getQuickStatsAction()
     {
         $stats = array();

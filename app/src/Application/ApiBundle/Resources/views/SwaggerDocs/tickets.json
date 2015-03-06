@@ -593,6 +593,54 @@
             ]
         },
         {
+            "path": "/tickets/filters",
+            "description": "Get a map of filters.",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get a map of filters",
+                    "nickname": "getFiltersAction",
+                    "type": "array",
+                    "notes": "Find all ticket filters (system and custom)"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/filters/count",
+            "description": "Get array of filters and counts",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get array of filters and counts",
+                    "nickname": "getFilterCountsAction",
+                    "type": "array",
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "path": "/tickets/filters/{filter_id}",
+            "description": "Execute a filter and return results.",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": " Execute a filter and return results",
+                    "nickname": "getFilterAction",
+                    "type": "array",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "filter_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "Filter ID should be executed"
+                        }
+                    ],
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "path": "/tickets/priorities",
             "operations": [
                 {
@@ -609,6 +657,18 @@
                     "method": "GET",
                     "summary": "Gets available ticket products.",
                     "nickname": "getProductsAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/quick-stats",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Returns all today created or resolved tickets and tickets awaiting their agent",
+                    "nickname": "getQuickStatsAction",
+                    "type": "array",
+                    "notes": ""
                 }
             ]
         },
