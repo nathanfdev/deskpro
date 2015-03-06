@@ -100,6 +100,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\ProcessEmailCommand',
             'Application\\DeskPRO\\Command\\RecountRatingsCommand',
             'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
+            'Application\\DeskPRO\\Command\\ResendTicketEmailNotificationsCommand',
             'Application\\DeskPRO\\Command\\SchemaCommand',
             'Application\\DeskPRO\\Command\\SearchReindexCommand',
             'Application\\DeskPRO\\Command\\SyncDataCommand',

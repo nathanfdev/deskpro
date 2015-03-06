@@ -327,6 +327,25 @@ class TicketEmail
         $vars['messages']      = array_reverse($ticketdisplay->getMessages());
         $vars['is_auto']       = $this->is_auto;
 
+        // If we have a speciifc 'new message', then we need to trim
+        // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
+        if (isset($vars['new_message'])) {
+            $got = false;
+            $new_arr = array();
+
+            foreach (array_reverse($vars['messages']) as $m) {
+                $new_arr[] = $m;
+                if ($vars['new_message'] === $m) {
+                    $got = true;
+                    break;
+                }
+            }
+
+            if ($got) {
+                $vars['messages'] = array_reverse($new_arr);
+            }
+        }
+
         if ($this->ticket_layout_manager) {
             $layout_id = $this->ticket->department ? $this->ticket->department->id : null;
 
