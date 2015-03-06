@@ -34,27 +34,126 @@
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\People\Helpers\Agent;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\SimplePreAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiAuthenticator implements SimplePreAuthenticatorInterface
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
-        // TODO: Implement authenticateToken() method.
+        if ($token instanceof AgentSessionSecurityToken) {
+            return $this->authenticateAgentSession($token, $userProvider, $providerKey);
+        }
+
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)
     {
-        // TODO: Implement supportsToken() method.
+        if ($token->getProviderKey() !== $providerKey) {
+            return false;
+        }
+
+        return $token instanceof AgentSessionSecurityToken;
     }
 
     public function createToken(Request $request, $providerKey)
     {
-        throw new UnauthorizedHttpException('DeskPRO API realm="DeskPRO""', 'No authentication credentials found in the request');
+        if ($session_id = $request->cookies->get('dpsid-agent')) {
+            return new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+        }
+
+        $this->throwUnauthorized('No authentication credentials were found in your request.');
+    }
+
+    private function authenticateAgentSession(
+        AgentSessionSecurityToken $token,
+        UserProviderInterface $user_provider,
+        $providerKey
+    )
+    {
+        $unauthorized_msg = 'Invalid session ID.';
+
+        /** @var \Application\DeskPRO\Entity\Session $session */
+        /** @var \Application\DeskPRO\EntityRepository\Session $session_repo */
+        $session_repo = $this->em->getRepository('DeskPRO:Session');
+        if (!$session = $session_repo->getSessionFromCode($token->getCredentials())) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        if (!$data = $this->extractDataFromSessionEntity($session)) {
+            // we cant find the session, or data from the session, or the person id from tht data
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        if (!isset($data['auth_person_id'])) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        if (!$person_id = $data['auth_person_id']) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        try {
+            if (!$person = $user_provider->loadUserByUsername($person_id)) {
+                $this->throwUnauthorized($unauthorized_msg);
+            }
+        } catch (UsernameNotFoundException $e) {
+            // we have the person id from the session, but we cant find a person object with it
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
+        return new AgentSessionSecurityToken(
+            $person,
+            $token->getCredentials(),
+            $providerKey,
+            array_merge($person->getRoles(), array('ROLE_API'))
+        );
+    }
+
+    /**
+     * @param $msg
+     */
+    private function throwUnauthorized($msg)
+    {
+        throw new UnauthorizedHttpException('session,token,key realm="DeskPRO API"', $msg);
+    }
+
+    private function extractDataFromSessionEntity(Session $session)
+    {
+        //
+        // due to the way sessions are stored in PHP, this looks rather ugly...
+        //
+        $data = $session->getData();
+        session_start(); // we dont use sessions in the API so this should always be ok
+        session_decode($data); // this populates $_SESSION
+        $data = null;
+        if (isset($_SESSION) && isset($_SESSION['_sf2_attributes'])) {
+            $data = $_SESSION['_sf2_attributes'];
+        }
+        foreach ($_SESSION as $k => $v) {
+            unset($_SESSION[$k]);
+        }
+        session_destroy();
+
+        return $data;
     }
 }

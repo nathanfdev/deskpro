@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -41,6 +42,15 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiUserProvider implements UserProviderInterface
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * Loads the user for the given username.
@@ -58,7 +68,11 @@ class ApiUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        // TODO: Implement loadUserByUsername() method.
+        if (!$person = $this->em->getRepository('DeskPRO:Person')->find($username)) {
+            return $person;
+        }
+
+        throw new UsernameNotFoundException('person with ID "'.$username.'" not found');
     }
 
     /**
@@ -77,7 +91,7 @@ class ApiUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        // TODO: Implement refreshUser() method.
+        return $this->loadUserByUsername($user->getId());
     }
 
     /**
@@ -89,6 +103,6 @@ class ApiUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        // TODO: Implement supportsClass() method.
+        return $class === 'Application\DeskPRO\Entity\Person';
     }
 }
