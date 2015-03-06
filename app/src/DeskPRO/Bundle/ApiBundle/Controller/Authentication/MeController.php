@@ -34,6 +34,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -45,6 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @RouteResource("me")
@@ -61,13 +64,26 @@ class MeController extends BaseController
      */
     public function cgetAction()
     {
+        /** @var \DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken $token */
+        $token = $this->get('security.token_storage')->getToken();
+
+        $person = $token->getUser();
+
+        $me = array(
+            'auth_method' => $this->makeAuthMethodString($token),
+            'person_id' => $token->getUser()->getId()
+        );
+
         return View::create(
             $this->createRepresentation(
-               array(
-                   'me' => 'Chris Tickner'
-               )
+               $me
             ),
             200
         );
+    }
+
+    protected function makeAuthMethodString(AbstractApiSecurityToken $token)
+    {
+        return $token->getName();
     }
 }
