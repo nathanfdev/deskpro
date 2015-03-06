@@ -6,6 +6,10 @@ me:
     type: rest
     resource: DeskPRO\Bundle\ApiBundle\Controller\Authentication\MeController
 
+api_tokens:
+    type: rest
+    resource: DeskPRO\Bundle\ApiBundle\Controller\Authentication\ApiTokensController
+
 api_batch_annotation:
     type: annotation
     resource: "@ApiBundle/Controller/BatchController.php"

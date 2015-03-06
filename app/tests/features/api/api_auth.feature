@@ -68,3 +68,29 @@ Feature: API Authentication
     And the JSON node "data.auth_method" should be equal to "api_key"
     And the JSON node "data.person_id" should be equal to 3
     And I should have an authenticated token with the role ROLE_API
+
+  Scenario: I fail to get a token
+    When I send a POST request to "/api/v2/api_tokens" with body:
+    """
+    {
+      "email": "agent@deskpro.dev",
+      "password": "wrong password"
+    }
+    """
+    Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should exist
+
+  @reinstall
+  Scenario: I successfully get a token
+    When I send a POST request to "/api/v2/api_tokens" with body:
+    """
+    {
+      "email": "agent@deskpro.dev",
+      "password": "password"
+    }
+    """
+    Then the response status code should be 201
+    And the JSON node "data.token" should exist
+
+

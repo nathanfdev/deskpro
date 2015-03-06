@@ -17,9 +17,9 @@ Feature: API Errors
 
   Scenario: Invalid JSONP callbacks result in an error
     When I send a GET request to "/api/v2/sandbox_widgets?callback=function"
-    Then the JSON node "code" should be equal to 400
-    And the JSON node "message" should exist
     Then the response status code should be 400
+    And the JSON node "code" should be equal to 400
+    And the JSON node "message" should exist
 
   Scenario: Request non-existent resource
     When I send a GET request to "/api/v2/sandbox_widgets/124"

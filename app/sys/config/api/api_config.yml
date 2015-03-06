@@ -90,14 +90,18 @@ security:
             id: dp_person_user_provider
 
     firewalls:
+        api_tokens_request:
+            pattern: ^/api/v2/api_tokens$
+            stateless: true
+            anonymous: ~
         api:
-            pattern: ^/api/v2
+            pattern: ^/api/v2(?!/api_tokens)
             stateless: true
             simple_preauth:
                 authenticator: api_authenticator
 
     access_control:
-        - { path: '~/api/v2', roles: ['ROLE_API'] }
+        - { path: '^/api/v2(?!/api_tokens)', roles: ['ROLE_API'] }
 
 sensio_framework_extra:
     cache:    { annotations: true }
