@@ -157,12 +157,20 @@ class RawSwiftmailerTransport implements RawTransportInterface
         #------------------------------
 
         foreach ($raw_message->getAttachments() as $attach) {
-            $message->attach(\Swift_Attachment::newInstance()
-                ->setId($attach['cid'])
-                ->setFilename($attach['filename'])
-                ->setContentType($attach['type'])
-                ->setBody($attach['bin_data'])
-            );
+            $a = \Swift_Attachment::newInstance();
+
+            try {
+                // Expects an ID without <>'s, so this may fail first
+                $a->setId($attach['cid']);
+            } catch (\Exception $e) {
+                try {
+                    $a->setId(trim($attach['cid'], '<>'));
+                } catch (\Exception $e) {}
+            }
+
+            $a->setFilename($attach['filename'])
+              ->setContentType($attach['type'])
+              ->setBody($attach['bin_data']);
         }
 
         #------------------------------
