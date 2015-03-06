@@ -75,6 +75,10 @@ class MeController extends BaseController
         $me->auth_method = $this->makeAuthMethodString($token);
         $me->person_id = $token->getUser()->getId();
 
+        if ($token instanceof AgentSessionSecurityToken) {
+            $me->app_id = $token->getAppId();
+        }
+
         return View::create(
             $this->createRepresentation(
                $me

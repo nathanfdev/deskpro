@@ -51,4 +51,10 @@ class Me
      * @Serializer\Type("string")
      */
     public $person_id;
+
+    /**
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
+     */
+    public $app_id;
 }

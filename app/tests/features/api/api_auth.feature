@@ -54,6 +54,16 @@ Feature: API Authentication
     And the JSON node "data.auth_method" should be equal to "agent_session"
     And the JSON node "data.person_id" should be equal to 2
     And I should have an authenticated token with the role ROLE_API
+    And the JSON node "data.app_id" should not exist
+
+  @reinstall
+  Scenario: I have a valid agent session ID and it's an app request via X-DeskPRO-App-ID header
+    Given the agent session auth "HJKLOP" is valid for agent
+    When I add cookie named "dpsid-agent" equal to "1-HJKLOP"
+    And I add "X-DeskPRO-App-ID" header equal to "12"
+    And I send a GET request to "/api/v2/me"
+    Then the response status code should be 200
+    And the JSON node "data.app_id" should be equal to 12
 
   @reinstall
   Scenario: I have a valid session ID but I am NOT an agent

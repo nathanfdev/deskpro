@@ -51,6 +51,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiAuthenticator implements SimplePreAuthenticatorInterface
 {
+    const APP_HEADER_NAME = 'X-DeskPRO-App-ID';
+
     /**
      * @var EntityManager
      */
@@ -65,7 +67,14 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     {
         // agent session cookie
         if ($session_id = $request->cookies->get('dpsid-agent')) {
-            return new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+            $agent_token = new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+
+            // add app if possible
+            if ($app_id = $request->headers->get(self::APP_HEADER_NAME, null, true)) {
+                $agent_token->setAppId($app_id);
+            }
+
+            return $agent_token;
         }
 
         // Authorize header
@@ -218,12 +227,18 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized($unauthorized_msg);
         }
 
-        return new AgentSessionSecurityToken(
+        $agent_token = new AgentSessionSecurityToken(
             $person,
             $token->getCredentials(),
             $providerKey,
             $this->generateApiRolesForPerson($person)
         );
+
+        if ($app_id = $token->getAppId()) {
+            $agent_token->setAppId($app_id);
+        }
+
+        return $agent_token;
     }
 
     /**
