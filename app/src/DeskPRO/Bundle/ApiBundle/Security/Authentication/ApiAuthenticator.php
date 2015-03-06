@@ -34,9 +34,11 @@
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\Helpers\Agent;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -58,12 +60,47 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         $this->em = $em;
     }
 
+    public function createToken(Request $request, $providerKey)
+    {
+        // agent session cookie
+        if ($session_id = $request->cookies->get('dpsid-agent')) {
+            return new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+        }
+
+        // Authorize header
+        if ($authorize_header = $request->headers->get('Authorization', null, true)) {
+            $split = preg_split("/[\s,]+/", trim($authorize_header));
+
+            if (count($split) !== 2) {
+                $this->throwUnauthorized('Malformed Authorization header (should be "Authorization: type value").');
+            }
+
+            $authorize_type = trim($split[0]);
+            $authorize_val = trim($split[1]);
+
+            switch ($authorize_type) {
+                case 'key':
+                    return new ApiKeySecurityToken('anon.', $authorize_val, $providerKey);
+                case 'token':
+                    // something
+                    break;
+                default:
+                    $this->throwUnauthorized('Invalid Authorization header (type can be one of "key" or "token").');
+            }
+        }
+
+        $this->throwUnauthorized('No authentication credentials were found in your request.');
+    }
+
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         if ($token instanceof AgentSessionSecurityToken) {
             return $this->authenticateAgentSession($token, $userProvider, $providerKey);
         }
 
+        if ($token instanceof ApiKeySecurityToken) {
+            return $this->authenticateApiKey($token, $userProvider, $providerKey);
+        }
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)
@@ -72,16 +109,34 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             return false;
         }
 
-        return $token instanceof AgentSessionSecurityToken;
+        return
+            $token instanceof AgentSessionSecurityToken
+            || $token instanceof ApiKeySecurityToken
+        ;
     }
 
-    public function createToken(Request $request, $providerKey)
+    protected function authenticateApiKey(
+        ApiKeySecurityToken $token,
+        UserProviderInterface $user_provider,
+        $providerKey
+    )
     {
-        if ($session_id = $request->cookies->get('dpsid-agent')) {
-            return new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+        $unauthorized_msg = 'Invalid API Key.';
+
+        /** @var \Application\DeskPRO\Entity\ApiKey $key_repo */
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key */
+        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+
+        if (!$key = $key_repo->findByKeyString($token->getCredentials())) {
+            $this->throwUnauthorized($unauthorized_msg);
         }
 
-        $this->throwUnauthorized('No authentication credentials were found in your request.');
+        return new ApiKeySecurityToken(
+            $key->person,
+            $token->getCredentials(),
+            $providerKey,
+            $this->generateApiRolesForPerson($key->person)
+        );
     }
 
     private function authenticateAgentSession(
@@ -90,7 +145,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         $providerKey
     )
     {
-        $unauthorized_msg = 'Invalid session ID.';
+        $unauthorized_msg = 'Invalid Session ID.';
 
         /** @var \Application\DeskPRO\Entity\Session $session */
         /** @var \Application\DeskPRO\EntityRepository\Session $session_repo */
@@ -125,7 +180,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $person,
             $token->getCredentials(),
             $providerKey,
-            array_merge($person->getRoles(), array('ROLE_API'))
+            $this->generateApiRolesForPerson($person)
         );
     }
 
@@ -155,5 +210,14 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         session_destroy();
 
         return $data;
+    }
+
+    /**
+     * @param $person
+     * @return array
+     */
+    private function generateApiRolesForPerson(Person $person)
+    {
+        return array_merge($person->getRoles(), array('ROLE_API'));
     }
 }

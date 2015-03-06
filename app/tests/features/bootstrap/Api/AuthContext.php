@@ -9,6 +9,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use Doctrine\ORM\EntityManager;
+use DpBehat\BaseContext;
 use DpTests\TestBundle\UserDetailsRepo;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * Defines application features from the specific context.
  */
-class AuthContext implements SnippetAcceptingContext
+class AuthContext extends BaseContext
 {
     /**
      * @var EntityManager
@@ -70,9 +71,23 @@ class AuthContext implements SnippetAcceptingContext
         $this->persistAndFlush($session);
     }
 
-    protected function persistAndFlush($entity)
+    /**
+     * @Then I should have an authenticated token with the role :role
+     */
+    public function iShouldHaveAnAuthenticatedTokenWithTheRole($role)
     {
-        $this->em->persist($entity);
-        $this->em->flush();
+        $token = $this->get('security.token_storage')->getToken();
+
+        expect($token)->toNotBe(null);
+        expect($token->isAuthenticated())->toBe(true);
+
+        $has_role = false;
+        foreach ($token->getRoles() as $the_role) {
+            if ($the_role->getRole() == $role) {
+                $has_role = true;
+            }
+        }
+
+        expect($has_role)->toBe(true);
     }
 }
