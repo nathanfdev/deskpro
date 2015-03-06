@@ -31,60 +31,24 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
+namespace DeskPRO\Bundle\ApiBundle\Model;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use JMS\Serializer\Annotation as Serializer;
 
-class MeController extends BaseController
+/**
+ * @Serializer\ExclusionPolicy("ALL")
+ */
+class Me 
 {
     /**
-     * @ApiDoc(
-     *      description="get information about the authenticated user",
-     *      output="DeskPRO\Bundle\ApiBundle\Model\Me",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/me", name="me")
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
      */
-    public function meAction()
-    {
-        /** @var \DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken $token */
-        $token = $this->get('security.token_storage')->getToken();
+    public $auth_method;
 
-        $person = $token->getUser();
-
-        $me = new Me();
-        $me->auth_method = $this->makeAuthMethodString($token);
-        $me->person_id = $token->getUser()->getId();
-
-        return View::create(
-            $this->createRepresentation(
-               $me
-            ),
-            200
-        );
-    }
-
-    protected function makeAuthMethodString(AbstractApiSecurityToken $token)
-    {
-        return $token->getName();
-    }
+    /**
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
+     */
+    public $person_id;
 }
