@@ -119,6 +119,34 @@ abstract class AbstractDbSet implements DataSetInterface
         return 1;
     }
 
+    protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false)
+    {
+        $new_user = new \Application\DeskPRO\Entity\Person();
+        $new_user->first_name = $fname;
+        $new_user->last_name = $lname;
+        $new_user->setEmail($email, true);
+        $new_user->setPassword($pass);
+        $new_user->is_user = true;
+        $new_user->is_confirmed = true;
+
+        if ($agent || $admin) {
+            $new_user->is_agent_confirmed = true;
+            $new_user->is_agent = true;
+            $new_user->can_agent = true;
+        }
+
+        if ($admin) {
+            $new_user->can_admin = true;
+            $new_user->can_billing = true;
+            $new_user->can_reports = true;
+        }
+
+        $this->getEm()->persist($new_user);
+        $this->getEm()->flush();
+
+        return $new_user;
+    }
+
     /**
      * Get the cache name for this set.
      *

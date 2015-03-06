@@ -3,8 +3,8 @@ Feature: JSON API Headers
   As a developer
   I need an option to include reponse headers in the json response body
 
-  Background: Empty db
-    Given I install the "empty" data set
+  Background:
+    Given I install the api data set
 
   Scenario: I do not include the header flag in my request
     When I send a GET request to "/api/v2/sandbox_widgets"

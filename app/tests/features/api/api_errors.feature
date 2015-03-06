@@ -3,8 +3,8 @@ Feature: API Errors
   As a developer
   I need to see error codes
 
-  Background: Using a empty data set
-    Given I install the empty data set
+  Background:
+    Given I install the api data set
 
   Scenario: Request with a non-JSON body
     When I send a POST request to "/api/v2/sandbox_widgets" with body:

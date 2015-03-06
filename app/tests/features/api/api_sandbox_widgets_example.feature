@@ -3,8 +3,8 @@ Feature: Sandbox Widgets Example
   As a developer
   I want a fully functional endpoint
 
-  Background: Using a empty data set
-    Given I install the empty data set
+  Background:
+    Given I install the api data set
 
   @reinstall
   Scenario: I create a widget

@@ -3,8 +3,8 @@ Feature: JSON Pagination
   As a developer
   I need meta data to tell me about the pagination info
 
-  Background: Empty db
-    Given I install the "empty" data set
+  Background:
+    Given I install the api data set
 
   @reinstall
   Scenario: I make a request that is paginated (resource collections)

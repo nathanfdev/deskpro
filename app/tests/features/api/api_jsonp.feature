@@ -3,8 +3,8 @@ Feature: JSONP
   As a developer
   I need to be able to recieve a JSONP callback
 
-  Background: Using a empty data set
-    Given I install the empty data set
+  Background:
+    Given I install the api data set
 
   Scenario: I add "callback" to the query string and get JSONP
     When I send a GET request to "/api/v2/sandbox_widgets?callback=my_function"

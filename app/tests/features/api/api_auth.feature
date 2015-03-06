@@ -3,8 +3,8 @@ Feature: API Authentication
   As anyone
   I must authenticate
 
-  Background: Using a empty data set
-    Given I install the empty data set
+  Background:
+    Given I install the api data set
 
   Scenario: I do not submit any auth credentials
     When I send a GET request to "/api/v2/me"
