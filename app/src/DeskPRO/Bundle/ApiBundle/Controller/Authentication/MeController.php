@@ -31,19 +31,43 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
+use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class BaseController extends FOSRestController
+/**
+ * @RouteResource("me")
+ */
+class MeController extends BaseController
 {
     /**
-     * @param mixed $input any array or object
-     * @return StandardRepresentation
+     * @ApiDoc(
+     *      description="get information about the authenticated user",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      */
-    protected function createRepresentation($input)
+    public function cgetAction()
     {
-        return $this->get('api_view_representation_factory')->createRepresentation($input);
+        return View::create(
+            $this->createRepresentation(
+               array(
+                   'me' => 'Chris Tickner'
+               )
+            ),
+            200
+        );
     }
 }

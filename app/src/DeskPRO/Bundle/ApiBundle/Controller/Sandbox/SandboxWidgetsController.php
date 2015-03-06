@@ -35,16 +35,11 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Sandbox;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
-use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Hateoas\Configuration\Route;
-use Hateoas\Representation\CollectionRepresentation;
-use Hateoas\Representation\Factory\PagerfantaFactory;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -112,11 +107,6 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             $this->createRepresentation($widget),
             Response::HTTP_OK
         );
-    }
-
-    protected function createRepresentation($input)
-    {
-        return $this->get('api_view_representation_factory')->createRepresentation($input);
     }
 
     /**

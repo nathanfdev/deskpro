@@ -2,6 +2,10 @@ sandbox_widgets:
     type: rest
     resource: DeskPRO\Bundle\ApiBundle\Controller\Sandbox\SandboxWidgetsController
 
+me:
+    type: rest
+    resource: DeskPRO\Bundle\ApiBundle\Controller\Authentication\MeController
+
 api_batch_annotation:
     type: annotation
     resource: "@ApiBundle/Controller/BatchController.php"

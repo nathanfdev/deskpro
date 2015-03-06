@@ -31,19 +31,30 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 
-class BaseController extends FOSRestController
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Security\Core\Authentication\SimplePreAuthenticatorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+
+class ApiAuthenticator implements SimplePreAuthenticatorInterface
 {
-    /**
-     * @param mixed $input any array or object
-     * @return StandardRepresentation
-     */
-    protected function createRepresentation($input)
+    public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
-        return $this->get('api_view_representation_factory')->createRepresentation($input);
+        // TODO: Implement authenticateToken() method.
+    }
+
+    public function supportsToken(TokenInterface $token, $providerKey)
+    {
+        // TODO: Implement supportsToken() method.
+    }
+
+    public function createToken(Request $request, $providerKey)
+    {
+        throw new UnauthorizedHttpException('DeskPRO API realm="DeskPRO""', 'No authentication credentials found in the request');
     }
 }
