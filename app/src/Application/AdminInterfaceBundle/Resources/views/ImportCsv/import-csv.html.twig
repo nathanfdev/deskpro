@@ -113,20 +113,20 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="(column_id, column_title) in fileUploadResults.columns">
+						<tr ng-repeat="column_title in fileUploadResults.columns track by $index">
 							<td class="alt dp-id-col">
 								{{ ng_var('column_title') }}
 							</td>
 							<td  class="alt dp-id-col">
-								{{ ng_var('fileUploadResults.examples[column_id]') }}
+								{{ ng_var('fileUploadResults.examples[$index]') }}
 							</td>
 							<td>
 								<select
 									ui-select2
-									ng-model="importSettings.fieldMappings[column_id]"
+									ng-model="importSettings.fieldMappings[$index]"
 									style="min-width: 240px"
 									class="no-search"
-									ng-change="Ctrl.selectMapping(column_id, importSettings.fieldMappings[column_id])"
+									ng-change="Ctrl.selectMapping($index, importSettings.fieldMappings[$index])"
 								>
 									<option value="">Do Not Map</option>
 									<optgroup label="Basic Information">
@@ -163,18 +163,18 @@
 										<option value="new_custom">New Custom Field</option>
 									</optgroup>
 								</select>
-								<span ng-if="importSettings.showExtraMappings.organization[column_id]">
+								<span ng-if="importSettings.showExtraMappings.organization[$index]">
 									<label>
 										<input type="checkbox"
-											   ng-model="importSettings.additionalMappings[column_id].create_auto" value="1"
+											   ng-model="importSettings.additionalMappings[$index].create_auto" value="1"
 											   checked="checked">
 										Create if does not exist
 									</label>
 								</span>
-								<span ng-if="importSettings.showExtraMappings.phone[column_id]">
+								<span ng-if="importSettings.showExtraMappings.phone[$index]">
 									<select
 										ui-select2
-										ng-model="importSettings.additionalMappings[column_id].type"
+										ng-model="importSettings.additionalMappings[$index].type"
 										style="min-width: 120px"
 										class="no-search"
 									>
@@ -182,17 +182,17 @@
 										<option value="mobile">Mobile</option>
 										<option value="fax">Fax</option>
 									</select>
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.website[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.website[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.im[column_id]">
+								<span ng-if="importSettings.showExtraMappings.im[$index]">
 									<select
 										ui-select2
-										ng-model="importSettings.additionalMappings[column_id].type"
+										ng-model="importSettings.additionalMappings[$index].type"
 										style="min-width: 120px"
 										class="no-search"
 									>
@@ -204,51 +204,51 @@
 										<option value="gtalk">GTalk</option>
 										<option value="other">Other</option>
 									</select>
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.twitter[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.twitter[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.linkedin[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.linkedin[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.facebook[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.facebook[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.address1[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.address1[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.address2[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.address2[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.city[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.city[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.state[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.state[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.post_code[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.post_code[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.country[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.country[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.new_custom[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].title"
+								<span ng-if="importSettings.showExtraMappings.new_custom[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].title"
 											placeholder="Title">
 									<select
 										ui-select2
-										ng-model="importSettings.additionalMappings[column_id].handler_class"
+										ng-model="importSettings.additionalMappings[$index].handler_class"
 										style="min-width: 120px"
 										class="no-search"
 									>
