@@ -8,9 +8,12 @@ api:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
-                - behatch:rest
+                - DpBehat\Api\RestContext
                 - DpBehat\Api\SandboxWidgetsContext:
                     em: @doctrine.orm.default_entity_manager
+                - DpBehat\Api\AuthContext:
+                    em: @doctrine.orm.default_entity_manager
+                    user_details: @user_details
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
