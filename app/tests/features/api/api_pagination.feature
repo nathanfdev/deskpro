@@ -5,6 +5,7 @@ Feature: JSON Pagination
 
   Background:
     Given I install the api data set
+    And my request is authenticated
 
   @reinstall
   Scenario: I make a request that is paginated (resource collections)

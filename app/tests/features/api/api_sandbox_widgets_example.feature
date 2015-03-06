@@ -5,6 +5,7 @@ Feature: Sandbox Widgets Example
 
   Background:
     Given I install the api data set
+    And my request is authenticated
 
   @reinstall
   Scenario: I create a widget

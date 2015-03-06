@@ -36,7 +36,6 @@ namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
-use Application\DeskPRO\People\Helpers\Agent;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
@@ -45,7 +44,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\SimplePreAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 

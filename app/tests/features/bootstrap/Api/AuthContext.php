@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Tester\Exception\PendingException;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use Doctrine\ORM\EntityManager;
@@ -28,6 +29,10 @@ class AuthContext extends BaseContext
      * @var UserDetailsRepo
      */
     private $user_details;
+    /**
+     * @var RestContext
+     */
+    private $rest_context;
 
     public function __construct(EntityManager $em, UserDetailsRepo $user_details)
     {
@@ -107,5 +112,27 @@ class AuthContext extends BaseContext
         }
 
         expect($has_role)->toBe(true);
+    }
+
+    /** @BeforeScenario */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        $this->rest_context = $environment->getContext('DpBehat\Api\RestContext');
+    }
+
+    /**
+     * @Given my request is authenticated
+     */
+    public function myRequestIsAuthenticated()
+    {
+        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+        if (!$key = $key_repo->find(1)) {
+            $this->aValidApiKeyExistsWithTheCodeAndIdForUser('MyCode', 1, 'admin');
+            $key = $key_repo->find(1);
+        }
+
+        $this->rest_context->iAddHeaderEqualTo('Authorization', 'key ' . $key->getKeyString());
     }
 }

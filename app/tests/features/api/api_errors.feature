@@ -5,6 +5,7 @@ Feature: API Errors
 
   Background:
     Given I install the api data set
+    And my request is authenticated
 
   Scenario: Request with a non-JSON body
     When I send a POST request to "/api/v2/sandbox_widgets" with body:

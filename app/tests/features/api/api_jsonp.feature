@@ -5,6 +5,7 @@ Feature: JSONP
 
   Background:
     Given I install the api data set
+    And my request is authenticated
 
   Scenario: I add "callback" to the query string and get JSONP
     When I send a GET request to "/api/v2/sandbox_widgets?callback=my_function"

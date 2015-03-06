@@ -5,6 +5,7 @@ Feature: JSON API Headers
 
   Background:
     Given I install the api data set
+    And my request is authenticated
 
   Scenario: I do not include the header flag in my request
     When I send a GET request to "/api/v2/sandbox_widgets"
