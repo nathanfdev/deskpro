@@ -24,7 +24,7 @@ Feature: API Authentication
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
 
   @reinstall
-  Scenario: I use an invalid Authorize header
+  Scenario: I use a malformed Authorization header
     When I add Authorization header equal to "key 1:XYZ invalid"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 401
@@ -33,12 +33,20 @@ Feature: API Authentication
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
 
   @reinstall
-  Scenario: I use an invalid Authorize header type
+  Scenario: I use an invalid Authorization header type
     When I add Authorization header equal to "invalid-type 1:XYZ"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 401
     And the JSON node "code" should be equal to "401"
     And the JSON node "message" should be equal to 'Invalid Authorization header (type can be one of "key" or "token").'
+    And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+
+  @reinstall
+  Scenario: I have a well-formed, but invalid api key
+    When I add Authorization header equal to "key 91:XdfadfadfeYZ"
+    And I send a GET request to "/api/v2/me"
+    And the JSON node "code" should be equal to "401"
+    And the JSON node "message" should be equal to 'Invalid API Key.'
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
 
   @reinstall
