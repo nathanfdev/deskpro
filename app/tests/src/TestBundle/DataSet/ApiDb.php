@@ -32,6 +32,7 @@
 namespace DpTests\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Usersource;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTests\TestBundle\UserDetailsRepo;
 
@@ -90,6 +91,20 @@ class ApiDb extends AbstractDbSet
         $em->flush();
 
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
+
+        $types = array('user', 'agent');
+        foreach ($types as $type) {
+            $deskProUsers = new Usersource();
+            $deskProUsers->type = $type;
+            $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+            $deskProUsers->is_enabled = true;
+            $deskProUsers->display_order = -10; // ensure #1 order (initially!)
+            $deskProUsers->title = 'DeskPRO';
+            $deskProUsers->options = array();
+            $this->getEm()->persist($deskProUsers);
+        }
+
+        $this->getEm()->flush();
 
         $this->getDb()->exec("
             REPLACE INTO `settings` (`name`, `value`)
