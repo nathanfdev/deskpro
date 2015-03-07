@@ -56,6 +56,7 @@ fos_rest:
             - { path: '^/api/v2', priorities: ['json', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
     exception:
         enabled: true
+        exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
     view:
         view_response_listener: force
         formats:

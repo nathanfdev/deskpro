@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
+use DeskPRO\Bundle\ApiBundle\View\Representation\ErrorRepresentation;
+use Symfony\Component\Form\FormInterface;
 
 class BaseController extends FOSRestController
 {
@@ -45,5 +47,17 @@ class BaseController extends FOSRestController
     protected function createRepresentation($input)
     {
         return $this->get('api_view_representation_factory')->createRepresentation($input);
+    }
+
+    /**
+     * @param $status
+     * @param $code
+     * @param $message
+     * @param array|FormInterface $errors_data
+     * @return ErrorRepresentation
+     */
+    protected function createErrorRepresentation($status, $code, $message, $errors_data = array())
+    {
+        return $this->get('api_view_representation_factory')->createErrorRepresentation($status, $code, $message, $errors_data);
     }
 }

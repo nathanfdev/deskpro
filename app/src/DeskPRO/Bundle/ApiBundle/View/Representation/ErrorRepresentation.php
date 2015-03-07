@@ -31,66 +31,108 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\View;
+namespace DeskPRO\Bundle\ApiBundle\View\Representation;
 
-use DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation;
-use DeskPRO\Bundle\ApiBundle\View\Representation\ErrorRepresentation;
-use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\FormInterface;
+use JMS\Serializer\Annotation as Serializer;
 
-class ApiViewRepresentationFactory
+/**
+ * @Serializer\ExclusionPolicy("ALL")
+ */
+class ErrorRepresentation
 {
     /**
-     * @param mixed $data
-     * @return StandardRepresentation
+     * @Serializer\Expose()
+     * @Serializer\Type("integer")
      */
-    public function createRepresentation($data)
+    private $status;
+
+    /**
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
+     */
+    private $code;
+
+    /**
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
+     */
+    private $message;
+
+    /**
+     * @Serializer\Expose()
+     * @Serializer\Type("array")
+     */
+    private $errors;
+
+    public function __construct($status, $code, $message, array $errors = array())
     {
-        if (!$data instanceof Pagerfanta) {
-            $representation = new StandardRepresentation($data);
-        } else {
-            $results = $data->getCurrentPageResults();
-
-            $meta = array(
-                'count' => count($results),
-                'total_count' => $data->getNbResults(),
-                'page' => $data->getCurrentPage(),
-                'total_pages' => $data->getNbPages()
-            );
-
-            $representation = new StandardRepresentation(
-                $results,
-                $meta
-            );
-        }
-
-
-        return $representation;
+        $this->status = $status;
+        $this->code = $code;
+        $this->message = $message;
+        $this->errors = $errors;
     }
 
     /**
-     * @param array $responses
-     * @return BatchRepresentation
+     * @return mixed
      */
-    public function createBatchRepresentation(array $responses = array())
+    public function getStatus()
     {
-        return new BatchRepresentation($responses);
+        return $this->status;
     }
 
     /**
-     * @param $status
-     * @param $code
-     * @param $message
-     * @param array|FormInterface $errors_data
-     * @return ErrorRepresentation
+     * @param mixed $status
      */
-    public function createErrorRepresentation($status, $code, $message, $errors_data = array())
+    public function setStatus($status)
     {
-        if ($errors_data instanceof FormInterface) {
-            // process form errors here into an array we want to use
-        }
+        $this->status = $status;
+    }
 
-        return new ErrorRepresentation($status, $code, $message, $errors_data);
+    /**
+     * @return mixed
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param mixed $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param mixed $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param array $errors
+     */
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
     }
 }
