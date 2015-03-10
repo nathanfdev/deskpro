@@ -12,6 +12,7 @@
     'api.error_codes.invalid_jsonp_callback' => 'The JSONP callback parameter is invalid. Please use a JSONP callback is is not a Javascript reserved word.',
     'api.error_codes.invalid_json_body' => 'The request JSON body is not valid JSON.',
     'api.error_codes.invalid_data_type' => 'This data type is not is data type that was expected.',
+    'api.error_codes.extra_fields' => 'Unexpected field names: {{ extra_fields }}',
 
     # Authentication
     'api.error_codes.invalid_session_id' => 'Invalid session ID.',

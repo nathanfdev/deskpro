@@ -38,6 +38,9 @@ use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\ApiBundle\Error\ErrorMessageFactory;
+use Symfony\Component\Form\Extension\Validator\Constraints\Form;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * @mixin \DeskPRO\Bundle\ApiBundle\Error\ErrorMessageFactory
@@ -51,8 +54,37 @@ class ErrorMessageFactorySpec extends ObjectBehavior
 
     function it_will_get_the_error_message_for_error_code(Translate $translate)
     {
-        $translate->phrase('api.error_codes.bad_request')->willReturn('Request is invalid.');
+        $translate->phrase('api.error_codes.bad_request', Argument::any())->willReturn('Request is invalid.');
 
         $this->createMessage(ApiErrors::BAD_REQUEST)->shouldReturn('Request is invalid.');
+    }
+
+    function it_will_get_the_error_message_for_formerror_code(
+        Translate $translate,
+        FormError $form_error,
+        ConstraintViolation $violation,
+        Form $form_constraint
+    )
+    {
+        $form_error->getMessageParameters()->willReturn(array());
+        $form_error->getMessage()->willReturn('irrelevant');
+        $translate->phrase('api.error_codes.bad_request', Argument::any())->willReturn('Request is invalid.');
+
+        $this->createFormErrorMessage(ApiErrors::BAD_REQUEST, $form_error)->shouldReturn('Request is invalid.');
+    }
+
+    function it_treats_extra_fields_specially(
+        Translate $translate,
+        FormError $form_error,
+        ConstraintViolation $violation,
+        Form $form_constraint
+    )
+    {
+        $form_error->getMessageParameters()->willReturn(array());
+        $form_error->getMessage()->willReturn('This form should not contain extra fields.');
+
+        $translate->phrase('api.error_codes.extra_fields', array())->willReturn('extra fields: email');
+
+        $this->createFormErrorMessage(ApiErrors::BAD_REQUEST, $form_error)->shouldReturn('extra fields: email');
     }
 }

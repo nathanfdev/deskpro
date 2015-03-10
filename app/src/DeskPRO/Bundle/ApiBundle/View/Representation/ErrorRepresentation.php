@@ -64,11 +64,14 @@ class ErrorRepresentation
      */
     private $errors;
 
-    public function __construct($status, $code, $message, array $errors = array())
+    public function __construct($status, $code, $message, array $errors = null)
     {
         $this->status = $status;
         $this->code = $code;
         $this->message = $message;
+        if (!count($errors)) {
+            $errors = null;
+        }
         $this->errors = $errors;
     }
 

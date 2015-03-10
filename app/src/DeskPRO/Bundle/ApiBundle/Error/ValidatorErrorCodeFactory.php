@@ -42,10 +42,14 @@ use Symfony\Component\Validator\ConstraintViolation;
 
 class ValidatorErrorCodeFactory
 {
+    public static $static_replacements = array(
+        'This form should not contain extra fields.' => ApiErrors::EXTRA_FIELDS
+    );
+
     public function getConstraintErrorCode(ConstraintViolation $constraint)
     {
         if ($code = $constraint->getMessage()) {
-            return $code;
+            return $this->filterCode($code);
         }
 
         return ApiErrors::CONSTRAINT_FALLBACK;
@@ -61,9 +65,22 @@ class ValidatorErrorCodeFactory
         }
 
         if ($code = $form_error->getMessage()) {
-            return $code;
+            return $this->filterCode($code);
         }
 
         return ApiErrors::CONSTRAINT_FALLBACK;
+    }
+
+    /**
+     * @param $code
+     * @return mixed
+     */
+    private function filterCode($code)
+    {
+        if (array_key_exists($code, self::$static_replacements)) {
+            $code = self::$static_replacements[$code];
+        }
+
+        return $code;
     }
 }

@@ -84,7 +84,7 @@ class ExceptionController extends BaseController
             $code = $this->getFormErrorCode($error);
             $list[] = array(
                 'code' => $code,
-                'message' => $this->getErrorMessageFactory()->createMessage($code),
+                'message' => $this->getErrorMessageFactory()->createFormErrorMessage($code, $error),
             );
         }
 
@@ -95,7 +95,9 @@ class ExceptionController extends BaseController
         $children = array();
         foreach ($form->all() as $child) {
             if ($child instanceof FormInterface) {
-                $children[$child->getName()] = $this->generateFormErrors($child);
+                if ($child_errors = $this->generateFormErrors($child)) {
+                    $children[$child->getName()] = $child_errors;
+                }
             }
         }
 

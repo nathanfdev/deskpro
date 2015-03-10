@@ -34,6 +34,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
 use Application\DeskPRO\Translate\Translate;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Form\Extension\Validator\Constraints\Form as FormConstraint;
 
 class ErrorMessageFactory
 {
@@ -47,8 +50,38 @@ class ErrorMessageFactory
         $this->translate = $translate;
     }
 
-    public function createMessage($error_code)
+    public function createMessage($error_code, array $params = array())
     {
-        return $this->translate->phrase('api.error_codes.'.$error_code);
+        if ($message = $this->translate->phrase('api.error_codes.'.$error_code, $params)) {
+            return $message;
+        }
+
+        return $error_code;
+    }
+
+    public function createFormErrorMessage($error_code, FormError $form_error)
+    {
+        $params = $this->parseParams($form_error->getMessageParameters());
+
+        if ($form_error->getMessage() === 'This form should not contain extra fields.') {
+            $error_code = ApiErrors::EXTRA_FIELDS;
+        }
+
+        return $this->createMessage($error_code, $params);
+    }
+
+    protected function parseParams(array $array = array())
+    {
+        $new_array = array();
+
+        foreach ($array as $key => $val) {
+            preg_match('#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#', $key, $matches);
+            if (isset($matches[1])) {
+                $key = $matches[1];
+            }
+            $new_array[$key] = $val;
+        }
+
+        return $new_array;
     }
 }
