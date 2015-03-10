@@ -9,41 +9,47 @@ Feature: API Authentication
   @reinstall
   Scenario: I do not submit any auth credentials
     When I send a GET request to "/api/v2/me"
-    Then the response status code should be 401
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to "No authentication credentials were found in your request."
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "unauthorized"
+    And the JSON node "message" should be equal to "You must be authenticated to make this request."
 
   Scenario: I use an invalid agent session cookie
     When I add cookie named "dpsid-agent" equal to "something-invalid"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 401
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to "Invalid Session ID."
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "invalid_session_id"
+    And the JSON node "message" should be equal to "Invalid session ID."
 
   Scenario: I use a malformed Authorization header
     When I add Authorization header equal to "key 1:XYZ invalid"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 401
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to 'Malformed Authorization header (should be "Authorization: type value").'
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "malformed_authorization_header"
+    And the JSON node "message" should be equal to 'Malformed Authorization header (should be "Authorization: type value").'
 
   Scenario: I use an invalid Authorization header type
     When I add Authorization header equal to "invalid-type 1:XYZ"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 401
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to 'Invalid Authorization header (type can be one of "key" or "token").'
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "invalid_authorization_header"
+    And the JSON node "message" should be equal to 'Invalid Authorization header (type can be one of "key" or "token").'
 
   Scenario: I have a well-formed, but invalid api key
     When I add Authorization header equal to "key 91:XdfadfadfeYZ"
     And I send a GET request to "/api/v2/me"
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to 'Invalid API Key.'
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "invalid_api_key"
+    And the JSON node "message" should be equal to "Invalid API key."
 
   @reinstall
   Scenario: I have a valid agent session ID (user "agent" id=2 in the "api" data set)
@@ -70,10 +76,11 @@ Feature: API Authentication
     Given the agent session auth "UZER" is valid for user
     When I add cookie named "dpsid-agent" equal to "1-UZER"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 401
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to "Invalid Session ID."
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "invalid_session_id"
+    And the JSON node "message" should be equal to "Invalid session ID."
 
   @reinstall
   Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
@@ -93,9 +100,11 @@ Feature: API Authentication
       "password": "wrong password"
     }
     """
-    Then the response status code should be 400
-    And the JSON node "code" should be equal to 400
-    And the JSON node "message" should exist
+    Then the response status code should be 401
+    And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    And the JSON node "status" should be equal to 401
+    And the JSON node "code" should be equal to "bad_credentials"
+    And the JSON node "message" should be equal to "Bad credentials."
 
   Scenario: I successfully get a token
     When I send a POST request to "/api/v2/api_tokens" with body:
@@ -121,8 +130,9 @@ Feature: API Authentication
   Scenario: I have an invalid api token
     When I add Authorization header equal to "token 1:incorrect"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 401
-    And the JSON node "code" should be equal to "401"
-    And the JSON node "message" should be equal to 'Invalid API Token.'
+    And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "invalid_api_token"
+    And the JSON node "message" should be equal to "Invalid API token."
 

@@ -33,26 +33,18 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
-use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\ApiToken;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\Me;
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class ApiTokensController extends BaseController
 {
@@ -82,19 +74,19 @@ class ApiTokensController extends BaseController
             // failed on agent usersources, revert to user
             $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
             if (!$auth_result->isValid()) {
-                throw new BadRequestHttpException('Invalid Credentials');
+                $this->throwUnauthorized();
             }
         }
 
         $identity = $auth_result->getIdentity();
 
         if (!$person_id = $identity->getIdentity()) {
-            throw new BadRequestHttpException('Bad Request');
+            $this->throwUnauthorized();
         }
 
         $em = $this->get('doctrine.orm.default_entity_manager');
         if (!$person = $em->getRepository('DeskPRO:Person')->find($person_id)) {
-            throw new BadRequestHttpException('Bad Request');
+            $this->throwUnauthorized();
         }
 
         $api_token = new ApiToken();
@@ -117,5 +109,10 @@ class ApiTokensController extends BaseController
     protected function makeAuthMethodString(AbstractApiSecurityToken $token)
     {
         return $token->getName();
+    }
+
+    private function throwUnauthorized()
+    {
+        throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ApiErrors::BAD_CREDENTIALS);
     }
 }

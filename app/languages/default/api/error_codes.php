@@ -6,12 +6,20 @@
     'api.error_codes.internal_error' => 'Internal error.',
     'api.error_codes.bad_request' => 'Request is invalid.',
     'api.error_codes.invalid_input' => 'Request input is invalid.',
-    'api.error_codes.unauthorized' => 'You are not authorized to make this request.',
-    'api.error_codes.not_authenticated' => 'You must be authenticated to make this request.',
+    'api.error_codes.forbidden' => 'You are not authorized to make this request.',
+    'api.error_codes.unauthorized' => 'You must be authenticated to make this request.',
     'api.error_codes.not_found' => 'The requested resource was not found.',
     'api.error_codes.invalid_jsonp_callback' => 'The JSONP callback parameter is invalid. Please use a JSONP callback is is not a Javascript reserved word.',
     'api.error_codes.invalid_json_body' => 'The request JSON body is not valid JSON.',
     'api.error_codes.invalid_data_type' => 'This data type is not is data type that was expected.',
+
+    # Authentication
+    'api.error_codes.invalid_session_id' => 'Invalid session ID.',
+    'api.error_codes.malformed_authorization_header' => 'Malformed Authorization header (should be "Authorization: type value").',
+    'api.error_codes.invalid_authorization_header' => 'Invalid Authorization header (type can be one of "key" or "token").',
+    'api.error_codes.invalid_api_key' => 'Invalid API key.',
+    'api.error_codes.invalid_api_token' => 'Invalid API token.',
+    'api.error_codes.bad_credentials' => 'Bad credentials.',
 
     # Length
     'api.error_codes.length_too_long' => 'This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.',

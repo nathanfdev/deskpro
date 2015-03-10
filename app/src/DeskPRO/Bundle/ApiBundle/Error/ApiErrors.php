@@ -50,9 +50,17 @@ class ApiErrors
     const BAD_REQUEST = 'bad_request';
     const INVALID_INPUT = 'invalid_input';
     const FORBIDDEN = 'unauthorized';
-    const NOT_AUTHORIZED = 'not_authenticated';
+    const UNAUTHORIZED = 'unauthorized';
     const NOT_FOUND = 'not_found';
     const INVALID_JSONP_CALLBACK = 'invalid_jsonp_callback';
     const INVALID_JSON_BODY = 'invalid_json_body';
     const INVALID_DATA_TYPE = 'invalid_data_type';
+
+    /** Some specific authentication codes */
+    const INVALID_SESSION_ID = 'invalid_session_id';
+    const INVALID_API_KEY = 'invalid_api_key';
+    const INVALID_API_TOKEN = 'invalid_api_token';
+    const INVALID_AUTHORIZATION_HEADER = 'invalid_authorization_header';
+    const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
+    const BAD_CREDENTIALS = 'bad_credentials';
 }

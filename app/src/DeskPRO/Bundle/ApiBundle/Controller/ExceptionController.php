@@ -69,7 +69,12 @@ class ExceptionController extends BaseController
             $errors_array
         );
 
-        return View::create($representation, $status);
+        $headers = array();
+        if ($exception instanceof HttpException) {
+            $headers = $exception->getHeaders();
+        }
+
+        return View::create($representation, $status, $headers);
     }
 
     private function generateFormErrors(FormInterface $form)

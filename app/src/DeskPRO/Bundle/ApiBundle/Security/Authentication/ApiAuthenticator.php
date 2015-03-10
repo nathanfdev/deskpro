@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
@@ -49,6 +50,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiAuthenticator implements SimplePreAuthenticatorInterface
 {
+    const HTTP_REALM = 'session,token,key realm="DeskPRO API"';
     const APP_HEADER_NAME = 'X-DeskPRO-App-ID';
 
     /**
@@ -80,7 +82,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $split = preg_split("/[\s,]+/", trim($authorize_header));
 
             if (count($split) !== 2) {
-                $this->throwUnauthorized('Malformed Authorization header (should be "Authorization: type value").');
+                $this->throwUnauthorized(ApiErrors::MALFORMED_AUTHORIZATION_HEADER);
             }
 
             $authorize_type = trim($split[0]);
@@ -92,11 +94,11 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
                 case 'token':
                     return new ApiTokenSecurityToken('anon.', $authorize_val, $providerKey);
                 default:
-                    $this->throwUnauthorized('Invalid Authorization header (type can be one of "key" or "token").');
+                    $this->throwUnauthorized(ApiErrors::INVALID_AUTHORIZATION_HEADER);
             }
         }
 
-        $this->throwUnauthorized('No authentication credentials were found in your request.');
+        $this->throwUnauthorized(ApiErrors::UNAUTHORIZED);
     }
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
@@ -133,7 +135,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         $providerKey
     )
     {
-        $unauthorized_msg = 'Invalid API Key.';
+        $unauthorized_msg = ApiErrors::INVALID_API_KEY;
 
         /** @var \Application\DeskPRO\Entity\ApiKey $key */
         /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
@@ -161,7 +163,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         $providerKey
     )
     {
-        $unauthorized_msg = 'Invalid API Token.';
+        $unauthorized_msg = ApiErrors::INVALID_API_TOKEN;
 
         /** @var \Application\DeskPRO\Entity\ApiToken $api_token */
         /** @var \Application\DeskPRO\EntityRepository\ApiToken $token_repo */
@@ -189,7 +191,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         $providerKey
     )
     {
-        $unauthorized_msg = 'Invalid Session ID.';
+        $unauthorized_msg = ApiErrors::INVALID_SESSION_ID;
 
         /** @var \Application\DeskPRO\Entity\Session $session */
         /** @var \Application\DeskPRO\EntityRepository\Session $session_repo */
@@ -244,7 +246,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
      */
     private function throwUnauthorized($msg)
     {
-        throw new UnauthorizedHttpException('session,token,key realm="DeskPRO API"', $msg);
+        throw new UnauthorizedHttpException(self::HTTP_REALM, $msg);
     }
 
     private function extractDataFromSessionEntity(Session $session)
