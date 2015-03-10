@@ -78,7 +78,7 @@ class SandboxWidget implements NotifyPropertyChanged
      * @Serializer\Expose()
      * @Assert\NotNull()
      * @Assert\NotBlank()
-     * @Assert\Type("int")
+     * @Assert\Type("integer")
      */
     private $inventory;
 

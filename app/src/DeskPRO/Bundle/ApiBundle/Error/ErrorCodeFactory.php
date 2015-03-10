@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
 use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 
 class ErrorCodeFactory
@@ -65,5 +66,10 @@ class ErrorCodeFactory
     public function getErrorCodeForConstraintViolation(ConstraintViolation $violation)
     {
         return $this->validator_error_code_factory->getConstraintErrorCode($violation);
+    }
+
+    public function getErrorCodeForFormError(FormError $form_error)
+    {
+        return $this->validator_error_code_factory->getFormErrorCode($form_error);
     }
 }

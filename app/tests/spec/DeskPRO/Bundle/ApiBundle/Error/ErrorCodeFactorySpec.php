@@ -39,6 +39,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\ApiBundle\Error\ErrorCodeFactory;
 use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
@@ -71,5 +72,18 @@ class ErrorCodeFactorySpec extends ObjectBehavior
         $validator_error_code_factory->getConstraintErrorCode($constraint_violation)->willReturn('bar');
 
         $this->getErrorCodeForConstraintViolation($constraint_violation)->shouldReturn('bar');
+    }
+
+    function it_uses_validator_factory_for_form_errors(
+        ValidatorErrorCodeFactory $validator_error_code_factory,
+        ExceptionErrorCodeFactory $exception_error_code_Factory,
+        FormError $form_error
+    )
+    {
+        $this->beConstructedWith($exception_error_code_Factory, $validator_error_code_factory);
+
+        $validator_error_code_factory->getFormErrorCode($form_error)->willReturn('bar');
+
+        $this->getErrorCodeForFormError($form_error)->shouldReturn('bar');
     }
 }

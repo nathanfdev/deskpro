@@ -34,9 +34,12 @@
 namespace spec\DeskPRO\Bundle\ApiBundle\Error;
 
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Type;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\ApiBundle\Error\ValidatorErrorCodeFactory;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -64,6 +67,29 @@ class ValidatorErrorCodeFactorySpec extends ObjectBehavior
         $violation->getMessage()->willReturn(null);
 
         $this->getConstraintErrorCode($violation)->shouldReturn(ApiErrors::CONSTRAINT_FALLBACK);
+    }
+
+    function it_treats_form_transformation_exception_as_a_type_error(
+        FormError $fe,
+        ConstraintViolation $violation,
+        TransformationFailedException $exception
+    )
+    {
+        $fe->getCause()->willReturn($violation);
+        $violation->getCause()->willReturn($exception);
+
+        $this->getFormErrorCode($fe)->shouldReturn(Type::ERROR_CODE);
+    }
+
+    function it_treats_transformat_form_errors_in_a_special_way(
+        FormError $fe,
+        ConstraintViolation $violation
+    )
+    {
+        $fe->getCause()->willReturn($violation);
+        $fe->getMessage()->willReturn('code_here');
+
+        $this->getFormErrorCode($fe);
     }
 }
 

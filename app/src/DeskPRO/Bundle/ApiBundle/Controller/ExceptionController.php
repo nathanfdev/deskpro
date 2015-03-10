@@ -38,6 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,23 +74,36 @@ class ExceptionController extends BaseController
 
     private function generateFormErrors(FormInterface $form)
     {
-        $array = array();
-        foreach ($form->getErrors(true, true) as $error) {
-            $constraint_violation = $error->getCause();
-            if (!$constraint_violation->getPropertyPath()) {
-                // TODO: we should collect these into an array and use the "_global" field name
-                // to display global errors
-                continue;
-            }
-            // strip "data." from the beginning
-            $property = substr($constraint_violation->getPropertyPath(), 5);
-            $array[$property] = array(
-                'code' => $code = $constraint_violation->getMessage(),
+        $errors = $list = array();
+        foreach ($form->getErrors() as $error) {
+            $code = $this->getFormErrorCode($error);
+            $list[] = array(
+                'code' => $code,
                 'message' => $this->getErrorMessageFactory()->createMessage($code),
             );
         }
 
-        return $array;
+        if ($list) {
+            $errors['errors'] = $list;
+        }
+
+        $children = array();
+        foreach ($form->all() as $child) {
+            if ($child instanceof FormInterface) {
+                $children[$child->getName()] = $this->generateFormErrors($child);
+            }
+        }
+
+        if ($children) {
+            $errors['fields'] = $children;
+        }
+
+        return $errors;
+    }
+
+    protected function getFormErrorCode(FormError $error)
+    {
+        return $this->getErrorCodeFactory()->getErrorCodeForFormError($error);
     }
 
     /**
@@ -106,6 +120,5 @@ class ExceptionController extends BaseController
     protected function getErrorMessageFactory()
     {
         return $this->get('error_message_factory');
-
     }
 }

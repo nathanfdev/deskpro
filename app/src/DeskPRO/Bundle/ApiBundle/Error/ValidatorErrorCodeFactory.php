@@ -34,6 +34,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Type;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolation;
 
@@ -42,6 +45,22 @@ class ValidatorErrorCodeFactory
     public function getConstraintErrorCode(ConstraintViolation $constraint)
     {
         if ($code = $constraint->getMessage()) {
+            return $code;
+        }
+
+        return ApiErrors::CONSTRAINT_FALLBACK;
+    }
+
+    public function getFormErrorCode(FormError $form_error)
+    {
+        $cause = $form_error->getCause();
+        if ($cause instanceof ConstraintViolation) {
+            if ($cause->getCause() instanceof TransformationFailedException) {
+                return Type::ERROR_CODE;
+            }
+        }
+
+        if ($code = $form_error->getMessage()) {
             return $code;
         }
 
