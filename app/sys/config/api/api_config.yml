@@ -37,6 +37,7 @@ jms_serializer:
             options: JSON_PRETTY_PRINT
 
 fos_rest:
+    disable_csrf_role: ROLE_API
     routing_loader:
         default_format: json
         include_format: false

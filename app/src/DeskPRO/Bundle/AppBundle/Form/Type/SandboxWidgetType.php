@@ -58,7 +58,6 @@ class SandboxWidgetType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
-                'csrf_protection' => false,
             )
         );
     }
