@@ -475,7 +475,7 @@ class CsvImport extends AbstractJob
                                 $em->persist($custom_data);
                                 $person->addCustomData($custom_data);
                             }
-                        } if ($custom_field->getTypeName() == 'date') {
+                        } else if ($custom_field->getTypeName() == 'date') {
                             if (ctype_digit($column_value)) {
                                 // assume timestamp
                                 $set_field = true;
