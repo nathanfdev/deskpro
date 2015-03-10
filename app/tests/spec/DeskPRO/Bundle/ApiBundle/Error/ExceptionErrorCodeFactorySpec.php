@@ -1,0 +1,87 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at https://www.deskpro.com/eula/                            |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace spec\DeskPRO\Bundle\ApiBundle\Error;
+
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\ApiBundle\Error\ExceptionErrorCodeFactory;
+use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormConfigInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
+/**
+ * @mixin \DeskPRO\Bundle\ApiBundle\Error\ExceptionErrorCodeFactory
+ */
+class ExceptionErrorCodeFactorySpec extends ObjectBehavior
+{
+    function it_gets_default_exception_error_code_if_none_defined()
+    {
+        $this->getExceptionErrorCode(new FlattenException(new NewException()))->shouldReturn(ApiErrors::EXCEPTION_FALLBACK);
+    }
+
+    function it_uses_the_map_for_blank_message_http_kernel_exceptions(
+        FlattenException $e
+    )
+    {
+        $e->getMessage()->willReturn('');
+        $e->getClass()->willReturn('Symfony\Component\HttpKernel\Exception\BadRequestHttpException');
+        $this->getExceptionErrorCode($e)->shouldReturn(ApiErrors::BAD_REQUEST);
+    }
+
+    function it_uses_the_map_for_non_kernel_exceptions(
+        FlattenException $e
+    )
+    {
+        $e->getMessage()->willReturn('');
+        $e->getClass()->willReturn('DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException');
+        $this->getExceptionErrorCode($e)->shouldReturn(ApiErrors::BAD_REQUEST);
+    }
+
+    function it_returns_the_error_message_if_it_was_thrown_with_one(
+        FlattenException $e
+    )
+    {
+        $e->getMessage()->willReturn(ApiErrors::INTERNAL_ERROR);
+        $e->getClass()->willReturn('DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException');
+        $this->getExceptionErrorCode($e)->shouldReturn(ApiErrors::INTERNAL_ERROR);
+    }
+}
+
+class NewException extends \Exception
+{
+}
