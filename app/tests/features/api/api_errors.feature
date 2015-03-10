@@ -16,7 +16,7 @@ Feature: API Errors
     And the response status code should be 400
     Then the JSON node "status" should be equal to 400
     Then the JSON node "code" should be equal to "invalid_json_body"
-    And the JSON node "message" should exist
+    And the JSON node "message" should be equal to "The request JSON body is not valid JSON."
     And the JSON node "errors" should have 0 elements
 
   Scenario: Invalid JSONP callbacks result in an error
@@ -25,7 +25,7 @@ Feature: API Errors
     Then the response status code should be 400
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "invalid_jsonp_callback"
-    And the JSON node "message" should exist
+    And the JSON node "message" should be equal to "The JSONP callback parameter is invalid. Please use a JSONP callback is is not a Javascript reserved word."
     And the JSON node "errors" should have 0 elements
 
   Scenario: Request non-existent resource
@@ -34,7 +34,7 @@ Feature: API Errors
     Then the response status code should be 404
     And the JSON node "status" should be equal to 404
     And the JSON node "code" should be equal to "not_found"
-    And the JSON node "message" should exist
+    And the JSON node "message" should be equal to "The requested resource was not found."
     And the JSON node "errors" should have 0 elements
 
   Scenario: Make an invalid POST
@@ -49,11 +49,11 @@ Feature: API Errors
     And the response status code should be 400
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "invalid_input"
-    And the JSON node "message" should exist
+    And the JSON node "message" should be equal to "Request input is invalid."
     And the JSON node "errors" should have 1 element
     And the JSON node "errors.fields.name" should have 0 elements
-    And the JSON node "errors.fields.inventory.errors[0].code" should be equal to "wrong_type"
-    And the JSON node "errors.fields.inventory.errors[0].message" should exist
+    And the JSON node "errors.fields.inventory.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.inventory.errors[0].message" should be equal to "This data type is not is data type that was expected."
 
   Scenario: Make a POST with a missing field
     When I send a POST request to "/api/v2/sandbox_widgets" with body:
@@ -66,8 +66,8 @@ Feature: API Errors
     And the response status code should be 400
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "invalid_input"
-    And the JSON node "message" should exist
+    And the JSON node "message" should be equal to "Request input is invalid."
     And the JSON node "errors" should have 1 element
     And the JSON node "errors.fields.inventory" should have 0 elements
     And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.name.errors[0].message" should exist
+    And the JSON node "errors.fields.name.errors[0].message" should be equal to "This value should not be blank."

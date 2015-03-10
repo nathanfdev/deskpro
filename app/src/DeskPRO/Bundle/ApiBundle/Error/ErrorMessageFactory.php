@@ -33,12 +33,22 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
+use Application\DeskPRO\Translate\Translate;
+
 class ErrorMessageFactory
 {
+    /**
+     * @var Translate
+     */
+    private $translate;
+
+    public function __construct(Translate $translate)
+    {
+        $this->translate = $translate;
+    }
+
     public function createMessage($error_code)
     {
-        return $error_code; // for now. eventually we add translator here
-
-        // we can do $trans->phrase('site.form_error_'.$error_code);
+        return $this->translate->phrase('api.error_codes.'.$error_code);
     }
 }

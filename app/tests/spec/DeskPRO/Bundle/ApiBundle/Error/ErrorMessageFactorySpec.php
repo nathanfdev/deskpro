@@ -33,6 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\ApiBundle\Error;
 
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -43,8 +44,15 @@ use DeskPRO\Bundle\ApiBundle\Error\ErrorMessageFactory;
  */
 class ErrorMessageFactorySpec extends ObjectBehavior
 {
-    function it_will_get_the_error_message_for_error_code()
+    function let(Translate $translate)
     {
-        $this->createMessage(ApiErrors::BAD_REQUEST)->shouldReturn(ApiErrors::BAD_REQUEST);
+        $this->beConstructedWith($translate);
+    }
+
+    function it_will_get_the_error_message_for_error_code(Translate $translate)
+    {
+        $translate->phrase('api.error_codes.bad_request')->willReturn('Request is invalid.');
+
+        $this->createMessage(ApiErrors::BAD_REQUEST)->shouldReturn('Request is invalid.');
     }
 }

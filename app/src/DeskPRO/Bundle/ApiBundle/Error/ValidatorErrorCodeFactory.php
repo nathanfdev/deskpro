@@ -56,7 +56,7 @@ class ValidatorErrorCodeFactory
         $cause = $form_error->getCause();
         if ($cause instanceof ConstraintViolation) {
             if ($cause->getCause() instanceof TransformationFailedException) {
-                return Type::ERROR_CODE;
+                return ApiErrors::INVALID_DATA_TYPE;
             }
         }
 

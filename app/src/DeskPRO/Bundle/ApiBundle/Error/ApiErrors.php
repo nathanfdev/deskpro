@@ -49,10 +49,10 @@ class ApiErrors
     const INTERNAL_ERROR = 'internal_error';
     const BAD_REQUEST = 'bad_request';
     const INVALID_INPUT = 'invalid_input';
-    const REQUIRED = 'required';
     const FORBIDDEN = 'unauthorized';
     const NOT_AUTHORIZED = 'not_authenticated';
     const NOT_FOUND = 'not_found';
     const INVALID_JSONP_CALLBACK = 'invalid_jsonp_callback';
     const INVALID_JSON_BODY = 'invalid_json_body';
+    const INVALID_DATA_TYPE = 'invalid_data_type';
 }

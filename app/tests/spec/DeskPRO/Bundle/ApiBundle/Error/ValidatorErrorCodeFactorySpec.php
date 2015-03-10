@@ -78,7 +78,7 @@ class ValidatorErrorCodeFactorySpec extends ObjectBehavior
         $fe->getCause()->willReturn($violation);
         $violation->getCause()->willReturn($exception);
 
-        $this->getFormErrorCode($fe)->shouldReturn(Type::ERROR_CODE);
+        $this->getFormErrorCode($fe)->shouldReturn(ApiErrors::INVALID_DATA_TYPE);
     }
 
     function it_treats_transformat_form_errors_in_a_special_way(

@@ -26,6 +26,8 @@ services:
 
   error_message_factory:
       class: DeskPRO\Bundle\ApiBundle\Error\ErrorMessageFactory
+      arguments:
+        - @deskpro.core.translate
 
   error_code_factory:
       class: DeskPRO\Bundle\ApiBundle\Error\ErrorCodeFactory
