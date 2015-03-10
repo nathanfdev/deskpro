@@ -36,8 +36,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 use Application\DeskPRO\Entity\ApiToken;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotNull;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -55,18 +57,31 @@ class ApiTokensController extends BaseController
      *      output="token",
      *      statusCodes={
      *          201="Created token",
-     *          400="Invalid credentials"
+     *          401="Invalid credentials",
+     *          400="Bad request"
      *      }
      * )
      *
      * @Post("/api_tokens", name="post_api_tokens")
-     * @Get("/api_tokens", name="post_api_tokens")
      */
     public function newTokenAction(Request $request)
     {
-        // TODO: refactor
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
+        $form = $this->createFormBuilder(
+                array('email' => null, 'password' => null),
+                array('csrf_protection' => false)
+            )
+            ->add('email', 'email', array('constraints' => new NotNull()))
+            ->add('password', 'password', array('constraints' => new NotNull()))
+            ->getForm();
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data = $form->getData();
+        $email = $data['email'];
+        $password = $data['password'];
 
         $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
 
