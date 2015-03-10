@@ -60,7 +60,7 @@ class InvalidFormException extends BadRequestHttpException
     {
         $this->form = $invalid_form;
 
-        parent::__construct(ApiErrors::BAD_REQUEST, $previous, $code);
+        parent::__construct(ApiErrors::INVALID_INPUT, $previous, $code);
     }
 
     public function getForm()

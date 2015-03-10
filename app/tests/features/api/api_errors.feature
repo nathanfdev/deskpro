@@ -12,21 +12,26 @@ Feature: API Errors
     """
     foo=bar
     """
-    Then the JSON node "code" should be equal to 400
+    Then the response should be in JSON
+    Then the JSON node "status" should be equal to 400
+    Then the JSON node "code" should be equal to "invalid_json_body"
     And the JSON node "message" should exist
     And the response status code should be 400
 
   Scenario: Invalid JSONP callbacks result in an error
     When I send a GET request to "/api/v2/sandbox_widgets?callback=function"
+    Then the response should be in JSON
     Then the response status code should be 400
-    And the JSON node "code" should be equal to 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_jsonp_callback"
     And the JSON node "message" should exist
 
   Scenario: Request non-existent resource
     When I send a GET request to "/api/v2/sandbox_widgets/124"
     Then the response should be in JSON
-    And the response status code should be 404
-    And the JSON node "code" should be equal to 404
+    Then the response status code should be 404
+    And the JSON node "status" should be equal to 404
+    And the JSON node "code" should be equal to "not_found"
     And the JSON node "message" should exist
 
   Scenario: Make an invalid POST
@@ -39,9 +44,12 @@ Feature: API Errors
     """
     Then the response should be in JSON
     And the response status code should be 400
-    And the JSON node "code" should be equal to 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
     And the JSON node "message" should exist
-    And the JSON node "errors.children" should have 1 element
+    And the JSON node "errors" should have 1 element
+    And the JSON node "errors.inventory.code" should be equal to "invalid_type"
+    And the JSON node "errors.inventory.message" should exist
 
   Scenario: Make a POST with a missing field
     When I send a POST request to "/api/v2/sandbox_widgets" with body:
@@ -52,6 +60,9 @@ Feature: API Errors
     """
     Then the response should be in JSON
     And the response status code should be 400
-    And the JSON node "code" should be equal to 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
     And the JSON node "message" should exist
-    And the JSON node "errors.children" should have 1 element
+    And the JSON node "errors" should have 1 element
+    And the JSON node "errors.name.code" should be equal to "required"
+    And the JSON node "errors.name.message" should exist

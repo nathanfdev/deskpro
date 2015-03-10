@@ -43,6 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\FlattenException as HttpFlattenException;
 use Symfony\Component\Debug\Exception\FlattenException as DebugFlattenException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Zend\Server\Reflection\ReflectionClass;
 
 class ExceptionController extends BaseController
@@ -54,7 +55,7 @@ class ExceptionController extends BaseController
             $errors_array = $this->generateFormErrors($exception->getForm());
         }
 
-        $status = $exception->getStatusCode() ?: 500;
+        $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
         $code = $this->getErrorCodeFactory()->getErrorCodeForException($exception);
         $message = $this->getErrorMessageFactory()->createMessage($code);
 
@@ -72,7 +73,23 @@ class ExceptionController extends BaseController
 
     private function generateFormErrors(FormInterface $form)
     {
-        return array('field' => array('code' => 'min_length', 'message' => 'some long msg'));
+        $array = array();
+        foreach ($form->getErrors(true, true) as $error) {
+            $constraint_violation = $error->getCause();
+            if (!$constraint_violation->getPropertyPath()) {
+                // TODO: we should collect these into an array and use the "_global" field name
+                // to display global errors
+                continue;
+            }
+            // strip "data." from the beginning
+            $property = substr($constraint_violation->getPropertyPath(), 5);
+            $array[$property] = array(
+                'code' => $code = $constraint_violation->getMessage(),
+                'message' => $this->getErrorMessageFactory()->createMessage($code),
+            );
+        }
+
+        return $array;
     }
 
     /**

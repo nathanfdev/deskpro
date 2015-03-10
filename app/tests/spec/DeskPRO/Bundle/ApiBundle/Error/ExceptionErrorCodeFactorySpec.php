@@ -49,36 +49,33 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class ExceptionErrorCodeFactorySpec extends ObjectBehavior
 {
+    function it_first_checks_a_map_of_text_message_to_response_codes_for_pre_defined_codes()
+    {
+        $this->getExceptionErrorCode(new \Exception('Invalid JSONP callback value'))->shouldReturn('invalid_jsonp_callback');
+    }
+
+    function it_returns_the_error_message_if_it_was_thrown_with_one()
+    {
+        $this->getExceptionErrorCode(new \Exception('my_error_code'))->shouldReturn('my_error_code');
+    }
+
     function it_gets_default_exception_error_code_if_none_defined()
     {
-        $this->getExceptionErrorCode(new FlattenException(new NewException()))->shouldReturn(ApiErrors::EXCEPTION_FALLBACK);
+        $this->getExceptionErrorCode(new NewException())->shouldReturn(ApiErrors::EXCEPTION_FALLBACK);
     }
 
     function it_uses_the_map_for_blank_message_http_kernel_exceptions(
         FlattenException $e
     )
     {
-        $e->getMessage()->willReturn('');
-        $e->getClass()->willReturn('Symfony\Component\HttpKernel\Exception\BadRequestHttpException');
-        $this->getExceptionErrorCode($e)->shouldReturn(ApiErrors::BAD_REQUEST);
+        $this->getExceptionErrorCode(new BadRequestHttpException())->shouldReturn(ApiErrors::BAD_REQUEST);
     }
 
     function it_uses_the_map_for_non_kernel_exceptions(
-        FlattenException $e
+        FormInterface $form
     )
     {
-        $e->getMessage()->willReturn('');
-        $e->getClass()->willReturn('DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException');
-        $this->getExceptionErrorCode($e)->shouldReturn(ApiErrors::BAD_REQUEST);
-    }
-
-    function it_returns_the_error_message_if_it_was_thrown_with_one(
-        FlattenException $e
-    )
-    {
-        $e->getMessage()->willReturn(ApiErrors::INTERNAL_ERROR);
-        $e->getClass()->willReturn('DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException');
-        $this->getExceptionErrorCode($e)->shouldReturn(ApiErrors::INTERNAL_ERROR);
+        $this->getExceptionErrorCode(new InvalidFormException($form->getWrappedObject()))->shouldReturn(ApiErrors::INVALID_INPUT);
     }
 }
 

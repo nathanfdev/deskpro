@@ -31,20 +31,21 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Error\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Symfony\Component\Validator\Constraints\NotNull as BaseConstraint;
 
-use Symfony\Component\Validator\Constraints\Length as BaseConstraint;
-
-class Length extends BaseConstraint
+/**
+ * @Annotation
+ */
+class NotNull extends BaseConstraint
 {
-    const TOO_LONG = 'length_too_long';
-    const TOO_SHORT = 'length_too_short';
-    const NOT_EXACT = 'length_invalid';
-    const INVALID_CHARSET = 'invalid_charset';
+    const ERROR_CODE = 'required';
 
-    public $maxMessage = self::TOO_LONG;
-    public $minMessage = self::TOO_SHORT;
-    public $exactMessage = self::NOT_EXACT;
-    public $charsetMessage = self::INVALID_CHARSET;
+    public $message = self::ERROR_CODE;
+
+    public function validatedBy()
+    {
+        return 'Symfony\Component\Validator\Constraints\NotNullValidator';
+    }
 }

@@ -37,7 +37,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
@@ -68,17 +68,17 @@ class SandboxWidget implements NotifyPropertyChanged
     /**
      * @ORM\Column(type="string", length=100)
      * @Serializer\Expose()
-     * @Assert\NotNull(message="required")
-     * @Assert\Length(min=10, minMessage="length_small")
+     * @Assert\NotNull()
+     * @Assert\Length(min=10)
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Serializer\Expose()
-     * @Assert\NotNull(message="required")
-     * @Assert\NotBlank(message="required")
-     * @Assert\Type("int", message="must_be_int")
+     * @Assert\NotNull()
+     * @Assert\NotBlank()
+     * @Assert\Type("int")
      */
     private $inventory;
 

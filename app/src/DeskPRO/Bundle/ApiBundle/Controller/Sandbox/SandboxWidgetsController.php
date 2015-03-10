@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Sandbox;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -196,7 +197,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $submitted = $request->request->all();
 
         if (!count($submitted)) {
-            throw new BadRequestHttpException('no body input found');
+            throw new BadRequestHttpException();
         }
 
         $form->submit($submitted, $request->getMethod() !== 'PUT');
@@ -215,7 +216,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
             );
         }
 
-        return $form; // let our listeners generate the form error response
+        throw new InvalidFormException($form); // let our listeners generate the form error response
     }
 
     /**
@@ -227,7 +228,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
         $widget = $this->getDoctrine()->getManager()->getRepository('App:SandboxWidget')->find($id);
 
         if (!$widget) {
-            throw new NotFoundHttpException('widget does not exist');
+            throw new NotFoundHttpException();
         }
         return $widget;
     }

@@ -31,28 +31,21 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Symfony\Component\Validator\Constraints\NotBlank as BaseConstraint;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidatorInterface;
-
-class ApiErrors
+/**
+ * @Annotation
+ */
+class NotBlank extends BaseConstraint
 {
-    /** The absolute last fallback error code for thrown exceptions */
-    const EXCEPTION_FALLBACK = 'error';
+    const ERROR_CODE = 'required';
 
-    /** The absolute last fallback error code for form/validator errors */
-    const CONSTRAINT_FALLBACK = 'invalid'
+    public $message = self::ERROR_CODE;
 
-    /** General purpose error codes */;
-    const INTERNAL_ERROR = 'internal_error';
-    const BAD_REQUEST = 'bad_request';
-    const INVALID_INPUT = 'invalid_input';
-    const REQUIRED = 'required';
-    const FORBIDDEN = 'unauthorized';
-    const NOT_AUTHORIZED = 'not_authenticated';
-    const NOT_FOUND = 'not_found';
-    const INVALID_JSONP_CALLBACK = 'invalid_jsonp_callback';
-    const INVALID_JSON_BODY = 'invalid_json_body';
+    public function validatedBy()
+    {
+        return 'Symfony\Component\Validator\Constraints\NotBlankValidator';
+    }
 }

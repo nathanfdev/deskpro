@@ -51,7 +51,7 @@ class ErrorCodeFactorySpec extends ObjectBehavior
         ExceptionErrorCodeFactory $exception_error_code_Factory
     )
     {
-        $e = new FlattenException(new \Exception());
+        $e = new \Exception();
 
         $this->beConstructedWith($exception_error_code_Factory, $validator_error_code_factory);
 

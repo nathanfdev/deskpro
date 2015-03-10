@@ -41,11 +41,21 @@ class ExceptionErrorCodeFactory
     public static $exceptions_to_error_codes_map = array(
         'DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException' => ApiErrors::BAD_REQUEST,
         'Symfony\Component\HttpKernel\Exception\BadRequestHttpException' => ApiErrors::BAD_REQUEST,
-        'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException' => ApiErrors::NOT_AUTHENTICATED,
+        'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException' => ApiErrors::NOT_AUTHORIZED,
+        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException' => ApiErrors::NOT_FOUND,
+    );
+
+    public static $exception_messages_to_error_codes_map = array(
+        'Invalid JSONP callback value' => ApiErrors::INVALID_JSONP_CALLBACK,
+        'Invalid json message received' => ApiErrors::INVALID_JSON_BODY
     );
 
     public function getExceptionErrorCode(\Exception $exception)
     {
+        if ($error_code = $this->findMappedMessage($exception->getMessage())) {
+            return $error_code;
+        }
+
         if ($error_code = $exception->getMessage()) {
             return $error_code;
         }
@@ -61,6 +71,17 @@ class ExceptionErrorCodeFactory
     {
         foreach (self::$exceptions_to_error_codes_map as $exception_name => $error_code) {
             if ($exception_name === $exception_class) {
+                return $error_code;
+            }
+        }
+
+        return null;
+    }
+
+    protected function findMappedMessage($exception_message)
+    {
+        foreach (self::$exception_messages_to_error_codes_map as $mapped_message => $error_code) {
+            if ($mapped_message === $exception_message) {
                 return $error_code;
             }
         }
