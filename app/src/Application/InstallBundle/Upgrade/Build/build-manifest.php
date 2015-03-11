@@ -1736,7 +1736,7 @@
 
 	1425653819 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1425653819.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\deskpro/www/app/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1425653819'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1425653819'
 	),
 
 );
