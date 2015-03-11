@@ -33,9 +33,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Security\Token;
 
-
-use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
-
 class ApiKeySecurityToken extends AbstractApiSecurityToken
 {
     public function getName()
