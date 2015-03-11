@@ -497,7 +497,9 @@ define [
 
     loadDataOptions: ->
       if not @loadDataPromise
-        @loadDataPromise = @Api.sendDataGet({
+        @loadDataPromise = @$q.defer();
+
+        @Api.sendDataGet({
           'agents':          '/agents'
           'agent_teams':     '/agent_teams',
           'ticket_deps':     '/ticket_deps',
@@ -555,9 +557,11 @@ define [
           if @options_data?.user_fields
             for f in @options_data.user_fields
               @initFieldGetter 'SetUserField', f, true
+
+          @loadDataPromise.resolve(options_data)
         )
 
-      @loadDataPromise
+      @loadDataPromise.promise
 
 
     getSetAgent: (options = {}) ->
