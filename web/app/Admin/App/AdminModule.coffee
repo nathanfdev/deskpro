@@ -15,7 +15,6 @@ define [
   'angularSelectize',
   'angularGrid',
   'ngFileUpload',
-  'angularUiDatetime',
 
   'moment',
   'momentTimezone',
@@ -34,12 +33,14 @@ define [
   'ngClip',
 
   'bootstrapTooltip',
+  'bootstrapDatetime',
 
   'select2',
   'toastr',
 
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
+  'DeskPRO/Directive/DpDateTimePicker',
 ], (
   angular,
   ZeroClipboard
@@ -70,7 +71,7 @@ define [
     'ngGrid',
     'deskpro.option_builder',
     'deskpro.category_builder',
-    'ui.datetime'
+    'dp.datetimepicker'
   ])
 
   AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->

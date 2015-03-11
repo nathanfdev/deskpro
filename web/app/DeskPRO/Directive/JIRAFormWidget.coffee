@@ -39,10 +39,10 @@ define ->
         <input type="text" ui-select2="{multiple: true, simple_tags: true, tags: []}" ng-model="value" ng-required="field.required" />
       """
 			'com.atlassian.jira.plugin.system.customfieldtypes:datepicker': """
-				<input name="{{ field.id }}" type="text" ng-model="value" dp-datetime-input="{minView: 'day'}" readonly />
+				<input name="{{ field.id }}" type="text" ng-model="value" dp-datetime-popup="{minView: 'day'}" readonly />
       """
 			'com.atlassian.jira.plugin.system.customfieldtypes:datetime': """
-				<input name="{{ field.id }}" type="text" ng-model="value" dp-datetime-input="{minView: 'minute'}" readonly />
+				<input name="{{ field.id }}" type="text" ng-model="value" dp-datetime-popup="{minView: 'minute'}" readonly />
       """
 
 		remap =
