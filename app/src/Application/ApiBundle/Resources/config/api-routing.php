@@ -55,6 +55,12 @@ $collection->create('api_deskpro_info', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_deskpro_dpspecial', array(
+    'path'        => '/deskpro/dp_special/{action}',
+    'controller'  => 'ApiBundle:Misc:dpSpecial',
+    'methods'     => array('GET', 'POST'),
+));
+
 $collection->create('api_me_lastlogin', array(
     'path'        => '/me/last-login',
     'controller'  => 'ApiBundle:Misc:getLastLogin',

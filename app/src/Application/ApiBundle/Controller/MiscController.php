@@ -42,13 +42,14 @@ use Application\DeskPRO\LoginLogs\LoginLogs;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\File\File;
 
 class MiscController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
-        if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction') {
+        if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction' || $action == 'dpSpecialAction') {
             return null;
         }
 
@@ -443,5 +444,70 @@ class MiscController extends AbstractController
         $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
 
         return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
+    }
+
+    /**
+     * Special action codes (internal system use)
+     *
+     * @param string $action
+     * @return \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     */
+    public function dpSpecialAction($action)
+    {
+        if (!defined('DP_API_SPECIAL_CODE')) {
+            throw $this->createAccessDeniedException('DP_API_SPECIAL_CODE is not defined');
+        }
+
+        if ($this->in->getString('SC') != DP_API_SPECIAL_CODE) {
+            throw $this->createAccessDeniedException('DP_API_SPECIAL_CODE invalid');
+        }
+
+        switch ($action) {
+            case 'agent_login_token':
+
+                if (!($agent_id = $this->in->getUInt('agent_id'))) {
+                    foreach ($this->container->getAgentData()->getAgents() as $agent) {
+                        if ($agent->can_admin) {
+                            $agent_id = $agent->id;
+                            break;
+                        }
+                    }
+                }
+
+                $agent = $this->container->getAgentData()->get($agent_id);
+                if (!$agent) {
+                    throw $this->createNotFoundException();
+                }
+
+                $secret = sha1($agent->secret_string . $agent->salt);
+                $token = Util::generateStaticSecurityToken($secret, 300);
+
+                $data = array(
+                    'agent_id'    => $agent->id,
+                    'agent_name'  => $agent->getDisplayName(),
+                    'agent_email' => $agent->getPrimaryEmailAddress(),
+                    'valid_until' => date('Y-m-d H:i:s', time()+300),
+                    'login_token' => $token,
+                    'login_url'   => App::getRouter()->generateUrl('user') . 'agent/login?tok=' . $agent->getId() . '-' . $token,
+                );
+
+                return $this->createApiResponse($data);
+
+            case 'list_agents':
+
+                $data = array('agents' => array());
+
+                foreach ($this->container->getAgentData()->getAgents() as $agent) {
+                    $data['agents'][$agent->id] = array(
+                        'agent_id'    => $agent->id,
+                        'agent_name'  => $agent->getDisplayName(),
+                        'agent_email' => $agent->getPrimaryEmailAddress(),
+                    );
+                }
+
+                return $this->createApiResponse($data);
+        }
+
+        throw $this->createNotFoundException();
     }
 }
