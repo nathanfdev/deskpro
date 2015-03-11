@@ -2101,7 +2101,7 @@ class Strings
         $body = preg_replace('#</div>#i', "<br />", $body);
         $body = preg_replace('#<br[^>]*>#i', "\n", $body);
         $body = preg_replace('#<p[^>]*>#i', "\n", $body);
-        $body = strip_tags($body);
+        $body = Strings::stripTags($body);
         $body = Strings::decodeHtmlEntities($body);
         $body = preg_replace('#\x{00a0}#u', ' ', $body); // nbsp's
         $body = trim($body);
