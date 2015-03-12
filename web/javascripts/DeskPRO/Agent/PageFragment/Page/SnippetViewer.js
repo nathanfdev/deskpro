@@ -857,9 +857,23 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		//------------------------------
 
 		editSnippetEl.find('.delete-snippet-trigger').on('click', function(ev) {
-			var snippet = self.editingSnippet;
+			var snippet = self.editingSnippet,
+					key;
+
 			editSnippetEl.find('.overlay-footer').addClass('loading');
 			self.snippetDriver.deleteSnippet(snippet.id, function(snippet_id) {
+
+				if (self.snippet_typename == 'tickets') {
+					key = 'DESKPRO_TICKET_SNIPPET_SHORTCODES';
+				} else if (self.snippet_typename == 'chat') {
+					key = 'DESKPRO_CHAT_SNIPPET_SHORTCODES';
+				}
+
+				if (window[key] && window[key][snippet.shortcut_code]) {
+					var idx = window[key][snippet.shortcut_code].indexOf(snippet.id);
+					idx > -1 && window[key][snippet.shortcut_code].splice(idx, 1);
+				}
+
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 				self.snippetEditOverlay.close();
 
