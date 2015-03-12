@@ -259,7 +259,7 @@ class CsvImport extends AbstractJob
         $secondary_emails = array();
         $addresses = array();
         $errors = array();
-	    $old = null;
+	    $send_welcome = true;
 
         foreach ($field_maps AS $column_id => $info) {
             if (empty($info['map'])) {
@@ -293,6 +293,7 @@ class CsvImport extends AbstractJob
 		                continue;
 	                }
 	                $person = $old;
+	                $send_welcome = false;
                 }
 
                 $primary_email = strtolower($column_value);
@@ -311,6 +312,7 @@ class CsvImport extends AbstractJob
 		                break;
 	                }
 	                $person = $old;
+	                $send_welcome = false;
                 }
 
                 $secondary_emails[] = strtolower($column_value);
@@ -473,7 +475,7 @@ class CsvImport extends AbstractJob
                                 $em->persist($custom_data);
                                 $person->addCustomData($custom_data);
                             }
-                        } if ($custom_field->getTypeName() == 'date') {
+                        } else if ($custom_field->getTypeName() == 'date') {
                             if (ctype_digit($column_value)) {
                                 // assume timestamp
                                 $set_field = true;
@@ -530,7 +532,7 @@ class CsvImport extends AbstractJob
         $em->persist($person);
         $em->flush();
 
-        if ($this->_data['welcome_email'] && !defined('DPC_IS_CLOUD')) {
+        if ($this->_data['welcome_email'] && $send_welcome && !defined('DPC_IS_CLOUD')) {
             $mailer = App::getContainer()->getMailer();
 
             $message = $mailer->createMessage();

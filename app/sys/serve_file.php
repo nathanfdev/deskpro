@@ -671,24 +671,6 @@ class FilestorageLoader extends LoaderAbstract
                 $mimetype = 'application/pdf';
                 break;
 
-            case 'Admin-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-manual/en_US.pdf';
-                $filename = 'Admin Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
-            case 'Reports-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
-                $filename = 'Reports Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
-            case 'Agent-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
-                $filename = 'Agent Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
             case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
                 $path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';

@@ -1068,7 +1068,7 @@ class TemplatingExtension extends \Twig_Extension
         $path = Strings::canonicalPath($path);
         $root_path = '/' . trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
 
-        if (strpos($path, $root_path) !== 0) {
+        if (!trim($path, '/') || strpos($path, $root_path) !== 0) {
             return false;
         }
 

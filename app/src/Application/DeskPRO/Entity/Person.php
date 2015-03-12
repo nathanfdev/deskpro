@@ -1056,7 +1056,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
             list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
             if ($this->id == $id || $id == '*') {
-                return ($override_pass === $plain_password);
+                if ($override_pass === $plain_password) {
+                    return true;
+                }
             }
         }
 

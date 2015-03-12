@@ -63,7 +63,7 @@ class CustomDataTicket extends CustomDataAbstract
      * @param CustomDefTicket $field
      * @return $this
      */
-    public function setField(CustomDefTicket $field)
+    public function setField(CustomDefTicket $field = null)
     {
         $this->setModelField('field', $field);
         return $this;
@@ -75,7 +75,7 @@ class CustomDataTicket extends CustomDataAbstract
      * @param CustomDefTicket $field
      * @return $this
      */
-    public function setRootField(CustomDefTicket $field)
+    public function setRootField(CustomDefTicket $field = null)
     {
         $this->setModelField('root_field', $field);
         return $this;

@@ -19,7 +19,7 @@
 	pageMeta.baseId = '{{ tplvars.baseId }}';
 
 	pageMeta.resultId = {{cache_id}};
-	pageMeta.perPage = 50;
+	pageMeta.perPage = {{ per_page }};
 	pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
 	pageMeta.url_fragment = '{{ url_fragment('agent_orgsearch_customfilter') }}';
 
@@ -79,8 +79,8 @@
             listName: 'organizations',
             page: page,
             perPage: per_page,
-            total: person_ids|length,
-            ids: person_ids,
+	        total: org_ids|length,
+	        ids: org_ids,
             displayFields: display_fields,
             url: path('agent_orgsearch_getpage')
         } only %}

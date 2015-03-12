@@ -685,22 +685,27 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
                             'person' => $person
                         ));
+
+                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                            $message->prepare();
+                        });
+
                         $this->container->getMailer()->send($message);
                     }
                 }
                 break;
-                        case 'upload-vcard':
-                                $blobId = $this->in->getUint('blob_id');
+        case 'upload-vcard':
+                $blobId = $this->in->getUint('blob_id');
 
-                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
 
-                                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-                                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
 
-                                $vCardReader->applyToPerson($content, $person);
+                $vCardReader->applyToPerson($content, $person);
 
-                                break;
+                break;
 
             default:
                 return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));

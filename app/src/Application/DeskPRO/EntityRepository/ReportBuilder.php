@@ -255,7 +255,13 @@ class ReportBuilder extends AbstractEntityRepository
                     'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
-                    'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')')
+                    'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+                    'hour_resolved' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+                    'day_week_resolved' => array('day of week resolved', 'ALIAS(DAYNAME(%s.date_resolved), \'Day of Week Resolved\')'),
+                    'day_month_resolved' => array('day of month resolved', 'ALIAS(DAYOFMONTH(%s.date_resolved), \'Day of Month Resolved\')'),
+                    'month_resolved' => array('month resolved', 'ALIAS(MONTHNAME(%s.date_resolved), \'Month Resolved\')'),
+                    'year_resolved' => array('year resolved', 'ALIAS(YEAR(%s.date_resolved), \'Year Resolved\')'),
+                    'date_resolved' => array('date resolved', 'ALIAS(DATE(%s.date_resolved), \'Date Resolved\')')
                 ),
                 'chats' => array(
                     'department' => array('department', '%s.department'),

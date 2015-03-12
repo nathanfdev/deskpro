@@ -72,7 +72,7 @@ class CustomDataPerson extends CustomDataAbstract
      * @param CustomDefPerson $field
      * @return $this
      */
-    public function setField(CustomDefPerson $field)
+    public function setField(CustomDefPerson $field = null)
     {
         $this->setModelField('field', $field);
         return $this;
@@ -84,7 +84,7 @@ class CustomDataPerson extends CustomDataAbstract
      * @param CustomDefPerson $field
      * @return $this
      */
-    public function setRootField(CustomDefPerson $field)
+    public function setRootField(CustomDefPerson $field = null)
     {
         $this->setModelField('root_field', $field);
         return $this;
