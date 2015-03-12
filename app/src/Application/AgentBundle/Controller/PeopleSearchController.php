@@ -737,7 +737,7 @@ class PeopleSearchController extends AbstractController
             $q = $this->in->getString('term');
         }
 
-        $limit       = $this->in->getUint('limit') ?: 100;
+        $limit       = $this->in->getUint('limit') ?: 250;
         $with_agents = $this->in->getBool('with_agents');
         $exclude_org = $this->in->getUint('exclude_org');
 
