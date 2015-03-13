@@ -44,6 +44,11 @@ use DeskPRO\Bundle\AppBundle\Entity\FilterView;
  */
 class FilterViewSpec extends ObjectBehavior
 {
+    function it_starts_with_a_null_id()
+    {
+        $this->getId()->shouldBe(null);
+    }
+
     function it_defaults_to_list_type_so_it_always_has_a_type()
     {
         $this->getType()->shouldBe(FilterView::TYPE_LIST);

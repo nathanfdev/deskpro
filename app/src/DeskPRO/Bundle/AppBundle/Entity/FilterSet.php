@@ -35,36 +35,63 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterSetRepository")
+ * @ORM\Table(name="filter_sets")
+ */
 class FilterSet
 {
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
      * @var string
+     * @ORM\Column(name="title", type="string")
      */
     protected $title;
 
     /**
      * @var int
+     * @ORM\Column(name="display_order", type="integer")
      */
     protected $display_order;
 
     /**
      * @var Filter[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Filter", mappedBy="filter_set")
      */
     protected $filters;
 
     /**
      * @var bool
+     * @ORM\Column(name="is_default", type="boolean")
      */
     protected $is_default;
 
     /**
      * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      */
     protected $private_agent;
 
     /**
      * @var Person[]|ArrayCollection
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinTable(
+     *      name="filter_set_agents",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
+     *      }
+     * )
      */
     protected $shared_agents;
 
@@ -73,6 +100,14 @@ class FilterSet
         $this->filters = new ArrayCollection();
         $this->shared_agents = new ArrayCollection();
         $this->display_order = 0;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

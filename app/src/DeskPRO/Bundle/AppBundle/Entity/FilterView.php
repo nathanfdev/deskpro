@@ -34,39 +34,57 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterViewRepository")
+ * @ORM\Table(name="filter_views")
+ */
 class FilterView
 {
     const TYPE_LIST = 'list';
     const TYPE_TABLE = 'table';
 
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
      * @var string
+     * @ORM\Column(name="type", type="string", length=10)
      */
     protected $type;
 
     /**
      * @var Filter
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Filter", inversedBy="filter_views")
      */
     protected $filter;
 
     /**
      * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      */
     protected $agent;
 
     /**
      * @var array
+     * @ORM\Column(name="fields", type="json_array")
      */
     protected $fields;
 
     /**
      * @var array
+     * @ORM\Column(name="icon_fields", type="json_array")
      */
     protected $icon_fields;
 
     /**
      * @var array
+     * @ORM\Column(name="options", type="json_array")
      */
     protected $options;
 
@@ -76,6 +94,22 @@ class FilterView
         $this->icon_fields = array();
         $this->options = array();
         $this->fields = array();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivate()
+    {
+        return null !== $this->agent;
     }
 
     /**
@@ -179,16 +213,18 @@ class FilterView
         $this->options = $options;
     }
 
-    public function isPrivate()
-    {
-        return null !== $this->agent;
-    }
-
+    /**
+     * @param string $key
+     * @param mixed $val
+     */
     public function addOption($key, $val)
     {
         $this->options[$key] = $val;
     }
 
+    /**
+     * @param string $key
+     */
     public function removeOption($key)
     {
         if (array_key_exists($key, $this->options)) {
@@ -196,6 +232,9 @@ class FilterView
         }
     }
 
+    /**
+     * @param string $field
+     */
     public function addIconField($field)
     {
         if (!in_array($field, $this->icon_fields)) {
@@ -203,6 +242,9 @@ class FilterView
         }
     }
 
+    /**
+     * @param string $field
+     */
     public function removeIconField($field)
     {
         if (in_array($field, $this->icon_fields)) {
@@ -217,6 +259,9 @@ class FilterView
         }
     }
 
+    /**
+     * @param string $field
+     */
     public function addField($field)
     {
         if (!in_array($field, $this->fields)) {
@@ -224,6 +269,9 @@ class FilterView
         }
     }
 
+    /**
+     * @param string $field
+     */
     public function removeField($field)
     {
         if (in_array($field, $this->fields)) {

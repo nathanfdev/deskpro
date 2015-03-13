@@ -45,6 +45,11 @@ use DeskPRO\Bundle\AppBundle\Entity\Filter;
  */
 class FilterSpec extends ObjectBehavior
 {
+    function it_starts_with_a_null_id()
+    {
+        $this->getId()->shouldBe(null);
+    }
+
     function it_belongs_to_only_one_filter_set(FilterSet $set)
     {
         $this->getFilterSet()->shouldBe(null);

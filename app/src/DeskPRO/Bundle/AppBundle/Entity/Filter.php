@@ -34,31 +34,48 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository")
+ * @ORM\Table(name="filters")
+ */
 class Filter
 {
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
      * @var string
+     * @ORM\Column(name="title", type="string")
      */
     protected $title;
 
     /**
      * @var int
+     * @ORM\Column(name="display_order", type="integer")
      */
     protected $display_order;
 
     /**
      * @var FilterSet
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterSet", inversedBy="filters")
      */
     protected $filter_set;
 
     /**
      * @var FilterView[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterView", mappedBy="filter")
      */
     protected $filter_views;
 
     /**
      * @var FilterPreference[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterPreference", mappedBy="filter")
      */
     protected $filter_preferences;
 
@@ -67,6 +84,14 @@ class Filter
         $this->filter_views = new ArrayCollection();
         $this->filter_preferences = new ArrayCollection();
         $this->display_order = 0;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

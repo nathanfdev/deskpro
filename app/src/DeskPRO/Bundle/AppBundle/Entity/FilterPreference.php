@@ -34,41 +34,60 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterPreferenceRepository")
+ * @ORM\Table(name="filter_preferences")
+ */
 class FilterPreference
 {
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
      * @var Filter
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Filter", inversedBy="filter_preferences")
      */
     protected $filter;
 
     /**
      * @var FilterView
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterView")
      */
     protected $filter_view;
 
     /**
      * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      */
     protected $agent;
 
     /**
      * @var int
+     * @ORM\Column(name="display_order", type="integer")
      */
     protected $display_order;
 
     /**
      * @var string
+     * @ORM\Column(name="main_grouping", type="string")
      */
     protected $main_grouping;
 
     /**
      * @var string
+     * @ORM\Column(name="result_grouping", type="string")
      */
     protected $result_grouping;
 
     /**
      * @var bool
+     * @ORM\Column(name="show_sla", type="boolean")
      */
     protected $show_sla;
 
@@ -76,6 +95,14 @@ class FilterPreference
     {
         $this->display_order = 0;
         $this->show_sla = false;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

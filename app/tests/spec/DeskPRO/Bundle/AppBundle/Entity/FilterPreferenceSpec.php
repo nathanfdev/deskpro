@@ -45,6 +45,11 @@ use DeskPRO\Bundle\AppBundle\Entity\FilterPreference;
  */
 class FilterPreferenceSpec extends ObjectBehavior
 {
+    function it_starts_with_a_null_id()
+    {
+        $this->getId()->shouldBe(null);
+    }
+
     function it_is_used_with_a_single_filter(Filter $filter)
     {
         $this->getFilter()->shouldBe(null);
