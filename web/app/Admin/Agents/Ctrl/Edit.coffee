@@ -507,6 +507,8 @@ define [
       # Shows the copy settings modal
       ###
     showDelete: ->
+      isSelf = @isSelf()
+
       deleteAgent = (settings) =>
         if settings.method == 'user'
           target = "/agents/#{@agentId}/delete/to-user"
@@ -532,6 +534,8 @@ define [
           $scope.options = {
             method: 'user'
           }
+
+          $scope.isSelf = isSelf
 
           $scope.doDelete = (options) ->
             $scope.is_loading = true
@@ -660,5 +664,8 @@ define [
       )
 
       return promise
+
+    isSelf: ->
+      window.DP_PERSON_ID == @agentId
 
   Admin_Agents_Ctrl_Edit.EXPORT_CTRL()
