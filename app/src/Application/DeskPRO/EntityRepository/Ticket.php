@@ -707,11 +707,19 @@ class Ticket extends AbstractEntityRepository
 
     public function getTicketCountsForPeople(array $people)
     {
-        $ret = array();
+	    $ids = array();
         foreach ($people as $p) {
-            $ret[$p['id']] = $this->countTicketsForPerson($p);
+	        $ids[] = $p['id'];
         }
-	    return $ret;
+
+	    return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+            SELECT person_id, COUNT(person_id) FROM (
+				SELECT person_id FROM tickets WHERE person_id IN (?)
+				UNION ALL
+				SELECT person_id FROM tickets_participants WHERE person_id IN (?)
+			) a
+			GROUP BY person_id
+        ', array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
     }
 
     /**
