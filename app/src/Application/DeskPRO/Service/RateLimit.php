@@ -40,6 +40,8 @@ class RateLimit
 {
 	const KEY = 'rate_limit';
 
+	const DISABLED = 'core.rate_limit_disabled';
+
 	const ACT_LOGIN = 'login';
 	const ACT_REGISTRATION = 'registration';
 	const ACT_RESET_PWD = 'reset_password';
@@ -60,6 +62,11 @@ class RateLimit
 		$this->container = $continer;
 	}
 
+	protected function isNoop()
+	{
+		return (int) $this->container->getSetting(self::DISABLED);
+	}
+
 	/**
 	 * save action
 	 * @param $action
@@ -68,6 +75,10 @@ class RateLimit
 	 */
 	public function saveAction($action)
 	{
+		if ($this->isNoop()) {
+			return false;
+		}
+
 		if (!$this->container->isScopeActive('request')) {
 			return false;
 		}
@@ -153,6 +164,10 @@ class RateLimit
 	 */
 	public function isActionLimited($action)
 	{
+		if ($this->isNoop()) {
+			return false;
+		}
+
 		if (!$this->container->isScopeActive('request')) {
 			return false;
 		}

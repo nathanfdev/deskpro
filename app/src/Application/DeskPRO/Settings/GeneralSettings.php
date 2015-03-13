@@ -32,6 +32,7 @@
  */
 
 namespace Application\DeskPRO\Settings;
+use Application\DeskPRO\Service\RateLimit;
 use Orb\Util\Arrays;
 
 class GeneralSettings
@@ -89,6 +90,9 @@ class GeneralSettings
 
     /** @var bool */
     protected $isCloud;
+
+	/** @var bool */
+	protected $rate_limit_disabled;
 
     /**
      * @param Settings $settings
@@ -159,6 +163,7 @@ class GeneralSettings
 
         if (!$this->attach_agent_must_exts) $this->attach_agent_must_exts = array();
         if (!$this->attach_agent_not_exts)  $this->attach_agent_not_exts = array();
+	    $this->rate_limit_disabled = (bool) $this->settings->get(RateLimit::DISABLED);
     }
 
 
@@ -204,6 +209,7 @@ class GeneralSettings
             'attach_agent_must_exts' => $this->attach_agent_must_exts,
             'attach_agent_not_exts'  => $this->attach_agent_not_exts,
             'attach_agent_maxsize'   => $this->attach_agent_maxsize,
+	        'rate_limit_disabled'    => $this->rate_limit_disabled,
 
         );
 
@@ -278,5 +284,7 @@ class GeneralSettings
         $this->settings->setSetting('core.attach_agent_maxsize', (int)$this->attach_agent_maxsize);
         $this->settings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
         $this->settings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
+
+	    $this->settings->setSetting(RateLimit::DISABLED, (bool) $this->rate_limit_disabled);
     }
 }
