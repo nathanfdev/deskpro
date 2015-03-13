@@ -3,7 +3,7 @@ define ['angular', 'moment'], (angular, moment) ->
 
   .constant('dpDatetimeConfig',
     minView: 'minute'
-    format: false
+    format: 'DD.MM.YYYY HH:mm'
     dayViewHeaderFormat: 'MMMM YYYY'
     minDate: false
     maxDate: false
@@ -59,6 +59,7 @@ define ['angular', 'moment'], (angular, moment) ->
       actualFormat = format.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g, (input) ->
         date.localeData().longDateFormat(input) || input
       )
+      console.info actualFormat
       parseFormats = if options.extraFormats then options.extraFormats.slice() else []
       if parseFormats.indexOf(format) < 0 && parseFormats.indexOf(actualFormat) < 0
         parseFormats.push actualFormat
@@ -218,6 +219,15 @@ define ['angular', 'moment'], (angular, moment) ->
         return if !$scope.isModeAvailable
         $scope.mode = mode
 
+      $scope.increment = (g) ->
+        setDatetime(date.clone().add(1, g))
+
+      $scope.decrement = (g) ->
+        setDatetime(date.clone().subtract(1, g))
+
+      $scope.gonext = (g) ->
+
+
       $scope.$watch 'mode', (val) ->
         render(val)
   ])
@@ -300,17 +310,17 @@ define ['angular', 'moment'], (angular, moment) ->
 							<tbody>
 								<tr ng-if="modes.time === mode">
 									<td>
-										<a href="#" class="btn">
+										<a class="btn" ng-click="increment('h')">
 											<span class="fa fa-chevron-up"></span>
 										</a>
 									</td>
 									<td class="separator"></td>
 									<td>
-										<a href="#" class="btn">
+										<a class="btn" ng-click="increment('m')">
 											<span class="fa fa-chevron-up"></span>
 										</a>
 									</td>
-									<td class="separator"></td>
+									<td class="separator" ng-if="!use24"></td>
 								</tr>
 								<tr ng-if="modes.time === mode">
 									<td>
@@ -332,17 +342,17 @@ define ['angular', 'moment'], (angular, moment) ->
 								</tr>
 								<tr ng-if="modes.time === mode">
 									<td>
-										<a href="#" class="btn">
+										<a class="btn" ng-click="decrement('h')">
 											<span class="fa fa-chevron-down"></span>
 										</a>
 									</td>
 									<td class="separator"></td>
 									<td>
-										<a href="#" class="btn">
+										<a class="btn" ng-click="decrement('m')">
 											<span class="fa fa-chevron-down"></span>
 										</a>
 									</td>
-									<td class="separator"></td>
+									<td class="separator" ng-if="!use24"></td>
 								</tr>
 								<tr ng-if="modes.hour === mode">
 									<td>
