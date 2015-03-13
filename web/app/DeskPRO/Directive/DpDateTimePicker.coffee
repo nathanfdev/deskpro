@@ -3,7 +3,7 @@ define ['angular', 'moment'], (angular, moment) ->
 
   .constant('dpDatetimeConfig',
     minView: 'minute'
-    format: 'DD.MM.YYYY HH:mm'
+    format: false
     dayViewHeaderFormat: 'MMMM YYYY'
     minDate: false
     maxDate: false
@@ -59,7 +59,6 @@ define ['angular', 'moment'], (angular, moment) ->
       actualFormat = format.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g, (input) ->
         date.localeData().longDateFormat(input) || input
       )
-      console.info actualFormat
       parseFormats = if options.extraFormats then options.extraFormats.slice() else []
       if parseFormats.indexOf(format) < 0 && parseFormats.indexOf(actualFormat) < 0
         parseFormats.push actualFormat
@@ -225,8 +224,21 @@ define ['angular', 'moment'], (angular, moment) ->
       $scope.decrement = (g) ->
         setDatetime(date.clone().subtract(1, g))
 
-      $scope.gonext = (g) ->
-
+      $scope.go = (dir) ->
+        return if !$scope[dir]
+        i = 1
+        g = null
+        if modes.day == $scope.mode
+          g = 'month'
+        else if modes.month == $scope.mode
+          g = 'year'
+        else if modes.year == $scope.mode
+          g = 'years'
+          i = 12
+        return if !g
+        method = if 'next' == dir then 'add' else 'subtract'
+        date[method](i, g)
+        render($scope.mode)
 
       $scope.$watch 'mode', (val) ->
         render(val)
@@ -243,13 +255,13 @@ define ['angular', 'moment'], (angular, moment) ->
 							<table class="table-condensed">
 								<thead>
 									<tr>
-										<th class="prev" ng-class="!prev && 'disabled'" ng-click="switch(-1)">
+										<th class="prev" ng-class="!prev && 'disabled'" ng-click="go('prev')">
 											<span class="fa fa-chevron-left"></span>
 										</th>
 										<th class="picker-switch" colspan="5" ng-click="switchMode(mode+1)" ng-class="headerDisabled && 'disabled'">
 											{{ header }}
 										</th>
-										<th class="next" ng-class="!next && 'disabled'" ng-click="switch(1)">
+										<th class="next" ng-class="!next && 'disabled'" ng-click="go('next')">
 											<span class="fa fa-chevron-right"></span>
 										</th>
 									</tr>
