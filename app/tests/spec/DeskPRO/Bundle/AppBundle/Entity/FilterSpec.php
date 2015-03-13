@@ -56,22 +56,22 @@ class FilterSpec extends ObjectBehavior
 
     function it_can_be_associated_with_views(FilterView $view1, FilterView $view2)
     {
-        $this->getFilterViews()->shouldBeLike(array());
+        $this->getFilterViews()->toArray()->shouldBeLike(array());
 
         $this->addFilterView($view1);
         $this->addFilterView($view2);
 
-        $this->getFilterViews()->shouldBeLike($view1, $view2);
+        $this->getFilterViews()->toArray()->shouldBeLike(array($view1, $view2));
     }
 
     function it_can_be_associated_with_preferences(FilterPreference $pref1, FilterPreference $pref2)
     {
-        $this->getFilterPreferences()->shouldBeLike(array());
+        $this->getFilterPreferences()->toArray()->shouldBeLike(array());
 
         $this->addFilterPreference($pref1);
         $this->addFilterPreference($pref2);
 
-        $this->getFilterPreferences()->shouldBeLike($pref1, $pref2);
+        $this->getFilterPreferences()->toArray()->shouldBeLike(array($pref1, $pref2));
     }
 
     function it_has_a_title()

@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO
@@ -33,67 +33,157 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Application\DeskPRO\Entity\Person;
+
 class FilterSet
 {
+    /**
+     * @var string
+     */
+    protected $title;
 
+    /**
+     * @var int
+     */
+    protected $display_order;
 
+    /**
+     * @var Filter[]|ArrayCollection
+     */
+    protected $filters;
+
+    /**
+     * @var bool
+     */
+    protected $is_default;
+
+    /**
+     * @var Person
+     */
+    protected $private_agent;
+
+    /**
+     * @var Person[]|ArrayCollection
+     */
+    protected $shared_agents;
+
+    public function __construct()
+    {
+        $this->filters = new ArrayCollection();
+        $this->shared_agents = new ArrayCollection();
+        $this->display_order = 0;
+    }
+
+    /**
+     * @return Filter[]|ArrayCollection
+     */
     public function getFilters()
     {
-        // TODO: write logic here
+        return $this->filters;
     }
 
-    public function addFilter($argument1)
+    /**
+     * @param Filter $filter
+     */
+    public function addFilter(Filter $filter)
     {
-        // TODO: write logic here
+        $this->filters->add($filter);
+        $filter->setFilterSet($this);
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
-        // TODO: write logic here
+        return $this->title;
     }
 
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return int
+     */
     public function getDisplayOrder()
     {
-        // TODO: write logic here
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->display_order = (int)$display_order;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsDefault()
+    {
+        return $this->is_default;
+    }
+
+    /**
+     * @param boolean $is_default
+     */
+    public function setIsDefault($is_default)
+    {
+        $this->is_default = (bool)$is_default;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPrivateAgent()
+    {
+        return $this->private_agent;
+    }
+
+    /**
+     * @param Person $private_agent
+     */
+    public function setPrivateAgent(Person $private_agent)
+    {
+        $this->private_agent = $private_agent;
+    }
+
+    /**
+     * @return Person[]|ArrayCollection
+     */
+    public function getSharedAgents()
+    {
+        return $this->shared_agents;
+    }
+
+    /**
+     * @param Person $agent
+     */
+    public function addSharedAgent(Person $agent)
+    {
+        $this->shared_agents->add($agent);
     }
 
     public function isDefault()
     {
-        // TODO: write logic here
+        return $this->is_default === true;
     }
 
-    public function setDefault($argument1)
+    public function setDefault($default)
     {
-        // TODO: write logic here
-    }
-
-    public function getPrivateAgent()
-    {
-        // TODO: write logic here
-    }
-
-    public function setPrivateAgent($argument1)
-    {
-        // TODO: write logic here
-    }
-
-    public function addSharedAgent($argument1)
-    {
-        // TODO: write logic here
-    }
-
-    public function setTitle($argument1)
-    {
-        // TODO: write logic here
-    }
-
-    public function getSharedAgents()
-    {
-        // TODO: write logic here
+        $this->is_default = (bool)$default;
     }
 
     public function isPrivate()
     {
-        // TODO: write logic here
+        return null !== $this->private_agent;
     }
 }

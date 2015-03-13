@@ -46,7 +46,7 @@ class FilterSetSpec extends ObjectBehavior
 {
     function it_starts_with_no_filters()
     {
-        $this->getFilters()->shouldBeLike(array());
+        $this->getFilters()->toArray()->shouldBeLike(array());
     }
 
     function it_lets_you_add_a_filter(Filter $filter)
@@ -54,7 +54,7 @@ class FilterSetSpec extends ObjectBehavior
         $this->addFilter($filter);
 
         $filter->setFilterSet($this)->shouldHaveBeenCalled();
-        $this->getFilters()->shouldBeLike(array($filter));
+        $this->getFilters()->toArray()->shouldBeLike(array($filter));
     }
 
     function it_has_a_title()
@@ -94,7 +94,7 @@ class FilterSetSpec extends ObjectBehavior
     function it_initialized_with_no_agents_and_shared()
     {
         $this->getPrivateAgent()->shouldBe(null);
-        $this->getSharedAgents()->shouldBeLike(array());
+        $this->getSharedAgents()->toArray()->shouldBeLike(array());
 
         $this->isPrivate()->shouldBe(false);
     }
@@ -104,7 +104,7 @@ class FilterSetSpec extends ObjectBehavior
         $this->setPrivateAgent($agent);
 
         $this->getPrivateAgent($agent);
-        $this->getSharedAgents()->shouldBeLike(array());
+        $this->getSharedAgents()->toArray()->shouldBeLike(array());
         $this->isPrivate()->shouldBe(true);
     }
 
@@ -112,13 +112,13 @@ class FilterSetSpec extends ObjectBehavior
     {
         $this->addSharedAgent($agent1);
 
-        $this->getSharedAgents()->shouldBeLike(array($agent1));
+        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1));
         $this->getPrivateAgent()->shouldBe(null);
         $this->isPrivate()->shouldBe(false);
 
         $this->addSharedAgent($agent2);
 
-        $this->getSharedAgents()->shouldBeLike(array($agent1, $agent2));
+        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1, $agent2));
         $this->getPrivateAgent()->shouldBe(null);
         $this->isPrivate()->shouldBe(false);
     }

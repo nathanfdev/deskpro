@@ -55,7 +55,7 @@ class FilterViewSpec extends ObjectBehavior
 
         $this->getType()->shouldBe(FilterView::TYPE_TABLE);
 
-        $this->shouldThrow('\InvalidArgumentException')->during('setType', 'invalid');
+        $this->shouldThrow('\InvalidArgumentException')->during('setType', array('invalid'));
     }
 
     function it_is_associated_with_a_filter(Filter $filter)
@@ -89,15 +89,15 @@ class FilterViewSpec extends ObjectBehavior
         $this->addField('name');
         $this->addField('email');
 
-        $this->getFields()->shouldBeLike(array('id', 'name', 'email'));
+        $this->getFields()->shouldBe(array('id', 'name', 'email'));
 
         $this->removeField('name');
 
-        $this->getFields()->shouldBeLike(array('id', 'email'));
+        $this->getFields()->shouldBe(array('id', 'email'));
 
         $this->setFields(array('foo', 'bar'));
 
-        $this->getFields()->shouldBeLike('foo', 'bar');
+        $this->getFields()->shouldBe(array('foo', 'bar'));
     }
 
     function it_has_icon_fields()
@@ -107,15 +107,15 @@ class FilterViewSpec extends ObjectBehavior
         $this->addIconField('name');
         $this->addIconField('email');
 
-        $this->getIconFields()->shouldBeLike(array('id', 'name', 'email'));
+        $this->getIconFields()->shouldBe(array('id', 'name', 'email'));
 
         $this->removeIconField('name');
 
-        $this->getIconFields()->shouldBeLike(array('id', 'email'));
+        $this->getIconFields()->shouldBe(array('id', 'email'));
 
         $this->setIconFields(array('foo', 'bar'));
 
-        $this->getIconFields()->shouldBeLike('foo', 'bar');
+        $this->getIconFields()->shouldBe(array('foo', 'bar'));
     }
 
     function it_has_options()

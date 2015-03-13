@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO
@@ -33,52 +33,119 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class Filter
 {
+    /**
+     * @var string
+     */
+    protected $title;
 
+    /**
+     * @var int
+     */
+    protected $display_order;
 
-    public function getFilterSet()
+    /**
+     * @var FilterSet
+     */
+    protected $filter_set;
+
+    /**
+     * @var FilterView[]|ArrayCollection
+     */
+    protected $filter_views;
+
+    /**
+     * @var FilterPreference[]|ArrayCollection
+     */
+    protected $filter_preferences;
+
+    public function __construct()
     {
-        // TODO: write logic here
+        $this->filter_views = new ArrayCollection();
+        $this->filter_preferences = new ArrayCollection();
+        $this->display_order = 0;
     }
 
-    public function getFilterViews()
-    {
-        // TODO: write logic here
-    }
-
-    public function getFilterPreferences()
-    {
-        // TODO: write logic here
-    }
-
+    /**
+     * @return string
+     */
     public function getTitle()
     {
-        // TODO: write logic here
+        return $this->title;
     }
 
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return int
+     */
     public function getDisplayOrder()
     {
-        // TODO: write logic here
+        return $this->display_order;
     }
 
-    public function setFilterSet($argument1)
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
     {
-        // TODO: write logic here
+        $this->display_order = (int)$display_order;
     }
 
-    public function addFilterView($argument1)
+    /**
+     * @return FilterSet
+     */
+    public function getFilterSet()
     {
-        // TODO: write logic here
+        return $this->filter_set;
     }
 
-    public function addFilterPreference($argument1)
+    /**
+     * @param FilterSet $filter_set
+     */
+    public function setFilterSet(FilterSet $filter_set)
     {
-        // TODO: write logic here
+        $this->filter_set = $filter_set;
     }
 
-    public function setTitle($argument1)
+    /**
+     * @return ArrayCollection|FilterView[]
+     */
+    public function getFilterViews()
     {
-        // TODO: write logic here
+        return $this->filter_views;
+    }
+
+    /**
+     * @return ArrayCollection|FilterPreference[]
+     */
+    public function getFilterPreferences()
+    {
+        return $this->filter_preferences;
+    }
+
+    /**
+     * @param FilterPreference $filter_preference
+     */
+    public function addFilterPreference(FilterPreference $filter_preference)
+    {
+        $this->filter_preferences->add($filter_preference);
+    }
+
+    /**
+     * @param FilterView $view
+     */
+    public function addFilterView(FilterView $view)
+    {
+        $this->filter_views->add($view);
     }
 }
