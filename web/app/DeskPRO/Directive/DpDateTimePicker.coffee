@@ -2,7 +2,6 @@ define ['angular', 'moment'], (angular, moment) ->
   angular.module('dp.datetimepicker', ['template/dp/datetime.html', 'ui.bootstrap'])
 
   .constant('dpDatetimeConfig',
-    minView: 'minute'
     format: 'DD.MM.YYYY HH:mm' # moment formats
     dayViewHeaderFormat: 'MMMM YYYY'
     minDate: false
@@ -15,13 +14,13 @@ define ['angular', 'moment'], (angular, moment) ->
       restrict: 'A'
       scope:
         date: '=ngModel'
-        format: '@format'
-        minView: '@minView'
-        minDate: '@minDate'
-        maxDate: '@maxDate'
+        minView: '@'
+        minDate: '@'
+        maxDate: '@'
       link: ($scope, $el, $attr, ngModelCtrl) ->
 
-        console.info $scope.format
+        $attr.$observe 'dpDatetimePopup', (value) ->
+          $scope.format = value || defaults.format
 
         ngModelCtrl.$formatters.push (val) ->
           return '' if !val
@@ -59,10 +58,10 @@ define ['angular', 'moment'], (angular, moment) ->
     templateUrl: 'template/dp/datetime.html'
     scope:
       date: '=ngModel'
-      format: '@format'
-      minView: '@minView'
-      minDate: '@minDate'
-      maxDate: '@maxDate'
+      format: '@'
+      minView: '@'
+      minDate: '@'
+      maxDate: '@'
     controller: ->
 
     link: ($scope, $el) ->
@@ -88,6 +87,7 @@ define ['angular', 'moment'], (angular, moment) ->
       $scope.use24 = $scope.format.toLowerCase().indexOf('a') < 1 && $scope.format.indexOf('h') < 1
       $scope.minDate = $scope.minDate || defaults.minDate
       $scope.maxDate = $scope.maxDate || defaults.maxDate
+      $scope.minMode = modes[$scope.minView] if modes[$scope.minView]
 
       granularities =
         y: -> $scope.format.indexOf('Y') != -1
@@ -97,15 +97,20 @@ define ['angular', 'moment'], (angular, moment) ->
         H: -> $scope.format.toLowerCase().indexOf('h') != -1
         m: -> $scope.format.indexOf('m') != -1
         s: -> $scope.format.indexOf('s') != -1
-
       isEnabled = (granularity) ->
         func = granularities[granularity]
         return false if !func
         func(granularity)
-
       hasTime = -> isEnabled('h') || isEnabled('m') || isEnabled('s')
-
       hasDate = -> isEnabled('y') || isEnabled('M') || isEnabled('d')
+
+      if !$scope.minMode?
+        if !hasTime()
+          $scope.minMode = modes.day
+          date.hours(0)
+          date.minutes(0)
+        else
+          $scope.minMode = modes.day
 
       isValid = (targetMoment, granularity) ->
         return false if !targetMoment.isValid()
@@ -114,14 +119,19 @@ define ['angular', 'moment'], (angular, moment) ->
         return true
 
       renderers = {}
-      render = (mode) -> renderers[mode]? && renderers[mode]()
+      render = (mode) ->
+        return if !renderers[mode]?
+        i = if mode == modes.year then 12 else 1
+        g = if mode > modes.day then 'Y' else 'M'
+        $scope.prev = isValid(date.clone().subtract(i, g), g)
+        $scope.next = isValid(date.clone().add(i, g), g)
+        $scope.headerDisabled = false
+        renderers[mode]()
 
       renderers[modes.year] = ->
         startY = date.clone().subtract(5, 'y')
         endY = date.clone().add(6, 'y')
         $scope.years.length = 0
-        $scope.prev = true
-        $scope.next = true
         $scope.headerDisabled = true
         $scope.header = startY.year() + '-' + endY.year()
         while !startY.isAfter(endY, 'y')
@@ -129,10 +139,7 @@ define ['angular', 'moment'], (angular, moment) ->
           startY.add(1, 'y')
       renderers[modes.month] = ->
         $scope.months.length = 0
-        $scope.prev = true
-        $scope.next = true
         $scope.header = date.year()
-        $scope.headerDisabled = false
         monthsShort = date.clone().startOf('y').hour(12)
         while monthsShort.isSame(date, 'y')
           $scope.months.push
@@ -144,9 +151,6 @@ define ['angular', 'moment'], (angular, moment) ->
         row = []
         $scope.days.length = 0
         $scope.header = date.format defaults.dayViewHeaderFormat
-        $scope.headerDisabled = false
-        $scope.prev = isValid(date.clone().subtract(1, 'M'), 'M')
-        $scope.next = isValid(date.clone().add(1, 'M'), 'M')
         currentDate = date.clone().startOf('M').startOf('week')
         while !date.clone().endOf('M').endOf('w').isBefore(currentDate, 'd')
           if 0 == currentDate.weekday()
@@ -165,9 +169,9 @@ define ['angular', 'moment'], (angular, moment) ->
         # do nothing
       renderers[modes.hour] = ->
         $scope.hours.length = 0
-        for n in [0..if use24Hours then 23 else 11]
+        for n in [0..if $scope.use24 then 23 else 11]
           $scope.hours.push n
-        $scope.hours[0] = 12 if !use24Hours
+        $scope.hours[0] = 12 if !$scope.use24
       renderers[modes.minute] = ->
         $scope.minutes.length = 0
         for n in [0..55] by 5
@@ -216,11 +220,11 @@ define ['angular', 'moment'], (angular, moment) ->
         setDatetime(date.clone().add(hours, 'h'))
 
       $scope.isModeAvailable = (mode) ->
-        return modes[mode] && mode >= $scope.minView
+        mode >= $scope.minMode && mode <= modes.year
 
       $scope.switchMode = (mode) ->
-        return if $scope.headerDisabled && mode >= modes.day
-        return if !$scope.isModeAvailable
+        return if $scope.headerDisabled
+        return if !$scope.isModeAvailable mode
         $scope.mode = mode
 
       $scope.increment = (g) ->
@@ -308,11 +312,11 @@ define ['angular', 'moment'], (angular, moment) ->
 							</table>
 						</div>
 					</li>
-					<li class="picker-switch">
+					<li class="picker-switch" ng-if="isModeAvailable(modes.time)">
 						<table class="table-condensed">
 							<tbody>
 								<tr>
-									<td ng-click="mode = mode < modes.day ? modes.day : modes.time">
+									<td ng-click="switchMode(mode < modes.day ? modes.day : modes.time)">
 										<a>
 											<span class="fa fa-clock-o" ng-if="mode >= modes.day"></span>
 											<span class="fa fa-calendar-o" ng-if="mode < modes.day"></span>
