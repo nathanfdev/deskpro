@@ -3,12 +3,11 @@ define ['angular', 'moment'], (angular, moment) ->
 
   .constant('dpDatetimeConfig',
     minView: 'minute'
-    format: false
+    format: 'DD.MM.YYYY HH:mm' # moment formats
     dayViewHeaderFormat: 'MMMM YYYY'
     minDate: false
     maxDate: false
     locale: moment.locale()
-    daysOfWeekDisabled: []
   )
 
   .directive('dpDatetimePopup', ['$compile', '$document', '$position', 'dpDatetimeConfig', ($compile, $document, $position, defaults) ->
@@ -16,11 +15,17 @@ define ['angular', 'moment'], (angular, moment) ->
       restrict: 'A'
       scope:
         date: '=ngModel'
+        format: '@format'
+        minView: '@minView'
+        minDate: '@minDate'
+        maxDate: '@maxDate'
       link: ($scope, $el, $attr, ngModelCtrl) ->
+
+        console.info $scope.format
 
         ngModelCtrl.$formatters.push (val) ->
           return '' if !val
-          moment(val).format('DD.MM.YYYY HH:mm')
+          moment(val).format($scope.format || defaults.format)
 
         ngModelCtrl.$parsers.push (val) ->
           return null if !val
@@ -29,7 +34,7 @@ define ['angular', 'moment'], (angular, moment) ->
         appendToBody = false
         $popupEl = angular.element """
 					<div ng-style="{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}">
-						<dp-datetime ng-model="date"></dp-datetime>
+						<dp-datetime ng-model="date" format="#{$scope.format}" min-view="#{$scope.minView}" min-date="#{$scope.minDate}" max-date="#{$scope.maxDate}"></dp-datetime>
 					</div>
 				"""
         $popupEl.addClass 'bootstrap-datetimepicker-widget dropdown-menu'
@@ -54,21 +59,15 @@ define ['angular', 'moment'], (angular, moment) ->
     templateUrl: 'template/dp/datetime.html'
     scope:
       date: '=ngModel'
+      format: '@format'
+      minView: '@minView'
+      minDate: '@minDate'
+      maxDate: '@maxDate'
     controller: ->
 
     link: ($scope, $el) ->
       date = if $scope.date? then moment($scope.date) else moment()
       today = moment()
-      options = defaults #todo
-
-      format = options.format || 'L LT'
-      actualFormat = format.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g, (input) ->
-        date.localeData().longDateFormat(input) || input
-      )
-      parseFormats = if options.extraFormats then options.extraFormats.slice() else []
-      if parseFormats.indexOf(format) < 0 && parseFormats.indexOf(actualFormat) < 0
-        parseFormats.push actualFormat
-      use24Hours = actualFormat.toLowerCase().indexOf('a') < 1 && actualFormat.indexOf('h') < 1
 
       $scope.modes = modes =
         minute: 0
@@ -84,16 +83,20 @@ define ['angular', 'moment'], (angular, moment) ->
       $scope.minutes = []
       $scope.mode = modes.day
       $scope.active = date.clone()
-      $scope.use24 = use24Hours
+
+      $scope.format = $scope.format || defaults.format
+      $scope.use24 = $scope.format.toLowerCase().indexOf('a') < 1 && $scope.format.indexOf('h') < 1
+      $scope.minDate = $scope.minDate || defaults.minDate
+      $scope.maxDate = $scope.maxDate || defaults.maxDate
 
       granularities =
-        y: -> actualFormat.indexOf('Y') != -1
-        M: -> actualFormat.indexOf('M') != -1
-        d: -> actualFormat.toLowerCase().indexOf('d') != -1
-        h: -> actualFormat.toLowerCase().indexOf('h') != -1
-        H: -> actualFormat.toLowerCase().indexOf('h') != -1
-        m: -> actualFormat.indexOf('m') != -1
-        s: -> actualFormat.indexOf('s') != -1
+        y: -> $scope.format.indexOf('Y') != -1
+        M: -> $scope.format.indexOf('M') != -1
+        d: -> $scope.format.toLowerCase().indexOf('d') != -1
+        h: -> $scope.format.toLowerCase().indexOf('h') != -1
+        H: -> $scope.format.toLowerCase().indexOf('h') != -1
+        m: -> $scope.format.indexOf('m') != -1
+        s: -> $scope.format.indexOf('s') != -1
 
       isEnabled = (granularity) ->
         func = granularities[granularity]
@@ -106,16 +109,12 @@ define ['angular', 'moment'], (angular, moment) ->
 
       isValid = (targetMoment, granularity) ->
         return false if !targetMoment.isValid()
-        return false if options.disabledDates && isInDisabledDates(targetMoment)
-        return true if options.enabledDates && isInEnabledDates(targetMoment)
-        return false if options.minDate && targetMoment.isBefore(options.minDate, granularity)
-        return false if options.maxDate && targetMoment.isAfter(options.maxDate, granularity)
-        return false if granularity == 'd' && options.daysOfWeekDisabled.indexOf(targetMoment.day()) != -1
+        return false if $scope.minDate && targetMoment.isBefore($scope.minDate, granularity)
+        return false if $scope.maxDate && targetMoment.isAfter($scope.maxDate, granularity)
         return true
 
       renderers = {}
-      render = (mode) ->
-        renderers[mode]? && renderers[mode]()
+      render = (mode) -> renderers[mode]? && renderers[mode]()
 
       renderers[modes.year] = ->
         startY = date.clone().subtract(5, 'y')
@@ -144,7 +143,7 @@ define ['angular', 'moment'], (angular, moment) ->
         return if !(isEnabled('y') || isEnabled('M') || isEnabled('d'))
         row = []
         $scope.days.length = 0
-        $scope.header = date.format options.dayViewHeaderFormat
+        $scope.header = date.format defaults.dayViewHeaderFormat
         $scope.headerDisabled = false
         $scope.prev = isValid(date.clone().subtract(1, 'M'), 'M')
         $scope.next = isValid(date.clone().add(1, 'M'), 'M')
@@ -177,7 +176,7 @@ define ['angular', 'moment'], (angular, moment) ->
           $scope.minutes.push n
 
       setDatetime = (dt) ->
-        dt.locale(options.locale)
+        dt.locale(defaults.locale)
         return if !isValid(dt)
         $scope.date = dt.toDate()
         $scope.active = dt.clone()
@@ -217,7 +216,7 @@ define ['angular', 'moment'], (angular, moment) ->
         setDatetime(date.clone().add(hours, 'h'))
 
       $scope.isModeAvailable = (mode) ->
-        return modes[mode] && mode >= options.minView
+        return modes[mode] && mode >= $scope.minView
 
       $scope.switchMode = (mode) ->
         return if $scope.headerDisabled && mode >= modes.day
