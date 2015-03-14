@@ -11,46 +11,52 @@ define ['angular', 'moment'], (angular, moment) ->
     daysOfWeekDisabled: []
   )
 
-  .directive('dpDatetimePopup', ['$compile', '$document', '$position', ($compile, $document, $position) ->
-      require: ['^ngModel']
+  .directive('dpDatetimePopup', ['$compile', '$document', '$position', 'dpDatetimeConfig', ($compile, $document, $position, defaults) ->
+      require: 'ngModel'
       restrict: 'A'
+      scope:
+        date: '=ngModel'
       link: ($scope, $el, $attr, ngModelCtrl) ->
+
+        ngModelCtrl.$formatters.push (val) ->
+          return '' if !val
+          moment(val).format('DD.MM.YYYY HH:mm')
+
+        ngModelCtrl.$parsers.push (val) ->
+          return null if !val
+          moment(val).toDate()
+
         appendToBody = false
         $popupEl = angular.element """
 					<div ng-style="{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}">
-						<dp-datetime></dp-datetime>
+						<dp-datetime ng-model="date"></dp-datetime>
 					</div>
 				"""
         $popupEl.addClass 'bootstrap-datetimepicker-widget dropdown-menu'
         $popupEl.css
           width: '280px'
           userSelect: 'none'
-        $popupScope = $scope.$new(true)
-        $popup = $compile($popupEl)($popupScope)
+        $popup = $compile($popupEl)($scope)
         $popupEl.remove()
         $el.after($popup)
 
-        $el.on 'click', -> $popupScope.isOpen = true
+        $el.on 'click', -> $scope.isOpen = true
 
-        $popupScope.$watch 'isOpen', (val) ->
-          return if !val?
-          if val
-            $popupScope.position = if appendToBody then $position.offset($el) else $position.position($el)
-            $popupScope.position.top = $popupScope.position.top + $el.prop('offsetHeight')
-
-        $popupScope.$watch 'date', (val) ->
-          return if !val?
-          ngModelCtrl.$setModelValue val.toDate()
+        $scope.$watch 'isOpen', (val) ->
+          return if !val
+          $scope.position = if appendToBody then $position.offset($el) else $position.position($el)
+          $scope.position.top = $scope.position.top + $el.prop('offsetHeight')
     ])
 
   .directive('dpDatetime', ['dpDatetimeConfig', (defaults) ->
     restrict: 'E'
     replace: true
     templateUrl: 'template/dp/datetime.html'
-    scope: {}
+    scope:
+      date: '=ngModel'
     controller: ->
 
-    link: ($scope, $el, $attrs) ->
+    link: ($scope, $el) ->
       date = if $scope.date? then moment($scope.date) else moment()
       today = moment()
       options = defaults #todo
