@@ -77,6 +77,7 @@ class FilterSet
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id")
      */
     protected $private_agent;
 
@@ -89,7 +90,7 @@ class FilterSet
      *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id")
      *      },
      *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      *      }
      * )
      */

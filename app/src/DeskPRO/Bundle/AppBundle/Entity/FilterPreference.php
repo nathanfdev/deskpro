@@ -64,6 +64,7 @@ class FilterPreference
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id")
      */
     protected $agent;
 
