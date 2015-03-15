@@ -13,14 +13,12 @@ define ['angular', 'moment'], (angular, moment) ->
       require: 'ngModel'
       restrict: 'A'
       scope:
+        format: '@dpDatetimePopup'
         date: '=ngModel'
         minView: '@'
         minDate: '@'
         maxDate: '@'
       link: ($scope, $el, $attr, ngModelCtrl) ->
-
-        $attr.$observe 'dpDatetimePopup', (value) ->
-          $scope.format = value || defaults.format
 
         ngModelCtrl.$formatters.push (val) ->
           return '' if !val
@@ -30,7 +28,9 @@ define ['angular', 'moment'], (angular, moment) ->
           return null if !val
           moment(val).toDate()
 
+        # todo?
         appendToBody = false
+
         $popupEl = angular.element """
 					<div ng-style="{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}">
 						<dp-datetime ng-model="date" format="#{$scope.format}" min-view="#{$scope.minView}" min-date="#{$scope.minDate}" max-date="#{$scope.maxDate}"></dp-datetime>
@@ -43,6 +43,10 @@ define ['angular', 'moment'], (angular, moment) ->
         $popup = $compile($popupEl)($scope)
         $popupEl.remove()
         $el.after($popup)
+
+        $popup.on 'click', (e) ->
+          e.preventDefault()
+          e.stopPropagation()
 
         $el.on 'click', -> $scope.isOpen = true
 
@@ -110,7 +114,7 @@ define ['angular', 'moment'], (angular, moment) ->
           date.hours(0)
           date.minutes(0)
         else
-          $scope.minMode = modes.day
+          $scope.minMode = modes.minute
 
       isValid = (targetMoment, granularity) ->
         return false if !targetMoment.isValid()
@@ -257,7 +261,7 @@ define ['angular', 'moment'], (angular, moment) ->
   angular.module('template/dp/datetime.html', []).run(["$templateCache", ($templateCache) ->
     $templateCache.put(
       'template/dp/datetime.html'
-                      """
+        """
 				<ul class="list-unstyled">
 					<li ng-if="mode >= modes.day" style="overflow: hidden;">
 						<div class="datepicker">
