@@ -31,19 +31,19 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\MysqlTicketFilterEngine;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\MysqlTicketFilterEngine;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\MysqlTicketFilterEngine
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\MysqlTicketFilterEngine
  */
 class MysqlTicketFilterEngineSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\MysqlTicketFilterEngine');
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\MysqlTicketFilterEngine');
     }
 }

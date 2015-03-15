@@ -31,21 +31,9 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler\AgentTermCompiler;
-
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler\AgentTermCompiler
- */
-class AgentTermCompilerSpec extends ObjectBehavior
+class AgentTermCompiler
 {
-    function it_is_initializable()
-    {
-        $this->shouldHaveType(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler\AgentTermCompiler'
-        );
-    }
+
 }

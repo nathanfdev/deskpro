@@ -31,21 +31,21 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler\DepartmentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\DepartmentTermCompiler;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\MysqlTicketFilter\Compiler\DepartmentTermCompiler
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\DepartmentTermCompiler
  */
 class DepartmentTermCompilerSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
         $this->shouldHaveType(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\MySqlTicketFilter\Compiler\DepartmentTermCompiler'
+            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\DepartmentTermCompiler'
         );
     }
 }
