@@ -118,6 +118,15 @@ class AgentTermSpec extends ObjectBehavior
         );
     }
 
+    function it_allows_you_to_get_a_single_resolved_option()
+    {
+        $this->getOption('agent_id')->shouldReturn(null);
+
+        $this->setOption('agent_id', 6);
+
+        $this->getOption('agent_id')->shouldReturn(6);
+    }
+
     function it_allows_replacing_all_options_with_a_new_set()
     {
         $new_options = array(

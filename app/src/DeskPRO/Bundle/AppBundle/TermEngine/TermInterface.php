@@ -93,6 +93,16 @@ interface TermInterface
     public function setOption($option, $value);
 
     /**
+     * Get a RESOLVED option value.
+     *
+     * Note that it will actually resolve the options before passing you your option.
+     *
+     * @param string $option option name
+     * @return mixed
+     */
+    public function getOption($option);
+
+    /**
      * Remove a single option.
      *
      * @param string $option the option name.

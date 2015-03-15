@@ -104,6 +104,16 @@ abstract class AbstractTerm implements TermInterface
     /**
      * @inheritdoc
      */
+    public function getOption($option)
+    {
+        $options = $this->getOptions();
+
+        return $options[$option];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function replaceOptions(array $options)
     {
         $this->options = $options;
