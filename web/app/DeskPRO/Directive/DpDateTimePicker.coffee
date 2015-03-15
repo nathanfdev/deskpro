@@ -48,12 +48,21 @@ define ['angular', 'moment'], (angular, moment) ->
           e.preventDefault()
           e.stopPropagation()
 
+        documentHandler = () ->
+          if $scope.isOpen && event.target != $el[0]
+            $scope.$apply -> $scope.isOpen = false
+
         $el.on 'click', -> $scope.isOpen = true
+        $document.on 'click', documentHandler
 
         $scope.$watch 'isOpen', (val) ->
           return if !val
           $scope.position = if appendToBody then $position.offset($el) else $position.position($el)
           $scope.position.top = $scope.position.top + $el.prop('offsetHeight')
+
+        $scope.$on '$destroy', ->
+          $popup.remove()
+          $document.off 'click', documentHandler
     ])
 
   .directive('dpDatetime', ['dpDatetimeConfig', (defaults) ->
