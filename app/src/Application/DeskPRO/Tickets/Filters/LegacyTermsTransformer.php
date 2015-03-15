@@ -419,11 +419,13 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => "ticket_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
-                    'options' => array(
-                        'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null
-                        )
-                    )
+                    'options' => array_merge(array(
+	                        'custom_fields' => array(
+	                            "field_{$fid}" => @$t['value'] ?: null
+	                        )
+	                    ),
+	                    $t->all()
+	                )
                 );
 
             case 'FilterUserField':
@@ -806,7 +808,7 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts = array();
+                $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 

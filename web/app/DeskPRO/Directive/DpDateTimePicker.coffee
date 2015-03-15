@@ -118,12 +118,9 @@ define ['angular', 'moment'], (angular, moment) ->
       hasDate = -> isEnabled('y') || isEnabled('M') || isEnabled('d')
 
       if !$scope.minMode?
-        if !hasTime()
-          $scope.minMode = modes.day
-          date.hours(0)
-          date.minutes(0)
-        else
-          $scope.minMode = modes.minute
+        $scope.minMode = if !hasTime() then modes.day else $scope.minMode = modes.minute
+      date.hours(0) if !isEnabled 'h'
+      date.minutes(0) if !isEnabled 'm'
 
       isValid = (targetMoment, granularity) ->
         return false if !targetMoment.isValid()
