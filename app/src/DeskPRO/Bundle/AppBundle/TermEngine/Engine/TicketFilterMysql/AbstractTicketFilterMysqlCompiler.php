@@ -31,22 +31,17 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql;
 
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\AbstractTicketFilterMysqlCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class AgentTermCompiler extends AbstractTicketFilterMysqlCompiler
+abstract class AbstractTicketFilterMysqlCompiler
 {
-    public function doCompile($term, $engine)
+    public function compile(TermInterface $term, TicketFilterMysqlEngine $engine)
     {
-        return sprintf(
-            "
-            ticket.agent_id IN (%s)
-            ",
-            implode(', ', $term->getOption('agent_ids'))
-        );
+        return $this->doCompile($term, $engine);
     }
+
+    abstract public function doCompile($term, $engine);
 }

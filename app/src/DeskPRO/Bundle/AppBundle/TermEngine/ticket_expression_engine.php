@@ -78,3 +78,14 @@ $terms->addTerm($departments);
 $terms->addTerm($agents);
 
 echo $engine->compile($terms);
+
+
+$mysql_engine = new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\TicketFilterMysqlEngine(
+    array(
+        new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\CompositeTermCompiler(),
+        new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\AgentTermCompiler(),
+        new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\DepartmentTermCompiler()
+    )
+);
+
+echo $mysql_engine->compile($terms);

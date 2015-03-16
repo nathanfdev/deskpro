@@ -31,82 +31,36 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler;
+
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\CompositeTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\AgentTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\Compiler\DepartmentTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketFilterMysql\AbstractTicketFilterMysqlCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-class TicketFilterMysqlEngine
+class CompositeTermCompiler extends AbstractTicketFilterMysqlCompiler
 {
-    /**
-     * @var TicketExpressionCompilerInterface[]
-     */
-    protected $compilers;
-
-    protected $joins;
-
-    public function __construct($compilers)
+    public function doCompile($term, $engine)
     {
-        $this->joins = array();
-        $this->compilers = $compilers;
-    }
-
-    public function compile(TermInterface $term)
-    {
-        $compiled = "
-    SELECT * FROM tickets ticket
-        ";
-
-        /** @var TicketExpressionCompilerInterface $compiler */
-        $compiler = $this->findCompiler($term);
-        $where = $compiler->compile($term, $this);
-
-        if (count($this->joins)) {
-            foreach ($this->joins as $table => $info) {
-                $compiled .= "
-                INNER JOIN $table {$info['alias']}";
-
-                if ($info['on']) {
-                    $compiled .= " ON {$info['on']}";
-                }
-            }
-
-        }
-
-        if ($where) {
-            $compiled .= "\n" . ' WHERE ' . "\n" . $where;
-        }
-        $compiled .=
-            ";
-        ";
-
-        return $compiled;
-    }
-
-    public function ensureJoin($table, $alias, $on)
-    {
-        $this->joins[$table] = array('alias' => $alias, 'on' => $on);
-    }
-
-    public function findCompiler(TermInterface $term)
-    {
-        foreach ($this->compilers as $compiler) {
-            if ($term instanceof AgentTerm && $compiler instanceof AgentTermCompiler) {
-                return $compiler;
-            }
-            if ($term instanceof DepartmentTerm && $compiler instanceof DepartmentTermCompiler) {
-                return $compiler;
-            }
-            if ($term instanceof CompositeTerm && $compiler instanceof CompositeTermCompiler) {
-                return $compiler;
+        $fragments = array();
+        foreach ($term->getTerms() as $term) {
+            $term_compiler = $engine->findCompiler($term);
+            $o = $term_compiler->compile($term, $engine);
+            if (trim($o)) {
+                $fragments[] = $o;
             }
         }
+
+        if (!count($fragments)) {
+            return;
+        }
+
+        return '(' .
+        implode(
+            sprintf(' %s ', $term->getOp() == TermInterface::OP_AND ? 'AND' : 'OR'),
+            $fragments
+        )
+        . ')';
     }
 }
