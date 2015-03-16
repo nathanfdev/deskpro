@@ -178,6 +178,11 @@ class PersonFromEmailProcessor
             $db->insert('people', Arrays::removeFalsey($p_array));
             $person_id = $db->lastInsertId();
 
+            // Since we are 'manually' inserting the user here, Person->isNew will think
+            // it already existed, so we need this hack to override it
+            if (!isset($GLOBALS['DP_CREATED_PEOPLE_IDS'])) $GLOBALS['DP_CREATED_PEOPLE_IDS'] = array();
+            $GLOBALS['DP_CREATED_PEOPLE_IDS'][$person_id] = $person_id;
+
             // Attempt to create email record,
             // this may fail (races)
 

@@ -2180,7 +2180,16 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function isNewPerson()
     {
-        return $this->_is_new_person;
+        if ($this->_is_new_person) {
+            return true;
+        }
+
+        // Hack for users created outside of doctrine in PersonFromEmailProcessor
+        if ($this->id && isset($GLOBALS['DP_CREATED_PEOPLE_IDS'][$this->id])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

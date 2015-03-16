@@ -145,7 +145,7 @@ class CsvImport extends AbstractJob
         $complete = false;
         $imported = 0;
 
-        while (1 || microtime(true) - $start_time < $max_time) {
+        while ($imported < 500 && (microtime(true) - $start_time < $max_time)) {
             if (feof($fp)) {
                 $complete = true;
                 break;
