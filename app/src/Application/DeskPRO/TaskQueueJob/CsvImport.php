@@ -443,37 +443,40 @@ class CsvImport extends AbstractJob
                     if ($custom_field_id && isset($this->_custom_fields[$custom_field_id])) {
                         $custom_field = $this->_custom_fields[$custom_field_id];
                         if ($custom_field->isChoiceType()) {
-                            $selected_child = false;
-                            $test_value = strtolower($column_value);
+                            $selected_childs = array();
+	                        $test_value = mb_strtolower($column_value);
+	                        $multiple = !empty($custom_field['options']['multiple']);
 
-                            // find an existing option by title
+	                        // find an existing option by title
                             foreach ($custom_field->getAllChildren() AS $child_field) {
-                                if (strtolower($child_field->getTitle()) == $test_value) {
-                                    $selected_child = $child_field;
-                                    break;
+                                if (mb_strtolower($child_field->getTitle()) === $test_value) {
+                                    $selected_childs[$child_field['id']] = $child_field;
+	                                if (!$multiple) break;
                                 }
                             }
 
                             // create a new one if necessary
-                            if (!$selected_child && $new_on_unknown) {
+                            if (!$selected_childs && $new_on_unknown) {
                                 $selected_child = new \Application\DeskPRO\Entity\CustomDefPerson();
                                 $selected_child->title = $column_value;
                                 $selected_child->display_order = count($custom_field->getAllChildren()) + 1;
                                 $custom_field->addChild($selected_child);
-
                                 $em->persist($selected_child);
+	                            $selected_childs[] = $selected_child;
                             }
 
                             // associate it
-                            if ($selected_child) {
-                                $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
-                                $custom_data->person = $person;
-                                $custom_data->field = $selected_child;
-                                $custom_data->root_field = $custom_field;
-                                $custom_data->value = 1;
-
-                                $em->persist($custom_data);
-                                $person->addCustomData($custom_data);
+                            if ($selected_childs) {
+	                            $person->custom_data->clear();
+	                            foreach ($selected_childs as $child) {
+		                            $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
+		                            $custom_data->person = $person;
+		                            $custom_data->field = $child;
+		                            $custom_data->root_field = $custom_field;
+		                            $custom_data->value = 1;
+		                            $em->persist($custom_data);
+		                            $person->addCustomData($custom_data);
+	                            }
                             }
                         } else if ($custom_field->getTypeName() == 'date') {
                             if (ctype_digit($column_value)) {
