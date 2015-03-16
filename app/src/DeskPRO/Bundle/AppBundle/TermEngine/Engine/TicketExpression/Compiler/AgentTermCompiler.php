@@ -34,20 +34,20 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler;
 
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\TicketExpressionCompilerInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\AbstractTicketExpressionCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\TicketExpressionEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class AgentTermCompiler implements TicketExpressionCompilerInterface
+class AgentTermCompiler extends AbstractTicketExpressionCompiler
 {
-    public function compile(TermInterface $term, TicketExpressionEngine $engine)
+    public function doCompile($term, $engine)
     {
-        return sprintf('(ticket.getAgent() != null && ticket.getAgent().getId() == %s)', $term->getOption('agent_id'));
-    }
-
-    public function supportsTerm(TermInterface $term)
-    {
-        return $term instanceof AgentTerm;
+        return sprintf(
+            "
+            (\$agent = \$ticket->getAgent()) && (in_array(\$agent->getId(), array(%s)))
+            ",
+            implode(', ', $term->getOption('agent_ids'))
+        );
     }
 }

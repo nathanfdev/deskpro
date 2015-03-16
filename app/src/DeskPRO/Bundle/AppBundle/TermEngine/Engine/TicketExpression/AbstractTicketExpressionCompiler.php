@@ -36,9 +36,12 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-interface TicketExpressionCompilerInterface
+abstract class AbstractTicketExpressionCompiler
 {
-    public function compile(TermInterface $term, TicketExpressionEngine $engine);
+    public function compile(TermInterface $term, TicketExpressionEngine $engine)
+    {
+        return $this->doCompile($term, $engine);
+    }
 
-    public function supportsTerm(TermInterface $term);
+    abstract public function doCompile($term, $engine);
 }

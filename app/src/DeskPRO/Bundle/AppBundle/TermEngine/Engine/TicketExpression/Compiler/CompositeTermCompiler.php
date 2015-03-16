@@ -35,26 +35,15 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler;
 
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\TicketExpressionCompilerInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\AbstractTicketExpressionCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\TicketExpressionEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class CompositeTermCompiler implements TicketExpressionCompilerInterface
+class CompositeTermCompiler extends AbstractTicketExpressionCompiler
 {
-    protected $terms;
-
-    public function __construct($terms)
+    public function doCompile($term, $engine)
     {
-        $this->terms = $terms;
-    }
-
-    public function compile(TermInterface $term, TicketExpressionEngine $engine)
-    {
-        if (!$term instanceof CompositeTermInterface) {
-            throw new \InvalidArgumentException('must be a composite term');
-        }
-
         $fragments = array();
         foreach ($term->getTerms() as $term) {
             $term_compiler = $engine->findCompiler($term);
@@ -67,10 +56,5 @@ class CompositeTermCompiler implements TicketExpressionCompilerInterface
             $fragments
         )
         . ')';
-    }
-
-    public function supportsTerm(TermInterface $term)
-    {
-        return $term instanceof CompositeTerm;
     }
 }

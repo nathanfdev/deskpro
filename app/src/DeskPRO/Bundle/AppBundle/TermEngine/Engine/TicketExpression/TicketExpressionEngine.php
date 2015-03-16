@@ -34,7 +34,12 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler\CompositeTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler\AgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler\DepartmentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
@@ -58,49 +63,50 @@ class TicketExpressionEngine
 
     public function compile(TermInterface $term)
     {
+        $compiled = "
+    <?php
+
+    use Application\\DeskPRO\\Entity\\Ticket;
+
+    class Checker_dlaj4
+    {
+        protected \$context;
+
+        public function __construct(\$context) {
+            \$this->context = \$context;
+        }
+
+        public function isCheck(Ticket \$ticket) {
+
+            return
+        ";
+
         /** @var TicketExpressionCompilerInterface $compiler */
         $compiler = $this->findCompiler($term);
-        $compiled = $compiler->compile($term, $this);
+        $compiled .= $compiler->compile($term, $this);
 
-        return $this->language->compile(
-            $compiled,
-            array(
-                /** compilers have access to certain variables that this engine provides */
-                /** access to the ticket in question */
-                'ticket',
-                /** access to the authenticated agent */
-                'me',
-                /** access to context/voters for security assertions */
-                'security',
-                /** etc */
-                /** can also create our own expression language functions */
-                /** container itself, is possible */
-            )
-        );
+        $compiled .=
+            ";
+
+    }
+}
+        ";
+
+        return $compiled;
     }
 
     public function findCompiler(TermInterface $term)
     {
         foreach ($this->compilers as $compiler) {
-            if ($compiler->supportsTerm($term)) {
+            if ($term instanceof AgentTerm && $compiler instanceof AgentTermCompiler) {
+                return $compiler;
+            }
+            if ($term instanceof DepartmentTerm && $compiler instanceof DepartmentTermCompiler) {
+                return $compiler;
+            }
+            if ($term instanceof CompositeTerm && $compiler instanceof CompositeTermCompiler) {
                 return $compiler;
             }
         }
-    }
-
-    protected function createMyTerms(TermInterface $term)
-    {
-        $my_terms = null;
-
-        if ($term instanceof CompositeTermInterface) {
-            $my_terms = new CompositeTerm();
-            foreach ($term->getTerms() as $term) {
-                $my_terms->addTerm($this->createMyTerms($term));
-            }
-        } else {
-            return $term;
-        }
-
-        return $my_terms;
     }
 }
