@@ -170,8 +170,17 @@ DeskPRO.User.Window = new Orb.Class({
 		});
 
 		$('.timeago').timeago();
-		$('input.datepicker, .datepicker input').datepicker({
-			dateFormat: 'yy-mm-dd'
+		$('input.datepicker, .datepicker input').each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 		$('.DateTime.customfield input').each(function(){
 			$(this).datetimepicker({

@@ -96,22 +96,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
         });
 
-		$('.Date.customfield input', this.wrapper).datepicker({
-			dateFormat: 'yy-mm-dd',
-			showButtonPanel: true,
-			beforeShow: function(input) {
-				setTimeout(function() {
-					var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-					buttonPane.find('button:first').remove();
-
-					var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-					btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-					btn.appendTo( buttonPane );
-
-					$(input).datepicker("widget").css('z-index', 30002);
-				},1);
-			}
+		$('.Date.customfield input', this.wrapper).each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 
 		$('.DateTime.customfield', this.wrapper).each(function(){
