@@ -44,7 +44,13 @@ class DepartmentTerm extends AbstractTerm
     {
         $resolver->setDefaults(
             array(
-                'department_id' => null,
+                'department_ids' => array(),
+            )
+        );
+
+        $resolver->setAllowedTypes(
+            array(
+                'department_ids' => 'array'
             )
         );
     }

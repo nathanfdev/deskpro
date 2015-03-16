@@ -44,8 +44,14 @@ class AgentTerm extends AbstractTerm
     {
         $options_resolver->setDefaults(
             array(
-                'agent_id' => null,
+                'agent_ids' => array(),
                 'is_active' => true
+            )
+        );
+
+        $options_resolver->setAllowedTypes(
+            array(
+                'agent_ids' => 'array'
             )
         );
 

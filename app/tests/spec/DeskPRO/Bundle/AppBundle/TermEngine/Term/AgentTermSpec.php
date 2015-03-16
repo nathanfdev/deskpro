@@ -82,7 +82,7 @@ class AgentTermSpec extends ObjectBehavior
     {
         $options_resolver->setDefaults(
             array(
-                'agent_id' => null,
+                'agent_ids' => array(),
                 'is_active' => true
             )
         )->shouldBeCalled();
@@ -93,6 +93,12 @@ class AgentTermSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
+        $options_resolver->setAllowedTypes(
+            array(
+                'agent_ids' => 'array'
+            )
+        )->shouldBeCalled();
+
         $this->setDefaultOptions($options_resolver);
     }
 
@@ -100,7 +106,7 @@ class AgentTermSpec extends ObjectBehavior
     {
         $this->getOptions()->shouldReturn(
             array(
-                'agent_id' => null,
+                'agent_ids' => array(),
                 'is_active' => true
             )
         );
@@ -108,11 +114,11 @@ class AgentTermSpec extends ObjectBehavior
 
     function it_allows_changing_a_single_option()
     {
-        $this->setOption('agent_id', 5);
+        $this->setOption('agent_ids', array(5));
 
         $this->getOptions()->shouldReturn(
             array(
-                'agent_id' => 5,
+                'agent_ids' => array(5),
                 'is_active' => true
             )
         );
@@ -120,17 +126,17 @@ class AgentTermSpec extends ObjectBehavior
 
     function it_allows_you_to_get_a_single_resolved_option()
     {
-        $this->getOption('agent_id')->shouldReturn(null);
+        $this->getOption('agent_ids')->shouldReturn(array());
 
-        $this->setOption('agent_id', 6);
+        $this->setOption('agent_ids', array(6));
 
-        $this->getOption('agent_id')->shouldReturn(6);
+        $this->getOption('agent_ids')->shouldReturn(array(6));
     }
 
     function it_allows_replacing_all_options_with_a_new_set()
     {
         $new_options = array(
-            'agent_id' => 10,
+            'agent_ids' => array(10),
             'is_active' => false
         );
 
@@ -143,14 +149,15 @@ class AgentTermSpec extends ObjectBehavior
     {
         $this->setOptions(
             array(
-                'agent_id' => 10
+                'agent_ids' => array(10),
+                'is_active' => false
             )
         );
 
         $this->getOptions()->shouldReturn(
             array(
-                'agent_id' => 10,
-                'is_active' => true
+                'agent_ids' => array(10),
+                'is_active' => false
             )
         );
     }
@@ -159,13 +166,13 @@ class AgentTermSpec extends ObjectBehavior
     {
         $this->beConstructedWith(
             array(
-                'agent_id' => 10
+                'agent_ids' => array(10)
             )
         );
 
         $this->getOptions()->shouldReturn(
             array(
-                'agent_id' => 10,
+                'agent_ids' => array(10),
                 'is_active' => true
             )
         );
@@ -173,23 +180,23 @@ class AgentTermSpec extends ObjectBehavior
 
     function it_allows_removing_an_option_that_was_set_previously_and_reverts_to_default()
     {
-        $this->setOption('agent_id', 1101);
+        $this->setOption('agent_ids', array(1101));
 
         $this->getOptions()->shouldReturn(
             array(
-                'agent_id' => 1101,
+                'agent_ids' => array(1101),
                 'is_active' => true
             )
         );
 
         // now remove it and see defaults again
 
-        $this->removeOption('agent_id');
+        $this->removeOption('agent_ids');
 
 
         $this->getOptions()->shouldReturn(
             array(
-                'agent_id' => null,
+                'agent_ids' => array(),
                 'is_active' => true
             )
         );

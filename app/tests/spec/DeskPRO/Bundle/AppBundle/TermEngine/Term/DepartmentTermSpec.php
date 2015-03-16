@@ -65,7 +65,13 @@ class DepartmentTermSpec extends ObjectBehavior
     {
         $resolver->setDefaults(
             array(
-                'department_id' => null,
+                'department_ids' => array(),
+            )
+        )->shouldBeCalled();
+
+        $resolver->setAllowedTypes(
+            array(
+                'department_ids' => 'array'
             )
         )->shouldBeCalled();
 
