@@ -90,9 +90,16 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 
 		$('.DateTime.customfield input', this.display).each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:ii',
-				container: $(this).parent().css('position', 'relative'),
-				autoclose: true
+				format: 'YYYY-M-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
 			});
 		});
 

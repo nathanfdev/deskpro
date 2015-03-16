@@ -105,11 +105,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
 			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 		});
-		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 			el: self.getEl('files_box'),
 			deleteUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save',
 		});
-		
+
 		this.ownObject(this.changePic);
 		this.ownObject(this.uploadFile);
 
@@ -373,9 +373,16 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
 						$(this).datetimepicker({
-							format: 'yyyy-mm-dd hh:ii',
-							container: $(this).parent().css('position', 'relative'),
-							autoclose: true
+							format: 'YYYY-M-DD HH:mm',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								time: 'fa fa-clock-o',
+								date: 'fa fa-calendar-o',
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
 						});
 					});
 				}

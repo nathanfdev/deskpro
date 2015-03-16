@@ -9,7 +9,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
 	},
-        
+
         _initLabels: function() {
             if (this.getEl('labels_input')[0]) {
                 this.labelsInput = new DeskPRO.UI.LabelsInput({
@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initMessageSection();
 		this._initOtherSection();
 		this._initCcSelection();
-                
+
                 this._initLabels();
 
 		this.meta.person_api_data = {};
@@ -114,11 +114,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		});
 
-		$('.DateTime.customfield input', this.wrapper).each(function(){
+		$('.DateTime.customfield', this.wrapper).each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:ii',
-				container: $(this).parent().css('position', 'relative'),
-				autoclose: true
+				format: 'YYYY-M-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
 			});
 		});
 

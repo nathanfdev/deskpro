@@ -384,13 +384,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
-			
-			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+
+			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 				el: self.getEl('files_box'),
 				deleteUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
-			
+
 			this.ownObject(this.changePic);
 			this.ownObject(this.uploadVcard);
 			this.ownObject(this.uploadFile);
@@ -410,13 +410,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 
 		var person_id = this.meta.person_id;
-		
+
 		this.sortTicketsMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('sort_tickets_menu_trigger'),
 			menuElement: this.getEl('sort_tickets_menu'),
 			onItemClicked: function(info) {
 				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
-				
+
 				$.ajax({
 					url: BASE_URL + 'agent/person/' + person_id + '/tickets',
 					data: {sort_by: sort_by},
@@ -429,7 +429,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			}
 		});
-		
+
 		this.ownObject(this.sortTicketsMenu);
 
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
@@ -663,9 +663,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
 						$(this).datetimepicker({
-							format: 'yyyy-mm-dd hh:ii',
-							container: $(this).parent().css('position', 'relative'),
-							autoclose: true
+							format: 'YYYY-M-DD HH:mm',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								time: 'fa fa-clock-o',
+								date: 'fa fa-calendar-o',
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
 						});
 					});
 				}

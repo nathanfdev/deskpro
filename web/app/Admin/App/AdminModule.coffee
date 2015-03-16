@@ -33,7 +33,6 @@ define [
   'ngClip',
 
   'bootstrapTooltip',
-  'bootstrapDatetime',
 
   'select2',
   'toastr',
