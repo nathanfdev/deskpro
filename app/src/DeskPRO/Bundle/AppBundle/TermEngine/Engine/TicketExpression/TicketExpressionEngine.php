@@ -50,15 +50,9 @@ class TicketExpressionEngine
      */
     protected $compilers;
 
-    /**
-     * @var ExpressionLanguage
-     */
-    protected $language;
-
     public function __construct($compilers)
     {
         $this->compilers = $compilers;
-        $this->language = new ExpressionLanguage(/** it has built in caching... */);
     }
 
     public function compile(TermInterface $term)
