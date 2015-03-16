@@ -38,43 +38,43 @@ define('DP_INTERFACE', 'user');
 require_once DP_ROOT . '/sys/preboot.php';
 require_once DP_ROOT . '/sys/autoload.php';
 
-// engine construction happens in the container,
-// each compiler is just tagged (name: expression_ticket_compiler, and can take any args it wants)
-$engine = new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\TicketExpressionEngine(
-    array(
-        new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler\CompositeTermCompiler(array()),
-        new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler\AgentTermCompiler(),
-        new \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TicketExpression\Compiler\DepartmentTermCompiler()
-    )
-);
+////
+// POC OUTPUT
+////
 
-// the admin interface crates terms, and we put them in the right place in the db
-$terms = new \DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm();
+use Application\DeskPRO\Entity\Ticket;
 
-$agents = new \DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm();
-$agents->setOp(\DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_OR);
-$agents->addTerm(
-    new \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm(
-        array(
-            'agent_ids' => array(5, 1, 12)
-        )
-    )
-);
+class Checker_dlaj4
+{
+    protected $context;
 
-$departments = new \DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm();
-$departments->setOp(\DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_OR);
-$departments->addTerm(
-    new \DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm(
-        array(
-            'department_ids' => array(2, 3)
-        )
-    )
-);
+    public function __construct($context)
+    {
+        $this->context = $context;
+    }
 
+    public function isCheck(Ticket $ticket)
+    {
 
-$terms->setOp(\DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_AND);
+        return
+            ((
+                    ($dep = $ticket->getDepartment()) && (in_array($dep->getId(), array(2, 3)))
+                ) || (
+                    ($agent = $ticket->getAgent()) && (in_array($agent->getId(), array(5, 1, 12)))
+                ));
 
-$terms->addTerm($departments);
-$terms->addTerm($agents);
+    }
+}
 
-echo $engine->compile($terms);
+////
+// END POC OUTPUT
+////
+
+$ticket = new Ticket();
+$dep = new \Application\DeskPRO\Entity\Department();
+$dep->id = 2;
+
+$ticket->setDepartment($dep);
+
+$chek = new Checker_dlaj4(array());
+var_dump($chek->isCheck($ticket));
