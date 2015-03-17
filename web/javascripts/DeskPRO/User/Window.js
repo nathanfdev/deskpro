@@ -170,14 +170,30 @@ DeskPRO.User.Window = new Orb.Class({
 		});
 
 		$('.timeago').timeago();
-		$('input.datepicker, .datepicker input').datepicker({
-			dateFormat: 'yy-mm-dd'
+		$('input.datepicker, .datepicker input').each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 		$('.DateTime.customfield input').each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:mm',
-				container: $(this).parent().css('position', 'relative'),
-				autoclose: true
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
 			});
 		});
 

@@ -168,6 +168,24 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             return $this->isIntMatch($ticket, $context, TermValue::createWithValue($field_data), (int)$options->get('value'));
 
         #------------------------------
+        # Handle dates
+        #------------------------------
+
+        } elseif ($field->getTypeName() === 'date' || $field->getTypeName() === 'datetime') {
+
+	        switch ($op) {
+		        case 'before':
+					$a = 1;
+			        break;
+		        case 'after':
+					$a = 1;
+			        break;
+		        case 'between':
+					$a = 1;
+			        break;
+	        }
+
+        #------------------------------
         # Handle text check
         #------------------------------
 

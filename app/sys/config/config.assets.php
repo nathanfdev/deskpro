@@ -64,6 +64,7 @@ $CONFIG['agent_vendors'] = array(
         'vendor/JSON-js/json2.js',
 
         'vendor/jquery/jquery.min.js',
+	    'vendor/jquery.patch.js',
         'vendor/jquery/jquery.resize.min.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
         'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
@@ -104,12 +105,12 @@ $CONFIG['agent_vendors'] = array(
         'vendor/ZeroClipboard/ZeroClipboard.min.js',
         'vendor/idbstore/idbstore.min.js',
         'vendor/twig/twig.js',
-        'vendor/momentjs/moment.min.js',
+        'bower_components/moment/min/moment-with-locales.min.js',
 
         'bower_components/notify.js/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
 
-        'vendor/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
+        'web/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     )
 );
 
@@ -500,6 +501,7 @@ $CONFIG['user_vendors'] = array(
         'javascripts/Orb/modernizr-ext.js',
 
         'vendor/jquery/jquery.min.js',
+	    'vendor/jquery.patch.js',
         'vendor/jquery/jquery-ui/jquery-ui.min.js',
         'vendor/jquery/jquery.cookie.js',
         'vendor/jquery/jquery.history.js',
@@ -517,7 +519,8 @@ $CONFIG['user_vendors'] = array(
         'vendor/PIE/PIE.js',
         'vendor/bootstrap/bootstrap-custom.js',
 
-	    'vendor/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
+	    'bower_components/moment/min/moment-with-locales.min.js',
+	    'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     )
 );
 
@@ -602,6 +605,7 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/bootstrap/css/dropdown.css',
         'vendor/bootstrap/css/table.css',
 
-	    'vendor/bootstrap-datetimepicker-master/build/build_standalone.css',
+        'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+        'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css'
     )
 );

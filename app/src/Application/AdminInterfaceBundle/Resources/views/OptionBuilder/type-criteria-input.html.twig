@@ -2,11 +2,10 @@
 	<div class="dp-ob-standard-row">
 		<label>{{ ng_var('type_title') }}</label>
 		<select
-			ui-select2="{dropdownAutoWidth:true}"
-			ng-model="model.op"
-			style="min-width: 50px;"
-		    ng-if="'date' !== options.type_name"
-		>
+				ui-select2="{dropdownAutoWidth:true}"
+				ng-model="model.op"
+				style="min-width: 50px;"
+				>
 			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
 			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
 			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
@@ -25,49 +24,6 @@
 			<option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
 			<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
 		</select>
-
-		<select
-				ui-select2="{dropdownAutoWidth:true}"
-				ng-model="model.op"
-				style="min-width: 50px;"
-				ng-if="'date' === options.type_name"
-				>
-			<option value="isset">exists</option>
-			<option value="not_isset">does not exist</option>
-			<option value="is">is</option>
-			<option value="not">is not</option>
-			<option value="gte">after</option>
-			<option value="lte">before</option>
-			<option value="between">between</option>
-		</select>
-
-		<input type="text" class="form-control" ng-model="model.value"
-		       ng-if="'date' !== options.type_name"
-		       ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset' || model.op == 'touched' || model.op == 'nottouched'"
-				/>
-
-		<span ng-if="'date' === options.type_name">
-			<span ng-if="['is', 'not', 'gte', 'between'].indexOf(model.op) > -1">
-				<input type="text" class="form-control" style="width: 140px; display: inline-block;"
-				       datepicker-popup="dd MMMM yyyy"
-				       ng-model="model.date1"
-				       datepicker-options="{'show-weeks': false}"
-				       is-open="opened"
-				       ng-click="opened = true"
-				       ng-focus="opened = true"
-						/>
-			</span>
-			<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
-			<span ng-if="model.op == 'lte' || model.op == 'between'">
-				<input type="text" class="form-control" style="width: 140px; display: inline-block;"
-				       datepicker-popup="dd MMMM yyyy"
-				       ng-model="model.date2"
-				       datepicker-options="{'show-weeks': false}"
-				       is-open="opened"
-				       ng-click="opened = true"
-				       ng-focus="opened = true"
-						/>
-			</span>
-		</span
+		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset' || model.op == 'touched' || model.op == 'nottouched'" />
 	</div>
 </dp-optionbuilder-row>

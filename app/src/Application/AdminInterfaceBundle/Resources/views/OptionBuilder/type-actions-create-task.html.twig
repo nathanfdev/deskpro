@@ -19,11 +19,8 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control" style="width: 140px; display: inline-block;"
-                                       datepicker-popup="dd MMMM yyyy" ng-model="model.date_due"
-                                       datepicker-options="{'show-weeks': false}"
-                                       is-open="opened"
-                                       ng-click="opened = true"
-                                       ng-focus="opened = true"
+                                       ng-model="model.date_due"
+                                       dp-datetime-popup="DD MMMM YYYY"
 		                                />
                             </td>
                         </tr>

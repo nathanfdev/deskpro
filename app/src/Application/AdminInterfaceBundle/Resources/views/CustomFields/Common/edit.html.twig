@@ -340,10 +340,7 @@
 											<input type="text" class="form-control"
 											       ng-model="EditCtrl.form.date.default_value"
 											       style="width: 50%;"
-											       datepicker-popup
-											       is-open="opened"
-											       ng-click="opened = true"
-											       ng-focus="opened = true"
+											       dp-datetime-popup="DD MMMM YYYY"
 													/>
 										</p>
 									</div>
@@ -381,27 +378,21 @@
 											<input type="text" class="form-control"
 											       ng-model="EditCtrl.form.date.date_valid_date1"
 											       style="width: 150px;" placeholder="Start date"
-											       datepicker-popup
-											       is-open="opened"
-											       ng-click="opened = true"
-											       ng-focus="opened = true"
+											       dp-datetime-popup="DD MMMM YYYY"
 													/>
 											and
 											<input type="text" class="form-control"
 											       ng-model="EditCtrl.form.date.date_valid_date2"
 											       style="width: 150px;"
 											       placeholder="Start end"
-											       datepicker-popup
-											       is-open="opened"
-											       ng-click="opened = true"
-											       ng-focus="opened = true"
+											       dp-datetime-popup="DD MMMM YYYY"
 													/>
 										</p>
 										<p ng-show="EditCtrl.form.date.valid_dates_mode == 'range'">
 											Date selected must be between
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate1" style="width: 80px;" placeholder="Start date" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate1" style="width: 80px;" placeholder="Days before" />
 											and
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate2" style="width: 80px;" placeholder="Start end" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate2" style="width: 80px;" placeholder="Days after" />
 											days from the time of submission
 										</p>
 									</div>
@@ -451,7 +442,11 @@
                                     <div class="inner-group">
                                         <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="0" /> Use date and time at the point of submission</label>
                                         <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="date" /> Specific date/time</label>
-                                        <datetimepicker ng-if="EditCtrl.form.datetime.default_mode == 'date'" ng-model="EditCtrl.form.datetime.default_value"></datetimepicker>
+	                                    <input type="text" class="form-control" style="width: 50%;"
+	                                           ng-model="EditCtrl.form.datetime.default_value"
+	                                           ng-if="EditCtrl.form.datetime.default_mode == 'date'"
+	                                           dp-datetime-popup="DD MMMM YYYY HH:mm"
+			                                    />
                                     </div>
                                 </div>
                             </div>
@@ -488,27 +483,21 @@
                                                    ng-model="EditCtrl.form.datetime.date_valid_date1"
                                                    style="width: 150px;"
                                                    placeholder="Start date"
-                                                   datepicker-popup
-                                                   is-open="opened"
-                                                   ng-click="opened = true"
-                                                   ng-focus="opened = true"
+                                                   dp-datetime-popup="DD MMMM YYYY"
 		                                            />
                                             and
                                             <input type="text" class="form-control"
                                                    ng-model="EditCtrl.form.datetime.date_valid_date2"
                                                    style="width: 150px;"
-                                                   placeholder="Start end"
-                                                   datepicker-popup
-                                                   is-open="opened"
-                                                   ng-click="opened = true"
-                                                   ng-focus="opened = true"
+                                                   placeholder="End date"
+                                                   dp-datetime-popup="DD MMMM YYYY"
 		                                            />
                                         </p>
                                         <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'range'">
                                             Date selected must be between
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate1" style="width: 80px;" placeholder="Start date" />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate1" style="width: 80px;" placeholder="Days before" />
                                             and
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate2" style="width: 80px;" placeholder="Start end" />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate2" style="width: 80px;" placeholder="Days after" />
                                             days from the time of submission
                                         </p>
                                     </div>
