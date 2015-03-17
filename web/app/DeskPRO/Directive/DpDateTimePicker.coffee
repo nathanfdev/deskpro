@@ -18,6 +18,7 @@ define ['angular', 'moment'], (angular, moment) ->
         minView: '@'
         minDate: '@'
         maxDate: '@'
+        appendTo: '@'
       link: ($scope, $el, $attr, ngModelCtrl) ->
 
         ngModelCtrl.$formatters.push (val) ->
@@ -28,8 +29,9 @@ define ['angular', 'moment'], (angular, moment) ->
           return null if !val
           moment(val).toDate()
 
-        # todo?
-        appendToBody = false
+        # todo should be always in body, only one instance of dpDatetime for all dpDatetimePopup
+        # todo as we have multiple instances of datetime directive for now
+        appendToBody = 'body' == $scope.appendTo
 
         $popupEl = angular.element """
 					<div ng-style="{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}">
@@ -40,9 +42,10 @@ define ['angular', 'moment'], (angular, moment) ->
         $popupEl.css
           width: '280px'
           userSelect: 'none'
+          zIndex: 10000
         $popup = $compile($popupEl)($scope)
         $popupEl.remove()
-        $el.after($popup)
+        if appendToBody then $document.find('body').append($popup) else $el.after($popup)
 
         $popup.on 'click', (e) ->
           e.preventDefault()
@@ -195,7 +198,10 @@ define ['angular', 'moment'], (angular, moment) ->
         $scope.date = dt.toDate()
         $scope.active = dt.clone()
         date = dt
-        render($scope.mode)
+        if modes.day == $scope.minMode
+          $scope.$parent.isOpen = false
+        else
+          render($scope.mode)
 
       $scope.selectDay = (day) ->
         return if day.disabled
