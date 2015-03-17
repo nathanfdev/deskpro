@@ -415,17 +415,23 @@ class LegacyTermsTransformer
             case 'FilterTicketField':
                 $t = $term->getTermOptions();
                 $fid = $t['field_id'];
+                $value = @$t['value'] ?: null;
+
+                if ($t->has('date1')) {
+                    $value = 'date|' . $t['date1'];
+                }
+                if ($t->has('date2')) {
+                    $value .= '|' . $t['date2'];
+                }
 
                 return array(
                     'type'    => "ticket_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
-                    'options' => array_merge(array(
-	                        'custom_fields' => array(
-	                            "field_{$fid}" => @$t['value'] ?: null
-	                        )
-	                    ),
-	                    $t->all()
-	                )
+                    'options' => array(
+                        'custom_fields' => array(
+                            "field_{$fid}" => $value
+                        )
+                    )
                 );
 
             case 'FilterUserField':
@@ -811,6 +817,14 @@ class LegacyTermsTransformer
                 $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                if ($parts = explode('|', $new_opts['value'])) {
+                    if (isset($parts[1])) {
+                        $new_opts[$parts[0] . '1'] = $parts[1];
+                    }
+                    if (isset($parts[2])) {
+                        $new_opts[$parts[0] . '2'] = $parts[2];
+                    }
+                }
 
                 return new Terms\FilterTicketField($op, $new_opts);
 

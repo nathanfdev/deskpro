@@ -1808,7 +1808,7 @@ class TicketSearch extends SearcherAbstract
                             case 'input':
                             case 'value':
 
-                                if (is_array($choice)) {
+                                if (is_array($choice) && !isset($choice['date1'])) {
                                     $choice = array_pop($choice);
                                 }
 
@@ -1855,6 +1855,22 @@ class TicketSearch extends SearcherAbstract
 
                                         $wheres[] = $w;
 
+                                        break;
+                                    case self::OP_LTE:
+                                    case self::OP_GTE:
+                                        $_parts = explode('|', $choice);
+                                        if ('date' === @$_parts[0] && @$_parts[1]) {
+                                            $op = self::OP_LTE === $op ? '<=' : '>=';
+                                            $wheres[] = "$field $op " . (int) $_parts[1];
+                                        }
+                                        break;
+                                    case self::OP_BETWEEN:
+                                        $_parts = explode('|', $choice);
+                                        if ('date' === @$_parts[0] && @$_parts[1] && @$_parts[2]) {
+                                            $d1 = (int) $_parts[1];
+                                            $d2 = (int) $_parts[2];
+                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                        }
                                         break;
                                 }
 
