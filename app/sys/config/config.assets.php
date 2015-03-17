@@ -110,7 +110,7 @@ $CONFIG['agent_vendors'] = array(
         'bower_components/notify.js/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
 
-        'vendor/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
+        'web/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     )
 );
 
@@ -445,7 +445,6 @@ $CONFIG['user_portaladmin_css'] = array(
     'filters' => array('less', 'css'),
     'files' => array(
         'stylesheets-less/admin/portal-admin.less',
-	    'vendor/eonasdan-bootstrap-datetimepicker/src/less/bootstrap-datetimepicker-build.less',
     )
 );
 
@@ -521,7 +520,7 @@ $CONFIG['user_vendors'] = array(
         'vendor/bootstrap/bootstrap-custom.js',
 
 	    'bower_components/moment/min/moment-with-locales.min.js',
-	    'vendor/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
+	    'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     )
 );
 
@@ -571,7 +570,6 @@ $CONFIG['agent_interface_css2'] = array(
     'files' => array(
         'stylesheets-less/agent/dp-content-pane.less',
         'stylesheets-less/agent/agent.less',
-	    'vendor/eonasdan-bootstrap-datetimepicker/src/less/bootstrap-datetimepicker-build.less',
     )
 );
 
@@ -606,5 +604,8 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/bootstrap/css/modal.css',
         'vendor/bootstrap/css/dropdown.css',
         'vendor/bootstrap/css/table.css',
+
+        'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+        'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css'
     )
 );
