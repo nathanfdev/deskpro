@@ -94,7 +94,7 @@ class TicketActionsTest extends AbstractApiResultTest
 
         $this->assertEquals($oldNoOfMessages + 1, $newNoOfMessages);
 
-        $this->assertEquals($testTicketMessageText, $data['messages'][$oldNoOfMessages]['message']);
+        $this->assertEquals('<div class="plaintext-string">'.$testTicketMessageText.'</div>', $data['messages'][$oldNoOfMessages]['message']);
     }
 
     public function testCanGetMessage()
