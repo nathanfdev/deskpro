@@ -813,12 +813,12 @@ define [
         getData: ->
           return {
             options: [
-              {title: 'Red', 'red'},
-              {title: 'Blue', 'blue'},
-              {title: 'Green', 'green'},
-              {title: 'Orange', 'orange'},
-              {title: 'Purple', 'purple'},
-              {title: 'Pink', 'Pink'}
+              {title: 'Red', value: 'red'},
+              {title: 'Blue', value: 'blue'},
+              {title: 'Green', value: 'green'},
+              {title: 'Orange', value: 'orange'},
+              {title: 'Purple', value: 'purple'},
+              {title: 'Pink', value: 'pink'}
             ]
           }
 
@@ -826,7 +826,7 @@ define [
           return {
             getViewValue: (value = {}, data) ->
               return {
-                value: value.color
+                value: value.options.color
               }
             getValue: (model = {}, data) ->
               value = {}
