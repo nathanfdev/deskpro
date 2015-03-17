@@ -28,4 +28,6 @@
     'generic_7'                          => '#^[^>]{1}.*? wrote:\n>#m',
 
     'mutt'                               => '#^On \d{4}\-\d{2}\-\d{2} \d{2}:\d{2}, (?P<from>.*?) wrote:#im',
+
+    'claws'                              => '#^On \w+, \d+ \w+, (?P<from>.*?) wrote:#im',
 );
