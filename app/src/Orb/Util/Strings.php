@@ -2109,6 +2109,29 @@ class Strings
         return $body;
     }
 
+
+    /**
+     * Converts a plain-text string into HTML.
+     *
+     * @param string $string
+     * @return string
+     */
+    public static function text2html($string)
+    {
+        $body = self::standardEol($string);
+        $body = self::convert4ByteCharsToHtmlEntities($body);
+        $body = str_replace("\t", '    ', $body);
+
+        $body = @htmlspecialchars($body, ENT_QUOTES, 'UTF-8');
+        $body = nl2br($body, true);
+        $body = preg_replace_callback('#( {2,})#', function($m) {
+            return str_repeat('&nbsp;', strlen($m[1]));
+        }, $body);
+
+        return '<div class="plaintext-string">'.$body.'</div>';
+    }
+
+
     /**
      * Remove all empty lines in a string
      *

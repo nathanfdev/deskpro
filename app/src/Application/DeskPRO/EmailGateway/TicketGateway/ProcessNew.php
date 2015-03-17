@@ -155,7 +155,7 @@ class ProcessNew extends ProcessAbstract
                     $txt = substr($txt, 0, 25000);
                 }
 
-                $email_info->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+                $email_info->body = Strings::text2html($txt);
                 $email_info->body_is_html = false;
             }
 
