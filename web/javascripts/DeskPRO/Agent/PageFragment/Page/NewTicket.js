@@ -111,7 +111,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		$('.DateTime.customfield', this.wrapper).each(function(){
 			$(this).datetimepicker({
-				format: 'YYYY-M-DD HH:mm',
+				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
 				icons: {
 					time: 'fa fa-clock-o',

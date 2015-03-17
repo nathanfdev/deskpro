@@ -128,7 +128,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$('.Date.customfield input', this.display).each(function(){
 			$(this).datetimepicker({
-				format: 'YYYY-M-DD',
+				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
 				icons: {
 					up: 'fa fa-chevron-up',
@@ -141,7 +141,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$('.DateTime.customfield input', this.display).each(function(){
 			$(this).datetimepicker({
-				format: 'YYYY-M-DD HH:mm',
+				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
 				icons: {
 					time: 'fa fa-clock-o',

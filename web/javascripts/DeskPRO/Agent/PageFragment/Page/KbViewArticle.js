@@ -580,7 +580,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
 		dateInput.each(function() {
 			$(this).datetimepicker({
-				format: 'YYYY-M-DD',
+				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
 				icons: {
 					up: 'fa fa-chevron-up',
