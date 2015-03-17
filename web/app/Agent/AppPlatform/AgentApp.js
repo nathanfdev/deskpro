@@ -18,7 +18,8 @@ define([
   'angularUiSortable',
   'ngContextMenu',
   'angularSanitize',
-	'jquery.ui.i18n'
+	'jquery.ui.i18n',
+  'DeskPRO/Directive/DpDateTimePicker'
 ], function(
   angular,
   Functions,
@@ -39,7 +40,8 @@ define([
 	'ng-context-menu',
 	'deskpro.category_builder',
 	'ui.select2',
-    'ngSanitize'
+  'ngSanitize',
+  'dp.datetimepicker'
   ]);
 
 	// set default locale for UI DatePicker
