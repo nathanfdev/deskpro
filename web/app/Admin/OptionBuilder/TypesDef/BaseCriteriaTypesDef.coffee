@@ -313,7 +313,7 @@ define [
               date1_relative = null
               date2_relative = null
               use_relative = false
-              console.info value
+
               if value.options.date1 or value.options.date2 or (not value.options.date1_relative and not value.options.date2_relative)
                 use_relative = false
 

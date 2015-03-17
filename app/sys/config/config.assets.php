@@ -110,7 +110,7 @@ $CONFIG['agent_vendors'] = array(
         'bower_components/notify.js/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
 
-        'web/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+        'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     )
 );
 
