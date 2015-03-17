@@ -1,0 +1,28 @@
+services:
+
+    term_engine.dbal:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine
+        arguments:
+            - @term_engine.dbal.compiler
+
+    term_engine.dbal.compiler:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler
+        arguments:
+            - @term_engine.dbal.compiler.factory
+            - []
+
+    term_engine.dbal.compiler.factory:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory
+        arguments:
+                - 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm': @term_engine.dbal.compiler.agent
+                - 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm': @term_engine.dbal.compiler.department
+                - 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm': @term_engine.dbal.compiler.composite
+
+    term_engine.dbal.compiler.agent:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalAgentCompiler
+
+    term_engine.dbal.compiler.department:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalDepartmentCompiler
+
+    term_engine.dbal.compiler.composite:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompositeCompiler
