@@ -71,8 +71,9 @@ class Html2Text
         $html = Strings::standardEol($html);
 
         // nbsp's
-        $html = str_replace('&nbsp;', ' ', $html);
-        $html = preg_replace('#\x{00a0}#u', ' ', $html);
+        $html = trim($html);
+        $html = str_replace('&nbsp;', 'xxxDP_NBSP_PLACExxx', $html);
+        $html = preg_replace('#\x{00a0}#u', 'xxxDP_NBSP_PLACExxx', $html);
 
         $html = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . $html;
 
@@ -82,7 +83,7 @@ class Html2Text
         }
 
         $txt = $this->convertNode($doc);
-        $txt = Strings::trimLines($txt);
+        $txt = str_replace('xxxDP_NBSP_PLACExxx', ' ', $txt);
         $txt = trim($txt);
 
         return $txt;

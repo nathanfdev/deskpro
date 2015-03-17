@@ -2310,8 +2310,12 @@ class Strings
         } while ($original != $html);
 
         $html = preg_replace('#(<br\s*/?>\s*)+$#', '', $html);
+        $html = preg_replace('#\x{00a0}#u', ' ', $html);
+        $html = preg_replace_callback('#( {2,})#', function($m) {
+            return str_repeat('&nbsp;', strlen($m[1]));
+        }, trim($html));
 
-        return trim($html);
+        return $html;
     }
 
     /**
