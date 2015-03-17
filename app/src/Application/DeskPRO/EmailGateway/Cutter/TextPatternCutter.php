@@ -181,12 +181,16 @@ class TextPatternCutter implements QuoteDef
 
                     $test_text = strtolower($test_text);
 
-                    foreach ($this->require_from as $from) {
-                        $from = strtolower($from);
-                        if (strpos($test_text, $from) !== false) {
-                            $do_add = true;
-                            break;
+                    if (preg_match('#[^ ]@[^ ]\.[^ ]#', $test_text)) {
+                        foreach ($this->require_from as $from) {
+                            $from = strtolower($from);
+                            if (strpos($test_text, $from) !== false) {
+                                $do_add = true;
+                                break;
+                            }
                         }
+                    } else {
+                        $do_add = true;
                     }
 
                 } else {
