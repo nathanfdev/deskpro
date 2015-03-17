@@ -54,6 +54,7 @@ class Reader extends BaseReader
         'password2' => 1,
         'new_password' => 1,
         'new_password2' => 1,
+        'current_password' => 1,
     );
 
     /**
