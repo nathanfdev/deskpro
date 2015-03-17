@@ -59,7 +59,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
         }
 
         $m = null;
-        if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $this->reader->getRawHeaders(), $m)) {
+        if (preg_match('#(?:PTAC|TICKET)\-([A-Z0-9]+)\.#', $this->reader->getRawHeaders(), $m)) {
             $this->ptac_code = $m[1];
             if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
         } else {
@@ -92,7 +92,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 
                     $headers = implode("\n", $headers);
 
-                    if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $headers, $m)) {
+                    if (preg_match('#(?:PTAC|TICKET)\-([A-Z0-9]+)\.#', $headers, $m)) {
                         $this->ptac_code = $m[1];
                         if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
                         break; // break out of reading attaches
