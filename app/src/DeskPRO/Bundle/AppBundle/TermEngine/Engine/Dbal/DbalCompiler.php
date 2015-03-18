@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -60,6 +61,11 @@ class DbalCompiler
      */
     private $joins;
 
+    /**
+     * @var ArbitraryHasher
+     */
+    private $arbitrary_hasher;
+
     public function __construct(
         DbalCompilerFactory $compiler_factory,
         array $visitors
@@ -68,6 +74,7 @@ class DbalCompiler
         $this->compiler_factory = $compiler_factory;
         $this->visitors = $visitors;
         $this->params = array();
+        $this->hasher = new ArbitraryHasher();
     }
 
     /**
@@ -104,8 +111,15 @@ class DbalCompiler
         return $this->compiler_factory->getCompiler($term);
     }
 
-    public function setParameter($name, $value)
+    public function setParameter($value)
     {
+        // remove the microtime input on the hash if we should share param names for
+        // the exact same param value. different now because we might want to edit them
+        // all independently.
+        $name = $this->hasher->generateHash(array(microtime(), $value));
+
         $this->params[$name] = $value;
+
+        return $name;
     }
 }

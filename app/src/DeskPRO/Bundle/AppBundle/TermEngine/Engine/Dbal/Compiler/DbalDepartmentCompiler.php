@@ -45,8 +45,8 @@ class DbalDepartmentCompiler extends AbstractDbalCompiler
 
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $compiler->setParameter('departments', $term->getOption('department_ids'));
+        $param_name = $compiler->setParameter($term->getOption('department_ids'));
 
-        return 'ticket.department_id ' . $isser . ' (:departments)';
+        return sprintf('ticket.department_id %s (:%s)', $isser, $param_name);
     }
 }

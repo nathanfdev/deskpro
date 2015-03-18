@@ -42,11 +42,10 @@ class DbalAgentCompiler extends AbstractDbalCompiler
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
-
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $compiler->setParameter('agents', $term->getOption('agent_ids'));
+        $param_name = $compiler->setParameter($term->getOption('agent_ids'));
 
-        return 'ticket.agent_id ' . $isser . ' (:agents)';
+        return sprintf('ticket.agent_id %s (:%s)', $isser, $param_name);
     }
 }
