@@ -1858,10 +1858,13 @@ class TicketSearch extends SearcherAbstract
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
+                                        $op = self::OP_LTE === $op ? '<=' : '>=';
                                         $_parts = explode('|', $choice);
                                         if ('date' === @$_parts[0] && @$_parts[1]) {
-                                            $op = self::OP_LTE === $op ? '<=' : '>=';
                                             $wheres[] = "$field $op " . (int) $_parts[1];
+                                        } elseif ('date_relative' === @$_parts[0]) {
+                                            @list($i, $g) = @$_parts[1];
+                                            $wheres[] = "$field $op " . strtotime('-' . (int) $i . ' ' . $g);
                                         }
                                         break;
                                     case self::OP_BETWEEN:
@@ -1869,6 +1872,10 @@ class TicketSearch extends SearcherAbstract
                                         if ('date' === @$_parts[0] && @$_parts[1] && @$_parts[2]) {
                                             $d1 = (int) $_parts[1];
                                             $d2 = (int) $_parts[2];
+                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                        } else if ('date_relative' === @$_parts[0]) {
+                                            $d1 = strtotime('-' . $_parts[1]);
+                                            $d2 = strtotime('-' . $_parts[2]);
                                             $wheres[] = "$field BETWEEN $d1 AND $d2";
                                         }
                                         break;
