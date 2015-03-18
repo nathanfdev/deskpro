@@ -424,6 +424,13 @@ class LegacyTermsTransformer
                     $value .= '|' . $t['date2'];
                 }
 
+                if ($t->has('date1_relative')) {
+                    $value = 'date_relative|' . (int) $t['date1_relative'] . ' ' . $t['date1_relative_type'];
+                }
+                if ($t->has('date2_relative')) {
+                    $value .= '|' . (int) $t['date2_relative'] . ' ' . $t['date2_relative_type'];
+                }
+
                 return array(
                     'type'    => "ticket_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
@@ -817,12 +824,16 @@ class LegacyTermsTransformer
                 $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
-                if ($parts = explode('|', $new_opts['value'])) {
-                    if (isset($parts[1])) {
-                        $new_opts[$parts[0] . '1'] = $parts[1];
-                    }
-                    if (isset($parts[2])) {
-                        $new_opts[$parts[0] . '2'] = $parts[2];
+                $parts = explode('|', $new_opts['value']);
+                if ($field = array_shift($parts)) {
+                    foreach ($parts as $k => $part) {
+                        if ('date_relative' === $field) {
+                            @list($interval, $type) = explode(' ', $part);
+                            $new_opts['date' . ($k + 1) . '_relative'] = $interval;
+                            $new_opts['date' . ($k + 1) . '_relative_type'] = $type;
+                        } else {
+                            $new_opts[$field . ($k + 1)] = $part;
+                        }
                     }
                 }
 

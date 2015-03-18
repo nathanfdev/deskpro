@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\Util;
 
 /**
  * Checks the value of a ticket field
@@ -173,17 +174,68 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 
         } elseif ($field->getTypeName() === 'date' || $field->getTypeName() === 'datetime') {
 
-	        switch ($op) {
-		        case 'before':
-					$a = 1;
-			        break;
-		        case 'after':
-					$a = 1;
-			        break;
-		        case 'between':
-					$a = 1;
-			        break;
-	        }
+            /**
+             * cp from CheckDateCreated
+             */
+
+            $opts = $this->getTermOptions();
+            $date1 = null;
+            $date2 = null;
+
+            try {
+                if ($opts['date1']) {
+                    $date1 = new \DateTime('@' . $opts['date1']);
+                } elseif ($opts['date1_relative']) {
+                    $date1 = new \DateTime('@' . @strtotime('-' . $opts['date1_relative'] . ' ' . $opts->get('date1_relative_type', 'days')));
+                } else {
+                    $date1 = null;
+                }
+            } catch (\Exception $e) {
+                $date1 = null;
+            }
+
+            try {
+                if ($opts['date2']) {
+                    $date2 = new \DateTime('@' . $opts['date2']);
+                } elseif ($opts['date2_relative']) {
+                    $date2 = new \DateTime('@' . @strtotime('-' . $opts['date2_relative'] . ' ' . $opts->get('date2_relative_type', 'days')));
+                } else {
+                    $date2 = null;
+                }
+            } catch (\Exception $e) {
+                $date2 = null;
+            }
+
+            try {
+                $value = TermValue::createWithValue(new \DateTime('@' . $field_data));
+            } catch (\Exception $e) {
+                $value = null;
+            }
+
+
+            switch ($this->getTermOperator()) {
+                case 'lt':
+                case 'lte':
+                case 'gt':
+                case 'gte':
+                    if (!$date1 && !$date2) {
+                        return false;
+                    }
+
+                    $d = Util::coalesce($date1, $date2);
+
+                    return $this->isDateMatch($ticket, $context, $value, $d);
+
+                case 'between':
+                    if (!$date1 || !$date2) {
+                        return false;
+                    }
+
+                    return $this->isDateRangeMatch($ticket, $context, $value, $date1, $date2);
+
+                default:
+                    return false;
+            }
 
         #------------------------------
         # Handle text check

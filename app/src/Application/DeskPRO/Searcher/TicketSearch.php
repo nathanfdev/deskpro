@@ -2314,7 +2314,7 @@ class TicketSearch extends SearcherAbstract
 
                 case self::TERM_DATE_ARCHIVED:
                     if ($ticket['status'] != Ticket::STATUS_ARCHIVED) return false;
-                    if (!$this->_testDateMatch($ticket['date_archived'], $op, $choice)) return false;
+                    if (!$this->_testDateMatch($ticket['ddoesTicketMatchate_archived'], $op, $choice)) return false;
                     break;
 
                 case self::TERM_DATE_RESOLVED:

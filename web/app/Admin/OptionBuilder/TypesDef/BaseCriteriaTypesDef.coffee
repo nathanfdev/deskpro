@@ -295,7 +295,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get(me.dateTemplate)
+          me.dpTemplateManager.get(me.dateTemplate)
 
         getData: ->
           return {
@@ -360,6 +360,9 @@ define [
                   d2 = model.date2_relative || [1, 'days']
                   value.options.date2_relative = d2[0]
                   value.options.date2_relative_type = d2[1]
+
+              # compatibility with Custom Ticket Field
+              value.options.value = 'date'
 
               return value
           }
