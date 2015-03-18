@@ -78,9 +78,10 @@ class DbalCompiledQuery
     public function __toString()
     {
         return sprintf(
-            'SELECT %s FROM %s WHERE %s %s',
+            'SELECT %s%s FROM %s WHERE %s %s',
             $this->select,
-            $this->from,
+            $this->from_table,
+            $this->from_alias ? ' ' . $this->from_alias : '',
             $this->where,
             $this->modifiers
         );
@@ -99,7 +100,7 @@ class DbalCompiledQuery
      */
     public function setWhere($where)
     {
-        $this->where = $where;
+        $this->where = trim($where);
     }
 
     /**
@@ -131,7 +132,7 @@ class DbalCompiledQuery
      */
     public function setModifiers($modifiers)
     {
-        $this->modifiers = $modifiers;
+        $this->modifiers = trim($modifiers);
     }
 
     /**
@@ -147,7 +148,7 @@ class DbalCompiledQuery
      */
     public function setSelect($select)
     {
-        $this->select = $select;
+        $this->select = trim($select);
     }
 
     /**
@@ -160,13 +161,13 @@ class DbalCompiledQuery
 
     public function addJoin($table, $alias)
     {
-        $this->joins[$table] = $alias;
+        $this->joins[trim($table)] = trim($alias);
     }
 
     /**
      * @param array $joins
      */
-    public function setJoins($joins)
+    public function setJoins(array $joins)
     {
         $this->joins = $joins;
     }
@@ -184,7 +185,7 @@ class DbalCompiledQuery
      */
     public function setFromTable($from_table)
     {
-        $this->from_table = $from_table;
+        $this->from_table = trim($from_table);
     }
 
     /**
@@ -200,6 +201,6 @@ class DbalCompiledQuery
      */
     public function setFromAlias($from_alias)
     {
-        $this->from_alias = $from_alias;
+        $this->from_alias = trim($from_alias);
     }
 }

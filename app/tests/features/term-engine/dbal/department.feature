@@ -11,11 +11,11 @@ Feature: DBAL Department term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.department_id IN (:departments)
+    ticket.department_id IN (:y)
     """
     And the parameters should be:
-      | Parameter   | Value    |
-      | departments | 1, 2, 15 |
+      | Parameter | Value    |
+      | y         | 1, 2, 15 |
 
   Scenario: Compile the not term
     And I have a NOT DepartmentTerm with the options:
@@ -25,8 +25,8 @@ Feature: DBAL Department term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.department_id NOT IN (:departments)
+    ticket.department_id NOT IN (:n)
     """
     And the parameters should be:
-      | Parameter   | Value     |
-      | departments | 2, 97, 10 |
+      | Parameter | Value     |
+      | n         | 2, 97, 10 |

@@ -16,9 +16,9 @@ Feature: DBAL Composite term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    (ticket.department_id IN (:departments) OR ticket.agent_id NOT IN (:agents))
+    (ticket.department_id IN (:d) OR ticket.agent_id NOT IN (:a))
     """
     And the parameters should be:
-      | Parameter   | Value     |
-      | departments | 4, 5      |
-      | agents      | 9, 17, 80 |
+      | Parameter | Value     |
+      | d         | 4, 5      |
+      | a         | 9, 17, 80 |

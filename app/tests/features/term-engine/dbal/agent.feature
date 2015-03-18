@@ -11,11 +11,11 @@ Feature: DBAL Agent term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.agent_id IN (:agents)
+    ticket.agent_id IN (:x)
     """
     And the parameters should be:
       | Parameter | Value    |
-      | agents    | 1, 2, 15 |
+      | x         | 1, 2, 15 |
 
   Scenario: Compile the not term
     And I have a NOT AgentTerm with the options:
@@ -25,8 +25,8 @@ Feature: DBAL Agent term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.agent_id NOT IN (:agents)
+    ticket.agent_id NOT IN (:x)
     """
     And the parameters should be:
       | Parameter | Value     |
-      | agents    | 2, 97, 10 |
+      | x         | 2, 97, 10 |

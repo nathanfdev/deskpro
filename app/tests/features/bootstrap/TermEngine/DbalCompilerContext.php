@@ -90,7 +90,6 @@ class DbalCompilerContext extends BaseContext
      */
     public function iCompileMyTerms()
     {
-        xdebug_break();
         $this->compiled = $this->get('term_engine.dbal')->compile($this->term);
     }
 
@@ -102,12 +101,41 @@ class DbalCompilerContext extends BaseContext
         expect($this->compiled)->toBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQuery');
     }
 
+    protected $param_name_mapping = array();
+
     /**
      * @Then the WHERE clause should be like:
      */
-    public function theSqlShouldBeLike(PyStringNode $string)
+    public function theWhereShouldBeLike(PyStringNode $string)
     {
-        expect(trim($this->compiled->getWhere()))->toBeLike(trim($string->getRaw()));
+        $where = trim($this->compiled->getWhere());
+        $expected = trim($string->getRaw());
+
+        $param_regex = '/:([\w]+)/';
+        preg_match_all($param_regex, $expected, $expected_where_param_names);
+        $expected_where_param_names = $expected_where_param_names[0];
+        preg_match_all($param_regex, $where, $real_where_param_names);
+        $real_where_param_names = $real_where_param_names[0];
+
+        if (count($expected_where_param_names) !== count($real_where_param_names)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'expected %s params, but the real query has %s params',
+                    count($expected_where_param_names),
+                    count($real_where_param_names)
+                )
+            );
+        }
+
+        // keep the mapping
+        foreach ($expected_where_param_names as $i => $expected_param) {
+            $this->param_name_mapping[$expected_param] = $real_where_param_names[$i];
+        }
+
+        $where = preg_replace($param_regex, '', $where);
+        $expected = preg_replace($param_regex, '', $expected);
+
+        expect($where)->toBeLike($expected);
     }
 
     /**
@@ -116,8 +144,13 @@ class DbalCompilerContext extends BaseContext
     public function theParametersShouldBe(TableNode $table)
     {
         $expected_params = $this->filterTable($table);
+        $resolved_params = array();
+        foreach ($expected_params as $param_name => $value) {
+            $p = $this->param_name_mapping[':' . $param_name];
+            $resolved_params[substr($p, 1)] = $value;
+        }
 
-        expect($this->compiled->getParameters())->toBeLike($expected_params);
+        expect($this->compiled->getParameters())->toBeLike($resolved_params);
     }
 
     /**
