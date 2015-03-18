@@ -44,7 +44,16 @@ class TermEnginePass implements CompilerPassInterface
             return;
         }
 
-        $compiler_def = $container->findDefinition('term_engine.dbal.compiler.factory');
+        $this->addTermCompilers($container);
+        $this->addVisitorCompilers($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function addTermCompilers(ContainerBuilder $container)
+    {
+        $compiler_factory_def = $container->findDefinition('term_engine.dbal.compiler.factory');
 
         $tagged_compilers = $container->findTaggedServiceIds('dbal_compiler');
 
@@ -56,6 +65,24 @@ class TermEnginePass implements CompilerPassInterface
             }
         }
 
-        $compiler_def->setArguments(array($compiler_array));
+        $compiler_factory_def->setArguments(array($compiler_array));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function addVisitorCompilers(ContainerBuilder $container)
+    {
+        $compiler_def = $container->findDefinition('term_engine.dbal.compiler');
+
+        $tagged_visitors = $container->findTaggedServiceIds('dbal_compiler_visitor');
+
+        $visitors = array();
+
+        foreach ($tagged_visitors as $id => $tags) {
+            $visitors[] = new Reference($id);
+        }
+
+        $compiler_def->replaceArgument(1, $visitors);
     }
 }

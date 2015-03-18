@@ -9,7 +9,7 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler
         arguments:
             - @term_engine.dbal.compiler.factory
-            - []
+            - []  # the visitors added in compiler pass
 
     term_engine.dbal.compiler.factory:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory
@@ -29,3 +29,9 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompositeCompiler
         tags:
          - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }
+
+    term_engine.dbal.logger_visitor:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Visitor\LoggingVisitor
+        arguments: [@logger]
+        tags:
+        - { name: dbal_compiler_visitor }

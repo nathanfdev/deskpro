@@ -60,8 +60,8 @@ class LoggingVisitor implements VisitorInterface
             $this->logger->info('entering ' . get_class($term));
             $this->logger->info(json_encode($term->getOptions()));
 
-            foreach ($term->getTerms() as $term) {
-                $this->visit($term);
+            foreach ($term->getTerms() as $child_term) {
+                $this->visit($child_term);
             }
 
 
