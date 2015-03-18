@@ -71,4 +71,46 @@ class CompositeTermSpec extends ObjectBehavior
 
         $this->setDefaultOptions($options_resolver);
     }
+
+    function it_lets_you_add_a_term(
+        TermInterface $term1
+    )
+    {
+        $this->getTerms()->shouldBe(array());
+
+        $this->addTerm($term1);
+
+        $this->getTerms()->shouldBe(array($term1));
+    }
+
+    function it_lets_you_remove_a_term(
+        TermInterface $term1
+    )
+    {
+        $this->addTerm($term1);
+
+        $this->getTerms()->shouldBe(array($term1));
+
+        $this->removeTerm($term1);
+
+        $this->getTerms()->shouldBe(array());
+    }
+
+    function it_lets_you_replace_a_term(
+        TermInterface $term1,
+        TermInterface $term2,
+        TermInterface $term3,
+        TermInterface $term4
+    )
+    {
+        $this->addTerm($term1);
+        $this->addTerm($term2);
+        $this->addTerm($term3);
+
+        $this->getTerms()->shouldBe(array($term1, $term2, $term3));
+
+        $this->replaceTerm($term2, $term4);
+
+        $this->getTerms()->shouldBe(array($term1, $term4, $term3));
+    }
 }

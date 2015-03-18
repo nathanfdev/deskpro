@@ -44,11 +44,21 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
     /**
      * @var TermInterface[]
      */
-    protected $terms = array();
+    protected $terms;
+
+    public function __construct()
+    {
+        $this->terms = array();
+    }
 
     public function getTerms()
     {
         return $this->terms;
+    }
+
+    public function setDefaultOptions(OptionsResolver $resolver)
+    {
+        // no options at the moment
     }
 
     public function addTerm(TermInterface $term)
@@ -56,8 +66,28 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
         $this->terms[] = $term;
     }
 
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function replaceTerm(TermInterface $old_term, TermInterface $new_term)
     {
-        // no options at the moment
+        $key = $this->findTermKey($old_term);
+
+        $this->terms[$key] = $new_term;
+    }
+
+    public function removeTerm(TermInterface $term)
+    {
+        $key = $this->findTermKey($term);
+
+        unset($this->terms[$key]);
+    }
+
+    protected function findTermKey(TermInterface $term)
+    {
+        foreach ($this->terms as $i => $t) {
+            if ($term === $t) {
+                return $i;
+            }
+        }
+
+        throw new \InvalidArgumentException('term not found');
     }
 }
