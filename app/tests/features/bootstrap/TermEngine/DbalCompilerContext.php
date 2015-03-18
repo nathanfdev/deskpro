@@ -186,7 +186,6 @@ class DbalCompilerContext extends BaseContext
     {
         $joins = $this->filterTable($table);
         $joins = array_flip($joins); // table extraction gets them in reverse
-        xdebug_break();
         expect($this->compiled->getJoins())->toBeLike($joins);
     }
 

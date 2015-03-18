@@ -45,9 +45,8 @@ class DbalPersonEmailCompiler extends AbstractDbalCompiler
 
         switch ($op) {
             case TermInterface::OP_IS:
-                $join_alias = $compiler->addJoin(
+                $join_alias = $compiler->ensureJoin(
                     'people_emails',
-                    'email',
                     'ticket.person_id = email.person_id'
                 );
                 $param = $compiler->setParameter($term->getOption('email'));

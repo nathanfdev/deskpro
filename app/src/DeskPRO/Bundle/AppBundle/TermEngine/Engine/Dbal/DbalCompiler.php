@@ -67,6 +67,11 @@ class DbalCompiler
     private $join_ons;
 
     /**
+     * @var array
+     */
+    private $join_types;
+
+    /**
      * @var ArbitraryHasher
      */
     private $hasher;
@@ -127,15 +132,46 @@ class DbalCompiler
     }
 
     /**
+     * There are two ways to add a JOIN from the term compilers.
+     *
+     * 1. Ensured join. This is just a LEFT JOIN of the given table with the $on.
+     *    This is "shared" in the sense that only the first compiler's ON is used.
+     *    Subsequent calls for the same table is treated as a no-op.
+     *    Calling this method does, however, ensure that the table is joined.
+     *    These shared joins are NOT ALIASED, so use the table name.
+     *
+     * 2. Unique join. See self::addUniqueJoin()
+     *
      * @param $table_name
-     * @param $suggested_alias
      * @param string|null $on
      * @return string
      */
-    public function addJoin($table_name, $suggested_alias, $on = null)
+    public function ensureJoin($table_name, $on = null)
+    {
+        $this->joins[$table_name] = $table_name;
+        $this->join_ons[$table_name] = $on;
+        $this->join_types[$table_name] = 'LEFT';
+
+        return $table_name;
+    }
+
+    /**
+     * There are two ways to add a JOIN from the term compilers.
+     *
+     * 1. Shared join. See self::ensureJoin()
+     *
+     * 2. Unique join. See self::addUniqueJoin()
+     *
+     * @param $table_name
+     * @param $suggested_alias
+     * @param string|null $on
+     * @param string $type
+     * @return string
+     */
+    public function addUniqueJoin($table_name, $suggested_alias, $on = null, $type = 'LEFT')
     {
         if ($existing_alias = $this->getJoinAliasForTable($table_name)) {
-            $resolved_alias_name = $existing_alias;
+            $resolved_alias_name = $this->hasher->generateHash($table_name);
         } elseif ($suggested_alias) {
             $resolved_alias_name = $suggested_alias;
         } else {
@@ -151,6 +187,7 @@ class DbalCompiler
 
         $this->joins[$resolved_alias_name] = $table_name;
         $this->join_ons[$resolved_alias_name] = $on;
+        $this->join_types[$resolved_alias_name] = $type;
 
         return $resolved_alias_name;
     }
@@ -160,6 +197,7 @@ class DbalCompiler
         $this->params = array();
         $this->joins = array();
         $this->join_ons = array();
+        $this->join_types = array();
         $this->hasher = new ArbitraryHasher();
     }
 

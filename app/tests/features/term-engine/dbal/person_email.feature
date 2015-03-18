@@ -11,14 +11,14 @@ Feature: DBAL Agent term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.person_id = email.person_id AND email.email = :x
+    ticket.person_id = people_emails.person_id AND people_emails.email = :x
     """
     And the parameters should be:
       | Parameter | Value                     |
       | x         | chris.tickner@deskpro.com |
     And the table joins should be like:
-      | Table         | Alias |
-      | people_emails | email |
+      | Table         | Alias         |
+      | people_emails | people_emails |
 
   Scenario: Compile the not term
     And I have a NOT PersonEmailTerm with the options:
