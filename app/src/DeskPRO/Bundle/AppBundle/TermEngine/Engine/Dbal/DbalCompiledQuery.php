@@ -69,6 +69,11 @@ class DbalCompiledQuery
     /**
      * @var array
      */
+    private $join_ons;
+
+    /**
+     * @var array
+     */
     private $parameters;
 
     public function __construct()
@@ -167,9 +172,10 @@ class DbalCompiledQuery
     /**
      * @param array $joins
      */
-    public function setJoins(array $joins)
+    public function setJoins(array $joins, array $join_ons)
     {
         $this->joins = $joins;
+        $this->join_ons = $join_ons;
     }
 
     /**

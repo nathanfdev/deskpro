@@ -30,6 +30,11 @@ services:
         tags:
          - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }
 
+    term_engine.dbal.compiler.person_email:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalPersonEmailCompiler
+        tags:
+         - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm' }
+
     term_engine.dbal.logger_visitor:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Visitor\LoggingVisitor
         arguments: [@logger]

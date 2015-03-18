@@ -62,9 +62,14 @@ class DbalCompiler
     private $joins;
 
     /**
+     * @var array
+     */
+    private $join_ons;
+
+    /**
      * @var ArbitraryHasher
      */
-    private $arbitrary_hasher;
+    private $hasher;
 
     public function __construct(
         DbalCompilerFactory $compiler_factory,
@@ -73,8 +78,7 @@ class DbalCompiler
     {
         $this->compiler_factory = $compiler_factory;
         $this->visitors = $visitors;
-        $this->params = array();
-        $this->hasher = new ArbitraryHasher();
+        $this->resetCompilerState();
     }
 
     /**
@@ -84,8 +88,7 @@ class DbalCompiler
     public function compile(TermInterface $term)
     {
         // we maintain some state between compiles, clear them here.
-        $this->params = array();
-        $this->joins = array();
+        $this->resetCompilerState();
 
         foreach ($this->visitors as $visitor) {
             $visitor->visit($term);
@@ -100,7 +103,7 @@ class DbalCompiler
         $compiled_terms = $this->getTermCompiler($term)->compile($term, $this);
         $query->setWhere($compiled_terms);
 
-        $query->setJoins($this->joins); // MUST be set after the compiler
+        $query->setJoins($this->joins, $this->join_ons); // MUST be set after the compiler
         $query->setParameters($this->params);
 
         return $query;
@@ -121,5 +124,54 @@ class DbalCompiler
         $this->params[$name] = $value;
 
         return $name;
+    }
+
+    /**
+     * @param $table_name
+     * @param $suggested_alias
+     * @param string|null $on
+     * @return string
+     */
+    public function addJoin($table_name, $suggested_alias, $on = null)
+    {
+        if ($existing_alias = $this->getJoinAliasForTable($table_name)) {
+            $resolved_alias_name = $existing_alias;
+        } elseif ($suggested_alias) {
+            $resolved_alias_name = $suggested_alias;
+        } else {
+            $resolved_alias_name = $this->hasher->generateHash($table_name);
+        }
+
+        if ($on) {
+            // ensure correct alias
+            $on = str_replace($suggested_alias . '.', $resolved_alias_name . '.', $on);
+        } else {
+            $on = '';
+        }
+
+        $this->joins[$resolved_alias_name] = $table_name;
+        $this->join_ons[$resolved_alias_name] = $on;
+
+        return $resolved_alias_name;
+    }
+
+    private function resetCompilerState()
+    {
+        $this->params = array();
+        $this->joins = array();
+        $this->join_ons = array();
+        $this->hasher = new ArbitraryHasher();
+    }
+
+
+    private function getJoinAliasForTable($table_name)
+    {
+        foreach ($this->joins as $alias => $table) {
+            if ($table_name === $table) {
+                return $alias;
+            }
+        }
+
+        return null;
     }
 }

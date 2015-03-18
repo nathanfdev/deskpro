@@ -156,7 +156,7 @@ class DbalCompilerContext extends BaseContext
     /**
      * @Given I enter a(n) :op composite term
      */
-    public function iEnterACompositeOrTerm($op)
+    public function iEnterACompositeTerm($op)
     {
         $this->composite_scope++;
         $scope = $this->composite_scope;
@@ -180,6 +180,17 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Then the table joins should be like:
+     */
+    public function theTableJoinsShouldBeLike(TableNode $table)
+    {
+        $joins = $this->filterTable($table);
+        $joins = array_flip($joins); // table extraction gets them in reverse
+        xdebug_break();
+        expect($this->compiled->getJoins())->toBeLike($joins);
+    }
+
+    /**
      * @param TableNode $table
      * @return array
      */
@@ -195,6 +206,14 @@ class DbalCompilerContext extends BaseContext
             $nv = array();
             foreach ($v as $vv) {
                 $nv[] = trim($vv);
+            }
+
+            if (count($nv) < 2) {
+                if (1 === count($nv)) {
+                    $nv = $nv[0];
+                } else {
+                    $nv = null;
+                }
             }
 
 
