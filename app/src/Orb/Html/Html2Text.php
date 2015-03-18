@@ -194,7 +194,7 @@ class Html2Text
                 break;
 
             case 'a':
-                if (!trim(str_replace('<DP_BR>', '', $output))) {
+                if (!trim(str_replace(array('<DP_BR>', 'xxxDP_NBSP_PLACExxx'), '', $output))) {
                     $output = '';
                 } else {
                     $href = $node->getAttribute("href");
