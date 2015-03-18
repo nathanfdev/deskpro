@@ -1,0 +1,32 @@
+Feature: DBAL Department term compiler
+  In order to search the Ticket data
+  As a developer
+  I need to use department terms
+
+  Scenario: Compile the term
+    And I have a DepartmentTerm (IS) with the options:
+      | Option         | Value    |
+      | department_ids | 1, 2, 15 |
+    When I compile my terms
+    Then I should have a DbalCompiledResult
+    And the SQL should be like:
+    """
+    SELECT * FROM tickets ticket WHERE ticket.department_id IN (:departments)
+    """
+    And the parameters should be:
+      | Parameter   | Value    |
+      | departments | 1, 2, 15 |
+
+  Scenario: Compile the not term
+    And I have a DepartmentTerm (NOT) with the options:
+      | Option         | Value   |
+      | department_ids | 2,97,10 |
+    When I compile my terms
+    Then I should have a DbalCompiledResult
+    And the SQL should be like:
+    """
+    SELECT * FROM tickets ticket WHERE ticket.department_id NOT IN (:departments)
+    """
+    And the parameters should be:
+      | Parameter   | Value     |
+      | departments | 2, 97, 10 |

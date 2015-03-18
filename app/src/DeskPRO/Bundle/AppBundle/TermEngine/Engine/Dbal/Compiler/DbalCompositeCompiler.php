@@ -47,11 +47,13 @@ class DbalCompositeCompiler extends AbstractDbalCompiler
         }
 
         $op = $term->getOp();
-        $isser = $op === TermInterface::OP_OR ? 'OR' : 'AND';
+
+        $isser = $this->isOp($op, TermInterface::OP_OR) ? 'OR' : 'AND';
+        $isser = ' ' . $isser . ' ';
 
         $parts = array();
         foreach ($term->getTerms() as $child_term) {
-            $part = trim($compiler->getTermCompiler($child_term)->compile($term, $qb, $compiler));
+            $part = trim($compiler->getTermCompiler($child_term)->compile($child_term, $compiler));
             if ($part) {
                 $parts[] = $part;
             }
@@ -61,6 +63,6 @@ class DbalCompositeCompiler extends AbstractDbalCompiler
             return '';
         }
 
-        return sprintf('( %s )', implode($isser, $parts));
+        return sprintf('(%s)', implode($isser, $parts));
     }
 }

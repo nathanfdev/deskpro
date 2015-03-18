@@ -37,12 +37,28 @@ namespace DpBehat\TermEngine;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpBehat\BaseContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQuery;
 
 class DbalCompilerContext extends BaseContext
 {
+    /**
+     * @var TermInterface
+     */
     protected $term;
+
+    /**
+     * @var CompositeTermInterface[]
+     */
+    protected $composites = array();
+
+    /**
+     * @var int
+     */
+    protected $composite_scope = 0;
 
     /**
      * @var DbalCompiledQuery
@@ -50,15 +66,23 @@ class DbalCompilerContext extends BaseContext
     protected $compiled;
 
     /**
-     * @Given I have a(n) :term with the options:
+     * @Given I have a(n) :term (:op) with the options:
      */
-    public function iHaveAnTermWithTheOptions($term, TableNode $table)
+    public function iHaveAnTermWithTheOptions($term, $op, TableNode $table)
     {
         $term_class = sprintf('DeskPRO\Bundle\AppBundle\TermEngine\Term\%s', $term);
 
         $options = $this->filterTable($table);
 
-        $this->term = new $term_class($options);
+        $term = new $term_class($options);
+        $term->setOp($this->getOp($op));
+
+        if ($this->term) {
+            $composite = $this->composites[$this->composite_scope];
+            $composite->addTerm($term);
+        } else {
+            $this->term = $term;
+        }
     }
 
     /**
@@ -96,6 +120,32 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Given I enter a composite (:op) term
+     */
+    public function iEnterACompositeOrTerm($op)
+    {
+        $this->composite_scope++;
+        $scope = $this->composite_scope;
+
+        $composite = new CompositeTerm();
+        $composite->setOp($op);
+
+        if (!$this->term) {
+            $this->term = $composite;
+        }
+
+        $this->composites[$scope] = $composite;
+    }
+
+    /**
+     * @Given I close the composite term
+     */
+    public function iCloseTheCompositeTerm()
+    {
+        $this->composite_scope--;
+    }
+
+    /**
      * @param TableNode $table
      * @return array
      */
@@ -117,5 +167,14 @@ class DbalCompilerContext extends BaseContext
             $output[$row[0]] = $nv;
         }
         return $output;
+    }
+
+    /**
+     * @param $op
+     * @return mixed
+     */
+    private function getOp($op)
+    {
+        return constant('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_' . $op);
     }
 }

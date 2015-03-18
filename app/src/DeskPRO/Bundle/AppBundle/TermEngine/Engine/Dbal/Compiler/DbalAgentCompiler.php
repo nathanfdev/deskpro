@@ -42,7 +42,8 @@ class DbalAgentCompiler extends AbstractDbalCompiler
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
-        $isser = $op === TermInterface::OP_NOT ? 'NOT IN' : 'IN';
+
+        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
         $compiler->setParameter('agents', $term->getOption('agent_ids'));
 

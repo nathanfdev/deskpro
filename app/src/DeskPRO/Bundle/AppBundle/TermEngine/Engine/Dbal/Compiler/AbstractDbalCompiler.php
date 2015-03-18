@@ -47,4 +47,18 @@ abstract class AbstractDbalCompiler
         // is just a pre-emptive abstraction.
         return $this->doCompile($term, $compiler);
     }
+
+    /**
+     * Use this shortcut to see if two op codes are the same.
+     *
+     * This normalizes the codes and then does the comparrison in a safe way.
+     *
+     * @param string $op
+     * @param string $code
+     * @return bool
+     */
+    protected function isOp($op, $code)
+    {
+        return strtolower($op) === strtolower($code);
+    }
 }
