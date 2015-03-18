@@ -13,17 +13,19 @@ services:
 
     term_engine.dbal.compiler.factory:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory
-        arguments:
-            array:
-                'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm': @term_engine.dbal.compiler.agent
-                'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm': @term_engine.dbal.compiler.department
-                'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm': @term_engine.dbal.compiler.composite
+        # compiler pass will add the term compilers
 
     term_engine.dbal.compiler.agent:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalAgentCompiler
+        tags:
+         - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm' }
 
     term_engine.dbal.compiler.department:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalDepartmentCompiler
+        tags:
+         - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' }
 
     term_engine.dbal.compiler.composite:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompositeCompiler
+        tags:
+         - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }

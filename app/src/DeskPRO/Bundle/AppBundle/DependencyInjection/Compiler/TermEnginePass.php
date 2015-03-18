@@ -29,49 +29,33 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
-use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
-use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
-use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\ExpressionLanguage\Expression;
 
-class AppBundle extends Bundle
+class TermEnginePass implements CompilerPassInterface
 {
-    public function getContainerExtension()
+    public function process(ContainerBuilder $container)
     {
-        return new AppExtension();
-    }
+        if (!$container->has('term_engine.dbal')) {
+            return;
+        }
 
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
+        $compiler_def = $container->findDefinition('term_engine.dbal.compiler.factory');
 
-        $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
-        $container->addCompilerPass(new TermEnginePass());
+        $tagged_compilers = $container->findTaggedServiceIds('dbal_compiler');
 
-        /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
-        $security = $container->getExtension('security');
-        $security->addSecurityListenerFactory(new DpFormLoginFactory());
-        $security->addSecurityListenerFactory(new AgentImpersonateFactory());
-    }
+        $compiler_array = array();
 
-    public function registerCommands(Application $application)
-    {
-    }
+        foreach ($tagged_compilers as $id => $tags) {
+            foreach ($tags as $attributes) {
+                $compiler_array[$attributes['term']] = new Reference($id);
+            }
+        }
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        $compiler_def->setArguments(array($compiler_array));
     }
 }
