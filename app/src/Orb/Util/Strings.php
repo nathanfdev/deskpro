@@ -2077,6 +2077,7 @@ class Strings
      * Does a "real" trim, triming other whitespace like non-breaking spaces.
      *
      * @param $string
+     * @return string
      */
     public static function trimWhitespace($string)
     {
@@ -2114,9 +2115,10 @@ class Strings
      * Converts a plain-text string into HTML.
      *
      * @param string $string
+     * @param string $wrap_class
      * @return string
      */
-    public static function text2html($string)
+    public static function text2html($string, $wrap_class = null)
     {
         $body = self::standardEol($string);
         $body = self::convert4ByteCharsToHtmlEntities($body);
@@ -2128,7 +2130,11 @@ class Strings
             return str_repeat('&nbsp;', strlen($m[1]));
         }, $body);
 
-        return '<div class="plaintext-string">'.$body.'</div>';
+        if ($wrap_class) {
+            return '<div class="'.$wrap_class.'">'.$body.'</div>';
+        } else {
+            return $body;
+        }
     }
 
 

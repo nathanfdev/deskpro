@@ -219,7 +219,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $agent_ticket_message = null;
         if ($agent_reply) {
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
-            $agent_reply = Strings::text2html($agent_reply);
+            $agent_reply = Strings::text2html($agent_reply, 'plaintext-email');
 
             $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
@@ -398,7 +398,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] (Agent) Reading text');
             $agent_reply = trim($this->reader->getBodyText()->body_utf8);
             if ($agent_reply) {
-                $agent_reply = Strings::text2html($agent_reply);
+                $agent_reply = Strings::text2html($agent_reply, 'plaintext-email');
             }
         }
 
@@ -498,7 +498,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $body = $this->cleaner->clean($body, 'html_email_postclean');
         } else {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading text');
-            $body = Strings::text2html($user_reader->getBodyText()->body_utf8);
+            $body = Strings::text2html($user_reader->getBodyText()->body_utf8, 'plaintext-email');
         }
         $ticket_message->setMessageHtml($body);
 
