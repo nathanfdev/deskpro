@@ -12,6 +12,7 @@
 
     'thunderbird_1'                      => '#^On ([0-9]+)/([0-9]+)/([0-9]+) ([0-9]{1,2}):([0-9]{1,2})\s*([ap]m)?, (?P<from>.*?) wrote:#mi',
     'thunderbird_2'                      => '#^\-\-\- Original Message Follows \-\-\-\s+Sender:(?P<from>.*?)\s+Date:(.*?)\s+#m',
+    'thunderbird_3'                      => '#^(?P<from>.*?) wrote on \d+\.\d+\.\d+ \d+:\d+\s*:\s*$#m',
     'thunderbird_fr_1'                   => '#^Le (.*?), (?P<from>.*?) a écrit\s*:#m',
 
     'applemail_1'                        => '#^On (.*?), ([0-9]+), at (.*?), (?P<from>.*?) wrote:\s+#m',
