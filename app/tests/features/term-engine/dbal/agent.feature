@@ -4,7 +4,7 @@ Feature: DBAL Agent term compiler
   I need to use agent terms
 
   Scenario: Compile the term
-    And I have an AgentTerm (IS) with the options:
+    And I have an IS AgentTerm with the options:
       | Option    | Value    |
       | agent_ids | 1, 2, 15 |
     When I compile my terms
@@ -18,7 +18,7 @@ Feature: DBAL Agent term compiler
       | agents    | 1, 2, 15 |
 
   Scenario: Compile the not term
-    And I have an AgentTerm (NOT) with the options:
+    And I have a NOT AgentTerm with the options:
       | Option    | Value   |
       | agent_ids | 2,97,10 |
     When I compile my terms

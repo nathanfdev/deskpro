@@ -4,11 +4,11 @@ Feature: DBAL Composite term compiler
   I need a composite term
 
   Scenario: Compile the term
-    Given I enter a composite (OR) term
-    And I have a DepartmentTerm (IS) with the options:
+    Given I enter an OR composite term
+    And I have an IS DepartmentTerm with the options:
       | Option         | Value |
       | department_ids | 4,5   |
-    And I have an AgentTerm (NOT) with the options:
+    And I have a NOT AgentTerm with the options:
       | Option    | Value   |
       | agent_ids | 9,17,80 |
     And I close the composite term

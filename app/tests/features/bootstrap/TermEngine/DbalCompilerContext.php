@@ -66,7 +66,7 @@ class DbalCompilerContext extends BaseContext
     protected $compiled;
 
     /**
-     * @Given I have a(n) :term (:op) with the options:
+     * @Given I have a(n) :op :term with the options:
      */
     public function iHaveAnTermWithTheOptions($term, $op, TableNode $table)
     {
@@ -120,7 +120,7 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
-     * @Given I enter a composite (:op) term
+     * @Given I enter a(n) :op composite term
      */
     public function iEnterACompositeOrTerm($op)
     {
