@@ -90,6 +90,7 @@ class DbalCompilerContext extends BaseContext
      */
     public function iCompileMyTerms()
     {
+        xdebug_break();
         $this->compiled = $this->get('term_engine.dbal')->compile($this->term);
     }
 
@@ -102,11 +103,11 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
-     * @Then the SQL should be like:
+     * @Then the WHERE clause should be like:
      */
     public function theSqlShouldBeLike(PyStringNode $string)
     {
-        expect(trim($this->compiled->getQueryString()))->toBeLike(trim($string->getRaw()));
+        expect(trim($this->compiled->getWhere()))->toBeLike(trim($string->getRaw()));
     }
 
     /**

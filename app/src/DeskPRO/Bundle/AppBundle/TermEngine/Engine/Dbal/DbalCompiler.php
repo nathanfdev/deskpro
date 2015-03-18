@@ -55,6 +55,11 @@ class DbalCompiler
      */
     private $params;
 
+    /**
+     * @var array
+     */
+    private $joins;
+
     public function __construct(
         DbalCompilerFactory $compiler_factory,
         array $visitors
@@ -73,22 +78,25 @@ class DbalCompiler
     {
         // we maintain some state between compiles, clear them here.
         $this->params = array();
+        $this->joins = array();
 
         foreach ($this->visitors as $visitor) {
             $visitor->visit($term);
         }
 
-        // TODO: we can easily add options on the method to manipulate this:
-        $query_string = 'SELECT * FROM tickets ticket';
+        $query = new DbalCompiledQuery();
 
-        $compiled = $this->getTermCompiler($term)->compile($term, $this);
+        $query->setSelect('id');
+        $query->setFromTable('tickets');
+        $query->setFromAlias('ticket');
 
-        // TODO: we havent got to joins yet in the terms, but the compiler will maintain state
-        // during this call to the compilers above, and we append to the sql string here
+        $compiled_terms = $this->getTermCompiler($term)->compile($term, $this);
+        $query->setWhere($compiled_terms);
 
-        $query_string .= ' WHERE ' . $compiled;
+        $query->setJoins($this->joins); // MUST be set after the compiler
+        $query->setParameters($this->params);
 
-        return new DbalCompiledQuery($query_string, $this->params);
+        return $query;
     }
 
     public function getTermCompiler(TermInterface $term)

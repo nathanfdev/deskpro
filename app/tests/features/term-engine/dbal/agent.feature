@@ -9,9 +9,9 @@ Feature: DBAL Agent term compiler
       | agent_ids | 1, 2, 15 |
     When I compile my terms
     Then I should have a DbalCompiledResult
-    And the SQL should be like:
+    And the WHERE clause should be like:
     """
-    SELECT * FROM tickets ticket WHERE ticket.agent_id IN (:agents)
+    ticket.agent_id IN (:agents)
     """
     And the parameters should be:
       | Parameter | Value    |
@@ -23,9 +23,9 @@ Feature: DBAL Agent term compiler
       | agent_ids | 2,97,10 |
     When I compile my terms
     Then I should have a DbalCompiledResult
-    And the SQL should be like:
+    And the WHERE clause should be like:
     """
-    SELECT * FROM tickets ticket WHERE ticket.agent_id NOT IN (:agents)
+    ticket.agent_id NOT IN (:agents)
     """
     And the parameters should be:
       | Parameter | Value     |

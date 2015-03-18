@@ -9,9 +9,9 @@ Feature: DBAL Department term compiler
       | department_ids | 1, 2, 15 |
     When I compile my terms
     Then I should have a DbalCompiledResult
-    And the SQL should be like:
+    And the WHERE clause should be like:
     """
-    SELECT * FROM tickets ticket WHERE ticket.department_id IN (:departments)
+    ticket.department_id IN (:departments)
     """
     And the parameters should be:
       | Parameter   | Value    |
@@ -23,9 +23,9 @@ Feature: DBAL Department term compiler
       | department_ids | 2,97,10 |
     When I compile my terms
     Then I should have a DbalCompiledResult
-    And the SQL should be like:
+    And the WHERE clause should be like:
     """
-    SELECT * FROM tickets ticket WHERE ticket.department_id NOT IN (:departments)
+    ticket.department_id NOT IN (:departments)
     """
     And the parameters should be:
       | Parameter   | Value     |

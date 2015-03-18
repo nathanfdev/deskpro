@@ -39,33 +39,67 @@ class DbalCompiledQuery
     /**
      * @var string
      */
-    private $query_string;
+    private $select;
+
+    /**
+     * @var string
+     */
+    private $from_table;
+
+    /**
+     * @var string
+     */
+    private $from_alias;
+
+    /**
+     * @var string
+     */
+    private $where;
+
+    /**
+     * @var string
+     */
+    private $modifiers;
+
+    /**
+     * @var array
+     */
+    private $joins;
 
     /**
      * @var array
      */
     private $parameters;
 
-    public function __construct($query_string, array $parameters)
+    public function __construct()
     {
-        $this->query_string = $query_string;
-        $this->parameters = $parameters;
+    }
+
+    public function __toString()
+    {
+        return sprintf(
+            'SELECT %s FROM %s WHERE %s %s',
+            $this->select,
+            $this->from,
+            $this->where,
+            $this->modifiers
+        );
     }
 
     /**
      * @return mixed
      */
-    public function getQueryString()
+    public function getWhere()
     {
-        return $this->query_string;
+        return $this->where;
     }
 
     /**
-     * @param mixed $query_string
+     * @param mixed $where
      */
-    public function setQueryString($query_string)
+    public function setWhere($where)
     {
-        $this->query_string = $query_string;
+        $this->where = $where;
     }
 
     /**
@@ -82,5 +116,90 @@ class DbalCompiledQuery
     public function setParameters(array $parameters)
     {
         $this->parameters = $parameters;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getModifiers()
+    {
+        return $this->modifiers;
+    }
+
+    /**
+     * @param mixed $modifiers
+     */
+    public function setModifiers($modifiers)
+    {
+        $this->modifiers = $modifiers;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelect()
+    {
+        return $this->select;
+    }
+
+    /**
+     * @param string $select
+     */
+    public function setSelect($select)
+    {
+        $this->select = $select;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJoins()
+    {
+        return $this->joins;
+    }
+
+    public function addJoin($table, $alias)
+    {
+        $this->joins[$table] = $alias;
+    }
+
+    /**
+     * @param array $joins
+     */
+    public function setJoins($joins)
+    {
+        $this->joins = $joins;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFromTable()
+    {
+        return $this->from_table;
+    }
+
+    /**
+     * @param string $from_table
+     */
+    public function setFromTable($from_table)
+    {
+        $this->from_table = $from_table;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFromAlias()
+    {
+        return $this->from_alias;
+    }
+
+    /**
+     * @param string $from_alias
+     */
+    public function setFromAlias($from_alias)
+    {
+        $this->from_alias = $from_alias;
     }
 }
