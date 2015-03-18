@@ -464,6 +464,10 @@ DeskPRO.Agent.RteEditor = {
           return s;
         });
 
+        html = html.replace(/&nbsp;/g, function(m) {
+          return '__DP_SPACE_PLACE__';
+        });
+
 				this.pasteCleanUp(html);
 
 				this.pasteRunning = false;
@@ -489,6 +493,7 @@ DeskPRO.Agent.RteEditor = {
       // remove nbsp
       html = html.replace(/(&nbsp;){2,}/gi, '&nbsp;');
       html = html.replace(/__DP_INDENT_PLACE__/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      html = html.replace(/__DP_SPACE_PLACE__/g, '&nbsp;');
 
       // remove google docs marker
       html = html.replace(/<b\sid="internal-source-marker(.*?)">([\w\W]*?)<\/b>/gi, "$2");
