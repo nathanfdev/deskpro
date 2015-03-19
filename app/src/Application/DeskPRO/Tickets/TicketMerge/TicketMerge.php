@@ -178,6 +178,48 @@ class TicketMerge implements PersonContextInterface
         $this->mergeLogs();
         $this->mergeMisc();
 
+
+        /**
+         * merge dates:
+         *
+         * Take the EARLIEST date:
+         *  date_feedback_rating
+         *  date_created
+         *  date_first_agent_assign
+         *  date_first_agent_reply
+         *  date_resolved
+         *  date_archived
+         *
+         * Take the LATEST date:
+         *  date_status
+         *  date_agent_waiting
+         *  date_user_waiting
+         *
+         * total_to_first_reply sholud be max(ticket1, ticket2)
+         * total_user_waiting should be max(ticket1, ticket2)
+         */
+
+        $n = $this->ticket;
+        $o = $this->other_ticket;
+        $md = function($prop, $func) use ($n, $o) {
+            if (!$n->$prop) return $n->$prop = $o->$prop ?: null;
+            if (!$o->$prop) return;
+            return $n->$prop = $func($n->$prop, $o->$prop);
+        };
+        $md('date_feedback_rating', 'min');
+        $md('date_created', 'min');
+        $md('date_first_agent_reply', 'min');
+        $md('date_first_agent_assign', 'min');
+        $md('date_resolved', 'min');
+        $md('date_archived', 'min');
+
+        $md('date_status', 'max');
+        $md('date_agent_waiting', 'max');
+        $md('date_user_waiting', 'max');
+
+        $md('total_to_first_reply', 'max');
+        $md('total_user_waiting', 'max');
+
         // non-merged fields that we want to log
         $lost_log = array(
             'subject' => null,

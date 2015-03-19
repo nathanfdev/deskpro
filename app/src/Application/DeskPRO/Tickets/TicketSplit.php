@@ -191,6 +191,7 @@ class TicketSplit implements PersonContextInterface
          * total_user_waiting set to total_to_first_reply
          */
         $new_ticket->date_feedback_rating = $this->ticket->date_feedback_rating;
+        $new_ticket->feedback_rating = $this->ticket->feedback_rating;
         $new_ticket->date_created = $first->date_created;
         $new_ticket->date_first_agent_assign = null;
         $new_ticket->date_first_agent_reply = $firstAgent ? $firstAgent->date_created : null;
