@@ -272,6 +272,19 @@ class DbalCompiledQuery
         return $alias;
     }
 
+    public function addParameter($name_prefix, $value)
+    {
+        $p_name = $name_prefix . '_0';
+
+        for ($i = 1; array_key_exists($p_name, $this->params); $i++) {
+            $p_name = $name_prefix . '_' . $i;
+        }
+
+        $this->params[$p_name] = $value;
+
+        return $p_name;
+    }
+
     public function setParameters(array $parameters)
     {
         $this->params = $parameters;

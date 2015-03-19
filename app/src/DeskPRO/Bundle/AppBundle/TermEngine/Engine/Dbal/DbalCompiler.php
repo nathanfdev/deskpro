@@ -72,9 +72,9 @@ class DbalCompiler
     private $join_types;
 
     /**
-     * @var ArbitraryHasher
+     * @var DbalCompiledQuery
      */
-    private $hasher;
+    private $query;
 
     public function __construct(
         DbalCompilerFactory $compiler_factory,
@@ -92,24 +92,22 @@ class DbalCompiler
      */
     public function compile(TermInterface $term)
     {
-        // we maintain some state between compiles, clear them here.
+        // we maintain some state between compiles, clear them here just in case.
         $this->resetCompilerState();
 
         foreach ($this->visitors as $visitor) {
             $visitor->visit($term);
         }
 
-        $query = new DbalCompiledQuery();
-
-        $query->setSelect('id');
-        $query->setFromTable('tickets');
-        $query->setFromAlias('ticket');
+        $this->query->setFrom('tickets', 'ticket');
 
         $compiled_terms = $this->getTermCompiler($term)->compile($term, $this);
-        $query->setWhere($compiled_terms);
+        $this->query->setWherePart($compiled_terms);
 
-        $query->setJoins($this->joins, $this->join_ons); // MUST be set after the compiler
-        $query->setParameters($this->params);
+        $query = $this->query;
+
+        // clear the compiler state
+        $this->resetCompilerState();
 
         return $query;
     }
@@ -119,97 +117,52 @@ class DbalCompiler
         return $this->compiler_factory->getCompiler($term);
     }
 
-    public function setParameter($value)
-    {
-        // remove the microtime input on the hash if we should share param names for
-        // the exact same param value. different now because we might want to edit them
-        // all independently.
-        $name = $this->hasher->generateHash(array(microtime(), $value));
-
-        $this->params[$name] = $value;
-
-        return $name;
-    }
-
     /**
-     * There are two ways to add a JOIN from the term compilers.
+     * Set a parameter, but the $name_prefix is just a prefix. The actual parameter
+     * name will be returned to you.
      *
-     * 1. Ensured join. This is just a LEFT JOIN of the given table with the $on.
-     *    This is "shared" in the sense that only the first compiler's ON is used.
-     *    Subsequent calls for the same table is treated as a no-op.
-     *    Calling this method does, however, ensure that the table is joined.
-     *    These shared joins are NOT ALIASED, so use the table name.
-     *
-     * 2. Unique join. See self::addUniqueJoin()
-     *
-     * @param $table_name
-     * @param string|null $on
-     * @return string
+     * @param $name_prefix
+     * @param $value
+     * @return string the parameter name
      */
-    public function ensureJoin($table_name, $on = null)
+    public function addParameter($name_prefix, $value)
     {
-        $this->joins[$table_name] = $table_name;
-        $this->join_ons[$table_name] = $on;
-        $this->join_types[$table_name] = 'LEFT';
-
-        return $table_name;
+        return $this->query->addParameter($name_prefix, $value);
     }
 
     /**
-     * There are two ways to add a JOIN from the term compilers.
-     *
-     * 1. Shared join. See self::ensureJoin()
-     *
-     * 2. Unique join. See self::addUniqueJoin()
+     * This will do nothing if the table is already joined, else it will join the
+     * table with the given ON
      *
      * @param $table_name
-     * @param $suggested_alias
-     * @param string|null $on
+     * @param string $on
+     */
+    public function addJoin($table_name, $on)
+    {
+        $this->query->addJoin($table_name, $on);
+    }
+
+    /**
+     * You can use {alias} in the $on param as a placeholder for the real join alias.
+     *
+     * It returns the real join alias so you can reference it.
+     *
+     * @param $table_name
+     * @param string $on
      * @param string $type
-     * @return string
+     * @return string the join alias
      */
-    public function addUniqueJoin($table_name, $suggested_alias, $on = null, $type = 'LEFT')
+    public function addUniqueJoin($table_name, $on, $type = 'LEFT')
     {
-        if ($existing_alias = $this->getJoinAliasForTable($table_name)) {
-            $resolved_alias_name = $this->hasher->generateHash($table_name);
-        } elseif ($suggested_alias) {
-            $resolved_alias_name = $suggested_alias;
-        } else {
-            $resolved_alias_name = $this->hasher->generateHash($table_name);
-        }
-
-        if ($on) {
-            // ensure correct alias
-            $on = str_replace($suggested_alias . '.', $resolved_alias_name . '.', $on);
-        } else {
-            $on = '';
-        }
-
-        $this->joins[$resolved_alias_name] = $table_name;
-        $this->join_ons[$resolved_alias_name] = $on;
-        $this->join_types[$resolved_alias_name] = $type;
-
-        return $resolved_alias_name;
+        return $this->query->addUniqueJoin($table_name, $on, $type);
     }
 
     private function resetCompilerState()
     {
+        $this->query = new DbalCompiledQuery();
         $this->params = array();
         $this->joins = array();
         $this->join_ons = array();
         $this->join_types = array();
-        $this->hasher = new ArbitraryHasher();
-    }
-
-
-    private function getJoinAliasForTable($table_name)
-    {
-        foreach ($this->joins as $alias => $table) {
-            if ($table_name === $table) {
-                return $alias;
-            }
-        }
-
-        return null;
     }
 }

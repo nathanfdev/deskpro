@@ -184,6 +184,25 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->__toString()->shouldReturn('SELECT * FROM tickets t LIMIT 10');
     }
 
+    function it_lets_you_add_parameters_and_returns_your_parameter_name()
+    {
+        $this->setFrom('tickets');
+
+        $p1_name = $this->addParameter('name', 'value');
+        $p2_name = $this->addParameter('name', 'other value');
+        $p3_name = $this->addParameter('other_name', 'bar');
+
+        // you get the param names from the addParameter call. your "name" is just a prefix but not the actual parameter name
+        $this->setWherePart(
+            't.id = :' . $p1_name->getWrappedObject() . ' OR t.subject = :' . $p2_name->getWrappedObject(
+            ) . ' AND t.name = :' . $p3_name->getWrappedObject()
+        );
+
+        $this->__toString()->shouldBe(
+            'SELECT * FROM tickets WHERE t.id = :name_0 OR t.subject = :name_1 AND t.name = :other_name_0'
+        );
+    }
+
     function it_does_everything_at_once()
     {
         $this->setSelectPart('{from}.id');
