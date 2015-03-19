@@ -224,17 +224,27 @@ class DbalCompiledQuery
         $this->where = trim($where);
     }
 
-    public function addJoin($table, $on)
+    public function addJoin($table, $on, $alias = null)
     {
-        $this->joins[$table] = $on;
+        if (!$alias) {
+            $alias = $table;
+        }
+        $this->joins[$alias] = array($table, $on);
     }
 
     public function generateJoinString()
     {
         $join_string = '';
 
-        foreach ($this->joins as $table => $on) {
-            $join_string .= sprintf('%s JOIN %s ON %s ', self::JOIN_LEFT, $table, $on);
+        foreach ($this->joins as $alias => $join) {
+            $table = $join[0];
+            $on = $join[1];
+
+            if ($table === $alias) {
+                $join_string .= sprintf('%s JOIN %s ON %s ', self::JOIN_LEFT, $table, $on);
+            } else {
+                $join_string .= sprintf('%s JOIN %s %s ON %s ', self::JOIN_LEFT, $table, $alias, $on);
+            }
         }
 
         // trim because it will always have a trailing space from loop

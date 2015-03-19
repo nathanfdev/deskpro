@@ -82,7 +82,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT * FROM tickets WHERE tickets.id = 4');
     }
 
-    function it_handles_shared_joins()
+    function it_handles_shared_joins_using_no_alias_be_default()
     {
         $this->setFrom('tickets');
 
@@ -95,6 +95,22 @@ class DbalCompiledQuerySpec extends ObjectBehavior
 
         $this->__toString()->shouldBe(
             'SELECT * FROM tickets LEFT JOIN people_emails ON people_emails.person_id = tickets.person_id LEFT JOIN departments ON departments.ticket_id = tickets.id'
+        );
+    }
+
+    function it_handles_shared_joins_that_specify_an_alias()
+    {
+        $this->setFrom('tickets');
+
+        $this->addJoin('people_emails', 'pe.person_id = {from}.person_id', 'pe');
+        $this->addJoin('departments', 'dp.ticket_id = {from}.id', 'dp');
+
+        $expected_join_string = 'LEFT JOIN people_emails pe ON pe.person_id = {from}.person_id LEFT JOIN departments dp ON dp.ticket_id = {from}.id';
+
+        $this->generateJoinString()->shouldBe($expected_join_string);
+
+        $this->__toString()->shouldBe(
+            'SELECT * FROM tickets LEFT JOIN people_emails pe ON pe.person_id = tickets.person_id LEFT JOIN departments dp ON dp.ticket_id = tickets.id'
         );
     }
 

@@ -56,6 +56,10 @@ class DbalPersonEmailCompiler extends AbstractDbalCompiler
                     $param
                 );
             case TermInterface::OP_NOT:
+                $alias = $compiler->addUniqueJoin(
+                    'people_emails',
+                    '{from}.person_id = people_emails.person_id'
+                );
                 $param = $compiler->addParameter('email', $term->getOption('email'));
 
                 return sprintf(
