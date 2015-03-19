@@ -11,7 +11,7 @@ Feature: DBAL Department term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.department_id IN (:y)
+    {from}.department_id IN (:y)
     """
     And the parameters should be:
       | Parameter | Value    |
@@ -25,7 +25,7 @@ Feature: DBAL Department term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    ticket.department_id NOT IN (:n)
+    {from}.department_id NOT IN (:n)
     """
     And the parameters should be:
       | Parameter | Value     |
