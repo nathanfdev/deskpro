@@ -108,7 +108,7 @@ class DbalCompilerContext extends BaseContext
      */
     public function theWhereShouldBeLike(PyStringNode $string)
     {
-        $where = trim($this->compiled->getWhere());
+        $where = trim($this->compiled->generateWhereString());
         $expected = trim($string->getRaw());
 
         $param_regex = '/:([\w]+)/';
@@ -180,13 +180,13 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
-     * @Then the table joins should be like:
+     * @Then the join string should be like:
      */
-    public function theTableJoinsShouldBeLike(TableNode $table)
+    public function theTableJoinsShouldBeLike(PyStringNode $string)
     {
-        $joins = $this->filterTable($table);
-        $joins = array_flip($joins); // table extraction gets them in reverse
-        expect($this->compiled->getJoins())->toBeLike($joins);
+        $expected = trim($string->getRaw());
+
+        expect($this->compiled->generateJoinString())->toBeLike($expected);
     }
 
     /**
