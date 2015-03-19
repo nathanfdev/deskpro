@@ -99,20 +99,21 @@ define ['angular', 'moment'], (angular, moment) ->
       $scope.mode = modes.day
       $scope.active = date.clone()
 
-      $scope.format = $scope.format || defaults.format
+      $scope.format = format = $scope.format || defaults.format
       $scope.use24 = $scope.format.toLowerCase().indexOf('a') < 1 && $scope.format.indexOf('h') < 1
       $scope.minDate = $scope.minDate || defaults.minDate
       $scope.maxDate = $scope.maxDate || defaults.maxDate
       $scope.minMode = modes[$scope.minView] if modes[$scope.minView]
 
       granularities =
-        y: -> $scope.format.indexOf('Y') != -1
-        M: -> $scope.format.indexOf('M') != -1
-        d: -> $scope.format.toLowerCase().indexOf('d') != -1
-        h: -> $scope.format.toLowerCase().indexOf('h') != -1
-        H: -> $scope.format.toLowerCase().indexOf('h') != -1
-        m: -> $scope.format.indexOf('m') != -1
-        s: -> $scope.format.indexOf('s') != -1
+        # todo check $scope.format initialized as undefined. changing to explicit value for now
+        y: -> format.indexOf('Y') != -1
+        M: -> format.indexOf('M') != -1
+        d: -> format.toLowerCase().indexOf('d') != -1
+        h: -> format.toLowerCase().indexOf('h') != -1
+        H: -> format.toLowerCase().indexOf('h') != -1
+        m: -> format.indexOf('m') != -1
+        s: -> format.indexOf('s') != -1
       isEnabled = (granularity) ->
         func = granularities[granularity]
         return false if !func
