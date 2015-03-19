@@ -69,11 +69,6 @@ class DbalCompiledQuery
     private $where;
 
     /**
-     * @var string
-     */
-    private $modifiers;
-
-    /**
      * @var array
      */
     private $joins;
@@ -113,9 +108,15 @@ class DbalCompiledQuery
      */
     private $limit;
 
+    /**
+     * @var int
+     */
+    private $page;
+
     public function __construct()
     {
         $this->select = '*';
+        $this->page = 1;
         $this->joins = array();
         $this->join_ons = array();
         $this->unique_joins = array();
@@ -153,7 +154,7 @@ class DbalCompiledQuery
         }
 
         if ($this->limit) {
-            $sql_string .= ' LIMIT ' . $this->limit;
+            $sql_string .= ' LIMIT ' . $this->generateLimitString();
         }
 
         $sql_string = str_replace(
@@ -344,5 +345,33 @@ class DbalCompiledQuery
     public function setLimit($limit)
     {
         $this->limit = $limit;
+    }
+
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    public function generateLimitString()
+    {
+        if (!$this->limit) {
+            return '';
+        }
+
+        return sprintf('%s, %s', $this->getPageOffset(), $this->limit);
+    }
+
+    public function getPageOffset()
+    {
+        if (!$this->limit || !$this->page) {
+            return null;
+        }
+
+        return ($this->page - 1) * $this->limit;
     }
 }
