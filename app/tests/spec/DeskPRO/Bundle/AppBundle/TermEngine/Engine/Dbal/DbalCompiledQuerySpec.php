@@ -89,12 +89,12 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->addJoin('people_emails', 'people_emails.person_id = {from}.person_id');
         $this->addJoin('departments', 'departments.ticket_id = {from}.id');
 
-        $expected_join_string = 'LEFT JOIN people_emails ON people_emails.person_id = {from}.person_id LEFT JOIN departments ON departments.ticket_id = {from}.id';
+        $expected_join_string = 'LEFT JOIN people_emails ON (people_emails.person_id = {from}.person_id) LEFT JOIN departments ON (departments.ticket_id = {from}.id)';
 
         $this->generateJoinString()->shouldBe($expected_join_string);
 
         $this->__toString()->shouldBe(
-            'SELECT * FROM tickets LEFT JOIN people_emails ON people_emails.person_id = tickets.person_id LEFT JOIN departments ON departments.ticket_id = tickets.id'
+            'SELECT * FROM tickets LEFT JOIN people_emails ON (people_emails.person_id = tickets.person_id) LEFT JOIN departments ON (departments.ticket_id = tickets.id)'
         );
     }
 
@@ -105,12 +105,12 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->addJoin('people_emails', 'pe.person_id = {from}.person_id', 'pe');
         $this->addJoin('departments', 'dp.ticket_id = {from}.id', 'dp');
 
-        $expected_join_string = 'LEFT JOIN people_emails pe ON pe.person_id = {from}.person_id LEFT JOIN departments dp ON dp.ticket_id = {from}.id';
+        $expected_join_string = 'LEFT JOIN people_emails pe ON (pe.person_id = {from}.person_id) LEFT JOIN departments dp ON (dp.ticket_id = {from}.id)';
 
         $this->generateJoinString()->shouldBe($expected_join_string);
 
         $this->__toString()->shouldBe(
-            'SELECT * FROM tickets LEFT JOIN people_emails pe ON pe.person_id = tickets.person_id LEFT JOIN departments dp ON dp.ticket_id = tickets.id'
+            'SELECT * FROM tickets LEFT JOIN people_emails pe ON (pe.person_id = tickets.person_id) LEFT JOIN departments dp ON (dp.ticket_id = tickets.id)'
         );
     }
 
@@ -131,7 +131,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         }
 
         $this->generateUniqueJoinString()->shouldReturn(
-            'INNER JOIN custom_def_people custom_def_people_0 ON custom_def_people_0.person_id = {from}.person_id'
+            'INNER JOIN custom_def_people custom_def_people_0 ON (custom_def_people_0.person_id = {from}.person_id)'
         );
     }
 
@@ -276,7 +276,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->setLimit(15);
 
         $this->__toString()->shouldBeLike(
-            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON people_emails.person_id = t.id INNER JOIN custom_def_person custom_def_person_0 ON custom_def_person_0.person_id = t.id WHERE t.id = 5 GROUP BY t.date_created, t.id ORDER BY t.id DESC LIMIT 0, 15'
+            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE t.id = 5 GROUP BY t.date_created, t.id ORDER BY t.id DESC LIMIT 0, 15'
         );
     }
 }

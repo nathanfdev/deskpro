@@ -241,9 +241,9 @@ class DbalCompiledQuery
             $on = $join[1];
 
             if ($table === $alias) {
-                $join_string .= sprintf('%s JOIN %s ON %s ', self::JOIN_LEFT, $table, $on);
+                $join_string .= sprintf('%s JOIN %s ON (%s) ', self::JOIN_LEFT, $table, $on);
             } else {
-                $join_string .= sprintf('%s JOIN %s %s ON %s ', self::JOIN_LEFT, $table, $alias, $on);
+                $join_string .= sprintf('%s JOIN %s %s ON (%s) ', self::JOIN_LEFT, $table, $alias, $on);
             }
         }
 
@@ -259,7 +259,7 @@ class DbalCompiledQuery
             $type = $this->unique_join_types[$alias];
             $on = $this->unique_join_ons[$alias];
 
-            $join_string .= sprintf('%s JOIN %s %s ON %s ', $type, $table, $alias, $on);
+            $join_string .= sprintf('%s JOIN %s %s ON (%s) ', $type, $table, $alias, $on);
         }
 
         // trim because it will always have a trailing space from loop

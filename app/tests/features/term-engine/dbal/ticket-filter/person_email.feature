@@ -15,7 +15,7 @@ Feature: DBAL Ticket Filter AgentTerm compiler
     """
     And the join string should be like:
     """
-    LEFT JOIN people_emails ON ticket.person_id = people_emails.person_id
+    LEFT JOIN people_emails ON (ticket.person_id = people_emails.person_id)
     """
     And the parameters should be:
       | Parameter | Value                     |
@@ -29,7 +29,7 @@ Feature: DBAL Ticket Filter AgentTerm compiler
     Then I should have a DbalCompiledResult
     And the unique join string should be like:
     """
-    LEFT JOIN people_emails people_emails_0 ON ticket.person_id = people_emails_0.person_id AND people_emails_0.email = :x
+    LEFT JOIN people_emails people_emails_0 ON (ticket.person_id = people_emails_0.person_id AND people_emails_0.email = :x)
     """
     And the WHERE clause should be like:
     """
