@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,47 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage UserBundle
+ * @subpackage
  */
 
-namespace Application\UserBundle\Form;
+namespace Application\EmailBundle\Mail\RawMessage\Mail\Header;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Zend\Mail\Header\Bcc as BaseBcc;
 
-/**
- * The new ticket form
- *
- */
-class NewTicketReplyType extends AbstractType
+class Bcc extends BaseBcc
 {
-    /**
-     * @option array tmp_files Add new checkboxes for tmp files
-     *
-     * @param \Symfony\Component\Form\FormBuilderInterface $builder
-     * @param array                                        $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected $fieldName = 'Bcc';
+    protected static $type = 'bcc';
+
+    public static function fromString($headerLine)
     {
-        $builder->add('message', 'textarea', array('filter_clean' => false));
-
-        $builder->add('new_upload', 'file', array('required' => false));
-
-        if (!empty($options['tmp_files'])) {
-            $builder->add('tmp_files', 'choice', array(
-                'choices' => array_combine($options['tmp_files'], $options['tmp_files']),
-
-                // These make them checkboxes
-                'multiple' => true,
-                'expanded' => true,
-
-                'required' => false,
-            ));
-        }
-    }
-
-    public function getName()
-    {
-        return 'newreply';
+        return AddressListParser::fromString($headerLine, self::$type, new self());
     }
 }

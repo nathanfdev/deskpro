@@ -3213,6 +3213,20 @@ $collection->create('api_emailstatus_sendmail_delete', array(
     'methods'      => array('DELETE'),
 ));
 
+$collection->create('api_emailstatus_sendmail_get_summary', array(
+    'path'         => '/email_status/sendmail/{id}/summary',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailSummary',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmail_get_rendered', array(
+    'path'         => '/email_status/sendmail/{id}/rendered',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailRendered',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
 $collection->create('api_emailstatus_sendmail_resend', array(
     'path'         => '/email_status/sendmail/{id}/resend',
     'controller'   => 'ApiBundle:EmailStatus:resendSendmail',

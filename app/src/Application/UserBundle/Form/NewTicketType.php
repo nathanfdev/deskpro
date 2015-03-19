@@ -125,7 +125,7 @@ class NewTicketType extends AbstractType
         $this->ticket_options = $ticket_options;
 
         $ticket_builder->add('subject', 'text');
-        $ticket_builder->add('message', 'textarea');
+        $ticket_builder->add('message', 'textarea', array('filter_clean' => false));
 
         if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
             $ticket_builder->add('department_id', 'choice', array(

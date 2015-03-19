@@ -133,6 +133,50 @@ td { vertical-align: top; }
 	}
 }
 
+.body-text blockquote, blockquote.dp-bq {
+  margin: 15px 0 15px 0 !important;
+  border-left: 2px solid #777 !important;
+  color: #777 !important;
+  font-style: normal !important;
+}
+
+.body-text pre, pre.dp-pre, .redactor_editor pre {
+  background: #f8f8f8 !important;
+  border: 1px solid #ddd !important;
+  border-radius: 3px !important;
+  padding: 6px !important;
+  white-space: pre;
+  overflow: auto;
+  max-height: 400px;
+  margin: 15px 0 15px 0 !important;
+}
+
+.body-text .plaintext-email {
+  font-family: 'Lucida Sans Typewriter', 'Lucida Console', 'Monaco', 'Consolas', monospace;
+  font-size: 90%;
+}
+
+.dp-signature-start {
+  margin: 0;
+}
+
+.redactor_editor, .body-text {
+  h1, h2, h3, h4, h5 {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #000 !important;
+    margin: 7px 0 7px 0 !important;
+    padding: 0 !important;
+    font-weight: bold;
+    background: none !important;
+  }
+
+  h1 { font-size: 36px; line-height: 40px }
+  h2 { font-size: 30px; line-height: 38px; }
+  h3 { font-size: 24px; line-height: 30px; }
+  h4 { font-size: 18px; line-height: 24px; }
+  h5 { font-size: 14px; line-height: 18px; }
+}
+
 .showmac { display: none; }
 .osmac .showmac { display: block; }
 

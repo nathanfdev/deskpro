@@ -314,6 +314,9 @@ class Message extends \Orb\Mail\Message
 
                 return $match[1] . $embed_map[$src] . $match[3];
             }, $body);
+
+            // Remove links to inline attachments as well
+            $body = preg_replace('#<a[^>]+dp-embed-blob-a-' . preg_quote($blob->getAuthId(), '#') . '[^>]*>(<img[^>]+>)</a>#', '$1', $body);
         }
 
         foreach ($embed_map AS $src => $null) {

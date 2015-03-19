@@ -462,7 +462,7 @@ class TicketEmail
             $vars['attached_blobs'] = $ticket_attachments;
             foreach ($ticket_attachments as $a) {
                 $ticketdisplay->setIgnoreAttachment($a);
-                $message->attachBlob($a->blob, $a->blob->getDownloadUrl(true));
+                $message->attachBlob($a->blob, $a->blob->getDownloadUrl(true), $a->is_inline);
             }
         }
 

@@ -17,44 +17,7 @@ DeskPRO.Agent.RteEditor = {
 		// must be done before initializing
 		var dropZone = textarea.siblings('.drop-file-zone');
 
-		if (window.DP_AGENT_RTE_BUTTONS) {
-			var b = window.DP_AGENT_RTE_BUTTONS;
-			var buttons = [];
-			if (b.html) buttons.push('html');
-
-			if ((b.bold || b.italic || b.underline || b.strike) && buttons.length) buttons.push('|');
-			if (b.bold) buttons.push('bold');
-			if (b.italic) buttons.push('italic');
-			if (b.underline) buttons.push('underline');
-			if (b.strike) buttons.push('deleted');
-
-			if (b.color) {
-				if (buttons.length) buttons.push('|');
-				buttons.push('fontcolor');
-			}
-
-			if (b.alignment) {
-				if (buttons.length) buttons.push('|');
-				buttons.push('alignment');
-			}
-
-			if (b.list) {
-				if (buttons.length) buttons.push('|');
-				buttons.push('unorderedlist');
-				buttons.push('orderedlist');
-				buttons.push('outdent');
-				buttons.push('indent');
-			}
-
-			if ((b.image || b.link || b.table || b.hr) && buttons.length) buttons.push('|');
-			if (b.image) buttons.push('image');
-			if (b.link) buttons.push('link');
-			if (b.table) buttons.push('table');
-			if (b.hr) buttons.push('horizontalrule');
-
-		} else {
-			var buttons = ['html', '|', 'bold', 'italic', 'underline', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'];
-		}
+    var buttons = ['bold', 'italic', 'underline', '|', 'formatting', 'fontcolor', '|', 'alignment', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'image', 'link', 'horizontalrule', '|', 'html'];
 
 		var defaultOptions = {
 			direction: textarea.attr('dir') || 'ltr',
@@ -76,7 +39,14 @@ DeskPRO.Agent.RteEditor = {
 			},
 			imageUploadErrorCallback: function(obj, json) {
 				alert(json.error);
-			}
+			},
+      execCommandCallback: function(api, cmd) {
+        api.$editor.find('blockquote').attr('style', null).addClass('dp-bq');
+        api.$editor.find('pre').attr('style', null).addClass('dp-pre');
+        api.$editor.find('font').each(function(n) {
+          $(this).replaceWith($('<span/>').html(n.innerHTML));
+        });
+      }
 		};
 
 		if (options.autosaveContent && options.autosaveContentId) {
@@ -485,8 +455,18 @@ DeskPRO.Agent.RteEditor = {
 				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<br/>');
 				html = html.replace(/(<p[^>]*) data-redactor="1"/g, '$1');
 				html = html.replace(/<\/p>\s*<p>/g, '<\/p><p>');
-				html = html.replace(/^<p>/, '');
-				html = html.replace(/<\/p>$/, '');
+
+        html = html.replace(/<span[^>]*>(\t+)<\/span>/g, function(m) {
+          var s = '';
+          for (var i = 0; i < m[1].length; i++) {
+            s += '__DP_INDENT_PLACE__';
+          }
+          return s;
+        });
+
+        html = html.replace(/&nbsp;/g, function(m) {
+          return '__DP_SPACE_PLACE__';
+        });
 
 				this.pasteCleanUp(html);
 
@@ -494,6 +474,88 @@ DeskPRO.Agent.RteEditor = {
 			}, this), 1);
 
 		}, textarea.data('redactor')));
+
+    var origPasteCleanup = api.pasteClean;
+    api.pasteCleanUp = $.proxy(function(html) {
+      var parent = this.getParentNode();
+
+      // clean up pre
+      if ($(parent).get(0).tagName === 'PRE')
+      {
+        html = this.cleanupPre(html);
+        this.pasteCleanUpInsert(html);
+        return true;
+      }
+
+      // remove comments and php tags
+      html = html.replace(/<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi, '');
+
+      // remove nbsp
+      html = html.replace(/(&nbsp;){2,}/gi, '&nbsp;');
+      html = html.replace(/__DP_INDENT_PLACE__/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      html = html.replace(/__DP_SPACE_PLACE__/g, '&nbsp;');
+
+      // remove google docs marker
+      html = html.replace(/<b\sid="internal-source-marker(.*?)">([\w\W]*?)<\/b>/gi, "$2");
+
+      // strip tags
+      html = this.stripTags(html);
+
+      // prevert
+      html = html.replace(/<td><\/td>/gi, '[td]');
+      html = html.replace(/<td>&nbsp;<\/td>/gi, '[td]');
+      html = html.replace(/<td><br><\/td>/gi, '[td]');
+      html = html.replace(/<a(.*?)href="(.*?)"(.*?)>([\w\W]*?)<\/a>/gi, '[a href="$2"]$4[/a]');
+      html = html.replace(/<iframe(.*?)>([\w\W]*?)<\/iframe>/gi, '[iframe$1]$2[/iframe]');
+      html = html.replace(/<video(.*?)>([\w\W]*?)<\/video>/gi, '[video$1]$2[/video]');
+      html = html.replace(/<audio(.*?)>([\w\W]*?)<\/audio>/gi, '[audio$1]$2[/audio]');
+      html = html.replace(/<embed(.*?)>([\w\W]*?)<\/embed>/gi, '[embed$1]$2[/embed]');
+      html = html.replace(/<object(.*?)>([\w\W]*?)<\/object>/gi, '[object$1]$2[/object]');
+      html = html.replace(/<param(.*?)>/gi, '[param$1]');
+      html = html.replace(/<img(.*?)style="(.*?)"(.*?)>/gi, '[img$1$3]');
+
+      // remove attributes
+      html = html.replace(/<(\w+)([\w\W]*?)>/gi, '<$1>');
+
+      // remove empty
+      html = html.replace(/<[^\/>][^>]*>(\s*|\t*|\n*|&nbsp;|<br>)<\/[^>]+>/gi, '');
+      html = html.replace(/<[^\/>][^>]*>(\s*|\t*|\n*|&nbsp;|<br>)<\/[^>]+>/gi, '');
+
+      // revert
+      html = html.replace(/\[td\]/gi, '<td>&nbsp;</td>');
+      html = html.replace(/\[a href="(.*?)"\]([\w\W]*?)\[\/a\]/gi, '<a href="$1">$2</a>');
+      html = html.replace(/\[iframe(.*?)\]([\w\W]*?)\[\/iframe\]/gi, '<iframe$1>$2</iframe>');
+      html = html.replace(/\[video(.*?)\]([\w\W]*?)\[\/video\]/gi, '<video$1>$2</video>');
+      html = html.replace(/\[audio(.*?)\]([\w\W]*?)\[\/audio\]/gi, '<audio$1>$2</audio>');
+      html = html.replace(/\[embed(.*?)\]([\w\W]*?)\[\/embed\]/gi, '<embed$1>$2</embed>');
+      html = html.replace(/\[object(.*?)\]([\w\W]*?)\[\/object\]/gi, '<object$1>$2</object>');
+      html = html.replace(/\[param(.*?)\]/gi, '<param$1>');
+      html = html.replace(/\[img(.*?)\]/gi, '<img$1>');
+
+
+      // convert div to p
+      if (this.opts.convertDivs)
+      {
+        html = html.replace(/<div(.*?)>([\w\W]*?)<\/div>/gi, '<p>$2</p>');
+      }
+
+      // remove span
+      html = html.replace(/<span>([\w\W]*?)<\/span>/gi, '$1');
+
+      html = html.replace(/\n{3,}/gi, '\n');
+
+      // remove dirty p
+      html = html.replace(/<p><p>/gi, '<p>');
+      html = html.replace(/<\/p><\/p>/gi, '</p>');
+
+      // FF fix
+      if (this.browser('mozilla'))
+      {
+        html = html.replace(/<br>$/gi, '');
+      }
+
+      this.pasteCleanUpInsert(html);
+    }, api);
 
 		return textarea;
 	}

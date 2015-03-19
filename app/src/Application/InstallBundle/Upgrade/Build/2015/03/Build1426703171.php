@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,47 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage UserBundle
+ * @subpackage
  */
 
-namespace Application\UserBundle\Form;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-/**
- * The new ticket form
- *
- */
-class NewTicketReplyType extends AbstractType
+class Build1426703171 extends AbstractBuild
 {
-    /**
-     * @option array tmp_files Add new checkboxes for tmp files
-     *
-     * @param \Symfony\Component\Form\FormBuilderInterface $builder
-     * @param array                                        $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function run()
     {
-        $builder->add('message', 'textarea', array('filter_clean' => false));
+        $this->out("Update default_newticket_byagent trigger criteria");
 
-        $builder->add('new_upload', 'file', array('required' => false));
+        $t = '{"@CLASS":"Application\\\\DeskPRO\\\\Tickets\\\\Triggers\\\\TriggerTerms","@DATA":{"version":1,"terms":[{"set_terms":[{"type":"CheckAgentMessage","op":"isset","options":{"message":""}},{"type":"CheckUserIsEmailed","op":"not","options":[]}]}]}}';
 
-        if (!empty($options['tmp_files'])) {
-            $builder->add('tmp_files', 'choice', array(
-                'choices' => array_combine($options['tmp_files'], $options['tmp_files']),
-
-                // These make them checkboxes
-                'multiple' => true,
-                'expanded' => true,
-
-                'required' => false,
-            ));
-        }
-    }
-
-    public function getName()
-    {
-        return 'newreply';
+		$this->container->getDb()->executeUpdate("
+		    UPDATE ticket_triggers
+		    SET terms = ?
+		    WHERE sys_name = ?
+		", array($t, 'default_newticket_byagent'));
     }
 }
