@@ -47,7 +47,7 @@ class DbalPersonEmailCompiler extends AbstractDbalCompiler
             case TermInterface::OP_IS:
                 $compiler->addJoin(
                     'people_emails',
-                    '{from}.person_id = people_emails.person_id'
+                    'ticket.person_id = people_emails.person_id'
                 );
                 $param = $compiler->addParameter('email', $term->getOption('email'));
 
@@ -56,15 +56,18 @@ class DbalPersonEmailCompiler extends AbstractDbalCompiler
                     $param
                 );
             case TermInterface::OP_NOT:
+                $param = $compiler->addParameter('email', $term->getOption('email'));
                 $alias = $compiler->addUniqueJoin(
                     'people_emails',
-                    '{from}.person_id = people_emails.person_id'
+                    sprintf(
+                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
+                        $param
+                    )
                 );
-                $param = $compiler->addParameter('email', $term->getOption('email'));
 
                 return sprintf(
-                    'NOT EXISTS ( SELECT 1 FROM people_emails pe WHERE pe.email = :%s AND pe.person_id = {from}.person_id )',
-                    $param
+                    '%s.id IS NULL',
+                    $alias
                 );
         }
 

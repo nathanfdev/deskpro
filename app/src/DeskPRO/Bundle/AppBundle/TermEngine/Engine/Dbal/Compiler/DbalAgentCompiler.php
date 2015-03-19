@@ -46,6 +46,6 @@ class DbalAgentCompiler extends AbstractDbalCompiler
 
         $param_name = $compiler->addParameter('agent_ids', $term->getOption('agent_ids'));
 
-        return sprintf('{from}.agent_id %s (:%s)', $isser, $param_name);
+        return sprintf('ticket.agent_id %s (:%s)', $isser, $param_name);
     }
 }

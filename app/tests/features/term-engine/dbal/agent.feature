@@ -11,7 +11,7 @@ Feature: DBAL Agent term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    {from}.agent_id IN (:x)
+    ticket.agent_id IN (:x)
     """
     And the parameters should be:
       | Parameter | Value    |
@@ -25,7 +25,7 @@ Feature: DBAL Agent term compiler
     Then I should have a DbalCompiledResult
     And the WHERE clause should be like:
     """
-    {from}.agent_id NOT IN (:x)
+    ticket.agent_id NOT IN (:x)
     """
     And the parameters should be:
       | Parameter | Value     |

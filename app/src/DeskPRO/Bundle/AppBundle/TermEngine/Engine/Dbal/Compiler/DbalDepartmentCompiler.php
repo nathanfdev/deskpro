@@ -47,6 +47,6 @@ class DbalDepartmentCompiler extends AbstractDbalCompiler
 
         $param_name = $compiler->addParameter('department_ids', $term->getOption('department_ids'));
 
-        return sprintf('{from}.department_id %s (:%s)', $isser, $param_name);
+        return sprintf('ticket.department_id %s (:%s)', $isser, $param_name);
     }
 }

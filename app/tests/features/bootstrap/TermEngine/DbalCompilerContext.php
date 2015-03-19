@@ -111,29 +111,10 @@ class DbalCompilerContext extends BaseContext
         $where = trim($this->compiled->generateWhereString());
         $expected = trim($string->getRaw());
 
-        $param_regex = '/:([\w]+)/';
-        preg_match_all($param_regex, $expected, $expected_where_param_names);
-        $expected_where_param_names = $expected_where_param_names[0];
-        preg_match_all($param_regex, $where, $real_where_param_names);
-        $real_where_param_names = $real_where_param_names[0];
-
-        if (count($expected_where_param_names) !== count($real_where_param_names)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'expected %s params, but the real query has %s params',
-                    count($expected_where_param_names),
-                    count($real_where_param_names)
-                )
-            );
-        }
-
-        // keep the mapping
-        foreach ($expected_where_param_names as $i => $expected_param) {
-            $this->param_name_mapping[$expected_param] = $real_where_param_names[$i];
-        }
-
-        $where = preg_replace($param_regex, '', $where);
-        $expected = preg_replace($param_regex, '', $expected);
+        list($where, $expected) = $this->dealWithParamAssertions(
+            $expected,
+            $where
+        );
 
         expect($where)->toBeLike($expected);
     }
@@ -185,8 +166,24 @@ class DbalCompilerContext extends BaseContext
     public function theTableJoinsShouldBeLike(PyStringNode $string)
     {
         $expected = trim($string->getRaw());
+        $real = $this->compiled->generateJoinString();
 
-        expect($this->compiled->generateJoinString())->toBeLike($expected);
+        list($expected, $real) = $this->dealWithParamAssertions($expected, $real);
+
+        expect($real)->toBeLike($expected);
+    }
+
+    /**
+     * @Then the unique join string should be like:
+     */
+    public function theUniqueTableJoinsShouldBeLike(PyStringNode $string)
+    {
+        $expected = trim($string->getRaw());
+        $real = $this->compiled->generateUniqueJoinString();
+
+        list($expected, $real) = $this->dealWithParamAssertions($expected, $real);
+
+        expect($real)->toBeLike($expected);
     }
 
     /**
@@ -228,5 +225,39 @@ class DbalCompilerContext extends BaseContext
     private function getOp($op)
     {
         return constant('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface::OP_' . $op);
+    }
+
+    /**
+     * @param $expected
+     * @param $where
+     * @return array
+     */
+    private function dealWithParamAssertions($expected, $where)
+    {
+        $param_regex = '/:([\w]+)/';
+        preg_match_all($param_regex, $expected, $expected_where_param_names);
+        $expected_where_param_names = $expected_where_param_names[0];
+        preg_match_all($param_regex, $where, $real_where_param_names);
+        $real_where_param_names = $real_where_param_names[0];
+
+        if (count($expected_where_param_names) !== count($real_where_param_names)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'expected %s params, but the real query has %s params',
+                    count($expected_where_param_names),
+                    count($real_where_param_names)
+                )
+            );
+        }
+
+        // keep the mapping
+        foreach ($expected_where_param_names as $i => $expected_param) {
+            $this->param_name_mapping[$expected_param] = $real_where_param_names[$i];
+        }
+
+        $where = preg_replace($param_regex, '', $where);
+        $expected = preg_replace($param_regex, '', $expected);
+
+        return array($where, $expected);
     }
 }
