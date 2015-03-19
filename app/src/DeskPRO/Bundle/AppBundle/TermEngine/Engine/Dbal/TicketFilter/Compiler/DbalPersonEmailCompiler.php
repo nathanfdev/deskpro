@@ -31,8 +31,9 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;

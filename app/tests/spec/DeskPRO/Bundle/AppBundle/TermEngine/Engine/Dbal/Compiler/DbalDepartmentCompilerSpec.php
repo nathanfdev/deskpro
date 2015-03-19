@@ -31,16 +31,16 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\DbalTicketFilter\Compiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\DbalTicketFilter\Compiler\DbalDepartmentCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\DbalTicketFilter\Compiler\DbalDepartmentCompiler
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler
  */
 class DbalDepartmentCompilerSpec extends ObjectBehavior
 {

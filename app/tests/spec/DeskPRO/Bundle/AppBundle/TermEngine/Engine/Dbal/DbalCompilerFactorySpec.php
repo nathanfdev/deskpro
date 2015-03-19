@@ -33,9 +33,9 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalAgentCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompositeCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalDepartmentCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalCompositeCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;

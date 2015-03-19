@@ -16,22 +16,22 @@ services:
         # compiler pass will add the term compilers
 
     term_engine.dbal.compiler.agent:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalAgentCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentCompiler
         tags:
          - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm' }
 
     term_engine.dbal.compiler.department:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalDepartmentCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler
         tags:
          - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' }
 
     term_engine.dbal.compiler.composite:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompositeCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalCompositeCompiler
         tags:
          - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }
 
     term_engine.dbal.compiler.person_email:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalPersonEmailCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalPersonEmailCompiler
         tags:
          - { name: dbal_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm' }
 

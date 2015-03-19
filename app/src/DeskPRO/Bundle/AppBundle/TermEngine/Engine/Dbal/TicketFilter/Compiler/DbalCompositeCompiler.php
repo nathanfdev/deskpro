@@ -31,21 +31,39 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalAgentCompiler extends AbstractDbalCompiler
+class DbalCompositeCompiler extends AbstractDbalCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
+        if (!$term instanceof CompositeTermInterface) {
+            throw new \InvalidArgumentException('expected a CompositeTermInterface, but got TermInterface');
+        }
+
         $op = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $param_name = $compiler->addParameter('agent_ids', $term->getOption('agent_ids'));
+        $isser = $this->isOp($op, TermInterface::OP_OR) ? 'OR' : 'AND';
+        $isser = ' ' . $isser . ' ';
 
-        return sprintf('ticket.agent_id %s (:%s)', $isser, $param_name);
+        $parts = array();
+        foreach ($term->getTerms() as $child_term) {
+            $part = trim($compiler->getTermCompiler($child_term)->compile($child_term, $compiler));
+            if ($part) {
+                $parts[] = $part;
+            }
+        }
+
+        if (0 === count($parts)) {
+            return '';
+        }
+
+        return sprintf('(%s)', implode($isser, $parts));
     }
 }

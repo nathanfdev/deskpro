@@ -31,22 +31,22 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalDepartmentCompiler extends AbstractDbalCompiler
+class DbalAgentCompiler extends AbstractDbalCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
-
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $param_name = $compiler->addParameter('department_ids', $term->getOption('department_ids'));
+        $param_name = $compiler->addParameter('agent_ids', $term->getOption('agent_ids'));
 
-        return sprintf('ticket.department_id %s (:%s)', $isser, $param_name);
+        return sprintf('ticket.agent_id %s (:%s)', $isser, $param_name);
     }
 }
