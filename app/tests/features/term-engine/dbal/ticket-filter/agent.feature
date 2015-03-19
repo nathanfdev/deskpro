@@ -1,4 +1,4 @@
-Feature: DBAL Agent term compiler
+Feature: DBAL Ticket Filter AgentTerm compiler
   In order to search the Ticket data
   As a developer
   I need to use agent terms

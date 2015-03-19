@@ -39,42 +39,42 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 
-class DbalCompiler
+abstract class DbalCompiler
 {
     /**
      * @var DbalCompilerFactory
      */
-    private $compiler_factory;
+    protected $compiler_factory;
 
     /**
      * @var VisitorInterface[]
      */
-    private $visitors;
+    protected $visitors;
 
     /**
      * @var array
      */
-    private $params;
+    protected $params;
 
     /**
      * @var array
      */
-    private $joins;
+    protected $joins;
 
     /**
      * @var array
      */
-    private $join_ons;
+    protected $join_ons;
 
     /**
      * @var array
      */
-    private $join_types;
+    protected $join_types;
 
     /**
      * @var DbalCompiledQuery
      */
-    private $query;
+    protected $query;
 
     public function __construct(
         DbalCompilerFactory $compiler_factory,
@@ -85,6 +85,8 @@ class DbalCompiler
         $this->visitors = $visitors;
         $this->resetCompilerState();
     }
+
+    abstract protected function prepareCompiledQuery();
 
     /**
      * @param TermInterface $term
@@ -99,7 +101,7 @@ class DbalCompiler
             $visitor->visit($term);
         }
 
-        $this->query->setFrom('tickets', 'ticket');
+        $this->prepareCompiledQuery();
 
         $compiled_terms = $this->getTermCompiler($term)->compile($term, $this);
         $this->query->setWherePart($compiled_terms);
@@ -157,7 +159,7 @@ class DbalCompiler
         return $this->query->addUniqueJoin($table_name, $on, $type);
     }
 
-    private function resetCompilerState()
+    protected function resetCompilerState()
     {
         $this->query = new DbalCompiledQuery();
         $this->params = array();

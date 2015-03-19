@@ -40,22 +40,18 @@ class TermEnginePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('term_engine.dbal')) {
-            return;
-        }
-
-        $this->addTermCompilers($container);
-        $this->addVisitorCompilers($container);
+        $this->addDbalTicketFilterTermCompilers($container);
+        $this->addDbalTicketFilterVisitors($container);
     }
 
     /**
      * @param ContainerBuilder $container
      */
-    private function addTermCompilers(ContainerBuilder $container)
+    private function addDbalTicketFilterTermCompilers(ContainerBuilder $container)
     {
-        $compiler_factory_def = $container->findDefinition('term_engine.dbal.compiler.factory');
+        $compiler_factory_def = $container->findDefinition('term_engine.dbal_ticket_filters.compiler.factory');
 
-        $tagged_compilers = $container->findTaggedServiceIds('dbal_compiler');
+        $tagged_compilers = $container->findTaggedServiceIds('dbal_ticket_filter_compiler');
 
         $compiler_array = array();
 
@@ -71,11 +67,11 @@ class TermEnginePass implements CompilerPassInterface
     /**
      * @param ContainerBuilder $container
      */
-    private function addVisitorCompilers(ContainerBuilder $container)
+    private function addDbalTicketFilterVisitors(ContainerBuilder $container)
     {
-        $compiler_def = $container->findDefinition('term_engine.dbal.compiler');
+        $compiler_def = $container->findDefinition('term_engine.dbal_ticket_filters.compiler');
 
-        $tagged_visitors = $container->findTaggedServiceIds('dbal_compiler_visitor');
+        $tagged_visitors = $container->findTaggedServiceIds('dbal_ticket_filter_visitor');
 
         $visitors = array();
 

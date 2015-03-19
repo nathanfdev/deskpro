@@ -1,4 +1,4 @@
-Feature: DBAL Composite term compiler
+Feature: DBAL Ticket Filter CompositeTerm compiler
   In order to perform compound searches
   As a developer
   I need a composite term

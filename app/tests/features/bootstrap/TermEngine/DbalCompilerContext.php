@@ -90,7 +90,7 @@ class DbalCompilerContext extends BaseContext
      */
     public function iCompileMyTerms()
     {
-        $this->compiled = $this->get('term_engine.dbal')->compile($this->term);
+        $this->compiled = $this->get('term_engine.dbal_ticket_filters.engine')->compile($this->term);
     }
 
     /**

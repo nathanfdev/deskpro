@@ -1,0 +1,54 @@
+services:
+
+    #
+    # ENGINE
+    #
+
+    term_engine.dbal_ticket_filters.engine:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine
+        arguments:
+            - @term_engine.dbal_ticket_filters.compiler
+
+    term_engine.dbal_ticket_filters.compiler:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterCompiler
+        arguments:
+            - @term_engine.dbal_ticket_filters.compiler.factory
+            - []  # the visitors added in compiler pass with tag "dbal_ticket_filter_visitor"
+
+    term_engine.dbal_ticket_filters.compiler.factory:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory
+        # compiler pass will add the term compilers on tag "dbal_ticket_filter_compiler"
+
+    #
+    # TERM COMPILERS
+    #
+
+    term_engine.dbal_ticket_filters.compiler.agent:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm' }
+
+    term_engine.dbal_ticket_filters.compiler.department:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' }
+
+    term_engine.dbal_ticket_filters.compiler.composite:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalCompositeCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }
+
+    term_engine.dbal_ticket_filters.compiler.person_email:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalPersonEmailCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm' }
+
+    #
+    # VISITORS
+    #
+
+    term_engine.dbal_ticket_filters.logger_visitor:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Visitor\LoggingVisitor
+        arguments: [@logger]
+        tags:
+        - { name: dbal_ticket_filter_visitor }
