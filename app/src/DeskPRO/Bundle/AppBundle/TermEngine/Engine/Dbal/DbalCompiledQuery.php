@@ -36,6 +36,18 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
 class DbalCompiledQuery
 {
+    const JOIN_LEFT = 'LEFT';
+    const JOIN_RIGHT = 'RIGHT';
+    const JOIN_INNER = 'INNER';
+
+    const ORDER_DESC = 'DESC';
+    const ORDER_ASC = 'ASC';
+
+    /**
+     * @var array
+     */
+    private $params;
+
     /**
      * @var string
      */
@@ -74,139 +86,250 @@ class DbalCompiledQuery
     /**
      * @var array
      */
-    private $parameters;
+    private $unique_joins;
+
+    /**
+     * @var array
+     */
+    private $unique_join_ons;
+
+    /**
+     * @var array
+     */
+    private $unique_join_types;
+
+    /**
+     * @var array
+     */
+    private $groupings;
+
+    /**
+     * @var array
+     */
+    private $orderings;
+
+    /**
+     * @var int|null
+     */
+    private $limit;
 
     public function __construct()
     {
+        $this->select = '*';
+        $this->joins = array();
+        $this->join_ons = array();
+        $this->unique_joins = array();
+        $this->unique_join_ons = array();
+        $this->unique_join_types = array();
+        $this->groupings = array();
+        $this->orderings = array();
+        $this->params = array();
     }
 
     public function __toString()
     {
-        return sprintf(
-            'SELECT %s%s FROM %s WHERE %s %s',
-            $this->select,
-            $this->from_table,
-            $this->from_alias ? ' ' . $this->from_alias : '',
-            $this->where,
-            $this->modifiers
+        $sql_string = '';
+
+        $sql_string = sprintf('SELECT %s FROM %s', $this->generateSelectString(), $this->generateFromString());
+
+        if (count($this->joins)) {
+            $sql_string .= ' ' . $this->generateJoinString();
+        }
+
+        if (count($this->unique_joins)) {
+            $sql_string .= ' ' . $this->generateUniqueJoinString();
+        }
+
+        if (strlen($this->where) > 0) {
+            $sql_string .= ' WHERE ' . $this->where;
+        }
+
+        if (count($this->groupings)) {
+            $sql_string .= ' GROUP BY ' . $this->generateGroupByString();
+        }
+
+        if (count($this->orderings)) {
+            $sql_string .= ' ORDER BY ' . $this->generateOrderByString();
+        }
+
+        if ($this->limit) {
+            $sql_string .= ' LIMIT ' . $this->limit;
+        }
+
+        $sql_string = str_replace(
+            '{from}',
+            ($this->from_alias ? $this->from_alias : $this->from_table),
+            $sql_string
         );
+
+        return $sql_string;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getWhere()
-    {
-        return $this->where;
-    }
-
-    /**
-     * @param mixed $where
-     */
-    public function setWhere($where)
-    {
-        $this->where = trim($where);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @param mixed $parameters
-     */
-    public function setParameters(array $parameters)
-    {
-        $this->parameters = $parameters;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getModifiers()
-    {
-        return $this->modifiers;
-    }
-
-    /**
-     * @param mixed $modifiers
-     */
-    public function setModifiers($modifiers)
-    {
-        $this->modifiers = trim($modifiers);
-    }
-
-    /**
-     * @return string
-     */
-    public function getSelect()
-    {
-        return $this->select;
-    }
-
-    /**
-     * @param string $select
-     */
-    public function setSelect($select)
-    {
-        $this->select = trim($select);
-    }
-
-    /**
-     * @return array
-     */
-    public function getJoins()
-    {
-        return $this->joins;
-    }
-
-    public function addJoin($table, $alias)
-    {
-        $this->joins[trim($table)] = trim($alias);
-    }
-
-    /**
-     * @param array $joins
-     */
-    public function setJoins(array $joins, array $join_ons)
-    {
-        $this->joins = $joins;
-        $this->join_ons = $join_ons;
-    }
-
-    /**
-     * @return string
-     */
     public function getFromTable()
     {
         return $this->from_table;
     }
 
-    /**
-     * @param string $from_table
-     */
-    public function setFromTable($from_table)
+    public function generateSelectString()
     {
-        $this->from_table = trim($from_table);
+        return $this->select;
     }
 
-    /**
-     * @return string
-     */
+    public function getSelectPart()
+    {
+        return $this->select;
+    }
+
+    public function generateWhereString()
+    {
+        return $this->where;
+    }
+
+    public function setFromTable($table)
+    {
+        $this->from_table = trim($table);
+    }
+
+    public function generateFromString()
+    {
+        $table = $this->from_table;
+
+        return $this->from_alias ? $table . ' ' . $this->from_alias : $table;
+    }
+
+    public function setSelectPart($select)
+    {
+        $this->select = trim($select);
+    }
+
+    public function setFrom($table, $alias = null)
+    {
+        $this->from_table = $table;
+        $this->from_alias = $alias;
+    }
+
+    public function setFromAlias($alias)
+    {
+        $this->from_alias = trim($alias);
+    }
+
     public function getFromAlias()
     {
         return $this->from_alias;
     }
 
-    /**
-     * @param string $from_alias
-     */
-    public function setFromAlias($from_alias)
+    public function setWherePart($where)
     {
-        $this->from_alias = trim($from_alias);
+        $this->where = trim($where);
+    }
+
+    public function addJoin($table, $on)
+    {
+        $this->joins[$table] = $on;
+    }
+
+    public function generateJoinString()
+    {
+        $join_string = '';
+
+        foreach ($this->joins as $table => $on) {
+            $join_string .= sprintf('%s JOIN %s ON %s ', self::JOIN_LEFT, $table, $on);
+        }
+
+        // trim because it will always have a trailing space from loop
+        return trim($join_string);
+    }
+
+    public function generateUniqueJoinString()
+    {
+        $join_string = '';
+
+        foreach ($this->unique_joins as $alias => $table) {
+            $type = $this->unique_join_types[$alias];
+            $on = $this->unique_join_ons[$alias];
+
+            $join_string .= sprintf('%s JOIN %s %s ON %s ', $type, $table, $alias, $on);
+        }
+
+        // trim because it will always have a trailing space from loop
+        return trim($join_string);
+    }
+
+    public function addUniqueJoin($table, $on, $type)
+    {
+        $alias = $table . '_0';
+
+        for ($i = 1; array_key_exists($alias, $this->unique_joins); $i++) {
+            $alias = $table . '_' . $i;
+        }
+
+        $on = str_replace('{alias}', $alias, $on);
+
+        $this->unique_joins[$alias] = $table;
+        $this->unique_join_ons[$alias] = $on;
+        $this->unique_join_types[$alias] = $type;
+
+        return $alias;
+    }
+
+    public function setParameters(array $parameters)
+    {
+        $this->params = $parameters;
+    }
+
+    public function getParameters()
+    {
+        return $this->params;
+    }
+
+    public function setParameter($param, $value)
+    {
+        $this->params[$param] = $value;
+    }
+
+    public function addGroupBy($group_by)
+    {
+        $this->groupings[] = $group_by;
+    }
+
+    public function getGroupBy()
+    {
+        return $this->groupings;
+    }
+
+    public function generateGroupByString()
+    {
+        return implode(', ', $this->groupings);
+    }
+
+    public function addOrderBy($order_by, $direction)
+    {
+        $this->orderings[] = array($order_by, $direction);
+    }
+
+    public function getOrderBy()
+    {
+        return $this->orderings;
+    }
+
+    public function generateOrderByString()
+    {
+        $parts = array();
+
+        foreach ($this->orderings as $order) {
+            $parts[] = $order[0] . ' ' . $order[1];
+        }
+
+        return implode(', ', $parts);
+    }
+
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
     }
 }
