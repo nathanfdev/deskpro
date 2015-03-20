@@ -34,13 +34,14 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterViewRepository")
  * @ORM\Table(name="filter_views")
  */
-class FilterView
+class FilterView extends NotifyPropertyChangeEntity
 {
     const TYPE_LIST = 'list';
     const TYPE_TABLE = 'table';
@@ -130,7 +131,7 @@ class FilterView
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid filter view type', $type));
         }
 
-        $this->type = $type;
+        $this->setModelField('type', $type);
     }
 
     /**
@@ -147,6 +148,9 @@ class FilterView
     public function setFilter(Filter $filter = null)
     {
         $this->filter = $filter;
+
+        $this->setModelField('filter', $filter);
+
         $filter->addFilterView($this);
     }
 
@@ -163,7 +167,7 @@ class FilterView
      */
     public function setAgent(Person $agent = null)
     {
-        $this->agent = $agent;
+        $this->setModelField('agent', $agent);
     }
 
     /**
@@ -179,7 +183,7 @@ class FilterView
      */
     public function setFields(array $fields = array())
     {
-        $this->fields = $fields;
+        $this->setModelField('fields', $fields);
     }
 
     /**
@@ -195,7 +199,7 @@ class FilterView
      */
     public function setIconFields(array $icon_fields = array())
     {
-        $this->icon_fields = $icon_fields;
+        $this->setModelField('icon_fields', $icon_fields);
     }
 
     /**
@@ -211,7 +215,7 @@ class FilterView
      */
     public function setOptions(array $options = array())
     {
-        $this->options = $options;
+        $this->setModelField('options', $options);
     }
 
     /**
@@ -221,6 +225,8 @@ class FilterView
     public function addOption($key, $val)
     {
         $this->options[$key] = $val;
+
+        $this->setModelField('options', $this->options);
     }
 
     /**
@@ -231,6 +237,8 @@ class FilterView
         if (array_key_exists($key, $this->options)) {
             unset($this->options[$key]);
         }
+
+        $this->setModelField('options', $this->options);
     }
 
     /**
@@ -241,6 +249,8 @@ class FilterView
         if (!in_array($field, $this->icon_fields)) {
             $this->icon_fields[] = $field;
         }
+
+        $this->setModelField('icon_fields', $this->icon_fields);
     }
 
     /**
@@ -258,6 +268,8 @@ class FilterView
                 )
             );
         }
+
+        $this->setModelField('icon_fields', $this->icon_fields);
     }
 
     /**
@@ -268,6 +280,8 @@ class FilterView
         if (!in_array($field, $this->fields)) {
             $this->fields[] = $field;
         }
+
+        $this->setModelField('fields', $this->fields);
     }
 
     /**
@@ -285,5 +299,7 @@ class FilterView
                 )
             );
         }
+
+        $this->setModelField('fields', $this->fields);
     }
 }

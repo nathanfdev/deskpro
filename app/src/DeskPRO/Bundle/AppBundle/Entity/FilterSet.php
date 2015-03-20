@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,7 +42,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterSetRepository")
  * @ORM\Table(name="filter_sets")
  */
-class FilterSet
+class FilterSet extends NotifyPropertyChangeEntity
 {
     /**
      * @ORM\Id()
@@ -125,6 +126,9 @@ class FilterSet
     public function addFilter(Filter $filter)
     {
         $this->filters->add($filter);
+
+        $this->setModelField('filter', $filter);
+
         $filter->setFilterSet($this);
     }
 
@@ -141,7 +145,7 @@ class FilterSet
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
     }
 
     /**
@@ -157,23 +161,17 @@ class FilterSet
      */
     public function setDisplayOrder($display_order)
     {
-        $this->display_order = (int)$display_order;
+        $this->setModelField('display_order', (int)$display_order);
     }
 
-    /**
-     * @return boolean
-     */
-    public function isIsDefault()
+    public function isDefault()
     {
-        return $this->is_default;
+        return $this->is_default === true;
     }
 
-    /**
-     * @param boolean $is_default
-     */
-    public function setIsDefault($is_default)
+    public function setDefault($default)
     {
-        $this->is_default = (bool)$is_default;
+        $this->setModelField('is_default', (bool)$default);
     }
 
     /**
@@ -189,7 +187,7 @@ class FilterSet
      */
     public function setPrivateAgent(Person $private_agent)
     {
-        $this->private_agent = $private_agent;
+        $this->setModelField('private_agent', $private_agent);
     }
 
     /**
@@ -206,16 +204,8 @@ class FilterSet
     public function addSharedAgent(Person $agent)
     {
         $this->shared_agents->add($agent);
-    }
 
-    public function isDefault()
-    {
-        return $this->is_default === true;
-    }
-
-    public function setDefault($default)
-    {
-        $this->is_default = (bool)$default;
+        $this->setModelField('shared_agents', $this->shared_agents);
     }
 
     public function isPrivate()

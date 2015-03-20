@@ -34,13 +34,14 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterPreferenceRepository")
  * @ORM\Table(name="filter_preferences")
  */
-class FilterPreference
+class FilterPreference extends NotifyPropertyChangeEntity
 {
     /**
      * @ORM\Id()
@@ -119,7 +120,7 @@ class FilterPreference
      */
     public function setFilter(Filter $filter)
     {
-        $this->filter = $filter;
+        $this->setModelField('filter', $filter);
         $filter->addFilterPreference($this);
     }
 
@@ -136,7 +137,7 @@ class FilterPreference
      */
     public function setFilterView(FilterView $filter_view)
     {
-        $this->filter_view = $filter_view;
+        $this->setModelField('filter_view', $filter_view);
     }
 
     /**
@@ -152,7 +153,7 @@ class FilterPreference
      */
     public function setAgent(Person $agent = null)
     {
-        $this->agent = $agent;
+        $this->setModelField('agent', $agent);
     }
 
     /**
@@ -168,7 +169,7 @@ class FilterPreference
      */
     public function setDisplayOrder($display_order)
     {
-        $this->display_order = (int)$display_order;
+        $this->setModelField('display_order', (int)$display_order);
     }
 
     /**
@@ -184,7 +185,7 @@ class FilterPreference
      */
     public function setMainGrouping($main_grouping)
     {
-        $this->main_grouping = $main_grouping;
+        $this->setModelField('main_grouping', $main_grouping);
     }
 
     /**
@@ -200,7 +201,7 @@ class FilterPreference
      */
     public function setResultGrouping($result_grouping)
     {
-        $this->result_grouping = $result_grouping;
+        $this->setModelField('result_grouping', $result_grouping);
     }
 
     /**
@@ -216,7 +217,7 @@ class FilterPreference
      */
     public function setShowSla($show_sla)
     {
-        $this->show_sla = (bool)$show_sla;
+        $this->setModelField('show_sla', (bool)$show_sla);
     }
 
     public function isPrivate()
