@@ -25,7 +25,8 @@ $definition = new Definition();
 $definition->setClass('Application\DeskPRO\NewSettings\SettingsResolver');
 $definition->setFactoryClass('Application\DeskPRO\DependencyInjection\SystemServices\SettingsResolverService');
 $definition->setFactoryMethod('create');
-$definition->setArguments(array(
+$definition->setArguments(
+    array(
         new Reference('service_container'),
     )
 );
@@ -55,7 +56,9 @@ $container->setDefinition('form.cleaner_extension', $definition);
 ############################################################################
 
 // Init readers
-$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true)));
+$definition = new Definition(
+    'Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true))
+);
 $container->setDefinition('deskpro.core.input_reader_req', $definition);
 
 $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST', array('accept_json_post' => true)));
@@ -159,14 +162,15 @@ $container->setDefinition('dp.entity_lister.person_custo_data_changelog', $defin
 ############################################################################
 
 $container->loadFromExtension(
-    'doctrine', array(
-        'orm'  => array(
+    'doctrine',
+    array(
+        'orm' => array(
             'auto_generate_proxy_classes' => false,
-            'default_entity_manager'      => 'default',
-            'entity_managers'             => array(
+            'default_entity_manager' => 'default',
+            'entity_managers' => array(
                 'default' => array(
                     'mappings' => array(
-                        'DeskPRO'     => array(
+                        'DeskPRO' => array(
                             'type' => 'staticphp'
                         ),
                         'EmailBundle' => array(
@@ -186,10 +190,13 @@ $container->loadFromExtension(
         ),
         'dbal' => array(
             'default_connection' => 'default',
-            'connections'        => array(
+            'connections' => array(
                 'default' => array('host' => 'from_user_config.db', 'logging' => true),
-                'read'                    => array('host' => 'from_user_config.db_read', 'logging' => true),
+                'read' => array('host' => 'from_user_config.db_read', 'logging' => true),
             ),
+            'types' => array(
+                'term_engine_term' => 'DeskPRO\Bundle\AppBundle\Doctrine\Type\TermEngineTermType'
+            )
         ),
     )
 );
@@ -228,7 +235,8 @@ $definition->setArguments(
 $container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
 
 $container->loadFromExtension(
-    'swiftmailer', array(
+    'swiftmailer',
+    array(
         'transport' => 'dp_delegating',
     )
 );
@@ -241,25 +249,35 @@ $definition->setFactoryMethod('create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
 
-$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
-    new Reference('doctrine.orm.entity_manager'),
-));
+$definition = new Definition(
+    'Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
+        new Reference('doctrine.orm.entity_manager'),
+    )
+);
 $container->setDefinition('deskpro.person_activity_logger', $definition);
 
-$definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
+$definition = new Definition(
+    'Application\DeskPRO\Log\Handler\LogEventHandler',
+    array(new Reference('doctrine.orm.entity_manager'))
+);
 $container->setDefinition('deskpro.log_handler.log_event', $definition);
 
 $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
 $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
 $container->setDefinition('deskpro.logger.changelog', $definition);
 
-$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-    DP_ROOT.'/sys/config/settings.php',
-    new Reference('database_connection'),
-));
+$definition = new Definition(
+    'Application\\DeskPRO\\Settings\\Settings', array(
+        DP_ROOT . '/sys/config/settings.php',
+        new Reference('database_connection'),
+    )
+);
 $container->setDefinition('deskpro.core.settings', $definition);
 
-$definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
+$definition = new Definition(
+    'Application\\DeskPRO\\Groups\\GroupsReposFactory',
+    array(new Reference('doctrine.orm.entity_manager'))
+);
 $definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
 $definition->setFactoryMethod('createFromEntityManager');
 $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
