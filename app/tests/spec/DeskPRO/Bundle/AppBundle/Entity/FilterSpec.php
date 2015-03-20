@@ -36,6 +36,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppBundle\Entity\FilterPreference;
 use DeskPRO\Bundle\AppBundle\Entity\FilterSet;
 use DeskPRO\Bundle\AppBundle\Entity\FilterView;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
@@ -95,5 +96,16 @@ class FilterSpec extends ObjectBehavior
         $this->setDisplayOrder(32);
 
         $this->getDisplayOrder()->shouldBe(32);
+    }
+
+    function it_holds_its_term_engine_term(
+        TermInterface $term
+    )
+    {
+        $this->getTerm()->shouldBe(null);
+
+        $this->setTerm($term);
+
+        $this->getTerm()->shouldBe($term);
     }
 }

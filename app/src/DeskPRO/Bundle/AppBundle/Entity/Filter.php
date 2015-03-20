@@ -33,6 +33,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,7 +42,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository")
  * @ORM\Table(name="filters")
  */
-class Filter
+class Filter extends NotifyPropertyChangeEntity
 {
     /**
      * @ORM\Id()
@@ -54,6 +56,12 @@ class Filter
      * @ORM\Column(name="title", type="string")
      */
     protected $title;
+
+    /**
+     * @var TermInterface
+     * @ORM\Column(name="term", type="term_engine_term")
+     */
+    protected $term;
 
     /**
      * @var int
@@ -107,7 +115,7 @@ class Filter
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
     }
 
     /**
@@ -123,7 +131,7 @@ class Filter
      */
     public function setDisplayOrder($display_order)
     {
-        $this->display_order = (int)$display_order;
+        $this->setModelField('display_order', (int)$display_order);
     }
 
     /**
@@ -139,7 +147,7 @@ class Filter
      */
     public function setFilterSet(FilterSet $filter_set)
     {
-        $this->filter_set = $filter_set;
+        $this->setModelField('filter_set', $filter_set);
     }
 
     /**
@@ -164,6 +172,8 @@ class Filter
     public function addFilterPreference(FilterPreference $filter_preference)
     {
         $this->filter_preferences->add($filter_preference);
+
+        $this->setModelField('filter_preferences', $this->filter_preferences);
     }
 
     /**
@@ -172,5 +182,23 @@ class Filter
     public function addFilterView(FilterView $view)
     {
         $this->filter_views->add($view);
+
+        $this->setModelField('filter_views', $this->filter_views);
+    }
+
+    /**
+     * @return TermInterface
+     */
+    public function getTerm()
+    {
+        return $this->term;
+    }
+
+    /**
+     * @param TermInterface $term
+     */
+    public function setTerm(TermInterface $term)
+    {
+        $this->setModelField('term', $term);
     }
 }
