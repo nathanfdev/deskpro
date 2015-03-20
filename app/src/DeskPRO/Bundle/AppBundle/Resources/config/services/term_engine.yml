@@ -1,0 +1,4 @@
+services:
+
+    term_serializer:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter
