@@ -57,7 +57,7 @@ class SandboxWidget extends NotifyPropertyChangeEntity
      * @ORM\GeneratedValue()
      * @Serializer\Expose()
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -65,7 +65,7 @@ class SandboxWidget extends NotifyPropertyChangeEntity
      * @Assert\NotNull()
      * @Assert\Length(min=10)
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="integer")
@@ -74,7 +74,7 @@ class SandboxWidget extends NotifyPropertyChangeEntity
      * @Assert\NotBlank()
      * @Assert\Type("integer")
      */
-    private $inventory;
+    protected $inventory;
 
     /**
      * @return mixed
