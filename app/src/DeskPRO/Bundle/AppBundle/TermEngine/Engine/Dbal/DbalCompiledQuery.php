@@ -296,18 +296,28 @@ class DbalCompiledQuery
         return $p_name;
     }
 
-    public function setParameters(array $parameters)
-    {
-        $this->params = $parameters;
-    }
-
     public function getParameters()
     {
         return $this->params;
     }
 
-    public function setParameter($param, $value)
+    public function getParameter($param)
     {
+        if (array_key_exists($param, $this->params)) {
+            return $this->params[$param];
+        }
+
+        return null;
+    }
+
+    public function replaceParameter($param, $value)
+    {
+        if (!array_key_exists($param, $this->params)) {
+            throw new \InvalidArgumentException(
+                sprintf('param "%s" does not exist. use addParameter() instead.', $param)
+            );
+        }
+
         $this->params[$param] = $value;
     }
 

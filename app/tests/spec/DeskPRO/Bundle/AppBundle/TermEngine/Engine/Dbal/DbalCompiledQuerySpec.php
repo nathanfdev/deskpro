@@ -33,6 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQuery;
@@ -133,17 +134,6 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->generateUniqueJoinString()->shouldReturn(
             'INNER JOIN custom_def_people custom_def_people_0 ON (custom_def_people_0.person_id = {from}.person_id)'
         );
-    }
-
-    function it_holds_query_parameters()
-    {
-        $this->setParameters(array('param' => 1, 'foo' => 'bar'));
-
-        $this->getParameters()->shouldBeLike(array('param' => 1, 'foo' => 'bar'));
-
-        $this->setParameter('new_param', 'new value');
-
-        $this->getParameters()->shouldBeLike(array('param' => 1, 'foo' => 'bar', 'new_param' => 'new value'));
     }
 
     function it_can_accept_group_bys()
@@ -260,6 +250,80 @@ class DbalCompiledQuerySpec extends ObjectBehavior
 
         $this->__toString()->shouldBe(
             'SELECT * FROM tickets WHERE t.id = :name_0 OR t.subject = :name_1 AND t.name = :other_name_0'
+        );
+    }
+
+    function it_lets_you_add_query_params_and_returns_the_name_of_the_param()
+    {
+        $param1 = $this->addParameter('param', 1);
+        $param2 = $this->addParameter('param', 'bar');
+
+        $param1->shouldBe('param_0');
+        $param2->shouldBe('param_1');
+
+        $this->getParameters()->shouldBeLike(
+            array(
+                'param_0' => 1,
+                'param_1' => 'bar'
+            )
+        );
+
+        $param3 = $this->addParameter('new_param', 'new value');
+
+        $param3->shouldBe('new_param_0');
+
+        $this->getParameters()->shouldBeLike(
+            array(
+                'param_0' => 1,
+                'param_1' => 'bar',
+                'new_param_0' => 'new value'
+            )
+        );
+    }
+
+    function it_throws_an_exception_if_you_set_a_non_existant_param()
+    {
+        $this->shouldThrow('\InvalidArgumentException')
+            ->during(
+                'replaceParameter',
+                array('new_param', 'new value')
+            );
+    }
+
+    function it_also_allows_a_term_engine_expression_as_a_param_value()
+    {
+        $this->setFrom('agents', 'agent');
+
+        $p1_name = $this->addParameter('my_name', new TermEngineExpression('agent.name'));
+
+        $this->setWherePart('agent.name = :' . $p1_name->getWrappedObject());
+
+        $this->__toString()->shouldBe(
+            'SELECT * FROM agents agent WHERE agent.name = :my_name_0'
+        );
+    }
+
+    function it_lets_you_get_and_manipulate_parameters()
+    {
+        $agent_p_name = $this->addParameter('agent', 1);
+        $time_p_name = $this->addParameter('time', new TermEngineExpression('agent.dateLastLogin'));
+        $foo_p_name = $this->addParameter('foo', 'bar');
+
+        // remember, the name is generated, so it wont be 'agent'
+        $this->replaceParameter($agent_p_name, 2);
+
+        // note that you are not guaranteed the exact same expression object, but it will
+        // have the same value.
+        $this->getParameter($time_p_name)->shouldBeLike(new TermEngineExpression('agent.dateLastLogin'));
+
+        $this->replaceParameter($foo_p_name, new TermEngineExpression('func(my.expression)'));
+
+        $this->getParameters()->shouldBeLike(
+            array(
+                'agent_0' => 2,
+                'time_0' => new TermEngineExpression('agent.dateLastLogin'),
+                'foo_0' => new TermEngineExpression('func(my.expression)')
+            )
         );
     }
 
