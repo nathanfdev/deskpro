@@ -126,4 +126,22 @@ interface TermInterface
      * @param array $options the new options (key = option name, value = option value)
      */
     public function replaceOptions(array $options);
+
+    /**
+     * An array that represents the term for seializing.
+     *
+     * The returned array will be passed to unserialize() directly after re-constructing
+     * the term to recreate it. Almost always this will just be the array of options for the term.
+     *
+     * @return array
+     */
+    public function serialize();
+
+    /**
+     * Reconstruct the object from the output of serialize().
+     *
+     * @param $serialized_form
+     * @return void
+     */
+    public function unserialize($serialized_form);
 }

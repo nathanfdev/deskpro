@@ -83,6 +83,32 @@ abstract class AbstractTerm implements TermInterface
     abstract public function setDefaultOptions(OptionsResolver $resolver);
 
     /**
+     * Serialize the user-given data.
+     *
+     * Note that we don't serialize the resolved options.
+     *
+     * @return array
+     */
+    public function serialize()
+    {
+        return array(
+            'op' => $this->op,
+            'options' => $this->options
+        );
+    }
+
+    /**
+     * Unserialize the serialized data.
+     *
+     * @param $serialized
+     */
+    public function unserialize($serialized)
+    {
+        $this->op = $serialized['op'];
+        $this->options = $serialized['options'];
+    }
+
+    /**
      * @inheritdoc
      */
     public function getOptions()

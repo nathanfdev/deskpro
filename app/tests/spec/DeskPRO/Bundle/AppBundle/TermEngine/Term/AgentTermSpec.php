@@ -201,4 +201,30 @@ class AgentTermSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_can_serialize_itself()
+    {
+        $serialized = $this->serialize();
+
+        $serialized->shouldBeLike(
+            array(
+                'op' => TermInterface::OP_IS,
+                'options' => array()
+            )
+        );
+
+        $this->setOp(TermInterface::OP_NOT);
+        $this->setOption('agent_ids', array(4, 5, 6));
+
+        $serialized = $this->serialize();
+
+        $serialized->shouldBeLike(
+            array(
+                'op' => TermInterface::OP_NOT,
+                'options' => array(
+                    'agent_ids' => array(4, 5, 6)
+                )
+            )
+        );
+    }
 }
