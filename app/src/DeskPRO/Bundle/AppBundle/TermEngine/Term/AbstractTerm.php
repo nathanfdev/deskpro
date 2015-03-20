@@ -180,4 +180,17 @@ abstract class AbstractTerm implements TermInterface
     {
         $this->op = (string)$op;
     }
+
+    /**
+     * AbstractTerm lets you get the raw options that were set. This is NOT recommended to be
+     * used for getting options and is here only for meta-info about the user-defined term options.
+     *
+     * See getOptions() instead
+     *
+     * @return array
+     */
+    public function getRawOptions()
+    {
+        return $this->options;
+    }
 }

@@ -38,11 +38,32 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class TermToJsonConverter
 {
+    /**
+     * Takes a TermInterface and returns a serialized form in JSON format.
+     *
+     * Works with CompositeTermInterface too, of course.
+     *
+     * @param TermInterface $term
+     * @return string
+     */
     public function toJson(TermInterface $term)
     {
         $serialized = $this->termToArray($term);
 
         return json_encode($serialized);
+    }
+
+    /**
+     * Takes a JSON string produced by toJson and returns the TermInterface.
+     *
+     * @param string $json
+     * @return TermInterface
+     */
+    public function toTerm($json)
+    {
+        $serialized_array = json_decode($json, true);
+
+        return $this->unserializeArrayToTerm($serialized_array);
     }
 
     /**
@@ -69,5 +90,23 @@ class TermToJsonConverter
             'class' => get_class($term),
             'serialized' => $term->serialize()
         );
+    }
+
+    /**
+     * @param $serialized_array
+     */
+    private function unserializeArrayToTerm($serialized_array)
+    {
+        $class = $serialized_array['class'];
+        $term = new $class($serialized_array['serialized']['options']);
+        $term->setOp($serialized_array['serialized']['op']);
+
+        if ($term instanceof CompositeTermInterface) {
+            foreach ($serialized_array['terms'] as $term_array) {
+                $term->addTerm($this->unserializeArrayToTerm($term_array));
+            }
+        }
+
+        return $term;
     }
 }

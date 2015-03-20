@@ -90,4 +90,66 @@ class TermToJsonConverterSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_can_take_a_serialized_term_and_reconstruct_the_terms()
+    {
+        $serialized_array = array(
+            'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm',
+            'serialized' => array(
+                'op' => TermInterface::OP_AND,
+                'options' => array()
+            ),
+            'terms' => array(
+                array(
+                    'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm',
+                    'serialized' => array(
+                        'op' => TermInterface::OP_NOT,
+                        'options' => array(
+                            'agent_ids' => array(5, 6)
+                        )
+                    )
+                ),
+                array(
+                    'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm',
+                    'serialized' => array(
+                        'op' => TermInterface::OP_IS,
+                        'options' => array(
+                            'department_ids' => array(5, 9)
+                        )
+                    )
+                )
+            )
+        );
+
+        $json = json_encode($serialized_array);
+
+        $result_term = $this->toTerm($json);
+
+        $result_term->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm');
+        $result_term->getOp()->shouldBe(TermInterface::OP_AND);
+        $result_term->getRawOptions()->shouldBe(array());
+        $result_term->getTerms()->shouldHaveCount(2);
+
+        $terms = $result_term->getTerms();
+
+        $term1 = $terms[0];
+
+        $term1->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm');
+        $term1->getOp()->shouldBe(TermInterface::OP_NOT);
+        $term1->getRawOptions()->shouldBe(
+            array(
+                'agent_ids' => array(5, 6)
+            )
+        );
+
+        $term2 = $terms[1];
+
+        $term2->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm');
+        $term2->getOp()->shouldBe(TermInterface::OP_IS);
+        $term2->getRawOptions()->shouldBe(
+            array(
+                'department_ids' => array(5, 9)
+            )
+        );
+    }
 }

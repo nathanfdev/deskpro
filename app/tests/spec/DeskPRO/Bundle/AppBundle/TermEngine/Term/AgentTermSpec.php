@@ -227,4 +227,25 @@ class AgentTermSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_lets_you_get_the_raw_options()
+    {
+        // you shouldn't really use this, use getOptions() instead
+
+        $this->getRawOptions()->shouldBe(array());
+
+        $this->setOption('agent_ids', array(5));
+        $this->getRawOptions()->shouldBe(
+            array('agent_ids' => array(5))
+        );
+
+        // options you set are NOT validated until getOptions() is called
+        $this->setOption('even_invalid_values_can_be_in_raw', 4);
+        $this->getRawOptions()->shouldBe(
+            array(
+                'agent_ids' => array(5),
+                'even_invalid_values_can_be_in_raw' => 4
+            )
+        );
+    }
 }
