@@ -23,6 +23,11 @@ services:
     # TERM COMPILERS
     #
 
+    term_engine.dbal_ticket_filters.compiler.ticket_status:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketStatusCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm' }
+
     term_engine.dbal_ticket_filters.compiler.agent:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentCompiler
         tags:
