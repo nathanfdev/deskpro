@@ -248,4 +248,11 @@ class AgentTermSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_allows_op_to_be_set_on_construction()
+    {
+        $this->beConstructedWith(array(), TermInterface::OP_NOT);
+
+        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+    }
 }

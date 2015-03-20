@@ -62,9 +62,13 @@ abstract class AbstractTerm implements TermInterface
     /**
      * @param array $options initial settings
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = array(), $op = null)
     {
         $this->options = $options;
+
+        if (null !== $op) {
+            $this->setOp($op);
+        }
     }
 
     /**
