@@ -224,6 +224,12 @@ class DbalCompiledQuery
         $this->where = trim($where);
     }
 
+
+    public function appendWhere($append_to_where)
+    {
+        $this->where .= ' ' . trim($append_to_where);
+    }
+
     public function addJoin($table, $on, $alias = null)
     {
         if (!$alias) {

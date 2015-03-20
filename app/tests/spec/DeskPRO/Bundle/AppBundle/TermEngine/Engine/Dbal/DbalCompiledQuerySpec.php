@@ -327,6 +327,34 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         );
     }
 
+    function it_does_allow_you_to_append_to_the_where_string()
+    {
+        $this->setWherePart($initial_where = '(agent.id = 5 AND agent.name = "Jim")');
+
+        $this->generateWhereString()->shouldBe($initial_where);
+
+        $this->appendWhere($appended = 'AND agent.fav_color = :fav_color_param');
+
+        $this->generateWhereString()->shouldBe($initial_where . ' ' . $appended);
+
+        $this->appendWhere($second_append = 'OR (x.foo = x.bar AND y.baz = 89');
+
+        $this->generateWhereString()->shouldBe(
+            $initial_where . ' ' . $appended . ' ' . $second_append
+        );
+
+        $this->setFrom('tickets');
+
+        $this->__toString()->shouldBe(
+            sprintf(
+                'SELECT * FROM tickets WHERE %s %s %s',
+                $initial_where,
+                $appended,
+                $second_append
+            )
+        );
+    }
+
     function it_does_everything_at_once()
     {
         $this->setSelectPart('{from}.id');
