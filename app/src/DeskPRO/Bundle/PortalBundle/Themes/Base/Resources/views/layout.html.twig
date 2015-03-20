@@ -6,14 +6,41 @@
     <meta name="viewport" content="width=device-width">
     <link href="{{ asset('pub/src-build/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.css') }}" media="all" rel="stylesheet" />
     <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
+    <style type="text/css">
+        {# If the browser is capable of running our enhanced UI #}
+        {# Then we should hide plain controls because JS will init enhanced ones and we dont want a stutter #}
+        body.with-dpui .dpui-plaincontrol { visibility: hidden; }
+    </style>
 </head>
 <body>
+<script type="text/javascript">
+(function(){
+    document.body.className = document.body.className + ' with-js';
 
-{% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
+    window.WITH_DPUI = true;
+    document.body.className = document.body.className + ' with-dpui';
+})();
+</script>
+
+<div class="dp-page-body">
+    {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
+</div>
 
 {% if not is_granted('ROLE_USER') %}
     {{ background_sso() }}
 {% endif %}
+<script type="text/javascript">
+(function(){
+    document.body.className = document.body.className + ' with-pageload-done';
 
+    if (WITH_DPUI) {
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = '{{ asset('pub/src-build/DeskPRO/Bundle/PortalBundle/PortalBundle.js') }}';
+        document.getElementsByTagName('head')[0].appendChild(s);
+    }
+})();
+</script>
 </body>
 </html>

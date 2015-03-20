@@ -1,8 +1,4 @@
-import reflux from "reflux";
+import PortalApp from "DeskPRO/Bundle/PortalBundle/PortalApp";
 
-export default function () {
-  "use strict";
-  console.log("HERE!!");
-
-  var x = <div > test < / div >;
-}
+let app = new PortalApp();
+app.run();
