@@ -10,33 +10,47 @@
 
             <article class="form-horizontal dp-form">
                 <div class="panel panel-innertable">
-                    <div class="panel-heading">
-                        <h3>
-                            <span>Published Content Settings</span>
-                        </h3>
-                    </div>
+                    {#<div class="panel-heading">#}
+                        {#<h3>#}
+                            {#<span>Header</span>#}
+                        {#</h3>#}
+                    {#</div>#}
                     <div class="form-group">
                         <div class="col-lg-12">
-                            <div class="inner-group" dp-error-class="form_props.show_ratings">
+
+                            {% set tp = 'adm.settings.reset_demo_titles_' %}
+                            {% set dp = 'adm.settings.reset_demo_descriptions_' %}
+                            {% for id in [
+                                'users',
+                                'agents',
+                                'tickets',
+                                'triggers',
+                                'filters',
+                                'templates',
+                                'esc_sla',
+                                'fields',
+                                'departments',
+                                'perms',
+                                'kb',
+                                'news',
+                                'downloads',
+                                'feedback',
+                                'labels',
+                                'snippets_macros',
+                                'settings',
+                                'apps'
+                            ] %}
+                            <div class="inner-group" dp-error-class="form_props.{{ id }}">
                                 <label>
-                                    <input type="checkbox" ng-model="show_ratings_opt" />
-                                    <h4>Show ratings publicly</h4>
+                                    <input type="checkbox" name="{{ id }}" ng-model="{{ id }}" />
+                                    <h4>{{ phrase(tp ~ id) }}</h4>
                                 </label>
-                                <div ng-show="show_ratings_opt">
-                                    Show ratings publicly in the portal after there have been
-                                    <input type="number" name="show_ratings" class="form-control" ng-model="settings.show_ratings"
-                                           style="width: 80px;" required min="0" /> votes.
-                                </div>
+                                <span class="help-block">
+							        {{ phrase(dp ~ id) }}
+						        </span>
                             </div>
-                            <div class="inner-group">
-                                <label>
-                                    <input type="checkbox" ng-model="settings.publish_comments" />
-                                    <h4>Enable comments on published content</h4>
-                                </label>
-						<span class="help-block">
-							Enable comments on articles, news and downloads. (This setting does not affect Feedback; discussons on feedback is always enabled).
-						</span>
-                            </div>
+                            {% endfor %}
+
                         </div>
                     </div>
                 </div>
