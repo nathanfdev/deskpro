@@ -51,6 +51,7 @@ class DbalAgentTeamCompiler extends AbstractDbalCompiler
         $real_agent_team_ids = array();
         $me_expression = null;
         $unassigned = false;
+        $and_or = $this->isOp($op, TermInterface::OP_IS) ? 'OR' : 'AND';
 
         foreach ($agent_team_ids as $agent_team_id) {
             if ($agent_team_id === AgentTeamTerm::TEAM_ID_ME) {
@@ -77,7 +78,7 @@ class DbalAgentTeamCompiler extends AbstractDbalCompiler
 
             $where .= sprintf(
                 '%sticket.agent_team_id %s (:%s)',
-                strlen($where) > 0 ? ' OR ' : '',
+                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
                 $me_isser,
                 $me_param
             );
@@ -86,7 +87,11 @@ class DbalAgentTeamCompiler extends AbstractDbalCompiler
         if ($unassigned) {
             $unassigned_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'IS NOT NULL' : 'IS NULL';
 
-            $where .= sprintf('%sticket.agent_team_id %s', strlen($where) > 0 ? ' OR ' : '', $unassigned_isser);
+            $where .= sprintf(
+                '%sticket.agent_team_id %s',
+                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
+                $unassigned_isser
+            );
         }
 
         return $where;

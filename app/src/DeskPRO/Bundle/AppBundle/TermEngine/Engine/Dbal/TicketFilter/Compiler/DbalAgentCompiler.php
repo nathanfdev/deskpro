@@ -49,6 +49,7 @@ class DbalAgentCompiler extends AbstractDbalCompiler
         $agent_ids = array();
         $me_expression = null;
         $unassigned = false;
+        $and_or = $this->isOp($op, TermInterface::OP_IS) ? 'OR' : 'AND';
 
         foreach ($term->getOption('agent_ids') as $id) {
             if ($id === AgentTerm::ID_ME) {
@@ -70,7 +71,11 @@ class DbalAgentCompiler extends AbstractDbalCompiler
 
         if ($unassigned) {
             $unassigned_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'IS NOT NULL' : 'IS NULL';
-            $where .= sprintf('%sticket.agent_id %s', strlen($where) > 0 ? ' OR ' : '', $unassigned_isser);
+            $where .= sprintf(
+                '%sticket.agent_id %s',
+                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
+                $unassigned_isser
+            );
         }
 
         return $where;
