@@ -34,6 +34,8 @@
 
 namespace Orb\Data;
 
+use Orb\Util\Strings;
+
 class ContentTypes
 {
     /** @var array  */
@@ -388,12 +390,18 @@ class ContentTypes
      * @static
      * @param $content_type
      * @param  bool $safe
+     * @param  string $filename
      * @return bool
      */
-    public static function isInlineContentType($content_type, $safe = true)
+    public static function isInlineContentType($content_type, $safe = true, $filename = null)
     {
         if (self::isImageContentType($content_type)) {
             return true;
+        }
+
+        $ext = null;
+        if ($filename) {
+            $ext = Strings::getExtension($filename);
         }
 
         switch ($content_type) {
@@ -402,6 +410,23 @@ class ContentTypes
             case 'text/plain':
             case 'text/x-markdown':
             case 'application/pdf':
+                // sometimes a file might be given the content type as text/plain
+                // but might have a filename of a file that should still be downloaded
+                if ($ext) {
+                    switch ($ext) {
+                        case 'html':
+                        case 'htm':
+                        case 'js':
+                        case 'jsx':
+                        case 'css':
+                        case 'php':
+                        case 'bat':
+                        case 'sh':
+                        case 'json':
+                        case 'yml':
+                            return false;
+                    }
+                }
                 return true;
 
             case 'text/html':
