@@ -46,19 +46,21 @@ class AppManagerService
 
         if (!defined('DP_BUILDING')) {
             $packages = array();
-            //$packages = $em->createQuery("
-            //    SELECT package, asset
-            //    FROM DeskPRO:AppPackage package
-            //    LEFT JOIN package.assets asset
-            //    ORDER BY package.title
-            //")->execute();
+            $packages = $em->createQuery("
+                SELECT package, asset
+                FROM DeskPRO:AppPackage package
+                LEFT JOIN package.assets asset
+                ORDER BY package.title
+            ")->execute();
             $apps = array();
-            //$apps = $em->createQuery("
-            //    SELECT app, package, asset
-            //    FROM DeskPRO:AppInstance app
-            //    LEFT JOIN app.package package
-            //    LEFT JOIN package.assets asset
-            //")->execute();
+            $apps = $em->createQuery(
+                "
+                SELECT app, package, asset
+                FROM DeskPRO:AppInstance app
+                LEFT JOIN app.package package
+                LEFT JOIN package.assets asset
+            "
+            )->execute();
 
             if (count($apps)) {
                 $names = array_map(function ($a) {
