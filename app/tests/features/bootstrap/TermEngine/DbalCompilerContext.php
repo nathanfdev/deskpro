@@ -39,6 +39,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpBehat\BaseContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQuery;
@@ -131,7 +132,36 @@ class DbalCompilerContext extends BaseContext
             $resolved_params[substr($p, 1)] = $value;
         }
 
-        expect($this->compiled->getParameters())->toBeLike($resolved_params);
+        $actual_params = $this->convertTermEngineExpressionToString(
+            $this->compiled->getParameters()
+        );
+
+        expect($actual_params)->toBeLike($resolved_params);
+    }
+
+    protected function convertTermEngineExpressionToString(array $params)
+    {
+        $the_params = array();
+
+        foreach ($params as $pname => $pval) {
+            if (is_array($pval)) {
+                $pval = $this->convertTermEngineExpressionToString($pval);
+            } elseif ($pval instanceof TermEngineExpression) {
+                $pval = sprintf('TermEngineExpression(\'%s\')', $pval);
+            }
+
+            $the_params[$pname] = $pval;
+        }
+
+        return $the_params;
+    }
+
+    /**
+     * @Then there should be no parameters
+     */
+    public function thereShouldBeNoParams()
+    {
+        expect($this->compiled->getParameters())->toHaveCount(0);
     }
 
     /**
