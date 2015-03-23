@@ -38,6 +38,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketParticipantTerm extends AbstractTerm
 {
+    /**
+     * A special string id to represent the currently logged in user
+     */
+    const ID_ME = 'me';
+
     protected $op = TermInterface::OP_IS;
 
     public function setDefaultOptions(OptionsResolver $resolver)

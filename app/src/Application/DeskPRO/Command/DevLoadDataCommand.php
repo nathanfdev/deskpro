@@ -359,18 +359,18 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             );
         }
         $db->batchInsert('department_permissions', $batch);
-
-        // Default notifications
-        $agent_id = $agent->getId();
-        $db->executeUpdate("
-            INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
-            VALUES
-                (NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-                (NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-                (NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-                (NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-                (NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-        ");
+//
+//        // Default notifications
+//        $agent_id = $agent->getId();
+//        $db->executeUpdate("
+//            INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
+//            VALUES
+//                (NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+//                (NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+//                (NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+//                (NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+//                (NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+//        ");
 
         $db->executeUpdate("
             INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)

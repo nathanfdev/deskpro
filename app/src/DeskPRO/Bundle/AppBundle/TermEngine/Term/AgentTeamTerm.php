@@ -38,6 +38,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgentTeamTerm extends AbstractTerm
 {
+    /**
+     * A special string id to represent the currently logged in agent's team
+     */
+    const TEAM_ID_ME = 'me';
+
+    /**
+     * A special string id to represent tickets with no agent team assigned
+     */
+    const TEAM_ID_UNASSIGNED = 'unassigned';
+
     protected $op = TermInterface::OP_IS;
 
     public function setDefaultOptions(OptionsResolver $resolver)
