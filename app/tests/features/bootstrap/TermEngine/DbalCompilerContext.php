@@ -192,6 +192,8 @@ class DbalCompilerContext extends BaseContext
      */
     private function filterTable(TableNode $table)
     {
+        // this is pretty terrible, but it did the trick. if problems, lets refactor it.
+
         $output = array();
         $rows = $table->getRows();
         array_shift($rows);
@@ -206,10 +208,17 @@ class DbalCompilerContext extends BaseContext
                 $v = explode(',', $array);
                 $nv = array();
                 foreach ($v as $vv) {
-                    $nv[] = trim($vv);
+                    $b = trim($vv);
+                    if (is_numeric($b)) {
+                        $b = (int)$b;
+                    }
+                    $nv[] = $b;
                 }
             } else {
                 // no array
+                if (is_numeric($v)) {
+                    $v = (int)$v;
+                }
                 $nv = $v;
             }
 

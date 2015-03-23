@@ -58,6 +58,11 @@ services:
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm' }
 
+    term_engine.dbal_ticket_filters.compiler.ticket_custom_data:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketCustomDataCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm' }
+
     #
     # VISITORS
     #
