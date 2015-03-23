@@ -412,7 +412,7 @@ class ContentTypes
             case 'application/pdf':
                 // sometimes a file might be given the content type as text/plain
                 // but might have a filename of a file that should still be downloaded
-                if ($ext) {
+                if ($content_type == 'text/plain' && $ext) {
                     switch ($ext) {
                         case 'html':
                         case 'htm':
