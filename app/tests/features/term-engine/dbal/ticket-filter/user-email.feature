@@ -1,7 +1,4 @@
-Feature: DBAL Ticket Filter UserEmailTerm compiler
-  In order to search for a ticket by user email
-  As a developer
-  I need to use UserEmail terms
+Feature: DbalUserEmailCompiler
 
   Scenario: Compile the term
     And I have an IS UserEmailTerm with the options:

@@ -196,24 +196,25 @@ class DbalCompilerContext extends BaseContext
         $rows = $table->getRows();
         array_shift($rows);
         foreach ($rows as $row) {
-            $v = $row[1];
+            $v = trim($row[1]);
 
-            $v = explode(',', $v);
-            $nv = array();
-            foreach ($v as $vv) {
-                $nv[] = trim($vv);
-            }
+            // array syntax
+            $len = strlen($v);
+            if (preg_match('/^\\[(.*?)\\]/', $v, $matches)) {
+                $array = $matches[1];
 
-            if (count($nv) < 2) {
-                if (1 === count($nv)) {
-                    $nv = $nv[0];
-                } else {
-                    $nv = null;
+                $v = explode(',', $array);
+                $nv = array();
+                foreach ($v as $vv) {
+                    $nv[] = trim($vv);
                 }
+            } else {
+                // no array
+                $nv = $v;
             }
 
 
-            $output[$row[0]] = $nv;
+            $output[trim($row[0])] = $nv;
         }
         return $output;
     }
