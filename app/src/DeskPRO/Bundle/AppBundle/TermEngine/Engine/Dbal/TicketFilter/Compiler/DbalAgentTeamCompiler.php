@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -43,10 +45,50 @@ class DbalAgentTeamCompiler extends AbstractDbalCompiler
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $param_name = $compiler->addParameter('status', $term->getOption('agent_team_ids'));
+        $agent_team_ids = $term->getOption('agent_team_ids');
 
-        return sprintf('ticket.agent_team_id %s (:%s)', $isser, $param_name);
+        $real_agent_team_ids = array();
+        $me_expression = null;
+        $unassigned = false;
+
+        foreach ($agent_team_ids as $agent_team_id) {
+            if ($agent_team_id === AgentTeamTerm::TEAM_ID_ME) {
+                $me_expression = new TermEngineExpression('agent_teams(agent)');
+            } elseif ($agent_team_id === AgentTeamTerm::TEAM_ID_UNASSIGNED) {
+                $unassigned = true;
+            } else {
+                $real_agent_team_ids[] = $agent_team_id;
+            }
+        }
+
+
+        $where = '';
+        if (count($real_agent_team_ids)) {
+            $in_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
+            $ids_param = $compiler->addParameter('agent_team_ids', $real_agent_team_ids);
+
+            $where = sprintf('ticket.agent_team_id %s (:%s)', $in_isser, $ids_param);
+        }
+
+        if ($me_expression) {
+            $me_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
+            $me_param = $compiler->addParameter('me', $me_expression);
+
+            $where .= sprintf(
+                '%sticket.agent_team_id %s (:%s)',
+                strlen($where) > 0 ? ' OR ' : '',
+                $me_isser,
+                $me_param
+            );
+        }
+
+        if ($unassigned) {
+            $unassigned_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'IS NOT NULL' : 'IS NULL';
+
+            $where .= sprintf('%sticket.agent_team_id %s', strlen($where) > 0 ? ' OR ' : '', $unassigned_isser);
+        }
+
+        return $where;
     }
 }
