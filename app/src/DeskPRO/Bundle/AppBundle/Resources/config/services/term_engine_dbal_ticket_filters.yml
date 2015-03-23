@@ -43,10 +43,20 @@ services:
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }
 
-    term_engine.dbal_ticket_filters.compiler.person_email:
+    term_engine.dbal_ticket_filters.compiler.user_email:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalUserEmailCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\UserEmailTerm' }
+
+    term_engine.dbal_ticket_filters.compiler.agent_team:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentTeamCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm' }
+
+    term_engine.dbal_ticket_filters.compiler.ticket_participant:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketParticipantCompiler
+        tags:
+         - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm' }
 
     #
     # VISITORS

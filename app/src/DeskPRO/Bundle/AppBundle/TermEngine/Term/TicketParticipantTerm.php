@@ -31,52 +31,27 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentParticipantTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentParticipantTerm
- */
-class AgentParticipantTermSpec extends ObjectBehavior
+class TicketParticipantTerm extends AbstractTerm
 {
-    function it_is_a_term()
-    {
-        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
-    }
+    protected $op = TermInterface::OP_IS;
 
-    function it_has_default_op_is()
+    public function setDefaultOptions(OptionsResolver $resolver)
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
-    }
-
-    function it_allows_op_change()
-    {
-        $this->setOp(TermInterface::OP_NOT);
-
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
-    }
-
-    function it_defines_its_options(
-        OptionsResolver $options_resolver
-    )
-    {
-        $options_resolver->setDefaults(
+        $resolver->setDefaults(
             array(
-                'agent_ids' => array()
+                'person_ids' => array()
             )
-        )->shouldBeCalled();
+        );
 
-        $options_resolver->setAllowedTypes(
+        $resolver->setAllowedTypes(
             array(
-                'agent_ids' => 'array'
+                'person_ids' => 'array'
             )
-        )->shouldBeCalled();
-
-        $this->setDefaultOptions($options_resolver);
+        );
     }
 }
