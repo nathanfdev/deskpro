@@ -31,47 +31,52 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DbalPersonEmailCompiler extends AbstractDbalCompiler
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm
+ */
+class AgentTeamTermSpec extends ObjectBehavior
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    function it_is_a_term()
     {
-        $op = $term->getOp();
+        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
+    }
 
-        switch ($op) {
-            case TermInterface::OP_IS:
-                $compiler->addJoin(
-                    'people_emails',
-                    'ticket.person_id = people_emails.person_id'
-                );
-                $param = $compiler->addParameter('email', $term->getOption('email'));
+    function it_has_default_op_is()
+    {
+        $this->getOp()->shouldBe(TermInterface::OP_IS);
+    }
 
-                return sprintf(
-                    'people_emails.email = :%s',
-                    $param
-                );
-            case TermInterface::OP_NOT:
-                $param = $compiler->addParameter('email', $term->getOption('email'));
-                $alias = $compiler->addUniqueJoin(
-                    'people_emails',
-                    sprintf(
-                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
-                        $param
-                    )
-                );
+    function it_allows_op_change()
+    {
+        $this->setOp(TermInterface::OP_NOT);
 
-                return sprintf(
-                    '%s.id IS NULL',
-                    $alias
-                );
-        }
+        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+    }
 
-        return '';
+    function it_defines_its_options(
+        OptionsResolver $options_resolver
+    )
+    {
+        $options_resolver->setDefaults(
+            array(
+                'agent_team_ids' => array()
+            )
+        )->shouldBeCalled();
+
+        $options_resolver->setAllowedTypes(
+            array(
+                'agent_team_ids' => 'array'
+            )
+        )->shouldBeCalled();
+
+        $this->setDefaultOptions($options_resolver);
     }
 }

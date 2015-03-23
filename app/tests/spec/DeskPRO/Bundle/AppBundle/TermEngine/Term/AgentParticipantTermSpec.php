@@ -36,86 +36,47 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentParticipantTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentParticipantTerm
  */
-class CompositeTermSpec extends ObjectBehavior
+class AgentParticipantTermSpec extends ObjectBehavior
 {
     function it_is_a_term()
     {
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
     }
 
-    function it_is_a_collection_of_terms(TermInterface $term1, TermInterface $term2)
+    function it_has_default_op_is()
     {
-        $this->getTerms()->shouldBe(array());
-        $this->addTerm($term1);
-        $this->getTerms()->shouldBe(array($term1));
-        $this->addTerm($term2);
-        $this->getTerms()->shouldBe(array($term1, $term2));
+        $this->getOp()->shouldBe(TermInterface::OP_IS);
     }
 
-    public function it_defaults_to_or_op()
+    function it_allows_op_change()
     {
-        $this->getOp()->shouldReturn(TermInterface::OP_OR);
+        $this->setOp(TermInterface::OP_NOT);
+
+        $this->getOp()->shouldBe(TermInterface::OP_NOT);
     }
 
-    public function it_lets_you_change_the_op()
+    function it_defines_its_options(
+        OptionsResolver $options_resolver
+    )
     {
-        $this->setOp(TermInterface::OP_AND);
+        $options_resolver->setDefaults(
+            array(
+                'agent_ids' => array()
+            )
+        )->shouldBeCalled();
 
-        $this->getOp()->shouldReturn(TermInterface::OP_AND);
-    }
-
-    function it_sets_up_its_own_settings_resolver(OptionsResolver $options_resolver)
-    {
-        // does not actually take options at the moment. the "op" is the main property here.
+        $options_resolver->setAllowedTypes(
+            array(
+                'agent_ids' => 'array'
+            )
+        )->shouldBeCalled();
 
         $this->setDefaultOptions($options_resolver);
-    }
-
-    function it_lets_you_add_a_term(
-        TermInterface $term1
-    )
-    {
-        $this->getTerms()->shouldBe(array());
-
-        $this->addTerm($term1);
-
-        $this->getTerms()->shouldBe(array($term1));
-    }
-
-    function it_lets_you_remove_a_term(
-        TermInterface $term1
-    )
-    {
-        $this->addTerm($term1);
-
-        $this->getTerms()->shouldBe(array($term1));
-
-        $this->removeTerm($term1);
-
-        $this->getTerms()->shouldBe(array());
-    }
-
-    function it_lets_you_replace_a_term(
-        TermInterface $term1,
-        TermInterface $term2,
-        TermInterface $term3,
-        TermInterface $term4
-    )
-    {
-        $this->addTerm($term1);
-        $this->addTerm($term2);
-        $this->addTerm($term3);
-
-        $this->getTerms()->shouldBe(array($term1, $term2, $term3));
-
-        $this->replaceTerm($term2, $term4);
-
-        $this->getTerms()->shouldBe(array($term1, $term4, $term3));
     }
 }

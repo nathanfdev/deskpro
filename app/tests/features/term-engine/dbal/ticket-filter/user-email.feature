@@ -1,10 +1,10 @@
-Feature: DBAL Ticket Filter AgentTerm compiler
-  In order to search the Ticket data
+Feature: DBAL Ticket Filter UserEmailTerm compiler
+  In order to search for a ticket by user email
   As a developer
-  I need to use agent terms
+  I need to use UserEmail terms
 
   Scenario: Compile the term
-    And I have an IS PersonEmailTerm with the options:
+    And I have an IS UserEmailTerm with the options:
       | Option | Value                     |
       | email  | chris.tickner@deskpro.com |
     When I compile my terms
@@ -22,7 +22,7 @@ Feature: DBAL Ticket Filter AgentTerm compiler
       | x         | chris.tickner@deskpro.com |
 
   Scenario: Compile the not term
-    And I have a NOT PersonEmailTerm with the options:
+    And I have a NOT UserEmailTerm with the options:
       | Option | Value                     |
       | email  | chris.tickner@deskpro.com |
     When I compile my terms

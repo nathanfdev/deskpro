@@ -31,39 +31,47 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\DBAL\Query\QueryBuilder;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm
- */
-class TicketStatusTermSpec extends ObjectBehavior
+class DbalUserEmailCompiler extends AbstractDbalCompiler
 {
-    function it_has_default_op_is()
+    public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
-    }
+        $op = $term->getOp();
 
-    function it_allows_op_change()
-    {
-        $this->setOp(TermInterface::OP_NOT);
+        switch ($op) {
+            case TermInterface::OP_IS:
+                $compiler->addJoin(
+                    'people_emails',
+                    'ticket.person_id = people_emails.person_id'
+                );
+                $param = $compiler->addParameter('email', $term->getOption('email'));
 
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
-    }
+                return sprintf(
+                    'people_emails.email = :%s',
+                    $param
+                );
+            case TermInterface::OP_NOT:
+                $param = $compiler->addParameter('email', $term->getOption('email'));
+                $alias = $compiler->addUniqueJoin(
+                    'people_emails',
+                    sprintf(
+                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
+                        $param
+                    )
+                );
 
-    function it_defines_its_options(
-        OptionsResolver $resolver
-    )
-    {
-        $resolver->setRequired('status')->shouldBeCalled();
+                return sprintf(
+                    '%s.id IS NULL',
+                    $alias
+                );
+        }
 
-        $resolver->setAllowedTypes(array('status' => 'array'))->shouldBeCalled();
-
-        $this->setDefaultOptions($resolver);
+        return '';
     }
 }

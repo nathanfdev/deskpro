@@ -31,39 +31,27 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm
- */
-class TicketStatusTermSpec extends ObjectBehavior
+class AgentTeamTerm extends AbstractTerm
 {
-    function it_has_default_op_is()
+    protected $op = TermInterface::OP_IS;
+
+    public function setDefaultOptions(OptionsResolver $resolver)
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
-    }
+        $resolver->setDefaults(
+            array(
+                'agent_team_ids' => array()
+            )
+        );
 
-    function it_allows_op_change()
-    {
-        $this->setOp(TermInterface::OP_NOT);
-
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
-    }
-
-    function it_defines_its_options(
-        OptionsResolver $resolver
-    )
-    {
-        $resolver->setRequired('status')->shouldBeCalled();
-
-        $resolver->setAllowedTypes(array('status' => 'array'))->shouldBeCalled();
-
-        $this->setDefaultOptions($resolver);
+        $resolver->setAllowedTypes(
+            array(
+                'agent_team_ids' => 'array'
+            )
+        );
     }
 }

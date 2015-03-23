@@ -36,7 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PersonEmailTerm extends AbstractTerm
+class UserEmailTerm extends AbstractTerm
 {
     protected $op = TermInterface::OP_IS;
 
