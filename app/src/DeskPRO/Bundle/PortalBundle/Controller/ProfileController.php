@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +42,7 @@ class ProfileController extends AbstractController
 {
     /**
      * @Route("/register", name="portal_user_registration")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function registerAction(Request $request)
     {
@@ -140,9 +140,9 @@ class ProfileController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Profile:edit.html.twig', array(
-                'profile_form'  => $profile_form->createView(),
+                'profile_form' => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
-                'emails_form'   => $emails_form->createView(),
+                'emails_form' => $emails_form->createView(),
             )
         );
     }

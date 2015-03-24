@@ -36,23 +36,23 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class NewTicketController extends AbstractController
 {
     /**
      * @Route("/new-ticket", name="portal_new_ticket")
      * @Security("is_granted('USE_TICKETS')")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function newTicketAction(Request $request)
     {
         $person = $this->getUser() ?: new PersonGuest();
 
-        $ticket         = $this->getTicketManager()->createTicket();
+        $ticket = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
@@ -61,19 +61,19 @@ class NewTicketController extends AbstractController
         if ('GET' === $request->getMethod()) {
             // do a one through with the GET request to update our model before starting the "real" form
             $form = $this->createForm('ticket', $ticket, array(
-                'person'            => $person,
-                'ticket_message'    => $ticket_message,
-                'method'            => 'GET',
+                'person' => $person,
+                'ticket_message' => $ticket_message,
+                'method' => 'GET',
                 'validation_groups' => false,
-                'settings'          => $this->getBrandContainer()->getSettings(),
+                'settings' => $this->getBrandContainer()->getSettings(),
             ));
             $form->submit($request->get('ticket', array()), false);
         }
 
         $form = $this->createForm('ticket', $ticket, array(
-                'person'         => $person,
-                'ticket_message' => $ticket_message,
-                'settings'       => $this->getBrandContainer()->getSettings(),
+            'person' => $person,
+            'ticket_message' => $ticket_message,
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $form->handleRequest($request);
 
@@ -111,7 +111,7 @@ class NewTicketController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
-                'form'        => $form->createView(),
+                'form' => $form->createView(),
                 'rerendering' => $rerendering,
             )
         );
@@ -135,7 +135,7 @@ class NewTicketController extends AbstractController
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
-            $context        = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+            $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
