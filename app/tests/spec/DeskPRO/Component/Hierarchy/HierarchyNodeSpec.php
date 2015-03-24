@@ -17,7 +17,7 @@ class HierarchyNodeSpec extends ObjectBehavior
 
     public function it_holds_any_data()
     {
-        $data  = 'strings, arrays, objects, whatever';
+        $data = 'strings, arrays, objects, whatever';
         $depth = 0;
         $order = 0;
 
@@ -31,7 +31,8 @@ class HierarchyNodeSpec extends ObjectBehavior
     public function it_uses_the_hierarchy_formatter_to_display_itself(
         Hierarchy $hierarchy,
         HierarchyFormatterInterface $formatter
-    ) {
+    )
+    {
         $hierarchy->getFormatter()->willReturn($formatter);
         $formatter->format(Argument::any())->willReturn('some formatted output');
 
@@ -43,7 +44,8 @@ class HierarchyNodeSpec extends ObjectBehavior
         Hierarchy $hierarchy,
         HierarchyNode $child1,
         HierarchyNode $child2
-    ) {
+    )
+    {
         $this->setHierarchy($hierarchy);
         $this->addChild($child1);
         $this->addChild($child2);
@@ -55,9 +57,10 @@ class HierarchyNodeSpec extends ObjectBehavior
         Hierarchy $hierarchy,
         HierarchyNode $child1,
         HierarchyNode $child2
-    ) {
-        $child1->getOrder()->willReturn(15);
-        $child2->getOrder()->willReturn(16);
+    )
+    {
+        $child1->getOrder()->willReturn(-40);
+        $child2->getOrder()->willReturn(-10);
 
         $child1->setHierarchy($hierarchy)->shouldBeCalled();
         $child2->setHierarchy($hierarchy)->shouldBeCalled();
@@ -71,6 +74,7 @@ class HierarchyNodeSpec extends ObjectBehavior
             $children[] = $child;
         }
 
-        expect($children)->toBeLike(array($child2, $child1));
+        expect($children[0])->toBe($child2);
+        expect($children[1])->toBe($child1);
     }
 }

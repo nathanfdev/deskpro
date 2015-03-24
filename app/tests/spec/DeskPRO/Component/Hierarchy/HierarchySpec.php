@@ -13,13 +13,14 @@ class HierarchySpec extends ObjectBehavior
         HierarchyFormatterInterface $formatter,
         HierarchyNode $node1,
         HierarchyNode $node2
-    ) {
+    )
+    {
         $node1->getData()->willReturn(array('id' => 11));
-        $node1->getOrder()->willReturn(1);
+        $node1->getOrder()->willReturn(10);
         $node1->setHierarchy(Argument::any())->shouldBeCalled();
 
         $node2->getData()->willReturn(array('id' => 22));
-        $node2->getOrder()->willReturn(2);
+        $node2->getOrder()->willReturn(50);
         $node2->setHierarchy(Argument::any())->shouldBeCalled();
 
         $root_nodes = array($node2, $node1);
@@ -31,9 +32,10 @@ class HierarchySpec extends ObjectBehavior
         HierarchyFormatterInterface $formatter,
         HierarchyNode $node1,
         HierarchyNode $node2
-    ) {
+    )
+    {
         $this->getFormatter()->shouldReturn($formatter);
-        $this->getRootNodes()->shouldBeLike(array($node2, $node1));
+        $this->getRootNodes()->shouldBe(array($node2, $node1));
     }
 
     public function it_is_countable()
@@ -43,7 +45,8 @@ class HierarchySpec extends ObjectBehavior
 
     public function it_finds_a_root_node_by_id_via_the_property_path_defined_in_constructor(
         HierarchyNode $node2
-    ) {
+    )
+    {
         $this->findNodeById(22)->shouldReturn($node2);
     }
 }

@@ -64,15 +64,15 @@ class HierarchyNode implements \IteratorAggregate, \Countable
     protected $parent;
 
     /**
-     * @param int   $depth the depth into the hierarchy that this exists
-     * @param int   $order the order amoung this depth (higher is top of list)
-     * @param mixed $data  any arbitrary data stored at this location in the hierarchy
+     * @param int $depth the depth into the hierarchy that this exists
+     * @param int $order the order amoung this depth (higher is top of list)
+     * @param mixed $data any arbitrary data stored at this location in the hierarchy
      */
     public function __construct($data, $depth = 0, $order = 0)
     {
-        $this->depth    = $depth;
-        $this->order    = $order;
-        $this->data     = $data;
+        $this->depth = $depth;
+        $this->order = $order;
+        $this->data = $data;
         $this->children = array();
     }
 
@@ -89,7 +89,13 @@ class HierarchyNode implements \IteratorAggregate, \Countable
 
         // bug in php will throw an exception for modifying arrays in some versions of php during usort
         @usort($this->children, function ($node1, $node2) {
-            return $node2->getOrder() - $node1->getOrder();
+            $a = $node2->getOrder();
+            $b = $node1->getOrder();
+
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
         });
     }
 
