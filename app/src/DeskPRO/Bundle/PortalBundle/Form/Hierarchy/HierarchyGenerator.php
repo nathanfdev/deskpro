@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO.
@@ -79,9 +79,9 @@ class HierarchyGenerator
 
     public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service)
     {
-        $this->em                      = $em;
+        $this->em = $em;
         $this->department_data_service = $department_data_service;
-        $this->feedback_data_service   = $feedback_data_service;
+        $this->feedback_data_service = $feedback_data_service;
     }
 
     public function generateForCustomFormField(CustomDefAbstract $field)
@@ -96,7 +96,7 @@ class HierarchyGenerator
                 foreach ($field->children as $field_child) {
                     // fields with a parent_id are dealt with below
                     if (!$field_child->getOption('parent_id')) {
-                        $root_nodes[] = new HierarchyNode($field_child, 0, $field_child->display_order);
+                        $root_nodes[] = new HierarchyNode($field_child, 0, HierarchyGenerator::reverseDisplayOrder($field_child->display_order));
                     }
                 }
 
@@ -112,7 +112,7 @@ class HierarchyGenerator
                 foreach ($field->children as $field_child) {
                     if ($parent_id = $field_child->getOption('parent_id')) {
                         if ($parent = $parent_node = $hierarchy->findNodeById($parent_id)) {
-                            $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, $field_child->display_order));
+                            $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, HierarchyGenerator::reverseDisplayOrder($field_child->display_order)));
                         }
                     }
                 }
@@ -138,7 +138,7 @@ class HierarchyGenerator
                     if ($product->getParent()) {
                         continue;
                     }
-                    $root_nodes[] = new HierarchyNode($product, 0, $product->display_order);
+                    $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
@@ -146,7 +146,7 @@ class HierarchyGenerator
 
                 $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
                     foreach ($prod->children as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
@@ -174,7 +174,7 @@ class HierarchyGenerator
 
                 $root_nodes = array();
                 foreach ($departments as $department) {
-                    $root_nodes[] = new HierarchyNode($department, 0, $department->display_order);
+                    $root_nodes[] = new HierarchyNode($department, 0, HierarchyGenerator::reverseDisplayOrder($department->display_order));
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
@@ -182,7 +182,7 @@ class HierarchyGenerator
 
                 $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive) {
                     foreach ($dep->children as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
@@ -212,7 +212,7 @@ class HierarchyGenerator
                     if ($product->getParent()) {
                         continue;
                     }
-                    $root_nodes[] = new HierarchyNode($product, 0, $product->display_order);
+                    $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
@@ -220,7 +220,7 @@ class HierarchyGenerator
 
                 $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
                     foreach ($prod->getChildren() as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
@@ -252,7 +252,7 @@ class HierarchyGenerator
                     if ($category->getParent()) {
                         continue;
                     }
-                    $root_nodes[] = new HierarchyNode($category, 0, $category->display_order);
+                    $root_nodes[] = new HierarchyNode($category, 0, HierarchyGenerator::reverseDisplayOrder($category->display_order));
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
@@ -260,7 +260,7 @@ class HierarchyGenerator
 
                 $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {
                     foreach ($cat->getChildren() as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->getDisplayOrder()));
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
@@ -275,7 +275,7 @@ class HierarchyGenerator
     }
 
     /**
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $params the "ArbitraryHasher" input to create cache key for this callable
      * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
      *
      * @return mixed|null
@@ -309,5 +309,17 @@ class HierarchyGenerator
         }
 
         return $this->hash_generator->generateHash($input);
+    }
+
+    /**
+     * The Hierarchy component uses higher values as higher display order, but our models use lower values to display
+     * higher in the lists. To fix this, we need to invert the values.
+     *
+     * @param int $display_order
+     * @return int
+     */
+    public static function reverseDisplayOrder($display_order)
+    {
+        return -1 * ((int)$display_order);
     }
 }
