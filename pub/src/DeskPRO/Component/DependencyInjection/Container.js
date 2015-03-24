@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-export class InvalidNameException {}
+export class InvalidNameException { constructor(name) { this.name = name; } }
 export class CyclicDependencyException {}
 export class InvalidRegisterType {}
 export class InvalidProviderType {}
@@ -8,7 +8,7 @@ export class InvalidProviderType {}
 export default class Container {
   constructor() {
     this.values = {
-      "injector": this
+      "container": this
     };
     this.providers = {};
     this.aliases = {};
@@ -241,7 +241,7 @@ export default class Container {
       return i;
     }
 
-    throw new InvalidNameException();
+    throw new InvalidNameException(name);
   }
 
   /**
