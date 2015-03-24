@@ -33,6 +33,9 @@
 (function(){
     document.body.className = document.body.className + ' with-pageload-done';
 
+    window.DP_ASSET_URL      = '{{ asset('') }}';
+    window.DP_BASE_URL       = '{{ path('portal_index')|trim('/') }}/';
+
     if (WITH_DPUI) {
         var s = document.createElement('script');
         s.type = 'text/javascript';

@@ -57,37 +57,37 @@ export default class Container {
     // Factory
     if (config.factory) {
       args.push(config.factory);
-      this.injector.setFactory(name, _.bind(function () {
+      this.setFactory(name, () => {
         return this.invoke(args, null, locals);
-      }, this.injector));
+      });
 
       // Provider
     } else if (config.provider) {
       args.push(config.provider);
-      this.injector.setFactory(name+'Provider', _.bind(function () {
+      this.setFactory(name+'Provider', () => {
         return this.invoke(args, null, locals);
-      }, this.injector));
+      });
 
-      this.injector.setFactory(name, [name+'Provider', _.bind(function (provider) {
+      this.setFactory(name, [name+'Provider', (provider) => {
         if (!provider.get) {
           throw new InvalidProviderType();
         }
 
         return this.invoke(provider.get);
-      }, this.injector)]);
+      }]);
 
       // Service
     } else if (config.service) {
       args.push(config.service);
-      this.injector.setFactory(name, _.bind(function() {
+      this.setFactory(name, () => {
         return this.invokeConstructor(args, locals);
-      }, this.injector));
+      });
 
       // Constant/value
     } else if (config.constant) {
-      this.injector.setValue(name, config.constant);
+      this.registerValue(name, config.constant);
     } else if (config.value) {
-      this.injector.setValue(name, config.value);
+      this.registerValue(name, config.value);
 
     // Error
     } else {
@@ -233,9 +233,9 @@ export default class Container {
       if (this.isBuilding[name]) {
         throw new CyclicDependencyException();
       }
-      this.building[name] = true;
+      this.isBuilding[name] = true;
       let i = this.invoke(this.providers[name]);
-      delete this.building[name];
+      delete this.isBuilding[name];
 
       this.values[name] = i;
       return i;
