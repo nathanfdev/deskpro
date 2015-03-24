@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO.
@@ -67,9 +67,9 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     public function __construct(BrandStack $brand_stack, PortalCacheHelper $cache_helper)
     {
         $this->lastModifiedDates = new \SplObjectStorage();
-        $this->etags             = new \SplObjectStorage();
-        $this->brand_stack       = $brand_stack;
-        $this->cache_helper      = $cache_helper;
+        $this->etags = new \SplObjectStorage();
+        $this->brand_stack = $brand_stack;
+        $this->cache_helper = $cache_helper;
     }
 
     /**
@@ -80,7 +80,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $page_cache_config = $request->attributes->get('_portal_page_cache');
-        $tag_cache_config  = $request->attributes->get('_portal_tag_cache');
+        $tag_cache_config = $request->attributes->get('_portal_tag_cache');
 
         if (!$tag_cache_config && !$page_cache_config) {
             return;
@@ -92,14 +92,14 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $content = null;
         if ($content_name = $config->getContent()) {
             if (!$content = $request->attributes->get($content_name)) {
-                throw new \InvalidArgumentException('could not find content for PortalHttpCacheListener (request attribute name = "'.$content_name.'" does not exist)');
+                throw new \InvalidArgumentException('could not find content for PortalHttpCacheListener (request attribute name = "' . $content_name . '" does not exist)');
             }
         }
 
         $response = new Response();
 
         $use_last_modified = $this->getBrandSetting('portal.http_cache_last_modified');
-        $use_etags         = $this->getBrandSetting('portal.http_cache_etags');
+        $use_etags = $this->getBrandSetting('portal.http_cache_etags');
 
         $lastModifiedDate = '';
         if ($use_last_modified && $content) {
@@ -118,10 +118,10 @@ class PortalHttpCacheListener implements EventSubscriberInterface
                 return $response;
             });
         } else {
-            if ($etag) {
+            if ($use_etags && $etag) {
                 $this->etags[$request] = $etag;
             }
-            if ($lastModifiedDate) {
+            if ($use_last_modified && $lastModifiedDate) {
                 $this->lastModifiedDates[$request] = $lastModifiedDate;
             }
         }
@@ -135,7 +135,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $page_cache_config = $request->attributes->get('_portal_page_cache');
-        $tag_cache_config  = $request->attributes->get('_portal_tag_cache');
+        $tag_cache_config = $request->attributes->get('_portal_tag_cache');
 
         if (!$tag_cache_config && !$page_cache_config) {
             return;
@@ -155,15 +155,15 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $is_guest = $this->cache_helper->isGuestRequest();
         if ($page_cache_config) {
             if ($is_guest) {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_guest_page');
+                $smaxage = (int)$this->getBrandSetting('portal.smaxage_guest_page');
             } else {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_user_page');
+                $smaxage = (int)$this->getBrandSetting('portal.smaxage_user_page');
             }
         } else {
             if ($is_guest) {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_guest_tag');
+                $smaxage = (int)$this->getBrandSetting('portal.smaxage_guest_tag');
             } else {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_user_tag');
+                $smaxage = (int)$this->getBrandSetting('portal.smaxage_user_tag');
             }
         }
 
@@ -190,7 +190,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     {
         return array(
             KernelEvents::CONTROLLER => 'onKernelController',
-            KernelEvents::RESPONSE   => 'onKernelResponse',
+            KernelEvents::RESPONSE => 'onKernelResponse',
         );
     }
 
@@ -221,11 +221,11 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     protected function generateEtag(ContentAbstract $content)
     {
         $global_timestamp = $this->getBrandSetting('portal.global_cache_timestamp');
-        $type             = $content->getContentType();
-        $id               = $content->getId();
-        $last_modified    = $this->generateLastModified($content);
+        $type = $content->getContentType();
+        $id = $content->getId();
+        $last_modified = $this->generateLastModified($content);
 
-        $etag = hash('sha256', $global_timestamp.$type.$id.$last_modified->getTimestamp());
+        $etag = hash('sha256', $global_timestamp . $type . $id . $last_modified->getTimestamp());
 
         return $etag;
     }
