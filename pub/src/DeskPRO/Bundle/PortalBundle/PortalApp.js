@@ -1,15 +1,21 @@
 require("babel/polyfill");
 
 import Container from "DeskPRO/Component/DependencyInjection/Container";
+import App from "DeskPRO/Component/DependencyInjection/AppContainer";
 import Http from "DeskPRO/Component/Http/Http";
 import UrlCorrector from "DeskPRO/Bundle/AppBundle/Http/UrlCorrector";
 import PortalPage from "DeskPRO/Bundle/PortalBundle/PageWidget/PortalPage";
-import ReactRegistry from "DeskPRO/Bundle/PortalBundle/ReactRegistry";
 import $ from "jquery";
 
 export default class PortalApp {
   constructor() {
+    window.$ = $;
+    window.App = App;
+    window.PortalApp = this;
+
     this.container = new Container();
+    App.setContainer(this.container);
+
     this.container.registerFactory('http', function() {
       let http = new Http(j$.ajax);
       http.enableJsonPayloads();
@@ -18,7 +24,6 @@ export default class PortalApp {
 
       return http;
     });
-    this.container.registerFactory('ReactReg', ['container', (c) => { return new ReactRegistry(c) } ]);
   }
 
   run() {

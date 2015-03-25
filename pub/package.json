@@ -7,15 +7,14 @@
     "font-awesome": "4.3.0"
   },
   "devDependencies": {
-    "react": "0.12.2",
-    "react-tools": "0.12.2",
-    "reflux": "0.2.5",
-    "lodash": "3.3.1",
+    "react": "0.13.1",
+    "react-tools": "0.13.1",
+    "lodash": "3.6.0",
     "jquery": "2.1.3",
 
     "node-sass": "2.0.1",
 
-    "babel": "4.3.0",
+    "babel": "4.7.16",
     "browserify": "9.0.3",
     "watchify": "2.3.0",
     "babelify": "5.0.3",

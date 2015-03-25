@@ -9,8 +9,4 @@ export default class PortalPage extends PageWidget {
       $(document).ready(resolve);
     });
   }
-
-  renderWidget() {
-    console.log("PORTAL PAGE RENDERED");
-  }
 }

@@ -1,6 +1,52 @@
 import _ from "lodash";
 import $ from "jquery";
 
+/**
+ * A page widget is something that can be attached to a page. It's a self-contained
+ * piece of code that handles logic for specific parts of the page, typcially
+ * by attaching logic to particular elements (i.e., to replace a dumb form element with an ehanched one).
+ *
+ * == Lifecycle ==
+ *
+ * 1) A PageWidget is instantied. This is usually done by OTHER PageWidget's by
+ *    a matching widgetDef.
+ *
+ * 2) The constructor is run (you probably should not change it).
+ *
+ * 3) init() is called. init() either finishes right away or returns a promise.
+ *
+ * 4) When init() is done, render() is called.
+ *
+ * 5) render() calls preRender() which finishes right away or returns a promise.
+ *
+ * 6) When preRender() is done, renderWidget() is called.
+ *
+ * == Hook methods ==
+ *
+ * The following methods are designed for you to 'hook' into:
+ *
+ * - init() should be where you set up dependencies or assign values etc.
+ * - preRender() should be where you set up the main UI for you widget.
+ *   You could use this to send network requests and show a loading indicator.
+ *   You would return the promise.
+ * - renderWidget() is where you would handle when everything is loaded and ready
+ *   to show your actual widget. If your widget doesnt need to load anything,
+ *   you would probably not need preRender().
+ *
+ * == Child widgets ==
+ *
+ * You can register child widgets that are automatically instantiated when they match.
+ * The use case is: You can have a main PageWidget that acts at a page level,
+ * and have it define all of the widgets that should operate on the page by adding
+ * widget defs within its init() method. For example:
+ *
+ *     init() {
+ *         this.addWidgetDef(myWidgetClass, ".my-widget-block");
+ *     }
+ *
+ * Whenever there's an element with class "my-widget-block", a new instance of myWidgetClass will be
+ * instantiated on it.
+ */
 export default class PageWidget {
   constructor(container, element = null, parent = null) {
     this.container = container;
@@ -55,7 +101,7 @@ export default class PageWidget {
    * @returns {Promise/undefined}
    */
   init() {
-    // Add custom init code in here.
+    // Add custom init code in sub-classes.
   }
 
   /**

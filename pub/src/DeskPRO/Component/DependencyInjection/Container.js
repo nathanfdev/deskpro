@@ -6,7 +6,7 @@ export class InvalidRegisterType {}
 export class InvalidProviderType {}
 
 export default class Container {
-  constructor() {
+  constructor(options = {}) {
     this.values = {
       "container": this
     };
