@@ -31,22 +31,23 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalTicketStatusCompiler extends AbstractDbalCompiler
+class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
+
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $param_name = $compiler->addParameter('status', $term->getOption('status'));
+        $param_name = $compiler->addParameter('department_ids', $term->getOption('department_ids'));
 
-        return sprintf('ticket.status %s (:%s)', $isser, $param_name);
+        return sprintf('ticket.department_id %s (:%s)', $isser, $param_name);
     }
 }

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,32 +31,60 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalCompilerFactory
+use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher;
+
+/**
+ * This is the compiler that the DbalTicketFilterEngine uses. It is a thin wrapper
+ * around the DbalTicketFilterCompiler that adds caching, and is aware of Filter
+ * entities instead of just TermInterface's.
+ */
+class DbalTicketFilterEngineCompiler
 {
     /**
-     * @var AbstractDbalCompiler[]
+     * @var DbalCompiler
      */
-    private $compilers;
+    protected $compiler;
 
-    public function __construct(array $compilers)
+    /**
+     * @var DbalCompiledQueryCacher
+     */
+    protected $cacher;
+
+    public function __construct(DbalCompiler $compiler, DbalCompiledQueryCacher $cacher)
     {
-        $this->compilers = $compilers;
+        $this->compiler = $compiler;
+        $this->cacher = $cacher;
     }
 
-    public function getCompiler(TermInterface $term)
+    /**
+     * @param Filter $filter
+     * @return DbalCompiledQuery|mixed
+     */
+    public function compile(Filter $filter)
     {
-        $class = get_class($term);
-        if (array_key_exists($class, $this->compilers)) {
-            return $this->compilers[$class];
+        $key = $this->generateKey($filter);
+
+        if ($compiled_query = $this->cacher->fetchQuery($key)) {
+            return $compiled_query;
         }
 
-        throw new \InvalidArgumentException(
-            sprintf('DbalCompilerFactory: No compiler found for term with class "%s"', $class)
-        );
+        $compiled_query = $this->compiler->compile($filter->getTerm());
+
+        // cache it for future calls to retrieve
+        $this->cacher->saveQuery($key, $compiled_query);
+
+        return $compiled_query;
+    }
+
+    protected function generateKey(Filter $filter)
+    {
+        return sprintf('%s.%s', $filter->getId(), $filter->getDateUpdated()->getTimestamp());
     }
 }

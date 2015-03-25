@@ -33,32 +33,22 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
+
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
-abstract class AbstractDbalCompiler
+/**
+ * We have compilers that do their job, but we also have caching versions that wrap them.
+ *
+ * The interface makes the "caching compiler" and the "real compiler" be interchangable.
+ */
+interface DbalCompilerInterface
 {
-    abstract public function doCompile(TermInterface $term, DbalCompiler $compiler);
-
-    public function compile(TermInterface $term, DbalCompiler $compiler)
-    {
-        // I think there will be common things we do on each compiler, so this
-        // is just a pre-emptive abstraction.
-        return $this->doCompile($term, $compiler);
-    }
-
     /**
-     * Use this shortcut to see if two op codes are the same.
+     * Take a TermInterface and transform it into a DbalCompiledQuery
      *
-     * This normalizes the codes and then does the comparrison in a safe way.
-     *
-     * @param string $op
-     * @param string $code
-     * @return bool
+     * @param TermInterface $term
+     * @return DbalCompiledQuery
      */
-    protected function isOp($op, $code)
-    {
-        return strtolower($op) === strtolower($code);
-    }
+    public function compile(TermInterface $term);
 }

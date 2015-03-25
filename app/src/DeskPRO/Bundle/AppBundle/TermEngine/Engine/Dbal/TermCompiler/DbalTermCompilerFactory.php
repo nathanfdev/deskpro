@@ -31,39 +31,32 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalCompositeCompiler extends AbstractDbalCompiler
+class DbalTermCompilerFactory
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    /**
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler[]
+     */
+    private $compilers;
+
+    public function __construct(array $compilers)
     {
-        if (!$term instanceof CompositeTermInterface) {
-            throw new \InvalidArgumentException('expected a CompositeTermInterface, but got TermInterface');
+        $this->compilers = $compilers;
+    }
+
+    public function getCompiler(TermInterface $term)
+    {
+        $class = get_class($term);
+        if (array_key_exists($class, $this->compilers)) {
+            return $this->compilers[$class];
         }
 
-        $op = $term->getOp();
-
-        $isser = $this->isOp($op, TermInterface::OP_OR) ? 'OR' : 'AND';
-        $isser = ' ' . $isser . ' ';
-
-        $parts = array();
-        foreach ($term->getTerms() as $child_term) {
-            $part = trim($compiler->getTermCompiler($child_term)->compile($child_term, $compiler));
-            if ($part) {
-                $parts[] = $part;
-            }
-        }
-
-        if (0 === count($parts)) {
-            return '';
-        }
-
-        return sprintf('(%s)', implode($isser, $parts));
+        throw new \InvalidArgumentException(
+            sprintf('DbalTermCompilerFactory: No compiler found for term with class "%s"', $class)
+        );
     }
 }

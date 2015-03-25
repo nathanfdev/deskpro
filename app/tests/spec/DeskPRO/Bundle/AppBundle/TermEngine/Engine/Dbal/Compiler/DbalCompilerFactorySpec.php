@@ -31,11 +31,11 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalCompositeCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalCompositeTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
@@ -44,18 +44,18 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
  */
-class DbalCompilerFactorySpec extends ObjectBehavior
+class DbalTermCompilerFactorySpec extends ObjectBehavior
 {
     function let(
-        DbalAgentCompiler $agent_compiler,
-        DbalDepartmentCompiler $department_compiler,
-        DbalCompositeCompiler $composite_compiler
+        DbalAgentTermCompiler $agent_compiler,
+        DbalDepartmentTermCompiler $department_compiler,
+        DbalCompositeTermCompiler $composite_compiler
     )
     {
         $this->beConstructedWith(
@@ -68,9 +68,9 @@ class DbalCompilerFactorySpec extends ObjectBehavior
     }
 
     function it_finds_the_right_compiler(
-        DbalAgentCompiler $agent_compiler,
-        DbalDepartmentCompiler $department_compiler,
-        DbalCompositeCompiler $composite_compiler
+        DbalAgentTermCompiler $agent_compiler,
+        DbalDepartmentTermCompiler $department_compiler,
+        DbalCompositeTermCompiler $composite_compiler
     )
     {
         $this->getCompiler(New AgentTerm())->shouldBe($agent_compiler);
@@ -79,9 +79,9 @@ class DbalCompilerFactorySpec extends ObjectBehavior
     }
 
     function it_throws_an_exception_if_no_compiler_found(
-        DbalAgentCompiler $agent_compiler,
-        DbalDepartmentCompiler $department_compiler,
-        DbalCompositeCompiler $composite_compiler
+        DbalAgentTermCompiler $agent_compiler,
+        DbalDepartmentTermCompiler $department_compiler,
+        DbalCompositeTermCompiler $composite_compiler
     )
     {
         $this->shouldThrow('\InvalidArgumentException')->during('getCompiler', array(new FakeTerm()));

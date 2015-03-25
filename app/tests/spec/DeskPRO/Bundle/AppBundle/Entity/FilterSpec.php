@@ -51,6 +51,21 @@ class FilterSpec extends ObjectBehavior
         $this->getId()->shouldBe(null);
     }
 
+    function it_constructs_with_created_and_updated_dates()
+    {
+        $this->getDateUpdated()->shouldBeAnInstanceOf('\DateTime');
+        $this->getDateCreated()->shouldBeAnInstanceOf('\DateTime');
+    }
+
+    function it_lets_you_change_updated_datetime()
+    {
+        $new_date = new \DateTime();
+
+        $this->setDateUpdated($new_date);
+
+        $this->getDateUpdated()->shouldBeLike($new_date);
+    }
+
     function it_belongs_to_only_one_filter_set(FilterSet $set)
     {
         $this->getFilterSet()->shouldBe(null);

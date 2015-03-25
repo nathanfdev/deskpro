@@ -31,38 +31,69 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalTicketParticipantCompiler extends AbstractDbalCompiler
+class DbalAgentTeamTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $join_alias = $compiler->addUniqueJoin(
-            'tickets_participants',
-            '{alias}.ticket_id = ticket.id'
-        );
+        $agent_team_ids = $term->getOption('agent_team_ids');
 
-        $person_ids = array();
-        foreach ($term->getOption('person_ids') as $id) {
-            if ($id === TicketParticipantTerm::ID_ME) {
-                $person_ids[] = new TermEngineExpression('agent.getId()');
+        $real_agent_team_ids = array();
+        $me_expression = null;
+        $unassigned = false;
+        $and_or = $this->isOp($op, TermInterface::OP_IS) ? 'OR' : 'AND';
+
+        foreach ($agent_team_ids as $agent_team_id) {
+            if ($agent_team_id === AgentTeamTerm::TEAM_ID_ME) {
+                $me_expression = new TermEngineExpression('agent_teams(agent)');
+            } elseif ($agent_team_id === AgentTeamTerm::TEAM_ID_UNASSIGNED) {
+                $unassigned = true;
             } else {
-                $person_ids[] = $id;
+                $real_agent_team_ids[] = $agent_team_id;
             }
         }
 
-        $param_name = $compiler->addParameter('status', $person_ids);
 
-        return sprintf('%s.person_id %s (:%s)', $join_alias, $isser, $param_name);
+        $where = '';
+        if (count($real_agent_team_ids)) {
+            $in_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
+            $ids_param = $compiler->addParameter('agent_team_ids', $real_agent_team_ids);
+
+            $where = sprintf('ticket.agent_team_id %s (:%s)', $in_isser, $ids_param);
+        }
+
+        if ($me_expression) {
+            $me_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
+            $me_param = $compiler->addParameter('me', $me_expression);
+
+            $where .= sprintf(
+                '%sticket.agent_team_id %s (:%s)',
+                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
+                $me_isser,
+                $me_param
+            );
+        }
+
+        if ($unassigned) {
+            $unassigned_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'IS NOT NULL' : 'IS NULL';
+
+            $where .= sprintf(
+                '%sticket.agent_team_id %s',
+                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
+                $unassigned_isser
+            );
+        }
+
+        return $where;
     }
 }

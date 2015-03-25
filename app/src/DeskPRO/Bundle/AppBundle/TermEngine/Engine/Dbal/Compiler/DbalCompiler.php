@@ -31,18 +31,21 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompilerInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 
-abstract class DbalCompiler
+abstract class DbalCompiler implements DbalCompilerInterface
 {
     /**
-     * @var DbalCompilerFactory
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
      */
     protected $compiler_factory;
 
@@ -77,7 +80,7 @@ abstract class DbalCompiler
     protected $query;
 
     public function __construct(
-        DbalCompilerFactory $compiler_factory,
+        DbalTermCompilerFactory $compiler_factory,
         array $visitors
     )
     {

@@ -31,38 +31,21 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalCompositeTermCompiler;
 
-class DbalTicketCustomDataCompiler extends AbstractDbalCompiler
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalCompositeTermCompiler
+ */
+class DbalCompositeTermCompilerSpec extends ObjectBehavior
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    function it_is_initializable()
     {
-        $op = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-
-        $field_param = $compiler->addParameter('field_id', $term->getOption('field_id'));
-
-        $join_alias = $compiler->addUniqueJoin(
-            'custom_data_ticket',
-            sprintf('{alias}.ticket_id = ticket.id AND {alias}.field_id = :%s', $field_param)
+        $this->shouldHaveType(
+            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalCompositeTermCompiler'
         );
-
-        if ($input = $term->getOption('input')) {
-
-            $param_name = $compiler->addParameter('input', $input);
-
-            return sprintf('%s.input = :%s', $join_alias, $param_name);
-
-        } else {
-
-            $param_name = $compiler->addParameter('values', $term->getOption('values'));
-
-            return sprintf('%s.value IN (:%s)', $join_alias, $param_name);
-        }
     }
 }

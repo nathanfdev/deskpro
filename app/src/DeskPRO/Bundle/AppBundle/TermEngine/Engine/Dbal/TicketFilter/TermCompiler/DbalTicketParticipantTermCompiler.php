@@ -31,23 +31,38 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler
- */
-class DbalDepartmentCompilerSpec extends ObjectBehavior
+class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
 {
-    function it_compiles_a_department_term(
-        DepartmentTerm $term,
-        QueryBuilder $qb
-    )
+    public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
+        $op = $term->getOp();
+        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
+
+        $join_alias = $compiler->addUniqueJoin(
+            'tickets_participants',
+            '{alias}.ticket_id = ticket.id'
+        );
+
+        $person_ids = array();
+        foreach ($term->getOption('person_ids') as $id) {
+            if ($id === TicketParticipantTerm::ID_ME) {
+                $person_ids[] = new TermEngineExpression('agent.getId()');
+            } else {
+                $person_ids[] = $id;
+            }
+        }
+
+        $param_name = $compiler->addParameter('status', $person_ids);
+
+        return sprintf('%s.person_id %s (:%s)', $join_alias, $isser, $param_name);
     }
 }

@@ -31,47 +31,39 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalUserEmailCompiler extends AbstractDbalCompiler
+class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
-        $op = $term->getOp();
-
-        switch ($op) {
-            case TermInterface::OP_IS:
-                $compiler->addJoin(
-                    'people_emails',
-                    'ticket.person_id = people_emails.person_id'
-                );
-                $param = $compiler->addParameter('email', $term->getOption('email'));
-
-                return sprintf(
-                    'people_emails.email = :%s',
-                    $param
-                );
-            case TermInterface::OP_NOT:
-                $param = $compiler->addParameter('email', $term->getOption('email'));
-                $alias = $compiler->addUniqueJoin(
-                    'people_emails',
-                    sprintf(
-                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
-                        $param
-                    )
-                );
-
-                return sprintf(
-                    '%s.id IS NULL',
-                    $alias
-                );
+        if (!$term instanceof CompositeTermInterface) {
+            throw new \InvalidArgumentException('expected a CompositeTermInterface, but got TermInterface');
         }
 
-        return '';
+        $op = $term->getOp();
+
+        $isser = $this->isOp($op, TermInterface::OP_OR) ? 'OR' : 'AND';
+        $isser = ' ' . $isser . ' ';
+
+        $parts = array();
+        foreach ($term->getTerms() as $child_term) {
+            $part = trim($compiler->getTermCompiler($child_term)->compile($child_term, $compiler));
+            if ($part) {
+                $parts[] = $part;
+            }
+        }
+
+        if (0 === count($parts)) {
+            return '';
+        }
+
+        return sprintf('(%s)', implode($isser, $parts));
     }
 }

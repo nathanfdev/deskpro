@@ -42,7 +42,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpBehat\BaseContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
 
 class DbalCompilerContext extends BaseContext
 {
@@ -62,7 +62,7 @@ class DbalCompilerContext extends BaseContext
     protected $composite_scope = 0;
 
     /**
-     * @var DbalCompiledQuery
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery
      */
     protected $compiled;
 
@@ -91,7 +91,7 @@ class DbalCompilerContext extends BaseContext
      */
     public function iCompileMyTerms()
     {
-        $this->compiled = $this->get('term_engine.dbal_ticket_filters.engine')->compile($this->term);
+        $this->compiled = $this->get('term_engine.dbal_ticket_filters.compiler')->compile($this->term);
     }
 
     /**
@@ -99,7 +99,9 @@ class DbalCompilerContext extends BaseContext
      */
     public function iShouldHaveADbalcompiledresult()
     {
-        expect($this->compiled)->toBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQuery');
+        expect($this->compiled)->toBeAnInstanceOf(
+            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery'
+        );
     }
 
     protected $param_name_mapping = array();

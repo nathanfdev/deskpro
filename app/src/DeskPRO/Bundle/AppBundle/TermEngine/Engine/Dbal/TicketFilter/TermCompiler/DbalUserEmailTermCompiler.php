@@ -31,53 +31,47 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalAgentCompiler extends AbstractDbalCompiler
+class DbalUserEmailTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiler $compiler)
     {
         $op = $term->getOp();
 
-        $agent_ids = array();
-        $me_expression = null;
-        $unassigned = false;
-        $and_or = $this->isOp($op, TermInterface::OP_IS) ? 'OR' : 'AND';
+        switch ($op) {
+            case TermInterface::OP_IS:
+                $compiler->addJoin(
+                    'people_emails',
+                    'ticket.person_id = people_emails.person_id'
+                );
+                $param = $compiler->addParameter('email', $term->getOption('email'));
 
-        foreach ($term->getOption('agent_ids') as $id) {
-            if ($id === AgentTerm::ID_ME) {
-                $agent_ids[] = new TermEngineExpression('agent.getId()');
-            } elseif ($id === AgentTerm::ID_UNASSIGNED) {
-                $unassigned = true;
-            } else {
-                $agent_ids[] = $id;
-            }
+                return sprintf(
+                    'people_emails.email = :%s',
+                    $param
+                );
+            case TermInterface::OP_NOT:
+                $param = $compiler->addParameter('email', $term->getOption('email'));
+                $alias = $compiler->addUniqueJoin(
+                    'people_emails',
+                    sprintf(
+                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
+                        $param
+                    )
+                );
+
+                return sprintf(
+                    '%s.id IS NULL',
+                    $alias
+                );
         }
 
-        $where = '';
-        if (count($agent_ids) > 0) {
-            $ids_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-            $ids_param = $compiler->addParameter('agent_ids', $agent_ids);
-
-            $where .= sprintf('ticket.agent_id %s (:%s)', $ids_isser, $ids_param);
-        }
-
-        if ($unassigned) {
-            $unassigned_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'IS NOT NULL' : 'IS NULL';
-            $where .= sprintf(
-                '%sticket.agent_id %s',
-                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
-                $unassigned_isser
-            );
-        }
-
-        return $where;
+        return '';
     }
 }

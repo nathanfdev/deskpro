@@ -5,61 +5,71 @@ services:
     #
 
     term_engine.dbal_ticket_filters.engine:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler
         arguments:
             - @term_engine.dbal_ticket_filters.compiler
+            - @term_engine.dbal.compiled_query_cacher
 
     term_engine.dbal_ticket_filters.compiler:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler
         arguments:
             - @term_engine.dbal_ticket_filters.compiler.factory
             - []  # the visitors added in compiler pass with tag "dbal_ticket_filter_visitor"
 
     term_engine.dbal_ticket_filters.compiler.factory:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompilerFactory
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
         # compiler pass will add the term compilers on tag "dbal_ticket_filter_compiler"
+
+    term_engine.dbal.compiled_query_cacher:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher
+        arguments:
+            - @cache.one_day
+            - @term_engine.dbal.compiled_query_serializer
+
+    term_engine.dbal.compiled_query_serializer:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuerySerializer
 
     #
     # TERM COMPILERS
     #
 
     term_engine.dbal_ticket_filters.compiler.ticket_status:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketStatusCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketStatusTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm' }
 
     term_engine.dbal_ticket_filters.compiler.agent:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm' }
 
     term_engine.dbal_ticket_filters.compiler.department:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalDepartmentCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' }
 
     term_engine.dbal_ticket_filters.compiler.composite:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalCompositeCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalCompositeTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm' }
 
     term_engine.dbal_ticket_filters.compiler.user_email:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalUserEmailCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalUserEmailTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\UserEmailTerm' }
 
     term_engine.dbal_ticket_filters.compiler.agent_team:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalAgentTeamCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTeamTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm' }
 
     term_engine.dbal_ticket_filters.compiler.ticket_participant:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketParticipantCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketParticipantTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm' }
 
     term_engine.dbal_ticket_filters.compiler.ticket_custom_data:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketCustomDataCompiler
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketCustomDataTermCompiler
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm' }
 
