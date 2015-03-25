@@ -87,11 +87,25 @@ class Filter extends NotifyPropertyChangeEntity
      */
     protected $filter_preferences;
 
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="date_created", type="datetime")
+     */
+    protected $date_created;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="date_updated", type="datetime")
+     */
+    protected $date_updated;
+
     public function __construct()
     {
         $this->filter_views = new ArrayCollection();
         $this->filter_preferences = new ArrayCollection();
-        $this->display_order = 0;
+        $this->setDisplayOrder(0);
+        $this->setDateUpdated($updated = new \DateTime());
+        $this->setDateCreated($updated);
     }
 
     /**
@@ -200,5 +214,37 @@ class Filter extends NotifyPropertyChangeEntity
     public function setTerm(TermInterface $term)
     {
         $this->setModelField('term', $term);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param \DateTime $date_updated
+     */
+    public function setDateUpdated(\DateTime $date_updated)
+    {
+        $this->setModelField('date_updated', $date_updated);
     }
 }
