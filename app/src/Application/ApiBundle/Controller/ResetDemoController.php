@@ -1,10 +1,9 @@
 <?php
-
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,50 +25,42 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\CustomFields\CustomDataPersister;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class TestCommand extends ContainerAwareCommand
+class ResetDemoController extends AbstractController implements ProtectedControllerInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
 
     /**
      * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function getPermissionStrategy()
     {
-        $c = $this->getContainer();
-        $q = $c->getJobQueue();
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
 
-        $q->add(UsersProcessor::JOB_TYPE, array());
+        return $multi;
+    }
 
-        echo __FILE__;
-        echo "\n";
-        return 0;
+    public function runAction()
+    {
+
     }
 }

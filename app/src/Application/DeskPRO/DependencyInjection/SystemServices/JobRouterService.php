@@ -39,6 +39,7 @@ use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
@@ -82,6 +83,16 @@ class JobRouterService
          */
         $router->addProcessor(
             new OutgoingFacebookFeedProcessor(
+                $conn,
+                $queue
+            )
+        );
+
+        /*************************************
+         * purge users
+         */
+        $router->addProcessor(
+            new UsersProcessor(
                 $conn,
                 $queue
             )

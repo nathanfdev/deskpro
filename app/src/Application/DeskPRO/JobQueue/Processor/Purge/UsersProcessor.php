@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,50 +25,14 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\JobQueue\Processor\Purge;
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
-
-namespace Application\DeskPRO\Command;
-
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class UsersProcessor extends Base
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    const JOB_TYPE = 'purge.users';
+
+    protected function doProcess(array $data)
     {
-        $this->setName('dp:test');
-    }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $c = $this->getContainer();
-        $q = $c->getJobQueue();
-
-        $q->add(UsersProcessor::JOB_TYPE, array());
-
-        echo __FILE__;
-        echo "\n";
-        return 0;
     }
 }
