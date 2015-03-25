@@ -350,7 +350,7 @@ class NewTicket
         $message_text = $formatter->formatText($message_text, $ticket);
 
         if ($this->is_html_reply) {
-            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
             $message_text = \Orb\Util\Strings::trimHtml($message_text);
             $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
