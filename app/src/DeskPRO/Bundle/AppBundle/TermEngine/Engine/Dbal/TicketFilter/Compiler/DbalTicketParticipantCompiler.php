@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\AbstractDbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -50,7 +52,16 @@ class DbalTicketParticipantCompiler extends AbstractDbalCompiler
             '{alias}.ticket_id = ticket.id'
         );
 
-        $param_name = $compiler->addParameter('status', $term->getOption('person_ids'));
+        $person_ids = array();
+        foreach ($term->getOption('person_ids') as $id) {
+            if ($id === TicketParticipantTerm::ID_ME) {
+                $person_ids[] = new TermEngineExpression('agent.getId()');
+            } else {
+                $person_ids[] = $id;
+            }
+        }
+
+        $param_name = $compiler->addParameter('status', $person_ids);
 
         return sprintf('%s.person_id %s (:%s)', $join_alias, $isser, $param_name);
     }
