@@ -1,0 +1,26 @@
+Feature: My Tickets Filter
+  In order to easily filter an agents tickets
+  As a developer
+  I want to use the term engine with this filter
+
+  Background: Basic database
+    Given I install the basic data set
+
+  Scenario: I use the built in "My Tickets" filter with user "agent"
+    Given I set the context agent to agent
+    When I evaluate the filter "My Tickets"
+    And I fetch the ids from the executable query
+    Then I should be given the following dbal rows:
+      | id |
+      | 1  |
+      | 2  |
+      | 4  |
+
+  Scenario: I use the built in "My Tickets" filter with user "admin"
+    Given I set the context agent to admin
+    When I evaluate the filter "My Tickets"
+    And I fetch the ids from the executable query
+    Then I should be given the following dbal rows:
+      | id |
+      | 3  |
+      | 5  |
