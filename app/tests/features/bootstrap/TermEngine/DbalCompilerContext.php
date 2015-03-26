@@ -39,10 +39,13 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpBehat\BaseContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
 
 class DbalCompilerContext extends BaseContext
 {
@@ -65,6 +68,77 @@ class DbalCompilerContext extends BaseContext
      * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery
      */
     protected $compiled;
+
+    /**
+     * @var DbalEngineContext
+     */
+    protected $engine_context;
+
+    /**
+     * @var DbalExecutableQuery
+     */
+    protected $executable_query;
+
+    /**
+     * @var mixed
+     */
+    protected $engine_result;
+
+    /**
+     * @Given I set the context agent to :who
+     */
+    public function iSetTheContextAgentTo($who)
+    {
+        $ud = $this->get('user_details');
+
+        $agent = $ud->getWho($who);
+
+        $this->engine_context = new DbalEngineContext($agent);
+    }
+
+    /**
+     * @When I evaluate the filter :filter_name
+     */
+    public function iEvaluateTheFilter($filter_name)
+    {
+        $filter = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\Filter')->findOneBy(
+            array('title' => $filter_name)
+        );
+
+        $this->executable_query = $this->getDbalTicketFiltersEngine()
+            ->evaluate($filter, $this->engine_context);
+    }
+
+    /**
+     * @return DbalTicketFilterEngine
+     */
+    protected function getDbalTicketFiltersEngine()
+    {
+        return $this->get('term_engine.dbal_ticket_filters.engine');
+    }
+
+    /**
+     * @Then I fetch the ids from the executable query
+     */
+    public function iExecForIds()
+    {
+        $this->engine_result = $this->executable_query->fetchIds();
+    }
+
+    /**
+     * @Then I should be given the following dbal rows:
+     */
+    public function iShouldBeGivenTheFollowingDbalRows(TableNode $table)
+    {
+        $rows = $table->getColumnsHash();
+
+        foreach ($rows as $inc => $expected_data) {
+            expect($this->engine_result[$inc])->toBeLike($expected_data);
+        }
+
+
+        return;
+    }
 
     /**
      * @Given I have a(n) :op :term with the options:
@@ -148,7 +222,7 @@ class DbalCompilerContext extends BaseContext
         foreach ($params as $pname => $pval) {
             if (is_array($pval)) {
                 $pval = $this->convertTermEngineExpressionToString($pval);
-            } elseif ($pval instanceof TermEngineExpression) {
+            } elseif ($pval instanceof \DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression) {
                 $pval = sprintf('TermEngineExpression(\'%s\')', $pval);
             }
 
