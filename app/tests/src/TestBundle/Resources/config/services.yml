@@ -7,7 +7,11 @@ services:
     dataset_manager:
         class: DpTests\TestBundle\DataSetManager
         arguments:
-            - [@dbset.empty, @dbset.fresh, @dbset.api]
+            sets:
+                - @dbset.empty
+                - @dbset.fresh
+                - @dbset.api
+                - @dbset.basic
 
     dbset.empty:
         class: DpTests\TestBundle\DataSet\EmptyDb
@@ -27,6 +31,14 @@ services:
 
     dbset.api:
         class: DpTests\TestBundle\DataSet\ApiDb
+        arguments:
+            - @service_container
+            - @doctrine.orm.default_entity_manager
+            - @doctrine.dbal.default_connection
+            - %kernel.cache_dir%/dbset
+
+    dbset.basic:
+        class: DpTests\TestBundle\DataSet\BasicDB
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
