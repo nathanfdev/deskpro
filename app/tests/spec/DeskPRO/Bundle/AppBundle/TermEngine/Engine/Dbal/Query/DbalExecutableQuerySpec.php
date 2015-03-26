@@ -33,6 +33,10 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
@@ -42,8 +46,46 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
  */
 class DbalExecutableQuerySpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    function let(
+        DbalCompiledQuery $query,
+        Connection $connection
+    )
     {
-        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery');
+        $this->beConstructedWith($query, $connection);
+    }
+
+    function it_will_execute_a_select_ids_query(
+        DbalCompiledQuery $query,
+        Connection $connection,
+        Statement $stmt
+    )
+    {
+        $query->setSelectPart('{from}.id')->shouldBeCalled();
+
+        $query->__toString()->willReturn(
+            'SELECT ticket.id FROM tickets ticket WHERE ticket.param = :param1'
+        );
+        $query->getParameters()->willReturn(
+            array('param1' => 4)
+        );
+
+        $connection->executeQuery(
+            'SELECT ticket.id FROM tickets ticket WHERE ticket.param = :param1',
+            array('param1' => 4)
+        )->willReturn($stmt);
+
+        $stmt->fetchAll()->willReturn(
+            $result =
+                array(
+                    array(
+                        'id' => 2
+                    ),
+                    array(
+                        'id' => 3
+                    )
+                )
+        );
+
+        $this->fetchIds()->shouldReturn($result);
     }
 }
