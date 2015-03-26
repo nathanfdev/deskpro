@@ -71,7 +71,8 @@ class DbalExecutableQuerySpec extends ObjectBehavior
 
         $connection->executeQuery(
             'SELECT ticket.id FROM tickets ticket WHERE ticket.param = :param1',
-            array('param1' => 4)
+            array('param1' => 4),
+            Argument::type('array')
         )->willReturn($stmt);
 
         $stmt->fetchAll()->willReturn(
@@ -87,5 +88,33 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         );
 
         $this->fetchIds()->shouldReturn($result);
+    }
+
+    function it_will_resolve_parameter_types_for_dbal_execute()
+    {
+        $input = array(
+            'a' => 4,
+            'b' => '5',
+            'c' => 'string',
+            'd' => array(
+                'of',
+                'stuff'
+            ),
+            'e' => array(
+                1,
+                2,
+                3
+            )
+        );
+
+        $this->determineParameterTypes($input)->shouldReturn(
+            array(
+                'a' => \PDO::PARAM_INT,
+                'b' => \PDO::PARAM_STR,
+                'c' => \PDO::PARAM_STR,
+                'd' => Connection::PARAM_STR_ARRAY,
+                'e' => Connection::PARAM_INT_ARRAY
+            )
+        );
     }
 }
