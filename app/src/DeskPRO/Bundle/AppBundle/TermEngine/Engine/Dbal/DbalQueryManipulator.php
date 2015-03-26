@@ -34,9 +34,21 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 
 class DbalQueryManipulator
 {
+    /**
+     * @var TermEngineExpressionLanguage
+     */
+    private $expression_language;
+
+    public function __construct(TermEngineExpressionLanguage $expression_language)
+    {
+        $this->expression_language = $expression_language;
+    }
+
     public function ensureAgentPermissions(DbalCompiledQuery $query, DbalEngineContext $context)
     {
         return $query;
@@ -59,6 +71,44 @@ class DbalQueryManipulator
 
     public function resolveParameters(DbalCompiledQuery $query, DbalEngineContext $context)
     {
+        foreach ($query->getParameters() as $key => $val) {
+            $resolved = $this->resolveParam($val, $context);
+
+            // if the resolution changed the value, replace it
+            if ($resolved !== $val) {
+                $query->replaceParameter($key, $resolved);
+            }
+        }
+
         return $query;
+    }
+
+    private function resolveParam($val, DbalEngineContext $context)
+    {
+        if (is_array($val)) {
+            $new_val = array();
+
+            foreach ($val as $key => $val) {
+                $new_val[$key] = $this->resolveParam($val, $context);
+            }
+
+            return $new_val;
+        }
+
+        if ($val instanceof TermEngineExpression) {
+            return $this->evalExpression($val, $context);
+        }
+
+        return $val;
+    }
+
+    private function evalExpression(TermEngineExpression $val, DbalEngineContext $context)
+    {
+        return $this->expression_language->evaluate(
+            (string)$val,
+            array(
+                'agent' => $context->getAgent()
+            )
+        );
     }
 }

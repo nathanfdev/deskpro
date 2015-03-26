@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use Doctrine\DBAL\Connection;
 
 class DbalTicketFilterEngine extends DbalEngine

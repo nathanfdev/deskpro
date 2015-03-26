@@ -57,11 +57,92 @@ class DbalExecutableQuery
     {
         $this->query->setSelectPart('{from}.id');
 
+        $params = $this->query->getParameters();
+        $types = $this->determineParameterTypes($params);
+
         $stmt = $this->connection->executeQuery(
             (string)$this->query,
-            $this->query->getParameters()
+            $params,
+            $types
         );
 
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Get an array of pdo/dbal types to use to execute the query
+     *
+     * @param array $params
+     * @return array
+     */
+    public function determineParameterTypes(array $params)
+    {
+        $types = array();
+
+        foreach ($params as $key => $param) {
+            if ($this->isNum($param)) {
+                $types[$key] = \PDO::PARAM_INT;
+                continue;
+            }
+
+            if ($this->isStr($param)) {
+                $types[$key] = \PDO::PARAM_STR;
+                continue;
+            }
+
+            if (is_array($param)) {
+                $num_str = 0;
+                $num_int = 0;
+
+                // we need to determine if its all ints or not
+                foreach ($param as $child) {
+                    if ($this->isNum($child)) {
+                        $num_int++;
+                    } elseif ($this->isStr($child)) {
+                        $num_str++;
+                    }
+                }
+
+                // its an array of ints
+                if ($num_int && !$num_str) {
+                    $types[$key] = Connection::PARAM_INT_ARRAY;
+                    continue;
+                }
+
+                // else, use array of strings
+                $types[$key] = Connection::PARAM_STR_ARRAY;
+                continue;
+            }
+
+            // last attempt before erroring
+            $param = (string)$param;
+
+            if (is_string($param)) {
+                $types[] = \PDO::PARAM_STR;
+                continue;
+            }
+
+            throw new \InvalidArgumentException('unable to determine param type in DbalExecutableQuery');
+        }
+
+        return $types;
+    }
+
+    /**
+     * @param $param
+     * @return bool
+     */
+    private function isNum($param)
+    {
+        return is_int($param) || is_float($param) || (is_numeric($param) && !is_string($param));
+    }
+
+    /**
+     * @param $param
+     * @return bool
+     */
+    private function isStr($param)
+    {
+        return is_string($param);
     }
 }

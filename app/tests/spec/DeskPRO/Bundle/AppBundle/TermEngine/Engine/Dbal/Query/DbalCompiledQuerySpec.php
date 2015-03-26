@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
