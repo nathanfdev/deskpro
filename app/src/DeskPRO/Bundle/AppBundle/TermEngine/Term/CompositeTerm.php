@@ -46,7 +46,7 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
      */
     protected $terms;
 
-    public function __construct(array $options = array(), $op = TermInterface::OP_NOOP)
+    public function __construct(array $options = array(), $op = null)
     {
         parent::__construct($options, $op);
         $this->terms = array();

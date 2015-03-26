@@ -63,7 +63,7 @@ abstract class AbstractTerm implements TermInterface
      * @param array $options initial settings
      * @param string $op initialize op
      */
-    public function __construct(array $options = array(), $op = TermInterface::OP_NOOP)
+    public function __construct(array $options = array(), $op = null)
     {
         $this->options = $options;
 
