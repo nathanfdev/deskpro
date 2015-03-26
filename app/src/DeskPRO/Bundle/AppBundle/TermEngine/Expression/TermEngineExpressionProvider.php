@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,38 +31,22 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Expression;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
-class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+
+class TermEngineExpressionProvider implements ExpressionFunctionProviderInterface
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    /**
+     * @return ExpressionFunction[] An array of Function instances
+     */
+    public function getFunctions()
     {
-        $op = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-
-        $join_alias = $compiler->addUniqueJoin(
-            'tickets_participants',
-            '{alias}.ticket_id = ticket.id'
+        return array(
+            // TODO: if we want custom functions
+            // available in term engine expressions, add them here
         );
-
-        $person_ids = array();
-        foreach ($term->getOption('person_ids') as $id) {
-            if ($id === TicketParticipantTerm::ID_ME) {
-                $person_ids[] = new TermEngineExpression('agent.getId()');
-            } else {
-                $person_ids[] = $id;
-            }
-        }
-
-        $param_name = $compiler->addParameter('status', $person_ids);
-
-        return sprintf('%s.person_id %s (:%s)', $join_alias, $isser, $param_name);
     }
 }

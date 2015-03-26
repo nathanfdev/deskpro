@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Expression;
 
 use Symfony\Component\ExpressionLanguage\Expression;
 

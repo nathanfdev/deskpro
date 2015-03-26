@@ -36,7 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompi
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 

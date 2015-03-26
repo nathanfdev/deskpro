@@ -2,3 +2,6 @@ services:
 
     term_serializer:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter
+
+    term_engine.expression_language:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage
