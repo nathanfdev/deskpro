@@ -68,12 +68,79 @@ class DbalExecutableQuery
         $this->connection = $connection;
     }
 
+    /**
+     * Fetches the entity ids like: [ [ 'id' => 1 ], [ 'id' => 2 ] ]
+     *
+     * @return array
+     */
     public function fetchIds()
     {
-        $this->query->setSelectPart('{from}.id');
+        $query = clone $this->query;
 
-        $this->last_run_sql = (string)$this->query;
-        $this->last_run_parameters = $this->query->getParameters();
+        $query->setSelectPart('{from}.id');
+
+        $stmt = $this->execute($query);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Gets the total count, ignoring any pagination
+     *
+     * @return int
+     */
+    public function fetchCount()
+    {
+        $query = clone $this->query;
+
+        $query->setSelectPart('COUNT(*) AS count');
+        $query->setPage(null);
+        $query->setLimit(null);
+
+        $stmt = $this->execute($query);
+
+        $res = $stmt->fetch();
+
+        if (!is_array($res) || !isset($res['count'])) {
+            return 0;
+        }
+
+        return (int)$res['count'];
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLastRunSql()
+    {
+        return $this->last_run_sql;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLastRunParameters()
+    {
+        return $this->last_run_parameters;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLastRunParameterTypes()
+    {
+        return $this->last_run_parameter_types;
+    }
+
+    /**
+     * @param DbalCompiledQuery $query
+     * @return \Doctrine\DBAL\Driver\Statement
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function execute(DbalCompiledQuery $query)
+    {
+        $this->last_run_sql = (string)$query;
+        $this->last_run_parameters = $query->getParameters();
         $this->last_run_parameter_types = $this->determineParameterTypes($this->last_run_parameters);
 
         $stmt = $this->connection->executeQuery(
@@ -82,7 +149,7 @@ class DbalExecutableQuery
             $this->last_run_parameter_types
         );
 
-        return $stmt->fetchAll();
+        return $stmt;
     }
 
     /**
@@ -160,29 +227,5 @@ class DbalExecutableQuery
     private function isStr($param)
     {
         return is_string($param);
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getLastRunSql()
-    {
-        return $this->last_run_sql;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getLastRunParameters()
-    {
-        return $this->last_run_parameters;
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getLastRunParameterTypes()
-    {
-        return $this->last_run_parameter_types;
     }
 }

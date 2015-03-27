@@ -9,7 +9,10 @@ Feature: My Tickets Filter
   Scenario: I use the built in "My Tickets" filter with user "agent"
     Given I set the context agent to agent
     When I evaluate the filter "My Tickets"
-    And I fetch the ids from the executable query
+    And I run a count on the executable query
+    Then I should be given the count 7
+    And print the last run query
+    When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
       | 1  |
@@ -24,7 +27,10 @@ Feature: My Tickets Filter
   Scenario: I use the built in "My Tickets" filter with user "admin"
     Given I set the context agent to admin
     When I evaluate the filter "My Tickets"
-    And I fetch the ids from the executable query
+    And I run a count on the executable query
+    Then I should be given the count 3
+    And print the last run query
+    When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
       | 3  |
@@ -36,7 +42,10 @@ Feature: My Tickets Filter
     Given I set the context agent to agent
     And I add the context order to id DESC
     When I evaluate the filter "My Tickets"
-    And I fetch the ids from the executable query
+    And I run a count on the executable query
+    Then I should be given the count 7
+    And print the last run query
+    When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
       | 10 |
@@ -48,21 +57,33 @@ Feature: My Tickets Filter
       | 1  |
     And print the last run query
 
-  Scenario: I paginate an agent's tickets to see the first and third page
+  Scenario: I paginate an agent's tickets to see the first page
     Given I set the context agent to agent
     And I add the context order to id DESC
     And I set the context page to 1
     And I set the context count to 2
     When I evaluate the filter "My Tickets"
-    And I fetch the ids from the executable query
+    And I run a count on the executable query
+    And print the last run query
+    Then I should be given the count 7
+    And print the last run query
+    When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
       | 10 |
       | 8  |
     And print the last run query
-    When I set the context page to 3
+
+  Scenario: I paginate an agent's tickets to see the third page
+    Given I set the context agent to agent
+    And I add the context order to id DESC
+    And I set the context page to 3
+    And I set the context count to 2
     When I evaluate the filter "My Tickets"
-    And I fetch the ids from the executable query
+    And I run a count on the executable query
+    Then I should be given the count 7
+    And print the last run query
+    When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
       | 4  |

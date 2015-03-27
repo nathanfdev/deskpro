@@ -54,6 +54,34 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         $this->beConstructedWith($query, $connection);
     }
 
+    function it_will_run_a_count_query(
+        DbalCompiledQuery $query,
+        Connection $connection,
+        Statement $stmt
+    )
+    {
+        $query->setSelectPart('COUNT(*) AS count')->shouldBeCalled();
+        $query->setPage(null)->shouldBeCalled();
+        $query->setLimit(null)->shouldBeCalled();
+
+        $query->__toString()->willReturn(
+            'SELECT COUNT(*) as count FROM tickets ticket WHERE ticket.param = :param1'
+        );
+        $query->getParameters()->willReturn(
+            array('param1' => 4)
+        );
+
+        $stmt->fetch()->willReturn(array('count' => 5));
+
+        $connection->executeQuery(
+            'SELECT COUNT(*) as count FROM tickets ticket WHERE ticket.param = :param1',
+            array('param1' => 4),
+            Argument::type('array')
+        )->willReturn($stmt);
+
+        $this->fetchCount()->shouldReturn(5);
+    }
+
     function it_will_execute_a_select_ids_query(
         DbalCompiledQuery $query,
         Connection $connection,

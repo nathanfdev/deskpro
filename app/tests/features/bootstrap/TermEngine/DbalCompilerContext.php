@@ -158,6 +158,22 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @When I run a count on the executable query
+     */
+    public function iRunACountOnTheExecutableQuery()
+    {
+        $this->engine_result = $this->executable_query->fetchCount();
+    }
+
+    /**
+     * @Then I should be given the count :num
+     */
+    public function ishouldSeeCount($num)
+    {
+        expect($this->engine_result)->toBe($num);
+    }
+
+    /**
      * @Then I should be given the following dbal rows:
      */
     public function iShouldBeGivenTheFollowingDbalRows(TableNode $table)
