@@ -66,13 +66,16 @@ class BasicDb extends AbstractDbSet
 
         $dep = $this->getEm()->find('DeskPRO:Department', 1);
 
-        $this->createTicket('Test Ticket', $dep, $user, $agent, 'Test Message');
-        $this->createTicket('Test Ticket', $dep, $user, $agent, 'Test Message');
-        $this->createTicket('Test Ticket', $dep, $user, $admin, 'Test Message');
-        $this->createTicket('Test Ticket', $dep, $user, $agent, 'Test Message');
-        $this->createTicket('Test Ticket', $dep, $user, $admin, 'Test Message');
-
-
+        $this->createTicket('Test Ticket 1', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 2', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 3', $dep, $user, $admin);
+        $this->createTicket('Test Ticket 4', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 5', $dep, $user, $admin);
+        $this->createTicket('Test Ticket 6', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 7', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 8', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 9', $dep, $user, $admin);
+        $this->createTicket('Test Ticket 10', $dep, $user, $agent);
     }
 
     protected function createTicket(
@@ -80,7 +83,7 @@ class BasicDb extends AbstractDbSet
         Department $dep,
         Person $person,
         Person $agent,
-        $message
+        $message = 'Test Message'
     )
     {
         $ticket = new Ticket();

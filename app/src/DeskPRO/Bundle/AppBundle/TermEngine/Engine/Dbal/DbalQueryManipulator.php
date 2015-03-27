@@ -55,6 +55,13 @@ class DbalQueryManipulator
 
     public function alterPagination(DbalCompiledQuery $query, DbalEngineContext $context)
     {
+        if ($page = $context->getPage()) {
+            $query->setPage($page);
+        }
+
+        if ($per_page = $context->getPerPage()) {
+            $query->setLimit($per_page);
+        }
     }
 
     public function alterSortOrder(DbalCompiledQuery $query, DbalEngineContext $context)

@@ -389,7 +389,11 @@ class DbalCompiledQuery
             return '';
         }
 
-        return sprintf('%s, %s', $this->getPageOffset(), $this->limit);
+        if (($offset = $this->getPageOffset()) > 0) {
+            return sprintf('%s, %s', $offset, $this->limit);
+        }
+
+        return sprintf('%s', $this->limit);
     }
 
     public function getPageOffset()

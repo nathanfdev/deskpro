@@ -67,6 +67,12 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         DbalEngineContext $engine_context
     )
     {
+        $engine_context->getPage()->willReturn(2);
+        $engine_context->getPerPage()->willReturn(10);
+
+        $query->setPage(2)->shouldBeCalled();
+        $query->setLimit(10)->shouldBeCalled();
+
         $this->alterPagination($query, $engine_context);
     }
 

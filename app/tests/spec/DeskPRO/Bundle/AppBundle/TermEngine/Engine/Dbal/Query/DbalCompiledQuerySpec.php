@@ -196,7 +196,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
 
         $this->setFrom('tickets', 't');
 
-        $this->__toString()->shouldReturn('SELECT * FROM tickets t LIMIT 0, 10');
+        $this->__toString()->shouldReturn('SELECT * FROM tickets t LIMIT 10');
     }
 
     function it_accepts_a_page_that_works_with_limit()
@@ -227,8 +227,8 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->setLimit(10);
 
         $this->getPageOffset()->shouldBe(0);
-        $this->generateLimitString()->shouldBe('0, 10');
-        $this->__toString()->shouldBe('SELECT * FROM tickets LIMIT 0, 10');
+        $this->generateLimitString()->shouldBe('10');
+        $this->__toString()->shouldBe('SELECT * FROM tickets LIMIT 10');
     }
 
     function it_only_uses_page_if_limit_is_set()
@@ -379,9 +379,10 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->addGroupBy('{from}.id');
         $this->addOrderBy('{from}.id', DbalCompiledQuery::ORDER_DESC);
         $this->setLimit(15);
+        $this->setPage(4);
 
         $this->__toString()->shouldBeLike(
-            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE t.id = 5 GROUP BY t.date_created, t.id ORDER BY t.id DESC LIMIT 0, 15'
+            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE t.id = 5 GROUP BY t.date_created, t.id ORDER BY t.id DESC LIMIT 45, 15'
         );
     }
 }

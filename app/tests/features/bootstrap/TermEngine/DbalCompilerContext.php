@@ -105,6 +105,22 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Given I set the context page to :page
+     */
+    public function iSetTheContextPageTo($page)
+    {
+        $this->engine_context->setPage($page);
+    }
+
+    /**
+     * @Given I set the context count to :count
+     */
+    public function iSetTheContextCountTo($count)
+    {
+        $this->engine_context->setPerPage($count);
+    }
+
+    /**
      * @When I evaluate the filter :filter_name
      */
     public function iEvaluateTheFilter($filter_name)
