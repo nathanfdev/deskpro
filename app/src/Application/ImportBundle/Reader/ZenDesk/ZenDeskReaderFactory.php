@@ -25,11 +25,11 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Zendesk\API\Client;
 use Exception;
+use DateTime;
 
 /**
  * ZenDesk reader factory
@@ -40,19 +40,80 @@ use Exception;
 class ZenDeskReaderFactory
 {
     /**
-     * Create a zenDesk reader
+     * Create a ZenDesk reader
      *
      * @return ZenDeskReader
      * @throws Exception
      */
-    public function createReader()
+    public static function createReaderByDeskproConfig()
+    {
+        $config = self::getZenDeskConfig();
+        $client = self::createClient($config);
+
+        return new ZenDeskReader(
+            new Request\RequestCacheAdapter(
+                new Request\RequestClientAdapter($client)
+            ),
+
+            $config->getInitialTime()
+        );
+    }
+
+    /**
+     * Create a ZenDesk fixtures collection
+     *
+     * @return Fixtures\Collection
+     * @throws Exception
+     */
+    public static function createFixturesByDeskproConfig()
+    {
+        $config = self::getZenDeskConfig();
+        $client = self::createClient($config);
+
+        $collection = new Fixtures\Collection();
+        $collection
+            ->attach(new Fixtures\People($client))
+            ->attach(new Fixtures\Tickets($client));
+
+        return $collection;
+    }
+
+    /**
+     * Create ZenDesk client
+     *
+     * @param ZenDeskConfig $config
+     *
+     * @return Client
+     * @throws Exception
+     */
+    private static function createClient(ZenDeskConfig $config)
+    {
+        $client = new Client($config->getSubdomain(), $config->getUsername());
+        $client->setAuth($config->getAuthType(), $config->getAuthValue());
+
+        return $client;
+    }
+
+    /**
+     * Create ZenDesk client config
+     *
+     * @return ZenDeskConfig
+     * @throws Exception
+     */
+    private static function getZenDeskConfig()
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {
             throw new Exception('Deskpro zendesk import config is not defined');
         }
 
-        $config = new ZenDeskConfig($dp_config['subdomain'], $dp_config['username']);
+        $config = new ZenDeskConfig(
+            $dp_config['subdomain'],
+            $dp_config['username'],
+            new DateTime($dp_config['initial_time'])
+
+        );
+
         if (isset($dp_config['password'])) {
             $config->setPassword($dp_config['password']);
         }
@@ -60,10 +121,6 @@ class ZenDeskReaderFactory
             $config->setApiToken($dp_config['api_token']);
         }
 
-
-        $client = new Client($config->getSubdomain(), $config->getUsername());
-        $client->setAuth($config->getAuthType(), $config->getAuthValue());
-
-        return new ZenDeskReader($client);
+        return $config;
     }
 }

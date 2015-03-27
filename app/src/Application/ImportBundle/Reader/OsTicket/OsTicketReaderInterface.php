@@ -36,50 +36,58 @@ namespace Application\ImportBundle\Reader\OsTicket;
 interface OsTicketReaderInterface
 {
     /**
-     * Returns total count of people records
-     * todo batch support offset?
+     * Returns total count of staff records
      *
+     * @param int $min_id
      * @return int
      */
-    public function getPeopleCount();
+    public function getStaffCount($min_id);
+
+    /**
+     * Returns total count of users records
+     *
+     * @param int $min_id
+     * @return int
+     */
+    public function getUsersCount($min_id);
 
     /**
      * Returns total count of ticket records
-     * todo batch support offset?
      *
+     * @param int $min_id
      * @return int
      */
-    public function getTicketsCount();
+    public function getTicketsCount($min_id);
 
     /**
      * Returns staff
      *
      * @param int $limit
-     * @param int $offset
+     * @param int $min_id
      *
      * @return mixed
      */
-    public function findStaff($limit, $offset);
+    public function findStaff($limit, $min_id);
 
     /**
      * Returns users
      *
      * @param int $limit
-     * @param int $offset
+     * @param int $min_id
      *
      * @return mixed
      */
-    public function findUsers($limit, $offset);
+    public function findUsers($limit, $min_id);
 
     /**
      * Returns tickets
      *
      * @param int $limit
-     * @param int $offset
+     * @param int $min_id
      *
      * @return array|false
      */
-    public function findTickets($limit, $offset);
+    public function findTickets($limit, $min_id);
 
     /**
      * Returns ticket messages
@@ -98,12 +106,28 @@ interface OsTicketReaderInterface
     public function findMessageAttachments($message_id);
 
     /**
-     * Returns department
+     * Returns a ticket department
      *
      * @param int $id
      * @return mixed
      */
     public function findDepartmentById($id);
+
+    /**
+     * Returns a person organization
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function findOrganizationNameById($id);
+
+    /**
+     * Returns an user group
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function findUserGroupNameById($id);
 
     /**
      * Returns staff email by id
@@ -144,4 +168,12 @@ interface OsTicketReaderInterface
      * @return mixed
      */
     public function findAttachmentData($file_id);
+
+    /**
+     * Returns ticket priority
+     *
+     * @param int $id
+     * @return array
+     */
+    public function findTicketPriority($id);
 }

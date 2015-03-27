@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
 use Application\ImportBundle\AbstractCollection;
+use Exception;
 
 /**
  * Collection of the supported json writer entities
@@ -45,7 +46,24 @@ final class Collection extends AbstractCollection
      */
     public function attach(DestinationInterface $destination)
     {
-        $this->collection[] = $destination;
+        $this->collection[$destination->getEntityType()] = $destination;
         return $this;
+    }
+
+    /**
+     * Returns a destination by entity type
+     *
+     * @param string $type
+     *
+     * @return DestinationInterface
+     * @throws Exception
+     */
+    public function getByEntityType($type)
+    {
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new Exception(sprintf('Destination `%s` not found', $type));
     }
 }

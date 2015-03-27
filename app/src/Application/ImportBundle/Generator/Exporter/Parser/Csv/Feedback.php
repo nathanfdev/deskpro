@@ -39,6 +39,8 @@ use DateTime;
  */
 final class Feedback extends AbstractParser
 {
+    const FEEDBACK_PREFIX = 'feedback_';
+
     /**
      * {@inheritdoc}
      */
@@ -52,7 +54,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getConfig());
+        return $this->getReaderCount($this->getFeedbackConfig());
     }
 
     /**
@@ -61,14 +63,22 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
-        $feedback_items = $this->getReaderData($this->getConfig());
+        $feedback_items = $this->getReaderData($this->getFeedbackConfig());
+        $attachments    = $this->exportFeedbackAttachments();
 
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportFeedback($num, $feedback);
+                $entity = $this->exportFeedback($feedback);
                 if ($entity) {
+                    foreach ($attachments as $attachment) {
+                        /** @var Entity\Attachment $attachment */
+                        if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
+                            $entity->addAttachment($attachment);
+                        }
+                    }
+
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
@@ -87,18 +97,18 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * @param int   $num
-     * @param array $feedback
+     * Returns a feedback entity
      *
+     * @param array $feedback
      * @return Entity\Feedback|null
      */
-    private function exportFeedback($num, array $feedback)
+    private function exportFeedback(array $feedback)
     {
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_' . $num)
-                ->setOid($num)
+                ->setDestination('feedback_' . $feedback['id'])
+                ->setOid($feedback['id'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
                 ->setTitle($feedback['title'])
@@ -123,6 +133,16 @@ final class Feedback extends AbstractParser
     }
 
     /**
+     * Returns a collection of ticket attachments
+     *
+     * @return Entity\Collection
+     */
+    private function exportFeedbackAttachments()
+    {
+        return $this->exportAttachments($this->getFeedbackAttachmentsConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+    }
+
+    /**
      * Check if feedback has all required columns
      *
      * @param array $feedback
@@ -131,6 +151,7 @@ final class Feedback extends AbstractParser
     private function isFeedbackValid(array $feedback)
     {
         $columns = array(
+            'id',
             'person',
             'title',
             'content',
@@ -152,8 +173,18 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getConfig()
+    private function getFeedbackConfig()
     {
         return $this->getReaderConfig(self::FILE_FEEDBACK);
+    }
+
+    /**
+     * Returns reader config of feedback attachment records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getFeedbackAttachmentsConfig()
+    {
+        return $this->getReaderConfig(self::FILE_FEEDBACK_ATTACHMENTS);
     }
 }

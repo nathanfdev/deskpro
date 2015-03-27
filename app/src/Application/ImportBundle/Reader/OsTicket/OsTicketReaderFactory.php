@@ -18,7 +18,7 @@ class OsTicketReaderFactory
      * @return OsTicketReader
      * @throws Exception
      */
-    public function createReaderByDeskproConfig()
+    public static function createReaderByDeskproConfig()
     {
         $dp_config = dp_get_config('osticket_import');
         if (empty($dp_config)) {

@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Exception;
+use DateTime;
 
 /**
  * ZenDesk reader config
@@ -61,47 +62,22 @@ class ZenDeskConfig
     private $api_token;
 
     /**
-     * How many times to try an API call before re-throwing an error?
-     *
-     * @var int
+     * @var DateTime
      */
-    private $try_count = 6;
-
-    /**
-     * The number of seconds between try attempts
-     * when the attempts are errors;
-     *
-     * @var int
-     */
-    private $try_time_error  = 6;
-
-    /**
-     * The number of seconds between try attempts
-     * when the attempts are rate limit errors.
-     *
-     * @var int
-     */
-    private $try_time_ratelimit  = 15;
-
-    /**
-     * The number of seconds between try attempts increases
-     * by this number every time. So try #2 is $try_time_ratelimit,
-     * try #3 is $try_time_ratelimit+$try_time_inc, etc.
-     *
-     * @var int
-     */
-    private $try_time_inc = 15;
+    private $initial_time;
 
     /**
      * Constructor
      *
-     * @param string $subdomain
-     * @param string $username
+     * @param string   $subdomain
+     * @param string   $username
+     * @param DateTime $initial_time
      */
-    public function __construct($subdomain, $username)
+    public function __construct($subdomain, $username, DateTime $initial_time)
     {
-        $this->subdomain = $subdomain;
-        $this->username  = $username;
+        $this->subdomain    = $subdomain;
+        $this->username     = $username;
+        $this->initial_time = $initial_time;
     }
 
     /**
@@ -122,6 +98,16 @@ class ZenDeskConfig
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * Returns initial start time
+     *
+     * @return DateTime
+     */
+    public function getInitialTime()
+    {
+        return $this->initial_time;
     }
 
     /**

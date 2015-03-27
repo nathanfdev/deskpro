@@ -38,41 +38,30 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class GeneratorFactory
 {
     /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * Constructor
+     * Create a generator
      *
      * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
      * @return GeneratorInterface
      */
-    public function createGenerator()
+    public static function createGenerator(ContainerInterface $container)
     {
         return new Generator(
-            $this->createExportersCollection(),
-            $this->createValidatorsCollection(),
-            $this->createWritersCollection()
+            self::createExportersCollection($container),
+            self::createValidatorsCollection($container),
+            self::createWritersCollection($container)
         );
     }
 
     /**
      * Create a json writer
      *
+     * @param ContainerInterface $container
      * @return Writer\Collection
      */
-    public function createWritersCollection()
+    private static function createWritersCollection(ContainerInterface $container)
     {
-        $jsonFactory   =  new Writer\Json\JsonWriterFactory($this->container);
-        $deskProFactory = new Writer\DeskPro\DeskProWriterFactory($this->container);
+        $jsonFactory   =  new Writer\Json\JsonWriterFactory($container);
+        $deskProFactory = new Writer\DeskPro\DeskProWriterFactory($container);
 
         $writers = new Writer\Collection();
         $writers
@@ -85,14 +74,15 @@ class GeneratorFactory
     /**
      * Returns a collection of exporters
      *
+     * @param ContainerInterface $container
      * @return Exporter\Collection
      */
-    private function createExportersCollection()
+    private static function createExportersCollection(ContainerInterface $container)
     {
-        $csvFactory      = new Exporter\CsvFactory($this->container);
-        $jsonFactory     = new Exporter\JsonFactory($this->container);
-        $osTicketFactory = new Exporter\OsTicketFactory($this->container);
-        $zenDeskFactory  = new Exporter\ZenDeskFactory($this->container);
+        $csvFactory      = new Exporter\CsvFactory($container);
+        $jsonFactory     = new Exporter\JsonFactory($container);
+        $osTicketFactory = new Exporter\OsTicketFactory($container);
+        $zenDeskFactory  = new Exporter\ZenDeskFactory($container);
 
         $exporters = new Exporter\Collection();
         $exporters
@@ -107,12 +97,14 @@ class GeneratorFactory
     /**
      * Returns a collection of validators
      *
+     * @param ContainerInterface $container
      * @return Validator\Collection
      */
-    private function createValidatorsCollection()
+    private static function createValidatorsCollection(ContainerInterface $container)
     {
         /** @var \Symfony\Component\Validator\Validator $validator */
-        $validator  = $this->container->get('validator');
+        $validator  = $container->get('validator');
+
         $validators = new Validator\Collection();
         $validators
             ->attach(new Validator\Download($validator))

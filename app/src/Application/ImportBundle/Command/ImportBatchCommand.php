@@ -27,16 +27,19 @@
 
 namespace Application\ImportBundle\Command;
 
+use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Exception;
 
 /**
- * Exporting and importing batch command
+ * Importing batch command
+ * Exports and imports data at the same time, imports data and saves json files
  *
  * Class ImportBatchCommand
  * @package Application\ImportBundle\Command
  */
-class ImportBatchCommand extends AbstractExportCommand
+class ImportBatchCommand extends AbstractGenerateCommand
 {
     /**
      * {@inheritDoc}
@@ -44,6 +47,7 @@ class ImportBatchCommand extends AbstractExportCommand
     protected function configure()
     {
         $this->setName('dp:import:batch');
+        $this->setHelp('Imports data and saves json files');
 
         parent::configure();
     }
@@ -55,10 +59,53 @@ class ImportBatchCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config    = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
-        $logger    = $this->createLogger($config, $output);
-        $generator = $this->createGenerator($config, $output, $logger);
+        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+        $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
-        $generator->generate();
+        if ($config->isDryRun() === false && ! $config->getOutputPath()) {
+            throw new Exception('Output path must be specified');
+        }
+        if ($config->needInputPath()) {
+            if ( ! $config->getInputPath()) {
+                throw new Exception('Input path must be specified');
+            }
+            if ($config->getInputPath() === $config->getOutputPath()) {
+                throw new Exception('Output path must be different from input path');
+            }
+        }
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
+
+        $logger    = $this->createLogger($config, $output);
+        $generator = $this->createGenerator($config, $logger);
+
+        if ($config->getRetryWaitTimeout()) {
+            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
+
+            return;
+        }
+
+        $progress_bar = $this->createAndSetProgressBar($generator, $output);
+
+        // Export data
+        $success = $this->generate($generator, $output, $logger);
+        if ($success) {
+            $config
+                ->setInputPath($config->getOutputPath())
+                ->setOutputPath(null)
+                ->setExporterBatchConfig(null)
+                ->setExporterType(Generator\Exporter\ExporterInterface::TYPE_JSON)
+                ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
+
+            $this->setBatchConfigByInputInterface($config, $input);
+
+            if ($progress_bar) {
+                $progress_bar->start();
+            }
+
+            // Import data
+            $this->generate($generator, $output, $logger);
+        }
     }
 }

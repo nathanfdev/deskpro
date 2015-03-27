@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Validator;
 use Exception;
+use DateTime;
 
 /**
  * Generator importer service
@@ -38,7 +39,7 @@ use Exception;
  * Class Generator
  * @package Application\ImportBundle\Generator
  */
-class Generator extends AbstractGenerator implements GeneratorInterface
+final class Generator extends AbstractGenerator implements GeneratorInterface
 {
     /**
      * @var Exporter\Collection
@@ -75,6 +76,14 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritdoc}
      */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTotalRecordsCount()
     {
         $count    = 0;
@@ -94,21 +103,45 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     {
         $exporter     = $this->getExporter();
         $outputWriter = $this->getWriter();
+        $collection   = new GenerateCollection();
 
-        foreach ($this->config->getEntityTypes() as $type) {
+        // Exports data to a collection of entities
+        foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
             $this->exporterLogHeader($type);
 
-            $collection = $exporter->exportByType($type);
-            $exceptions = $this->validateExportingCollection($type, $collection);
+            $entities   = $exporter->exportByType($type);
+            $exceptions = $this->validateExportingCollection($type, $entities);
             if (count($exceptions) > 0) {
                 throw new GeneratorException($exceptions);
             }
 
-            $this->writerLogHeader($type);
+            $collection->attach($type, $entities);
+        }
 
-            foreach ($collection as $entity) {
-                /** @var Entity\EntityInterface $entity */
-                $outputWriter->writeData($entity);
+        if ($exporter instanceof Exporter\ExporterBatchInterface) {
+            $outputWriter->setBatchConfig($exporter->getUpdatedBatchConfig());
+
+            // Writes batch config (even no entities to write to support "retry-after" timeout)
+            $outputWriter->writeBatchConfig();
+        }
+
+        // Writes entities to a storage
+        if ($collection->hasEntities()) {
+            $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
+            $outputWriter->prepare();
+
+            foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
+                if ($collection->hasEntitiesByType($type)) {
+                    $this->writerLogHeader($type);
+                    $entities = $collection->getByEntityType($type);
+
+                    foreach ($entities as $entity) {
+                        $this->advanceProgressBar();
+
+                        /** @var Entity\EntityInterface $entity */
+                        $outputWriter->writeData($entity);
+                    }
+                }
             }
         }
     }
@@ -140,21 +173,19 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     private function getExporter()
     {
         if ( ! $this->config) {
-            throw new Exception('Generator configuration is not set up');
+            throw new Exception('Generator configuration is not defined');
         }
 
         $exporter = $this->exporters->getByType($this->config->getExporterType());
-        $exporter->setConfig($this->config);
-        $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
 
-        if ($this->logger && $exporter instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $exporter */
-            $exporter->setLogger($this->logger);
+        if ($exporter instanceof Exporter\ExporterBatchInterface) {
+            if ( ! $this->config->getExporterBatchConfig()) {
+                $this->config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
+            }
         }
-        if ($this->progress_bar && $exporter instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $exporter */
-            $exporter->setProgressBarHelper($this->progress_bar);
-        }
+
+        $this->setHelpers($exporter);
+        $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
 
         return $exporter;
     }
@@ -168,23 +199,36 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     private function getWriter()
     {
         if ( ! $this->config) {
-            throw new Exception('Generator configuration is not set up');
+            throw new Exception('Generator configuration is not defined');
         }
 
         $writer = $this->writers->getByType($this->config->getWriterType());
-        $writer->setConfig($this->config);
+
+        $this->setHelpers($writer);
         $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
 
-        if ($this->logger && $writer instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $writer */
-            $writer->setLogger($this->logger);
-        }
-        if ($this->progress_bar && $writer instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $writer */
-            $writer->setProgressBarHelper($this->progress_bar);
-        }
-
         return $writer;
+    }
+
+    /**
+     * Attach helpers to handler
+     *
+     * @param mixed $handler
+     */
+    private function setHelpers($handler)
+    {
+        if ($this->config && $handler instanceof GeneratorConfigAwareInterface) {
+            /** @var GeneratorConfigAwareInterface $handler */
+            $handler->setConfig($this->config);
+        }
+        if ($this->logger && $handler instanceof LoggerAwareInterface) {
+            /** @var LoggerAwareInterface $handler */
+            $handler->setLogger($this->logger);
+        }
+        if ($this->progress_bar && $handler instanceof ProgressBarAwareInterface) {
+            /** @var ProgressBarAwareInterface $handler */
+            $handler->setProgressBarHelper($this->progress_bar);
+        }
     }
 
     /**
@@ -201,6 +245,8 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $validators = $this->validators->getByRecordType($type);
 
         foreach ($collection as $entity) {
+            $this->advanceProgressBar();
+
             foreach ($validators as $validator) {
                 try {
                     /** @var Validator\ValidatorInterface $validator */
@@ -239,5 +285,52 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $this->logInfo('=====================================');
         $this->logInfo(sprintf('Write `%s` collection', $type));
         $this->logInfo('=====================================');
+    }
+
+    /**
+     * Returns ordered entity types of the exporters
+     *
+     * @return string[]
+     * @throws Exception
+     */
+    private function getRequiredExportersOrderedEntityTypes()
+    {
+        return $this->getRequiredOrderedEntityTypes($this->exporters);
+    }
+
+    /**
+     * Returns ordered entity types of the writers
+     *
+     * @return string[]
+     * @throws Exception
+     */
+    private function getRequiredWritersOrderedEntityTypes()
+    {
+        return $this->getRequiredOrderedEntityTypes($this->writers);
+    }
+
+    /**
+     * Returns a list of ordered entity types
+     * Writers and exporters need different entities foreach order
+     *
+     * @param TypeOrderInterface $handlers
+     *
+     * @return string[]
+     * @throws Exception
+     */
+    private function getRequiredOrderedEntityTypes(TypeOrderInterface $handlers)
+    {
+        if ( ! $this->config) {
+            throw new Exception('Generator configuration is not defined');
+        }
+
+        $types = array();
+        foreach ($handlers->getOrderedTypes() as $type) {
+            if ($this->config->hasEntityType($type)) {
+                $types[] = $type;
+            }
+        }
+
+        return $types;
     }
 }

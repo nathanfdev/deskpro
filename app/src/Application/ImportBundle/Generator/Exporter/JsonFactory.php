@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
- * Json data generator factory
+ * Json data exporter factory
  *
  * Class JsonFactory
  * @package Application\ImportBundle\Generator\Exporter

@@ -31,7 +31,6 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Orb\Util\Strings;
 
 /**
  * DeskPro ticket importer
@@ -131,26 +130,26 @@ final class Ticket extends AbstractImporter
     /**
      * Returns the importing DeskPro doctrine ticket message entity
      *
-     * @param Entity\TicketMessage $importing_entity
+     * @param Entity\TicketMessage $entity
      * @return DeskPROEntity\TicketMessage
      */
-    private function createTicketMessage(Entity\TicketMessage $importing_entity)
+    private function createTicketMessage(Entity\TicketMessage $entity)
     {
         $message = new DeskPROEntity\TicketMessage();
         $message
-            ->setPersonId($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail())->getId())
-            ->setDateCreated($importing_entity->getDateCreated());
+            ->setPersonId($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail())->getId())
+            ->setDateCreated($entity->getDateCreated());
 
-        if ($importing_entity->getMessageText()) {
-            $message->setMessageText($importing_entity->getMessageText());
+        if ($entity->getMessageText()) {
+            $message->setMessageText($entity->getMessageText());
         }
-        if ($importing_entity->getMessageHtml()) {
-            $message->setMessageText($importing_entity->getMessageHtml());
+        if ($entity->getMessageHtml()) {
+            $message->setMessageHtml($entity->getMessageHtml());
         }
-        foreach ($importing_entity->getAttachments() as $importing_attachment) {
+        foreach ($entity->getAttachments() as $attachment) {
             $message->addAttachment($this->createAttachment(
-                $importing_attachment,
-                $importing_entity->getPersonEmail()
+                $attachment,
+                $entity->getPersonEmail()
             ));
         }
 
@@ -161,18 +160,18 @@ final class Ticket extends AbstractImporter
     /**
      * Returns the importing DeskPro doctrine ticket message attachment entity
      *
-     * @param Entity\Attachment $importing_entity
-     * @param string            $message_person_email
+     * @param Entity\Attachment $entity
+     * @param string            $person_email
      *
      * @return DeskPROEntity\TicketAttachment
      */
-    private function createAttachment(Entity\Attachment $importing_entity, $message_person_email)
+    private function createAttachment(Entity\Attachment $entity, $person_email)
     {
-        $email = $importing_entity->getPersonEmail() ? : $message_person_email;
+        $email = $entity->getPersonEmail() ? : $person_email;
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($importing_entity));
+            ->setBlob($this->blob_adapter->createByAttachment($entity));
 
         $this->records->add($attachment);
         return $attachment;
@@ -230,21 +229,23 @@ final class Ticket extends AbstractImporter
      * Returns a ticket priority by title
      * Creates a new ticket priority if not found
      *
-     * @param string $title
+     * @param Entity\TicketPriority $entity
      *
      * @return DeskPROEntity\TicketPriority|null
      * @throws \Exception
      */
-    private function findOrCreateTicketPriority($title)
+    private function findOrCreateTicketPriority(Entity\TicketPriority $entity = null)
     {
         $priority = null;
-        if ($title) {
-            $priority = $this->getTicketPriorityMapper()->findOneByTitle($title, false);
+        if ($entity) {
+            $priority = $this->getTicketPriorityMapper()->findOneByTitle($entity->getTitle(), false);
             if ($priority) {
                 $this->logInfo(sprintf('Found existing ticket priority `%s`', $priority->getTitle()));
             } else {
                 $priority = new DeskPROEntity\TicketPriority();
-                $priority->setRealTitle($title);
+                $priority
+                    ->setRealTitle($entity->getTitle())
+                    ->setPriority($entity->getValue());
 
                 $this->records->add($priority);
                 $this->logWarning(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
@@ -285,58 +286,57 @@ final class Ticket extends AbstractImporter
     /**
      * Returns custom def person entity
      *
-     * @param Entity\CustomField $importing_entity
+     * @param Entity\CustomField $entity
      *
      * @return DeskPROEntity\CustomDataTicket
      * @throws ImporterException
      */
-    private function createCustomData(Entity\CustomField $importing_entity)
+    private function createCustomData(Entity\CustomField $entity)
     {
-        $person_def = $this->getCustomDefTicketMapper()->findOneByTitle($importing_entity->getKey());
-        $entity     = new DeskPROEntity\CustomDataTicket();
+        $ticket_def   = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getKey());
+        $custom_field = new DeskPROEntity\CustomDataTicket();
 
-        switch ($person_def->getTypeName()) {
+        switch ($ticket_def->getTypeName()) {
             case Entity\CustomField::FIELD_TYPE_TEXT:
             case Entity\CustomField::FIELD_TYPE_TEXTAREA:
-                $entity
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($importing_entity->getValue());
+                $custom_field
+                    ->setField($ticket_def)
+                    ->setRootField($ticket_def)
+                    ->setValue($entity->getValue());
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_TOGGLE:
-                $entity
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($importing_entity->getValue() ? 1 : 0);
+                $custom_field
+                    ->setField($ticket_def)
+                    ->setRootField($ticket_def)
+                    ->setValue($entity->getValue() ? 1 : 0);
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_DATE:
-                $entity
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($importing_entity->getValue() ? strtotime($importing_entity->getValue()) : 0);
+                $custom_field
+                    ->setField($ticket_def)
+                    ->setRootField($ticket_def)
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
-                // todo choice def from persons or tickets
-                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($importing_entity->getValue());
-                $entity
+                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getValue());
+                $custom_field
                     ->setField($choice_def)
-                    ->setRootField($person_def)
+                    ->setRootField($ticket_def)
                     ->setValue(1);
 
                 break;
 
             default:
-                throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
+                throw new ImporterException('Unknown custom field type `%s`', $ticket_def->getTypeName());
         }
 
-        $this->records->add($entity);
-        return $entity;
+        $this->records->add($custom_field);
+        return $custom_field;
     }
 
     /**

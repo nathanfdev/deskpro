@@ -114,7 +114,7 @@ final class Tickets extends AbstractParser
                 ->setAgentTeam($ticket['agent_team'])
                 ->setStatus($ticket['status'])
                 ->setSubject($ticket['subject'])
-                ->setPriority($ticket['priority'])
+                ->setPriority($this->exportPriority($ticket['priority']))
                 ->setLanguage($ticket['language'])
                 ->setCategory($ticket['category'])
                 ->setWorkflow($ticket['workflow'])
@@ -148,6 +148,28 @@ final class Tickets extends AbstractParser
                 /** @var Entity\CustomField $custom_field */
                 $entity->addCustomField($custom_field);
             }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a ticket priority entity
+     *
+     * @param array $priority
+     * @return Entity\TicketPriority|null
+     */
+    private function exportPriority(array $priority = null)
+    {
+        if ($this->isPriorityValid($priority)) {
+            $entity = new Entity\TicketPriority();
+            $entity
+                ->setDestination('priority_' . $priority['oid'])
+                ->setOid($priority['oid'])
+                ->setTitle($priority['title'])
+                ->setValue($priority['value']);
 
             return $entity;
         }
@@ -253,33 +275,6 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns an attachment entity
-     *
-     * @param array $attachment
-     * @return Entity\Attachment|null
-     */
-    private function exportAttachment(array $attachment)
-    {
-        if ($this->isAttachmentValid($attachment)) {
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination('attachment_' . $attachment['oid'])
-                ->setOid($attachment['oid'])
-                ->setPersonEmail($attachment['person'])
-                ->setBlobData($attachment['blob_data'])
-                ->setBlobData($attachment['blob_url'])
-                ->setBlobData($attachment['blob_path'])
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-                ->setAsInline($attachment['is_inline']);
-
-            return $entity;
-        }
-
-        return null;
-    }
-
-    /**
      * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
@@ -324,10 +319,29 @@ final class Tickets extends AbstractParser
         );
 
         return $this->hasRequiredColumns($ticket, $columns)
+            && ($ticket['priority'] && $this->isArrayColumn($ticket, 'priority') || $ticket['priority'] === null)
             && $this->isArrayColumn($ticket, 'messages')
             && $this->isArrayColumn($ticket, 'participants')
             && $this->isArrayColumn($ticket, 'labels')
             && $this->isArrayColumn($ticket, 'custom_fields');
+    }
+
+    /**
+     * Check if ticket priority has all required columns
+     *
+     * @param array $priority
+     *
+     * @return bool
+     * @throws NoColumnException
+     */
+    private function isPriorityValid(array $priority = null)
+    {
+        $columns = array(
+            'title',
+            'value',
+        );
+
+        return $priority && $this->hasRequiredColumns($priority, $columns);
     }
 
     /**

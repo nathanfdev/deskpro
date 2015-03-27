@@ -33,7 +33,6 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\SkipDuplicateInterface;
-use Application\ImportBundle\Generator\Writer\WriterException;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -73,6 +72,16 @@ final class DeskProWriter extends AbstractWriter
     public function getType()
     {
         return self::TYPE_DESK_PRO;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare()
+    {
+        if ( ! $this->config->getInputPath()) {
+            $this->createOutputDirIfNotExist();
+        }
     }
 
     /**
