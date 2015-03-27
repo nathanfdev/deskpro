@@ -59,9 +59,7 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         DbalEngineContext $engine_context
     )
     {
-        $manipulated = $this->ensureAgentPermissions($query, $engine_context);
-
-        $manipulated->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery');
+        $this->ensureAgentPermissions($query, $engine_context);
     }
 
     function it_will_manipulate_pagination(
@@ -69,9 +67,7 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         DbalEngineContext $engine_context
     )
     {
-        $manipulated = $this->alterPagination($query, $engine_context);
-
-        $manipulated->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery');
+        $this->alterPagination($query, $engine_context);
     }
 
     function it_will_set_the_correct_sort_order(
@@ -79,9 +75,17 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         DbalEngineContext $engine_context
     )
     {
-        $manipulated = $this->alterSortOrder($query, $engine_context);
+        $engine_context->getOrderBy()->willReturn(
+            array(
+                '{from}.id' => 'desc',
+                '{from}.date' => 'asc'
+            )
+        );
 
-        $manipulated->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery');
+        $query->addOrderBy('{from}.id', 'desc')->shouldBeCalled();
+        $query->addOrderBy('{from}.date', 'asc')->shouldBeCalled();
+
+        $this->alterSortOrder($query, $engine_context);
     }
 
     function it_will_use_proper_grouping(
@@ -89,9 +93,7 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         DbalEngineContext $engine_context
     )
     {
-        $manipulated = $this->alterGrouping($query, $engine_context);
-
-        $manipulated->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery');
+        $this->alterGrouping($query, $engine_context);
     }
 
     function it_will_resolve_query_parameters(
@@ -127,7 +129,5 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         )->shouldBeCalled();
 
         $manipulated = $this->resolveParameters($query, $engine_context);
-
-        $manipulated->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery');
     }
 }

@@ -51,22 +51,21 @@ class DbalQueryManipulator
 
     public function ensureAgentPermissions(DbalCompiledQuery $query, DbalEngineContext $context)
     {
-        return $query;
     }
 
     public function alterPagination(DbalCompiledQuery $query, DbalEngineContext $context)
     {
-        return $query;
     }
 
     public function alterSortOrder(DbalCompiledQuery $query, DbalEngineContext $context)
     {
-        return $query;
+        foreach ($context->getOrderBy() as $order => $direction) {
+            $query->addOrderBy($order, $direction);
+        }
     }
 
     public function alterGrouping(DbalCompiledQuery $query, DbalEngineContext $context)
     {
-        return $query;
     }
 
     public function resolveParameters(DbalCompiledQuery $query, DbalEngineContext $context)
@@ -79,8 +78,6 @@ class DbalQueryManipulator
                 $query->replaceParameter($key, $resolved);
             }
         }
-
-        return $query;
     }
 
     private function resolveParam($val, DbalEngineContext $context)

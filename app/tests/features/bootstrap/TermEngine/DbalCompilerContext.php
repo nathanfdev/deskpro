@@ -97,6 +97,14 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Given I add the context order to :order :dir
+     */
+    public function iSetTheContextOrderTo($order, $dir)
+    {
+        $this->engine_context->addOrderBy('{from}.' . $order, $dir);
+    }
+
+    /**
      * @When I evaluate the filter :filter_name
      */
     public function iEvaluateTheFilter($filter_name)

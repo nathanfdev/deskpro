@@ -24,3 +24,14 @@ Feature: My Tickets Filter
       | id |
       | 3  |
       | 5  |
+
+  Scenario: I use a descending ordering
+    Given I set the context agent to agent
+    And I add the context order to id DESC
+    When I evaluate the filter "My Tickets"
+    And I fetch the ids from the executable query
+    Then I should be given the following dbal rows:
+      | id |
+      | 4  |
+      | 2  |
+      | 1  |
