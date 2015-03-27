@@ -104,7 +104,7 @@ class ZenDeskReaderFactory
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {
-            throw new Exception('Deskpro zendesk import config is not defined');
+            throw new Exception('DeskPRO zendesk import config is not defined');
         }
 
         $config = new ZenDeskConfig(

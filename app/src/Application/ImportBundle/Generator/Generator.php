@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Validator;
 use Exception;
-use DateTime;
 
 /**
  * Generator importer service
@@ -178,6 +177,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
 
         $exporter = $this->exporters->getByType($this->config->getExporterType());
 
+        if ($exporter instanceof Exporter\LazyExporter) {
+            $exporter = $exporter->initialize();
+        }
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             if ( ! $this->config->getExporterBatchConfig()) {
                 $this->config->setExporterBatchConfig($exporter->getDefaultBatchConfig());

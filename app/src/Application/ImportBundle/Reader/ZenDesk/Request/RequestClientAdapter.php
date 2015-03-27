@@ -40,6 +40,11 @@ use Zendesk\API;
 final class RequestClientAdapter implements RequestAdapterInterface
 {
     /**
+     * @var API\Client
+     */
+    private $client;
+
+    /**
      * Constructor
      *
      * @param API\Client $client

@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Generator\Exporter\LazyExporter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -79,17 +80,12 @@ class GeneratorFactory
      */
     private static function createExportersCollection(ContainerInterface $container)
     {
-        $csvFactory      = new Exporter\CsvFactory($container);
-        $jsonFactory     = new Exporter\JsonFactory($container);
-        $osTicketFactory = new Exporter\OsTicketFactory($container);
-        $zenDeskFactory  = new Exporter\ZenDeskFactory($container);
-
         $exporters = new Exporter\Collection();
         $exporters
-            ->attach($csvFactory->createExporter())
-            ->attach($jsonFactory->createExporter())
-            ->attach($osTicketFactory->createExporter())
-            ->attach($zenDeskFactory->createExporter());
+            ->attach(new LazyExporter(new Exporter\CsvFactory($container)))
+            ->attach(new LazyExporter(new Exporter\JsonFactory($container)))
+            ->attach(new LazyExporter(new Exporter\OsTicketFactory($container)))
+            ->attach(new LazyExporter(new Exporter\ZenDeskFactory($container)));
 
         return $exporters;
     }

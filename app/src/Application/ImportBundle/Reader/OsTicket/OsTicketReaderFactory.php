@@ -22,7 +22,7 @@ class OsTicketReaderFactory
     {
         $dp_config = dp_get_config('osticket_import');
         if (empty($dp_config)) {
-            throw new Exception('Deskpro os ticket import config is not defined');
+            throw new Exception('DeskPRO os ticket import config is not defined');
         }
 
         $db_host     = $dp_config['db_host'];
