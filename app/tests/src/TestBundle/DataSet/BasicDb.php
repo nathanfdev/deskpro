@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTests\TestBundle\UserDetailsRepo;
 
-class BasicDB extends AbstractDbSet
+class BasicDb extends AbstractDbSet
 {
     public function getId()
     {

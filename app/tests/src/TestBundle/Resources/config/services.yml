@@ -38,7 +38,7 @@ services:
             - %kernel.cache_dir%/dbset
 
     dbset.basic:
-        class: DpTests\TestBundle\DataSet\BasicDB
+        class: DpTests\TestBundle\DataSet\BasicDb
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
