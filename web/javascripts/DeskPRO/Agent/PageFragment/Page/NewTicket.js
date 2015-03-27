@@ -181,11 +181,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			getOrganizationId: function() {
 				return 0;
 			},
-			getWorkflowId: function() {
-				var catId = self.getEl('work').val();
-				return parseInt(catId) || 0;
-			}
 		};
+    getWorkflowId: function() {
+      var catId = self.getEl('work').val();
+      return parseInt(catId) || 0;
+    }
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		self._updateFields = function() {

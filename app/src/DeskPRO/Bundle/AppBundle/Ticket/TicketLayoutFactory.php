@@ -68,6 +68,31 @@ class TicketLayoutFactory
     }
 
     /**
+     * Gets a combination of all ticket layouts. This is used to output a 'full' form with every field,
+     * which is used by JS to dynamically update the UI as a user changes options.
+     *
+     * @return TicketLayout
+     */
+    public function getFullLayoutForTicketForm()
+    {
+        $layout = new TicketLayout();
+
+        /** @var TicketLayout[] $all_layouts */
+        $all_layouts = $this->entity_manager->createQuery("SELECT l FROM DeskPRO:TicketLayout l")->execute();
+
+        foreach ($all_layouts as $l) {
+            foreach ($l->user_layout->all() as $f) {
+                $layout->user_layout->add($f);
+            }
+            foreach ($l->agent_layout->all() as $f) {
+                $layout->agent_layout->add($f);
+            }
+        }
+
+        return $layout;
+    }
+
+    /**
      * @return TicketLayout
      */
     public function getInitialLayout()

@@ -21,11 +21,13 @@
     document.body.className = document.body.className + ' with-dpui';
 })();
 </script>
+{% block doc_begin %}{% endblock %}
 
 <div class="dp-page-body">
     {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
 </div>
 
+{% block doc_end %}{% endblock %}
 {% if not is_granted('ROLE_USER') %}
     {{ background_sso() }}
 {% endif %}

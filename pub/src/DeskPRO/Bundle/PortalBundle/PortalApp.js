@@ -28,6 +28,6 @@ export default class PortalApp {
 
   run() {
     let page = new PortalPage(this.container);
-    page.render();
+    page.renderWhenReady();
   }
 }

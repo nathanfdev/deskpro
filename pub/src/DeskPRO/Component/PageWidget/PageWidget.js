@@ -53,11 +53,13 @@ export default class PageWidget {
 
     this.initState = 'pre_init';
     this.waitingRender = false;
+    this.waitingRunWidgets = false;
 
-    this.element     = element ? $(element) : null;
+    this.$element    = element ? $(element) : null;
     this.parent      = parent;
     this.widgetDefs  = [];
     this.widgetInsts = [];
+    this.widgetClassInst = new Map();
 
     let initVal = this.init();
     if (initVal && initVal.then) {
@@ -89,7 +91,7 @@ export default class PageWidget {
    * @returns {jQuery}
    */
   getElement() {
-    return this.element;
+    return this.$element;
   }
 
   /**
@@ -111,9 +113,13 @@ export default class PageWidget {
     let pre = this.preRender();
 
     if (pre && pre.then) {
-      pre.then(() => this.renderWidget());
+      pre.then(() => {
+        this.renderWidget();
+        this.runWidgets();
+      });
     } else {
       this.renderWidget();
+      this.runWidgets();
     }
   }
 
@@ -152,12 +158,16 @@ export default class PageWidget {
    */
   _runDoneInit() {
     if (this.waitingRender) {
-      this.render();
-    }
+      let p = this.render();
 
-    this.widgetDefs.forEach(w => {
-      this._runWidgetDef(w);
-    });
+      if (p && p.then) {
+        p.then(() => {
+          this.runWidgets();
+        })
+      } else {
+        this.runWidgets();
+      }
+    }
   }
 
   /**
@@ -176,11 +186,27 @@ export default class PageWidget {
   }
 
   /**
+   * Runs all widget definitions. You can run this multiple times, the system
+   * will ensure that an element is not instantiated multiple times.
+   *
+   * @param {HTMLElement/jQuery} $el Optionally scope the run to this element
+   */
+  runWidgets($el = null) {
+    if ($el) {
+      $el = $($el);
+    }
+
+    this.widgetDefs.forEach(w => {
+      this._runWidgetDef(w, $el);
+    });
+  }
+
+  /**
    * @param {Array} widgetDef
    * @private
    */
-  _runWidgetDef(widgetDef) {
-    let insts = this._createWidgetInst(widgetDef);
+  _runWidgetDef(widgetDef, $el) {
+    let insts = this._createWidgetInst(widgetDef, $el);
 
     insts.forEach(i => {
       this.widgetInsts.push(i);
@@ -190,18 +216,29 @@ export default class PageWidget {
 
   /**
    * @param {Array} widgetDef
+   * @param {HTMLElement/jQuery} $el Optionally scope the run to this element
    * @returns {Array}
    * @private
    */
-  _createWidgetInst(widgetDef) {
+  _createWidgetInst(widgetDef, $el) {
     let widgetClass = widgetDef[0];
+    if (!this.widgetClassInst.get(widgetClass)) {
+      this.widgetClassInst.set(widgetClass, [])
+    }
+    let widgetClassInstArray = this.widgetClassInst.set(widgetClass);
     let selector = widgetDef[1];
     let matches;
 
-    if (_.isFunction(selector)) {
-      matches = selector(widgetClass, this);
+    if (!$el) {
+      $el = $(document);
     } else {
-      matches = $(selector);
+      $el = $($el);
+    }
+
+    if (_.isFunction(selector)) {
+      matches = selector(widgetClass, $el, this);
+    } else {
+      matches = $el.find(selector);
     }
 
     if (!matches || !matches[0]) {
@@ -209,8 +246,18 @@ export default class PageWidget {
     }
 
     let insts = [];
-    matches.each((_, el) => {
-      insts.push(new widgetClass(this.container, el, this));
+    matches.each((x, el) => {
+      el = $(el);
+      if (!el.data('dpWidgetInsts')) {
+        el.data('dpWidgetInsts', new WeakMap());
+      }
+      let elInsts = el.data('dpWidgetInsts');
+
+      if (!elInsts.has(widgetClass)) {
+        let i = new widgetClass(this.container, el, this);
+        elInsts.set(widgetClass, i);
+        insts.push(i);
+      }
     });
 
     return insts;

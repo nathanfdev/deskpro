@@ -11,8 +11,10 @@ import React from "react";
 export class LevelSelectActionStore extends FormActionStore {
   onValueChanged(data) {
     let opts = this.el.find('option');
-    opts.not((_, el) => { return $(el).data('id') == data.value }).attr('selected', false);
-    opts.filter((_, el) => { return $(el).data('id') == data.value }).attr('selected', true);
+    opts.each((x, el) => {
+      el.selected = el.value == data.value;
+    });
+    this.el.trigger('change');
   }
 
   readValueFromForm() {
@@ -21,7 +23,7 @@ export class LevelSelectActionStore extends FormActionStore {
 
   getOptionData() {
     let options = [];
-    this.el.find('option').each((_, optEl) => {
+    this.el.find('option').each((x, optEl) => {
       optEl = $(optEl);
       let parent = optEl.data('parent') || null;
       if (!parent || parent === "0" || parent === 0) {
@@ -169,7 +171,7 @@ export class LevelSelect extends Component {
  */
 export function createComponent(select, renderTo, actionStore = null) {
   select = $(select);
-  select.find('option').each((_, opt) => {
+  select.find('option').each((x, opt) => {
     opt = $(opt);
     if (!opt.data('id')) {
       opt.data('id', opt.data('id', _.uniqueId('opt_')));

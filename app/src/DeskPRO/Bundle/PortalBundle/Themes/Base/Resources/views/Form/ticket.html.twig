@@ -12,18 +12,20 @@
         width: 30%;
     }
 </style>
-
-
-{{ form_errors(form) }}
-{{ form_start(form, { attr: { class: 'form-ticket' } }) }}
-{% for widget in form.children if widget.vars.name != '_token' %}
-    <div class="deskpro-form-widget {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}">
-        {{ form_label(widget) }}
-        {{ form_widget(widget) }}
-        {% if widget.vars.valid is defined %}
-        {{ form_errors(widget) }}
-        {% endif %}
+<div class="dp_ticket_form">
+    {{ form_errors(form) }}
+    {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+    <div class="dynamic-fields-container">
+        {% for widget in form.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
+            <div class="deskpro-form-widget field_{{ widget.vars.name }} {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}" data-field="{{ widget.vars.name }}">
+                {{ form_label(widget) }}
+                {{ form_widget(widget) }}
+                {% if widget.vars.valid is defined %}
+                {{ form_errors(widget) }}
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
-{{ form_rest(form) }}
-{{ form_end(form) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>

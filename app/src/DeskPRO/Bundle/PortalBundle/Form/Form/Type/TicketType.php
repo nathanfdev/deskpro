@@ -134,7 +134,12 @@ class TicketType extends AbstractType
         $form           = $event->getForm();
         $ticket_message = $form->getConfig()->getOption('ticket_message');
         $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
-        $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
+
+        if ($form->getConfig()->getOption('full_version')) {
+            $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm($ticket->department ?: null);
+        }
+
+        $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
         $person    = $context->getForm()->getConfig()->getOption('person');
@@ -320,6 +325,7 @@ class TicketType extends AbstractType
             'method'              => 'POST',
             'allow_extra_fields'  => true,
             'ticket_message'      => null,
+            'full_version'        => false,
         ));
         $resolver->setRequired(array(
             'person',

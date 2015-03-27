@@ -71,9 +71,9 @@ class NewTicketController extends AbstractController
         }
 
         $form = $this->createForm('ticket', $ticket, array(
-            'person' => $person,
+            'person'         => $person,
             'ticket_message' => $ticket_message,
-            'settings' => $this->getBrandContainer()->getSettings(),
+            'settings'       => $this->getBrandContainer()->getSettings(),
         ));
         $form->handleRequest($request);
 
@@ -109,10 +109,22 @@ class NewTicketController extends AbstractController
             }
         }
 
+        $form_full = $this->createForm('ticket', $ticket, array(
+            'person'         => $person,
+            'ticket_message' => null,
+            'settings'       => $this->getBrandContainer()->getSettings(),
+            'full_version'   => true,
+        ));
+
+        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
+        $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
+
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
-                'form' => $form->createView(),
-                'rerendering' => $rerendering,
+                'form'              => $form->createView(),
+                'form_full'         => $form_full->createView(),
+                'ticket_display_js' => $ticket_display_js,
+                'rerendering'       => $rerendering,
             )
         );
     }
