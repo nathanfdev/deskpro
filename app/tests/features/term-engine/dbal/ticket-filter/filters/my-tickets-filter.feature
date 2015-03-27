@@ -15,6 +15,7 @@ Feature: My Tickets Filter
       | 1  |
       | 2  |
       | 4  |
+    And print the last run query
 
   Scenario: I use the built in "My Tickets" filter with user "admin"
     Given I set the context agent to admin
@@ -24,6 +25,7 @@ Feature: My Tickets Filter
       | id |
       | 3  |
       | 5  |
+    And print the last run query
 
   Scenario: I use a descending ordering
     Given I set the context agent to agent
@@ -35,3 +37,4 @@ Feature: My Tickets Filter
       | 4  |
       | 2  |
       | 1  |
+    And print the last run query

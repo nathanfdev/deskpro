@@ -134,6 +134,14 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Then print the last run query
+     */
+    public function iPrintLastRunQuery()
+    {
+        print $this->executable_query->getLastRunSql();
+    }
+
+    /**
      * @Then I should be given the following dbal rows:
      */
     public function iShouldBeGivenTheFollowingDbalRows(TableNode $table)

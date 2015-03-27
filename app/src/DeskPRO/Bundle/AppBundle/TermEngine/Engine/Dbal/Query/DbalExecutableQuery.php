@@ -47,6 +47,21 @@ class DbalExecutableQuery
      */
     private $connection;
 
+    /**
+     * @var string|null
+     */
+    private $last_run_sql;
+
+    /**
+     * @var array|null
+     */
+    private $last_run_parameters;
+
+    /**
+     * @var array|null
+     */
+    private $last_run_parameter_types;
+
     public function __construct(DbalCompiledQuery $query, Connection $connection)
     {
         $this->query = $query;
@@ -57,13 +72,14 @@ class DbalExecutableQuery
     {
         $this->query->setSelectPart('{from}.id');
 
-        $params = $this->query->getParameters();
-        $types = $this->determineParameterTypes($params);
+        $this->last_run_sql = (string)$this->query;
+        $this->last_run_parameters = $this->query->getParameters();
+        $this->last_run_parameter_types = $this->determineParameterTypes($this->last_run_parameters);
 
         $stmt = $this->connection->executeQuery(
-            (string)$this->query,
-            $params,
-            $types
+            $this->last_run_sql,
+            $this->last_run_parameters,
+            $this->last_run_parameter_types
         );
 
         return $stmt->fetchAll();
@@ -144,5 +160,29 @@ class DbalExecutableQuery
     private function isStr($param)
     {
         return is_string($param);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLastRunSql()
+    {
+        return $this->last_run_sql;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLastRunParameters()
+    {
+        return $this->last_run_parameters;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLastRunParameterTypes()
+    {
+        return $this->last_run_parameter_types;
     }
 }
