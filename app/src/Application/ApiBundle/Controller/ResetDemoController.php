@@ -87,16 +87,23 @@ class ResetDemoController extends AbstractController implements ProtectedControl
         }
 
         $status = $this->getStatus();
+        $last = null;
 
         foreach (self::$types as $v) {
             if (!@$data[$v]) continue;
             if ('waiting' === @$status[$v]) continue;
 
-            $queue->add('reset.' . $v, array(
+            $job = $queue->add('reset.' . $v, array(
                 'context_person_id' => $this->person['id'],
             ));
+
+            if ($last) {
+                $job->depends_on_job = $last;
+            }
+            $last = $job;
         }
 
+        $this->em->flush();
         return $this->statusAction();
     }
 

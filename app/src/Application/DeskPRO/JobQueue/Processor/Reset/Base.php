@@ -82,7 +82,13 @@ abstract class Base extends AbstractJobProcessor
 
         if ($total === $data['limit']) {
             $data['offset'] = $data['offset'] + $total;
-            $this->queue->add($this::JOB_TYPE, $data);
+            $new = $this->queue->add($this::JOB_TYPE, $data);
+
+            $jobs = $this->em->getRepository('DeskPRO:Job')->findBy(array('depends_on_job' => $job['id']));
+            foreach ($jobs as $dep) {
+                $dep->depends_on_job = $new;
+            }
+            $this->em->flush();
         }
 
         return true;
