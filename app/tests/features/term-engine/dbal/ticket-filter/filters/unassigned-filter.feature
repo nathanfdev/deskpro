@@ -50,5 +50,5 @@ Feature: Unassigned Tickets Filter
     When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
-      | 17 |
+      | 18 |
     And print the last run query
