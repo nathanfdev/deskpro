@@ -98,7 +98,7 @@ class FilterData extends AbstractDefaultData
         $this->saveFilter('My Team\'s Tickets', $term, $filter_set);
 
 
-        // my team's tickets
+        // tickets I follow
         $term = new CompositeTerm(array(), TermInterface::OP_AND);
         $term->addTerm(
             new TicketParticipantTerm(
@@ -132,7 +132,7 @@ class FilterData extends AbstractDefaultData
         $term->addTerm(
             new AgentTeamTerm(
                 array(
-                    'agent_ids' => array(AgentTeamTerm::TEAM_ID_UNASSIGNED)
+                    'agent_team_ids' => array(AgentTeamTerm::TEAM_ID_UNASSIGNED)
                 ),
                 TermInterface::OP_IS
             )

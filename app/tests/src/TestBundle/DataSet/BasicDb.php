@@ -86,13 +86,18 @@ class BasicDb extends AbstractDbSet
         $this->createTicket('Test Ticket 13', $dep, $user, $agent_chris, $team_agent);
         $this->createTicket('Test Ticket 14', $dep, $user, $agent_chris, $team_agent);
         $this->createTicket('Test Ticket 15', $dep, $user, $agent_chris);
+        $this->createTicket('Unassigned But Has Team - Ticket 16', $dep, $user, null, $team_agent);
+        $this->createTicket('UNASSIGNED Test Ticket 17', $dep, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 18', $dep, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 19', $dep, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 20', $dep, $user);
     }
 
     protected function createTicket(
         $subject,
         Department $dep,
         Person $person,
-        Person $agent,
+        Person $agent = null,
         AgentTeam $agent_team = null,
         $status = Ticket::STATUS_AWAITING_AGENT,
         $message = 'Test Message'
@@ -109,7 +114,7 @@ class BasicDb extends AbstractDbSet
         $ticket->agent_team = $agent_team;
 
         $message = new TicketMessage();
-        $message->person = $agent;
+        $message->person = $person;
         $message->ticket = $ticket;
         $message->message = "Test Ticket";
         $ticket->addMessage($message);
