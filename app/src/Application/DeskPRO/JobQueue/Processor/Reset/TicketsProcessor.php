@@ -35,8 +35,7 @@ class TicketsProcessor extends Base
 
     protected function doProcess(array $data)
     {
-        $limit = (int) @$data['limit'] ?: self::LIMIT;
-        $start = $offset = (int) @$data['offset'] ?: 0;
         $purger = new TicketPurger($this->em->getConnection());
+        $purger->purgeAll();
     }
 }

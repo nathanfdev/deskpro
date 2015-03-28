@@ -27,9 +27,7 @@
 
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-use Application\DeskPRO\Entity\Department;
-
-class PermissionsProcessor extends Base
+class PermsProcessor extends Base
 {
     const JOB_TYPE = 'reset.perms';
 

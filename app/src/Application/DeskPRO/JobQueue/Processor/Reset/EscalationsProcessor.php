@@ -29,7 +29,7 @@ namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
 class EscalationsProcessor extends Base
 {
-    const JOB_TYPE = 'reset.esc_sla';
+    const JOB_TYPE = 'reset.escalations';
 
     protected function doProcess(array $data)
     {
