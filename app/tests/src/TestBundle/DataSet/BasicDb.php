@@ -71,6 +71,8 @@ class BasicDb extends AbstractDbSet
         $team_both = $this->createAgentTeam('Agent And Chris', array($agent, $agent_chris));
         $team_agent = $this->createAgentTeam('Agent And Chris', array($agent));
 
+        // the ticket numbers in the titles are purposley hardcoded
+        // because they represent the insert IDs used in tests
         $this->createTicket('Test Ticket 1', $dep, $user, $agent);
         $this->createTicket('Test Ticket 2', $dep, $user, $agent);
         $this->createTicket('Test Ticket 3', $dep, $user, $admin);
@@ -91,6 +93,35 @@ class BasicDb extends AbstractDbSet
         $this->createTicket('UNASSIGNED Test Ticket 18', $dep, $user);
         $this->createTicket('UNASSIGNED Test Ticket 19', $dep, $user);
         $this->createTicket('UNASSIGNED Test Ticket 20', $dep, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 21', $dep, $user, $agent_chris, null, Ticket::STATUS_AWAITING_USER);
+        $this->createTicket('UNASSIGNED Test Ticket 22', $dep, $user, $admin, null, Ticket::STATUS_AWAITING_USER);
+        $this->createTicket('UNASSIGNED Test Ticket 23', $dep, $user, $admin, null, Ticket::STATUS_RESOLVED);
+        $this->createTicket('UNASSIGNED Test Ticket 24', $dep, $user, $admin, null, Ticket::STATUS_RESOLVED);
+        $this->createTicket('UNASSIGNED Test Ticket 25', $dep, $user, $admin, null, Ticket::STATUS_ARCHIVED);
+        $this->createTicket(
+            'UNASSIGNED Test Ticket 26',
+            $dep,
+            $user,
+            $admin,
+            null,
+            Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_VALIDATING
+        );
+        $this->createTicket(
+            'UNASSIGNED Test Ticket 27',
+            $dep,
+            $user,
+            $admin,
+            null,
+            Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_SPAM
+        );
+        $this->createTicket(
+            'UNASSIGNED Test Ticket 28',
+            $dep,
+            $user,
+            $admin,
+            null,
+            Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED
+        );
     }
 
     protected function createTicket(
@@ -110,7 +141,7 @@ class BasicDb extends AbstractDbSet
         $ticket->person = $person;
         $ticket->department = $dep;
         $ticket->subject = 'Test';
-        $ticket->status = $status;
+        $ticket->setStatus($status);
         $ticket->agent_team = $agent_team;
 
         $message = new TicketMessage();

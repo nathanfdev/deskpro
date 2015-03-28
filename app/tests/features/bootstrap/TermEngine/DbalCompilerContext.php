@@ -174,11 +174,12 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
-     * @Then I should be given the count of all tickets in the db
+     * @Then I should be given the count of all tickets in the db with :status
      */
-    public function iShouldBeGivenTheCountOfAllTicketsInTheDb()
+    public function iShouldBeGivenTheCountOfAllTicketsInTheDb($status)
     {
-        $count = count($this->getEntityRepo('DeskPRO:Ticket')->findAll());
+        $status = constant(sprintf('Application\DeskPRO\Entity\Ticket::%s', $status));
+        $count = count($this->getEntityRepo('DeskPRO:Ticket')->findBy(array('status' => $status)));
         expect($this->engine_result)->toBe($count);
     }
 
