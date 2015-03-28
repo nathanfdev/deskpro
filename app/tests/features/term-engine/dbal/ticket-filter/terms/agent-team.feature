@@ -27,7 +27,7 @@ Feature: DbalAgentTeamCompiler
     And the parameters should be:
       | Parameter | Value                                      |
       | x         | [1, 3, 199]                                |
-      | y         | TermEngineExpression('agent_teams(agent)') |
+      | y         | TermEngineExpression('agent.getTeamIds()') |
 
   Scenario: Compile the term with NOT "me"
     And I have a NOT AgentTeamTerm with the options:
@@ -42,7 +42,7 @@ Feature: DbalAgentTeamCompiler
     And the parameters should be:
       | Parameter | Value                                      |
       | x         | [1, 3, 199]                                |
-      | y         | TermEngineExpression('agent_teams(agent)') |
+      | y         | TermEngineExpression('agent.getTeamIds()') |
 
   Scenario: Compile the term with "unassigned"
     And I have an IS AgentTeamTerm with the options:
@@ -110,7 +110,7 @@ Feature: DbalAgentTeamCompiler
     And the parameters should be:
       | Parameter | Value                                      |
       | x         | [1, 3, 199]                                |
-      | y         | TermEngineExpression('agent_teams(agent)') |
+      | y         | TermEngineExpression('agent.getTeamIds()') |
 
 
   Scenario: Compile the term with several NOT
@@ -126,4 +126,4 @@ Feature: DbalAgentTeamCompiler
     And the parameters should be:
       | Parameter | Value                                      |
       | x         | [1, 3, 199]                                |
-      | y         | TermEngineExpression('agent_teams(agent)') |
+      | y         | TermEngineExpression('agent.getTeamIds()') |

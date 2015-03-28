@@ -31,6 +31,7 @@
 
 namespace DpTests\TestBundle\DataSet;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
@@ -59,12 +60,16 @@ class BasicDb extends AbstractDbSet
         # Init data
         #------------------------------
 
-        list($admin, $agent, $user) = $this->addBasicUsers();
+        // users
+        list($admin, $agent, $agent_chris, $user) = $this->addBasicUsers();
+
+        // install
         $this->addBaseBrand($em);
         $this->runBasicDataInstall($admin, $em);
 
-
         $dep = $this->getEm()->find('DeskPRO:Department', 1);
+        $team_both = $this->createAgentTeam('Agent And Chris', array($agent, $agent_chris));
+        $team_agent = $this->createAgentTeam('Agent And Chris', array($agent));
 
         $this->createTicket('Test Ticket 1', $dep, $user, $agent);
         $this->createTicket('Test Ticket 2', $dep, $user, $agent);
@@ -75,7 +80,12 @@ class BasicDb extends AbstractDbSet
         $this->createTicket('Test Ticket 7', $dep, $user, $agent);
         $this->createTicket('Test Ticket 8', $dep, $user, $agent);
         $this->createTicket('Test Ticket 9', $dep, $user, $admin);
-        $this->createTicket('Test Ticket 10', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 10', $dep, $user, $agent, $team_both);
+        $this->createTicket('Test Ticket 11', $dep, $user, $agent_chris, $team_both);
+        $this->createTicket('Test Ticket 12', $dep, $user, $agent_chris, $team_both);
+        $this->createTicket('Test Ticket 13', $dep, $user, $agent_chris, $team_agent);
+        $this->createTicket('Test Ticket 14', $dep, $user, $agent_chris, $team_agent);
+        $this->createTicket('Test Ticket 15', $dep, $user, $agent_chris);
     }
 
     protected function createTicket(
@@ -83,6 +93,8 @@ class BasicDb extends AbstractDbSet
         Department $dep,
         Person $person,
         Person $agent,
+        AgentTeam $agent_team = null,
+        $status = Ticket::STATUS_AWAITING_AGENT,
         $message = 'Test Message'
     )
     {
@@ -93,7 +105,8 @@ class BasicDb extends AbstractDbSet
         $ticket->person = $person;
         $ticket->department = $dep;
         $ticket->subject = 'Test';
-        $ticket->status = Ticket::STATUS_AWAITING_AGENT;
+        $ticket->status = $status;
+        $ticket->agent_team = $agent_team;
 
         $message = new TicketMessage();
         $message->person = $agent;
@@ -106,6 +119,8 @@ class BasicDb extends AbstractDbSet
         $this->getEm()->persist($ticket);
         $this->getEm()->persist($message);
         $this->getEm()->flush();
+
+        return $ticket;
     }
 
     /**
@@ -131,6 +146,15 @@ class BasicDb extends AbstractDbSet
             false
         );
 
+        $agent_chris = $this->addUser(
+            UserDetailsRepo::AGENT_CHRIS_FIRST_NAME,
+            UserDetailsRepo::AGENT_CHRIS_LAST_NAME,
+            UserDetailsRepo::AGENT_CHRIS_EMAIL,
+            UserDetailsRepo::AGENT_CHRIS_PASS,
+            true,
+            false
+        );
+
         $user = $this->addUser(
             UserDetailsRepo::USER_FIRST_NAME,
             UserDetailsRepo::USER_LAST_NAME,
@@ -143,7 +167,7 @@ class BasicDb extends AbstractDbSet
 
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
 
-        return array($admin, $agent, $user);
+        return array($admin, $agent, $agent_chris, $user);
     }
 
     /**
@@ -256,5 +280,25 @@ class BasicDb extends AbstractDbSet
                 ('portal.smaxage_user_tag', '0');
         "
         );
+    }
+
+    /**
+     * @param $team_name
+     * @param array $members
+     * @return AgentTeam
+     */
+    protected function createAgentTeam($team_name, array $members)
+    {
+        $agent_team = new AgentTeam();
+        $agent_team->name = $team_name;
+
+        foreach ($members as $member) {
+            $agent_team->addPerson($member);
+        }
+
+        $this->getEm()->persist($agent_team);
+        $this->getEm()->flush();
+
+        return $agent_team;
     }
 }

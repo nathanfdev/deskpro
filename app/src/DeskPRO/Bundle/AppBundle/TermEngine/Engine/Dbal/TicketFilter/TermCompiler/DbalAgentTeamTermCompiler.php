@@ -55,7 +55,7 @@ class DbalAgentTeamTermCompiler extends AbstractDbalTermCompiler
 
         foreach ($agent_team_ids as $agent_team_id) {
             if ($agent_team_id === AgentTeamTerm::TEAM_ID_ME) {
-                $me_expression = new TermEngineExpression('agent_teams(agent)');
+                $me_expression = new TermEngineExpression('agent.getTeamIds()');
             } elseif ($agent_team_id === AgentTeamTerm::TEAM_ID_UNASSIGNED) {
                 $unassigned = true;
             } else {

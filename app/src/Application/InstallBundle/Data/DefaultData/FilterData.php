@@ -59,10 +59,20 @@ class FilterData extends AbstractDefaultData
         // my tickets
         $term = new CompositeTerm(array(), TermInterface::OP_AND);
         $term->addTerm(
-            new AgentTerm(array('agent_ids' => array(AgentTerm::ID_ME)), TermInterface::OP_IS)
+            new AgentTerm(
+                array(
+                    'agent_ids' => array(AgentTerm::ID_ME)
+                ),
+                TermInterface::OP_IS
+            )
         );
         $term->addTerm(
-            new TicketStatusTerm(array('status' => array(Ticket::STATUS_AWAITING_AGENT)), TermInterface::OP_IS)
+            new TicketStatusTerm(
+                array(
+                    'status' => array(Ticket::STATUS_AWAITING_AGENT)
+                ),
+                TermInterface::OP_IS
+            )
         );
         $this->saveFilter('My Tickets', $term, $filter_set);
 

@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Expression;
 
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class TermEngineExpressionProvider implements ExpressionFunctionProviderInterface
 {
@@ -44,9 +45,6 @@ class TermEngineExpressionProvider implements ExpressionFunctionProviderInterfac
      */
     public function getFunctions()
     {
-        return array(
-            // TODO: if we want custom functions
-            // available in term engine expressions, add them here
-        );
+        return array();
     }
 }
