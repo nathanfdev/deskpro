@@ -174,6 +174,15 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Then I should be given the count of all tickets in the db
+     */
+    public function iShouldBeGivenTheCountOfAllTicketsInTheDb()
+    {
+        $count = count($this->getEntityRepo('DeskPRO:Ticket')->findAll());
+        expect($this->engine_result)->toBe($count);
+    }
+
+    /**
      * @Then I should be given the following dbal rows:
      */
     public function iShouldBeGivenTheFollowingDbalRows(TableNode $table)

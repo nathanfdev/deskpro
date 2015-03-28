@@ -151,7 +151,7 @@ class FilterData extends AbstractDefaultData
         // all tickets (awaiting agent)
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_AWAITING_AGENT
+                'status' => array(Ticket::STATUS_AWAITING_AGENT)
             ),
             TermInterface::OP_IS
         );
@@ -161,7 +161,7 @@ class FilterData extends AbstractDefaultData
         // all tickets (awaiting user)
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_AWAITING_USER
+                'status' => array(Ticket::STATUS_AWAITING_USER)
             ),
             TermInterface::OP_IS
         );
@@ -171,7 +171,7 @@ class FilterData extends AbstractDefaultData
         // resolved
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_RESOLVED
+                'status' => array(Ticket::STATUS_RESOLVED)
             ),
             TermInterface::OP_IS
         );
@@ -181,7 +181,7 @@ class FilterData extends AbstractDefaultData
         // archived
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_ARCHIVED
+                'status' => array(Ticket::STATUS_ARCHIVED)
             ),
             TermInterface::OP_IS
         );
@@ -191,7 +191,7 @@ class FilterData extends AbstractDefaultData
         // awaiting validation
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_VALIDATING
+                'status' => array(Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_VALIDATING)
             ),
             TermInterface::OP_IS
         );
@@ -201,7 +201,7 @@ class FilterData extends AbstractDefaultData
         // spam
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_SPAM
+                'status' => array(Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_SPAM)
             ),
             TermInterface::OP_IS
         );
@@ -211,7 +211,7 @@ class FilterData extends AbstractDefaultData
         // deleted
         $term = new TicketStatusTerm(
             array(
-                'status' => Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED
+                'status' => array(Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED)
             ),
             TermInterface::OP_IS
         );
