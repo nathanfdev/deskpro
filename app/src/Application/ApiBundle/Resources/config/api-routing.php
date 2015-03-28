@@ -4905,4 +4905,21 @@ $collection->create('api_apps_jira', array(
 	'methods'      => array('GET'),
 ));
 
+
+########################################################################################################################
+# Reset Demo
+########################################################################################################################
+
+$collection->create('api_reset_demo_run', array(
+    'path'        => '/reset-demo',
+    'controller'  => 'ApiBundle:ResetDemo:run',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_reset_demo_status', array(
+    'path'        => '/reset-demo/status',
+    'controller'  => 'ApiBundle:ResetDemo:status',
+    'methods'     => array('GET'),
+));
+
 return $collection;

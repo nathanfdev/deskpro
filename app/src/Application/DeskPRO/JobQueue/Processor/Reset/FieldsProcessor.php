@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,49 +25,44 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
+use Application\DeskPRO\Monolog\NullLogger;
+use Application\InstallBundle\Data\DefaultData\TicketLayoutData;
 
-namespace Application\DeskPRO\Command;
-
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class FieldsProcessor extends Base
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    const JOB_TYPE = 'reset.fields';
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
+    protected function doProcess(array $data)
     {
-        return parent::getContainer();
-    }
+        $types = array('article', 'chat', 'feedback', 'organizations', 'ticket');
+        foreach ($types as $type) {
+            $this->connection->executeUpdate("DELETE FROM custom_data_$type");
+            $this->connection->executeUpdate("DELETE FROM custom_def_$type");
+        }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $c = $this->getContainer();
-        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
+        $this->connection->executeUpdate("DELETE FROM custom_data_person");
+        $this->connection->executeUpdate("DELETE FROM custom_def_people");
 
-        echo __FILE__;
-        echo "\n";
-        return 0;
+        $this->connection->executeUpdate("DELETE FROM custom_data_product");
+        $this->connection->executeUpdate("DELETE FROM custom_def_products");
+
+        $this->connection->executeUpdate("DELETE FROM custom_field_data");
+        $this->connection->executeUpdate("DELETE FROM custom_field_definition");
+
+        $this->connection->executeUpdate("DELETE FROM products");
+        $this->connection->executeUpdate("DELETE FROM ticket_categories");
+        $this->connection->executeUpdate("DELETE FROM ticket_workflows");
+        $this->connection->executeUpdate("DELETE FROM ticket_priorities");
+
+        $sh = $this->container->getSettingsHandler();
+        $sh->setSetting('core.use_product', false);
+        $sh->setSetting('core.use_ticket_priority', false);
+        $sh->setSetting('core.use_ticket_workflow', false);
+        $sh->setSetting('core.use_ticket_category', false);
+
+        $layout_data = new TicketLayoutData($this->container, new NullLogger());
+        $layout_data->runReset();
     }
 }

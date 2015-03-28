@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,49 +25,52 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
 
-namespace Application\DeskPRO\Command;
+use Doctrine\DBAL\Connection;
 
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class SettingsProcessor extends Base
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    const JOB_TYPE = 'reset.settings';
+
+    const NAMES = 'core.settings.names';
+
+    protected function doProcess(array $data)
     {
-        $this->setName('dp:test');
+        $enc = $this->connection->fetchColumn(
+            'select value from settings where name = :name',
+            array('name' => self::NAMES)
+        );
+        if (!$settings = json_decode($enc, 1)) throw new \Exception('Settings backup not found');
+        $settings['core.site_url'] = null;
+        $settings['core.license'] = null;
+        $settings[self::NAMES] = $enc;
+
+        $this->connection->executeUpdate(
+            'delete from settings where name not in (:names)',
+            array('names' => array_keys($settings)),
+            array('names' => Connection::PARAM_STR_ARRAY)
+        );
+
+        unset($settings['core.site_url'], $settings['core.license']);
+        foreach ($settings as $k => $v) {
+            $this->connection->executeUpdate(
+                'replace into settings values (:name, :value)',
+                array('name' => $k, 'value' => $v)
+            );
+        }
     }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
+    static public function saveBaseSettings(Connection $connection)
     {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $c = $this->getContainer();
-        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
-
-        echo __FILE__;
-        echo "\n";
-        return 0;
+        $settings = array();
+        foreach ($connection->fetchAll('select * from settings') as $row) {
+            $settings[$row['name']] = $row['value'];
+        }
+        $connection->executeUpdate(
+            'replace into settings values (:name, :value)',
+            array('name' => self::NAMES, 'value' => json_encode($settings))
+        );
     }
 }

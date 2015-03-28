@@ -25,14 +25,68 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\JobQueue\Processor\Purge;
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-class UsersProcessor extends Base
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JobQueue\JobQueue;
+use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
+use Application\DeskPRO\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+abstract class Base extends AbstractJobProcessor
 {
-    const JOB_TYPE = 'purge.users';
+    /**
+     * @var JobQueue
+     */
+    protected $queue;
 
-    protected function doProcess(array $data)
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var DeskproContainer
+     */
+    protected $container;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(DeskproContainer $container, JobQueue $queue)
     {
-
+        parent::__construct($container->getEm()->getConnection());
+        $this->queue = $queue;
+        $this->em = $container->getEm();
+        $this->container = $container;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDataOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'context_person_id' => null,
+            'limit' => 100,
+            'offset' => 0,
+        ));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function process(array $data, array $job)
+    {
+        $total = (int) $this->doProcess($data, $job);
+
+        if ($total === $data['limit']) {
+            $data['offset'] = $data['offset'] + $total;
+            $this->queue->add($this::JOB_TYPE, $data);
+        }
+
+        return true;
+    }
+
+    abstract protected function doProcess(array $data);
 }

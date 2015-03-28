@@ -34,12 +34,16 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\ApiBundle\Controller\ResetDemoController;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\AgentsProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\TicketsProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\TriggersProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\UsersProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
@@ -88,15 +92,15 @@ class JobRouterService
             )
         );
 
-        /*************************************
-         * purge users
+        /**
+         * todo instantiate processors on demand
          */
-        $router->addProcessor(
-            new UsersProcessor(
-                $conn,
-                $queue
-            )
-        );
+        foreach (ResetDemoController::$types as $type) {
+            $proc = 'Application\DeskPRO\JobQueue\Processor\Reset\\' . ucfirst($type) . 'Processor';
+            if (class_exists($proc)) {
+                $router->addProcessor(new $proc($container, $queue));
+            }
+        }
 
         return $router;
     }

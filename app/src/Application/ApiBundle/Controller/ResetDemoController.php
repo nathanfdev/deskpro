@@ -47,6 +47,26 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ResetDemoController extends AbstractController implements ProtectedControllerInterface
 {
+    static public $types = array(
+        'users',
+        'agents',
+        'tickets',
+        'triggers',
+        'filters',
+        'templates',
+        'escalations',
+        'fields',
+        'departments',
+        'perms',
+        'kb',
+        'news',
+        'downloads',
+        'feedback',
+        'labels',
+        'snippets',
+        'settings',
+        'apps'
+    );
 
     /**
      * {@inheritDoc}
@@ -59,8 +79,54 @@ class ResetDemoController extends AbstractController implements ProtectedControl
         return $multi;
     }
 
-    public function runAction()
+    public function runAction(Request $request)
     {
+        $queue = $this->container->getJobQueue();
+        if (!$data = json_decode($request->getContent(), 1)) {
+            return $this->statusAction();
+        }
 
+        $status = $this->getStatus();
+
+        foreach (self::$types as $v) {
+            if (!@$data[$v]) continue;
+            if ('waiting' === @$status[$v]) continue;
+
+            $queue->add('reset.' . $v, array(
+                'context_person_id' => $this->person['id'],
+            ));
+        }
+
+        return $this->statusAction();
+    }
+
+    public function statusAction()
+    {
+        return $this->createJsonResponse($this->getStatus());
+    }
+
+    protected function getStatus()
+    {
+        $res = array('waiting' => false);
+        $queue = $this->container->getJobQueue();
+        $rep = $this->em->getRepository('DeskPRO:Job');
+
+        foreach (self::$types as $type) {
+            if (!$jobs = $rep->findBy(array('type' => 'reset.' . $type), array('date_created' => 'desc'), 1)) continue;
+            $status = $jobs[0]['status'];
+            if (in_array($status, array('rejected', 'aborted'))) {
+                $status = 'error';
+            }
+            if (in_array($status, array('inserting', 'reserved', 'processing'))) {
+                $status = 'waiting';
+            }
+            $res[$type] = $status;
+
+            if ('waiting' === $status) {
+                $res['waiting'] = true;
+            }
+        }
+
+        return $res;
     }
 }

@@ -25,48 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\JobQueue\Processor\Purge;
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\JobQueue\JobQueue;
-use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-abstract class Base extends AbstractJobProcessor
+class DownloadsProcessor extends Base
 {
-    /**
-     * @var JobQueue
-     */
-    protected $queue;
+    const JOB_TYPE = 'reset.downloads';
 
-    /**
-     * @inheritdoc
-     */
-    public function __construct(Connection $connection, JobQueue $queue)
+    protected function doProcess(array $data)
     {
-        parent::__construct($connection);
-        $this->queue = $queue;
+        $this->connection->executeUpdate("DELETE FROM downloads");
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function setDataOptions(OptionsResolverInterface $resolver)
-    {
-
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function process(array $data, array $job)
-    {
-        if (!$this->doProcess($data, $job)) {
-            $this->queue->retryByJobId($job['id'], new \DateTime('+5 seconds'));
-        } else {
-            return true;
-        }
-    }
-
-    abstract protected function doProcess(array $data);
 }
