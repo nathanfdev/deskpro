@@ -35,7 +35,7 @@ class SnippetsProcessor extends Base
     protected function doProcess(array $data)
     {
         $this->connection->executeUpdate("DELETE FROM ticket_macros");
-        $this->connection->executeUpdate("DELETE FROM ticket_snippet_categories");
+        $this->connection->executeUpdate("DELETE FROM text_snippet_categories");
         $this->connection->executeUpdate("DELETE FROM object_lang WHERE ref_type IN ('text_snippets', 'text_snippet_categories')");
     }
 }
