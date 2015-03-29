@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Base exporter factory
+ *
  * Class AbstractFactory
  * @package Application\ImportBundle\Generator\Exporter
  */

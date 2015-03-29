@@ -99,6 +99,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Blob data
+     *
      * @return string
      */
     public function getBlobData()
@@ -107,6 +109,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Set blob data
+     *
      * @param string $blob_data
      * @return $this
      */
@@ -117,6 +121,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Blob url
+     *
      * @return string
      */
     public function getBlobUrl()
@@ -125,6 +131,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Set a blob url
+     *
      * @param string $blob_url
      * @return $this
      */
@@ -135,6 +143,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Blob path
+     *
      * @return string
      */
     public function getBlobPath()
@@ -143,6 +153,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Set a blob path
+     *
      * @param string $blob_path
      * @return $this
      */
@@ -153,6 +165,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * File name
+     *
      * @return string
      */
     public function getFileName()
@@ -161,6 +175,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Set file name
+     *
      * @param string $file_name
      * @return $this
      */
@@ -171,6 +187,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Content type
+     *
      * @return string
      */
     public function getContentType()
@@ -179,6 +197,8 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
+     * Set content type
+     *
      * @param string $content_type
      * @return $this
      */
@@ -224,9 +244,7 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

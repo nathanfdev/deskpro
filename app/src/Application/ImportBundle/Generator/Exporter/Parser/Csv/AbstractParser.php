@@ -46,6 +46,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     const FILE_DOWNLOADS            = 'downloads.csv';
     const FILE_DOWNLOAD_ATTACHMENTS = 'downloads_attachments.csv';
     const FILE_FEEDBACK             = 'feedback.csv';
+    const FILE_FEEDBACK_ATTACHMENTS = 'feedback_attachments.csv';
     const FILE_NEWS                 = 'news.csv';
     const FILE_PEOPLE               = 'people.csv';
     const FILE_TICKETS              = 'tickets.csv';
@@ -141,11 +142,11 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         foreach ($attachments as $num => $attachment) {
             try {
-                $entity = $this->exportAttachment($destination_prefix, $attachment, $ref_column);
+                $entity = $this->exportAttachment($num, $destination_prefix, $attachment, $ref_column);
                 if ($entity) {
                     $collection->attach($entity);
                     $this->logInfo(sprintf(
-                        'Entity `%s%s` parsed successfully!',
+                        'Attachment of entity `%s%s` parsed successfully!',
                         $destination_prefix, $entity->getOid())
                     );
                 } else {
@@ -166,19 +167,20 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns an attachment entity
      *
+     * @param int    $num
      * @param string $destination_prefix
      * @param array  $attachment
      * @param string $ref_column
      *
      * @return Entity\Attachment|null
      */
-    protected function exportAttachment($destination_prefix, array $attachment, $ref_column)
+    protected function exportAttachment($num, $destination_prefix, array $attachment, $ref_column)
     {
         if ($this->isAttachmentValid($attachment, $ref_column)) {
             $entity = new Entity\Attachment();
             $entity
                 ->setDestination($destination_prefix . $attachment[$ref_column])
-                ->setOid($attachment[$ref_column])
+                ->setOid($num)
                 ->setPersonEmail($attachment['person'])
                 ->setBlobUrl($attachment['blob_url'])
                 ->setBlobPath($attachment['blob_path'])

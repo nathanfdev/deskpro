@@ -72,6 +72,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
             ->setDateEnd($entity->getDateEnd())
+            ->setEndAction($entity->getEndAction())
             ->setViewsCount($entity->getViewCount());
 
         foreach ($entity->getCategories() as $category) {

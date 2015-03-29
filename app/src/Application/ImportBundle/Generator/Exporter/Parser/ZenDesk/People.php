@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -73,7 +75,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function getCount()
     {
-        return $this->reader->getPeopleCount();
+        return count($this->getPeople());
     }
 
     /**
@@ -87,43 +89,27 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredPersonColumns($person) === false) {
-                $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
-            } else {
-                $date_created = new DateTime($person['created_at']);
-                $timezone     = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+            try {
+                $entity = $this->exportPerson($person);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
-                $entity = new Entity\Person();
-                $entity
-                    ->setDestination('person_' . $person['id'])
-                    ->setOid($person['id'])
-                    ->setName($person['name'])
-                    ->setTimezone($timezone)
-                    ->setDateCreated($date_created);
-
-                switch ($person['role']) {
-                    case self::ROLE_ADMIN:
-                        $entity->setAsAgent(true)->setAsAdmin(true);
-                        break;
-
-                    case self::ROLE_AGENT:
-                        $entity->setAsAgent(true);
-                        break;
-
-                    case self::ROLE_END_USER:
-                        $entity->setAsUser(true);
-                        break;
+                } else {
+                    $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
                 }
 
-                $entity->addEmail($person['email']);
+            } catch (NoColumnException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid person record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
 
-                $user_fields = (array)$person['user_fields'];
-                foreach ($user_fields as $user_field) {
-                    $entity->addCustomField($this->exportCustomField($user_field));
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (NotArrayException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid person record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -131,14 +117,66 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     }
 
     /**
-     * Exports person custom field
+     * Returns a person entity
      *
-     * @param $user_field
-     * @return Entity\CustomField
+     * @param array $person
+     *
+     * @return Entity\Person
+     * @throws \Exception
      */
-    private function exportCustomField($user_field)
+    private function exportPerson(array $person)
     {
-        return new Entity\CustomField();
+        if ($this->isPersonValid($person)) {
+            $date_created = new DateTime($person['created_at']);
+            $timezone = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+
+            $entity = new Entity\Person();
+            $entity
+                ->setDestination('person_' . $person['id'])
+                ->setOid($person['id'])
+                ->addEmail($person['email'])
+                ->setName($person['name'])
+                ->setTimezone($timezone)
+                ->setOrganization($this->getOrganizationName($person['organization_id']))
+                ->setDateCreated($date_created);
+
+            switch ($person['role']) {
+                case self::ROLE_ADMIN:
+                    $entity->setAsAgent(true)->setAsAdmin(true);
+                    break;
+
+                case self::ROLE_AGENT:
+                    $entity->setAsAgent(true);
+                    break;
+
+                case self::ROLE_END_USER:
+                    $entity->setAsUser(true);
+                    break;
+            }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a person organization name
+     *
+     * @param int $id
+     * @return null
+     */
+    private function getOrganizationName($id)
+    {
+        $organization = null;
+        if ($id) {
+            $organization = $this->reader->getOrganizationById($id);
+            if ($organization) {
+                return $organization['name'];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -154,7 +192,12 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             $people = $this->people_storage->getPeople();
         }
         if (empty($people)) {
-            $people = $this->reader->getPeople();
+            if ($this->getBatchConfig()->getPeopleEndTime() < new DateTime('-5 minutes')) {
+                $people = $this->reader->getPeople($this->getBatchConfig()->getPeopleEndTime());
+                $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getPeopleEndTime());
+            } else {
+                $this->logAlert('No person was exported due 5 minutes timeout of the last end time');
+            }
         }
 
         return $people;
@@ -166,7 +209,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      * @param array $person
      * @return bool
      */
-    private function hasRequiredPersonColumns(array $person)
+    private function isPersonValid(array $person)
     {
         $columns = array(
             'id',
@@ -176,8 +219,10 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             'role',
             'created_at',
             'user_fields',
+            'organization_id',
         );
 
-        return $this->hasRequiredColumns($person, $columns);
+        return $this->hasRequiredColumns($person, $columns)
+            && $this->isArrayColumn($person, 'user_fields');
     }
 }

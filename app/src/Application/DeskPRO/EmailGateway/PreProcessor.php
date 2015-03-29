@@ -63,14 +63,19 @@ class PreProcessor extends AbstractGatewayProcessor
         # Dupe Detection
         #------------------------------
 
+        // TODO: Put this behind an option
+        // It's possible IDs are non-unique (e.g. by some automated systems)
+        // Until then, this is disabled.
+        /*
         if ($id = $this->reader->getId()) {
             if ($old = $this->getEm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
-                /** @var $old TicketMessage */
+                $this->error = EmailSource::ERR_DUPE;
                 $this->source_info[] = 'Ticket ID: '. $old->message->ticket['id'];
                 $this->source_info[] = 'Email Message ID: '. $id;
-                return $this->error = EmailSource::ERR_DUPE;
+                return;
             }
         }
+        */
 
         #------------------------------
         # Invalid From

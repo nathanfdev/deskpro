@@ -30,13 +30,15 @@ namespace Application\ImportBundle\Generator;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Inject an output logger interface
+ *
  * Interface LoggerAwareInterface
  * @package Application\ImportBundle\Generator
  */
 interface LoggerAwareInterface
 {
     /**
-     * Set output logger
+     * Set an output logger
      *
      * @param LoggerInterface $logger
      * @return $this

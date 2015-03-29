@@ -28,6 +28,9 @@
 namespace Application\ImportBundle\Generator;
 
 /**
+ * Generator exception
+ * Uses in CLI commands
+ *
  * Class GeneratorException
  * @package Application\ImportBundle\Generator
  */

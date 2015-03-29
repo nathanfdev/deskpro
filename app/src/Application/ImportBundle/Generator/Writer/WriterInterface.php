@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer;
 
 use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
@@ -41,6 +42,9 @@ interface WriterInterface extends GeneratorConfigAwareInterface
     const TYPE_JSON     = 'json';
     const TYPE_DESK_PRO = 'deskpro';
 
+    const OUTPUT_BATCH_FILE = 'output.batch.json';
+    const INPUT_BATCH_FILE  = 'input.batch.json';
+
     /**
      * Returns the writer type
      *
@@ -49,10 +53,40 @@ interface WriterInterface extends GeneratorConfigAwareInterface
     public function getType();
 
     /**
+     * Set batch configuration
+     *
+     * @param BatchConfigInterface $config
+     * @return $this
+     */
+    public function setBatchConfig(BatchConfigInterface $config);
+
+    /**
+     * Set list of writing entity types
+     *
+     * @param array $types
+     * @return mixed
+     */
+    public function setWritingEntityTypes(array $types);
+
+    /**
+     * Prepares a writer to store data
+     *
+     * @return bool
+     */
+    public function prepare();
+
+    /**
      * Writes an entity to the storage
      *
      * @param EntityInterface $entity
      * @return bool
      */
     public function writeData(EntityInterface $entity);
+
+    /**
+     * Writes updated batch config
+     *
+     * @return bool
+     */
+    public function writeBatchConfig();
 }

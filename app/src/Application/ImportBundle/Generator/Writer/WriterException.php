@@ -33,7 +33,7 @@ namespace Application\ImportBundle\Generator\Writer;
  * Class WriterException
  * @package Application\ImportBundle\Generator\Writer
  */
-class WriterException extends \Exception
+final class WriterException extends \Exception
 {
 
 }

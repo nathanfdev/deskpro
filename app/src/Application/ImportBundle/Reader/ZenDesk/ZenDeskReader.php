@@ -27,12 +27,15 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Zendesk\API\Client;
+use Zendesk\API;
+use DateTime;
 
 /**
  * ZenDesk reader
  *
+ * see https://developer.zendesk.com/rest_api/docs/core/introduction
  * see https://developer.zendesk.com/rest_api/docs/core/incremental_export
+ * see https://support.zendesk.com/hc/en-us/articles/204232743
  *
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
@@ -40,56 +43,68 @@ use Zendesk\API\Client;
 class ZenDeskReader implements ZenDeskReaderInterface
 {
     /**
-     * @var Client
+     * @var Request\RequestAdapterInterface
      */
-    private $client;
+    private $adapter;
+
+    /**
+     * @var DateTime
+     */
+    private $initial_time;
 
     /**
      * Constructor
      *
-     * @param Client $client
+     * @param Request\RequestAdapterInterface $adapter
+     * @param DateTime                        $initial_time
      */
-    public function __construct(Client $client)
+    public function __construct(Request\RequestAdapterInterface $adapter, DateTime $initial_time)
     {
-        $this->client = $client;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * There is no method count(), but method findAll() returns total collection count value
-     */
-    public function getPeopleCount()
-    {
-        $result = $this->client->users()->findAll(array('per_page' => 1));
-        return $result->count;
+        $this->adapter      = $adapter;
+        $this->initial_time = $initial_time;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPeople()
+    public function getPeopleCount(DateTime $start_time = null)
     {
-        $people = array();
-        $result = $this->client->users()->findAll(array(
-            'page'       => 1,
-            'per_page'   => 100,
-            'sort_by'    => 'id',
-            'sort_order' => 'desc',
-            'start_time' => time(), // todo see https://support.zendesk.com/hc/en-us/articles/204232743
+        $result = $this->adapter->doPeopleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 
-//        var_dump($result->next_page);
-//        var_dump($result->previous_page);
-//        var_dump($result->count);
+        return $result ? $result->count : 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeople(DateTime $start_time = null)
+    {
+        $people = array();
+        $result = $this->adapter->doPeopleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
 
         if (is_array($result->users)) {
             foreach ($result->users as $person) {
-                $people[] = (array)$person;
+                $people[] = $this->toArray($person);
             }
         }
 
         return $people;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeopleEndTime(DateTime $start_time = null)
+    {
+        $request = $this->adapter->doPeopleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $this->getIncrementalEndDateTime($request);
     }
 
     /**
@@ -97,11 +112,16 @@ class ZenDeskReader implements ZenDeskReaderInterface
      */
     public function getPeopleByIds(array $ids)
     {
-        $people = array();
-        $result = $this->client->users()->find(array('id' => $ids));
-        if (is_array($result->users)) {
-            foreach ($result->users as $person) {
-                $people[] = (array)$person;
+        $people    = array();
+        $chunk_ids = array_chunk($ids, 100);
+
+        foreach ($chunk_ids as $chunk_ids_batch) {
+            $result = $this->adapter->doPeopleFindRequest(array('id' => $chunk_ids_batch));
+
+            if (is_array($result->users)) {
+                foreach ($result->users as $person) {
+                    $people[] = $this->toArray($person);
+                }
             }
         }
 
@@ -110,29 +130,100 @@ class ZenDeskReader implements ZenDeskReaderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * There is no method count(), but method findAll() returns total collection count value
      */
-    public function getTicketsCount()
+    public function getOrganizationById($id)
     {
-        $result = $this->client->tickets()->findAll(array('per_page' => 1));
-        return $result->count;
+        $result = $this->adapter->doOrganizationFindRequest(array(
+            'id' => $id,
+        ));
+
+        return $this->toArray($result->organization);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getTickets()
+    public function getTicketsCount(DateTime $start_time = null)
+    {
+        $result = $this->adapter->doTicketsIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $result ? $result->count : 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTickets(DateTime $start_time = null)
     {
         $tickets = array();
-        $result  = $this->client->tickets()->findAll();
+        $result  = $this->adapter->doTicketsIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
 
-        if (is_array($result->tickets)) {
+        if ($result) {
             foreach ($result->tickets as $ticket) {
-                $tickets[] = (array)$ticket;
+                $tickets[] = $this->toArray($ticket);
             }
         }
 
         return $tickets;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTicketsEndTime(DateTime $start_time = null)
+    {
+        $request = $this->adapter->doPeopleIncrementalExportRequest(array(
+            'start_time' => $this->getStartTimeTimestamp($start_time),
+        ));
+
+        return $this->getIncrementalEndDateTime($request);
+    }
+
+    /**
+     * Converts stdClass to array
+     *
+     * @param \stdClass $object
+     * @return array
+     */
+    private function toArray(\stdClass $object)
+    {
+        return @json_decode(json_encode($object), true);
+    }
+
+    /**
+     * Returns request start time timestamp
+     *
+     * @param DateTime $start_time
+     * @return int
+     */
+    private function getStartTimeTimestamp(DateTime $start_time = null)
+    {
+        if ($start_time && $start_time > $this->initial_time) {
+            return $start_time->getTimestamp();
+        }
+
+        return $this->initial_time->getTimestamp();
+    }
+
+    /**
+     * Request end time timestamp to DateTime
+     *
+     * @param \stdClass $request
+     * @return DateTime|int
+     */
+    private function getIncrementalEndDateTime(\stdClass $request)
+    {
+        if ($request) {
+            $time = new DateTime();
+            $time->setTimestamp($request->end_time);
+
+            return $time;
+        }
+
+        return 0;
     }
 }

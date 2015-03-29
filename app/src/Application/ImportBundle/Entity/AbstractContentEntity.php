@@ -2,6 +2,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Application\DeskPRO\Entity\ContentAbstract;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Orb\Util\Strings;
@@ -148,7 +149,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function getStatus()
     {
         if ($this->date_published) {
-            return 'published';
+            return ContentAbstract::STATUS_PUBLISHED;
         }
 
         return $this->status;
@@ -161,6 +162,32 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     {
         $this->status = $status;
         return $this;
+    }
+
+    /**
+     * Checks if status is valid
+     *
+     * @return bool
+     */
+    public function isStatusValid()
+    {
+        $hidden_prefix = 'hidden.';
+
+        $statuses = array(
+            ContentAbstract::STATUS_PUBLISHED,
+            ContentAbstract::STATUS_ARCHIVED,
+            ContentAbstract::STATUS_HIDDEN,
+
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_VALIDATING,
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_USER_VALIDATING,
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_DELETED,
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_SPAM,
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_DRAFT,
+            $hidden_prefix . ContentAbstract::HIDDEN_STATUS_TEMP,
+        );
+
+        return in_array($this->status, $statuses, true);
     }
 
     /**
@@ -266,9 +293,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
@@ -282,6 +307,9 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             ->addGetterConstraint('slug', new Constraints\NotBlank())
             ->addGetterConstraint('slug', new Constraints\Regex(array(
                 'pattern' => '/^[a-z0-9-]+$/',
-            )));
+            )))
+
+            ->addGetterConstraint('statusValid', new Constraints\True())
+        ;
     }
 }

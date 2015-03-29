@@ -146,7 +146,10 @@ final class Tickets extends AbstractParser
                     }
 
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `ticket_message_%s` parsed successfully!', $entity->getOid()));
+                    $this->logInfo(sprintf(
+                        'Entity `%s%s` parsed successfully!',
+                        self::MESSAGE_PREFIX,  $entity->getOid()
+                    ));
                 } else {
                     $this->logWarning(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
                 }
@@ -170,7 +173,7 @@ final class Tickets extends AbstractParser
      */
     private function exportMessage(array $message)
     {
-        if ($this->isValidMessage($message)) {
+        if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
                 ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
@@ -221,7 +224,7 @@ final class Tickets extends AbstractParser
      * @param array $message
      * @return bool
      */
-    private function isValidMessage(array $message)
+    private function isMessageValid(array $message)
     {
         $columns = array(
             'ticket_id',

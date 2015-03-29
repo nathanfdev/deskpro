@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Entity;
 
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Application\DeskPRO;
 
 /**
  * Exporting feedback entity
@@ -36,7 +37,8 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  * Class Feedback
  * @package Application\ImportBundle\Entity
  */
-final class Feedback extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
+final class Feedback extends AbstractContentEntity
+    implements PersonAwareInterface, LabelAwareInterface, AttachmentsAwareInterface
 {
     /**
      * @var string
@@ -60,6 +62,19 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     private $labels = array();
 
     /**
+     * @var Collection
+     */
+    private $attachments;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->attachments = new Collection();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getType()
@@ -68,6 +83,8 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Feedback category
+     *
      * @return string
      */
     public function getCategory()
@@ -76,6 +93,8 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Set feedback category
+     *
      * @param string $category
      * @return $this
      */
@@ -103,6 +122,8 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Feedback popularity
+     *
      * @return int
      */
     public function getPopularity()
@@ -111,12 +132,14 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Set feedback popularity
+     *
      * @param int $popularity
      * @return $this
      */
     public function setPopularity($popularity)
     {
-        $this->popularity = $popularity;
+        $this->popularity = (int)$popularity;
         return $this;
     }
 
@@ -140,10 +163,48 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     /**
      * {@inheritdoc}
      */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addAttachment(Attachment $attachment)
+    {
+        $this->attachments->attach($attachment);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isStatusValid()
+    {
+        $feedback_statuses = array(
+            DeskPRO\Entity\Feedback::STATUS_NEW,
+            DeskPRO\Entity\Feedback::STATUS_ACTIVE,
+            DeskPRO\Entity\Feedback::STATUS_CLOSED,
+            DeskPRO\Entity\Feedback::STATUS_HIDDEN,
+        );
+
+        return in_array($this->status, $feedback_statuses, true) || parent::isStatusValid();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function toArray()
     {
         if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
+        }
+
+        $attachments = array();
+        foreach ($this->attachments as $attachment) {
+            /** @var Attachment $attachment */
+            $attachments[] = $attachment->toArray();
         }
 
         return array(
@@ -163,13 +224,12 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
             'labels'         => $this->labels,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
+            'attachments'    => $attachments,
         );
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

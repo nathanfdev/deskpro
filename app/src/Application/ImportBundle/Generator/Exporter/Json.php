@@ -27,13 +27,18 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Json\NotFoundException;
+use Exception;
+use DateTime;
+
 /**
  * Exporter from json files
  *
  * Class Json
  * @package Application\ImportBundle\Generator\Exporter
  */
-final class Json extends AbstractExporter
+final class Json extends AbstractExporter implements ExporterBatchInterface
 {
     /**
      * {@inheritdoc}
@@ -41,5 +46,68 @@ final class Json extends AbstractExporter
     public function getType()
     {
         return self::TYPE_JSON;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountByType($type)
+    {
+        try {
+            return parent::getCountByType($type);
+
+        } catch (NotFoundException $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exportByType($type)
+    {
+        try {
+            return parent::exportByType($type);
+
+        } catch (NotFoundException $e) {
+            return new Entity\Collection();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUpdatedBatchConfig()
+    {
+        /** @var Parser\Json\BatchConfig $updated_config */
+        $updated_config = clone $this->config->getExporterBatchConfig();
+        $updated_config
+            ->setId($updated_config->getId() + 1)
+            ->setDateModified(new DateTime());
+
+        return $updated_config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultBatchConfig()
+    {
+        return new Parser\Json\BatchConfig();
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return Parser\Json\BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
     }
 }
