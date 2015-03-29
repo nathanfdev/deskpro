@@ -36,7 +36,8 @@ class TriggersProcessor extends Base
 
     protected function doProcess(array $data)
     {
+        $this->connection->executeUpdate("DELETE FROM ticket_triggers");
         $trigger_data = new TriggerData($this->container, new NullLogger());
-        $trigger_data->runReset();
+        $trigger_data->runInstall();
     }
 }

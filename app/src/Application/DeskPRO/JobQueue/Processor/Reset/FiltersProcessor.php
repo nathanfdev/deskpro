@@ -36,6 +36,7 @@ class FiltersProcessor extends Base
 
     protected function doProcess(array $data)
     {
+        $this->connection->executeUpdate('DELETE FROM ticket_filters');
         $filter_data = new FilterData($this->container, new NullLogger());
         $filter_data->runReset();
     }
