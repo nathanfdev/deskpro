@@ -67,48 +67,56 @@ class BasicDb extends AbstractDbSet
         $this->addBaseBrand($em);
         $this->runBasicDataInstall($admin, $em);
 
-        $dep = $this->getEm()->find('DeskPRO:Department', 1);
+        $support = $this->getEm()->find('DeskPRO:Department', 1);
+        $sales = $this->getEm()->find('DeskPRO:Department', 2);
         $team_both = $this->createAgentTeam('Agent And Chris', array($agent, $agent_chris));
         $team_agent = $this->createAgentTeam('Agent And Chris', array($agent));
 
         // the ticket numbers in the titles are purposley hardcoded
         // because they represent the insert IDs used in tests
-        $this->createTicket('Test Ticket 1', $dep, $user, $agent);
-        $this->createTicket('Test Ticket 2', $dep, $user, $agent);
-        $this->createTicket('Test Ticket 3', $dep, $user, $admin);
-        $this->createTicket('Test Ticket 4', $dep, $user, $agent);
-        $this->createTicket('Test Ticket 5', $dep, $user, $admin);
-        $this->createTicket('Test Ticket 6', $dep, $user, $agent);
-        $this->createTicket('Test Ticket 7', $dep, $user, $agent);
-        $this->createTicket('Test Ticket 8', $dep, $user, $agent);
+        $this->createTicket('Test Ticket 1', $support, $user, $agent);
+        $this->createTicket('Test Ticket 2', $support, $user, $agent);
+        $this->createTicket('Test Ticket 3', $support, $user, $admin);
+        $this->createTicket('Test Ticket 4', $support, $user, $agent);
+        $this->createTicket('Test Ticket 5', $support, $user, $admin);
+        $this->createTicket('Test Ticket 6', $sales, $user, $agent);
+        $this->createTicket('Test Ticket 7', $sales, $user, $agent);
+        $this->createTicket('Test Ticket 8', $support, $user, $agent);
 
-        $agent_participates = $this->createTicket('Test Ticket 9', $dep, $user, $admin);
+        $agent_participates = $this->createTicket('Test Ticket 9', $support, $user, $admin);
         $agent_participates->addParticipantPerson($agent);
 
-        $this->createTicket('Test Ticket 10', $dep, $user, $agent, $team_both);
+        $this->createTicket('Test Ticket 10', $support, $user, $agent, $team_both);
 
-        $agent_participates = $this->createTicket('Test Ticket 11', $dep, $user, $agent_chris, $team_both);
+        $agent_participates = $this->createTicket('Test Ticket 11', $support, $user, $agent_chris, $team_both);
         $agent_participates->addParticipantPerson($agent);
-        $agent_participates = $this->createTicket('Test Ticket 12', $dep, $user, $agent_chris, $team_both);
+        $agent_participates = $this->createTicket('Test Ticket 12', $support, $user, $agent_chris, $team_both);
         $agent_participates->addParticipantPerson($agent);
-        $agent_participates = $this->createTicket('Test Ticket 13', $dep, $user, $agent_chris, $team_agent);
+        $agent_participates = $this->createTicket('Test Ticket 13', $support, $user, $agent_chris, $team_agent);
         $agent_participates->addParticipantPerson($agent);
 
-        $this->createTicket('Test Ticket 14', $dep, $user, $agent_chris, $team_agent);
-        $this->createTicket('Test Ticket 15', $dep, $user, $agent_chris);
-        $this->createTicket('Unassigned But Has Team - Ticket 16', $dep, $user, null, $team_agent);
-        $this->createTicket('UNASSIGNED Test Ticket 17', $dep, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 18', $dep, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 19', $dep, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 20', $dep, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 21', $dep, $user, $agent_chris, null, Ticket::STATUS_AWAITING_USER);
-        $this->createTicket('UNASSIGNED Test Ticket 22', $dep, $user, $admin, null, Ticket::STATUS_AWAITING_USER);
-        $this->createTicket('UNASSIGNED Test Ticket 23', $dep, $user, $admin, null, Ticket::STATUS_RESOLVED);
-        $this->createTicket('UNASSIGNED Test Ticket 24', $dep, $user, $admin, null, Ticket::STATUS_RESOLVED);
-        $this->createTicket('UNASSIGNED Test Ticket 25', $dep, $user, $admin, null, Ticket::STATUS_ARCHIVED);
+        $this->createTicket('Test Ticket 14', $support, $user, $agent_chris, $team_agent);
+        $this->createTicket('Test Ticket 15', $support, $user, $agent_chris);
+        $this->createTicket('Unassigned But Has Team - Ticket 16', $support, $user, null, $team_agent);
+        $this->createTicket('UNASSIGNED Test Ticket 17', $support, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 18', $support, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 19', $support, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 20', $support, $user);
+        $this->createTicket(
+            'UNASSIGNED Test Ticket 21',
+            $support,
+            $user,
+            $agent_chris,
+            null,
+            Ticket::STATUS_AWAITING_USER
+        );
+        $this->createTicket('UNASSIGNED Test Ticket 22', $support, $user, $admin, null, Ticket::STATUS_AWAITING_USER);
+        $this->createTicket('UNASSIGNED Test Ticket 23', $support, $user, $admin, null, Ticket::STATUS_RESOLVED);
+        $this->createTicket('UNASSIGNED Test Ticket 24', $support, $user, $admin, null, Ticket::STATUS_RESOLVED);
+        $this->createTicket('UNASSIGNED Test Ticket 25', $support, $user, $admin, null, Ticket::STATUS_ARCHIVED);
         $this->createTicket(
             'UNASSIGNED Test Ticket 26',
-            $dep,
+            $support,
             $user,
             $admin,
             null,
@@ -116,7 +124,7 @@ class BasicDb extends AbstractDbSet
         );
         $this->createTicket(
             'UNASSIGNED Test Ticket 27',
-            $dep,
+            $support,
             $user,
             $admin,
             null,
@@ -124,7 +132,7 @@ class BasicDb extends AbstractDbSet
         );
         $this->createTicket(
             'UNASSIGNED Test Ticket 28',
-            $dep,
+            $support,
             $user,
             $admin,
             null,
@@ -149,7 +157,7 @@ class BasicDb extends AbstractDbSet
         $ticket->creation_system = Ticket::CREATED_WEB_PERSON;
         $ticket->setAgent($agent);
         $ticket->person = $person;
-        $ticket->department = $dep;
+        $ticket->setDepartment($dep);
         $ticket->subject = 'Test';
         $ticket->setStatus($status);
         $ticket->agent_team = $agent_team;

@@ -136,4 +136,16 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
 
         $manipulated = $this->resolveParameters($query, $engine_context);
     }
+
+    function it_will_alter_where_string(
+        DbalCompiledQuery $query,
+        DbalEngineContext $engine_context
+    )
+    {
+        $engine_context->getAndWhere()->willReturn('ticket.department_id = 4');
+
+        $query->appendWhere('AND (ticket.department_id = 4)')->shouldBeCalled();
+
+        $this->alterWhere($query, $engine_context);
+    }
 }

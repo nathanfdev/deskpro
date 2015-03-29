@@ -199,6 +199,14 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Given I set the context AND where to :where_string
+     */
+    public function iSetTheContextWhereTo($where_string)
+    {
+        $this->engine_context->setAndWhere($where_string);
+    }
+
+    /**
      * @Given I have a(n) :op :term with the options:
      */
     public function iHaveAnTermWithTheOptions($term, $op, TableNode $table)

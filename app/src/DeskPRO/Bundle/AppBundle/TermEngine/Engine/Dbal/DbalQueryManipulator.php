@@ -75,6 +75,13 @@ class DbalQueryManipulator
     {
     }
 
+    public function alterWhere(DbalCompiledQuery $query, DbalEngineContext $context)
+    {
+        if ($and_where = $context->getAndWhere()) {
+            $query->appendWhere(sprintf('AND (%s)', $and_where));
+        }
+    }
+
     public function resolveParameters(DbalCompiledQuery $query, DbalEngineContext $context)
     {
         foreach ($query->getParameters() as $key => $val) {

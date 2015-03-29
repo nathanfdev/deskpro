@@ -73,6 +73,7 @@ class DbalTicketFilterEngine extends DbalEngine
     {
         $compiled_query = $this->compiler->compile($filter);
 
+        $this->query_manipulator->alterWhere($compiled_query, $context);
         $this->query_manipulator->ensureAgentPermissions($compiled_query, $context);
         $this->query_manipulator->alterPagination($compiled_query, $context);
         $this->query_manipulator->alterGrouping($compiled_query, $context);

@@ -132,4 +132,13 @@ class DbalEngineContextSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_lets_you_append_to_the_where_string_of_the_end_query()
+    {
+        $this->getAndWhere()->shouldBe(null);
+
+        $this->setAndWhere('ticket.dpartment_id = 4');
+
+        $this->getAndWhere()->shouldBe('ticket.dpartment_id = 4');
+    }
 }

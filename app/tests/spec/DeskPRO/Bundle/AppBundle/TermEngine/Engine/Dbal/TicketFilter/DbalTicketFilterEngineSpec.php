@@ -86,6 +86,9 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
         $query_manipulator->alterSortOrder($compiled_query, $context)
             ->shouldBeCalled();
 
+        $query_manipulator->alterWhere($compiled_query, $context)
+            ->shouldBeCalled();
+
         $query_manipulator->resolveParameters($compiled_query, $context)
             ->shouldBeCalled();
 

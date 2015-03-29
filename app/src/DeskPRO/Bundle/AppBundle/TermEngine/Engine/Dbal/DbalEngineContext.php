@@ -62,6 +62,11 @@ class DbalEngineContext
      */
     protected $order_by;
 
+    /**
+     * @var string
+     */
+    protected $and_where;
+
     public function __construct(Person $person)
     {
         $this->agent = $person;
@@ -138,5 +143,21 @@ class DbalEngineContext
     public function getOrderBy()
     {
         return $this->order_by;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAndWhere()
+    {
+        return $this->and_where;
+    }
+
+    /**
+     * @param string $where_append
+     */
+    public function setAndWhere($where_append)
+    {
+        $this->and_where = $where_append;
     }
 }
