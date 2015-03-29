@@ -11,7 +11,7 @@ Feature: My Team's Tickets Filter
     When I evaluate the filter "My Team's Tickets"
     And I run a count on the executable query
     And print the last run query
-    Then I should be given the count 5
+    Then I should be given the count 6
     And print the last run query
     When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
@@ -21,6 +21,7 @@ Feature: My Team's Tickets Filter
       | 12 |
       | 13 |
       | 14 |
+      | 16 |
     And print the last run query
 
   Scenario: I use the built in "My Tickets" filter with user "agent_chris"
@@ -48,16 +49,16 @@ Feature: My Team's Tickets Filter
     And I add the context order to id DESC
     When I evaluate the filter "My Team's Tickets"
     And I run a count on the executable query
-    Then I should be given the count 5
+    Then I should be given the count 6
     And print the last run query
     When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
+      | 16 |
       | 14 |
       | 13 |
       | 12 |
       | 11 |
-      | 10 |
     And print the last run query
 
   Scenario: I paginate an agent's tickets to see the first page
@@ -67,12 +68,12 @@ Feature: My Team's Tickets Filter
     And I set the context count to 3
     When I evaluate the filter "My Team's Tickets"
     And I run a count on the executable query
-    Then I should be given the count 5
+    Then I should be given the count 6
     And print the last run query
     When I fetch the ids from the executable query
     Then I should be given the following dbal rows:
       | id |
+      | 16 |
       | 14 |
       | 13 |
-      | 12 |
     And print the last run query
