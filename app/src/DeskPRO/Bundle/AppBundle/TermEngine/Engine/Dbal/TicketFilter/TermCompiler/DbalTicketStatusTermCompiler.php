@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -45,8 +46,85 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
         $op = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $param_name = $compiler->addParameter('status', $term->getOption('status'));
+        $statuses = $term->getOption('status');
 
-        return sprintf('ticket.status %s (:%s)', $isser, $param_name);
+        $non_hidden = array();
+        $hidden = array();
+        foreach ($statuses as $status) {
+            if ($this->isHiddenStatus($status)) {
+                $hidden[] = $status;
+            } else {
+                $non_hidden[] = $status;
+            }
+        }
+
+        // only non hidden
+        if (count($non_hidden) && !count($hidden)) {
+            $status_non_hidden = $compiler->addParameter('status', $non_hidden);
+
+            return sprintf(
+                'ticket.status %s (:%s)',
+                $isser,
+                $status_non_hidden
+            );
+        }
+
+        // both
+        if (count($non_hidden) && count($hidden)) {
+            $status_non_hidden = $compiler->addParameter('status', $non_hidden);
+            $hidden_param = $compiler->addParameter('status', Ticket::STATUS_HIDDEN);
+            $status_hidden = $compiler->addParameter('status', $hidden);
+
+            return sprintf(
+                'ticket.status %s (:%s) OR (ticket.status = :%s AND ticket.hidden_status %s (:%s))',
+                $isser,
+                $status_non_hidden,
+                $hidden_param,
+                $isser,
+                $status_hidden
+            );
+        }
+
+        // only hidden
+        if (!count($non_hidden) && count($hidden)) {
+            $hidden_param = $compiler->addParameter('status', Ticket::STATUS_HIDDEN);
+            $status_hidden = $compiler->addParameter('status', $hidden);
+
+            if ($this->isOp($op, TermInterface::OP_NOT)) {
+
+                return sprintf(
+                    'ticket.status != :%s OR (ticket.status = :%s AND ticket.hidden_status NOT IN (:%s))',
+                    $hidden_param,
+                    $hidden_param,
+                    $status_hidden
+                );
+
+            } else {
+
+                return sprintf(
+                    'ticket.status = :%s AND ticket.hidden_status IN (:%s)',
+                    $hidden_param,
+                    $status_hidden
+                );
+
+            }
+        }
+    }
+
+    /**
+     * @param $status
+     * @return bool
+     */
+    protected function isHiddenStatus($status)
+    {
+        return in_array(
+            $status,
+            array(
+                Ticket::HIDDEN_STATUS_VALIDATING,
+                Ticket::HIDDEN_STATUS_SPAM,
+                Ticket::HIDDEN_STATUS_DELETED,
+                Ticket::HIDDEN_STATUS_TEMP
+            )
+        );
     }
 }
