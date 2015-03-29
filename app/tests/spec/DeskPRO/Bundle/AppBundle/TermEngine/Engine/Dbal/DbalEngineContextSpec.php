@@ -86,6 +86,17 @@ class DbalEngineContextSpec extends ObjectBehavior
         $this->getPerPage()->shouldBe(null);
     }
 
+    function it_will_set_page_to_1_when_per_page_is_set_and_there_is_not_page_yet()
+    {
+        $this->getPage()->shouldBe(null);
+        $this->getPerPage()->shouldBe(null);
+
+        $this->setPerPage(5);
+
+        $this->getPerPage()->shouldBe(5);
+        $this->getPage()->shouldBe(1);
+    }
+
     function it_has_no_group_bys_by_default()
     {
         $this->getGroupBy()->shouldReturn(array());

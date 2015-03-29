@@ -81,11 +81,19 @@ class BasicDb extends AbstractDbSet
         $this->createTicket('Test Ticket 6', $dep, $user, $agent);
         $this->createTicket('Test Ticket 7', $dep, $user, $agent);
         $this->createTicket('Test Ticket 8', $dep, $user, $agent);
-        $this->createTicket('Test Ticket 9', $dep, $user, $admin);
+
+        $agent_participates = $this->createTicket('Test Ticket 9', $dep, $user, $admin);
+        $agent_participates->addParticipantPerson($agent);
+
         $this->createTicket('Test Ticket 10', $dep, $user, $agent, $team_both);
-        $this->createTicket('Test Ticket 11', $dep, $user, $agent_chris, $team_both);
-        $this->createTicket('Test Ticket 12', $dep, $user, $agent_chris, $team_both);
-        $this->createTicket('Test Ticket 13', $dep, $user, $agent_chris, $team_agent);
+
+        $agent_participates = $this->createTicket('Test Ticket 11', $dep, $user, $agent_chris, $team_both);
+        $agent_participates->addParticipantPerson($agent);
+        $agent_participates = $this->createTicket('Test Ticket 12', $dep, $user, $agent_chris, $team_both);
+        $agent_participates->addParticipantPerson($agent);
+        $agent_participates = $this->createTicket('Test Ticket 13', $dep, $user, $agent_chris, $team_agent);
+        $agent_participates->addParticipantPerson($agent);
+
         $this->createTicket('Test Ticket 14', $dep, $user, $agent_chris, $team_agent);
         $this->createTicket('Test Ticket 15', $dep, $user, $agent_chris);
         $this->createTicket('Unassigned But Has Team - Ticket 16', $dep, $user, null, $team_agent);
@@ -122,6 +130,8 @@ class BasicDb extends AbstractDbSet
             null,
             Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED
         );
+
+        $this->getEm()->flush();
     }
 
     protected function createTicket(

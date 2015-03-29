@@ -115,6 +115,9 @@ class DbalEngineContext
     public function setPerPage($per_page)
     {
         $this->per_page = $per_page;
+        if (!$this->page) {
+            $this->page = 1;
+        }
     }
 
     public function addGroupBy($group)
