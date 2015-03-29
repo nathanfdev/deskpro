@@ -7,6 +7,8 @@
     'adm.round_robins.delete_warn'           => 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} trigger and remove the round robin actions.|Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.',
 
     'adm.round_robins.title'                  => 'Title',
+    'adm.round_robins.online_title'           => 'Online Only?',
+    'adm.round_robins.online_description'     => 'Only Assign to Agents that are Online',
     'adm.round_robins.agents'                 => 'Agents',
 
     'adm.round_robins.next'                   => 'Next in queue',

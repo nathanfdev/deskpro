@@ -89,7 +89,7 @@ class RoundRobin extends AbstractEntityRepository
         foreach ($robin->agents as $agentRef) {
             $a = $agentRef->agent;
 
-            if ($a['is_agent'] && !$a['is_disabled'] && !$a['is_deleted']) {
+            if ($a['is_agent'] && !$a['is_disabled'] && !$a['is_deleted'] && (!$robin['online_only'] || $a['is_online_now'])) {
                 $availableAgents[] = $a;
             }
         }

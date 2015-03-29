@@ -68,10 +68,16 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $title;
 
+    /**
+     * @var bool
+     */
+    protected $online_only;
+
 
     public function __construct()
     {
         $this->agents = new ArrayCollection();
+        $this->online_only = false;
     }
 
     /**
@@ -121,6 +127,12 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
             'columnName' => 'title',
             'type'       => 'string',
             'length'     => 255,
+            'nullable'  => false
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'online_only',
+            'columnName' => 'online_only',
+            'type'       => 'boolean',
             'nullable'  => false
         ));
 
