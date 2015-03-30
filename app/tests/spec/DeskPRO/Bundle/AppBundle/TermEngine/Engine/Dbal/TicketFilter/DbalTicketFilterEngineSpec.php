@@ -77,18 +77,6 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
         $query_manipulator->ensureAgentPermissions($compiled_query, $context)
             ->shouldBeCalled();
 
-        $query_manipulator->alterPagination($compiled_query, $context)
-            ->shouldBeCalled();
-
-        $query_manipulator->alterGrouping($compiled_query, $context)
-            ->shouldBeCalled();
-
-        $query_manipulator->alterSortOrder($compiled_query, $context)
-            ->shouldBeCalled();
-
-        $query_manipulator->alterWhere($compiled_query, $context)
-            ->shouldBeCalled();
-
         $query_manipulator->resolveParameters($compiled_query, $context)
             ->shouldBeCalled();
 

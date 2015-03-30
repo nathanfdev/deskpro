@@ -53,35 +53,6 @@ class DbalQueryManipulator
     {
     }
 
-    public function alterPagination(DbalCompiledQuery $query, DbalEngineContext $context)
-    {
-        if ($page = $context->getPage()) {
-            $query->setPage($page);
-        }
-
-        if ($per_page = $context->getPerPage()) {
-            $query->setLimit($per_page);
-        }
-    }
-
-    public function alterSortOrder(DbalCompiledQuery $query, DbalEngineContext $context)
-    {
-        foreach ($context->getOrderBy() as $order => $direction) {
-            $query->addOrderBy($order, $direction);
-        }
-    }
-
-    public function alterGrouping(DbalCompiledQuery $query, DbalEngineContext $context)
-    {
-    }
-
-    public function alterWhere(DbalCompiledQuery $query, DbalEngineContext $context)
-    {
-        if ($and_where = $context->getAndWhere()) {
-            $query->appendWhere(sprintf('AND (%s)', $and_where));
-        }
-    }
-
     public function resolveParameters(DbalCompiledQuery $query, DbalEngineContext $context)
     {
         foreach ($query->getParameters() as $key => $val) {

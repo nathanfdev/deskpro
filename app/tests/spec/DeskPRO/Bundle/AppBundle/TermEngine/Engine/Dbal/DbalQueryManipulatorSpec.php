@@ -62,46 +62,6 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         $this->ensureAgentPermissions($query, $engine_context);
     }
 
-    function it_will_manipulate_pagination(
-        DbalCompiledQuery $query,
-        DbalEngineContext $engine_context
-    )
-    {
-        $engine_context->getPage()->willReturn(2);
-        $engine_context->getPerPage()->willReturn(10);
-
-        $query->setPage(2)->shouldBeCalled();
-        $query->setLimit(10)->shouldBeCalled();
-
-        $this->alterPagination($query, $engine_context);
-    }
-
-    function it_will_set_the_correct_sort_order(
-        DbalCompiledQuery $query,
-        DbalEngineContext $engine_context
-    )
-    {
-        $engine_context->getOrderBy()->willReturn(
-            array(
-                '{from}.id' => 'desc',
-                '{from}.date' => 'asc'
-            )
-        );
-
-        $query->addOrderBy('{from}.id', 'desc')->shouldBeCalled();
-        $query->addOrderBy('{from}.date', 'asc')->shouldBeCalled();
-
-        $this->alterSortOrder($query, $engine_context);
-    }
-
-    function it_will_use_proper_grouping(
-        DbalCompiledQuery $query,
-        DbalEngineContext $engine_context
-    )
-    {
-        $this->alterGrouping($query, $engine_context);
-    }
-
     function it_will_resolve_query_parameters(
         DbalCompiledQuery $query,
         DbalEngineContext $engine_context,
@@ -135,17 +95,5 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
         )->shouldBeCalled();
 
         $manipulated = $this->resolveParameters($query, $engine_context);
-    }
-
-    function it_will_alter_where_string(
-        DbalCompiledQuery $query,
-        DbalEngineContext $engine_context
-    )
-    {
-        $engine_context->getAndWhere()->willReturn('ticket.department_id = 4');
-
-        $query->appendWhere('AND (ticket.department_id = 4)')->shouldBeCalled();
-
-        $this->alterWhere($query, $engine_context);
     }
 }
