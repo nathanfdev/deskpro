@@ -113,7 +113,8 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
             $agents[] = $ref->agent;
         }
 
-        if (false !== $lastIdx = array_search($this->last, $agents)) {
+        $lastIdx = array_search($this->last, $agents, 1);
+        if (false !== $lastIdx) {
             $end = array_splice($agents, 0, $lastIdx + 1);
             array_pop($end);
             $agents = array_merge($agents, $end);
