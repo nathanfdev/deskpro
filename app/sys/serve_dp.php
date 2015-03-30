@@ -46,7 +46,7 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
 /**
  * A light-weight loader for website widgetss.
  */
-class serve_dp extends LoaderAbstract
+class DpLoader extends LoaderAbstract
 {
     public function runAction()
     {

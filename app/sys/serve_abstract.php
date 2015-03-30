@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Kernel;
 
-abstract class serve_abstract
+abstract class LoaderAbstract
 {
     /**
      * @var string

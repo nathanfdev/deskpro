@@ -34,7 +34,6 @@ namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Imagine\Image\Box;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 
@@ -83,7 +82,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
  */
-class serve_file extends LoaderAbstract
+class FilestorageLoader extends LoaderAbstract
 {
     /**
      * @var string
