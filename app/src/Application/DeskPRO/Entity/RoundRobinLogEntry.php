@@ -57,39 +57,42 @@ class RoundRobinLogEntry extends DomainObject
 
     protected $translate;
 
-    public function __construct(\Application\DeskPRO\Translate\Translate $translate = null)
+    public function __construct()
     {
         $this->created = new \DateTime();
         $this->actions = array();
-        $this->translate = $translate;
     }
 
     public function addActionNoOnline()
     {
-        if ($this->translate) {
-            $this->actions[] = $this->translate->phrase('adm.round_robins.log_no_agents_online');
-        }
+        $this->actions[] = array(
+            'phrase' => 'adm.round_robins.log_no_agents_online',
+            'params' => array(),
+        );
     }
 
     public function addActionAssigned(Person $person)
     {
-        if ($this->translate) {
-            $this->actions[] = $this->translate->phrase('adm.round_robins.log_assigned', array('name' => $person->getDisplayName()));
-        }
+        $this->actions[] = array(
+            'phrase' => 'adm.round_robins.log_assigned',
+            'params' => array('name' => $person->getDisplayName()),
+        );
     }
 
     public function addActionSkippedOffline(Person $person)
     {
-        if ($this->translate) {
-            $this->actions[] = $this->translate->phrase('adm.round_robins.log_skipped_offline', array('name' => $person->getDisplayName()));
-        }
+        $this->actions[] = array(
+            'phrase' => 'adm.round_robins.log_skipped_offline',
+            'params' => array('name' => $person->getDisplayName()),
+        );
     }
 
     public function addActionSkippedDisabled(Person $person)
     {
-        if ($this->translate) {
-            $this->actions[] = $this->translate->phrase('adm.round_robins.log_skipped_disabled', array('name' => $person->getDisplayName()));
-        }
+        $this->actions[] = array(
+            'phrase' => 'adm.round_robins.log_skipped_disabled',
+            'params' => array('name' => $person->getDisplayName()),
+        );
     }
 
     ############################################################################

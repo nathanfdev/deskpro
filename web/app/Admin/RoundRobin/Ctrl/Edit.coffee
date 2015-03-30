@@ -134,6 +134,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
 
 
+    showLogs: ->
+      @Api.sendGet("/round_robin/#{@robin.id}/logs").then (res) =>
+        @$modal.open({
+          template: res.data,
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+          ]
+        })
+
+
+
     delete: ->
 
       @service.checkTriggers(@robin.id).then (data) =>

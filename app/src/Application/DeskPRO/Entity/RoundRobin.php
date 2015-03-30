@@ -116,7 +116,6 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         $lastIdx = array_search($this->last, $agents, 1);
         if (false !== $lastIdx) {
             $end = array_splice($agents, 0, $lastIdx + 1);
-            array_pop($end);
             $agents = array_merge($agents, $end);
         }
 
@@ -132,7 +131,12 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
                 continue;
             }
 
+            $entry && $entry->addActionAssigned($agent);
             return $agent;
+        }
+
+        if ($entry && $this['online_only']) {
+            $entry->addActionNoOnline();
         }
     }
 

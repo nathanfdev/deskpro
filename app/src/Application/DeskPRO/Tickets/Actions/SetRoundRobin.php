@@ -97,7 +97,8 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
         $em = $this->getContainer()->getEm();
         $adata = $this->getContainer()->getAgentData();
 
-        $entry = new RoundRobinLogEntry($this->getContainer()->getTranslator());
+        $entry = new RoundRobinLogEntry();
+        $entry->rr = $rr;
         $entry['ticketId'] = $ticket['id'];
         $entry['ticketSubject'] = $ticket['subject'];
         $em->persist($entry);
@@ -105,8 +106,6 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
         if ($agent = $rr->getNextAgent($adata, $entry)) {
             $ticket->agent = $agent;
             $rr->last = $agent;
-        } elseif ($rr['online_only']) {
-            $entry->addActionNoOnline();
         }
 
         $em->flush($entry);

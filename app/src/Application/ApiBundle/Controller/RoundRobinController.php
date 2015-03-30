@@ -36,9 +36,11 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\RoundRobin;
+use Application\DeskPRO\Entity\RoundRobinLogEntry;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
@@ -215,5 +217,29 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         }
 
         return $count;
+    }
+
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function logsAction($id)
+    {
+        if (!$rr = $this->em->find('DeskPRO:RoundRobin', $id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $entries = $this->em->getRepository('DeskPRO:RoundRobinLogEntry')->findBy(
+            array('rr' => $rr),
+            array('created' => 'desc')
+        );
+
+        return $this->render('AdminInterfaceBundle:RoundRobin:logs.html.twig', array(
+            'entries' => $entries,
+            'rr' => $rr,
+        ));
     }
 }
