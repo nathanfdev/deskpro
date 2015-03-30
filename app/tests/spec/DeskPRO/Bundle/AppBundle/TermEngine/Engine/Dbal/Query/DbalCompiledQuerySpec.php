@@ -72,6 +72,15 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->__toString()->shouldBe('SELECT tickets.id FROM tickets');
     }
 
+    function it_allows_appending_select_pieces()
+    {
+        $this->setSelectPart('{from}.id');
+        $this->addSelectPart('{from}.department_id AS department');
+
+        $this->setFrom('tickets', 'ticket');
+        $this->__toString()->shouldBe('SELECT ticket.id, ticket.department_id AS department FROM tickets ticket');
+    }
+
     function it_handles_where_part()
     {
         $this->generateWhereString()->shouldBe(null);

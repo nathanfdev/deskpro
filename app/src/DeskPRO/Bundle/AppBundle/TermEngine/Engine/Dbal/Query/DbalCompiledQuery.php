@@ -49,9 +49,9 @@ class DbalCompiledQuery
     private $params;
 
     /**
-     * @var string
+     * @var array
      */
-    private $select;
+    private $select_pieces;
 
     /**
      * @var string
@@ -115,8 +115,8 @@ class DbalCompiledQuery
 
     public function __construct()
     {
-        $this->select = '*';
         $this->page = 1;
+        $this->select_pieces = array('*');
         $this->joins = array();
         $this->join_ons = array();
         $this->unique_joins = array();
@@ -173,12 +173,12 @@ class DbalCompiledQuery
 
     public function generateSelectString()
     {
-        return $this->select;
+        return $this->getSelectPart();
     }
 
     public function getSelectPart()
     {
-        return $this->select;
+        return implode(', ', $this->select_pieces);
     }
 
     public function generateWhereString()
@@ -198,9 +198,15 @@ class DbalCompiledQuery
         return $this->from_alias ? $table . ' ' . $this->from_alias : $table;
     }
 
+    public function addSelectPart($select)
+    {
+        $this->select_pieces[] = trim($select);
+    }
+
     public function setSelectPart($select)
     {
-        $this->select = trim($select);
+        $this->select_pieces = array();
+        $this->addSelectPart($select);
     }
 
     public function setFrom($table, $alias = null)
