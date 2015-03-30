@@ -127,7 +127,7 @@ export default class DynamicForm {
       insertPoint = this.$formEl;
     }
 
-    _.forEach(this.currentFields, (name) => {
+    this.currentFields.map((name) => {
       if (this.fields.has(name)) {
         let $el = this.fields.get(name);
         if (!$el) {
