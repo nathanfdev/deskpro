@@ -24,8 +24,8 @@ Feature: Unassigned Tickets Filter
 
   Scenario: I use a descending ordering
     Given I set the context agent to agent
-    And I add the context order to id DESC
     When I evaluate the filter "Unassigned"
+    And I append ticket.id DESC to the executable query order
     And I run a count on the executable query
     Then I should be given the count 4
     And print the last run query
@@ -40,10 +40,10 @@ Feature: Unassigned Tickets Filter
 
   Scenario: I paginate an agent's tickets to see the second page
     Given I set the context agent to agent
-    And I add the context order to id DESC
-    And I set the context page to 3
-    And I set the context count to 1
     When I evaluate the filter "Unassigned"
+    And I append ticket.id DESC to the executable query order
+    And I set the executable query count to 1
+    And I set the executable query page to 3
     And I run a count on the executable query
     Then I should be given the count 4
     And print the last run query

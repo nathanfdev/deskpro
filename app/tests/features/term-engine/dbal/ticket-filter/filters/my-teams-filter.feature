@@ -46,8 +46,8 @@ Feature: My Team's Tickets Filter
 
   Scenario: I use a descending ordering
     Given I set the context agent to agent
-    And I add the context order to id DESC
     When I evaluate the filter "My Team's Tickets"
+    And I append ticket.id DESC to the executable query order
     And I run a count on the executable query
     Then I should be given the count 6
     And print the last run query
@@ -63,10 +63,9 @@ Feature: My Team's Tickets Filter
 
   Scenario: I paginate an agent's tickets to see the first page
     Given I set the context agent to agent
-    And I add the context order to id DESC
-    And I set the context page to 1
-    And I set the context count to 3
     When I evaluate the filter "My Team's Tickets"
+    And I append ticket.id DESC to the executable query order
+    And I set the executable query count to 3
     And I run a count on the executable query
     Then I should be given the count 6
     And print the last run query

@@ -23,15 +23,15 @@ Feature: Following Tickets Filter
 
   Scenario: I use the built in "Tickets I Follow" filter with user "agent" reverse order
     Given I set the context agent to agent
-    And I set the context count to 2
-    And I add the context order to id DESC
     When I evaluate the filter "Tickets I Follow"
+    And I set the executable query count to 2
+    And I append ticket.id DESC to the executable query order
     And I run a count on the executable query
     And print the last run query
     Then I should be given the count 4
     When I fetch the ids from the executable query
+    And print the last run query
     Then I should be given the following dbal rows:
       | id |
       | 13 |
       | 12 |
-    And print the last run query
