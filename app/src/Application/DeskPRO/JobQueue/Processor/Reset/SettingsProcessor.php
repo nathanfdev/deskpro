@@ -36,6 +36,17 @@ class SettingsProcessor extends Base
 
     const NAMES = 'core.settings.names';
 
+    protected $skip = array(
+        'core.site_url',
+        'core.deskpro_build',
+        'core.deskpro_build_num',
+        'core.deskpro_version',
+        'core.last_cron_run',
+        'core.last_cron_start',
+        'core.last_heartbeat',
+        'core.license',
+    );
+
     protected function doProcess(array $data)
     {
         $enc = $this->connection->fetchColumn(
@@ -43,8 +54,9 @@ class SettingsProcessor extends Base
             array('name' => self::NAMES)
         );
         if (!$settings = json_decode($enc, 1)) throw new \Exception('Settings backup not found');
-        $settings['core.site_url'] = null;
-        $settings['core.license'] = null;
+        foreach ($this->skip as $k) {
+            $settings[$k] = null;
+        }
         $settings[self::NAMES] = $enc;
 
         $this->connection->executeUpdate(
@@ -53,7 +65,10 @@ class SettingsProcessor extends Base
             array('names' => Connection::PARAM_STR_ARRAY)
         );
 
-        unset($settings['core.site_url'], $settings['core.license']);
+        foreach ($this->skip as $k) {
+            unset($settings[$k]);
+        }
+
         foreach ($settings as $k => $v) {
             $this->connection->executeUpdate(
                 'replace into settings values (:name, :value)',
