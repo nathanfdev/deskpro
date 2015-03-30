@@ -14,4 +14,10 @@
     'adm.round_robins.next'                   => 'Next in queue',
 
     'adm.round_robins.help_bulk'              => 'Bulk add agents that are members of teams, departments or permission groups',
+
+
+    'adm.round_robins.log_assigned'           => '{{ name }}',
+    'adm.round_robins.log_skipped_disabled'   => '{{ name }}',
+    'adm.round_robins.log_skipped_offline'    => '{{ name }}',
+    'adm.round_robins.log_no_agents_online'   => 'No Agents online: Remains Unassigned',
 );

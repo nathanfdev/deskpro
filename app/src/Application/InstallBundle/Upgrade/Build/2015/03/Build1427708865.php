@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,18 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\Log\Handler;
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
 
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\LogRoundRobin;
-
-class RoundRobinHandler extends DBHandler
+class Build1427708865 extends AbstractBuild
 {
-    /**
-     * @inheritdoc
-     */
-    public function isHandling(array $record)
+    public function run()
     {
-        return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogRoundRobin;
+        $this->out("Upgrade Round Robin");
+		$this->execMutateSql("ALTER TABLE round_robin DROP FOREIGN KEY FK_A56034E1C0E3DE5");
+		$this->execMutateSql("DROP INDEX IDX_A56034E1C0E3DE5 ON round_robin");
+		$this->execMutateSql("ALTER TABLE round_robin CHANGE next_agent_id last_agent_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE round_robin ADD CONSTRAINT FK_A56034E14C753495 FOREIGN KEY (last_agent_id) REFERENCES people (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_A56034E14C753495 ON round_robin (last_agent_id)");
+        $this->execMutateSql("UPDATE round_robin SET last_agent_id = NULL");
     }
 }

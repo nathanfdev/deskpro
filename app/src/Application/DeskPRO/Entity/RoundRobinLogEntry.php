@@ -34,47 +34,62 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Log\Loggable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class LogRoundRobin extends DomainObject implements Loggable
+class RoundRobinLogEntry extends DomainObject
 {
     /** @var int */
     protected $id;
-    /** @var int */
-    protected $timestamp;
-    /** @var int */
-    protected $roundRobinId;
-    /** @var int */
-    protected $agentId;
+    /** @var RoundRobin */
+    protected $rr;
     /** @var int */
     protected $ticketId;
-    /** @var int */
-    protected $triggerId;
+    /** @var string */
+    protected $ticketSubject;
+    /** @var array */
+    protected $actions;
+    /** @var \DateTime */
+    protected $created;
 
-    public function __construct($robinId, $agentId, $ticketId, $triggerId)
+    protected $translate;
+
+    public function __construct(\Application\DeskPRO\Translate\Translate $translate = null)
     {
-        $this['timestamp'] = time();
-        $this['roundRobinId'] = (int) $robinId;
-        $this['agentId'] = (int) $agentId;
-        $this['ticketId'] = (int) $ticketId;
-        $this['triggerId'] = (int) $triggerId;
+        $this->created = new \DateTime();
+        $this->actions = array();
+        $this->translate = $translate;
     }
 
-    /**
-     * todo
-     * @return string
-     */
-    public function __toString()
+    public function addActionNoOnline()
     {
-        return sprintf('Round Robin entry');
+        if ($this->translate) {
+            $this->actions[] = $this->translate->phrase('adm.round_robins.log_no_agents_online');
+        }
     }
 
-    public function context()
+    public function addActionAssigned(Person $person)
     {
-        return array();
+        if ($this->translate) {
+            $this->actions[] = $this->translate->phrase('adm.round_robins.log_assigned', array('name' => $person->getDisplayName()));
+        }
+    }
+
+    public function addActionSkippedOffline(Person $person)
+    {
+        if ($this->translate) {
+            $this->actions[] = $this->translate->phrase('adm.round_robins.log_skipped_offline', array('name' => $person->getDisplayName()));
+        }
+    }
+
+    public function addActionSkippedDisabled(Person $person)
+    {
+        if ($this->translate) {
+            $this->actions[] = $this->translate->phrase('adm.round_robins.log_skipped_disabled', array('name' => $person->getDisplayName()));
+        }
     }
 
     ############################################################################
@@ -83,15 +98,45 @@ class LogRoundRobin extends DomainObject implements Loggable
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->setPrimaryTable(array( 'name' => 'log_round_robin', ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true,));
-        $metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp',));
-        $metadata->mapField(array( 'fieldName' => 'roundRobinId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'round_robin_id'));
-        $metadata->mapField(array( 'fieldName' => 'agentId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'agent_id'));
-        $metadata->mapField(array( 'fieldName' => 'ticketId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'ticket_id'));
-        $metadata->mapField(array( 'fieldName' => 'triggerId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'trigger_id'));
-        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->setPrimaryTable(array('name' => 'round_robin_log',));
+
+        $metadata->mapField(array(
+            'fieldName' => 'id',
+            'columnName' => 'id',
+            'type' => 'integer',
+            'id' => true,
+        ));
+
+        $metadata->mapField(array(
+            'fieldName' => 'ticketId',
+            'columnName' => 'ticket_id',
+            'type' => 'integer',
+        ));
+
+        $metadata->mapField(array(
+            'fieldName' => 'ticketSubject',
+            'columnName' => 'ticket_subject',
+        ));
+
+        $metadata->mapField(array(
+            'fieldName' => 'actions',
+            'columnName' => 'actions',
+            'type' => 'array',
+        ));
+
+        $metadata->mapField(array(
+            'fieldName' => 'created',
+            'columnName' => 'created',
+            'type' => 'datetime',
+        ));
+
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'rr',
+            'targetEntity' => 'Application\DeskPRO\Entity\RoundRobin',
+        ));
+
     }
 }

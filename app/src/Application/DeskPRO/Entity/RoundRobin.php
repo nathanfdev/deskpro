@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -50,11 +51,11 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * Next agent in queue
+     * Recently assigned agent
      *
      * @var \Application\DeskPRO\Entity\Person
      */
-    protected $next = null;
+    protected $last = null;
 
     /**
      * Agents
@@ -101,6 +102,39 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
+    /**
+     * @param RoundRobinLogEntry $entry
+     * @return Person|mixed
+     */
+    public function getNextAgent(AgentDataService $adata, RoundRobinLogEntry $entry = null)
+    {
+        $agents = array();
+        foreach ($this->agents as $ref) {
+            $agents[] = $ref->agent;
+        }
+
+        if (false !== $lastIdx = array_search($this->last, $agents)) {
+            $end = array_splice($agents, 0, $lastIdx + 1);
+            array_pop($end);
+            $agents = array_merge($agents, $end);
+        }
+
+        while ($agent = array_shift($agents)) {
+            /** @var $agent Person */
+            if (!$agent['is_agent'] || $agent['is_disabled'] || $agent['is_deleted']) {
+                $entry && $entry->addActionSkippedDisabled($agent);
+                continue;
+            }
+
+            if ($this['online_only'] && !$adata->isAgentOnline($agent)) {
+                $entry && $entry->addActionSkippedOffline($agent);
+                continue;
+            }
+
+            return $agent;
+        }
+    }
+
 
 
     ############################################################################
@@ -137,11 +171,11 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName'    => 'next',
+            'fieldName'    => 'last',
             'dpApi'        => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'joinColumns' => array(array(
-                'name'                 => 'next_agent_id',
+                'name'                 => 'last_agent_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
