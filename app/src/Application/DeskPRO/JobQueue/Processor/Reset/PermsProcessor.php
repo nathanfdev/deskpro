@@ -162,5 +162,15 @@ class PermsProcessor extends Base
                 ($ugid, NULL, '1', 'agent_general.signature'),
                 ($ugid, NULL, '1', 'agent_general.signature_rte')
         ");
+
+        $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+        foreach ($scanner->getNames() as $p_name) {
+            $p = new \Application\DeskPRO\Entity\Permission();
+            $p->usergroup = $USERGROUP_EVERYONE;
+            $p->name = $p_name;
+            $p->value = 1;
+            $this->em->persist($p);
+        }
+        $this->em->flush();
     }
 }
