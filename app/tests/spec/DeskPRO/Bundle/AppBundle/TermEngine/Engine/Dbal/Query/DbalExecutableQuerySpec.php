@@ -54,6 +54,30 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         $this->beConstructedWith($query, $connection);
     }
 
+    function it_holds_query_config_data()
+    {
+        $this->getOrderBy()->shouldBe(array());
+        $this->getPage()->shouldBe(1);
+        $this->getCount()->shouldBe(null);
+        $this->getAndWhere()->shouldBe(array());
+        $this->getAndGroupWhere()->shouldBe(array());
+
+        $this->addOrderBy('department', 'DESC');
+        $this->getOrderBy()->shouldBe(array('department' => 'DESC'));
+
+        $this->setPage(4);
+        $this->getPage()->shouldBe(4);
+
+        $this->setCount(10);
+        $this->getCount()->shouldBe(10);
+
+        $this->addAndWhere('{from}.department = 5');
+        $this->getAndWhere()->shouldBe(array('{from}.department = 5'));
+
+        $this->addAndGroupWhere('department', 5);
+        $this->getAndGroupWhere()->shouldBe(array('department' => 5));
+    }
+
     function it_will_run_a_count_query(
         DbalCompiledQuery $query,
         Connection $connection,
@@ -116,6 +140,56 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         );
 
         $this->fetchIds()->shouldReturn($result);
+    }
+
+    function it_will_execute_a_select_ids_query_with_pagination_custom_where_and_sorting_applied(
+        DbalCompiledQuery $query,
+        Connection $connection,
+        Statement $stmt
+    )
+    {
+        $query->setSelectPart('{from}.id')->shouldBeCalled();
+
+        $query->__toString()->willReturn(
+            'SELECT ticket.id FROM tickets ticket WHERE ticket.param = :param1 AND ticket.test = true ORDER BY ticket.id LIMIT 5,10'
+        );
+        $query->getParameters()->willReturn(
+            array('param1' => 4)
+        );
+
+        $connection->executeQuery(
+            'SELECT ticket.id FROM tickets ticket WHERE ticket.param = :param1 AND ticket.test = true ORDER BY ticket.id LIMIT 5,10',
+            array('param1' => 4),
+            Argument::type('array')
+        )->willReturn($stmt);
+
+        $stmt->fetchAll()->willReturn(
+            $result =
+                array(
+                    array(
+                        'id' => 2
+                    ),
+                    array(
+                        'id' => 3
+                    )
+                )
+        );
+
+        $this->fetchIds(
+            array(
+                'order_by' => array(
+                    '{from}.id' => 'DESC'
+                ),
+                'page' => 2,
+                'count' => 5,
+                'andWhere' => array(
+                    '{from}.test = true'
+                ),
+                'andGroupWhere' => array(
+                    'agent' => 5
+                )
+            )
+        )->shouldReturn($result);
     }
 
     function it_will_resolve_parameter_types_for_dbal_execute()

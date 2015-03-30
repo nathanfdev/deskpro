@@ -97,27 +97,43 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
-     * @Given I add the context order to :order :dir
+     * @Given I set the executable query page to :val
      */
-    public function iSetTheContextOrderTo($order, $dir)
+    public function iSetTheQueryOptionpageTo($val)
     {
-        $this->engine_context->addOrderBy('{from}.' . $order, $dir);
+        $this->executable_query->setPage($val);
     }
 
     /**
-     * @Given I set the context page to :page
+     * @Given I set the executable query count to :val
      */
-    public function iSetTheContextPageTo($page)
+    public function iSetTheQueryOptionCountTo($val)
     {
-        $this->engine_context->setPage($page);
+        $this->executable_query->setCount($val);
     }
 
     /**
-     * @Given I set the context count to :count
+     * @When I add the count group :group to the executable query
      */
-    public function iSetTheContextCountTo($count)
+    public function iAddTheCountGroupToTheExecutableQuery($group)
     {
-        $this->engine_context->setPerPage($count);
+        $this->executable_query->addCountGroup($group);
+    }
+
+    /**
+     * @When I append :field :dir to the executable query order
+     */
+    public function iAppendIdDescToTheExecutableQueryOptionOrderby($field, $dir)
+    {
+        $this->executable_query->addOrderBy($field, $dir);
+    }
+
+    /**
+     * @Given I append :group_name = :val to the executable query andGroupWhere
+     */
+    public function iAppendDepartmentToTheQueryOptionGroupWhere($group_name, $val)
+    {
+        $this->executable_query->addAndGroupWhere($group_name, $val);
     }
 
     /**
@@ -191,19 +207,16 @@ class DbalCompilerContext extends BaseContext
         $rows = $table->getColumnsHash();
 
         foreach ($rows as $inc => $expected_data) {
-            expect($this->engine_result[$inc])->toBeLike($expected_data);
+            $expected = array();
+            foreach ($expected_data as $key => $val) {
+                if ($val == 'null') {
+                    $val = null;
+                }
+                $expected[$key] = $val;
+            }
+
+            expect($this->engine_result[$inc])->toBeLike($expected);
         }
-
-
-        return;
-    }
-
-    /**
-     * @Given I set the context AND where to :where_string
-     */
-    public function iSetTheContextWhereTo($where_string)
-    {
-        $this->engine_context->setAndWhere($where_string);
     }
 
     /**
@@ -224,6 +237,14 @@ class DbalCompilerContext extends BaseContext
         } else {
             $this->term = $term;
         }
+    }
+
+    /**
+     * @When I fetch the grouped count from the executable query
+     */
+    public function iFetchTheGroupedCountFromTheExecutableQuery()
+    {
+        $this->engine_result = $this->executable_query->fetchGroupedCount();
     }
 
     /**
@@ -390,6 +411,9 @@ class DbalCompilerContext extends BaseContext
                 // no array
                 if (is_numeric($v)) {
                     $v = (int)$v;
+                }
+                if ($v == 'null') {
+                    $v = null;
                 }
                 $nv = $v;
             }

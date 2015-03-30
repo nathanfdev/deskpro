@@ -34,9 +34,17 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DbalExecutableQuery
 {
+    public static $groupAliases = array(
+        'agent' => '{from}.agent_id',
+        'department' => '{from}.department_id',
+        'person' => '{from}.person_id',
+        'date_created' => '{from}.date_created'
+    );
+
     /**
      * @var DbalCompiledQuery
      */
@@ -62,10 +70,24 @@ class DbalExecutableQuery
      */
     private $last_run_parameter_types;
 
+    private $order_by;
+    private $page;
+    private $count;
+    private $and_where;
+    private $and_group_where;
+    private $group_by;
+
     public function __construct(DbalCompiledQuery $query, Connection $connection)
     {
         $this->query = $query;
         $this->connection = $connection;
+
+        $this->order_by = array();
+        $this->and_where = array();
+        $this->and_group_where = array();
+        $this->group_by = array();
+        $this->page = 1;
+        $this->count = null;
     }
 
     /**
@@ -78,6 +100,21 @@ class DbalExecutableQuery
         $query = clone $this->query;
 
         $query->setSelectPart('{from}.id');
+
+        // pagination
+        if ($this->count) {
+            $query->setPage($this->page);
+            $query->setLimit($this->count);
+        }
+
+        // ordering
+        foreach ($this->order_by as $order_by => $direction) {
+            $query->addOrderBy($order_by, $direction);
+        }
+
+        // various WHERE manipulations
+        $this->manipulateWhere($query);
+
 
         $stmt = $this->execute($query);
 
@@ -97,6 +134,10 @@ class DbalExecutableQuery
         $query->setPage(null);
         $query->setLimit(null);
 
+
+        // various WHERE manipulations
+        $this->manipulateWhere($query);
+
         $stmt = $this->execute($query);
 
         $res = $stmt->fetch();
@@ -106,6 +147,31 @@ class DbalExecutableQuery
         }
 
         return (int)$res['count'];
+    }
+
+    function fetchGroupedCount()
+    {
+        $query = clone $this->query;
+
+        $query->setSelectPart('COUNT(*) AS count');
+
+        // group by
+        foreach ($this->group_by as $alias => $group) {
+            $query->addSelectPart(sprintf('%s AS %s', $group, $alias));
+            $query->addGroupBy($alias);
+        }
+
+        // various WHERE manipulations
+        $this->manipulateWhere($query);
+
+        $query->setPage(null);
+        $query->setLimit(null);
+
+        $stmt = $this->execute($query);
+
+        $res = $stmt->fetchAll();
+
+        return $res;
     }
 
     /**
@@ -122,6 +188,25 @@ class DbalExecutableQuery
     public function getLastRunParameters()
     {
         return $this->last_run_parameters;
+    }
+
+    public function addCountGroup($group, $optional_select_alias = null)
+    {
+        if (null === $optional_select_alias) {
+            if ($sql = $this->transformAliasGroupName($group)) {
+                $optional_select_alias = $group;
+                $group = $sql;
+            } else {
+                $optional_select_alias = $group;
+            }
+        }
+
+        $this->group_by[$optional_select_alias] = $group;
+    }
+
+    public function getGroupBy()
+    {
+        return $this->group_by;
     }
 
     /**
@@ -215,7 +300,7 @@ class DbalExecutableQuery
      * @param $param
      * @return bool
      */
-    private function isNum($param)
+    protected function isNum($param)
     {
         return is_int($param) || is_float($param) || (is_numeric($param) && !is_string($param));
     }
@@ -224,8 +309,118 @@ class DbalExecutableQuery
      * @param $param
      * @return bool
      */
-    private function isStr($param)
+    protected function isStr($param)
     {
         return is_string($param);
     }
+
+    protected function transformAliasGroupName($potentially_an_alias)
+    {
+        if (!array_key_exists($potentially_an_alias, self::$groupAliases)) {
+            return null;
+        }
+
+        return self::$groupAliases[$potentially_an_alias];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrderBy()
+    {
+        return $this->order_by;
+    }
+
+    /**
+     * @param $order_by
+     * @param $dir
+     */
+    public function addOrderBy($order_by, $dir)
+    {
+        $this->order_by[$order_by] = $dir;
+    }
+
+    /**
+     * @return null
+     */
+    public function getCount()
+    {
+        return $this->count;
+    }
+
+    /**
+     * @param null $count
+     */
+    public function setCount($count)
+    {
+        $this->count = $count;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAndWhere()
+    {
+        return $this->and_where;
+    }
+
+    /**
+     * @param array $and_where
+     */
+    public function addAndWhere($and_where)
+    {
+        $this->and_where[] = $and_where;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAndGroupWhere()
+    {
+        return $this->and_group_where;
+    }
+
+    /**
+     * @param $group_alias
+     * @param $value
+     */
+    public function addAndGroupWhere($group_alias, $value)
+    {
+        $this->and_group_where[$group_alias] = $value;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param int $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    /**
+     * @param $query
+     */
+    protected function manipulateWhere($query)
+    {
+// extra where
+        foreach ($this->and_where as $where) {
+            $query->appendWhere(sprintf('AND (%s)', $where));
+        }
+
+        // group where (allows setting a special group field to a value in the where clause)
+        foreach ($this->and_group_where as $group_name => $value) {
+            $param_name = $query->addParameter('group_name', $value);
+            $query->appendWhere(sprintf('AND (%s = :%s)', $this->transformAliasGroupName($group_name), $param_name));
+        }
+    }
+
+
 }
