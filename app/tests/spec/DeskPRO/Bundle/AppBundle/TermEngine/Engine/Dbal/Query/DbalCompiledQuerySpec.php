@@ -152,13 +152,13 @@ class DbalCompiledQuerySpec extends ObjectBehavior
 
         $this->getGroupBy()->shouldBeLike(array('{from}.subject'));
         $this->generateGroupByString()->shouldBe('{from}.subject');
-        $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject');
+        $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject WITH ROLLUP');
 
         $this->addGroupBy('{from}.date_created');
 
         $this->getGroupBy()->shouldBeLike(array('{from}.subject', '{from}.date_created'));
         $this->generateGroupByString()->shouldBe('{from}.subject, {from}.date_created');
-        $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject, t.date_created');
+        $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject, t.date_created WITH ROLLUP');
     }
 
     function it_can_accept_order_bys()
@@ -391,7 +391,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->setPage(4);
 
         $this->__toString()->shouldBeLike(
-            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE t.id = 5 GROUP BY t.date_created, t.id ORDER BY t.id DESC LIMIT 45, 15'
+            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE t.id = 5 GROUP BY t.date_created, t.id WITH ROLLUP ORDER BY t.id DESC LIMIT 45, 15'
         );
     }
 }

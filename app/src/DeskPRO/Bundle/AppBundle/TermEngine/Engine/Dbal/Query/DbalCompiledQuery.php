@@ -113,6 +113,11 @@ class DbalCompiledQuery
      */
     private $page;
 
+    /**
+     * @var bool
+     */
+    private $group_with_rollup;
+
     public function __construct()
     {
         $this->page = 1;
@@ -125,6 +130,7 @@ class DbalCompiledQuery
         $this->groupings = array();
         $this->orderings = array();
         $this->params = array();
+        $this->group_with_rollup = true; // uses GROUP BY .. WITH ROLLUP by default
     }
 
     public function __toString()
@@ -147,6 +153,9 @@ class DbalCompiledQuery
 
         if (count($this->groupings)) {
             $sql_string .= ' GROUP BY ' . $this->generateGroupByString();
+            if ($this->group_with_rollup) {
+                $sql_string .= ' WITH ROLLUP';
+            }
         }
 
         if (count($this->orderings)) {
@@ -409,5 +418,21 @@ class DbalCompiledQuery
         }
 
         return ($this->page - 1) * $this->limit;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isGroupWithRollup()
+    {
+        return $this->group_with_rollup;
+    }
+
+    /**
+     * @param boolean $group_with_rollup
+     */
+    public function setGroupWithRollup($group_with_rollup)
+    {
+        $this->group_with_rollup = (bool)$group_with_rollup;
     }
 }
