@@ -15,7 +15,7 @@ Feature: DbalAgentCompiler
       | x         | [1, 2, 15] |
 
   Scenario: Compile the term with "me"
-    And I have an IS AgentTerm with the options:
+    Given I have an IS AgentTerm with the options:
       | Option    | Value          |
       | agent_ids | [1, 2, 15, me] |
     When I compile my terms

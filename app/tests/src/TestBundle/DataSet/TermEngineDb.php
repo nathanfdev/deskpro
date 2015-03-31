@@ -33,11 +33,18 @@ namespace DpTests\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTests\TestBundle\UserDetailsRepo;
 
 class TermEngineDb extends AbstractDbSet
@@ -138,6 +145,8 @@ class TermEngineDb extends AbstractDbSet
             null,
             Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED
         );
+
+        $this->createCustomDataAndCustomFilters();
 
         $this->getEm()->flush();
     }
@@ -354,5 +363,138 @@ class TermEngineDb extends AbstractDbSet
         $this->getEm()->flush();
 
         return $agent_team;
+    }
+
+    protected function createCustomDataAndCustomFilters()
+    {
+// CUSTOM DATA
+        $question_def = new CustomDefTicket();
+        $question_def->title = "Favorite Color";
+        $question_def->dscription = "Pick your favorite color";
+        $question_def->is_enabled = $question_def->is_user_enabled = true;
+
+        $option_def_green = new CustomDefTicket();
+        $option_def_green->title = "Green";
+        $option_def_green->description = "Green";
+        $option_def_green->is_enabled = $option_def_green->is_enabled = true;
+        $option_def_green->parent = $question_def;
+
+        $option_def_blue = new CustomDefTicket();
+        $option_def_blue->title = "Blue";
+        $option_def_blue->description = "Blue";
+        $option_def_blue->is_enabled = $option_def_blue->is_enabled = true;
+        $option_def_blue->parent = $question_def;
+
+        $option_def_red = new CustomDefTicket();
+        $option_def_red->title = "Red";
+        $option_def_red->description = "Red";
+        $option_def_red->is_enabled = $option_def_red->is_enabled = true;
+        $option_def_red->parent = $question_def;
+
+        $this->getEm()->persist($question_def);
+        $this->getEm()->persist($option_def_green);
+        $this->getEm()->persist($option_def_blue);
+        $this->getEm()->persist($option_def_red);
+        $this->getEm()->flush();
+
+        // TICKETS WITH CUSTOM DATA
+        $ticket7 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(7);
+        $ticket_data = new CustomDataTicket();
+        $ticket_data->field = $question_def;
+        $ticket_data->ticket = $ticket7;
+        $ticket_data->value = $option_def_red->getId();
+        $this->getEm()->persist($ticket_data);
+
+        $ticket2 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(2);
+        $ticket_data = new CustomDataTicket();
+        $ticket_data->field = $question_def;
+        $ticket_data->ticket = $ticket2;
+        $ticket_data->value = $option_def_blue->getId();
+        $this->getEm()->persist($ticket_data);
+
+        $ticket4 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(4);
+        $ticket_data = new CustomDataTicket();
+        $ticket_data->field = $question_def;
+        $ticket_data->ticket = $ticket4;
+        $ticket_data->value = $option_def_blue->getId();
+        $this->getEm()->persist($ticket_data);
+
+        $ticket11 = $this->getEm()->getRepository('DeskPRO:Ticket')->find(11); // NOT "agent"
+        $ticket_data = new CustomDataTicket(); // NOT "agent"
+        $ticket_data->field = $question_def; // NOT "agent"
+        $ticket_data->ticket = $ticket11; // NOT "agent"
+        $ticket_data->value = $option_def_red->getId(); // NOT "agent"
+        $this->getEm()->persist($ticket_data);
+
+        $this->getEm()->flush();
+
+        // ADD CUSTOM FILTER
+
+        // tickets that are assigned to the current user, whos custom color field is RED
+        $term = new CompositeTerm(array(), TermInterface::OP_AND);
+        $term->addTerm(
+            new AgentTerm(
+                array(
+                    'agent_ids' => array(AgentTerm::ID_ME) // current agent
+                )
+            )
+        );
+        $term->addTerm(
+            new TicketCustomDataTerm(
+                array(
+                    'field_id' => $question_def->getId(),
+                    'values' => array($option_def_red->getId()) // favorite color is RED
+                )
+            )
+        );
+
+        $filter = new Filter();
+        $filter->setTitle('Fav. Color is Red');
+        $filter->setTerm($term);
+        $filter->setFilterSet($this->getEm()->getRepository('App:FilterSet')->find(1));
+        $this->getEm()->persist($filter);
+
+        // tickets that are assigned to the current user, whos custom color field is RED
+        $main_term = new CompositeTerm(array(), TermInterface::OP_AND);
+        $main_term->addTerm(
+            new AgentTerm(
+                array(
+                    'agent_ids' => array(AgentTerm::ID_ME) // current agent
+                )
+            )
+        );
+
+        // NOTE: this is NOT the only way to do this, because the TicketCustomDataTerm
+        //       "values" option allows for an array of ids. This is for testing embedded
+        //       composite values.
+        $embedded_or = new CompositeTerm(array(), TermInterface::OP_OR);
+        $embedded_or->addTerm(
+            new TicketCustomDataTerm(
+                array(
+                    'field_id' => $question_def->getId(),
+                    'values' => array($option_def_red->getId())
+                    // favorite color is RED
+                )
+            )
+        );
+        $embedded_or->addTerm(
+            new TicketCustomDataTerm(
+                array(
+                    'field_id' => $question_def->getId(),
+                    'values' => array($option_def_blue->getId())
+                    // favorite color is BLUE
+                )
+            )
+        );
+
+        $main_term->addTerm(
+            $embedded_or
+        );
+
+        $filter = new Filter();
+        $filter->setTitle('Fav. Color is Red or Blue');
+        $filter->setTerm($main_term);
+        $filter->setFilterSet($this->getEm()->getRepository('App:FilterSet')->find(1));
+        $this->getEm()->persist($filter);
     }
 }
