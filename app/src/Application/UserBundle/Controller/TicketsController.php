@@ -157,7 +157,7 @@ class TicketsController extends AbstractController
             $last_mesasge_ids = App::getDb()->fetchAllCol("
                 SELECT MAX(id)
                 FROM tickets_messages
-                WHERE ticket_id IN (?)
+                WHERE ticket_id IN (?) AND is_agent_note = 0
                 GROUP BY ticket_id
             ", array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
 
