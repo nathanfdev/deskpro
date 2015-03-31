@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpUnitTests\DeskPRO\Application\NewSettings;
+namespace DeskPRO\Tests\DeskPRO\Application\NewSettings;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -90,7 +90,8 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         $mockCache->shouldReceive('delete')->with('settings.bag.global')->never();
         $mockCache->shouldReceive('has')->with('settings.bag.global')->andReturn(false)->once();
         $mockCache->shouldReceive('set')->with(
-            'settings.bag.global', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
+            'settings.bag.global',
+            \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
         )->once();
 
         $this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings());
@@ -135,7 +136,8 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         $mockCache->shouldReceive('delete')->with('settings.bag.global')->once();
         $mockCache->shouldReceive('has')->with('settings.bag.global')->andReturn(false)->once();
         $mockCache->shouldReceive('set')->with(
-            'settings.bag.global', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
+            'settings.bag.global',
+            \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
         )->once();
 
         $this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings(true));
@@ -176,7 +178,8 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         $mockCache->shouldReceive('delete')->with('settings.bag.default')->never();
         $mockCache->shouldReceive('has')->with('settings.bag.default')->andReturn(false)->once();
         $mockCache->shouldReceive('set')->with(
-            'settings.bag.default', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
+            'settings.bag.default',
+            \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
         )->once();
 
         $this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings());
@@ -217,7 +220,8 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         $mockCache->shouldReceive('delete')->with('settings.bag.default')->once();
         $mockCache->shouldReceive('has')->with('settings.bag.default')->andReturn(false)->once();
         $mockCache->shouldReceive('set')->with(
-            'settings.bag.default', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
+            'settings.bag.default',
+            \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
         )->once();
 
         $this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings(true));
@@ -236,7 +240,8 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         );
 
         $resolver->setVirtual(
-            'core.default_timezone', function () {
+            'core.default_timezone',
+            function () {
                 return 'func_generated_value';
             }
         );
@@ -260,7 +265,8 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         );
 
         $resolver->setVirtual(
-            'core.default_timezone', function () {
+            'core.default_timezone',
+            function () {
                 return 'func_generated_value';
             }
         );

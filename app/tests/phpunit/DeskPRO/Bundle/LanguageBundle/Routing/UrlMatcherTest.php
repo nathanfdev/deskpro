@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -29,49 +29,34 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application;
+namespace DeskPRO\Tests\DeskPRO\Bundle\LanguageBundle\Routing;
 
-use Application\DeskPRO\JobQueue\JobQueue;
-use Application\DeskPRO\Sms\DeskPROSmsSender;
-use Orb\Sms\SmsMessage;
+use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
 
-class DeskPROSmsSenderTest extends \PHPUnit_Framework_TestCase
+class UrlMatcherTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSendUsesDefaults()
+    public function testExtractsLanguage()
     {
-        $queue = $this->getMockJobQueue();
-        $queue->shouldReceive('addJob')->once();
+        $matcher = new UrlMatcher();
 
-        $sms = new DeskPROSmsSender(null, null, $queue);
-        $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
-        $text = new SmsMessage('Some text message!');
+        $this->assertEquals(
+            array('lang_url_code' => 'en', 'remaining_pathinfo' => '/kb/articles/article-five'),
+            $matcher->extractLanguageCode('/en/kb/articles/article-five')
+        );
 
-        $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-        $sms_provider->shouldReceive('getName')->andReturn('name');
-        $sms_provider->shouldReceive('getParams')->andReturn(array());
+        $this->assertEquals(
+            array('lang_url_code' => 'en', 'remaining_pathinfo' => '/'),
+            $matcher->extractLanguageCode('/en')
+        );
 
-        $sms->setDefaultProvider($sms_provider);
+        $this->assertEquals(
+            array('lang_url_code' => 'en', 'remaining_pathinfo' => '/'),
+            $matcher->extractLanguageCode('/en/')
+        );
 
-        $sms->send($to, $text);
-    }
-
-    public function testMaxChunks()
-    {
-        $sms = new DeskPROSmsSender(null, null, $this->getMockJobQueue(), 2);
-        $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
-        $text = new SmsMessage(str_repeat('Some text message!', 50));
-
-        $this->setExpectedException('Orb\Sms\SmsException');
-
-        $sms->send($to, $text);
-    }
-
-    private function getMockJobQueue()
-    {
-        $queue = \Mockery::mock('Application\DeskPRO\JobQueue\JobQueue');
-
-        return $queue;
+        $this->assertEquals(
+            array('lang_url_code' => null, 'remaining_pathinfo' => '/kb/articles/article-five'),
+            $matcher->extractLanguageCode('/kb/articles/article-five')
+        );
     }
 }
