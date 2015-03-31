@@ -33,20 +33,14 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Kernel\ApiKernel;
-use DpTest\DeskProTestCase;
 
 class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
     public function testSimpleIsCompile()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199)
@@ -67,7 +61,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testSimpleIsNOTCompile()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199)
@@ -89,7 +82,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testSimpleIsWithMeCompile()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199, 'me')
@@ -111,7 +103,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testNotWithMeCompile()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199, 'me')
@@ -134,7 +125,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testNotUnassignedCompile()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199, 'unassigned')
@@ -156,7 +146,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testOnlyUnassigned()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array('unassigned')
@@ -176,7 +165,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testOnlyNotUnassigned()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array('unassigned')
@@ -196,7 +184,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testCompileSeveral()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199, 'unassigned', 'me')
@@ -219,7 +206,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testCompileSeveralNOT()
     {
-        // create agent term
         $term = new AgentTeamTerm(
             array(
                 'agent_team_ids' => array(1, 3, 199, 'unassigned', 'me')

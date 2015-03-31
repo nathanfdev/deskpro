@@ -33,68 +33,49 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DpTest\DeskProTestCase;
 
-abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
+class DbalDepartmentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
-    /**
-     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler
-     */
-    protected function getDbalTicketFilterTermEngineCompiler()
+    public function testCompileIs()
     {
-        return $this->getApiContainer()->get('term_engine.dbal_ticket_filters.compiler');
-    }
+        $term = new DepartmentTerm(
+            array(
+                'department_ids' => array(1, 2, 15)
+            )
+        );
 
-    /**
-     * @param $term
-     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery
-     */
-    protected function compileTerm(TermInterface $term)
-    {
-        $compiled_query = $this->getDbalTicketFilterTermEngineCompiler()->compile($term);
+        $compiled_query = $this->compileTerm($term);
 
-        return $compiled_query;
-    }
-
-    /**
-     * A shortcut to test lots of the query at once
-     *
-     * @param DbalCompiledQuery $query
-     * @param $where_string
-     * @param null $join_string
-     * @param array $parameters
-     */
-    protected function assertCompiledQuery(
-        DbalCompiledQuery $query,
-        $where_string,
-        $join_string = null,
-        array $parameters = array()
-    )
-    {
-        $this->assertQueryWhereString($where_string, $query);
-        $this->assertParameters($parameters, $query);
-    }
-
-    protected function assertQueryWhereString($where, DbalCompiledQuery $compiled_query)
-    {
-        // assert where string
-        $this->assertSame(
-            $where,
-            $compiled_query->generateWhereString(),
-            'DbalCompiledQuery WHERE clause is correct'
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.department_id IN (:department_ids_0)',
+            null,
+            array(
+                'department_ids_0' => array(1, 2, 15),
+            )
         );
     }
 
-    protected function assertParameters($parameters, DbalCompiledQuery $compiled_query)
+    public function testCompileIsNort()
     {
-        // assert the parameter values
-        $this->assertEquals(
-            $parameters,
-            $compiled_query->getParameters(),
-            'parameters are as expected'
+        $term = new DepartmentTerm(
+            array(
+                'department_ids' => array(1, 2, 15)
+            ),
+            TermInterface::OP_NOT
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.department_id NOT IN (:department_ids_0)',
+            null,
+            array(
+                'department_ids_0' => array(1, 2, 15),
+            )
         );
     }
 }

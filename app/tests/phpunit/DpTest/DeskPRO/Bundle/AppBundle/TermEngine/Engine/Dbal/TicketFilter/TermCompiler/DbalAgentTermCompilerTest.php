@@ -33,19 +33,14 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Kernel\ApiKernel;
-use DpTest\DeskProTestCase;
 
 class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
     public function testSimpleIsCompile()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(1, 2, 15)
@@ -66,7 +61,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testIsCompileWithMe()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME)
@@ -87,7 +81,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testIsNotMe()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME)
@@ -109,7 +102,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testWithUnassigned()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(1, 2, 15, AgentTerm::ID_UNASSIGNED)
@@ -131,7 +123,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testWithNOTUnassigned()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
@@ -149,7 +140,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testWithOnlyUnassigned()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
@@ -167,7 +157,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testAllIdTypes()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, AgentTerm::ID_UNASSIGNED)
@@ -189,7 +178,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
     public function testNOTAllIdTypes()
     {
-        // create agent term
         $term = new AgentTerm(
             array(
                 'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, AgentTerm::ID_UNASSIGNED)

@@ -33,22 +33,15 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Kernel\ApiKernel;
-use DpTest\DeskProTestCase;
 
 class DbalCompositeTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
     public function testCompositeCompilesCorrectlyWithAND()
     {
-        // create agent term
         $term = new CompositeTerm(array(), TermInterface::OP_AND);
         $term->addTerm(new DepartmentTerm(array('department_ids' => array(4, 5))));
         $term->addTerm(new AgentTerm(array('agent_ids' => array(19, 17, 80)), TermInterface::OP_NOT));
@@ -68,7 +61,6 @@ class DbalCompositeTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
     public function testCompositeCompilesCorrectlyWithOR()
     {
-        // create agent term
         $term = new CompositeTerm(array(), TermInterface::OP_OR);
         $term->addTerm(new DepartmentTerm(array('department_ids' => array(4, 5))));
         $term->addTerm(new AgentTerm(array('agent_ids' => array(19, 17, 80)), TermInterface::OP_NOT));
