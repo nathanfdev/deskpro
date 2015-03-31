@@ -11,7 +11,7 @@ services:
                 - @dbset.empty
                 - @dbset.fresh
                 - @dbset.api
-                - @dbset.basic
+                - @dbset.term_engine
 
     dbset.empty:
         class: DpTests\TestBundle\DataSet\EmptyDb
@@ -37,8 +37,8 @@ services:
             - @doctrine.dbal.default_connection
             - %kernel.cache_dir%/dbset
 
-    dbset.basic:
-        class: DpTests\TestBundle\DataSet\BasicDb
+    dbset.term_engine:
+        class: DpTests\TestBundle\DataSet\TermEngineDb
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager

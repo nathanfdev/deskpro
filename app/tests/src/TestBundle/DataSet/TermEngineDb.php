@@ -40,11 +40,11 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTests\TestBundle\UserDetailsRepo;
 
-class BasicDb extends AbstractDbSet
+class TermEngineDb extends AbstractDbSet
 {
     public function getId()
     {
-        return 'basic';
+        return 'term engine';
     }
 
     /**

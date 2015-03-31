@@ -3,8 +3,8 @@ Feature: Deleted Filter
   As a developer
   I want to use the term engine with this filter
 
-  Background: Basic database
-    Given I install the basic data set
+  Background: Use the specific Term Engine data set
+    Given I install the "term engine" data set
 
   Scenario: I run the filter
     Given I set the context agent to agent

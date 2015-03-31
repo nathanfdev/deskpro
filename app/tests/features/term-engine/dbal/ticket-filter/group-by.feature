@@ -3,8 +3,8 @@ Feature: Group By
   As a developer
   I need the DbalTicketFilterEngine to process my GROUP BY commands
 
-  Background: Basic database
-    Given I install the basic data set
+  Background: Use the specific Term Engine data set
+    Given I install the "term engine" data set
 
   Scenario: I group tickets by agent (simple grouping)
     Given I set the context agent to agent
