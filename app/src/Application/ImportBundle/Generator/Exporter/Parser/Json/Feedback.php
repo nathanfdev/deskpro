@@ -129,10 +129,46 @@ final class Feedback extends AbstractParser
                 $entity->addLabel($label);
             }
 
+            $attachments = $this->exportAttachments($feedback['attachments']);
+            foreach ($attachments as $attachment) {
+                /** @var Entity\Attachment $attachment */
+                $entity->addAttachment($attachment);
+            }
+
             return $entity;
         }
 
         return null;
+    }
+
+    /**
+     * Returns a collection of the feedback item attachments
+     *
+     * @param array $attachments
+     * @return Entity\Collection
+     */
+    private function exportAttachments(array $attachments)
+    {
+        $collection = new Entity\Collection();
+        foreach ($attachments as $num => $attachment) {
+            try {
+                $entity = $this->exportAttachment($attachment);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid feedback attachment record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid feedback attachment record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
     }
 
     /**
@@ -169,9 +205,11 @@ final class Feedback extends AbstractParser
             'labels',
             'date_created',
             'date_published',
+            'attachments',
         );
 
         return $this->hasRequiredColumns($feedback, $columns)
-            && $this->isArrayColumn($feedback, 'labels');
+            && $this->isArrayColumn($feedback, 'labels')
+            && $this->isArrayColumn($feedback, 'attachments');
     }
 }

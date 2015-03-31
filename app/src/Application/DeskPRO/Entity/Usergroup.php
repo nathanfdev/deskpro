@@ -164,10 +164,21 @@ class Usergroup extends DomainObject
     /**
      * @return string
      */
-
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+        return $this;
     }
 
     /**

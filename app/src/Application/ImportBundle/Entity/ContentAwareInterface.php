@@ -35,7 +35,7 @@ use DateTime;
  * Interface ContentAwareInterface
  * @package Application\ImportBundle\Entity
  */
-interface ContentAwareInterface
+interface ContentAwareInterface extends LanguageAwareInterface
 {
     /**
      * Entity title
@@ -84,21 +84,6 @@ interface ContentAwareInterface
      * @return $this
      */
     public function setSlug($slug);
-
-    /**
-     * Entity language
-     *
-     * @return string
-     */
-    public function getLanguage();
-
-    /**
-     * Set entity language
-     *
-     * @param string $language
-     * @return $this
-     */
-    public function setLanguage($language);
 
     /**
      * Set status

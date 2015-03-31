@@ -20,21 +20,21 @@
 				<span class="dp-badge dp-small">{{ category_counts['0_total']|default(0) }}</span>
 			</li>
 			<li class="sep"></li>
-			{% macro cat_li(category_counts, status, order_by, cat, depth) %}
+			{% macro cat_li(category_counts, status, order_by, cat, depth, perms) %}
 				{% if not depth %}{% set depth = 0 %}{% endif %}
-				<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
-					<i class="dp-icon-folder-close"></i>
-					<a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a>
-					<span class="dp-badge dp-small">{{ category_counts[cat.id ~ '_total']|default(0) }}</span>
-				</li>
-				{% if cat.getChildren()|length %}
-					{% for child in cat.getChildren() %}
-						{{ _self.cat_li(category_counts, status, order_by, child, depth+1) }}
-					{% endfor %}
-				{% endif %}
+                <li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
+                    <i class="dp-icon-folder-close"></i>
+                    <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a>
+                    <span class="dp-badge dp-small">{{ category_counts[cat.id ~ '_total']|default(0) }}</span>
+                </li>
+                {% if cat.getChildren()|length %}
+                    {% for child in cat.getChildren() if perms.isCategoryAllowed(child.id) %}
+                        {{ _self.cat_li(category_counts, status, order_by, child, depth+1, perms) }}
+                    {% endfor %}
+                {% endif %}
 			{% endmacro %}
-			{% for cat in news_cats %}
-				{{ _self.cat_li(category_counts, status, search_options.order_by, cat) }}
+			{% for cat in news_cats if perms.isCategoryAllowed(cat.id) %}
+				{{ _self.cat_li(category_counts, status, search_options.order_by, cat, null, perms) }}
 			{% endfor %}
 		</ul>
 	</li>

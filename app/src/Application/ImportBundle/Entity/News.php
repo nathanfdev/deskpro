@@ -79,6 +79,8 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     }
 
     /**
+     * News category
+     *
      * @return string
      */
     public function getCategory()
@@ -87,6 +89,8 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     }
 
     /**
+     * Set news category
+     *
      * @param string $category
      * @return $this
      */
@@ -142,9 +146,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

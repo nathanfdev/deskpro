@@ -33,7 +33,6 @@ use Application\ImportBundle\Entity;
  * Exporter from csv files
  *
  * Class Csv
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
 final class Csv extends AbstractExporter

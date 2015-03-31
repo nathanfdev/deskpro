@@ -2309,6 +2309,9 @@ class Strings
         $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
         $html = preg_replace('#(<br\s*/?>)\s*</div>#', '</div>', $html);
         $html = preg_replace('#<div[^>]*>\s*(<br\s*/?>)?\s*</div>\s*#i', "<br />\n", $html);
+        $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
+        $html = preg_replace('#<p(\b)#', '<div$1', $html);
+        $html = preg_replace('#<div[^>]+class="dp-signature-start"[^>]*>#', '<div>', $html);
         do {
             $original = $html;
             $html = preg_replace('#<div>(.*)</div>\s*?#siU', "\\1<br />\n", $html);

@@ -826,7 +826,7 @@ define [
           return {
             getViewValue: (value = {}, data) ->
               return {
-                value: value.options.color
+                value: value.options?.color || 'red'
               }
             getValue: (model = {}, data) ->
               value = {}

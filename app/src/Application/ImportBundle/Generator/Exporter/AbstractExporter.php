@@ -27,13 +27,14 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Exception;
 
 /**
- * Base data generator class methods
+ * Base data exporter class methods
  *
  * Class AbstractExporter
  * @package Application\ImportBundle\Generator\Exporter
@@ -60,7 +61,12 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function getCountByType($type)
     {
-        return $this->getParserByType($type)->getCount();
+        $parser = $this->getParserByType($type);
+        if ($parser instanceof Parser\NotSupportedInterface) {
+            return 0;
+        }
+
+        return $parser->getCount();
     }
 
     /**
@@ -68,7 +74,16 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function exportByType($type)
     {
-        return $this->getParserByType($type)->export();
+        $this->logNotice(sprintf('Parsing `%s` entities', $type));
+
+        $parser = $this->getParserByType($type);
+        if ($parser instanceof Parser\NotSupportedInterface) {
+            $this->logNotice(sprintf('Entity `%s` is not supported', $type));
+
+            return new Entity\Collection();
+        }
+
+        return $parser->export();
     }
 
     /**
@@ -79,13 +94,11 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      * @return Parser\ParserInterface
      * @throws Exception
      */
-    private function getParserByType($type)
+    protected function getParserByType($type)
     {
         if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
-
-        $this->logNotice(sprintf('Parsing `%s` entities', $type));
 
         $parser = $this->parsers->getByEntityType($type);
         $parser->setConfig($this->config);

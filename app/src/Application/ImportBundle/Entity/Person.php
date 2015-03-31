@@ -38,8 +38,10 @@ use DateTimeZone;
  * Class Person
  * @package Application\ImportBundle\Entity
  */
-final class Person extends AbstractEntity implements LabelAwareInterface
+final class Person extends AbstractEntity implements LabelAwareInterface, LanguageAwareInterface
 {
+    const INITIAL_PASSWORD = 'password';
+
     const PASSWORD_SCHEME_PLAIN  = 'plain';
     const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
@@ -49,15 +51,11 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     private $is_agent = false;
 
     /**
-     * Can we merge isAgent and isUser?
-     *
      * @var bool
      */
     private $is_user = false;
 
     /**
-     * Can we merge isAgent and isUser and isAdmin?
-     *
      * @var bool
      */
     private $is_admin = false;
@@ -73,15 +71,11 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     private $last_name;
 
     /**
-     * Should we use name or just first name?
-     *
      * @var string
      */
     private $name;
 
     /**
-     * Too much names, something merge?
-     *
      * @var string
      */
     private $override_display_name;
@@ -160,6 +154,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Is agent?
+     *
      * @return boolean
      */
     public function isAgent()
@@ -168,6 +164,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set person as agent
+     *
      * @param boolean $is_agent
      * @return $this
      */
@@ -178,14 +176,19 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Does person has login credentials?
+     *
      * @return boolean
      */
     public function isUser()
     {
-        return $this->is_user;
+        return $this->is_user || $this->is_agent || $this->is_admin;
     }
 
     /**
+     * Set person as user
+     * If password is empty then initial password will be set up
+     *
      * @param boolean $is_user
      * @return $this
      */
@@ -196,6 +199,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Is admin?
+     *
      * @return boolean
      */
     public function isAdmin()
@@ -204,6 +209,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set person as admin
+     *
      * @param boolean $is_admin
      * @return $this
      */
@@ -214,6 +221,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns person first name
+     * If property "first_name" is empty tries to parse person name
+     *
      * @return string
      */
     public function getFirstName()
@@ -233,6 +243,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set person first name
+     *
      * @param string $first_name
      * @return $this
      */
@@ -243,6 +255,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns person last name
+     * If property "last_name" is empty tries to parse person name
+     *
      * @return string
      */
     public function getLastName()
@@ -262,6 +277,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set person last name
+     *
      * @param string $last_name
      * @return $this
      */
@@ -272,6 +289,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns person name
+     * If property "name" is empty tries to get from the first email
+     *
      * @return string
      */
     public function getName()
@@ -290,6 +310,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set person name
+     *
      * @param string $name
      * @return $this
      */
@@ -300,6 +322,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns custom display name
+     *
      * @return string
      */
     public function getOverrideDisplayName()
@@ -308,6 +332,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set custom display dame
+     *
      * @param string $override_display_name
      * @return $this
      */
@@ -318,6 +344,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns password
+     *
      * @return string
      */
     public function getPassword()
@@ -326,6 +354,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set password
+     *
      * @param string $password
      * @return $this
      */
@@ -336,6 +366,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns password scheme
+     * Bcrypt by default
+     *
      * @return string
      */
     public function getPasswordScheme()
@@ -354,6 +387,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set specific password scheme
+     *
      * @param string $password_scheme
      * @return $this
      */
@@ -364,6 +399,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns time zone
+     *
      * @return string
      */
     public function getTimezone()
@@ -372,6 +409,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set time zone
+     *
      * @param DateTimeZone $timezone
      * @return $this
      */
@@ -382,6 +421,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns date created
+     *
      * @return DateTime
      */
     public function getDateCreated()
@@ -390,6 +431,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set date created
+     *
      * @param DateTime $date_created
      * @return $this
      */
@@ -400,7 +443,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getLanguage()
     {
@@ -408,8 +451,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param string $language
-     * @return $this
+     * {@inheritdoc}
      */
     public function setLanguage($language)
     {
@@ -418,6 +460,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns a person organization
+     *
      * @return string
      */
     public function getOrganization()
@@ -426,6 +470,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set an organization
+     *
      * @param string $organization
      * @return $this
      */
@@ -436,6 +482,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns an organization position
+     *
      * @return string
      */
     public function getOrganizationPosition()
@@ -444,6 +492,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Set an organization position
+     *
      * @param string $organization_position
      * @return $this
      */
@@ -454,6 +504,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns person emails
+     *
      * @return array
      */
     public function getEmails()
@@ -472,6 +524,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Add an email
+     *
      * @param string $email
      * @return $this
      */
@@ -499,7 +553,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * Returns user groups
+     * Returns a collection of person user groups
      *
      * @return array
      */
@@ -509,6 +563,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Add an user group
+     *
      * @param string $user_group
      * @return $this
      */
@@ -519,6 +575,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Returns a collection of person custom fields
+     *
      * @return Collection
      */
     public function getCustomFields()
@@ -527,6 +585,8 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
+     * Add a custom field
+     *
      * @param CustomField $custom_field
      * @return $this
      */
@@ -541,7 +601,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface
      */
     public function toArray()
     {
-        if (!$this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -575,9 +635,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

@@ -540,7 +540,6 @@ class CsvImport extends AbstractJob
 
             $message = $mailer->createMessage();
             $message->setToPerson($person);
-            $message->setFrom($this->_data['welcome_from_email'], $this->_data['welcome_from_name']);
             $message->setSubject($this->_data['welcome_subject']);
             $message->setBody($this->_replaceMessagePlaceholders($this->_data['welcome_message'], $person));
 
