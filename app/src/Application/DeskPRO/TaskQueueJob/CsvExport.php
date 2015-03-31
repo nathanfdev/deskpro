@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\TmpData;
+use Symfony\Component\Process\Process;
 
 class CsvExport extends AbstractJob
 {
@@ -160,11 +161,35 @@ class CsvExport extends AbstractJob
 
         if (!$batch) {
 
-            $data = TmpData::create(
-                'csv_export.file',
-                array('file' => $file, 'count' => $this->_data['offset']),
-                '+24 hours'
-            );
+            if (defined('DPC_IS_CLOUD')) {
+
+                $fname = basename($file);
+                $proc = new Process("zip -j $fname.zip $fname", dirname($file));
+                $proc->setTimeout(300);
+                $proc->run();
+
+                if ($proc->isSuccessful()) {
+                    $blob = App::$container->getBlobStorage()->createBlobRecordFromFile(
+                        $file . '.zip',
+                        'export.csv.zip',
+                        'text/csv'
+                    );
+                    $data = TmpData::create(
+                        'csv_export.file',
+                        array('file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']),
+                        '+28 hours'
+                    );
+                } else {
+
+                }
+            } else {
+                $data = TmpData::create(
+                    'csv_export.file',
+                    array('file' => $file, 'count' => $this->_data['offset']),
+                    '+28 hours'
+                );
+            }
+
             $data['name'] = 'csv_export.file';
             $em->persist($data);
 
