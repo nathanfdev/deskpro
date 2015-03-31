@@ -85,7 +85,7 @@ class ProcessQueueCommand extends ContainerAwareCommand
         $runner = $this->getContainer()->get('email.queue_runner');
         $runner->setLimits(
             intval($input->getOption('limit')) ?: 40,
-            intval($input->getOption('time')) ?: 20
+            intval($input->getOption('time')) ?: 60
         );
 
         $count = $runner->run();

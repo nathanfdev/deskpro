@@ -259,6 +259,8 @@ class QueueRunner
 
         $this->logger->info(sprintf('Starting -- Limit: %d -- Max Time: %ds', $this->proc_limit, $this->proc_time_limit));
 
+        $did_early_break = false;
+
         while (true) {
             $did_break = false;
             $batch_count = 0;
@@ -276,18 +278,21 @@ class QueueRunner
                     if ($count >= $this->proc_limit) {
                         $this->logger->info("Reached limit, breaking");
                         $did_break = true;
+                        $did_early_break = true;
                         break;
                     }
 
                     if ((time() - $time_start) > $this->proc_time_limit) {
                         $this->logger->info("Reached time limit, breaking");
                         $did_break = true;
+                        $did_early_break = true;
                         break;
                     }
                 }
             }
 
             if ($batch) {
+                $did_early_break = true;
                 $this->logger->info(sprintf('Releasing remainder %d reserved records back into queue', count($batch)));
                 $this->releaseRemaining($batch);
             }
@@ -297,6 +302,7 @@ class QueueRunner
             }
 
             if ((time() - $time_start) > $this->proc_time_limit) {
+                $did_early_break = true;
                 $this->logger->info("Reached time limit, breaking (outer)");
                 break;
             }
@@ -304,6 +310,29 @@ class QueueRunner
 
         $time_end = time();
         $this->logger->info(sprintf('Processed %d records in %ds', $count, $time_end - $time_start));
+
+        // If we broke early then we may have messages stuck in the 'pending' state
+        // we should re-queue the messages so they enter into the queue again and
+        // (in case of our cloud) re-spawn the exec command
+        if ($did_early_break && !($this->source_mapper instanceof DatabaseSourceMapper)) {
+            $this->db->beginTransaction();
+
+            $batch = $this->db->fetchAllKeyed("
+                SELECT * FROM sendmail_sources
+                WHERE status IN ('pending')
+                LIMIT 250
+                FOR UPDATE
+            ");
+
+            foreach ($batch as $r) {
+                $done_ids[] = $r['id'];
+                $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
+            }
+
+            $this->db->commit();
+
+            $this->logger->info(sprintf('Touched %d records for processing in another run', count($batch)));
+        }
 
         return $count;
     }
@@ -353,6 +382,7 @@ class QueueRunner
      * to their original status so they can be run next time.
      *
      * @param array $batch
+     * @return int
      * @throws \Exception
      */
     private function releaseRemaining(array $batch)
