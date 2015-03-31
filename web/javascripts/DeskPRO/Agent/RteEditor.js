@@ -43,8 +43,18 @@ DeskPRO.Agent.RteEditor = {
       execCommandCallback: function(api, cmd) {
         api.$editor.find('blockquote').attr('style', null).addClass('dp-bq');
         api.$editor.find('pre').attr('style', null).addClass('dp-pre');
-        api.$editor.find('font').each(function(n) {
-          $(this).replaceWith($('<span/>').html(n.innerHTML));
+        api.$editor.find('font').each(function(x, n) {
+          n = $(n);
+          var el = $('<span/>').html(n.html());
+
+          if (n.attr('style')) {
+            el.attr('style', n.attr('style'));
+          }
+          if (n.attr('color') && !el.css('color')) {
+            el.css('color', n.attr('color'));
+          }
+
+          $(this).replaceWith(el);
         });
       }
 		};

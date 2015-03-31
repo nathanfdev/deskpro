@@ -657,6 +657,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->subject;
     }
 
+    /**
+     * Alias for getSubject.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getSubject();
+    }
+
 
     /**
      * Get an array of addresses the ticket was sent To or CC's

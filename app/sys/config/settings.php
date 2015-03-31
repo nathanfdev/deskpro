@@ -98,6 +98,11 @@
     'core.deskpro_url' => '',
 
     /**
+     * Auto-correct the URL?
+     */
+    'core.deskpro_url_autocorrect' => true,
+
+    /**
      * The name of the DeskPRO helpdesk
      */
     'core.deskpro_name' => 'DeskPRO',
