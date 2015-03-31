@@ -89,7 +89,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
 
         $this->setFrom('tickets');
 
-        $this->__toString()->shouldBe('SELECT * FROM tickets WHERE tickets.id = 4');
+        $this->__toString()->shouldBe('SELECT * FROM tickets WHERE (tickets.id = 4)');
     }
 
     function it_handles_shared_joins_using_no_alias_be_default()
@@ -267,7 +267,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         );
 
         $this->__toString()->shouldBe(
-            'SELECT * FROM tickets WHERE t.id = :name_0 OR t.subject = :name_1 AND t.name = :other_name_0'
+            'SELECT * FROM tickets WHERE (t.id = :name_0 OR t.subject = :name_1 AND t.name = :other_name_0)'
         );
     }
 
@@ -317,7 +317,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->setWherePart('agent.name = :' . $p1_name->getWrappedObject());
 
         $this->__toString()->shouldBe(
-            'SELECT * FROM agents agent WHERE agent.name = :my_name_0'
+            'SELECT * FROM agents agent WHERE (agent.name = :my_name_0)'
         );
     }
 
@@ -365,7 +365,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
 
         $this->__toString()->shouldBe(
             sprintf(
-                'SELECT * FROM tickets WHERE %s %s %s',
+                'SELECT * FROM tickets WHERE (%s %s %s)',
                 $initial_where,
                 $appended,
                 $second_append
@@ -391,7 +391,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->setPage(4);
 
         $this->__toString()->shouldBeLike(
-            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE t.id = 5 GROUP BY t.date_created, t.id WITH ROLLUP ORDER BY t.id DESC LIMIT 45, 15'
+            'SELECT t.id FROM tickets t LEFT JOIN people_emails ON (people_emails.person_id = t.id) INNER JOIN custom_def_person custom_def_person_0 ON (custom_def_person_0.person_id = t.id) WHERE (t.id = 5) GROUP BY t.date_created, t.id WITH ROLLUP ORDER BY t.id DESC LIMIT 45, 15'
         );
     }
 }

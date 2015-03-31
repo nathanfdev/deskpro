@@ -148,7 +148,7 @@ class DbalCompiledQuery
         }
 
         if (strlen($this->where) > 0) {
-            $sql_string .= ' WHERE ' . $this->where;
+            $sql_string .= sprintf(' WHERE (%s)', $this->generateWhereString());
         }
 
         if (count($this->groupings)) {
