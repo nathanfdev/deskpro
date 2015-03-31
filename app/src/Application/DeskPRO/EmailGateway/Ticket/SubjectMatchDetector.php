@@ -225,7 +225,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $from = $reader->getFromAddress()->getEmail();
 
         foreach ($tickets as $ticket) {
-            if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
+            if (($p = $ticket->findUserByEmail($from))) {
                 $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id . " " . $p->getDisplayContact());
                 $this->_found_person = $p;
 
