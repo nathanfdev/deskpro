@@ -33,13 +33,54 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Kernel\ApiKernel;
 use DpTest\DeskProTestCase;
 
-class DbalAgentTermCompilerTest extends DeskProTestCase
+class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
-    public function testSimpleCompile()
+    public function testSimpleIsCompile()
     {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(1, 2, 15)
+            )
+        );
 
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id IN (:agent_ids_0)',
+            null,
+            array(
+                'agent_ids_0' => array(1, 2, 15)
+            )
+        );
+    }
+
+    public function testIsCompileWithMe()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME)
+            )
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id IN (:agent_ids_0)',
+            null,
+            array(
+                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+            )
+        );
     }
 }

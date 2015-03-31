@@ -59,6 +59,25 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
         return $compiled_query;
     }
 
+    /**
+     * A shortcut to test lots of the query at once
+     *
+     * @param DbalCompiledQuery $query
+     * @param $where_string
+     * @param null $join_string
+     * @param array $parameters
+     */
+    protected function assertCompiledQuery(
+        DbalCompiledQuery $query,
+        $where_string,
+        $join_string = null,
+        array $parameters = array()
+    )
+    {
+        $this->assertQueryWhereString($where_string, $query);
+        $this->assertParameters($parameters, $query);
+    }
+
     protected function assertQueryWhereString($where, DbalCompiledQuery $compiled_query)
     {
         $this->assertSame(
@@ -71,10 +90,8 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
     protected function assertParameters($parameters, DbalCompiledQuery $compiled_query)
     {
         // assert the parameter values
-        $this->assertSame(
-            array(
-                'agent_ids_0' => array(1, 2, 15)
-            ),
+        $this->assertEquals(
+            $parameters,
             $compiled_query->getParameters(),
             'parameters are as expected'
         );
