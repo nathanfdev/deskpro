@@ -31,38 +31,52 @@
  * @package DeskPRO
  */
 
-namespace DpTest;
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Kernel\ApiKernel;
 
-class DeskProTestCase extends \PHPUnit_Framework_TestCase
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DpTest\DeskProTestCase;
+
+abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
 {
-    protected static $api_kernel;
-
     /**
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler
      */
-    protected function getApiContainer()
+    protected function getDbalTicketFilterTermEngineCompiler()
     {
-        return $this->getApiKernel()->getContainer();
+        return $this->getApiContainer()->get('term_engine.dbal_ticket_filters.compiler');
     }
 
     /**
-     * @param bool $force_reboot
-     * @return ApiKernel
+     * @param $term
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery
      */
-    protected function getApiKernel($force_reboot = false)
+    protected function compileTerm(TermInterface $term)
     {
-        if (self::$api_kernel && !$force_reboot) {
-            return self::$api_kernel;
-        }
+        $compiled_query = $this->getDbalTicketFilterTermEngineCompiler()->compile($term);
 
-        require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
-        $kernel = new ApiKernel('test', true);
-        $kernel->boot();
+        return $compiled_query;
+    }
 
-        self::$api_kernel = $kernel;
+    protected function assertQueryWhereString($where, DbalCompiledQuery $compiled_query)
+    {
+        $this->assertSame(
+            $where,
+            $compiled_query->generateWhereString(),
+            'DbalCompiledQuery WHERE clause is correct'
+        );
+    }
 
-        return self::$api_kernel;
+    protected function assertParameters($parameters, DbalCompiledQuery $compiled_query)
+    {
+        // assert the parameter values
+        $this->assertSame(
+            array(
+                'agent_ids_0' => array(1, 2, 15)
+            ),
+            $compiled_query->getParameters(),
+            'parameters are as expected'
+        );
     }
 }

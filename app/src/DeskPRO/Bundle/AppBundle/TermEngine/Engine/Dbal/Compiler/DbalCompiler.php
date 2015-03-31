@@ -93,7 +93,7 @@ abstract class DbalCompiler implements DbalCompilerInterface
 
     /**
      * @param TermInterface $term
-     * @return mixed
+     * @return DbalCompiledQuery
      */
     public function compile(TermInterface $term)
     {
