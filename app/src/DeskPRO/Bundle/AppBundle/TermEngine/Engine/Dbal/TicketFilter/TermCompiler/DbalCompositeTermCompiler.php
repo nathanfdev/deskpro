@@ -56,7 +56,9 @@ class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
         foreach ($term->getTerms() as $child_term) {
             $part = trim($compiler->getTermCompiler($child_term)->compile($child_term, $compiler));
             if ($part) {
-                $parts[] = $part;
+                // surround each term compilers output in parenthesis
+                // this is to be extra safe with the AND/OR boolean logic
+                $parts[] = '(' . $part . ')';
             }
         }
 
