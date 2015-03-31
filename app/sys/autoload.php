@@ -25,7 +25,7 @@ $loader->registerNamespaces(
         'Bundle' => DP_ROOT . '/src',
         'Orb' => DP_ROOT . '/src',
         'DpUnitTests' => DP_ROOT . '/testing/tests/unit',
-        'DeskPRO\\Tests' => DP_ROOT . '/tests/phpunit',
+        'DpTest' => DP_ROOT . '/tests/phpunit',
         'DpIntegrationTests' => DP_ROOT . '/testing/tests/integration',
         'DpTestingMocks' => DP_ROOT . '/testing/src',
         'Metadata' => DP_ROOT . '/vendor-src/metadata/src',

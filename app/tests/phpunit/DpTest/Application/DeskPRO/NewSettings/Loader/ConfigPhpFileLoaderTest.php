@@ -29,13 +29,14 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application\NewSettings\Loader;
+namespace DpTest\DeskPRO\Application\NewSettings\Loader;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\NewSettings\Loader\ConfigPhpFileLoader;
+use DpTest\DeskProTestCase;
 use Mockery\Mock;
 
-class ConfigPhpFileLoaderTest extends \PHPUnit_Framework_TestCase
+class ConfigPhpFileLoaderTest extends DeskProTestCase
 {
     public function testInvalidCaseExceptions()
     {

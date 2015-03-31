@@ -29,23 +29,26 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application\Cache\Adapter;
+namespace DpTest\DeskPRO\Application\Brand;
 
-use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory;
+use DpTest\DeskProTestCase;
 
-class SimpleArrayCacheTest extends \PHPUnit_Framework_TestCase
+class BrandContainerFactoryTest extends DeskProTestCase
 {
-    public function testCacheWorks()
+    public function testConstruction()
     {
-        $cache = new SimpleArrayCache();
+        $mockBrand = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+        $mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
 
-        $this->assertFalse($cache->has('key'));
+        $mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
+        $mockSettingsResolver->shouldReceive('getBrandSettings')->with($mockBrand)->andReturn($mockSettings)->once();
+        $themeResolver = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver');
+        $factory = new BrandContainerFactory($mockSettingsResolver, $themeResolver);
 
-        $cache->set('key', $arr = array('some' => 'data'));
+        $container = $factory->create($mockBrand);
 
-        $this->assertSame($arr, $cache->get('key'));
-        $this->assertTrue($cache->has('key'));
-
-        $this->assertNull($cache->get('non_existant-key'));
+        $this->assertSame($mockBrand, $container->getBrand());
+        $this->assertSame($mockSettings, $container->getSettings());
     }
 }

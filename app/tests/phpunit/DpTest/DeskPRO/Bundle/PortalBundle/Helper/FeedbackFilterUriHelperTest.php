@@ -29,12 +29,13 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Bundle\PortalBundle\Helper;
+namespace DpTest\DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DpTest\DeskProTestCase;
 
-class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
+class FeedbackFilterUriHelperTest extends DeskProTestCase
 {
     public function testExtractNoPath()
     {

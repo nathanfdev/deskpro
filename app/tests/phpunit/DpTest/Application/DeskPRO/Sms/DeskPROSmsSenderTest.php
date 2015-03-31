@@ -29,13 +29,14 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application;
+namespace DpTest\DeskPRO\Application;
 
 use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Sms\DeskPROSmsSender;
+use DpTest\DeskProTestCase;
 use Orb\Sms\SmsMessage;
 
-class DeskPROSmsSenderTest extends \PHPUnit_Framework_TestCase
+class DeskPROSmsSenderTest extends DeskProTestCase
 {
     public function testSendUsesDefaults()
     {

@@ -29,11 +29,12 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application\NewSettings;
+namespace DpTest\DeskPRO\Application\NewSettings;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
+use DpTest\DeskProTestCase;
 
-class SettingsBagTest extends \PHPUnit_Framework_TestCase
+class SettingsBagTest extends DeskProTestCase
 {
     public function testIsLikeAnArrayObject()
     {

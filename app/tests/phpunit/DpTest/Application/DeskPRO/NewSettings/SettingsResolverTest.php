@@ -29,12 +29,13 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application\NewSettings;
+namespace DpTest\DeskPRO\Application\NewSettings;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DpTest\DeskProTestCase;
 
-class SettingsResolverTest extends \PHPUnit_Framework_TestCase
+class SettingsResolverTest extends DeskProTestCase
 {
     public function testConstructedWithLoaders()
     {

@@ -29,11 +29,12 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Application\Cache;
+namespace DpTest\DeskPRO\Application\Cache;
 
 use Application\DeskPRO\Cache\ConvenientCache;
+use DpTest\DeskProTestCase;
 
-class ConvenientCacheTest extends \PHPUnit_Framework_TestCase
+class ConvenientCacheTest extends DeskProTestCase
 {
     public function testGetWillUseAndSetDefaultIfNoCacheEntryExists()
     {

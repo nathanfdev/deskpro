@@ -29,11 +29,12 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Tests\DeskPRO\Bundle\LanguageBundle\Routing;
+namespace DpTest\DeskPRO\Bundle\LanguageBundle\Routing;
 
 use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
+use DpTest\DeskProTestCase;
 
-class UrlMatcherTest extends \PHPUnit_Framework_TestCase
+class UrlMatcherTest extends DeskProTestCase
 {
     public function testExtractsLanguage()
     {
