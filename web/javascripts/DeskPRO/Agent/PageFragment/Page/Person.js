@@ -622,6 +622,27 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
+    var $notes = this.getEl('notes_tab'),
+        notesClickHandler = function(e){
+          var $el = $(e.target).closest('li.note');
+          if (!$el.length) return;
+          $notes.off('click', notesClickHandler);
+
+          $.ajax({
+            url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
+            type: 'DELETE',
+            dataType: 'json',
+            success: function(data) {
+              $el.remove();
+              $notes.on('click', '.delete', notesClickHandler);
+            },
+            error: function() {
+              $notes.on('click', '.delete', notesClickHandler);
+            }
+          });
+        };
+    $notes.on('click', '.delete', notesClickHandler);
+
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
 		this.refreshPropBox();
