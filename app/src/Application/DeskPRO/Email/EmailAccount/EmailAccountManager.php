@@ -374,7 +374,7 @@ class EmailAccountManager
      */
     public function getAccountForTicket(Ticket $ticket)
     {
-        if ($ticket->email_account) {
+        if ($ticket->email_account && $ticket->email_account->is_enabled && $ticket->email_account->outgoing_account) {
             return $ticket->email_account;
         }
 
