@@ -320,15 +320,6 @@
     'core.agent_intercept_external_link' => false,
 
     /**
-     * Show the share widget (twitter/facebook/linkedin/gplus)
-     */
-    'core.show_share_widget' => true,
-    'core.show_share_facebook' => true,
-    'core.show_share_twitter' => true,
-    'core.show_share_linkedin' => true,
-    'core.show_share_gplus' => true,
-
-    /**
      * Enable the KB?
      */
     'core.apps_kb' => 1,
