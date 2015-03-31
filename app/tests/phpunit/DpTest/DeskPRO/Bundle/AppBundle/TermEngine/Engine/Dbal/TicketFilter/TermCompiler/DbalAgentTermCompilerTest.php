@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Kernel\ApiKernel;
 use DpTest\DeskProTestCase;
 
@@ -77,6 +78,130 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id IN (:agent_ids_0)',
+            null,
+            array(
+                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+            )
+        );
+    }
+
+    public function testIsNotMe()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME)
+            ),
+            TermInterface::OP_NOT
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id NOT IN (:agent_ids_0)',
+            null,
+            array(
+                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+            )
+        );
+    }
+
+    public function testWithUnassigned()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_UNASSIGNED)
+            ),
+            TermInterface::OP_IS
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id IN (:agent_ids_0) OR ticket.agent_id IS NULL',
+            null,
+            array(
+                'agent_ids_0' => array(1, 2, 15)
+            )
+        );
+    }
+
+    public function testWithNOTUnassigned()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
+            ),
+            TermInterface::OP_NOT
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id IS NOT NULL'
+        );
+    }
+
+    public function testWithOnlyUnassigned()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
+            ),
+            TermInterface::OP_IS
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id IS NULL'
+        );
+    }
+
+    public function testAllIdTypes()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, AgentTerm::ID_UNASSIGNED)
+            ),
+            TermInterface::OP_IS
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id IN (:agent_ids_0) OR ticket.agent_id IS NULL',
+            null,
+            array(
+                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+            )
+        );
+    }
+
+    public function testNOTAllIdTypes()
+    {
+        // create agent term
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, AgentTerm::ID_UNASSIGNED)
+            ),
+            TermInterface::OP_NOT
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'ticket.agent_id NOT IN (:agent_ids_0) AND ticket.agent_id IS NOT NULL',
             null,
             array(
                 'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
