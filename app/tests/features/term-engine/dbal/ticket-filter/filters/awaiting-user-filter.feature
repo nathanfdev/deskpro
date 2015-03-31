@@ -13,8 +13,7 @@ Feature: Awaiting User Tickets Filter
     Then I should be given the count of all tickets in the db with STATUS_AWAITING_USER
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 21 |
       | 22 |
     And print the last run query

@@ -13,8 +13,7 @@ Feature: My Tickets Filter
     Then I should be given the count 7
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 1  |
       | 2  |
       | 4  |
@@ -31,11 +30,10 @@ Feature: My Tickets Filter
     Then I should be given the count 3
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
-      | 3  |
-      | 5  |
-      | 9  |
+    Then I should have an array with the following ids:
+      | 3 |
+      | 5 |
+      | 9 |
     And print the last run query
 
   Scenario: I use a descending ordering
@@ -46,8 +44,7 @@ Feature: My Tickets Filter
     Then I should be given the count 7
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 10 |
       | 8  |
       | 7  |
@@ -67,8 +64,7 @@ Feature: My Tickets Filter
     Then I should be given the count 7
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 10 |
       | 8  |
     And print the last run query
@@ -83,8 +79,7 @@ Feature: My Tickets Filter
     Then I should be given the count 7
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
-      | 4  |
-      | 2  |
+    Then I should have an array with the following ids:
+      | 4 |
+      | 2 |
     And print the last run query

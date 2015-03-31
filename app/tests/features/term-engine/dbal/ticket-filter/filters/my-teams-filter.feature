@@ -14,8 +14,7 @@ Feature: My Team's Tickets Filter
     Then I should be given the count 6
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 10 |
       | 11 |
       | 12 |
@@ -31,8 +30,7 @@ Feature: My Team's Tickets Filter
     Then I should be given the count 3
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 10 |
       | 11 |
       | 12 |
@@ -52,13 +50,13 @@ Feature: My Team's Tickets Filter
     Then I should be given the count 6
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 16 |
       | 14 |
       | 13 |
       | 12 |
       | 11 |
+      | 10 |
     And print the last run query
 
   Scenario: I paginate an agent's tickets to see the first page
@@ -70,8 +68,7 @@ Feature: My Team's Tickets Filter
     Then I should be given the count 6
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 16 |
       | 14 |
       | 13 |

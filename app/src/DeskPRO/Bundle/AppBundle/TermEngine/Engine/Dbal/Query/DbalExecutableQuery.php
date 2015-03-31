@@ -118,7 +118,13 @@ class DbalExecutableQuery
 
         $stmt = $this->execute($query);
 
-        return $stmt->fetchAll();
+        $ids = array();
+
+        foreach ($stmt->fetchAll() as $row) {
+            $ids[] = $row['id'];
+        }
+
+        return $ids;
     }
 
     /**

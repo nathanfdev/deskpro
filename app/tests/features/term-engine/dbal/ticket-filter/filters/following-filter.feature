@@ -13,8 +13,7 @@ Feature: Following Tickets Filter
     Then I should be given the count 4
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 9  |
       | 11 |
       | 12 |
@@ -31,7 +30,6 @@ Feature: Following Tickets Filter
     Then I should be given the count 4
     When I fetch the ids from the executable query
     And print the last run query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 13 |
       | 12 |

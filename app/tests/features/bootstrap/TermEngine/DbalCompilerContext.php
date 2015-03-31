@@ -220,6 +220,21 @@ class DbalCompilerContext extends BaseContext
     }
 
     /**
+     * @Then I should have an array with the following ids:
+     */
+    public function iShouldHaveAnArrayWithTheFollowingIds(TableNode $table)
+    {
+        $expected_ids = array();
+
+        foreach ($table->getRows() as $vals) {
+            $expected_ids[] = current($vals);
+        }
+
+
+        expect($this->engine_result)->toBeLike($expected_ids);
+    }
+
+    /**
      * @Given I have a(n) :op :term with the options:
      */
     public function iHaveAnTermWithTheOptions($term, $op, TableNode $table)

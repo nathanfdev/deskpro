@@ -14,8 +14,7 @@ Feature: Unassigned Tickets Filter
     Then I should be given the count 4
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 17 |
       | 18 |
       | 19 |
@@ -30,8 +29,7 @@ Feature: Unassigned Tickets Filter
     Then I should be given the count 4
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 20 |
       | 19 |
       | 18 |
@@ -48,7 +46,6 @@ Feature: Unassigned Tickets Filter
     Then I should be given the count 4
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 18 |
     And print the last run query

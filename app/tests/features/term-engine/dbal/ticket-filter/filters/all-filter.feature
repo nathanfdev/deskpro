@@ -15,8 +15,7 @@ Feature: All Tickets Filter
     Then I should be given the count of all tickets in the db with STATUS_AWAITING_AGENT
     And print the last run query
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
+    Then I should have an array with the following ids:
       | 11 |
       | 12 |
       | 13 |
@@ -32,8 +31,7 @@ Feature: All Tickets Filter
     And print the last run query
     Then I should be given the count 2
     When I fetch the ids from the executable query
-    Then I should be given the following dbal rows:
-      | id |
-      | 6  |
-      | 7  |
+    Then I should have an array with the following ids:
+      | 6 |
+      | 7 |
     And print the last run query

@@ -139,7 +139,12 @@ class DbalExecutableQuerySpec extends ObjectBehavior
                 )
         );
 
-        $this->fetchIds()->shouldReturn($result);
+        $this->fetchIds()->shouldReturn(
+            array(
+                2,
+                3
+            )
+        );
     }
 
     function it_will_execute_a_select_ids_query_with_pagination_custom_where_and_sorting_applied(
@@ -189,7 +194,12 @@ class DbalExecutableQuerySpec extends ObjectBehavior
                     'agent' => 5
                 )
             )
-        )->shouldReturn($result);
+        )->shouldReturn(
+            array(
+                2,
+                3
+            )
+        );
     }
 
     function it_will_resolve_parameter_types_for_dbal_execute()
