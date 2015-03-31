@@ -177,7 +177,8 @@ class NewsController extends AbstractController
             'num_results' => $total,
             'pageinfo' => $pageinfo,
             'per_page' => $per_page,
-            'show_more' => $show_more
+            'show_more' => $show_more,
+            'perms' => $this->person->PermissionsManager->get('NewsCategories'),
         ));
     }
 

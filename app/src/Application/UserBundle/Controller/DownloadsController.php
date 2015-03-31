@@ -151,6 +151,7 @@ class DownloadsController extends AbstractController
             'num_results' => $total,
             'pageinfo' => $pageinfo,
             'section_counts' => $this->em->getRepository('DeskPRO:Download')->getSectionCounts($this->person),
+            'perms' => $this->person->PermissionsManager->get('DownloadCategories'),
         ));
     }
 
