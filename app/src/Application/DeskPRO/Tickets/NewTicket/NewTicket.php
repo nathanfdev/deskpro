@@ -360,16 +360,16 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket_message['message_raw'] = $this->ticket->message_raw;
         }
 
-            $attach = null;
-            if ($this->ticket->new_upload) {
-                $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-                    $this->ticket->new_upload->getRealPath(),
-                    $this->ticket->new_upload->getClientOriginalName(),
-                    $this->ticket->new_upload->getClientMimeType()
-                );
-                $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-                $attach['blob'] = $blob;
-                $attach['person'] = $person;
+        $attach = null;
+        if ($this->ticket->new_upload) {
+            $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+                $this->ticket->new_upload->getRealPath(),
+                $this->ticket->new_upload->getClientOriginalName(),
+                $this->ticket->new_upload->getClientMimeType()
+            );
+            $attach = new \Application\DeskPRO\Entity\TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $person;
 
             $ticket_message->addAttachment($attach);
         }

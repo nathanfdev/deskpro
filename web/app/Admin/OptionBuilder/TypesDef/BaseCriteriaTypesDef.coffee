@@ -59,6 +59,7 @@ define [
       # Constructs standard input from a custom field def
     ###
     getStandardForFieldDef: (field, options = {}) ->
+      options.type_name = field.type_name
       if not options.propName then options.propName = 'value'
 
       if field.type_name == 'choice'
@@ -68,8 +69,9 @@ define [
         options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
         options.single = true
         return @getStandardSelect(options)
+      else if field.type_name == 'date' || field.type_name == 'datetime'
+        return @getDateInput(options)
       else
-        console.info(options)
         if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
         return @getStandardInput(options)
 
@@ -293,7 +295,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get(me.dateTemplate)
+          me.dpTemplateManager.get(me.dateTemplate)
 
         getData: ->
           return {
@@ -358,6 +360,9 @@ define [
                   d2 = model.date2_relative || [1, 'days']
                   value.options.date2_relative = d2[0]
                   value.options.date2_relative_type = d2[1]
+
+              # compatibility with Custom Ticket Field
+              value.options.value = 'date'
 
               return value
           }

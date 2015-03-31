@@ -432,4 +432,9 @@ abstract class HandlerAbstract
     {
         return 'input';
     }
+
+	public function getSearchCriteriaForm($data = null)
+	{
+		// todo
+	}
 }

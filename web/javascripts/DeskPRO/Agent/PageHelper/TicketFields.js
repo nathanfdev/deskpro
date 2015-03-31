@@ -126,29 +126,31 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.updateDisplay();
 
-		$('.Date.customfield input', this.display).datepicker({
-			dateFormat: 'yy-mm-dd',
-			showButtonPanel: true,
-			beforeShow: function(input) {
-				setTimeout(function() {
-					var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-					buttonPane.find('button:first').remove();
-
-					var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-					btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-					btn.appendTo( buttonPane );
-
-					$(input).datepicker("widget").css('z-index', 30001);
-				},1);
-			}
+		$('.Date.customfield input', this.display).each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
 		});
 
 		$('.DateTime.customfield input', this.display).each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:ii',
-				container: $(this).parent().css('position', 'relative'),
-				autoclose: true
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
 			});
 		});
 

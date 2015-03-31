@@ -571,21 +571,21 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
 		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				endDate.data('val', timestamp);
-				endDate.text(dateText);
-
-				self.updateAutoUnPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 
 		endDate.on('click', function() {
-			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
+			$('.auto-unpublish .end-date-input', optWrap).datetimepicker('show');
 		});
 	},
 
@@ -655,21 +655,21 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
 		var dateInput = $('.auto-publish .pub-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				pubDate.data('val', timestamp);
-				pubDate.text(dateText);
-
-				self.updateAutoPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 
 		pubDate.on('click', function() {
-			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
+			$('.auto-publish .pub-date-input', optWrap).datetimepicker('show');
 		});
 	},
 
