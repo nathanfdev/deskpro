@@ -82,7 +82,7 @@ class EntityHelper
             $ids_isser = $op === TermInterface::OP_NOT ? 'NOT IN' : 'IN';
             $ids_param = $query_writer->addParameter('ids', $assert_ids);
 
-            $where .= sprintf('ticket.agent_id %s (:%s)', $ids_isser, $ids_param);
+            $where .= sprintf('%s %s (:%s)', $field_name, $ids_isser, $ids_param);
         }
 
         if ($assert_null) {
@@ -90,8 +90,9 @@ class EntityHelper
             $and_or = $op === TermInterface::OP_NOT ? 'AND' : 'OR';
 
             $where .= sprintf(
-                '%sticket.agent_id %s',
+                '%s%s %s',
                 strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
+                $field_name,
                 $null_isser
             );
         }

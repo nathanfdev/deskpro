@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer\EntityHelper;
 
 class DbalCompiledQueryWriter
 {
@@ -115,5 +116,16 @@ class DbalCompiledQueryWriter
     public function setFrom($table, $alias)
     {
         $this->query->setFrom($table, $alias);
+    }
+
+    /**
+     * @param $field_name
+     * @param $op
+     * @param array $ids
+     * @return string
+     */
+    public function writeEntityCheck($field_name, $op, array $ids)
+    {
+        return EntityHelper::write($this, $field_name, $op, $ids);
     }
 }

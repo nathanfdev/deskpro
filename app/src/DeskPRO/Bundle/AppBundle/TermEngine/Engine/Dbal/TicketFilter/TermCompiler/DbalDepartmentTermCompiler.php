@@ -41,18 +41,14 @@ class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
-        return $query_writer->getHelper()->writeEntityCheck(
-            'ticket.department_ids',
+        // in reality, we need to create a TermExpression for this for some values
+        // a simple foreach, and modify the $ids array
+        $ids = $term->getOption('department_ids');
+
+        return $query_writer->writeEntityCheck(
+            'ticket.department_id',
             $term->getOp(),
-            $term->getOption('department_ids')
+            $ids
         );
-
-        $op = $term->getOp();
-
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-
-        $param_name = $query_writer->addParameter('department_ids', $term->getOption('department_ids'));
-
-        return sprintf('ticket.department_id %s (:%s)', $isser, $param_name);
     }
 }

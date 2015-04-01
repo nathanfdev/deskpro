@@ -50,9 +50,9 @@ class DbalDepartmentTermCompilerTest extends AbstractDbalTicketFilterTermCompile
 
         $this->assertCompiledQuery(
             $compiled_query,
-            'ticket.department_id IN (:department_ids_0)',
+            'ticket.department_id IN (:ids_0)',
             array(
-                'department_ids_0' => array(1, 2, 15),
+                'ids_0' => array(1, 2, 15),
             )
         );
     }
@@ -70,9 +70,9 @@ class DbalDepartmentTermCompilerTest extends AbstractDbalTicketFilterTermCompile
 
         $this->assertCompiledQuery(
             $compiled_query,
-            'ticket.department_id NOT IN (:department_ids_0)',
+            'ticket.department_id NOT IN (:ids_0)',
             array(
-                'department_ids_0' => array(1, 2, 15),
+                'ids_0' => array(1, 2, 15),
             )
         );
     }

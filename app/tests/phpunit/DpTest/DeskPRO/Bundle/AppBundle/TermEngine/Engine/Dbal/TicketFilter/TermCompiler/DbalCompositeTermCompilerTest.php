@@ -50,9 +50,9 @@ class DbalCompositeTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertCompiledQuery(
             $compiled_query,
-            '((ticket.department_id IN (:department_ids_0)) AND (ticket.agent_id NOT IN (:agent_ids_0)))',
+            '((ticket.department_id IN (:ids_0)) AND (ticket.agent_id NOT IN (:agent_ids_0)))',
             array(
-                'department_ids_0' => array(4, 5),
+                'ids_0' => array(4, 5),
                 'agent_ids_0' => array(19, 17, 80)
             )
         );
@@ -68,9 +68,9 @@ class DbalCompositeTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertCompiledQuery(
             $compiled_query,
-            '((ticket.department_id IN (:department_ids_0)) OR (ticket.agent_id NOT IN (:agent_ids_0)))',
+            '((ticket.department_id IN (:ids_0)) OR (ticket.agent_id NOT IN (:agent_ids_0)))',
             array(
-                'department_ids_0' => array(4, 5),
+                'ids_0' => array(4, 5),
                 'agent_ids_0' => array(19, 17, 80)
             )
         );
