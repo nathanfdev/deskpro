@@ -4373,6 +4373,12 @@ $collection->create('api_import_csv_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_import_csv_logs', array(
+    'path'        => '/import_csv_logs',
+    'controller'  => 'ApiBundle:CsvUpload:logs',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # CRM Export CSV
 ########################################################################################################################

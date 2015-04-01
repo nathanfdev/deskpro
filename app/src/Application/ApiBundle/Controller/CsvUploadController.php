@@ -107,4 +107,16 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
         return $this->createApiResponse($result);
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function logsAction()
+    {
+        $logs = array();
+        foreach ($this->em->getRepository('DeskPRO:DataStore')->getByPrefix('csv_import.') as $entity) {
+            $logs[] = $entity->toApiData();
+        }
+        return $this->createApiResponse($logs);
+    }
 }

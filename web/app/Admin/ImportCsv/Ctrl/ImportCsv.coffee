@@ -1,9 +1,11 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
   class Admin_ImportCsv_Ctrl_ImportCsv extends Admin_Ctrl_Base
 
     @CTRL_ID = 'Admin_ImportCsv_Ctrl_ImportCsv'
     @CTRL_AS = 'Ctrl'
     @DEPS = ['Api', 'Growl', '$http']
+
+
 
     init: ->
       @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload')}
@@ -12,6 +14,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.processStarted = false
       @$scope.importErrors = {}
       @$scope.importStarted = false
+      @$scope.logs = []
 
       @$scope.delimeter = 'comma'
       @$scope.enclosure = 'none'
@@ -28,14 +31,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$scope.$on 'dp-status-update', (e, data) =>
         @$scope.log = data.log
+        @updateLogs()
 
       @setupUploadListeners()
 
-      return
 
-    ###
-    #
-    ###
+
+    initialLoad: ->
+      @updateLogs()
+
+
 
     setupUploadListeners: ->
       @$scope.$on('fileuploaddone', (e, data) =>
@@ -59,9 +64,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$scope.fileSelected = true
       )
 
-    ###
-  # Sends requests to launch a task for starting CSV import
-  ###
+
 
     startImport: ->
       field_maps = []
@@ -111,19 +114,33 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         )
       )
 
-    ###
-  # Handler for selection of field mapping
-  # Shows / hides appropriate extra mapping for mappings table, could add extra functionality here later
-  #
-  # @param {Integer} column_id - id of column from the table with mapping
-  # @param {String} selected_field - name of field sent by 'ng-change'
-    ###
 
+
+    ###
+    # Handler for selection of field mapping
+    # Shows / hides appropriate extra mapping for mappings table, could add extra functionality here later
+    #
+    # @param {Integer} column_id - id of column from the table with mapping
+    # @param {String} selected_field - name of field sent by 'ng-change'
+    ###
     selectMapping: (column_id, selected_field) ->
       for key of @$scope.importSettings.showExtraMappings
         @$scope.importSettings.showExtraMappings[key][column_id] = false
 
       if @showExtraMappingsCases.indexOf(selected_field) > -1
         @$scope.importSettings.showExtraMappings[selected_field][column_id] = true
+
+
+
+    updateLogs: ->
+      @Api.sendGet('import_csv_logs').then (res) =>
+        return @$scope.logs = [] if !res.data?.length
+        res.data.map (item) =>
+          item.date = new Date(item.data.started * 1000)
+          item.time = if item.data.finished then moment(item.data.finished * 1000).from(item.data.started * 1000, true) else '-'
+          @$scope.logs.push item
+        console.info res.data
+
+
 
   Admin_ImportCsv_Ctrl_ImportCsv.EXPORT_CTRL()

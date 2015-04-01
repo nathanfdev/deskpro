@@ -324,7 +324,7 @@
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
 				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
-				
+
 			</div>
 
             <br />
@@ -342,4 +342,36 @@
 		</article>
 
 	</section>
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Import Logs</h3>
+        </header>
+
+        <article class="padd">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Filename</th>
+                        <th>Imported Items</th>
+                        <th>Skipped Items</th>
+                        <th>Time Taken</th>
+                        <th>Undo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="log in logs">
+                        <td>{{ ng_var('log.date | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
+                        <td>{{ ng_var('log.data.file') }}</td>
+                        <td>{{ ng_var('log.data.imported') }}</td>
+                        <td>{{ ng_var('log.data.skipped') }}</td>
+                        <td>{{ ng_var('log.time') }}</td>
+                        <td><a href="#" ng-click="">Delete Imported Users</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+
+    </section>
 {% endblock %}
