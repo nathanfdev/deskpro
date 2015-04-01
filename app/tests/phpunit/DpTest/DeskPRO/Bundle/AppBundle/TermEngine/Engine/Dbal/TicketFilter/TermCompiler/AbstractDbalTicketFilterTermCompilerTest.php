@@ -64,18 +64,26 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
      *
      * @param DbalCompiledQuery $query
      * @param $where_string
-     * @param null $join_string
      * @param array $parameters
+     * @param null $join_string
+     * @param null $unique_join_string
      */
     protected function assertCompiledQuery(
         DbalCompiledQuery $query,
         $where_string,
+        array $parameters = array(),
         $join_string = null,
-        array $parameters = array()
+        $unique_join_string = null
     )
     {
         $this->assertQueryWhereString($where_string, $query);
         $this->assertParameters($parameters, $query);
+        if ($join_string) {
+            $this->assertJoinString($join_string, $query);
+        }
+        if ($unique_join_string) {
+            $this->assertUniqueJoinString($unique_join_string, $query);
+        }
     }
 
     protected function assertQueryWhereString($where, DbalCompiledQuery $compiled_query)
@@ -85,6 +93,26 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
             $where,
             $compiled_query->generateWhereString(),
             'DbalCompiledQuery WHERE clause is correct'
+        );
+    }
+
+    protected function assertJoinString($join_string, DbalCompiledQuery $compiled_query)
+    {
+        // assert where string
+        $this->assertSame(
+            $join_string,
+            $compiled_query->generateJoinString(),
+            'DbalCompiledQuery JOIN string is correct'
+        );
+    }
+
+    protected function assertUniqueJoinString($join_string, DbalCompiledQuery $compiled_query)
+    {
+        // assert where string
+        $this->assertSame(
+            $join_string,
+            $compiled_query->generateUniqueJoinString(),
+            'DbalCompiledQuery UNIQUE JOIN string is correct'
         );
     }
 

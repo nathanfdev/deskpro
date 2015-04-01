@@ -52,7 +52,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id IN (:agent_team_ids_0)',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199)
             )
@@ -73,7 +72,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id NOT IN (:agent_team_ids_0)',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199)
             )
@@ -93,7 +91,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id IN (:agent_team_ids_0) OR ticket.agent_team_id IN (:me_0)',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199),
                 'me_0' => new TermEngineExpression('agent.getTeamIds()')
@@ -115,7 +112,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id NOT IN (:agent_team_ids_0) AND ticket.agent_team_id NOT IN (:me_0)',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199),
                 'me_0' => new TermEngineExpression('agent.getTeamIds()')
@@ -137,7 +133,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id IN (:agent_team_ids_0) OR ticket.agent_team_id IS NULL',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199)
             )
@@ -158,7 +153,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id IS NULL',
-            null,
             array()
         );
     }
@@ -177,7 +171,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id IS NOT NULL',
-            null,
             array()
         );
     }
@@ -196,7 +189,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id IN (:agent_team_ids_0) OR ticket.agent_team_id IN (:me_0) OR ticket.agent_team_id IS NULL',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199),
                 'me_0' => new TermEngineExpression('agent.getTeamIds()')
@@ -218,7 +210,6 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_team_id NOT IN (:agent_team_ids_0) AND ticket.agent_team_id NOT IN (:me_0) AND ticket.agent_team_id IS NOT NULL',
-            null,
             array(
                 'agent_team_ids_0' => array(1, 3, 199),
                 'me_0' => new TermEngineExpression('agent.getTeamIds()')

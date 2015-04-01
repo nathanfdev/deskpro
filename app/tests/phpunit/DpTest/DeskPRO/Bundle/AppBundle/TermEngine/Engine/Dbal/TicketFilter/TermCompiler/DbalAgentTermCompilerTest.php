@@ -52,7 +52,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id IN (:agent_ids_0)',
-            null,
             array(
                 'agent_ids_0' => array(1, 2, 15)
             )
@@ -72,7 +71,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id IN (:agent_ids_0)',
-            null,
             array(
                 'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
             )
@@ -93,7 +91,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id NOT IN (:agent_ids_0)',
-            null,
             array(
                 'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
             )
@@ -114,7 +111,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id IN (:agent_ids_0) OR ticket.agent_id IS NULL',
-            null,
             array(
                 'agent_ids_0' => array(1, 2, 15)
             )
@@ -169,7 +165,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id IN (:agent_ids_0) OR ticket.agent_id IS NULL',
-            null,
             array(
                 'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
             )
@@ -190,7 +185,6 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
         $this->assertCompiledQuery(
             $compiled_query,
             'ticket.agent_id NOT IN (:agent_ids_0) AND ticket.agent_id IS NOT NULL',
-            null,
             array(
                 'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
             )
