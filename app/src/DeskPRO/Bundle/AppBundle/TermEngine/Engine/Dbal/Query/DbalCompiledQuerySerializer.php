@@ -43,7 +43,8 @@ class DbalCompiledQuerySerializer
      */
     public function unserialize($serialized_compiled_query)
     {
-        return unserialize($serialized_compiled_query);
+        // CN requested we silence this, because people tend to mess with cached vals in the DB
+        return @unserialize($serialized_compiled_query);
     }
 
     /**
