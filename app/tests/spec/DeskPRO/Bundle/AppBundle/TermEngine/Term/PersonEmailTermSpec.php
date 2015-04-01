@@ -31,47 +31,47 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DbalUserEmailTermCompiler extends AbstractDbalTermCompiler
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm
+ */
+class PersonEmailTermSpec extends ObjectBehavior
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    function it_has_default_op_is()
     {
-        $op = $term->getOp();
+        $this->getOp()->shouldBe(TermInterface::OP_IS);
+    }
 
-        switch ($op) {
-            case TermInterface::OP_IS:
-                $compiler->addJoin(
-                    'people_emails',
-                    'ticket.person_id = people_emails.person_id'
-                );
-                $param = $compiler->addParameter('email', $term->getOption('email'));
+    function it_allows_op_change()
+    {
+        $this->setOp(TermInterface::OP_NOT);
 
-                return sprintf(
-                    'people_emails.email = :%s',
-                    $param
-                );
-            case TermInterface::OP_NOT:
-                $param = $compiler->addParameter('email', $term->getOption('email'));
-                $alias = $compiler->addUniqueJoin(
-                    'people_emails',
-                    sprintf(
-                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
-                        $param
-                    )
-                );
+        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+    }
 
-                return sprintf(
-                    '%s.id IS NULL',
-                    $alias
-                );
-        }
+    function it_defines_its_options(
+        OptionsResolver $options_resolver
+    )
+    {
+        $options_resolver->setDefaults(
+            array(
+                'email' => ''
+            )
+        )->shouldBeCalled();
 
-        return '';
+        $options_resolver->setAllowedTypes(
+            array(
+                'email' => 'string'
+            )
+        )->shouldBeCalled();
+
+        $this->setDefaultOptions($options_resolver);
     }
 }

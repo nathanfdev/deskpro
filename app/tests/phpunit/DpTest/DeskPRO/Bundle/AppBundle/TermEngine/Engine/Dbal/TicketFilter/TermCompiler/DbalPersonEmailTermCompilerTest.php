@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,47 +31,52 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\UserEmailTerm;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\UserEmailTerm
- */
-class UserEmailTermSpec extends ObjectBehavior
+class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
-    function it_has_default_op_is()
+    public function testCompileIs()
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
+        $term = new PersonEmailTerm(
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            )
+        );
+
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'people_emails.email = :email_0',
+            array(
+                'email_0' => 'chris.tickner@deskpro.com'
+            ),
+            'LEFT JOIN people_emails ON (ticket.person_id = people_emails.person_id)'
+        );
     }
 
-    function it_allows_op_change()
+    public function testCompileIsNort()
     {
-        $this->setOp(TermInterface::OP_NOT);
-
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
-    }
-
-    function it_defines_its_options(
-        OptionsResolver $options_resolver
-    )
-    {
-        $options_resolver->setDefaults(
+        $term = new PersonEmailTerm(
             array(
-                'email' => ''
-            )
-        )->shouldBeCalled();
+                'email' => 'chris.tickner@deskpro.com'
+            ),
+            TermInterface::OP_NOT
+        );
 
-        $options_resolver->setAllowedTypes(
+        $compiled_query = $this->compileTerm($term);
+
+        $this->assertCompiledQuery(
+            $compiled_query,
+            'people_emails_0.id IS NULL',
             array(
-                'email' => 'string'
-            )
-        )->shouldBeCalled();
-
-        $this->setDefaultOptions($options_resolver);
+                'email_0' => 'chris.tickner@deskpro.com'
+            ),
+            null,
+            'LEFT JOIN people_emails people_emails_0 ON (ticket.person_id = people_emails_0.person_id AND people_emails_0.email = :email_0)'
+        );
     }
 }
