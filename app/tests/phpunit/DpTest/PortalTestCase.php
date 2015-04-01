@@ -34,8 +34,14 @@
 namespace DpTest;
 
 use DeskPRO\Kernel\ApiKernel;
-use DeskPRO\Kernel\PortalKernel;
 
-class DeskProTestCase extends \PHPUnit_Framework_TestCase
+class PortalTestCase extends AbstractKernelAwareTestCase
 {
+    /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected function getContainer()
+    {
+        return $this->getPortalKernel()->getContainer();
+    }
 }

@@ -36,16 +36,16 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Te
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DpTest\DeskProTestCase;
+use DpTest\ApiTestCase;
 
-abstract class AbstractDbalTicketFilterTermCompilerTest extends DeskProTestCase
+abstract class AbstractDbalTicketFilterTermCompilerTest extends ApiTestCase
 {
     /**
      * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler
      */
     protected function getDbalTicketFilterTermEngineCompiler()
     {
-        return $this->getApiContainer()->get('term_engine.dbal_ticket_filters.compiler');
+        return $this->getContainer()->get('term_engine.dbal_ticket_filters.compiler');
     }
 
     /**
