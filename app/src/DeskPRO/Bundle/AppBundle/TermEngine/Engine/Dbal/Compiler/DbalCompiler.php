@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompilerInterface;
@@ -54,31 +55,6 @@ abstract class DbalCompiler implements DbalCompilerInterface
      */
     protected $visitors;
 
-    /**
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * @var array
-     */
-    protected $joins;
-
-    /**
-     * @var array
-     */
-    protected $join_ons;
-
-    /**
-     * @var array
-     */
-    protected $join_types;
-
-    /**
-     * @var DbalCompiledQuery
-     */
-    protected $query;
-
     public function __construct(
         DbalTermCompilerFactory $compiler_factory,
         array $visitors
@@ -86,10 +62,23 @@ abstract class DbalCompiler implements DbalCompilerInterface
     {
         $this->compiler_factory = $compiler_factory;
         $this->visitors = $visitors;
-        $this->resetCompilerState();
     }
 
-    abstract protected function prepareCompiledQuery();
+    /**
+     * An opportunity for this engine implemention to alter the query before compile starts
+     *
+     * @param DbalCompiledQueryWriter $query_writer
+     * @return void
+     */
+    abstract protected function enginePreCompile(DbalCompiledQueryWriter $query_writer);
+
+    /**
+     * An opportunity for this engine implemention to alter the query after compile is completed
+     *
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter $query_writer
+     * @return void
+     */
+    abstract protected function enginePostCompile(DbalCompiledQueryWriter $query_writer);
 
     /**
      * @param TermInterface $term
@@ -97,77 +86,29 @@ abstract class DbalCompiler implements DbalCompilerInterface
      */
     public function compile(TermInterface $term)
     {
-        // we maintain some state between compiles, clear them here just in case.
-        $this->resetCompilerState();
-
+        // let visitors alter the term
         foreach ($this->visitors as $visitor) {
             $visitor->visit($term);
         }
 
-        $this->prepareCompiledQuery();
+        $query_writer = new DbalCompiledQueryWriter(new DbalCompiledQuery());
 
-        $compiled_terms = $this->getTermCompiler($term)->compile($term, $this);
-        $this->query->setWherePart($compiled_terms);
+        // engine pre hook
+        $this->enginePreCompile($query_writer);
 
-        $query = $this->query;
+        // use term compilers to write the query and return the complete WHERE string
+        $compiled_where = $this->getTermCompiler($term)->compile($term, $query_writer, $this);
+        $query_writer->replaceWhere($compiled_where);
 
-        // clear the compiler state
-        $this->resetCompilerState();
+        // engine post hook
+        $this->enginePostCompile($query_writer);
 
-        return $query;
+        // result is a DbalCompiledQuery
+        return $query_writer->getQuery();
     }
 
     public function getTermCompiler(TermInterface $term)
     {
         return $this->compiler_factory->getCompiler($term);
-    }
-
-    /**
-     * Set a parameter, but the $name_prefix is just a prefix. The actual parameter
-     * name will be returned to you.
-     *
-     * @param $name_prefix
-     * @param $value
-     * @return string the parameter name
-     */
-    public function addParameter($name_prefix, $value)
-    {
-        return $this->query->addParameter($name_prefix, $value);
-    }
-
-    /**
-     * This will do nothing if the table is already joined, else it will join the
-     * table with the given ON
-     *
-     * @param $table_name
-     * @param string $on
-     */
-    public function addJoin($table_name, $on)
-    {
-        $this->query->addJoin($table_name, $on);
-    }
-
-    /**
-     * You can use {alias} in the $on param as a placeholder for the real join alias.
-     *
-     * It returns the real join alias so you can reference it.
-     *
-     * @param $table_name
-     * @param string $on
-     * @param string $type
-     * @return string the join alias
-     */
-    public function addUniqueJoin($table_name, $on, $type = 'LEFT')
-    {
-        return $this->query->addUniqueJoin($table_name, $on, $type);
-    }
-
-    protected function resetCompilerState()
-    {
-        $this->query = new DbalCompiledQuery();
-        $this->params = array();
-        $this->joins = array();
-        $this->join_ons = array();
-        $this->join_types = array();
     }
 }
