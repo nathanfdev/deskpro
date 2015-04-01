@@ -33,20 +33,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
+        return $query_writer->getHelper()->writeEntityCheck(
+            'ticket.department_ids',
+            $term->getOp(),
+            $term->getOption('department_ids')
+        );
+
         $op = $term->getOp();
 
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $param_name = $compiler->addParameter('department_ids', $term->getOption('department_ids'));
+        $param_name = $query_writer->addParameter('department_ids', $term->getOption('department_ids'));
 
         return sprintf('ticket.department_id %s (:%s)', $isser, $param_name);
     }

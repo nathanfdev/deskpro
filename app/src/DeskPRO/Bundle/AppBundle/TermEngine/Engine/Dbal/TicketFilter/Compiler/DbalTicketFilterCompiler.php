@@ -35,11 +35,16 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 
 class DbalTicketFilterCompiler extends DbalCompiler
 {
-    protected function prepareCompiledQuery()
+    protected function enginePreCompile(DbalCompiledQueryWriter $writer)
     {
-        $this->query->setFrom('tickets', 'ticket');
+        $writer->setFrom('tickets', 'ticket');
+    }
+
+    protected function enginePostCompile(DbalCompiledQueryWriter $query_writer)
+    {
     }
 }

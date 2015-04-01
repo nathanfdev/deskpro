@@ -34,14 +34,13 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
         $op = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
@@ -60,7 +59,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         // only non hidden
         if (count($non_hidden) && !count($hidden)) {
-            $status_non_hidden = $compiler->addParameter('status', $non_hidden);
+            $status_non_hidden = $query_writer->addParameter('status', $non_hidden);
 
             return sprintf(
                 'ticket.status %s (:%s)',
@@ -71,9 +70,9 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         // both
         if (count($non_hidden) && count($hidden)) {
-            $status_non_hidden = $compiler->addParameter('status', $non_hidden);
-            $hidden_param = $compiler->addParameter('status', Ticket::STATUS_HIDDEN);
-            $status_hidden = $compiler->addParameter('status', $hidden);
+            $status_non_hidden = $query_writer->addParameter('status', $non_hidden);
+            $hidden_param = $query_writer->addParameter('status', Ticket::STATUS_HIDDEN);
+            $status_hidden = $query_writer->addParameter('status', $hidden);
 
             return sprintf(
                 'ticket.status %s (:%s) OR (ticket.status = :%s AND ticket.hidden_status %s (:%s))',
@@ -87,8 +86,8 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         // only hidden
         if (!count($non_hidden) && count($hidden)) {
-            $hidden_param = $compiler->addParameter('status', Ticket::STATUS_HIDDEN);
-            $status_hidden = $compiler->addParameter('status', $hidden);
+            $hidden_param = $query_writer->addParameter('status', Ticket::STATUS_HIDDEN);
+            $status_hidden = $query_writer->addParameter('status', $hidden);
 
             if ($this->isOp($op, TermInterface::OP_NOT)) {
 

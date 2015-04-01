@@ -33,34 +33,33 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalTicketCustomDataTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
         $op = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $field_param = $compiler->addParameter('field_id', $term->getOption('field_id'));
+        $field_param = $query_writer->addParameter('field_id', $term->getOption('field_id'));
 
-        $join_alias = $compiler->addUniqueJoin(
+        $join_alias = $query_writer->addUniqueJoin(
             'custom_data_ticket',
             sprintf('{alias}.ticket_id = ticket.id AND {alias}.field_id = :%s', $field_param)
         );
 
         if ($input = $term->getOption('input')) {
 
-            $param_name = $compiler->addParameter('input', $input);
+            $param_name = $query_writer->addParameter('input', $input);
 
             return sprintf('%s.input = :%s', $join_alias, $param_name);
 
         } else {
 
-            $param_name = $compiler->addParameter('values', $term->getOption('values'));
+            $param_name = $query_writer->addParameter('values', $term->getOption('values'));
 
             return sprintf('%s.value IN (:%s)', $join_alias, $param_name);
         }

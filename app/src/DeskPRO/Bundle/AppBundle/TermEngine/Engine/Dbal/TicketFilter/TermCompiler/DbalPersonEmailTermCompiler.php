@@ -33,32 +33,31 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalPersonEmailTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
         $op = $term->getOp();
 
         switch ($op) {
             case TermInterface::OP_IS:
-                $compiler->addJoin(
+                $query_writer->addJoin(
                     'people_emails',
                     'ticket.person_id = people_emails.person_id'
                 );
-                $param = $compiler->addParameter('email', $term->getOption('email'));
+                $param = $query_writer->addParameter('email', $term->getOption('email'));
 
                 return sprintf(
                     'people_emails.email = :%s',
                     $param
                 );
             case TermInterface::OP_NOT:
-                $param = $compiler->addParameter('email', $term->getOption('email'));
-                $alias = $compiler->addUniqueJoin(
+                $param = $query_writer->addParameter('email', $term->getOption('email'));
+                $alias = $query_writer->addUniqueJoin(
                     'people_emails',
                     sprintf(
                         'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',

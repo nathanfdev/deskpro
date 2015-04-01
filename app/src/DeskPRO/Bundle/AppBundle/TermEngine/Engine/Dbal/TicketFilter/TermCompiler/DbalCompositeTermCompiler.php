@@ -34,14 +34,13 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
         if (!$term instanceof CompositeTermInterface) {
             throw new \InvalidArgumentException('expected a CompositeTermInterface, but got TermInterface');
@@ -53,8 +52,11 @@ class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
         $isser = ' ' . $isser . ' ';
 
         $parts = array();
+        $compiler = $this->getCompiler();
         foreach ($term->getTerms() as $child_term) {
-            $part = trim($compiler->getTermCompiler($child_term)->compile($child_term, $compiler));
+            $part = trim(
+                $compiler->getTermCompiler($child_term)->compile($child_term, $query_writer, $compiler)
+            );
             if ($part) {
                 // surround each term compilers output in parenthesis
                 // this is to be extra safe with the AND/OR boolean logic

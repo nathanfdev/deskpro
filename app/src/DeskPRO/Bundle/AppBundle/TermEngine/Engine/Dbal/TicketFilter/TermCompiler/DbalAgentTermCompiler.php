@@ -33,16 +33,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalAgentTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalCompiler $compiler)
+    public function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer)
     {
         $op = $term->getOp();
 
@@ -64,7 +63,7 @@ class DbalAgentTermCompiler extends AbstractDbalTermCompiler
         $where = '';
         if (count($agent_ids) > 0) {
             $ids_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-            $ids_param = $compiler->addParameter('agent_ids', $agent_ids);
+            $ids_param = $query_writer->addParameter('agent_ids', $agent_ids);
 
             $where .= sprintf('ticket.agent_id %s (:%s)', $ids_isser, $ids_param);
         }

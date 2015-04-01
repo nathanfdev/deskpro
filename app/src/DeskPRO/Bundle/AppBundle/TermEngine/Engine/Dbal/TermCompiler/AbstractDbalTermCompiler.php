@@ -34,34 +34,42 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 abstract class AbstractDbalTermCompiler
 {
     /**
+     * @var DbalCompiler
+     */
+    protected $compiler;
+
+    /**
      * Take a term and return its WHERE clause. Inside, you may also
      * interact with the DbalCompiler to add paramters, joins, etc.
      *
+     * This should NEVER be called directly, instead call "compile()".
+     *
      * @param TermInterface $term
-     * @param DbalCompiler $compiler
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter $query_writer
      * @return string
      */
-    abstract public function doCompile(TermInterface $term, DbalCompiler $compiler);
+    abstract protected function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer);
 
     /**
      * Take a term and return its WHERE clause. Inside, you may also
      * interact with the DbalCompiler to add paramters, joins, etc.
      *
      * @param TermInterface $term
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter $query_writer
      * @param DbalCompiler $compiler
      * @return string
      */
-    public function compile(TermInterface $term, DbalCompiler $compiler)
+    public function compile(TermInterface $term, DbalCompiledQueryWriter $query_writer, DbalCompiler $compiler)
     {
-        // I think there will be common things we do on each compiler, so this
-        // is just a pre-emptive abstraction.
-        return $this->doCompile($term, $compiler);
+        $this->compiler = $compiler;
+
+        return $this->doCompile($term, $query_writer);
     }
 
     /**
@@ -76,5 +84,18 @@ abstract class AbstractDbalTermCompiler
     protected function isOp($op, $code)
     {
         return strtolower($op) === strtolower($code);
+    }
+
+    /**
+     * @return DbalCompiler
+     * @throws \RuntimeException
+     */
+    protected function getCompiler()
+    {
+        if (!$this->compiler) {
+            throw new \RuntimeException('no compiler exists, you must set a compiler before calling this');
+        }
+
+        return $this->compiler;
     }
 }
