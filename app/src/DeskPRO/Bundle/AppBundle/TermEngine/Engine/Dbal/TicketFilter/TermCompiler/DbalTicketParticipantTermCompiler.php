@@ -61,7 +61,7 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        $param_name = $compiler->addParameter('status', $person_ids);
+        $param_name = $compiler->addParameter('person_ids', $person_ids);
 
         return sprintf('%s.person_id %s (:%s)', $join_alias, $isser, $param_name);
     }
