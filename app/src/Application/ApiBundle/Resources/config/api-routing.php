@@ -4379,6 +4379,12 @@ $collection->create('api_import_csv_logs', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_import_csv_clean', array(
+    'path'        => '/import_csv_clean',
+    'controller'  => 'ApiBundle:CsvUpload:clean',
+    'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # CRM Export CSV
 ########################################################################################################################

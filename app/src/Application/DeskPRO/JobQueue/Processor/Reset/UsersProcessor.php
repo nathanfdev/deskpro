@@ -28,10 +28,24 @@
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
 use Application\DeskPRO\People\Purger;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UsersProcessor extends Base
 {
     const JOB_TYPE = 'reset.users';
+
+    /**
+     * @inheritdoc
+     */
+    public function setDataOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'context_person_id' => null,
+            'limit' => 100,
+            'offset' => 0,
+            'labeled_by' => null,
+        ));
+    }
 
     protected function doProcess(array $data)
     {
@@ -52,6 +66,15 @@ class UsersProcessor extends Base
         $limit = (int) @$data['limit'];
         $offset = (int) @$data['offset'];
         $rep = $this->em->getRepository('DeskPRO:Person');
+
+        if ($data['labeled_by']) {
+            return $this->em->createQuery('SELECT p FROM DeskPRO:Person p JOIN p.labels l WHERE l.label = :label')
+                ->setParameter('label', $data['labeled_by'])
+                ->setMaxResults($limit)
+                ->setFirstResult($offset)
+                ->getResult();
+        }
+
         return $rep->findBy(array('is_agent' => false), null, $limit, $offset);
     }
 }

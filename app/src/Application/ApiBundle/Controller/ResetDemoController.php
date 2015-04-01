@@ -115,7 +115,6 @@ class ResetDemoController extends AbstractController implements ProtectedControl
     protected function getStatus()
     {
         $res = array('waiting' => false);
-        $queue = $this->container->getJobQueue();
         $rep = $this->em->getRepository('DeskPRO:Job');
 
         foreach (self::$types as $type) {

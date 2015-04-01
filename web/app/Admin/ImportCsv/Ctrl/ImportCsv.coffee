@@ -3,7 +3,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
     @CTRL_ID = 'Admin_ImportCsv_Ctrl_ImportCsv'
     @CTRL_AS = 'Ctrl'
-    @DEPS = ['Api', 'Growl', '$http']
+    @DEPS = ['Api', 'Growl', '$http', '$interval']
 
 
 
@@ -33,11 +33,14 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         @$scope.log = data.log
         @updateLogs()
 
+      @$scope.$on '$destroy', => @interval && @$interval.cancel(@interval)
+
       @setupUploadListeners()
 
 
 
     initialLoad: ->
+      @interval = @$interval (=> @updateLogs()), 5000
       @updateLogs()
 
 
@@ -134,12 +137,36 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
     updateLogs: ->
       @Api.sendGet('import_csv_logs').then (res) =>
-        return @$scope.logs = [] if !res.data?.length
+        @$scope.logs.length = 0
+        return if !res.data?.length
         res.data.map (item) =>
           item.date = new Date(item.data.started * 1000)
           item.time = if item.data.finished then moment(item.data.finished * 1000).from(item.data.started * 1000, true) else '-'
           @$scope.logs.push item
-        console.info res.data
+
+
+
+    startDeleteUsers: (name) ->
+      deleteUsers = =>
+        @Api.sendDelete 'import_csv_clean', {ref: name.replace('csv_import.', '')}
+
+      message = @getRegisteredMessage 'delete_users_prompt'
+      update = => @updateLogs()
+
+      @$modal.open({
+        templateUrl: @getTemplatePath('Index/modal-confirm.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+
+          $scope.message = message
+
+          $scope.confirm = (options) ->
+            deleteUsers().then ->
+              $modalInstance.dismiss()
+              update()
+        ]
+      });
 
 
 
