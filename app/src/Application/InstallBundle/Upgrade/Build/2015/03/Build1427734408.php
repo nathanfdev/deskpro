@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -26,49 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class Build1427734408 extends AbstractBuild
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    public function run()
     {
-        $this->setName('dp:test');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $c = $this->getContainer();
-        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
-
-        echo __FILE__;
-        echo "\n";
-        return 0;
+        $this->out("Upgrade Agent-Team relations");
+		$this->execMutateSql("ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03217BBB47");
+		$this->execMutateSql("ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03296CD8AE");
+		$this->execMutateSql("ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03296CD8AE FOREIGN KEY (team_id) REFERENCES agent_teams (id) ON DELETE CASCADE");
     }
 }

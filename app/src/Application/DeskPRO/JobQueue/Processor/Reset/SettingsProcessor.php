@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,52 +25,67 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-namespace Application\DeskPRO\Tickets;
 
 use Doctrine\DBAL\Connection;
 
-class TicketPurger
+class SettingsProcessor extends Base
 {
-    /** @var \Doctrine\DBAL\Connection  */
-    private $db;
+    const JOB_TYPE = 'reset.settings';
 
-    public function __construct(Connection $db)
-    {
-        $this->db = $db;
-    }
+    const NAMES = 'core.settings.names';
 
-    public function purgeSpamAction()
+    protected $skip = array(
+        'core.site_url',
+        'core.deskpro_build',
+        'core.deskpro_build_num',
+        'core.deskpro_version',
+        'core.last_cron_run',
+        'core.last_cron_start',
+        'core.last_heartbeat',
+        'core.license',
+    );
+
+    protected function doProcess(array $data)
     {
-        $count = $this->db->delete(
-            'tickets',
-            array('status' => 'hidden', 'hidden_status' => 'spam')
+        $enc = $this->connection->fetchColumn(
+            'select value from settings where name = :name',
+            array('name' => self::NAMES)
+        );
+        if (!$settings = json_decode($enc, 1)) throw new \Exception('Settings backup not found');
+        foreach ($this->skip as $k) {
+            $settings[$k] = null;
+        }
+        $settings[self::NAMES] = $enc;
+
+        $this->connection->executeUpdate(
+            'delete from settings where name not in (:names)',
+            array('names' => array_keys($settings)),
+            array('names' => Connection::PARAM_STR_ARRAY)
         );
 
-        return $count;
+        foreach ($this->skip as $k) {
+            unset($settings[$k]);
+        }
+
+        foreach ($settings as $k => $v) {
+            $this->connection->executeUpdate(
+                'replace into settings values (:name, :value)',
+                array('name' => $k, 'value' => $v)
+            );
+        }
     }
 
-    public function purgeDeletedAction()
+    static public function saveBaseSettings(Connection $connection)
     {
-        $count = $this->db->delete(
-            'tickets',
-            array('status' => 'hidden', 'hidden_status' => 'deleted')
+        $settings = array();
+        foreach ($connection->fetchAll('select * from settings') as $row) {
+            $settings[$row['name']] = $row['value'];
+        }
+        $connection->executeUpdate(
+            'replace into settings values (:name, :value)',
+            array('name' => self::NAMES, 'value' => json_encode($settings))
         );
-
-        return $count;
-    }
-
-    public function purgeAll()
-    {
-        $this->db->executeUpdate('delete from tickets');
-        $this->db->executeUpdate('delete from tickets_deleted');
-        $this->db->executeUpdate('delete from tickets_flagged');
-        $this->db->executeUpdate('delete from tickets_sms');
     }
 }

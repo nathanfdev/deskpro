@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,49 +25,33 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
+use Application\DeskPRO\People\Purger;
 
-namespace Application\DeskPRO\Command;
-
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class UsersProcessor extends Base
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    const JOB_TYPE = 'reset.users';
+
+    protected function doProcess(array $data)
     {
-        $this->setName('dp:test');
+        $count = 0;
+
+        foreach ($this->getPersons($data) as $person) {
+            $count++;
+            if (@$data['context_person_id'] === $person['id']) continue;
+            $purger = new Purger($person, $this->em);
+            $purger->purge();
+        }
+
+        return $count;
     }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
+    protected function getPersons(array $data)
     {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $c = $this->getContainer();
-        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
-
-        echo __FILE__;
-        echo "\n";
-        return 0;
+        $limit = (int) @$data['limit'];
+        $offset = (int) @$data['offset'];
+        $rep = $this->em->getRepository('DeskPRO:Person');
+        return $rep->findBy(array('is_agent' => false), null, $limit, $offset);
     }
 }
