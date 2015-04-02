@@ -2886,7 +2886,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
                                        'mappedBy'     => 'person', 'cascade' => array('persist', 'detach'),
-                                       'orphanRemoval' => true
+                                       'orphanRemoval' => true,
         ));
         $metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',

@@ -37,6 +37,10 @@ namespace Application\DeskPRO\TaskQueueJob;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Form\Type\PersonPhoneNumbersType;
+use Application\DeskPRO\Form\Type\PhoneNumberType;
+use Orb\Util\PhoneNumbers;
 
 class CsvImport extends AbstractJob
 {
@@ -397,8 +401,16 @@ class CsvImport extends AbstractJob
                     break;
 
                 case 'phone':
-                    if (empty($info['type'])) $info['type'] = 'phone';
-                    $this->_addContactData($person, 'phone', array('type' => $info['type'], 'number' => $column_value), $label);
+                    $form = App::$container->getFormFactory()->create(new PersonPhoneNumbersType(), $person);
+                    $form->submit(array('phone_numbers' => array(array('number' => $column_value))));
+                    if (!$form->isValid()) {
+                        $this->log(array('Invalid phone number "%s"', $column_value));
+                    }
+                    // todo wtf?!
+                    foreach ($person->phone_numbers as $pn) {
+                        $pn->person = $person;
+                    }
+
                     break;
 
                 case 'im':
