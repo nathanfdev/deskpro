@@ -69,6 +69,7 @@ use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * Handles ticket searches
@@ -2217,14 +2218,36 @@ class TicketController extends AbstractController
             if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
                 $permission_errors = true;
             } else {
+
+                $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+                $newticket->setValuesFromTicket($ticket);
+
+                $validator = new NewTicketValidator();
+                $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+                $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+                $validator->setLayout($layout);
+
                 $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-                $this->em->persist($ticket);
-                $this->em->flush();
-                $ticket->getTicketLogger()->done();
+                $newticket->status = $ticket->status;
+
+                if (!$validator->isValid($newticket)) {
+                    $free = array();
+                    foreach ($validator->getErrorsInfo() as $info) {
+                        $free[] = htmlspecialchars($info['message']);
+                    }
+                    throw new ValidatorException(implode('|', $free));
+                }
+
+                $tm = $this->container->getTicketManager();
+                $tm->markAsManaged($ticket);
+                $tm->saveTicket($ticket, $context);
                 $this->db->commit();
             }
         } catch (\Exception $e) {
             $this->db->rollback();
+            if ($e instanceof ValidatorException) {
+                return $this->createJsonResponse(array('error' => true, 'error_messages' => explode('|', $e->getMessage())));
+            }
         }
 
         if ($permission_errors) {
