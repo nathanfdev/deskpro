@@ -110,31 +110,7 @@ define [
         # Departments
         #--------------------
 
-        @deps_perms = {
-          tickets: {},
-          chat: {}
-        }
-
-        for dep in @ticketDeps
-          assign = false
-          full = false
-
-          if @agentId and dep.permissions?.users
-            u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
-            if u
-              if u.name == 'full' then full = true else assign = true
-
-          @deps_perms.tickets[dep.id] = { assign: assign, full: full }
-
-        for dep in @chatDeps
-          full = false
-          if @agentId and dep.permissions?.users
-            u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
-            if u
-              full = true
-
-          @deps_perms.chat[dep.id] = { full: full }
-
+        @deps_perms = @parseDepPermOverrides(@agentId, @ticketDeps, @chatDeps)
         @$timeout(=> @updateHasPermOverridesStatus())
       )
       return promise
@@ -385,10 +361,10 @@ define [
 
       copySettings = (settings) =>
         promise = @Api.sendDataGet({
-          agent: "/agents/#{settings.agent_id}",
-          notif_prefs_table: "/agents/#{settings.agent_id}/notify-prefs/get-tables",
-          teams: "/agent_teams",
-          groups: "/agent_groups",
+          agent: "/agents/#{settings.agent_id}?extended=1"
+          notif_prefs_table: "/agents/#{settings.agent_id}/notify-prefs/get-tables"
+          teams: "/agent_teams"
+          groups: "/agent_groups"
         }).then( (result) =>
           agent  = result.data.agent.agent
           teams  = result.data.teams.agent_teams
@@ -420,10 +396,8 @@ define [
               group.value = group.id in gids
 
           if settings.perms
-            for own type, perms of agent.perms
-              for own permName, value of perms
-                continue if not @perm_form[type]?[permName]?
-                @perm_form[type][permName] = value
+            @perm_form = angular.copy result.data.agent.perm_overrides
+            @deps_perms = @parseDepPermOverrides(agent.id, @ticketDeps, @chatDeps)
 
           if settings.ticket_notifs
             for n in ['sys_filters_email', 'sys_filters_alert', 'custom_filters_email', 'custom_filters_alert']
@@ -442,6 +416,7 @@ define [
                     val = notif_prefs.subs[n]?.rows[rkey]?.cols[subckey]?.value || false
                     @notif_prefs.subs[n].rows[rkey].cols[subckey].value = val
         )
+        @$timeout(=> @updateHasPermOverridesStatus())
         return promise
 
       #------------------------------
@@ -665,7 +640,39 @@ define [
 
       return promise
 
+
+
     isSelf: ->
       window.DP_PERSON_ID == @agentId
+
+
+
+    parseDepPermOverrides: (agentId, ticketDeps, chatDeps) ->
+      overrides =
+        tickets: {}
+        chat: {}
+
+      for dep in ticketDeps
+        assign = false
+        full = false
+
+        if agentId and dep.permissions?.users
+          u = dep.permissions.users.filter((x) => x.id == agentId)[0]
+          if u
+            if u.name == 'full' then full = true else assign = true
+
+        overrides.tickets[dep.id] = { assign: assign, full: full }
+
+      for dep in chatDeps
+        full = false
+        if agentId and dep.permissions?.users
+          u = dep.permissions.users.filter((x) => x.id == agentId)[0]
+          if u
+            full = true
+
+        overrides.chat[dep.id] = { full: full }
+
+      overrides
+
 
   Admin_Agents_Ctrl_Edit.EXPORT_CTRL()
