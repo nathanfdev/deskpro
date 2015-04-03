@@ -31,16 +31,16 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class EntityHelper
+class DbalEntityHelper
 {
-    public static function write(DbalQueryBuilder $query_writer, $field_name, $op, array $ids)
+    public function write(DbalQueryBuilder $query_writer, $field_name, $op, array $ids)
     {
         // the "count" function won't catch arrays that are all null
         $all_null = true;

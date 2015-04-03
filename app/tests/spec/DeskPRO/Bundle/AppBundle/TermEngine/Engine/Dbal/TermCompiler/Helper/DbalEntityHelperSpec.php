@@ -31,19 +31,19 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer\EntityHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer\EntityHelper
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper
  */
-class EntityHelperSpec extends ObjectBehavior
+class DbalEntityHelperSpec extends ObjectBehavior
 {
     function it_handles_the_simple_is_case(
         DbalQueryBuilder $query_writer
