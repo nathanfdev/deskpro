@@ -46,7 +46,7 @@ class DbalExecutableQuery
     );
 
     /**
-     * @var DbalCompiledQuery
+     * @var DbalQuery
      */
     private $query;
 
@@ -77,7 +77,7 @@ class DbalExecutableQuery
     private $and_group_where;
     private $group_by;
 
-    public function __construct(DbalCompiledQuery $query, Connection $connection)
+    public function __construct(DbalQuery $query, Connection $connection)
     {
         $this->query = $query;
         $this->connection = $connection;
@@ -224,11 +224,11 @@ class DbalExecutableQuery
     }
 
     /**
-     * @param DbalCompiledQuery $query
+     * @param DbalQuery $query
      * @return \Doctrine\DBAL\Driver\Statement
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function execute(DbalCompiledQuery $query)
+    protected function execute(DbalQuery $query)
     {
         $this->last_run_sql = (string)$query;
         $this->last_run_parameters = $query->getParameters();

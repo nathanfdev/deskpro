@@ -34,7 +34,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use PhpSpec\ObjectBehavior;
@@ -47,7 +47,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
 class DbalExecutableQuerySpec extends ObjectBehavior
 {
     function let(
-        DbalCompiledQuery $query,
+        DbalQuery $query,
         Connection $connection
     )
     {
@@ -79,7 +79,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
     }
 
     function it_will_run_a_count_query(
-        DbalCompiledQuery $query,
+        DbalQuery $query,
         Connection $connection,
         Statement $stmt
     )
@@ -107,7 +107,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
     }
 
     function it_will_execute_a_select_ids_query(
-        DbalCompiledQuery $query,
+        DbalQuery $query,
         Connection $connection,
         Statement $stmt
     )
@@ -148,7 +148,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
     }
 
     function it_will_execute_a_select_ids_query_with_pagination_custom_where_and_sorting_applied(
-        DbalCompiledQuery $query,
+        DbalQuery $query,
         Connection $connection,
         Statement $stmt
     )

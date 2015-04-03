@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 
@@ -49,11 +49,11 @@ class DbalQueryManipulator
         $this->expression_language = $expression_language;
     }
 
-    public function ensureAgentPermissions(DbalCompiledQuery $query, DbalEngineContext $context)
+    public function ensureAgentPermissions(DbalQuery $query, DbalEngineContext $context)
     {
     }
 
-    public function resolveParameters(DbalCompiledQuery $query, DbalEngineContext $context)
+    public function resolveParameters(DbalQuery $query, DbalEngineContext $context)
     {
         foreach ($query->getParameters() as $key => $val) {
             $resolved = $this->resolveParam($val, $context);

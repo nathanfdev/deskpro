@@ -34,8 +34,8 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -50,7 +50,7 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
 {
     function let(
         DbalTicketFilterCompiler $compiler,
-        DbalCompiledQueryCacher $query_cache
+        DbalQueryCacher $query_cache
     )
     {
         $this->beConstructedWith($compiler, $query_cache);
@@ -60,9 +60,9 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
         Filter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
-        DbalCompiledQuery $compiled,
+        DbalQuery $compiled,
         \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler $compiler,
-        DbalCompiledQueryCacher $query_cache
+        DbalQueryCacher $query_cache
     )
     {
         $filter->getId()->willReturn(2);
@@ -86,9 +86,9 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
         Filter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
-        DbalCompiledQuery $compiled,
+        DbalQuery $compiled,
         \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler $compiler,
-        DbalCompiledQueryCacher $query_cache
+        DbalQueryCacher $query_cache
     )
     {
         $filter->getId()->willReturn(2);

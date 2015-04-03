@@ -33,41 +33,41 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder
  */
-class DbalCompiledQueryWriterSpec extends ObjectBehavior
+class DbalQueryBuilderSpec extends ObjectBehavior
 {
     function let(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $this->beConstructedWith($query);
     }
 
     function it_is_a_wrapper_around_a_dbal_compiled_query(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $this->getQuery()->shouldReturn($query);
     }
 
     function it_writes_where(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $query->setWherePart('ticket.id = 3')->shouldBeCalled();
 
-        $this->replaceWhere('ticket.id = 3');
+        $this->setWhereString('ticket.id = 3');
     }
 
     function it_writes_parameters(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $query->addParameter('name_prefix', 'value')->shouldBeCalled();
@@ -76,7 +76,7 @@ class DbalCompiledQueryWriterSpec extends ObjectBehavior
     }
 
     function it_writes_joins(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $query->addJoin('table', 'alias')->shouldBeCalled();
@@ -85,7 +85,7 @@ class DbalCompiledQueryWriterSpec extends ObjectBehavior
     }
 
     function it_writes_unique_joins(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $query->addUniqueJoin('table', 'on', 'type')->shouldBeCalled();
@@ -94,7 +94,7 @@ class DbalCompiledQueryWriterSpec extends ObjectBehavior
     }
 
     function it_lets_you_write_from(
-        DbalCompiledQuery $query
+        DbalQuery $query
     )
     {
         $query->setFrom('table', 'alias')->shouldBeCalled();

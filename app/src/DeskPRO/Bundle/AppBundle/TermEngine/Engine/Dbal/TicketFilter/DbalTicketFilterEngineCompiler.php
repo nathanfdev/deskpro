@@ -37,8 +37,8 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher;
 
 /**
  * This is the compiler that the DbalTicketFilterEngine uses. It is a thin wrapper
@@ -53,11 +53,11 @@ class DbalTicketFilterEngineCompiler
     protected $compiler;
 
     /**
-     * @var DbalCompiledQueryCacher
+     * @var DbalQueryCacher
      */
     protected $cacher;
 
-    public function __construct(DbalCompiler $compiler, DbalCompiledQueryCacher $cacher)
+    public function __construct(DbalCompiler $compiler, DbalQueryCacher $cacher)
     {
         $this->compiler = $compiler;
         $this->cacher = $cacher;
@@ -65,7 +65,7 @@ class DbalTicketFilterEngineCompiler
 
     /**
      * @param Filter $filter
-     * @return DbalCompiledQuery|mixed
+     * @return DbalQuery|mixed
      */
     public function compile(Filter $filter)
     {

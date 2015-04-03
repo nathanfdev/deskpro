@@ -33,13 +33,13 @@ services:
         # compiler pass will add the term compilers on tag "dbal_ticket_filter_compiler"
 
     term_engine.dbal.compiled_query_cacher:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher
         arguments:
             - @cache.one_day
             - @term_engine.dbal.compiled_query_serializer
 
     term_engine.dbal.compiled_query_serializer:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuerySerializer
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer
 
     #
     # TERM COMPILERS

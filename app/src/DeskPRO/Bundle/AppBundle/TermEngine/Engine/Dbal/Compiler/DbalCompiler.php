@@ -34,8 +34,8 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompilerInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -67,22 +67,22 @@ abstract class DbalCompiler implements DbalCompilerInterface
     /**
      * An opportunity for this engine implemention to alter the query before compile starts
      *
-     * @param DbalCompiledQueryWriter $query_writer
+     * @param DbalQueryBuilder $query_writer
      * @return void
      */
-    abstract protected function enginePreCompile(DbalCompiledQueryWriter $query_writer);
+    abstract protected function enginePreCompile(DbalQueryBuilder $query_writer);
 
     /**
      * An opportunity for this engine implemention to alter the query after compile is completed
      *
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter $query_writer
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
      * @return void
      */
-    abstract protected function enginePostCompile(DbalCompiledQueryWriter $query_writer);
+    abstract protected function enginePostCompile(DbalQueryBuilder $query_writer);
 
     /**
      * @param TermInterface $term
-     * @return DbalCompiledQuery
+     * @return DbalQuery
      */
     public function compile(TermInterface $term)
     {
@@ -91,19 +91,19 @@ abstract class DbalCompiler implements DbalCompilerInterface
             $visitor->visit($term);
         }
 
-        $query_writer = new DbalCompiledQueryWriter(new DbalCompiledQuery());
+        $query_writer = new DbalQueryBuilder(new DbalQuery());
 
         // engine pre hook
         $this->enginePreCompile($query_writer);
 
         // use term compilers to write the query and return the complete WHERE string
         $compiled_where = $this->getTermCompiler($term)->compile($term, $query_writer, $this);
-        $query_writer->replaceWhere($compiled_where);
+        $query_writer->setWhereString($compiled_where);
 
         // engine post hook
         $this->enginePostCompile($query_writer);
 
-        // result is a DbalCompiledQuery
+        // result is a DbalQuery
         return $query_writer->getQuery();
     }
 

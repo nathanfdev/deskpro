@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 
-class DbalCompiledQuery
+class DbalQuery
 {
     const JOIN_LEFT = 'LEFT';
     const JOIN_RIGHT = 'RIGHT';

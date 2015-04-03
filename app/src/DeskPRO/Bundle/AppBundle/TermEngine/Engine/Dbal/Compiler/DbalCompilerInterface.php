@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 /**
@@ -45,10 +45,10 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 interface DbalCompilerInterface
 {
     /**
-     * Take a TermInterface and transform it into a DbalCompiledQuery
+     * Take a TermInterface and transform it into a DbalQuery
      *
      * @param TermInterface $term
-     * @return DbalCompiledQuery
+     * @return DbalQuery
      */
     public function compile(TermInterface $term);
 }

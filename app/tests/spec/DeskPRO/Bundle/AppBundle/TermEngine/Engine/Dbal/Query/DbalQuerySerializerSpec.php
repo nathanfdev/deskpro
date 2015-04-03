@@ -33,48 +33,17 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use Application\DeskPRO\Cache\CacheAdapterInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuerySerializer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryCacher
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer
  */
-class DbalCompiledQueryCacherSpec extends ObjectBehavior
+class DbalQueryCacheSpec extends ObjectBehavior
 {
-    function let(
-        CacheAdapterInterface $adapter,
-        DbalCompiledQuerySerializer $serializer
-    )
+    function it_is_initializable()
     {
-        $this->beConstructedWith($adapter, $serializer);
-    }
-
-    function it_will_retrieve_a_cached_query(
-        DbalCompiledQuery $compiled,
-        DbalCompiledQuerySerializer $serializer,
-        CacheAdapterInterface $adapter
-    )
-    {
-        $adapter->get('dbal.term_engine.query.' . 'some key from engine')->shouldBeCalled();
-        $serializer->unserialize(Argument::any())->willReturn($compiled);
-
-        $this->fetchQuery('some key from engine')->shouldReturn($compiled);
-    }
-
-    function it_will_cache_a_query(
-        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery $compiled,
-        DbalCompiledQuerySerializer $serializer,
-        CacheAdapterInterface $adapter
-    )
-    {
-        $serializer->serialize($compiled)->willReturn($serialized_version = 'serialized_version');
-
-        $this->saveQuery('some key from engine', $compiled);
-
-        $adapter->set('dbal.term_engine.query.' . 'some key from engine', $serialized_version)->shouldHaveBeenCalled();
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalCompiledQueryCacheSerializer');
     }
 }

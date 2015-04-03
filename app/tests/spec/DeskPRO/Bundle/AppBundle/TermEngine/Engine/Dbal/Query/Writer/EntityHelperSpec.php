@@ -33,8 +33,8 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -46,7 +46,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer\EntityHelper;
 class EntityHelperSpec extends ObjectBehavior
 {
     function it_handles_the_simple_is_case(
-        DbalCompiledQueryWriter $query_writer
+        DbalQueryBuilder $query_writer
     )
     {
         $query_writer->addParameter('ids', array(1))->willReturn('ids_0');
@@ -56,7 +56,7 @@ class EntityHelperSpec extends ObjectBehavior
     }
 
     function it_handles_the_simple_NOT_case(
-        DbalCompiledQueryWriter $query_writer
+        DbalQueryBuilder $query_writer
     )
     {
         $query_writer->addParameter('ids', array(1))->willReturn('ids_0');
@@ -66,7 +66,7 @@ class EntityHelperSpec extends ObjectBehavior
     }
 
     function it_handles_the_is_null_case(
-        DbalCompiledQueryWriter $query_writer
+        DbalQueryBuilder $query_writer
     )
     {
         $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(0))
@@ -83,7 +83,7 @@ class EntityHelperSpec extends ObjectBehavior
     }
 
     function it_handles_the_NOT_null_case(
-        DbalCompiledQueryWriter $query_writer
+        DbalQueryBuilder $query_writer
     )
     {
         $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array(0))
@@ -95,7 +95,7 @@ class EntityHelperSpec extends ObjectBehavior
     }
 
     function it_handles_the_full_is_case(
-        DbalCompiledQueryWriter $query_writer
+        DbalQueryBuilder $query_writer
     )
     {
         $query_writer->addParameter('ids', array(3))->willReturn('ids_0');
@@ -108,7 +108,7 @@ class EntityHelperSpec extends ObjectBehavior
     }
 
     function it_handles_the_full_NOT_case(
-        DbalCompiledQueryWriter $query_writer
+        DbalQueryBuilder $query_writer
     )
     {
         $query_writer->addParameter('ids', array(3))->willReturn('ids_0');

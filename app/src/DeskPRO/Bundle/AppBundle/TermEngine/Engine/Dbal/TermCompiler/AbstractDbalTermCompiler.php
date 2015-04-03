@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 abstract class AbstractDbalTermCompiler
@@ -51,21 +51,21 @@ abstract class AbstractDbalTermCompiler
      * This should NEVER be called directly, instead call "compile()".
      *
      * @param TermInterface $term
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter $query_writer
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
      * @return string
      */
-    abstract protected function doCompile(TermInterface $term, DbalCompiledQueryWriter $query_writer);
+    abstract protected function doCompile(TermInterface $term, DbalQueryBuilder $query_writer);
 
     /**
      * Take a term and return its WHERE clause. Inside, you may also
      * interact with the DbalCompiler to add paramters, joins, etc.
      *
      * @param TermInterface $term
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter $query_writer
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
      * @param DbalCompiler $compiler
      * @return string
      */
-    public function compile(TermInterface $term, DbalCompiledQueryWriter $query_writer, DbalCompiler $compiler)
+    public function compile(TermInterface $term, DbalQueryBuilder $query_writer, DbalCompiler $compiler)
     {
         $this->compiler = $compiler;
 

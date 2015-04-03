@@ -33,26 +33,57 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use Application\DeskPRO\Cache\CacheAdapterInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 
-class DbalCompiledQuerySerializer
+class DbalQueryCacher
 {
     /**
-     * @param string $serialized_compiled_query the result of self::serialize()
-     * @return DbalCompiledQuery
+     * @var CacheAdapterInterface
      */
-    public function unserialize($serialized_compiled_query)
+    private $cache_adapter;
+
+    /**
+     * @var DbalQuerySerializer
+     */
+    private $serializer;
+
+    public function __construct(CacheAdapterInterface $cache_adapter, DbalQuerySerializer $serializer)
     {
-        // CN requested we silence this, because people tend to mess with cached vals in the DB
-        return @unserialize($serialized_compiled_query);
+        $this->cache_adapter = $cache_adapter;
+        $this->serializer = $serializer;
+    }
+
+    public function fetchQuery($key)
+    {
+        $key = $this->generateKey($key);
+
+        $serialized = $this->cache_adapter->get($key);
+
+        $compiled_query = $this->serializer->unserialize($serialized);
+
+        return $compiled_query;
+    }
+
+    public function saveQuery($key, DbalQuery $compiled_query)
+    {
+        $serialized = $this->serializer->serialize($compiled_query);
+
+        $key = $this->generateKey($key);
+
+        $this->cache_adapter->set($key, $serialized);
     }
 
     /**
-     * @param DbalCompiledQuery $compiled_query
-     * @return string the storable serialized version
+     * Prefixes the key from the engine to ensure its unique in the global cache namespace
+     *
+     * @param $key
+     * @return string
      */
-    public function serialize(DbalCompiledQuery $compiled_query)
+    private function generateKey($key)
     {
-        return serialize($compiled_query);
+        $add_unique = sprintf('dbal.term_engine.query.%s', $key);
+        return $add_unique;
     }
 }

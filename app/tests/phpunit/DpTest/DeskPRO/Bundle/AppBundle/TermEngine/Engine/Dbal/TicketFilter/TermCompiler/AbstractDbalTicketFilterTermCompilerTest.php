@@ -34,7 +34,7 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\ApiTestCase;
 
@@ -50,7 +50,7 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends ApiTestCase
 
     /**
      * @param $term
-     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery
      */
     protected function compileTerm(TermInterface $term)
     {
@@ -62,14 +62,14 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends ApiTestCase
     /**
      * A shortcut to test lots of the query at once
      *
-     * @param DbalCompiledQuery $query
+     * @param DbalQuery $query
      * @param $where_string
      * @param array $parameters
      * @param null $join_string
      * @param null $unique_join_string
      */
     protected function assertCompiledQuery(
-        DbalCompiledQuery $query,
+        DbalQuery $query,
         $where_string,
         array $parameters = array(),
         $join_string = null,
@@ -86,37 +86,37 @@ abstract class AbstractDbalTicketFilterTermCompilerTest extends ApiTestCase
         }
     }
 
-    protected function assertQueryWhereString($where, DbalCompiledQuery $compiled_query)
+    protected function assertQueryWhereString($where, DbalQuery $compiled_query)
     {
         // assert where string
         $this->assertSame(
             $where,
             $compiled_query->generateWhereString(),
-            'DbalCompiledQuery WHERE clause is correct'
+            'DbalQuery WHERE clause is correct'
         );
     }
 
-    protected function assertJoinString($join_string, DbalCompiledQuery $compiled_query)
+    protected function assertJoinString($join_string, DbalQuery $compiled_query)
     {
         // assert where string
         $this->assertSame(
             $join_string,
             $compiled_query->generateJoinString(),
-            'DbalCompiledQuery JOIN string is correct'
+            'DbalQuery JOIN string is correct'
         );
     }
 
-    protected function assertUniqueJoinString($join_string, DbalCompiledQuery $compiled_query)
+    protected function assertUniqueJoinString($join_string, DbalQuery $compiled_query)
     {
         // assert where string
         $this->assertSame(
             $join_string,
             $compiled_query->generateUniqueJoinString(),
-            'DbalCompiledQuery UNIQUE JOIN string is correct'
+            'DbalQuery UNIQUE JOIN string is correct'
         );
     }
 
-    protected function assertParameters($parameters, DbalCompiledQuery $compiled_query)
+    protected function assertParameters($parameters, DbalQuery $compiled_query)
     {
         // assert the parameter values
         $this->assertEquals(

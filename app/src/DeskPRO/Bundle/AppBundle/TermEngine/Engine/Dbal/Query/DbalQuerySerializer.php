@@ -31,24 +31,28 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 
-class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
+class DbalQuerySerializer
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    /**
+     * @param string $serialized_compiled_query the result of self::serialize()
+     * @return DbalQuery
+     */
+    public function unserialize($serialized_compiled_query)
     {
-        // in reality, we need to create a TermExpression for this for some values
-        // a simple foreach, and modify the $ids array
-        $ids = $term->getOption('department_ids');
+        // CN requested we silence this, because people tend to mess with cached vals in the DB
+        return @unserialize($serialized_compiled_query);
+    }
 
-        return $query_writer->writeEntityCheck(
-            'ticket.department_id',
-            $term->getOp(),
-            $ids
-        );
+    /**
+     * @param DbalQuery $compiled_query
+     * @return string the storable serialized version
+     */
+    public function serialize(DbalQuery $compiled_query)
+    {
+        return serialize($compiled_query);
     }
 }

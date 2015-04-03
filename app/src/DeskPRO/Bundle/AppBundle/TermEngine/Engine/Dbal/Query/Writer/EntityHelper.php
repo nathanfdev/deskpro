@@ -33,14 +33,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\Writer;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQueryWriter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class EntityHelper
 {
-    public static function write(DbalCompiledQueryWriter $query_writer, $field_name, $op, array $ids)
+    public static function write(DbalQueryBuilder $query_writer, $field_name, $op, array $ids)
     {
         // the "count" function won't catch arrays that are all null
         $all_null = true;

@@ -36,12 +36,12 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery
  */
-class DbalCompiledQuerySpec extends ObjectBehavior
+class DbalQuerySpec extends ObjectBehavior
 {
     function it_handles_select_from_part()
     {
@@ -133,7 +133,7 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $join_alias = $this->addUniqueJoin(
             'custom_def_people',
             '{alias}.person_id = {from}.person_id',
-            DbalCompiledQuery::JOIN_INNER
+            DbalQuery::JOIN_INNER
         );
 
         if (strlen($join_alias->getWrappedObject()) <= 0) {
@@ -166,28 +166,28 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->setFrom('tickets', 't');
         $this->addOrderBy(
             '{from}.subject',
-            \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery::ORDER_ASC
+            \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_ASC
         );
 
         $this->getOrderBy()->shouldBeLike(
             array(
                 array(
                     '{from}.subject',
-                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery::ORDER_ASC
+                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_ASC
                 )
             )
         );
         $this->generateOrderByString()->shouldBe('{from}.subject ASC');
         $this->__toString()->shouldBe('SELECT * FROM tickets t ORDER BY t.subject ASC');
 
-        $this->addOrderBy('{from}.date_created', DbalCompiledQuery::ORDER_DESC);
+        $this->addOrderBy('{from}.date_created', DbalQuery::ORDER_DESC);
 
         $this->getOrderBy()->shouldBeLike(
             array(
-                array('{from}.subject', DbalCompiledQuery::ORDER_ASC),
+                array('{from}.subject', DbalQuery::ORDER_ASC),
                 array(
                     '{from}.date_created',
-                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery::ORDER_DESC
+                    \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_DESC
                 )
             )
         );
@@ -382,11 +382,11 @@ class DbalCompiledQuerySpec extends ObjectBehavior
         $this->addUniqueJoin(
             'custom_def_person',
             '{alias}.person_id = {from}.id',
-            \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery::JOIN_INNER
+            \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::JOIN_INNER
         );
         $this->addGroupBy('{from}.date_created');
         $this->addGroupBy('{from}.id');
-        $this->addOrderBy('{from}.id', DbalCompiledQuery::ORDER_DESC);
+        $this->addOrderBy('{from}.id', DbalQuery::ORDER_DESC);
         $this->setLimit(15);
         $this->setPage(4);
 

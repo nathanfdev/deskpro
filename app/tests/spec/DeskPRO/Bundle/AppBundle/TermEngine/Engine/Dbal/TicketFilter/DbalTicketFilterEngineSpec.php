@@ -36,7 +36,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompiledQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use Doctrine\DBAL\Connection;
@@ -69,7 +69,7 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
         DbalEngineContext $context,
         DbalTicketFilterEngineCompiler $compiler,
         DbalQueryManipulator $query_manipulator,
-        DbalCompiledQuery $compiled_query
+        DbalQuery $compiled_query
     )
     {
         $compiler->compile($filter)->willReturn($compiled_query);
