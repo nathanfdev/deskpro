@@ -33,8 +33,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -42,6 +40,11 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 class DbalEntityHelper
 {
     /**
+     * Given a field name from the query, like "ticket.agent_id", create a query
+     * part that satisfied the operation for the given array of IDs.
+     *
+     * You can use a TermEngineExpression in the $ids array.
+     *
      * @param $field_name
      * @param $op
      * @param $ids
