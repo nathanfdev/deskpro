@@ -5,3 +5,9 @@ services:
 
     term_engine.expression_language:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage
+
+    #
+    # HELPERS - inject these into your TermCompiler to help build DbalQueryPart's for you
+    #
+    term_engine.dbal.entity_helper:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper

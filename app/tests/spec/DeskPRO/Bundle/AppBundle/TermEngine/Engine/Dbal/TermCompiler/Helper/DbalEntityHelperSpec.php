@@ -45,78 +45,105 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEnti
  */
 class DbalEntityHelperSpec extends ObjectBehavior
 {
-    function it_handles_the_simple_is_case(
-        DbalQueryBuilder $query_writer
-    )
+    function it_handles_the_simple_IS_case()
     {
-        $query_writer->addParameter('ids', array(1))->willReturn('ids_0');
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(1));
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(1))
-            ->shouldReturn('ticket.agent_id IN (:ids_0)');
+        $query_part->getWhereString()->shouldBe(
+            'ticket.agent_id IN (:ids)'
+        );
+
+        $query_part->getParameters()->shouldBe(
+            array(
+                'ids' => array(1)
+            )
+        );
+
+        $query_part->getJoins()->shouldBe(array());
+        $query_part->getUniqueJoins()->shouldBe(array());
     }
 
-    function it_handles_the_simple_NOT_case(
-        DbalQueryBuilder $query_writer
-    )
+    function it_handles_the_simple_NOT_case()
     {
-        $query_writer->addParameter('ids', array(1))->willReturn('ids_0');
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(1));
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array(1))
-            ->shouldReturn('ticket.agent_id NOT IN (:ids_0)');
+        $query_part->getWhereString()->shouldBe(
+            'ticket.agent_id NOT IN (:ids)'
+        );
+
+        $query_part->getParameters()->shouldBe(
+            array(
+                'ids' => array(1)
+            )
+        );
+
+        $query_part->getJoins()->shouldBe(array());
+        $query_part->getUniqueJoins()->shouldBe(array());
     }
 
-    function it_handles_the_is_null_case(
-        DbalQueryBuilder $query_writer
-    )
+    function it_handles_the_IS_NULL_case()
     {
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(0))
-            ->shouldReturn('ticket.agent_id IS NULL');
+        $first_query_part_result = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(0));
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array())
-            ->shouldReturn('ticket.agent_id IS NULL');
+        $first_query_part_result->getWhereString()->shouldBe(
+            'ticket.agent_id IS NULL'
+        );
+        $first_query_part_result->getParameters()->shouldBe(array());
+        $first_query_part_result->getJoins()->shouldBe(array());
+        $first_query_part_result->getUniqueJoins()->shouldBe(array());
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(null))
-            ->shouldReturn('ticket.agent_id IS NULL');
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array())
+            ->shouldBeLike($first_query_part_result);
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(null, null, null))
-            ->shouldReturn('ticket.agent_id IS NULL');
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(null))
+            ->shouldBeLike($first_query_part_result);
+
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(null, null, null))
+            ->shouldBeLike($first_query_part_result);
     }
 
-    function it_handles_the_NOT_null_case(
-        DbalQueryBuilder $query_writer
-    )
+    function it_handles_the_NOT_NULL_case()
     {
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array(0))
-            ->shouldReturn('ticket.agent_id IS NOT NULL');
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array())
-            ->shouldReturn('ticket.agent_id IS NOT NULL');
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array(null, null))
-            ->shouldReturn('ticket.agent_id IS NOT NULL');
+        $first_query_part_result = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(0));
+
+        $first_query_part_result->getWhereString()->shouldBe(
+            'ticket.agent_id IS NOT NULL'
+        );
+        $first_query_part_result->getParameters()->shouldBe(array());
+        $first_query_part_result->getJoins()->shouldBe(array());
+        $first_query_part_result->getUniqueJoins()->shouldBe(array());
+
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array())
+            ->shouldBeLike($first_query_part_result);
+
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(null))
+            ->shouldBeLike($first_query_part_result);
+
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(null, null, null))
+            ->shouldBeLike($first_query_part_result);
     }
 
-    function it_handles_the_full_is_case(
-        DbalQueryBuilder $query_writer
-    )
+    function it_handles_the_FULL_IS_case()
     {
-        $query_writer->addParameter('ids', array(3))->willReturn('ids_0');
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(0, 3));
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(0, 3))
-            ->shouldReturn('ticket.agent_id IN (:ids_0) OR ticket.agent_id IS NULL');
-
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_IS, array(null, 3))
-            ->shouldReturn('ticket.agent_id IN (:ids_0) OR ticket.agent_id IS NULL');
+        $query_part->getWhereString()->shouldBe('ticket.agent_id IN (:ids) OR ticket.agent_id IS NULL');
+        $query_part->getParameters()->shouldBe(
+            array(
+                'ids' => array(3)
+            )
+        );
     }
 
-    function it_handles_the_full_NOT_case(
-        DbalQueryBuilder $query_writer
-    )
+    function it_handles_the_FULL_NOT_case()
     {
-        $query_writer->addParameter('ids', array(3))->willReturn('ids_0');
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(0, 3));
 
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array(0, 3))
-            ->shouldReturn('ticket.agent_id NOT IN (:ids_0) AND ticket.agent_id IS NOT NULL');
-
-        $this->write($query_writer, 'ticket.agent_id', TermInterface::OP_NOT, array(null, 3))
-            ->shouldReturn('ticket.agent_id NOT IN (:ids_0) AND ticket.agent_id IS NOT NULL');
+        $query_part->getWhereString()->shouldBe('ticket.agent_id NOT IN (:ids) AND ticket.agent_id IS NOT NULL');
+        $query_part->getParameters()->shouldBe(
+            array(
+                'ids' => array(3)
+            )
+        );
     }
 }

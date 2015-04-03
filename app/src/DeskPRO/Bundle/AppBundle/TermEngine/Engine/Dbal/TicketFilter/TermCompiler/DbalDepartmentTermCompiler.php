@@ -35,10 +35,21 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompi
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * @var DbalEntityHelper
+     */
+    private $helper;
+
+    public function __construct(DbalEntityHelper $helper)
+    {
+        $this->helper = $helper;
+    }
+
     public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
     {
         // in reality, we need to create a TermExpression for this for some values

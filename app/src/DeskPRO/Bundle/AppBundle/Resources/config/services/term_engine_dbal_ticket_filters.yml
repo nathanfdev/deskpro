@@ -57,6 +57,7 @@ services:
 
     term_engine.dbal_ticket_filters.compiler.department:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler
+        arguments: @term_engine.dbal.entity_helper
         tags:
          - { name: dbal_ticket_filter_compiler, term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' }
 
