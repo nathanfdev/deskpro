@@ -35,41 +35,39 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 abstract class AbstractDbalTermCompiler
 {
     /**
-     * @var DbalCompiler
+     * @var DbalHelperPool
      */
-    protected $compiler;
+    private $helper_pool;
 
-    /**
-     * Take a term and return its WHERE clause. Inside, you may also
-     * interact with the DbalCompiler to add paramters, joins, etc.
-     *
-     * This should NEVER be called directly, instead call "compile()".
-     *
-     * @param TermInterface $term
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
-     * @return string
-     */
-    abstract protected function doCompile(TermInterface $term, DbalQueryBuilder $query_writer);
-
-    /**
-     * Take a term and return its WHERE clause. Inside, you may also
-     * interact with the DbalCompiler to add paramters, joins, etc.
-     *
-     * @param TermInterface $term
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
-     * @param DbalCompiler $compiler
-     * @return string
-     */
-    public function compile(TermInterface $term, DbalQueryBuilder $query_writer, DbalCompiler $compiler)
+    public function setHelperPool(DbalHelperPool $helper_pool)
     {
-        $this->compiler = $compiler;
+        $this->helper_pool = $helper_pool;
+    }
 
-        return $this->doCompile($term, $query_writer);
+    /**
+     * Get a registered helper by ID (DbalHelperInterface::getId())
+     *
+     * @param $id
+     * @return DbalHelperInterface
+     */
+    public function getHelper($id)
+    {
+        return $this->helper_pool->getHelper($id);
+    }
+
+    /**
+     * @return DbalEntityHelper
+     */
+    public function getEntityHelper()
+    {
+        return $this->helper_pool->getHelper('entity');
     }
 
     /**
@@ -87,15 +85,21 @@ abstract class AbstractDbalTermCompiler
     }
 
     /**
-     * @return DbalCompiler
-     * @throws \RuntimeException
+     * Take a term and return a DbalQueryPart representing the term's query conditions.
+     *
+     * @param TermInterface $term
+     * @return DbalQueryPart
      */
-    protected function getCompiler()
+    public function compile(TermInterface $term)
     {
-        if (!$this->compiler) {
-            throw new \RuntimeException('no compiler exists, you must set a compiler before calling this');
-        }
-
-        return $this->compiler;
+        return $this->doCompile($term);
     }
+
+    /**
+     * Take a term and return a DbalQueryPart representing the term's query conditions.
+     *
+     * @param TermInterface $term
+     * @return DbalQueryPart
+     */
+    abstract protected function doCompile(TermInterface $term);
 }
