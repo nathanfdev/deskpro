@@ -33,11 +33,22 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalDepartmentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
+    /**
+     * @var DbalDepartmentTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
+    {
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.department');
+    }
+
     public function testCompileIs()
     {
         $term = new DepartmentTerm(
@@ -46,15 +57,19 @@ class DbalDepartmentTermCompilerTest extends AbstractDbalTicketFilterTermCompile
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.department_id IN (:ids_0)',
+        $this->assertParameters(
+            $query_part,
             array(
-                'ids_0' => array(1, 2, 15),
+                'ids' => array(1, 2, 15)
             )
         );
+
+        $this->assertWhere($query_part, 'ticket.department_id IN (:ids)');
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testCompileIsNort()
@@ -66,14 +81,18 @@ class DbalDepartmentTermCompilerTest extends AbstractDbalTicketFilterTermCompile
             TermInterface::OP_NOT
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.department_id NOT IN (:ids_0)',
+        $this->assertParameters(
+            $query_part,
             array(
-                'ids_0' => array(1, 2, 15),
+                'ids' => array(1, 2, 15)
             )
         );
+
+        $this->assertWhere($query_part, 'ticket.department_id NOT IN (:ids)');
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 }

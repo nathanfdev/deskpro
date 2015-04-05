@@ -34,14 +34,16 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    public function doCompile(TermInterface $term)
     {
+        $query_part = new DbalQueryPart();
+
         $op = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
@@ -59,53 +61,55 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         // only non hidden
         if (count($non_hidden) && !count($hidden)) {
-            $status_non_hidden = $query_writer->addParameter('status', $non_hidden);
+            $query_part->setParameter('status', $non_hidden);
 
-            return sprintf(
-                'ticket.status %s (:%s)',
-                $isser,
-                $status_non_hidden
+            $query_part->setWhereString(
+                sprintf(
+                    'ticket.status %s (:status)',
+                    $isser
+                )
             );
+
+            return $query_part;
         }
 
         // both
         if (count($non_hidden) && count($hidden)) {
-            $status_non_hidden = $query_writer->addParameter('status', $non_hidden);
-            $hidden_param = $query_writer->addParameter('status', Ticket::STATUS_HIDDEN);
-            $status_hidden = $query_writer->addParameter('status', $hidden);
+            $query_part->setParameter('status', $non_hidden);
+            $query_part->setParameter('status_hidden', Ticket::STATUS_HIDDEN);
+            $query_part->setParameter('hidden_status', $hidden);
 
-            return sprintf(
-                'ticket.status %s (:%s) OR (ticket.status = :%s AND ticket.hidden_status %s (:%s))',
-                $isser,
-                $status_non_hidden,
-                $hidden_param,
-                $isser,
-                $status_hidden
+            $query_part->setWhereString(
+                sprintf(
+                    'ticket.status %s (:status) OR (ticket.status = :status_hidden AND ticket.hidden_status %s (:hidden_status))',
+                    $isser,
+                    $isser
+                )
             );
+
+            return $query_part;
         }
 
         // only hidden
         if (!count($non_hidden) && count($hidden)) {
-            $hidden_param = $query_writer->addParameter('status', Ticket::STATUS_HIDDEN);
-            $status_hidden = $query_writer->addParameter('status', $hidden);
+            $query_part->setParameter('status_hidden', Ticket::STATUS_HIDDEN);
+            $query_part->setParameter('hidden_status', $hidden);
 
             if ($this->isOp($op, TermInterface::OP_NOT)) {
 
-                return sprintf(
-                    'ticket.status != :%s OR (ticket.status = :%s AND ticket.hidden_status NOT IN (:%s))',
-                    $hidden_param,
-                    $hidden_param,
-                    $status_hidden
+                $query_part->setWhereString(
+                    'ticket.status != :status_hidden OR (ticket.status = :status_hidden AND ticket.hidden_status NOT IN (:hidden_status))'
                 );
+
+                return $query_part;
 
             } else {
 
-                return sprintf(
-                    'ticket.status = :%s AND ticket.hidden_status IN (:%s)',
-                    $hidden_param,
-                    $status_hidden
+                $query_part->setWhereString(
+                    'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)'
                 );
 
+                return $query_part;
             }
         }
     }

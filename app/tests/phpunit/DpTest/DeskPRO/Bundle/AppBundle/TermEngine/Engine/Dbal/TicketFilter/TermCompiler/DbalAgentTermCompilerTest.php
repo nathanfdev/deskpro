@@ -36,9 +36,20 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Te
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
 
 class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
+    /**
+     * @var DbalAgentTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
+    {
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.agent');
+    }
+
     public function testSimpleIsCompile()
     {
         $term = new AgentTerm(
@@ -47,15 +58,19 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.agent_id IN (:agent_ids_0)',
+        $this->assertWhere($query_part, 'ticket.agent_id IN (:ids)');
+
+        $this->assertParameters(
+            $query_part,
             array(
-                'agent_ids_0' => array(1, 2, 15)
+                'ids' => array(1, 2, 15)
             )
         );
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testIsCompileWithMe()
@@ -66,15 +81,27 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.agent_id IN (:agent_ids_0)',
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id IN (:ids)'
+        );
+
+        $this->assertParameters(
+            $query_part,
             array(
-                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+                'ids' => array(
+                    1,
+                    2,
+                    15,
+                    new TermEngineExpression('agent.getId()')
+                )
             )
         );
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testIsNotMe()
@@ -86,108 +113,159 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
             TermInterface::OP_NOT
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.agent_id NOT IN (:agent_ids_0)',
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id NOT IN (:ids)'
+        );
+
+        $this->assertParameters(
+            $query_part,
             array(
-                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+                'ids' => array(
+                    1,
+                    2,
+                    15,
+                    new TermEngineExpression('agent.getId()')
+                )
             )
         );
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testWithUnassigned()
     {
         $term = new AgentTerm(
             array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_UNASSIGNED)
+                'agent_ids' => array(1, 2, 15, 0)
             ),
             TermInterface::OP_IS
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.agent_id IN (:agent_ids_0) OR ticket.agent_id IS NULL',
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id IN (:ids) OR ticket.agent_id IS NULL'
+        );
+
+        $this->assertParameters(
+            $query_part,
             array(
-                'agent_ids_0' => array(1, 2, 15)
+                'ids' => array(1, 2, 15)
             )
         );
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testWithNOTUnassigned()
     {
         $term = new AgentTerm(
             array(
-                'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
+                'agent_ids' => array(0)
             ),
             TermInterface::OP_NOT
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
+        $this->assertWhere(
+            $query_part,
             'ticket.agent_id IS NOT NULL'
         );
+
+        $this->assertNoParameters($query_part);
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testWithOnlyUnassigned()
     {
         $term = new AgentTerm(
             array(
-                'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
+                'agent_ids' => array(0)
             ),
             TermInterface::OP_IS
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
+        $this->assertWhere(
+            $query_part,
             'ticket.agent_id IS NULL'
         );
+
+        $this->assertNoParameters($query_part);
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testAllIdTypes()
     {
         $term = new AgentTerm(
             array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, AgentTerm::ID_UNASSIGNED)
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, 0)
             ),
             TermInterface::OP_IS
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.agent_id IN (:agent_ids_0) OR ticket.agent_id IS NULL',
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id IN (:ids) OR ticket.agent_id IS NULL'
+        );
+
+        $this->assertParameters(
+            $query_part,
             array(
-                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+                'ids' => array(
+                    1,
+                    2,
+                    15,
+                    new TermEngineExpression('agent.getId()')
+                )
             )
         );
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 
     public function testNOTAllIdTypes()
     {
         $term = new AgentTerm(
             array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, AgentTerm::ID_UNASSIGNED)
+                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, 0)
             ),
             TermInterface::OP_NOT
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'ticket.agent_id NOT IN (:agent_ids_0) AND ticket.agent_id IS NOT NULL',
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id NOT IN (:ids) AND ticket.agent_id IS NOT NULL'
+        );
+
+        $this->assertParameters(
+            $query_part,
             array(
-                'agent_ids_0' => array(1, 2, 15, new TermEngineExpression('agent.getId()'))
+                'ids' => array(
+                    1,
+                    2,
+                    15,
+                    new TermEngineExpression('agent.getId()')
+                )
             )
         );
+
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
     }
 }

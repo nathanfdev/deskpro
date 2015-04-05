@@ -33,14 +33,27 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketCustomDataTermCompiler;
 
 class DbalTicketCustomDataTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
+    /**
+     * @var DbalTicketCustomDataTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
+    {
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.ticket_custom_data');
+    }
+
     public function testCompileIsAValue()
     {
         $term = new TicketCustomDataTerm(
@@ -50,17 +63,25 @@ class DbalTicketCustomDataTermCompilerTest extends AbstractDbalTicketFilterTermC
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'custom_data_ticket_0.value IN (:values_0)',
+        $this->assertWhere($query_part, '{custom_data}.value IN (:values)');
+        $this->assertParameters(
+            $query_part,
             array(
-                'values_0' => array(3, 11),
-                'field_id_0' => 1
-            ),
-            null,
-            'LEFT JOIN custom_data_ticket custom_data_ticket_0 ON (custom_data_ticket_0.ticket_id = ticket.id AND custom_data_ticket_0.field_id = :field_id_0)'
+                'values' => array(3, 11),
+                'field_id' => 1
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'custom_data' => array(
+                    'table' => 'custom_data_ticket',
+                    'on' => '{custom_data}.ticket_id = ticket.id AND {custom_data}.field_id = :field_id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
     }
 
@@ -73,17 +94,25 @@ class DbalTicketCustomDataTermCompilerTest extends AbstractDbalTicketFilterTermC
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'custom_data_ticket_0.input = :input_0',
+        $this->assertWhere($query_part, '{custom_data}.input = :input');
+        $this->assertParameters(
+            $query_part,
             array(
-                'field_id_0' => 1,
-                'input_0' => 'my string input'
-            ),
-            null,
-            'LEFT JOIN custom_data_ticket custom_data_ticket_0 ON (custom_data_ticket_0.ticket_id = ticket.id AND custom_data_ticket_0.field_id = :field_id_0)'
+                'input' => 'my string input',
+                'field_id' => 1
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'custom_data' => array(
+                    'table' => 'custom_data_ticket',
+                    'on' => '{custom_data}.ticket_id = ticket.id AND {custom_data}.field_id = :field_id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
     }
 }

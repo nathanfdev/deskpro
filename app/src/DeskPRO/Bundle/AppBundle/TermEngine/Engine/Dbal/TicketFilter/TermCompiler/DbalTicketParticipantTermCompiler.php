@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
@@ -41,14 +41,17 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    public function doCompile(TermInterface $term)
     {
+        $query_part = new DbalQueryPart();
+
         $op = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $join_alias = $query_writer->addUniqueJoin(
-            'tickets_participants',
-            '{alias}.ticket_id = ticket.id'
+        $query_part->addUniqueJoin(
+            'participants',
+            'ticket_participants',
+            '{participants}.ticket_id = ticket.id'
         );
 
         $person_ids = array();
@@ -60,8 +63,10 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        $param_name = $query_writer->addParameter('person_ids', $person_ids);
+        $query_part->setParameter('person_ids', $person_ids);
 
-        return sprintf('%s.person_id %s (:%s)', $join_alias, $isser, $param_name);
+        $query_part->setWhereString(sprintf('{participants}.person_id %s (:person_ids)', $isser));
+
+        return $query_part;
     }
 }

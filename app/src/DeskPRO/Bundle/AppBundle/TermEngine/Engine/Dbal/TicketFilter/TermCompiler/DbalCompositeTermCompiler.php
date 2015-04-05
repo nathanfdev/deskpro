@@ -40,7 +40,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    public function doCompile(TermInterface $term)
     {
         if (!$term instanceof CompositeTermInterface) {
             throw new \InvalidArgumentException('expected a CompositeTermInterface, but got TermInterface');
@@ -55,7 +55,7 @@ class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
         $compiler = $this->getCompiler();
         foreach ($term->getTerms() as $child_term) {
             $part = trim(
-                $compiler->getTermCompiler($child_term)->compile($child_term, $query_writer, $compiler)
+                $compiler->getTermCompiler($child_term)->compile($child_term)
             );
             if ($part) {
                 // surround each term compilers output in parenthesis

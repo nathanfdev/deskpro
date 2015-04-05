@@ -33,41 +33,39 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalTicketCustomDataTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    public function doCompile(TermInterface $term)
     {
+        $query_part = new DbalQueryPart();
+
         $op = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $field_param = $query_writer->addParameter('field_id', $term->getOption('field_id'));
+        $query_part->setParameter('field_id', $term->getOption('field_id'));
 
-        $join_alias = $query_writer->addUniqueJoin(
+        $query_part->addUniqueJoin(
+            'custom_data',
             'custom_data_ticket',
-            sprintf('{alias}.ticket_id = ticket.id AND {alias}.field_id = :%s', $field_param)
+            '{custom_data}.ticket_id = ticket.id AND {custom_data}.field_id = :field_id'
         );
 
         if ($input = $term->getOption('input')) {
 
-            $param_name = $query_writer->addParameter('input', $input);
+            $query_part->setParameter('input', $input);
+            $query_part->setWhereString('{custom_data}.input = :input');
 
-            return sprintf('%s.input = :%s', $join_alias, $param_name);
+            return $query_part;
 
-        } else {
-
-            $param_name = $query_writer->addParameter('values', $term->getOption('values'));
-
-            return sprintf('%s.value IN (:%s)', $join_alias, $param_name);
         }
 
-        return SqlPart::Create(
-            array('field_id' => 4, 'input' => 'Never'),
-            '{custom}.input = :input',
-            array('custom', 'custom_data_ticket', '{custom}.ticket_id = ticket.id AND {custom}.field_id = :field_id')
-        );
+        $query_part->setParameter('values', $term->getOption('values'));
+        $query_part->setWhereString('{custom_data}.value IN (:values)');
+
+        return $query_part;
     }
 }

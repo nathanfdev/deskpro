@@ -33,7 +33,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
@@ -41,42 +40,22 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalAgentTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    public function doCompile(TermInterface $term)
     {
-        $op = $term->getOp();
+        $ids = array();
 
-        $agent_ids = array();
-        $me_expression = null;
-        $unassigned = false;
-        $and_or = $this->isOp($op, TermInterface::OP_IS) ? 'OR' : 'AND';
-
-        foreach ($term->getOption('agent_ids') as $id) {
-            if ($id === AgentTerm::ID_ME) {
-                $agent_ids[] = new TermEngineExpression('agent.getId()');
-            } elseif ($id === AgentTerm::ID_UNASSIGNED) {
-                $unassigned = true;
+        foreach ($term->getOption('agent_ids') as $agent_id) {
+            if ($agent_id === AgentTerm::ID_ME) {
+                $ids[] = new TermEngineExpression('agent.getId()');
             } else {
-                $agent_ids[] = $id;
+                $ids[] = $agent_id;
             }
         }
 
-        $where = '';
-        if (count($agent_ids) > 0) {
-            $ids_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
-            $ids_param = $query_writer->addParameter('agent_ids', $agent_ids);
-
-            $where .= sprintf('ticket.agent_id %s (:%s)', $ids_isser, $ids_param);
-        }
-
-        if ($unassigned) {
-            $unassigned_isser = $this->isOp($op, TermInterface::OP_NOT) ? 'IS NOT NULL' : 'IS NULL';
-            $where .= sprintf(
-                '%sticket.agent_id %s',
-                strlen($where) > 0 ? ' ' . $and_or . ' ' : '',
-                $unassigned_isser
-            );
-        }
-
-        return $where;
+        return $this->getEntityHelper()->buildQueryPart(
+            'ticket.agent_id',
+            $term->getOp(),
+            $ids
+        );
     }
 }

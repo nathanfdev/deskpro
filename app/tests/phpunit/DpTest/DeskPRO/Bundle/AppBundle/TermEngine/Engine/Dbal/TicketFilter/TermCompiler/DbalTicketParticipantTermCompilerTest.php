@@ -33,13 +33,25 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketParticipantTermCompiler;
 
 class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
+    /**
+     * @var DbalTicketParticipantTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
+    {
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.ticket_participant');
+    }
+
     public function testCompileIs()
     {
         $term = new TicketParticipantTerm(
@@ -48,16 +60,24 @@ class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTerm
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'tickets_participants_0.person_id IN (:person_ids_0)',
+        $this->assertWhere($query_part, '{participants}.person_id IN (:person_ids)');
+        $this->assertParameters(
+            $query_part,
             array(
-                'person_ids_0' => array(4, 9),
-            ),
-            null,
-            'LEFT JOIN tickets_participants tickets_participants_0 ON (tickets_participants_0.ticket_id = ticket.id)'
+                'person_ids' => array(4, 9)
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'participants' => array(
+                    'table' => 'ticket_participants',
+                    'on' => '{participants}.ticket_id = ticket.id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
     }
 
@@ -70,16 +90,24 @@ class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTerm
             TermInterface::OP_NOT
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'tickets_participants_0.person_id NOT IN (:person_ids_0)',
+        $this->assertWhere($query_part, '{participants}.person_id NOT IN (:person_ids)');
+        $this->assertParameters(
+            $query_part,
             array(
-                'person_ids_0' => array(14),
-            ),
-            null,
-            'LEFT JOIN tickets_participants tickets_participants_0 ON (tickets_participants_0.ticket_id = ticket.id)'
+                'person_ids' => array(14)
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'participants' => array(
+                    'table' => 'ticket_participants',
+                    'on' => '{participants}.ticket_id = ticket.id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
     }
 
@@ -87,20 +115,28 @@ class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTerm
     {
         $term = new TicketParticipantTerm(
             array(
-                'person_ids' => array(10, 'me')
+                'person_ids' => array(10, TicketParticipantTerm::ID_ME)
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'tickets_participants_0.person_id IN (:person_ids_0)',
+        $this->assertWhere($query_part, '{participants}.person_id IN (:person_ids)');
+        $this->assertParameters(
+            $query_part,
             array(
-                'person_ids_0' => array(10, new TermEngineExpression('agent.getId()')),
-            ),
-            null,
-            'LEFT JOIN tickets_participants tickets_participants_0 ON (tickets_participants_0.ticket_id = ticket.id)'
+                'person_ids' => array(10, new TermEngineExpression('agent.getId()'))
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'participants' => array(
+                    'table' => 'ticket_participants',
+                    'on' => '{participants}.ticket_id = ticket.id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
     }
 }

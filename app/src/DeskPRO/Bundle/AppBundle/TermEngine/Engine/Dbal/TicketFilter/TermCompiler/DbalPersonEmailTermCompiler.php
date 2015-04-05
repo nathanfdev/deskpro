@@ -33,42 +33,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalPersonEmailTermCompiler extends AbstractDbalTermCompiler
 {
-    public function doCompile(TermInterface $term, DbalQueryBuilder $query_writer)
+    public function doCompile(TermInterface $term)
     {
+        $query_part = new DbalQueryPart();
+
         $op = $term->getOp();
 
         switch ($op) {
             case TermInterface::OP_IS:
-                $query_writer->addJoin(
-                    'people_emails',
-                    'ticket.person_id = people_emails.person_id'
-                );
-                $param = $query_writer->addParameter('email', $term->getOption('email'));
+                $query_part->setParameter('email', $term->getOption('email'));
+                $query_part->addJoin('people_emails', 'ticket.person_id = people_emails.person_id');
+                $query_part->setWhereString('people_emails.email = :email');
 
-                return sprintf(
-                    'people_emails.email = :%s',
-                    $param
-                );
+                return $query_part;
             case TermInterface::OP_NOT:
-                $param = $query_writer->addParameter('email', $term->getOption('email'));
-                $alias = $query_writer->addUniqueJoin(
+                $query_part->setParameter('email', $term->getOption('email'));
+                $query_part->addUniqueJoin(
+                    'email_join',
                     'people_emails',
-                    sprintf(
-                        'ticket.person_id = {alias}.person_id AND {alias}.email = :%s',
-                        $param
-                    )
+                    'ticket.person_id = {email_join}.person_id AND {email_join}.email = :email'
                 );
+                $query_part->setWhereString('{email_join}.id IS NULL');
 
-                return sprintf(
-                    '%s.id IS NULL',
-                    $alias
-                );
+                return $query_part;
         }
 
         return '';

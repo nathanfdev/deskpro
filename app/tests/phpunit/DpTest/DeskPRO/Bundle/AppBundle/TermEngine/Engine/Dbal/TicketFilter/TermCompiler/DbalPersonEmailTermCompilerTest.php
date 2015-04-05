@@ -33,11 +33,23 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalPersonEmailTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
+    /**
+     * @var DbalPersonEmailTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
+    {
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.person_email');
+    }
+
     public function testCompileIs()
     {
         $term = new PersonEmailTerm(
@@ -46,19 +58,29 @@ class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompil
             )
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'people_emails.email = :email_0',
+        $this->assertJoins(
+            $query_part,
             array(
-                'email_0' => 'chris.tickner@deskpro.com'
-            ),
-            'LEFT JOIN people_emails ON (ticket.person_id = people_emails.person_id)'
+                'people_emails' => array(
+                    'table' => 'people_emails',
+                    'on' => 'ticket.person_id = people_emails.person_id',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
+        $this->assertParameters(
+            $query_part,
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            )
+        );
+        $this->assertWhere($query_part, 'people_emails.email = :email');
+        $this->assertNoUniqueJoins($query_part);
     }
 
-    public function testCompileIsNort()
+    public function testCompileIsNot()
     {
         $term = new PersonEmailTerm(
             array(
@@ -67,16 +89,25 @@ class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompil
             TermInterface::OP_NOT
         );
 
-        $compiled_query = $this->compileTerm($term);
+        $query_part = $this->term_compiler->compile($term);
 
-        $this->assertCompiledQuery(
-            $compiled_query,
-            'people_emails_0.id IS NULL',
+        $this->assertUniqueJoins(
+            $query_part,
             array(
-                'email_0' => 'chris.tickner@deskpro.com'
-            ),
-            null,
-            'LEFT JOIN people_emails people_emails_0 ON (ticket.person_id = people_emails_0.person_id AND people_emails_0.email = :email_0)'
+                'email_join' => array(
+                    'table' => 'people_emails',
+                    'on' => 'ticket.person_id = {email_join}.person_id AND {email_join}.email = :email',
+                    'type' => DbalQuery::JOIN_LEFT
+                )
+            )
         );
+        $this->assertParameters(
+            $query_part,
+            array(
+                'email' => 'chris.tickner@deskpro.com'
+            )
+        );
+        $this->assertWhere($query_part, '{email_join}.id IS NULL');
+        $this->assertNoJoins($query_part);
     }
 }

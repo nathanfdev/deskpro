@@ -35,94 +35,44 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Te
 
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\ApiTestCase;
 
 abstract class AbstractDbalTicketFilterTermCompilerTest extends ApiTestCase
 {
-    /**
-     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler
-     */
-    protected function getDbalTicketFilterTermEngineCompiler()
+    protected function assertWhere(DbalQueryPart $query_part, $where_string)
     {
-        return $this->getContainer()->get('term_engine.dbal_ticket_filters.compiler');
+        $this->assertSame($where_string, $query_part->getWhereString(), 'query where string match');
     }
 
-    /**
-     * @param $term
-     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery
-     */
-    protected function compileTerm(TermInterface $term)
+    protected function assertParameters(DbalQueryPart $query_part, array $expected_parameters)
     {
-        $compiled_query = $this->getDbalTicketFilterTermEngineCompiler()->compile($term);
-
-        return $compiled_query;
+        $this->assertEquals($expected_parameters, $query_part->getParameters(), 'query parameters match');
     }
 
-    /**
-     * A shortcut to test lots of the query at once
-     *
-     * @param DbalQuery $query
-     * @param $where_string
-     * @param array $parameters
-     * @param null $join_string
-     * @param null $unique_join_string
-     */
-    protected function assertCompiledQuery(
-        DbalQuery $query,
-        $where_string,
-        array $parameters = array(),
-        $join_string = null,
-        $unique_join_string = null
-    )
+    protected function assertNoParameters(DbalQueryPart $query_part)
     {
-        $this->assertQueryWhereString($where_string, $query);
-        $this->assertParameters($parameters, $query);
-        if ($join_string) {
-            $this->assertJoinString($join_string, $query);
-        }
-        if ($unique_join_string) {
-            $this->assertUniqueJoinString($unique_join_string, $query);
-        }
+        $this->assertCount(0, $query_part->getParameters(), 'query has no parameters');
     }
 
-    protected function assertQueryWhereString($where, DbalQuery $compiled_query)
+    protected function assertNoJoins(DbalQueryPart $query_part)
     {
-        // assert where string
-        $this->assertSame(
-            $where,
-            $compiled_query->generateWhereString(),
-            'DbalQuery WHERE clause is correct'
-        );
+        $this->assertCount(0, $query_part->getJoins(), 'query has no joins');
     }
 
-    protected function assertJoinString($join_string, DbalQuery $compiled_query)
+    protected function assertNoUniqueJoins(DbalQueryPart $query_part)
     {
-        // assert where string
-        $this->assertSame(
-            $join_string,
-            $compiled_query->generateJoinString(),
-            'DbalQuery JOIN string is correct'
-        );
+        $this->assertCount(0, $query_part->getUniqueJoins(), 'query has no unique joins');
     }
 
-    protected function assertUniqueJoinString($join_string, DbalQuery $compiled_query)
+    protected function assertJoins(DbalQueryPart $query_part, array $joins)
     {
-        // assert where string
-        $this->assertSame(
-            $join_string,
-            $compiled_query->generateUniqueJoinString(),
-            'DbalQuery UNIQUE JOIN string is correct'
-        );
+        $this->assertEquals($joins, $query_part->getJoins(), 'query joins match expected');
     }
 
-    protected function assertParameters($parameters, DbalQuery $compiled_query)
+    protected function assertUniqueJoins(DbalQueryPart $query_part, array $unique_joins)
     {
-        // assert the parameter values
-        $this->assertEquals(
-            $parameters,
-            $compiled_query->getParameters(),
-            'parameters are as expected'
-        );
+        $this->assertEquals($unique_joins, $query_part->getUniqueJoins(), 'query unique joins match expected');
     }
 }
