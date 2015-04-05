@@ -97,7 +97,7 @@ abstract class DbalCompiler implements DbalCompilerInterface
         $this->enginePreCompile($query_writer);
 
         // use term compilers to write the query and return the complete WHERE string
-        $compiled_where = $this->getTermCompiler($term)->compile($term, $query_writer, $this);
+        $compiled_where = $this->getTermCompiler($term)->compile($term);
         $query_writer->setWhereString($compiled_where);
 
         // engine post hook
