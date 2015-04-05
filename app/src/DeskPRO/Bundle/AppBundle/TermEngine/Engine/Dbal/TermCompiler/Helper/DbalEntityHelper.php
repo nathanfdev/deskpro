@@ -34,11 +34,17 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalEntityHelper
+class DbalEntityHelper implements DbalHelperInterface
 {
+    public function getId()
+    {
+        return 'entity';
+    }
+
     /**
      * Given a field name from the query, like "ticket.agent_id", create a query
      * part that satisfied the operation for the given array of IDs.

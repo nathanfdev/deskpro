@@ -9,5 +9,11 @@ services:
     #
     # HELPERS - inject these into your TermCompiler to help build DbalQueryPart's for you
     #
+
+    term_engine.dbal.helper_pool:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperPool
+
     term_engine.dbal.entity_helper:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper
+        tags:
+            - { name: dbal_term_engine_helper }

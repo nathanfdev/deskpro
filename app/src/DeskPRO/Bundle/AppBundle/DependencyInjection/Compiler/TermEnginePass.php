@@ -41,6 +41,7 @@ class TermEnginePass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $this->addDbalTicketFilterTermCompilers($container);
+        $this->addDbalTermCompilerHelpers($container);
         $this->addDbalTicketFilterVisitors($container);
     }
 
@@ -80,5 +81,20 @@ class TermEnginePass implements CompilerPassInterface
         }
 
         $compiler_def->replaceArgument(1, $visitors);
+    }
+
+    private function addDbalTermCompilerHelpers(ContainerBuilder $container)
+    {
+        $helper_pool = $container->findDefinition('term_engine.dbal.helper_pool');
+
+        $helper_tags = $container->findTaggedServiceIds('dbal_term_engine_helper');
+
+        $helpers = array();
+
+        foreach ($helper_tags as $id => $tags) {
+            $helpers[] = new Reference($id);
+        }
+
+        $helper_pool->setArguments(array($helpers));
     }
 }

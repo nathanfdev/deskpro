@@ -45,6 +45,12 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEnti
  */
 class DbalEntityHelperSpec extends ObjectBehavior
 {
+    function it_is_a_dbal_helper()
+    {
+        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface');
+        $this->getId()->shouldBe('entity');
+    }
+
     function it_handles_the_simple_IS_case()
     {
         $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(1));
