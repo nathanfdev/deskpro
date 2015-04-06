@@ -115,6 +115,11 @@ class DbalQueryBuilder
         $this->query->setFrom($table, $alias);
     }
 
+    /**
+     * Take a DbalQueryPart, and add it to the query
+     *
+     * @param DbalQueryPart $query_part
+     */
     public function writeQueryPart(DbalQueryPart $query_part)
     {
         // this will create the real "new" param names, and replace the DbalQueryPart correctly
@@ -128,13 +133,17 @@ class DbalQueryBuilder
         //       time, there will be an issue with the query
         $join_renames = array();
         foreach ($query_part->getUniqueJoins() as $alias => $join_info) {
+            // replace the proposed alias with "alias", because query will replace it with the real alias
             $on = $join_info['on'];
             $on = str_replace('{' . $alias . '}', '{alias}', $on);
+            // if any joins exist, replace the old alias with the new in the existing join ONs
+            // this allows multiple unique joins to reference each other
             foreach ($join_renames as $old => $new) {
                 $on = str_replace('{' . $old . '}', $new, $on);
             }
             $join_alias = $this->query->addUniqueJoin($join_info['table'], $on, $join_info['type']);
             $join_renames[$alias] = $join_alias;
+            // everything still in the $query_part needs to be renamed to the real alias in the query
             $query_part->renameJoinAlias($alias, $join_alias);
         }
 

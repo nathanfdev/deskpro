@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
@@ -91,24 +92,50 @@ abstract class DbalCompiler implements DbalCompilerInterface
             $visitor->visit($term);
         }
 
-        $query_writer = new DbalQueryBuilder(new DbalQuery());
+        $query_builder = new DbalQueryBuilder(new DbalQuery());
 
         // engine pre hook
-        $this->enginePreCompile($query_writer);
+        $this->enginePreCompile($query_builder);
 
-        // use term compilers to write the query and return the complete WHERE string
-        $compiled_where = $this->getTermCompiler($term)->compile($term);
-        $query_writer->setWhereString($compiled_where);
+        $this->compileTerm($term, $query_builder);
 
         // engine post hook
-        $this->enginePostCompile($query_writer);
+        $this->enginePostCompile($query_builder);
 
         // result is a DbalQuery
-        return $query_writer->getQuery();
+        return $query_builder->getQuery();
     }
 
     public function getTermCompiler(TermInterface $term)
     {
         return $this->compiler_factory->getCompiler($term);
+    }
+
+    /**
+     * @param TermInterface $term
+     * @param $query_builder
+     */
+    protected function compileTerm(TermInterface $term, DbalQueryBuilder $query_builder)
+    {
+        if ($term instanceof CompositeTermInterface) {
+            $query_builder->openBracket();
+            foreach ($term->getTerms() as $term) {
+                $this->compileSingleTerm($term, $query_builder);
+            }
+            $query_builder->endBracket();
+        } else {
+            $this->compileSingleTerm($term, $query_builder);
+        }
+    }
+
+    /**
+     * @param TermInterface $term
+     * @param DbalQueryBuilder $query_builder
+     */
+    protected function compileSingleTerm(TermInterface $term, DbalQueryBuilder $query_builder)
+    {
+        // use term compilers to write the query and return the complete WHERE string
+        $query_part = $this->getTermCompiler($term)->compile($term);
+        $query_builder->writeQueryPart($query_part);
     }
 }
