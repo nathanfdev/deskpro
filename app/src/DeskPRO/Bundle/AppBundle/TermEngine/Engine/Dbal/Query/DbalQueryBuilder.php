@@ -114,4 +114,36 @@ class DbalQueryBuilder
     {
         $this->query->setFrom($table, $alias);
     }
+
+    public function writeQueryPart(DbalQueryPart $query_part)
+    {
+        // this will create the real "new" param names, and replace the DbalQueryPart correctly
+        foreach ($query_part->getParameters() as $param_name => $param_val) {
+            $new_param_name = $this->query->addParameter($param_name, $param_val);
+            $query_part->renameParam($param_name, $new_param_name);
+        }
+
+        // keep track of renames, and update all joins with new join names given by DbalQuery
+        // NOTE: if a unique join references a join that is added to the QueryPart at a later
+        //       time, there will be an issue with the query
+        $join_renames = array();
+        foreach ($query_part->getUniqueJoins() as $alias => $join_info) {
+            $on = $join_info['on'];
+            $on = str_replace('{' . $alias . '}', '{alias}', $on);
+            foreach ($join_renames as $old => $new) {
+                $on = str_replace('{' . $old . '}', $new, $on);
+            }
+            $join_alias = $this->query->addUniqueJoin($join_info['table'], $on, $join_info['type']);
+            $join_renames[$alias] = $join_alias;
+            $query_part->renameJoinAlias($alias, $join_alias);
+        }
+
+        foreach ($query_part->getJoins() as $join_alias => $join_info) {
+            $this->query->addJoin($join_info['table'], $join_info['on']);
+        }
+
+        if ($where = $query_part->getWhereString()) {
+            $this->query->setWherePart($where);
+        }
+    }
 }
