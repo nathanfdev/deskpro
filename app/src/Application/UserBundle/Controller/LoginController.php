@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO
@@ -62,7 +62,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
-    /** @var string  */
+    /** @var string */
     protected $tpl_prefix = 'UserBundle:Login';
     /** @var string */
     protected $route_prefix = 'user';
@@ -414,7 +414,7 @@ HTML;
                     if (!extension_loaded('ldap')) {
                         return $this->render('UserBundle:Main:error-standard.html.twig', array(
                             'error_message' => 'LDAP Extension Required',
-                            'error_title'   => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
+                            'error_title' => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
                         ));
                     }
                 }
@@ -434,12 +434,12 @@ HTML;
             // Save login log
             if ($attempt_person) {
                 $this->db->insert('login_log', array(
-                    'person_id'    => $attempt_person->getId(),
-                    'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
-                    'is_success'   => 0,
-                    'ip_address'   => dp_get_user_ip_address(),
-                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-                    'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                    'person_id' => $attempt_person->getId(),
+                    'area' => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                    'is_success' => 0,
+                    'ip_address' => dp_get_user_ip_address(),
+                    'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s')
                 ));
             }
@@ -494,7 +494,7 @@ HTML;
                 }
 
                 $data = array(
-                    'agent_id'   => $person['id'],
+                    'agent_id' => $person['id'],
                     'agent_name' => $person['display_name'],
                     'agent_short_name' => $person->getDisplayContactShort(4),
                     'picture_url' => $person->getPictureUrl(10)
@@ -517,12 +517,12 @@ HTML;
 
                 // Login log
                 $this->db->insert('login_log', array(
-                    'person_id'    => $person->getId(),
-                    'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
-                    'is_success'   => 1,
-                    'ip_address'   => dp_get_user_ip_address(),
-                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-                    'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                    'person_id' => $person->getId(),
+                    'area' => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                    'is_success' => 1,
+                    'ip_address' => dp_get_user_ip_address(),
+                    'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s')
                 ));
 
@@ -709,7 +709,7 @@ HTML;
                     return $this->redirectRoute($this->route_prefix);
                 }
 
-            // We expect a redirect to be rquired
+                // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
 
                 $return = $this->request->getReturnParam();
@@ -728,16 +728,16 @@ HTML;
 
                 return $this->redirect($result->getRedirectUrl());
 
-            // Otherwise its an error
+                // Otherwise its an error
             } else {
                 $this->session->setFlash('login_failed', true);
 
                 return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
             }
 
-        #------------------------------
-        # Other types should return a result right away
-        #------------------------------
+            #------------------------------
+            # Other types should return a result right away
+            #------------------------------
 
         } else {
             $result = $adapter->authenticate();
@@ -757,7 +757,7 @@ HTML;
                     return $this->redirectRoute($this->route_prefix);
                 }
 
-            // Error, go back to login
+                // Error, go back to login
             } else {
                 $this->session->setFlash('login_failed', true);
 
@@ -811,7 +811,7 @@ HTML;
                 return $this->render(
                     'DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
-                        'log'    => $arr_writer->getMessagesAsString()
+                        'log' => $arr_writer->getMessagesAsString()
                     )
                 );
             }
@@ -828,7 +828,7 @@ HTML;
                 return $this->redirectRoute($this->route_prefix);
             }
 
-        // Error, go back to login
+            // Error, go back to login
         } else {
             if ($usersource_test) {
                 return $this->render(
@@ -878,8 +878,8 @@ HTML;
     }
 
     /**
-     * @param  Usersource                         $usersource
-     * @param  null                               $displayContext
+     * @param  Usersource $usersource
+     * @param  null $displayContext
      * @return \Orb\Auth\Adapter\AdapterInterface
      */
     protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
@@ -896,12 +896,12 @@ HTML;
 
     public function sendResetPasswordAction($_format = 'html', Request $request)
     {
-	    $p = $this->session->getPerson();
-	    if ($p && !$p instanceof PersonGuest) {
-		    $this->ensureStandardRequestToken();
-	    } else {
-		    $this->ensureRequestToken('user_login');
-	    }
+        $p = $this->session->getPerson();
+        if ($p && !$p instanceof PersonGuest) {
+            $this->ensureStandardRequestToken();
+        } else {
+            $this->ensureRequestToken('user_login');
+        }
 
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
@@ -909,7 +909,7 @@ HTML;
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
             if (!$captcha->validate()) {
                 if ($_format == 'json') {
-                    return $this->createJsonResponse(array('success' =>1 ));
+                    return $this->createJsonResponse(array('success' => 1));
                 } else {
                     $this->session->setFlash('captcha_reset_error', true);
                     return $this->redirectRoute($this->route_prefix . '_login_resetpass', array('return' => $request->getReturnParam()));
@@ -930,7 +930,7 @@ HTML;
         /** @var \Application\DeskPRO\EntityRepository\TmpData $rep */
         $rep = $this->em->getRepository('DeskPRO:TmpData');
         // hardcoded rate-limit for reset password request
-        if (2 <= $rep->getCountByName('reset-password:' . DP_INTERFACE .':' . $person['id'], 30 * 60)) {
+        if (2 <= $rep->getCountByName('reset-password:' . DP_INTERFACE . ':' . $person['id'], 30 * 60)) {
             return $_format == 'json'
                 ? $this->createJsonResponse(array('success' => 1))
                 : $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
@@ -1024,7 +1024,7 @@ HTML;
                 $this->container->getMailer()->send($message);
 
                 if ($_format == 'json') {
-                    return $this->createJsonResponse(array('success' =>1 ));
+                    return $this->createJsonResponse(array('success' => 1));
                 }
 
                 return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
@@ -1037,14 +1037,14 @@ HTML;
         // If they're still here, then we just send them through the normal DeskPRO reset procedure
 
         $code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+3 days');
-        $code_data['name'] = 'reset-password:' . DP_INTERFACE .':' . $person['id'];
+        $code_data['name'] = 'reset-password:' . DP_INTERFACE . ':' . $person['id'];
         $this->em->persist($code_data);
         $this->em->flush();
 
         $vars = array(
-            'code'      => $code_data->getCode(),
-            'person'    => $person,
-            'email'     => $email,
+            'code' => $code_data->getCode(),
+            'person' => $person,
+            'email' => $email,
             'interface' => DP_INTERFACE
         );
 
@@ -1055,7 +1055,7 @@ HTML;
         $this->container->getMailer()->send($message);
 
         if ($_format == 'json') {
-            return $this->createJsonResponse(array('success' =>1 ));
+            return $this->createJsonResponse(array('success' => 1));
         }
 
         $this->session->remove('auth_person_id');
@@ -1070,7 +1070,7 @@ HTML;
     public function resetPasswordNewPassAction($code)
     {
         if (!$this->session->getPerson() instanceof PersonGuest) {
-	        $this->_logoutPerson();
+            $this->_logoutPerson();
             return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
         }
 
@@ -1192,9 +1192,7 @@ HTML;
 
         return $this->createJsonResponse(array(
             'html' => $html,
-            'sections_replace' => array(
-
-            ),
+            'sections_replace' => array(),
             'person_id' => $person['id'],
             'name' => $person['name']
         ));
@@ -1211,7 +1209,7 @@ HTML;
             throw $this->createNotFoundException();
         }
 
-        $agent  = $this->container->getAgentData()->get($tmp->getData('agent_id'));
+        $agent = $this->container->getAgentData()->get($tmp->getData('agent_id'));
         $person = $this->em->getRepository('DeskPRO:Person')->find($tmp->getData('person_id'));
 
         if (!$agent || !$agent->is_agent || !$agent->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
@@ -1226,24 +1224,24 @@ HTML;
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
         $this->db->insert('login_log', array(
-            'person_id'    => $person->getId(),
-            'area'         => 'user',
-            'is_success'   => 1,
-            'ip_address'   => dp_get_user_ip_address(),
-            'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-            'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-            'note'         => "Agent login by Admin #{$agent->id} {$agent->display_name} <{$agent->email_address}>",
+            'person_id' => $person->getId(),
+            'area' => 'user',
+            'is_success' => 1,
+            'ip_address' => dp_get_user_ip_address(),
+            'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+            'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+            'note' => "Agent login by Admin #{$agent->id} {$agent->display_name} <{$agent->email_address}>",
             'date_created' => date('Y-m-d H:i:s')
         ));
 
         // Log to activity log
         $this->db->insert('person_activity', array(
-            'person_id'    => $person->id,
-            'action_type'  => 'agent_login_as',
+            'person_id' => $person->id,
+            'action_type' => 'agent_login_as',
             'date_created' => date('Y-m-d H:i:s'),
-            'details'      => serialize(array(
-                'agent_id'    => $agent->id,
-                'agent_name'  => $agent->display_name,
+            'details' => serialize(array(
+                'agent_id' => $agent->id,
+                'agent_name' => $agent->display_name,
                 'agent_email' => $agent->email_address
             ))
         ));
@@ -1259,7 +1257,7 @@ HTML;
         }
 
         $person = $this->em->find('DeskPRO:Person', $tmp_data->getData('person_id'));
-        if(!$person) {
+        if (!$person) {
             throw $this->createNotFoundException();
         }
 
@@ -1267,8 +1265,8 @@ HTML;
 
         $whitelist_ip = new \Application\DeskPRO\Entity\WhiteListedIp();
 
-        $whitelist_ip['person']		= $person;
-        $whitelist_ip['ip_address']	= $data['ip'];
+        $whitelist_ip['person'] = $person;
+        $whitelist_ip['ip_address'] = $data['ip'];
 
         $this->em->persist($whitelist_ip);
         $this->em->remove($tmp_data);
@@ -1291,11 +1289,10 @@ HTML;
         $source = $this
             ->usersource_manager
             ->getAll()
-            ->forInterface($interface) // TODO: will always be user interface since this is always a user URL
+            ->forInterface($interface)// TODO: will always be user interface since this is always a user URL
             ->withCapability(UsersourceInfo::CAPABILITY_SSO_JS)
             ->mustHaveId($usersource_id)
-            ->getFirstOrNull()
-        ;
+            ->getFirstOrNull();
 
         if (!$source) {
             throw new NotFoundHttpException();
@@ -1348,7 +1345,8 @@ HTML;
             //--------------------------------------
             if ($usersource_test) {
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', array(
-                        'log' => implode("\n", $arr_writer->getMessages())
+                        'log' => implode("\n", $arr_writer->getMessages()),
+                        'display_errors' => $result->getMessages('display_errors')
                     )
                 );
             }
