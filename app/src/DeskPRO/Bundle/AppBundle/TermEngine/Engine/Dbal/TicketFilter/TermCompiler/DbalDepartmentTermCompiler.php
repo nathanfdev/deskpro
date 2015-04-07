@@ -40,8 +40,6 @@ class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)
     {
-        // in reality, we need to create a TermExpression for this for some values
-        // a simple foreach, and modify the $ids array
         $ids = $term->getOption('department_ids');
 
         return $this->getEntityHelper()->buildQueryPart(
