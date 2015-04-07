@@ -107,7 +107,8 @@ spl_autoload_register(
     function ($class) {
         $namespaces = array(
             'DpBehat\\' => DP_ROOT . '/tests/features/bootstrap/',
-            'DpTests\\' => DP_ROOT . '/tests/src/'
+            'DpTests\\' => DP_ROOT . '/tests/src/',
+            'DeskPRO\\Kernel' => DP_ROOT . '/sys/Kernel'
         );
 
         foreach ($namespaces as $prefix => $base_dir) {

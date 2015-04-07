@@ -14,3 +14,5 @@ require_once DP_ROOT . '/sys/preboot.php';
 require_once DP_ROOT . '/sys/autoload.php';
 
 ini_set('max_execution_time', 0);
+
+\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT . '/vendor-src/php-utf8/');
