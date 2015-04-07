@@ -6,17 +6,17 @@
 // Paths
 //-------------------------
 
-$pub-path:        "../../../../../..";
-$modules-path:    "../../../../../../node_modules";
+$pub-path: "../../../../../..";
+$modules-path: "../../../../../../node_modules";
 $portal-res-path: "../../../../../../src/DeskPRO/Bundle/PortalBundle/Resources";
 $portal-img-path: "../../../../../../src/DeskPRO/Bundle/PortalBundle/Resources/img";
-$fa-font-path:    "../../../../../../node_modules/font-awesome/fonts";
+$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 
 //-------------------------
 // Outer page
 //-------------------------
 
-$world-background: #fff;
+$world-background: #ffffff;
 $world-padding: 20px;
 
 //-------------------------
@@ -83,7 +83,7 @@ $border-radius-main: 4px;
 $border-radius-small: 2px;
 
 // Inner shadow for buttons that need it (usualy large buttons)
-$common-box-shadow-inner: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.05);
+$common-box-shadow-inner: inset 0 0 20px 10px rgba(0, 0, 0, 0.05);
 
 // Form paddings
 $form-padding-vertical: 0.75em;
@@ -99,49 +99,49 @@ $max-width: 1080px;
 // Button text color based on how dark the button color is
 @function set-button-text-color($color) {
   @if (lightness( $color ) > 60) {
-    @return #000;
+    @return #000000;
   }
   @else {
-    @return #fff;
+    @return #ffffff;
   }
 }
 
 @mixin whitespace {
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @mixin blank-list {
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 @mixin generate-background-and-border($bg) {
-  background: $bg;
-  border: 0px;
+  border: 0;
   border-bottom: 1px solid shade($bg, 15%);
   border-radius: 2px;
+  background: $bg;
 }
 
 
 @mixin make-this-a-button($bg, $text, $padding-vertical, $padding-horizontal) {
-  background: $bg;
-  border: 0px;
-  border-bottom: 1px solid shade($bg, 15%);
-  padding: $padding-vertical $padding-horizontal;
   display: inline-block;
-  color: $text;
+  padding: $padding-vertical $padding-horizontal;
+  border: 0;
+  border-bottom: 1px solid shade($bg, 15%);
   border-radius: 2px;
+  background: $bg;
+  color: $text;
   text-decoration: none;
-  line-height: 1em;
   font-size: 0.9em;
+  line-height: 1em;
 
   &:hover {
-    background: shade($bg, 5%);
-    color: #fff;
     border-bottom: 1px solid shade($bg, 15%);
+    background: shade($bg, 5%);
+    color: #ffffff;
   }
 }
 
@@ -159,18 +159,18 @@ $max-width: 1080px;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 body {
-  font-family: $fonts;
-  line-height: 1.75em;
-  font-size: 0.85em;
-  color: $text-color;
   padding: 20px;
   background: $world-background;
+  color: $text-color;
+  font-size: 0.85em;
+  font-family: $fonts;
+  line-height: 1.75em;
 }
 
 .world {
-  background: $page-background;
   padding: $world-padding;
   padding-top: 0;
+  background: $page-background;
 }
 
 a {
@@ -199,7 +199,9 @@ h1, h2, h3, h4, h5 {
   color: $text-color-darker;
 }
 
-h2 { font-size: 1em; }
+h2 {
+  font-size: 1em;
+}
 
 header {
   h1 {
@@ -214,38 +216,39 @@ h2 {
 
 
 hr {
-  background: $divider-color;
-  border: 0px;
   height: 1px;
+  border: 0;
+  background: $divider-color;
 }
 
 .titled-header {
-  margin-bottom: 10px;
   position: relative;
-  text-align: center;
+  margin-bottom: 10px;
+  padding-left: 0;
   border-bottom: 1px solid $divider-color;
-  padding-left: 0px;
+  text-align: center;
 
   h1, h2 {
-    font-size: 1.1em;
-    font-weight: 400;
-    display: inline-block;
-    background: $page-background;
-    padding-left: 1em;
-    padding-right: 1em;
     position: relative;
     top: 10px;
     z-index: 100;
+    display: inline-block;
+    padding-right: 1em;
+    padding-left: 1em;
+    background: $page-background;
     color: $text-color-darker;
+    font-weight: 400;
+    font-size: 1.1em;
   }
 }
 
 .titled-header-left {
   @extend .titled-header;
-  text-align: left;
-  padding-left: 0px;
-  margin-bottom: 35px;
+
   margin-top: 5px;
+  margin-bottom: 35px;
+  padding-left: 0;
+  text-align: left;
 
   h1, h2 {
     padding-left: $universal-left-padding;
@@ -253,19 +256,19 @@ hr {
 }
 
 .section-header {
-  margin-bottom: 30px;
   margin-top: 15px;
+  margin-bottom: 30px;
   padding-left: $universal-left-padding;
 
   @media screen and (max-width: 760px) {
-    text-align: center;
     margin-bottom: 15px;
+    text-align: center;
   }
 }
 
 .section-subheader {
-  margin-bottom: 30px;
   margin-top: 15px;
+  margin-bottom: 30px;
   padding-left: $universal-left-padding;
 }
 
@@ -293,28 +296,38 @@ section, .wrapper {
 // 6
 .column-half {
   @include span-columns(6);
-  @include media($tablet) { @include span-columns(6); }
+  @include media($tablet) {
+    @include span-columns(6);
+  }
 }
 // 4
 .column-third {
   @include span-columns(4);
-  @include media($tablet) { @include span-columns(6); }
+  @include media($tablet) {
+    @include span-columns(6);
+  }
 }
 
 // On a sidebar layout - 2/3rd of the main with a third remaining (so it's .column-third x 2) - i'm pretty sure this is insane
 .column-sixth {
   @include span-columns(8);
-  @include media($tablet) { @include span-columns(6); }
+  @include media($tablet) {
+    @include span-columns(6);
+  }
 }
 
 // full width when sidebared
 .column-half-plus {
   @include span-columns(9);
-  @include media($tablet) { @include span-columns(6); }
+  @include media($tablet) {
+    @include span-columns(6);
+  }
 }
 
 .sidebar {
-  @include media($tablet) { @include span-columns(6); }
+  @include media($tablet) {
+    @include span-columns(6);
+  }
   @include span-columns(3);
   @include omega();
 }
@@ -343,64 +356,65 @@ section, .wrapper {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .upload-avatar {
+  position: relative;
+  position: relative;
   display: inline-block;
-  line-height: 1em;
-  background: none repeat scroll 0 0 $page-background;
+  padding: 1em 2em;
+  padding-left: 140px;
+  padding-left: 50px;
   border: 1px solid $divider-color;
   border-radius: 2px;
-  padding-left: 140px;
-  position: relative;
+  background: none repeat scroll 0 0 $page-background;
   color: $text-color;
-  line-height: 1em;
-  padding: 1em 2em;
-  padding-left: 50px;
   text-align: left;
-  font-weight: 300;
   text-decoration: none;
-  position: relative;
+  font-weight: 300;
+  line-height: 1em;
+  line-height: 1em;
 
   img {
     position: absolute;
     top: 5px;
     left: 5px;
-    max-height: 30px;
     max-width: 30px;
+    max-height: 30px;
     vertical-align: middle;
   }
 }
 
 button, .button, input[type="submit"] {
   @include generate-background-and-border($button-color);
-  color: set-button-text-color($button-color);
-  border-radius: 2px;
+
+  position: relative;
   display: inline-block;
-  line-height: 1em;
   padding: 1em 2em;
   width: auto;
-  font-size: 13px;
-  font-weight: 300;
+  border-radius: 2px;
+  color: set-button-text-color($button-color);
   text-decoration: none;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-  position: relative;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1em;
 
   @media screen and (max-width: 760px) {
     display: block;
-    width: 100%;
     margin-bottom: 10px;
+    width: 100%;
   }
 
   &.cancel {
+    border-bottom: 1px solid $page-background;
     background: none;
     color: $text-color;
-    border-bottom: 1px solid $page-background;
     text-shadow: none;
   }
 
   &.button-blank {
+    position: relative;
     border: 1px solid $grey;
     background: none;
     color: $text-faded;
-    position: relative;
     text-shadow: none;
   }
 
@@ -409,53 +423,56 @@ button, .button, input[type="submit"] {
   }
 
   &.button-dropdown {
+    position: relative;
     border: 1px solid $divider-color;
     background: none;
     color: $text-color;
-    position: relative;
     text-shadow: none;
 
     .extra {
-      border-left: 1px solid $divider-color;
-      padding-left: 10px;
       position: relative;
       left: 10px;
       margin-left: 10px;
+      padding-left: 10px;
+      border-left: 1px solid $divider-color;
 
       @media screen and (max-width: 760px) {
-        left: auto;
-        right: 15px;
         position: absolute;
+        right: 15px;
+        left: auto;
       }
     }
   }
 
   &.button-open {
-    border-radius: 0px;
-    border-top: 0px;
-    border-bottom: 0px;
+    border-top: 0;
+    border-bottom: 0;
+    border-radius: 0;
     color: $button-color;
-    i { margin-left: 10px; }
+    i {
+      margin-left: 10px;
+    }
   }
 
   &.button-dropdown-activated {
     @extend .button-dropdown;
+
     position: relative;
-    border: 1px solid $divider-color;
-    border-bottom: 0px;
     z-index: 100;
+    border: 1px solid $divider-color;
+    border-bottom: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
     background: $world-background;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
   }
 
   &.auth {
     i {
+      position: relative;
+      top: 2px;
       margin-right: 4px;
       font-size: 1.3em;
       line-height: 1px;
-      position: relative;
-      top: 2px;
     }
   }
 
@@ -476,17 +493,16 @@ button, .button, input[type="submit"] {
   }
 
   &.button-reply {
-
     &:before {
-      content: ' ';
+      position: absolute;
+      top: 40%;
+      left: -8px;
       display: block;
-      width: 0px;
-      background: none;
+      width: 0;
       border: 5px solid rgba(0, 0, 0, 0);
       border-right: 5px solid $button-color;
-      position: absolute;
-      left: -8px;
-      top: 40%;
+      background: none;
+      content: " ";
     }
   }
 
@@ -501,18 +517,18 @@ button, .button, input[type="submit"] {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 input[type="text"], input[type="password"], textarea, select {
-  border: 0px;
-  padding: $form-padding-vertical $form-padding-horizontal;
-  margin-bottom: 10px;
-  font-weight: 300;
-  background: $form-input;
-
   @include placeholder {
     color: $text-faded;
+    font-weight: 400;
     font-style: italic;
     font-size: $font-mid;
-    font-weight: 400;
   }
+
+  margin-bottom: 10px;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  border: 0;
+  background: $form-input;
+  font-weight: 300;
 
   &.email {
     color: $button-color;
@@ -521,36 +537,36 @@ input[type="text"], input[type="password"], textarea, select {
 }
 
 textarea {
-  outline: none;
-  width: 100%;
-  min-height: 70px;
-  border: 0px;
-  font-size: 14px;
   @include generate-background-and-border(#f8f8f8);
-
   @include placeholder {
     color: $text-faded;
     font-style: italic;
   }
+
+  min-height: 70px;
+  width: 100%;
+  outline: none;
+  border: 0;
+  font-size: 14px;
 }
 
 .user-logged-in {
-  border-radius: $border-radius-main;
-  border: 1px dashed $divider-color;
-  background: $surface-secondary;
-  padding: $form-padding-vertical $form-padding-horizontal;
+  position: relative;
   display: block;
   margin-bottom: 20px;
-  text-decoration: none;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  border: 1px dashed $divider-color;
+  border-radius: $border-radius-main;
+  background: $surface-secondary;
   color: $text-color;
-  position: relative;
+  text-decoration: none;
 
   i {
-    font-size: 1.3em;
-    margin-right: 4px;
-    color: $text-color-lighter;
     position: relative;
     top: 1px;
+    margin-right: 4px;
+    color: $text-color-lighter;
+    font-size: 1.3em;
   }
 
   span {
@@ -559,64 +575,73 @@ textarea {
   }
 
   div {
-    display: inline-block;
-    color: $grey;
-    background: $text-color-lighter;
-    border-radius: 2px;
-    line-height: 1em;
-    padding: $form-padding-vertical $form-padding-horizontal;
     position: absolute;
-    right: 10px;
     top: 7px;
+    right: 10px;
+    display: inline-block;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    border-radius: 2px;
+    background: $text-color-lighter;
+    color: $grey;
     font-size: 0.9em;
+    line-height: 1em;
   }
 
   @media screen and (max-width: 760px) {
     text-align: center;
 
     div {
-      display: block;
       position: relative;
-      left:0px;
-      top: 0px;
+      top: 0;
+      left: 0;
+      display: block;
       margin-top: 10px;
     }
 
-    i { display: block; }
+    i {
+      display: block;
+    }
   }
 }
 
 .new-ticket-attachements {
-  .title { margin-top: 10px; }
+  .title {
+    margin-top: 10px;
+  }
 
   ul {
     @include blank-list;
+
     margin-bottom: 20px;
 
     li {
-      margin-left: 20px;
       position: relative;
+      margin-left: 20px;
       font-size: 0.9em;
 
       &:before {
-        content: " ";
         position: absolute;
-        left: -13px;
         top: 10px;
+        left: -13px;
         width: 5px;
         height: 5px;
         border-radius: 199px;
         background: $text-color-lighter;
+        content: " ";
       }
     }
 
-    a { text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
 
     .file-size {
-      opacity: $text-opacue;
       margin-left: 3px;
       font-size: 0.9em;
+      opacity: $text-opacue;
     }
   }
 }
@@ -624,13 +649,14 @@ textarea {
 .attach-file {
   // Grab the same styles as the logged in user button
   @extend .user-logged-in;
-  margin-bottom: 0px;
+
+  margin-bottom: 0;
 }
 
 .remove-attachement {
+  margin-left: 10px;
   color: inherit;
   font-size: 0.9em;
-  margin-left: 10px;
   opacity: 0.3;
 
   i {
@@ -645,16 +671,16 @@ textarea {
 .multiselect {
   ul.first-level {
     @include blank-list;
+
     border: 1px solid $button-color;
     border-radius: 2px;
 
     a {
-
-      background: $form-input;
       display: block;
-      text-decoration: none;
       padding: 5px 10px;
+      background: $form-input;
       color: $text-color;
+      text-decoration: none;
       // border-bottom: 1px solid #cecece;
       font-weight: 300;
 
@@ -668,29 +694,30 @@ textarea {
       position: relative;
       i {
         position: absolute;
-        right: 15px;
         top: 12px;
+        right: 15px;
       }
     }
   }
 
   ul.second-level {
     @extend .first-level;
+
+    position: relative;
     margin-top: 10px;
     margin-left: 30px;
-    position: relative;
 
     &:before {
-      content: " ";
+      position: absolute;
+      top: 0;
+      left: -20px;
       display: block;
       width: 10px;
       height: 20px;
       border: 1px dotted $text-color-lighter;
       border-top: none;
       border-right: none;
-      position: absolute;
-      left: -20px;
-      top: 0px;
+      content: " ";
     }
   }
 
@@ -698,18 +725,20 @@ textarea {
     ul.first-level {
       border: 1px solid $form-border-color;
 
-      &:hover { border: 1px solid $button-color; }
+      &:hover {
+        border: 1px solid $button-color;
+      }
 
       a {
-        background: #fff;
-        border-radius: 2px;
-        border-bottom: 1px solid $form-border-color;
-        line-height: normal;
         padding: $form-padding-vertical $form-padding-horizontal;
+        border-bottom: 1px solid $form-border-color;
+        border-radius: 2px;
+        background: #ffffff;
+        line-height: normal;
 
         &:hover {
-          background: $button-color;
           border-bottom: 1px solid $button-color;
+          background: $button-color;
         }
       }
     }
@@ -719,30 +748,30 @@ textarea {
 .radio-button {
   position: relative;
   display: inline-block;
+  margin-top: 5px;
   margin-right: 50px;
   margin-bottom: 10px;
-  margin-top: 5px;
   margin-left: 5px;
 
 
   input[type="radio"] {
     display: none;
-    border : 2px solid $button-color-secondary;
+    border: 2px solid $button-color-secondary;
 
     &:checked + label {
       &:after {
-        display: block;
         position: absolute;
+        top: 7px;
         left: 7px;
-        top : 7px;
-        content: "";
-        margin-right: 3px;
+        display: block;
         float: left;
-        background-color: $button-color-secondary;
+        margin-right: 3px;
         width: 7px;
         height: 7px;
-        border-radius: 16px;
         border: 1px solid $button-color-secondary;
+        border-radius: 16px;
+        background-color: $button-color-secondary;
+        content: "";
       }
     }
   }
@@ -752,30 +781,30 @@ textarea {
 
     &:before {
       display: block;
-      content: "";
-      margin-right: 8px;
       float: left;
+      margin-right: 8px;
       width: 19px;
-      height:19px;
-      border-radius: 24px;
+      height: 19px;
       border: 2px solid $button-color-secondary;
+      border-radius: 24px;
+      content: "";
     }
   }
 }
 
 .form-help {
-  border-left: 1px solid $divider-color;
-  padding: 5px 0px 5px 20px;
   position: relative;
   top: -5px;
   margin-bottom: 5px;
+  padding: 5px 0 5px 20px;
+  border-left: 1px solid $divider-color;
 
 
   h1 {
-    font-size: 1em;
-    font-weight: 400;
     display: block;
     margin-bottom: 5px;
+    font-weight: 400;
+    font-size: 1em;
   }
 
   p {
@@ -784,12 +813,12 @@ textarea {
 }
 
 .form-meta {
+  position: relative;
+  top: 6px;
+  float: right;
+  font-style: italic;
   font-size: 0.9em;
   line-height: 1em;
-  position: relative;
-  font-style: italic;
-  float: right;
-  top: 6px;
 }
 
 .form-meta-grey {
@@ -799,7 +828,9 @@ textarea {
     color: $text-color-lighter;
     text-decoration: none;
 
-    &:hover { color: $text-color; }
+    &:hover {
+      color: $text-color;
+    }
   }
 }
 
@@ -818,26 +849,26 @@ textarea {
   }
 
   .title {
-    color: $text-color;
-    padding-left: $form-padding-horizontal;
     display: block;
     margin-bottom: 7px;
-    font-weight: 0.9em;
+    padding-left: $form-padding-horizontal;
+    color: $text-color;
+    font-weight: lighter;
   }
 
   .subtitle {
-    padding-left: 5px;
-    font-size: 0.9em;
-    display: block;
-    margin-bottom: 5px;
-    line-height: 1em;
     position: relative;
     top: -5px;
+    display: block;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    font-size: 0.9em;
+    line-height: 1em;
   }
 
   .bucket {
-    width: 100%;
     margin-bottom: 10px;
+    width: 100%;
   }
 
 
@@ -845,18 +876,20 @@ textarea {
     width: 100%;
     transition: all 0.30s ease-in-out;
 
-    &:hover { cursor: pointer; }
+    &:hover {
+      cursor: pointer;
+    }
 
     &:focus {
-      background: #f0f0e8;
       border: 1px solid $button-color;
+      background: #f0f0e8;
     }
   }
 
   input[type="text"], input[type="password"], textarea {
-    background: $form-input;
     border: 1px solid $form-border-color;
     border-radius: 2px;
+    background: $form-input;
 
 
     &.email-present {
@@ -865,13 +898,15 @@ textarea {
   }
 
   select {
-    background: $page-background;
-    border: 1px solid $form-border-color;
-    border-radius: 2px;
-    border-bottom: 1px solid $form-border-color;
     padding: $form-padding-vertical $form-padding-horizontal;
+    border: 1px solid $form-border-color;
+    border-bottom: 1px solid $form-border-color;
+    border-radius: 2px;
+    background: $page-background;
     line-height: normal;
-    option { line-height: normal; }
+    option {
+      line-height: normal;
+    }
   }
 }
 
@@ -879,44 +914,44 @@ textarea {
   .bucket {
     span {
       display: inline;
-      font-size: 0.9em;
       margin-right: 3px;
+      font-size: 0.9em;
     }
   }
 
   input[type="text"], textarea {
-    background: $page-background;
     border: 1px solid $form-border-color;
     border-radius: 2px;
+    background: $page-background;
   }
 }
 
 .error-large {
-  background: $red;
-  color: #fff;
-  padding: $form-padding-vertical $form-padding-horizontal;
   position: relative;
-  border-radius: 2px;
   margin-bottom: 10px;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  border-radius: 2px;
+  background: $red;
+  color: #ffffff;
 
   &:before {
-    content: " ";
-    display: block;
-    width: 0px;
-    border: 4px solid rgba(0, 0, 0, 0);
-    border-bottom: 4px solid $red;
     position: absolute;
     top: -8px;
     left: 40px;
+    display: block;
+    width: 0;
+    border: 4px solid rgba(0, 0, 0, 0);
+    border-bottom: 4px solid $red;
+    content: " ";
   }
 }
 
 .remember-me {
   display: inline-block;
-  vertical-align: top;
-  line-height: 1em;
-  font-size: 0.9em;
   margin-left: 10px;
+  vertical-align: top;
+  font-size: 0.9em;
+  line-height: 1em;
 
   input {
     margin-right: 2px;
@@ -926,11 +961,11 @@ textarea {
 
 // Cramped forms (in a dropdown, in the sidebar etc)
 .permanent-login {
+  position: relative;
+  top: -3px;
   display: block;
   font-size: 0.85em;
-  position: relative;
   line-height: 1.5em;
-  top: -3px;
 
   label {
     display: inline-block;
@@ -943,10 +978,10 @@ textarea {
 
   .button, button {
     display: block;
-    text-align: center;
     margin-top: 10px;
-    width: 100%;
     margin-bottom: 5px;
+    width: 100%;
+    text-align: center;
   }
 
   .permanent-login {
@@ -954,9 +989,9 @@ textarea {
   }
 
   hr {
-    background: #e5e5e5;
-    border: 0px;
     height: 1px;
+    border: 0;
+    background: #e5e5e5;
   }
 
   .panel {
@@ -972,8 +1007,8 @@ textarea {
   }
 
   label {
-    display: block;
     position: relative;
+    display: block;
 
     span {
       display: block;
@@ -985,8 +1020,8 @@ textarea {
     font-size: 0.85em;
     a {
       margin-left: 5px;
+      color: #333333;
       text-decoration: none;
-      color: #333;
 
       &:hover {
         text-decoration: underline;
@@ -995,8 +1030,8 @@ textarea {
   }
 
   input[type="text"], input[type="password"], textarea {
-    border: 1px solid $divider-color;
     width: 100%;
+    border: 1px solid $divider-color;
     border-radius: 4px;
   }
 }
@@ -1005,23 +1040,23 @@ textarea {
 form {
   .error {
     .message {
-      display: block;
       position: absolute;
+      right: 0;
       bottom: 10px;
-      right: 0px;
-      background: $red;
-      color: #fff;
-      padding-left: 4px;
+      display: block;
       padding-right: 4px;
+      padding-left: 4px;
+      background: $red;
+      color: #ffffff;
+      font-weight: 500;
       font-size: 0.9em;
       line-height: 1.5em;
-      font-weight: 500;
     }
 
     input[type="text"], input[type="password"] {
-      background: #fff0ec;
       border: 1px solid $red;
-      border-top-right-radius: 0px;
+      border-top-right-radius: 0;
+      background: #fff0ec;
     }
   }
 }
@@ -1039,14 +1074,15 @@ form {
 }
 
 .sidebar-news-calendar {
-  line-height: 1em;
   vertical-align: top;
+  line-height: 1em;
 
   .year-list {
     @include blank-list;
+
     display: inline-block;
-    width: 65px;
     margin-right: 20px;
+    width: 65px;
     vertical-align: top;
   }
 
@@ -1056,34 +1092,38 @@ form {
   }
 
   a {
-    color: $text-color;
     display: block;
+    color: $text-color;
   }
 
   .year-list a {
-    border-right: 2px solid $divider-color;
     padding-top: 2px;
     padding-right: 10px;
+    border-right: 2px solid $divider-color;
   }
 
   a:hover, a.active {
-    .year { color: $button-color; }
-    .count { color: $text-color; }
+    .year {
+      color: $button-color;
+    }
+    .count {
+      color: $text-color;
+    }
   }
 
   .year {
-    margin-bottom: 2px;
-    font-size: 1.1em;
     display: block;
+    margin-bottom: 2px;
     font-weight: 500;
+    font-size: 1.1em;
   }
 
   .count {
     display: block;
-    font-size: 0.7em;
+    color: $text-color-lighter;
     text-transform: uppercase;
     font-weight: 500;
-    color: $text-color-lighter;
+    font-size: 0.7em;
   }
   // End year list
 
@@ -1092,19 +1132,20 @@ form {
   // Month list
   .month-list {
     @include blank-list;
+
     display: inline-block;
     border-left: 2px solid $divider-color;
     text-transform: uppercase;
-    font-size: 0.8em;
     font-weight: 500;
+    font-size: 0.8em;
 
     li {
-      border: 2px solid rgba(0, 0, 0, 0);
-      padding-left: 10px;
       position: relative;
       margin-bottom: 5px;
       padding-top: 3px;
       padding-bottom: 3px;
+      padding-left: 10px;
+      border: 2px solid rgba(0, 0, 0, 0);
 
 
       &.active, &:hover {
@@ -1114,7 +1155,9 @@ form {
       a {
         color: $button-color;
 
-        span { color: $text-color-lighter; }
+        span {
+          color: $text-color-lighter;
+        }
       }
     }
   }
@@ -1125,35 +1168,37 @@ form {
   border-left: 1px dashed $divider-color;
 
   @media screen and (max-width: 760px) {
-    border-left: 0px;
-    padding-left: 0px;
+    padding-left: 0;
+    border-left: 0;
   }
 
   .button {
     width: 100%;
-    text-align: center
+    text-align: center;
   }
 
   hr {
-    background: $divider-color;
-    border: 0px;
-    height: 1px;
     margin-top: 30px;
     margin-bottom: 25px;
+    height: 1px;
+    border: 0;
+    background: $divider-color;
   }
 
   h1 {
-    font-weight: 100;
-    font-size: 1.3em;
     margin-bottom: 5px;
     color: $text-color-darker;
+    font-weight: 100;
+    font-size: 1.3em;
 
     @media screen and (max-width: 760px) {
       text-align: center;
     }
   }
 
-  h2 { font-weight: 500; }
+  h2 {
+    font-weight: 500;
+  }
 
   p {
     font-size: 0.95em;
@@ -1162,41 +1207,43 @@ form {
 
 
   .large-title {
-    border-bottom: 0px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
+    border-bottom: 0;
 
     h1 {
-      left: 0px;
-      top: 0px;
-      padding: 0px;
+      top: 0;
+      left: 0;
       margin-bottom: 10px;
+      padding: 0;
     }
   }
 
   .panel-tiny {
     ul {
-      margin-left: 0px;
+      margin-left: 0;
     }
   }
 
 
   ul {
-    list-style: none;
-    padding: 0;
     margin: 0;
     margin-top: 10px;
+    padding: 0;
+    list-style: none;
 
     a {
-      text-decoration: none;
       padding-right: 3px;
+      text-decoration: none;
 
       &:hover {
         .focus {
           @include transition (all 0.5s ease-in-out);
-          opacity: 1;
+
           color: $button-color-secondary;
+          opacity: 1;
           &:after {
             @include transition (all 0.5s ease-in-out);
+
             background: $button-color-secondary;
           }
         }
@@ -1204,24 +1251,24 @@ form {
     }
 
     .focus {
-      font-size: 0.8em;
-      color: $grey;
-      line-height: 0.8em;
-      padding-bottom: 0px;
-      font-weight: 700;
-      opacity: 0.8;
       position: relative;
       top: -1px;
+      padding-bottom: 0;
+      color: $grey;
+      font-weight: 700;
+      font-size: 0.8em;
+      line-height: 0.8em;
+      opacity: 0.8;
 
       &:after {
-        content: ' ';
-        display: block;
-        bottom: 0px;
-        left: 0px;
-        width: 100%;
         position: absolute;
+        bottom: 0;
+        left: 0;
+        display: block;
+        width: 100%;
         height: 2px;
         background: #cecece;
+        content: " ";
       }
     }
   }
@@ -1229,7 +1276,9 @@ form {
 
 .agents-online {
   ul {
-    li { margin-bottom: 10px; }
+    li {
+      margin-bottom: 10px;
+    }
   }
 
   ul.simple {
@@ -1250,16 +1299,18 @@ form {
 }
 
 .get-in-touch {
-  h2 { margin-top: 10px; }
+  h2 {
+    margin-top: 10px;
+  }
 }
 
 // Large links for facebook, twitter etc
 .link-solo {
-  font-size: 1.1em;
+  display: inline-block;
   margin-top: 5px;
   margin-bottom: 5px;
   text-decoration: none;
-  display: inline-block;
+  font-size: 1.1em;
 
   i {
     margin-right: 5px;
@@ -1267,35 +1318,41 @@ form {
   }
 }
 
-.link-facebook { color: $color-facebook; }
-.link-twitter { color: $color-twitter; }
+.link-facebook {
+  color: $color-facebook;
+}
+.link-twitter {
+  color: $color-twitter;
+}
 
 // Top articles
 .sidebar-list {
-
   ul {
-
     a {
-      color: $text-color;
       display: block;
-      line-height: 1.5em;
       margin-bottom: 5px;
+      color: $text-color;
+      line-height: 1.5em;
     }
 
-    li { margin-bottom: 5px; }
+    li {
+      margin-bottom: 5px;
+    }
   }
 
   ul.simple {
     li {
-      a { @include whitespace; }
+      a {
+        @include whitespace;
+      }
     }
   }
 
   ul.simple-ticket {
     li {
       a {
-        background: url(../img/icon-article.png) no-repeat center left;
         padding-left: 25px;
+        background: url(../img/icon-article.png) no-repeat center left;
       }
     }
   }
@@ -1305,10 +1362,10 @@ form {
       a {
         i {
           display: inline-block;
-          width: 20px;
           margin-right: 5px;
-          text-align: center;
+          width: 20px;
           color: $text-faded;
+          text-align: center;
         }
       }
     }
@@ -1316,8 +1373,8 @@ form {
 
   .meta {
     display: block;
-    font-size: 0.9em;
     color: $text-color-lighter;
+    font-size: 0.9em;
     line-height: 1em;
 
     span:first-of-type {
@@ -1325,61 +1382,74 @@ form {
     }
   }
 
-  .button { margin-top: 10px; }
+  .button {
+    margin-top: 10px;
+  }
 }
 
 // Customer satisfaction
 // Number of satisfied folk
 .satisfaction-meta {
-  font-weight: 500;
   margin-top: 5px;
-  span { color: $button-color-secondary; }
+  font-weight: 500;
+  span {
+    color: $button-color-secondary;
+  }
 }
 
 .happy-faces {
+  margin-top: 10px;
+  padding: 5px 10px;
   border: 1px solid $divider-color;
   border-radius: 4px;
-  padding: 5px 10px;
-  margin-top: 10px;
   text-align: center;
 
   span {
     display: inline-block;
+    margin-top: 5px;
+    margin-right: 2%;
     width: 16%;
     height: 20px;
-    margin-right: 2%;
-    margin-top: 5px;
   }
 
-  .happy { background: no-repeat center url(../img/icon-face-happy.png); }
-  .unhappy { background: no-repeat center url(../img/icon-face-unhappy.png); }
-  .so-and-so { background: no-repeat center url(../img/icon-face-so-and-so.png); }
+  .happy {
+    background: no-repeat center url(../img/icon-face-happy.png);
+  }
+  .unhappy {
+    background: no-repeat center url(../img/icon-face-unhappy.png);
+  }
+  .so-and-so {
+    background: no-repeat center url(../img/icon-face-so-and-so.png);
+  }
 }
 
 .knowledge-base {
-  border-top: 1px dashed $divider-color;
   margin-top: 30px;
   padding: 10px;
+  border-top: 1px dashed $divider-color;
 
-  p { opacity: 0.75; }
+  p {
+    opacity: 0.75;
+  }
 }
 
 .panel-tiny {
   ul {
-    font-weight: 400;
-    margin: 0px;
-    padding: 0px;
     display: block;
+    margin: 0;
     margin-left: 10px;
+    padding: 0;
+    font-weight: 400;
 
     li {
       @include whitespace;
+
       display: block;
       height: 2em;
 
       a {
-        text-decoration: none;
         color: $text-color;
+        text-decoration: none;
 
         &:hover {
           color: $text-color-darker;
@@ -1400,10 +1470,10 @@ form {
   padding-left: $universal-left-padding;
 
   h1 {
-    font-weight: 300;
-    font-size: 1.5em;
     position: absolute;
     bottom: 25px;
+    font-weight: 300;
+    font-size: 1.5em;
   }
 
   img {
@@ -1413,35 +1483,37 @@ form {
 
   @media screen and (max-width: 760px) {
     h1 {
-      display: block;
       position: relative;
-      bottom: 0px;
-      text-align: center;
+      bottom: 0;
+      display: block;
       margin-bottom: 20px;
+      text-align: center;
     }
   }
 }
 
 .top-bar {
-  border-bottom: 1px solid $divider-color;
-  padding-bottom: 20px;
-  padding-top: 20px;
-  margin-bottom: 20px;
-  color: $text-color;
   position: relative;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid $divider-color;
+  color: $text-color;
 
   ul {
     margin: 0;
     padding: 0;
     text-align: right;
 
-    img { vertical-align: middle; }
+    img {
+      vertical-align: middle;
+    }
 
     li {
+      position: relative;
       display: inline;
       margin-left: 5px;
       text-align: left;
-      position: relative;
 
       @media screen and (max-width: 760px) {
         display: block;
@@ -1464,8 +1536,8 @@ form {
       display: block;
 
       a {
-        color: $text-color;
         padding: 0;
+        color: $text-color;
         text-decoration: none;
 
         &.active-language {
@@ -1489,19 +1561,19 @@ form {
 .search-box-results {
   display: block;
   background: darken($form-input, 2.5%);
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
   header {
-    text-transform: uppercase;
     padding: 10px 15px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     border-top: 1px solid $divider-color;
+    text-transform: uppercase;
   }
   .text-tag {
-    background: $button-color-secondary;
     top: -1px;
-    font-weight: 500;
     margin-right: 4px;
+    background: $button-color-secondary;
+    font-weight: 500;
   }
 
   .pagination {
@@ -1511,38 +1583,42 @@ form {
 
 .live-search-meta {
   @include clearfix;
-  text-align: center;
-  width: 100%;
+
   padding: 10px;
+  width: 100%;
+  text-align: center;
 
   a {
-    margin: 0px 5px;
     display: inline-block;
+    margin: 0 5px;
     min-width: 140px;
   }
 
   div {
-    line-height: 1em;
-    margin-bottom: 10px;
     position: relative;
     top: -2px;
+    margin-bottom: 10px;
+    line-height: 1em;
     opacity: 0.5;
   }
 }
 
-.result-count { color: $text-color-darker; }
+.result-count {
+  color: $text-color-darker;
+}
 
 .result-filter {
   @include blank-list;
+
   display: inline-block;
-  font-size: 0.8em;
-  font-weight: 500;
-  text-transform: uppercase;
   float: right;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 0.8em;
 
   a {
-    text-decoration: none;
     color: $text-color;
+    text-decoration: none;
   }
 
   i {
@@ -1556,8 +1632,8 @@ form {
     border-right: 1px solid $divider-color;
 
     &:last-child {
-      margin-right: 0px;
-      padding-right: 0px;
+      margin-right: 0;
+      padding-right: 0;
       border-right: none;
     }
   }
@@ -1565,29 +1641,29 @@ form {
 
 .result-list {
   .focus {
-    font-weight: 500;
     color: $text-color-darker;
+    font-weight: 500;
   }
 
   ul {
     @include blank-list;
+
     font-size: 0.95em;
   }
 
   i {
     display: inline-block;
+    margin-right: 5px;
     width: 20px;
     text-align: center;
-    margin-right: 5px;
     opacity: 0.5;
   }
 
   a {
+    display: block;
+    padding: 6px 15px;
     color: inherit;
     text-decoration: none;
-    display: block;
-
-    padding: 6px 15px;
   }
 
   .alt {
@@ -1600,155 +1676,181 @@ form {
 // Add .single-item to .search-and-ticket for showing just the ticket create button
 // or just the search form at 100%
 .search-and-ticket {
+  // End Structure
+  $top-search-common-line-height: 20px;
   @include clearfix;
+
+  margin: 0 0 10px 0;
+  padding: 10px;
   border: 1px dashed $divider-color;
   border-radius: $border-radius-main;
-  padding: 10px;
-  margin: 0px 0px 10px 0px;
 
   // Structure
   // Set widths for the three main boxes (search form, the "or" divider, and the ticket button)
   .search-box, .or, .ticket {
-    float: left;
-    display: block;
     @include clearfix;
 
-    &.search-box { width: 65%; }
-    &.or { width: 5%; }
-    &.ticket { width: 30%; }
+    display: block;
+    float: left;
+
+    &.search-box {
+      width: 65%;
+    }
+    &.or {
+      width: 5%;
+    }
+    &.ticket {
+      width: 30%;
+    }
 
     // Responsive Styles
-    @media screen and (max-width: 760px) {// This applies to the class it's into
+    @media screen and (max-width: 760px) {
+      // This applies to the class it's into
       float: none;
 
-      &.search-box, &.ticket { width: 100%; }
+      &.search-box, &.ticket {
+        width: 100%;
+      }
 
       &.or {
+        margin: 10px 0;
         padding: 0;
-        margin: 10px 0px;
         width: 100%;
 
         &:before, &:after {
+          top: 5px;
           width: 42%;
           height: 1px;
-          top: 5px;
         }
 
-        &:before { left: 0px; }
-        &:after { left: auto; right: 0px; }
+        &:before {
+          left: 0;
+        }
+        &:after {
+          right: 0; 
+          left: auto;
+        }
       }
     }// End Responsive Styles
   }
 
-  &.single-item {// Use this class when you only need just the ticker or form
+  &.single-item {
+    // Use this class when you only need just the ticker or form
     .search-box, .or, .ticket {
       width: 100%;
     }
   }
-  // End Structure
-
-  $top-search-common-line-height: 20px;
   // Basis for all input and buttons so they're always the same height
   input[type="text"], button, .button-ticket {
-    font-size: 14px;// Use pixels because icon font does not have the same baseline height and ends up increasing the padding
+    margin-bottom: 0;
     padding: 1.3em 2em;
-    border: 0px;
-    border-radius: 2px;
+    border: 0;
     border-bottom: 1px solid shade($form-input, 7.5%);
+    border-radius: 2px;
     vertical-align: top;
+    font-size: 14px;// Use pixels because icon font does not have the same baseline height and ends up increasing the padding
     font-family: $fonts;
     line-height: $top-search-common-line-height;
-    margin-bottom: 0px;
 
     i {
-      line-height: $top-search-common-line-height
+      line-height: $top-search-common-line-height;
     }
   }
 
   form.search-box {
-    margin-bottom: 0px;
     position: relative;
+    margin-bottom: 0;
 
     // Use float instead of inline block to avoid the need for extra styles if there's no ticket
     input[type="text"], button {
-      left: 0px;
+      left: 0;
       float: left;
     }
 
     input[type="text"] {
-      background: $form-input;
-      border-radius: 2px;
-      color: $text-color;
-      border-top-right-radius: 0px;
-      border-bottom-right-radius: 0px;
-      width: 80%;
-
       @include placeholder {
         color: $text-color-lighter;
-        font-style: italic;
         font-weight: 400;
+        font-style: italic;
       }
+
+      width: 80%;
+      border-radius: 2px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      background: $form-input;
+      color: $text-color;
     }
 
     button {
-      background: shade($form-input, 10%);
-      padding-left: 0px;
-      padding-right: 0px;
-      border-bottom-right-radius: 0px;
-      border-bottom-left-radius: 0px;
-      color: $text-color-lighter;
+      padding-right: 0;
+      padding-left: 0;
       width: 20%;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      background: shade($form-input, 10%);
+      color: $text-color-lighter;
 
-      &:hover { box-shadow: $common-box-shadow-inner; }
+      &:hover {
+        box-shadow: $common-box-shadow-inner;
+      }
     }
   }
 
   .or {
-    font-weight: 700;
-    text-transform: uppercase;
     position: relative;
+    padding: 1.8em 0;
     text-align: center;
-    padding: 1.8em 0em;
-    line-height: 1em;
+    text-transform: uppercase;
+    font-weight: 700;
     font-size: 0.8em;
+    line-height: 1em;
 
     &:before, &:after {
-      content: " ";
+      position: absolute;
+      left: 50%;
       display: block;
       width: 1px;
       height: 16px;
       background: $button-grey;
-      position: absolute;
-      left: 50%;
+      content: " ";
     }
 
-    &:before { top: 0px; }
-    &:after { bottom: 0px; }
+    &:before {
+      top: 0;
+    }
+    &:after {
+      bottom: 0;
+    }
   }
 
   .button-ticket {
     @include generate-background-and-border($button-color);
-    color: set-button-text-color($button-color);
-    border-radius: $border-radius-small;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    font-weight: 300;
 
+    display: inline-block;
+    overflow: hidden;
+    padding-right: 5px;
     // Get rid of extra padding to fit as much text as possible on this button (to acommodate translations etc), max ~25 characters
     // right now, would need to edit the width for the button for more
     padding-left: 5px;
-    padding-right: 5px;
-    white-space: nowrap;
-    overflow: hidden;
+    width: 100%;
+    border-radius: $border-radius-small;
+    color: set-button-text-color($button-color);
+    text-align: center;
+    text-decoration: none;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 300;
 
-    &:hover { box-shadow: $common-box-shadow-inner; }
+    &:hover {
+      box-shadow: $common-box-shadow-inner;
+    }
   }
 }
 
-table { font-size: 1em; }
+table {
+  font-size: 1em;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1762,63 +1864,71 @@ $tab-border: $divider-color;
   ul {
     @include clearfix;
     @include blank-list;
-    line-height: 1em;
-    border-bottom: 1px solid $tab-border;
+
     padding-left: 20px;
+    border-bottom: 1px solid $tab-border;
+    line-height: 1em;
   }
 
   .title {
-    font-size: 1.1em;
-    font-weight: 500;
     margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 1.1em;
   }
 
   .subtitle {
-    font-size: 0.85em;
     color: $text-color-lighter;
+    font-size: 0.85em;
   }
 
   li {
-    display: block;
-    border: 1px solid rgba(255, 255, 255, 0);
-    float: left;
     position: relative;
     top: 1px;
+    display: block;
+    float: left;
+    border: 1px solid rgba(255, 255, 255, 0);
 
-    div { display: inline-block; }
+    div {
+      display: inline-block;
+    }
 
     // Dividers
     &:after {
-      content: " ";
+      position: absolute;
+      top: 10%;
+      right: -2px;
       display: block;
       width: 1px;
       height: 80%;
       background: $tab-border;
-      position: absolute;
-      right: -2px;
-      top: 10%;
+      content: " ";
     }
 
     &:last-child, &.tab-active {
-      &:after {  display: none; }
+      &:after {
+        display: none;
+      }
     }
 
-    img {// Needs to be ~18px height for now
-      opacity: 0.3;
-      vertical-align: top;
+    img {
       margin-top: 5px;
       margin-right: 7px;
+      vertical-align: top;
+      // Needs to be ~18px height for now
+      opacity: 0.3;
     }
 
     &:hover {
-      .title { color: $button-color; }
+      .title {
+        color: $button-color;
+      }
     }
 
     a {
       display: block;
       padding: 15px 20px 10px 20px;
-      text-decoration: none;
       color: inherit;
+      text-decoration: none;
     }
 
     &.tab-active {
@@ -1826,14 +1936,20 @@ $tab-border: $divider-color;
       border-bottom: 1px solid rgba(255, 255, 255, 0);
       background: $page-background;
 
-      .title { color: $button-color; }
+      .title {
+        color: $button-color;
+      }
     }
 
     &.tab-inactive {
-      .title { color: $text-color-lighter; }
+      .title {
+        color: $text-color-lighter;
+      }
     }
 
-    span { display: block; }
+    span {
+      display: block;
+    }
   }
 }
 
@@ -1841,19 +1957,19 @@ $tab-border: $divider-color;
   position: relative;
 
   ul {
-    padding-left: 0px;
+    padding-left: 0;
   }
   li.tab-active {
     .title {
       color: $text-color;
 
       .text-tag {
-        font-size: 0.6em;
-        padding-top: 3px;
-        padding-bottom: 3px;
         position: relative;
         top: -1px;
+        padding-top: 3px;
+        padding-bottom: 3px;
         text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+        font-size: 0.6em;
       }
     }
   }
@@ -1861,8 +1977,8 @@ $tab-border: $divider-color;
 
 .tab-solo {
   position: absolute !important;
+  right: 0;
   left: auto;
-  right: 0px;
 }
 
 
@@ -1871,36 +1987,42 @@ $tab-border: $divider-color;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 hr.divider {
-  height: 1px;
-  border: 0px;
-  background: $divider-color;
   margin-top: 15px;
   margin-bottom: 15px;
+  height: 1px;
+  border: 0;
+  background: $divider-color;
 }
 
-.padded { padding-left: 10px; }
+.padded {
+  padding-left: 10px;
+}
 
-.centered { text-align: center; }
+.centered {
+  text-align: center;
+}
 
 .glossary-link {
   border-bottom: 1px dotted $text-color;
-  text-decoration: none;
   color: $text-color;
+  text-decoration: none;
 }
 
 header {
   .category-jumper {
-    border: 1px solid $divider-color;
-    color: inherit;
-    margin-left: -10px;
-    &:hover { background: $surface-secondary; }
-    padding: 5px 10px;
-    border-radius: 2px;
-    font-size: 0.9em;
-    color: $text-color;
     position: relative;
     top: -1px;
     margin-right: 5px;
+    margin-left: -10px;
+    padding: 5px 10px;
+    border: 1px solid $divider-color;
+    border-radius: 2px;
+    color: inherit;
+    color: $text-color;
+    font-size: 0.9em;
+    &:hover {
+      background: $surface-secondary;
+    }
 
     i {
       font-size: 14px;
@@ -1910,34 +2032,34 @@ header {
 }
 
 .tag-list {
-  border: 1px solid $divider-color;
-  border-radius: 2px;
   display: inline-block;
   margin-top: 10px;
+  border: 1px solid $divider-color;
+  border-radius: 2px;
 
   .tag-list-header {
     i {
       position: absolute;
-      left: -10px;
       top: 2px;
-      background: $page-background;
+      left: -10px;
       padding: 3px;
+      background: $page-background;
     }
   }
 
   ul {
     @include blank-list;
     li {
-      display: inline-block;
       position: relative;
-      vertical-align: middle;
-      padding: 0px 10px;
+      display: inline-block;
+      padding: 0 10px;
       border-right: 1px solid $divider-color;
       color: $text-faded;
+      vertical-align: middle;
       font-size: 0.9em;
 
       &:last-child {
-        border-right: 0px;
+        border-right: 0;
       }
     }
 
@@ -1954,39 +2076,40 @@ header {
 
 // All sort of small popups for buttons/forms etc
 .popup-tiny {
+  position: relative;
   display: block;
+  margin-bottom: 20px;
+  padding: 10px;
+  max-width: 300px;
   border: 1px solid $divider-color;
   border-radius: 4px;
-  padding: 10px;
   background: $world-background;
-  margin-bottom: 20px;
-  position: relative;
-  max-width: 300px;
   color: $text-color;
 
   input[type="text"], .select {
-    border: 1px solid $form-border-color;
-    width: 100%;
     padding: 0.5em 0.75em;
+    width: 100%;
+    border: 1px solid $form-border-color;
     border-radius: 2px;
   }
 
   .button {
     display: block;
-    text-align: center;
     padding: 0.75em 0.75em;
+    text-align: center;
   }
 
 
 
   h1 {
-    font-size: 1.1em;
-    font-weight: 500;
     margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 1.1em;
   }
 
   ul {
     @include blank-list;
+
     margin-bottom: 10px;
   }
 
@@ -2004,8 +2127,8 @@ header {
 
   .popup-controls {
     position: absolute;
-    right: 15px;
     top: 10px;
+    right: 15px;
     a {
       color: $text-color;
       font-size: 0.8em;
@@ -2016,11 +2139,11 @@ header {
     border: 1px solid $form-border-color;
 
     a {
-      border-radius: 2px;
-      line-height: 1em;
-      padding: 0.75em;
       display: block;
+      padding: 0.75em;
+      border-radius: 2px;
       color: $text-color;
+      line-height: 1em;
 
       &:hover {
         color: $link-color;
@@ -2028,61 +2151,57 @@ header {
     }
 
     i {
-      color: $text-color;
       float: right;
+      color: $text-color;
     }
 
     ul {
-      border: 0px;
-      margin-bottom: 0px;
+      margin-bottom: 0;
+      border: 0;
       li {
         border-top: 1px solid $form-border-color;
         a {
-          border-radius: 0px;
-          border: 0px;
+          border: 0;
+          border-radius: 0;
         }
       }
     }
-  }
-
-  .select-dropdown.expanded {
-
   }
 }
 
 .active-button-dropdown {
   position: absolute;
+  position: absolute;
   top: 30px;
   right: 4px;
-  background: #fff;
-  border: 1px solid $divider-color;
-  border-radius: 2px;
+  z-index: 99;
   display: block;
-  position: absolute;
-  border-radius: 2px;
-  text-align: left;
-  min-width: 135px;
   padding: 7px 14px;
   padding-bottom: 14px;
-  border-top-right-radius: 0px;
-  z-index: 99;
+  min-width: 135px;
+  border: 1px solid $divider-color;
+  border-radius: 2px;
+  border-radius: 2px;
+  border-top-right-radius: 0;
+  background: #ffffff;
+  text-align: left;
 
   ul {
-    list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   hr {
-    background: $divider-color;
-    border: 0px;
     height: 1px;
+    border: 0;
+    background: $divider-color;
   }
 
   @media screen and (max-width: 760px) {
     position: relative;
     top: -10px;
-    right: 0px;
+    right: 0;
 
     hr {
       display: none;
@@ -2096,40 +2215,39 @@ header {
 
 div.large-title {
   display: block;
-  border-bottom: 1px solid $divider-color;
-  margin-bottom: 30px;
   margin-top: 20px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid $divider-color;
   text-align: left;
 
   h1 {
-    font-weight: 100;
-    font-size: 1.4em;
-    padding-bottom: 0px;
-    display: inline-block;
-    color: $text-color-darker;
     position: relative;
-    background: $page-background;
-    padding-left: 10px;
-    padding-right: 10px;
     top: 11px;
     left: 30px;
-
+    display: inline-block;
+    padding-right: 10px;
+    padding-bottom: 0;
+    padding-left: 10px;
+    background: $page-background;
+    color: $text-color-darker;
+    font-weight: 100;
+    font-size: 1.4em;
   }
 }
 
 
 
 .header-buttons {
-  font-size: 0.9em;
   float: right;
+  font-size: 0.9em;
   a {
     display: inline-block;
+    padding: 0 0.5em;
+    border: 1px solid $divider-color;
+    border-radius: 2px;
     background: $surface-secondary;
     color: $text-color;
     text-decoration: none;
-    border-radius: 2px;
-    border: 1px solid $divider-color;
-    padding: 0em 0.5em;
 
     &:hover {
       background: darken($surface-secondary, 10%);
@@ -2140,13 +2258,13 @@ div.large-title {
     }
 
     i {
-      font-size: 0.9em;
-      vertical-align: middle;
-      margin-left: 6px;
-      margin-right: 2px;
-      color: $text-color-lighter;
       position: relative;
       top: -1px;
+      margin-right: 2px;
+      margin-left: 6px;
+      color: $text-color-lighter;
+      vertical-align: middle;
+      font-size: 0.9em;
     }
   }
 }
@@ -2154,24 +2272,24 @@ div.large-title {
 
 // If we need them on their own line
 .header-button-container {
-  text-align: right;
+  position: relative;
   display: block;
-  width: 100%;
+  float: none;
   margin-top: 30px;
   margin-bottom: 30px;
-  float: none;
-  border-bottom: 1px solid $divider-color;
-  position: relative;
+  width: 100%;
   height: 1px;
+  border-bottom: 1px solid $divider-color;
+  text-align: right;
 
   .header-buttons {
-    float: none;
     position: relative;
+    top: -12px;
     display: inline-block;
+    float: none;
     padding-right: 5px;
     padding-left: 5px;
     background: $page-background;
-    top: -12px;
   }
 }
 
@@ -2193,39 +2311,41 @@ div.large-title {
   }
 
   input[type="text"] {
-    border: 1px solid $divider-color;
-    max-width: 160px;
-    border-radius: 2px;
-    padding: 0.5em 0.75em;
     position: relative;
     top: 1px;
+    padding: 0.5em 0.75em;
+    max-width: 160px;
+    border: 1px solid $divider-color;
+    border-radius: 2px;
   }
 }
 
 // Not using variables here, need to be consistent everywhere
 .admin-bar {
   position: fixed;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  padding: 1px 0;
   width: 100%;
   background: #383838;
-  z-index: 9999;
   font-size: $font-mid;
-  padding: 1px 0px;
   ul {
     @include blank-list;
 
-    li { display: inline; }
+    li {
+      display: inline;
+    }
   }
 
   a {
     display: block;
     float: right;
+    margin-left: 1px;
+    padding: 7px 10px;
     background: #4c4c4c;
     color: #d2d2d2;
-    padding: 7px 10px;
     text-decoration: none;
-    margin-left: 1px;
 
     span {
       color: #a2a2a2;
@@ -2243,9 +2363,9 @@ div.large-title {
     }
 
     .fa-edit {
-      font-size: 1.2em;
       position: relative;
       top: 2px;
+      font-size: 1.2em;
     }
   }
 }
@@ -2253,20 +2373,25 @@ div.large-title {
 .admin-bar-extended {
   position: fixed;
   top: 38px;
-  left: 0px;
+  left: 0;
+  z-index: 9999;
   width: 100%;
   background: #3d3d3d;
   color: #d2d2d2;
-  z-index: 9999;
-  font-size: $font-mid;
-  font-weight: 300;
   text-align: right;
+  font-weight: 300;
+  font-size: $font-mid;
 
   a {
-    text-align: right;
+    position: relative;
+    display: inline-block;
     padding: 10px;
     min-width: 360px;
-    position: relative;
+    width: auto;
+    background: #323232;
+    color: $text-color-lighter;
+    text-align: right;
+    text-decoration: none;
 
     img {
       float: right;
@@ -2275,40 +2400,33 @@ div.large-title {
 
     .title {
       display: inline-block;
-      font-size: 1.3em;
-      color: #fff;
       margin-top: 10px;
       margin-bottom: 2px;
+      color: #ffffff;
+      font-size: 1.3em;
     }
 
     p {
       line-height: 1.6em;
     }
-
-    display: inline-block;
-    background: #323232;
-    width: auto;
-    color: $text-color-lighter;
-    text-decoration: none;
   }
 }
 
 
 .welcome-message {
+  padding: 20px;
+  border: 1px solid $divider-color;
+  border-radius: 4px;
+  background: darken($page-background, 3%);
   h1 {
+    margin-bottom: 10px;
     font-weight: 300;
     font-size: $font-large;
-    margin-bottom: 10px;
   }
 
   p {
     margin-bottom: 10px;
   }
-
-  padding: 20px;
-  border: 1px solid $divider-color;
-  background: darken($page-background, 3%);
-  border-radius: 4px;
 }
 
 .extra-margin {
@@ -2319,20 +2437,20 @@ div.large-title {
 // Inline tags for text
 
 .text-tag {
-  background: $button-color-secondary;
-  border-radius: 2px;
-  font-weight: 600;
-  color: #fff;
-  padding: 3px 6px;
-  font-size: 0.7em;
-  text-transform: uppercase;
-  cursor: default;
-  line-height: 1em;
   position: relative;
+  padding: 3px 6px;
+  border-radius: 2px;
+  background: $button-color-secondary;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.7em;
+  line-height: 1em;
+  cursor: default;
 
   i {
     position: relative;
-    top: 0px;
+    top: 0;
     left: 2px;
   }
 }
@@ -2340,23 +2458,23 @@ div.large-title {
 // Adding tags to h1
 h1 {
   .text-tag {
-    font-size: 10px;
-    background: $button-color-secondary;
-    color: #fff;
     position: relative;
     top: -2px;
     left: 4px;
+    background: $button-color-secondary;
+    color: #ffffff;
+    font-size: 10px;
 
     &:after {
-      content: " ";
-      width: 0px;
-      height: 0px;
+      position: absolute;
+      top: 5px;
+      left: -6px;
       display: block;
+      width: 0;
+      height: 0;
       border: 4px solid rgba(0, 0, 0, 0);
       border-right: 4px solid $button-color-secondary;
-      position: absolute;
-      left: -6px;
-      top: 5px;
+      content: " ";
     }
   }
 }
@@ -2364,37 +2482,39 @@ h1 {
 // Tag with pointy thingy up
 .rating-tag {
   @extend .text-tag;
-  background: $button-color-secondary;
+
   padding-top: 1px;
   padding-bottom: 1px;
+  background: $button-color-secondary;
 }
 
 // Tag with comment icon
 .comment-tag {
   @extend .text-tag;
-  background: $button-color;
+
   padding-top: 1px;
   padding-bottom: 1px;
+  background: $button-color;
 
   i {
-    font-size: 0.9em;
     top: -1px;
+    font-size: 0.9em;
   }
 }
 
 // View more button
 .list-meta {
   margin-top: 0.5em;
-  font-size: 0.9em;
   text-align: right;
+  font-size: 0.9em;
 
   a {
-    opacity: 0.5;
-    display: inline-block;
-    text-decoration: none;
-    color: $text-color-lighter;
     position: relative;
     left: -5px;
+    display: inline-block;
+    color: $text-color-lighter;
+    text-decoration: none;
+    opacity: 0.5;
 
     &:hover {
       opacity: 1;
@@ -2408,8 +2528,8 @@ h1 {
     }
 
     span {
-      font-weight: 500;
       color: $text-color-lighter;
+      font-weight: 500;
     }
   }
 }
@@ -2418,13 +2538,13 @@ h1 {
 table {
   tr {
     td {
-      vertical-align: top;
       padding: 5px 10px;
       color: $text-color-darker;
+      vertical-align: top;
 
       &:first-child {
-        text-align: right;
         color: $text-color-lighter;
+        text-align: right;
       }
     }
   }
@@ -2433,12 +2553,13 @@ table {
 // Date tag for news list
 .date-tag {
   @extend .text-tag;
-  background: darken($page-background, 3%);;
-  color: $text-color-lighter;
-  min-width: 40px;
+
   display: inline-block;
-  text-align: center;
   margin-right: 10px;
+  min-width: 40px;
+  background: darken($page-background, 3%);
+  color: $text-color-lighter;
+  text-align: center;;
 
   span {
     color: $text-color-lighter;
@@ -2446,45 +2567,45 @@ table {
   }
 
   &:after {
-    content: " ";
-    width: 0px;
-    height: 0px;
+    position: absolute;
+    top: 5px;
+    right: -8px;
     display: block;
+    width: 0;
+    height: 0;
     border: 4px solid rgba(0, 0, 0, 0);
     border-left: 4px solid darken($page-background, 3%);
-    position: absolute;
-    right: -8px;
-    top: 5px;
+    content: " ";
   }
 }
 
 // Files & file icons
 .file-tag {
   display: inline-block;
-  min-width: 40px;
-  font-size: 0.6em;
-  color: rgba(255, 255, 255, 0.6);
   margin-right: 5px;
+  min-width: 40px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.6em;
 }
 
 .file-pdf {
   background-color: #f44e4e;
   background-image: url(../img/icon-pdf.png);
-  background-repeat: no-repeat;
   background-position: right center;
+  background-repeat: no-repeat;
 }
 
 .file-zip {
   background-color: #b6b800;
   background-image: url(../img/icon-zip.png);
-  background-repeat: no-repeat;
   background-position: 30px center;
+  background-repeat: no-repeat;
 }
 
 .ticket-related-articles {
-  border: 1px solid $divider-color;
-  padding-bottom: 10px;
   margin-top: 20px;
+  padding-bottom: 10px;
+  border: 1px solid $divider-color;
 
   header {
     padding: 10px;
@@ -2494,9 +2615,9 @@ table {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 
     h1 {
-      font-size: 1.2em;
-      font-weight: 600;
       color: $page-background;
+      font-weight: 600;
+      font-size: 1.2em;
     }
 
     h2 {
@@ -2510,17 +2631,19 @@ table {
 
   .bucket {
     margin-top: 20px;
-    padding-right: 20px;
     margin-bottom: 10px;
-    padding-left: 10px;
+    padding-right: 20px;
     padding-bottom: 10px;
+    padding-left: 10px;
 
-    a:hover { text-decoration: underline; }
+    a:hover {
+      text-decoration: underline;
+    }
   }
 
   .button {
     margin-left: 10px;
-    border: 0px;
+    border: 0;
     text-shadow: none;
     font-weight: 400;
   }
@@ -2537,10 +2660,12 @@ table {
 
   ul {
     @include blank-list;
+
     margin-left: 10px;
 
     li {
       @include whitespace;
+
       margin-bottom: 5px;
     }
 
@@ -2550,33 +2675,36 @@ table {
     }
 
     p {
-      font-size: 0.9em;
       color: $text-color;
       font-weight: 300;
+      font-size: 0.9em;
     }
 
     i {
-      margin-right: 5px;
-      color: $text-color-lighter;
-      opacity: 0.5;
-      font-size: 1.2em;
       float: left;
       margin-top: 12px;
+      margin-right: 5px;
       margin-right: 10px;
+      color: $text-color-lighter;
+      font-size: 1.2em;
+      opacity: 0.5;
     }
   }
 }
 
 // Showing users & avatar styles
 
-.agent {// Overall user container
+.agent {
+  // Overall user container
   display: inline-block;
-  line-height: 1.2em;
-  font-weight: 400;
   margin-right: 10px;
+  font-weight: 400;
+  line-height: 1.2em;
 
   &:hover {
-    .remove-agent { display: block; }
+    .remove-agent {
+      display: block;
+    }
   }
 
   // Enable in case we need agent as a link
@@ -2590,37 +2718,38 @@ table {
 
 .agent-info {
   @include whitespace;
+
   display: inline-block;
   vertical-align: bottom;
 
   .agent-meta {
+    display: block;
     color: $text-color-lighter;
     font-size: 0.85em;
-    display: block;
   }
 }
 
 .agent-avatar {
-  vertical-align: middle;
+  position: relative;
   display: inline-block;
+  margin-right: 5px;
   width: 36px;
   height: 36px;
   border-radius: 199px;
-  margin-right: 5px;
-  position: relative;
   background: #cecece;
+  vertical-align: middle;
   text-align: center;
 
   i {
     position: relative;
     top: 6px;
-    color: #fff;
+    color: #ffffff;
   }
 
   &.agent-avatar-tiny {
+    margin-left: 2px;
     width: 25px;
     height: 25px;
-    margin-left: 2px;
   }
 
   &.agent-avatar-mini {
@@ -2634,19 +2763,19 @@ table {
 }
 
 .remove-agent {
-  display: none;
-  width: 15px;
-  height: 15px;
   position: absolute;
   top: -5px;
   right: -5px;
+  display: none;
+  width: 15px;
+  height: 15px;
   border: 2px solid $page-background;
   border-radius: 199px;
   background: $text-color-darker no-repeat center center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NzBGNENBNzM1MDY0MTFFNDk3NDVEMzE2NDU2OUY3QTIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NzBGNENBNzQ1MDY0MTFFNDk3NDVEMzE2NDU2OUY3QTIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3MEY0Q0E3MTUwNjQxMUU0OTc0NUQzMTY0NTY5RjdBMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3MEY0Q0E3MjUwNjQxMUU0OTc0NUQzMTY0NTY5RjdBMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtgnKacAAABMSURBVHjaYvj///9CIM4EYgYg5gPiJSwMDAwngTgHiF8DcQAQszNAVQT8h4AzID4TUEYUiEOhOniA2AekagkQrwZiNiD2BuIjAAEGAFIkNxfsqyxGAAAAAElFTkSuQmCC);
 
   &:hover {
-    background: #000 no-repeat center center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NzBGNENBNzM1MDY0MTFFNDk3NDVEMzE2NDU2OUY3QTIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NzBGNENBNzQ1MDY0MTFFNDk3NDVEMzE2NDU2OUY3QTIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3MEY0Q0E3MTUwNjQxMUU0OTc0NUQzMTY0NTY5RjdBMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3MEY0Q0E3MjUwNjQxMUU0OTc0NUQzMTY0NTY5RjdBMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtgnKacAAABMSURBVHjaYvj///9CIM4EYgYg5gPiJSwMDAwngTgHiF8DcQAQszNAVQT8h4AzID4TUEYUiEOhOniA2AekagkQrwZiNiD2BuIjAAEGAFIkNxfsqyxGAAAAAElFTkSuQmCC);
     border: 2px solid $page-background;
+    background: #000000 no-repeat center center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NzBGNENBNzM1MDY0MTFFNDk3NDVEMzE2NDU2OUY3QTIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NzBGNENBNzQ1MDY0MTFFNDk3NDVEMzE2NDU2OUY3QTIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3MEY0Q0E3MTUwNjQxMUU0OTc0NUQzMTY0NTY5RjdBMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3MEY0Q0E3MjUwNjQxMUU0OTc0NUQzMTY0NTY5RjdBMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtgnKacAAABMSURBVHjaYvj///9CIM4EYgYg5gPiJSwMDAwngTgHiF8DcQAQszNAVQT8h4AzID4TUEYUiEOhOniA2AekagkQrwZiNiD2BuIjAAEGAFIkNxfsqyxGAAAAAElFTkSuQmCC);
   }
 }
 
@@ -2657,13 +2786,14 @@ table {
 
 .pagination {
   @include blank-list;
-  margin: 10px 0px;
+  @include clearfix;
+
+  display: inline-block;
+  margin: 10px 0;
   border: 1px solid $divider-color;
   border-radius: 2px;
   font-size: 0.9em;
   line-height: 1em;
-  @include clearfix;
-  display: inline-block;
 
   li {
     display: block;
@@ -2676,10 +2806,10 @@ table {
   }
 
   a {
-    text-decoration: none;
-    color: $text-color-lighter;
     display: block;
     padding: 7px 12px;
+    color: $text-color-lighter;
+    text-decoration: none;
   }
 
   .active-page, a:hover {
@@ -2687,7 +2817,9 @@ table {
   }
 
   .inactive {
-    a { opacity: 0.5;}
+    a {
+      opacity: 0.5;
+    }
   }
 }
 
@@ -2697,29 +2829,32 @@ table {
 
   ul {
     @include blank-list;
-    display: inline-block;
-    color: $text-color-darker;
-    background: $page-background;
-    padding-right: 10px;
+
     position: relative;
     z-index: 100;
+    display: inline-block;
+    padding-right: 10px;
+    background: $page-background;
+    color: $text-color-darker;
   }
 
   hr {
-    border: 0px;
-    height: 1px;
-    background: $divider-color;
     position: relative;
     top: -11px;
     z-index: 99;
+    height: 1px;
+    border: 0;
+    background: $divider-color;
   }
 
-  li { display: inline-block; }
+  li {
+    display: inline-block;
+  }
 
   a {
-    font-size: 0.9em;
     color: inherit;
     text-decoration: none;
+    font-size: 0.9em;
   }
 
   a.active-page {
@@ -2729,11 +2864,13 @@ table {
   i {
     position: relative;
     top: 1px;
-    margin-left: 3px;
     margin-right: 2px;
+    margin-left: 3px;
   }
 
-  hr { margin: 0; }
+  hr {
+    margin: 0;
+  }
 }
 
 
@@ -2744,13 +2881,14 @@ table {
 .comment-box {
   .single-comment {
     @include clearfix;
+
     margin-bottom: 20px;
   }
 
   .agent-response {
     .blurb {
-      background: $surface-secondary;
       border-left: 4px solid $button-color;
+      background: $surface-secondary;
     }
   }
 
@@ -2775,8 +2913,8 @@ table {
   }
 
   strong {
-    font-weight: 500;
     color: $text-color-darker;
+    font-weight: 500;
   }
 
   .author {
@@ -2784,38 +2922,39 @@ table {
   }
 
   .date {
-    font-size: 0.9em;
     color: $text-faded;
+    font-size: 0.9em;
   }
 
   .blurb {
     @include clearfix;
-    border-left: 1px solid $divider-color;
+
+    margin-left: 20px;
     padding: 10px;
     padding-left: 20px;
-    margin-left: 20px;
+    border-left: 1px solid $divider-color;
 
     .response {
-      background: $surface-secondary;
-      border: 0px;
+      border: 0;
       border-left: 4px solid $button-color;
-      border-radius: 0px;
+      border-radius: 0;
+      background: $surface-secondary;
 
       span {
-        font-size: 1.15em;
         font-weight: 400;
+        font-size: 1.15em;
       }
     }
   }
 
   form {
     textarea {
-      background: $page-background;
+      min-height: 50px;
+      width: 100%;
+      height: 50px;
       border: 1px solid $divider-color;
       border-radius: 2px;
-      width: 100%;
-      min-height: 50px;
-      height: 50px;
+      background: $page-background;
     }
 
     textarea:focus {
@@ -2827,42 +2966,42 @@ table {
 
 
 .response {
-  background: $form-input;
+  position: relative;
+  margin-top: 10px;
+  margin-left: 160px;
+  padding: 5px 10px;
   border: 1px solid $divider-color;
   border-radius: 4px;
-  padding: 5px 10px;
-  position: relative;
-  margin-left: 160px;
-  margin-top: 10px;
+  background: $form-input;
 
   .response-meta {
     position: absolute;
     left: -160px;
+    padding-right: 50px;
     width: 160px;
     color: $text-color-lighter;
-    font-size: 0.85em;
     text-align: right;
-    padding-right: 50px;
+    font-size: 0.85em;
     line-height: 1.5em;
 
     span {
       display: block;
       color: $text-color;
-      font-size: 1.2em;
       font-weight: 500;
+      font-size: 1.2em;
     }
 
     .avatar {
-      display: block;
       position: absolute;
       right: 15px;
-      width: 22px;
-      height: 22px;
-      background-size: cover;
+      display: block;
       float: right;
-      border-radius: 199px;
       margin-top: 7px;
       margin-left: 10px;
+      width: 22px;
+      height: 22px;
+      border-radius: 199px;
+      background-size: cover;
     }
   }
 }
@@ -2875,115 +3014,124 @@ table {
 
 .cover {
   position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 108;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 108;
 }
 
 // main popup styles
 .popup {
   @include clearfix;
-  border-radius: 2px;
-  width: 100%;// Some responsiveness (although content will break for now)
-  max-width: 850px;
-  display: block;
-  background: $popup-background;
-  z-index: 109;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  color: $text-color;
-  padding: 20px;
   // Place it in the middle of the screen
+
   position: fixed;
   top: 50%;
   left: 50%;
+  z-index: 109;
+  display: block;
+  padding: 20px;
+  max-width: 850px;
+  width: 100%;// Some responsiveness (although content will break for now)
+  border-radius: 2px;
+  background: $popup-background;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  color: $text-color;
   transform: translate(-50%, -50%);
-  * { line-height: 1.2em; }
+  * {
+    line-height: 1.2em;
+  }
 }
 
 .popup-file-download {
-  max-width: 400px;
-  text-align: center;
   padding-top: 30px;
   padding-bottom: 40px;
+  max-width: 400px;
+  text-align: center;
 
   .cancel {
     position: absolute;
     top: 10px;
     right: 10px;
     color: $text-color-lighter;
-    font-size: 0.85em;
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.85em;
     opacity: 0.5;
 
-    &:hover { opacity: 1; }
+    &:hover {
+      opacity: 1;
+    }
   }
 
   .cudos-wrapper {
-    text-align: center;
     position: relative;
     z-index: 89;
     margin-top: -15px;
+    text-align: center;
   }
 
   .cudos {
-    background: $button-color-secondary;
-    border-radius: 199px;
-    color: #fff;
-    text-decoration: none;
     padding: 3px 12px;
-    font-size: 0.9em;
     border: 4px solid $popup-background;
-    &:hover { background: darken($button-color-secondary, 10%); }
+    border-radius: 199px;
+    background: $button-color-secondary;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9em;
+    &:hover {
+      background: darken($button-color-secondary, 10%);
+    }
 
-    i { margin-right: 2px; }
-
+    i {
+      margin-right: 2px;
+    }
   }
 
   .file-icon {
     position: relative;
 
-    >i {
-      font-size: 90px;
-      color: $text-faded;
-      background: $popup-background;
+    > i {
       position: relative;
       z-index: 88;
-      padding: 0px 10px;
+      padding: 0 10px;
+      background: $popup-background;
+      color: $text-faded;
+      font-size: 90px;
       cursor: default;
-
     }
 
     hr {
-      margin: 0;
       position: absolute;
       top: 50px;
-      width: 100%;
       z-index: 81;
+      margin: 0;
+      width: 100%;
     }
   }
 
   .button {
-    font-size: 1.1em;
     padding: 12px 40px;
-    &:hover { background: darken($button-color, 10%); }
+    font-size: 1.1em;
+    &:hover {
+      background: darken($button-color, 10%);
+    }
   }
 
   h1 {
-    font-weight: 100;
     display: block;
     margin-top: 25px;
     margin-bottom: 5px;
+    font-weight: 100;
     font-size: 1.5em;
   }
 
   h2 {
+    margin-bottom: 25px;
     color: $text-faded;
     font-weight: 500;
-    margin-bottom: 25px;
     font-size: 0.9em;
   }
 }
@@ -2994,43 +3142,43 @@ table {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .tooltip {
-  background: #737373;
   position: relative;
-  color: #fff;
-  border-radius: 2px;
-  padding: 5px 10px;
-  line-height: 1em;
   display: inline-block;
-  line-height: 1em;
+  padding: 5px 10px;
+  border-radius: 2px;
+  background: #737373;
+  color: #ffffff;
   font-size: 1em;
+  line-height: 1em;
+  line-height: 1em;
 
   &:before {
-    content: " ";
-    display: block;
-    width: 0px;
-    height: 0px;
-    border: 4px solid rgba(0, 0, 0, 0);
-    border-bottom: 4px solid #737373;
     position: absolute;
     top: -8px;
     left: 20px;
+    display: block;
+    width: 0;
+    height: 0;
+    border: 4px solid rgba(0, 0, 0, 0);
+    border-bottom: 4px solid #737373;
+    content: " ";
   }
 }
 
 .glossary-tooltip {
   position: absolute;
-  background: #fff;
+  display: block;
+  padding: 10px;
+  width: 380px;
   border: 2px solid $text-color-darker;
   border-radius: 4px;
-  display: block;
-  width: 380px;
-  padding: 10px;
+  background: #ffffff;
   font-weight: 300;
 
 
   h1 {
-    font-size: 1.2em;
     font-weight: 300;
+    font-size: 1.2em;
   }
 
   h1, p {
@@ -3038,15 +3186,15 @@ table {
   }
 
   &:before {
-    content: " ";
-    display: block;
-    width: 0px;
-    height: 0px;
-    border: 5px solid rgba(0, 0, 0, 0);
-    border-top: 5px solid $text-color-darker;
     position: absolute;
     bottom: -10px;
     left: 10px;
+    display: block;
+    width: 0;
+    height: 0;
+    border: 5px solid rgba(0, 0, 0, 0);
+    border-top: 5px solid $text-color-darker;
+    content: " ";
   }
 }
 
@@ -3056,12 +3204,12 @@ table {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .alerts {
-  font-weight: 400;
   margin-top: 10px;
+  font-weight: 400;
 
   a.all-tickets {
-    border-bottom: 2px solid $grey;
     padding-bottom: 1px;
+    border-bottom: 2px solid $grey;
     text-decoration: none;
   }
 
@@ -3082,26 +3230,28 @@ table {
 }
 
 .alert {
-  background: darken($page-background, 6%);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.9em;
-  padding: 0.75em 1em;
-  display: block;
-  border-radius: 2px;
-  text-decoration: none;
-  color: $text-color;
-  padding-right: 50px;
   position: relative;
+  display: block;
+  overflow: hidden;
   margin-bottom: 10px;
+  padding: 0.75em 1em;
+  padding-right: 50px;
+  border-radius: 2px;
+  background: darken($page-background, 6%);
+  color: $text-color;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9em;
 
-  strong { color: $text-color-darker; }
+  strong {
+    color: $text-color-darker;
+  }
 
   i {
     position: absolute;
-    right: 20px;
     top: 36%;
+    right: 20px;
     color: $text-color-lighter;
   }
 }
@@ -3114,28 +3264,30 @@ table {
 .kb-article-news {
   margin-bottom: 50px;
   hr {
-    margin: 20px 0px;
+    margin: 20px 0;
   }
 }
 
 
 .expand {
-  border: 1px solid $divider-color;
-  border-radius: $border-radius-main;
+  position: absolute;
+  top: 13px;
+  right: 13px;
   display: block;
   width: 32px;
   height: 32px;
-  position: absolute;
-  right: 13px;
-  text-align: center;
+  border: 1px solid $divider-color;
+  border-radius: $border-radius-main;
   color: $grey;
-  top: 13px;
+  text-align: center;
   i {
     position: relative;
     top: 8px;
   }
 
-  &:hover { color: $text-color-darker; }
+  &:hover {
+    color: $text-color-darker;
+  }
 }
 
 .tabs.news-categories-tabs {
@@ -3144,114 +3296,125 @@ table {
 
 .article-metrics {
   display: inline-block;
-  border-radius: 2px;
   overflow: hidden;
   margin-left: 10px;
+  border-radius: 2px;
 
   ul {
-    line-height: 1em;
     @include blank-list;
+
+    background: $divider-color;
     color: $text-color;
     font-size: 0.9em;
-    background: $divider-color;
-    li { display: inline-block; }
+    line-height: 1em;
+    li {
+      display: inline-block;
+    }
 
     a {
       display: inline-block;
-      line-height: 1em;
-      width: auto;
-      text-decoration: none;
-      color: inherit;
       padding: 8px 15px;
+      width: auto;
+      color: inherit;
+      text-decoration: none;
+      line-height: 1em;
     }
 
     .comments.has-comments {
       background: $button-color;
-      color: #fff;
-      &:hover { background: darken($button-color, 5%); }
+      color: #ffffff;
+      &:hover {
+        background: darken($button-color, 5%);
+      }
     }
 
     .cudos {
       background: $button-color-secondary;
-      &:hover { background: darken($button-color-secondary, 5%); }
-      color: #fff;
+      color: #ffffff;
+      &:hover {
+        background: darken($button-color-secondary, 5%);
+      }
     }
 
     .grumpy {
       background: $red;
-      &:hover { background: darken($red, 5%); }
-      color: #fff;
+      color: #ffffff;
+      &:hover {
+        background: darken($red, 5%);
+      }
     }
   }
 }
 
 .calendar-decoration {
   float: left;
+  margin-right: 0.66em;
   width: 45px;
   height: 45px;
+  border-radius: $border-radius-main;
   background: $button-color;
   color: $button-text;
-  border-radius: $border-radius-main;
   text-align: center;
   line-height: 1em;
-  margin-right: 0.66em;
 
-  span { display: block; }
+  span {
+    display: block;
+  }
 
   .month {
-    font-size: 0.7em;
-    font-weight: 400;
-    text-transform: uppercase;
     padding-top: 3px;
     padding-bottom: 3px;
-    color: $page-background;
-    background: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    color: $page-background;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 0.7em;
   }
 
   .day {
-    font-size: 1em;
-    font-weight: 600;
     padding-top: 3px;
+    font-weight: 600;
+    font-size: 1em;
   }
 
   hr {
-    border: 0px;
-    height: 1px;
-    margin: 0;
-    padding: 0;;
-    z-index: 99;
-    border-top: 1px solid darken($main-color, 10%);
-    background: $button-color;
     position: relative;
-    top: 0px;
+    top: 0;
+    z-index: 99;
+    margin: 0;
+    padding: 0;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid darken($main-color, 10%);
+    background: $button-color;;
   }
 }
 
 // News
 h1.fancy-header {
-  font-size: 1.15em;
-  font-weight: 600;
-  display: inline-block;
-  background: $page-background;
-  padding-left: 2em;
-  padding-right: 2em;
   position: relative;
   z-index: 100;
+  display: inline-block;
+  padding-right: 2em;
+  padding-left: 2em;
+  background: $page-background;
+  font-weight: 600;
+  font-size: 1.15em;
 }
 
 .front-page-news {
   header, footer {
     text-align: center;
     hr {
-      border: 0px;
-      height: 1px;
-      background: #e5e5e5;
+      position: relative;
+      top: -0.85em;
+      z-index: 99;
       margin: 0;
       padding: 0;
-      position: relative;
-      z-index: 99;
-      top: -0.85em;
+      height: 1px;
+      border: 0;
+      background: #e5e5e5;
     }
   }
 
@@ -3263,47 +3426,52 @@ h1.fancy-header {
 
     li {
       @include clearfix;
-      line-height: 1.4em;
-      border-radius: 4px;
-      padding: 7px;
-      margin-bottom: 10px;
+
       position: relative;
+      margin-bottom: 10px;
+      padding: 7px;
       padding-right: 70px;
+      border-radius: 4px;
+      line-height: 1.4em;
 
       h1 {
         display: inline;
-        font-size: 1.1em;
         font-weight: 400;
+        font-size: 1.1em;
 
-        a { text-decoration: none; }
+        a {
+          text-decoration: none;
+        }
       }
 
       h2 {
         display: inline;
-        font-size: 0.9em;
         font-weight: 400;
+        font-size: 0.9em;
 
-        a { color: $text-color-lighter; }
+        a {
+          color: $text-color-lighter;
+        }
       }
 
       p {
+        overflow: hidden;
         margin-top: 3px;
         color: $text-color-lighter;
-        white-space: nowrap;
-        overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       &.expanded-post {
         border: 1px solid $divider-color;
         background: darken($page-background, 3%);
         p {
-          white-space: normal;
           overflow: visible;
-          text-overflow: ellipsis;
-          line-height: 1.7em;
           margin-bottom: 10px;
           color: $text-color;
+          text-overflow: ellipsis;
+          white-space: normal;
+          line-height: 1.7em;
         }
       }
     }
@@ -3327,15 +3495,16 @@ h1.fancy-header {
 
 .slider-list {
   @include blank-list;
+
   display: block;
-  border-bottom: 1px solid $divider-color;
   margin-bottom: 20px;
   padding-bottom: 20px;
+  border-bottom: 1px solid $divider-color;
   line-height: 1em;
 
   li {
     display: inline-block;
-    margin: 0px 5px;
+    margin: 0 5px;
   }
 
   .slider-panel {
@@ -3343,15 +3512,15 @@ h1.fancy-header {
   }
 
   a.slider {
-    background: $button-color-secondary;
     display: inline-block;
+    margin: 2px;
+    padding-right: 2px;
+    padding-left: 2px;
+    height: 18px;
     border-radius: 2px;
+    background: $button-color-secondary;
     color: $page-background;
     text-decoration: none;
-    height: 18px;
-    margin: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
 
     &.off {
       background: $grey;
@@ -3359,33 +3528,35 @@ h1.fancy-header {
 
       .slider-icon {
         background: #9f9f9f;
-        color: #fff;
-        i { left: 3px; }
+        color: #ffffff;
+        i {
+          left: 3px;
+        }
       }
     }
 
     .slider-status {
-      font-size: 0.65em;
-      font-weight: 700;
-      text-transform: uppercase;
-      line-height: 1em;
       position: relative;
       top: -2px;
       margin-right: 2px;
       margin-left: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 0.65em;
+      line-height: 1em;
     }
 
     .slider-icon {
-      display: inline-block;
-      background: #fff;
-      color: $button-color-secondary;
-      font-size: 0.7em;
-      border-radius: 2px;
-      height: 14px;
-      width: 14px;
-      text-align: center;
       position: relative;
       top: 2px;
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      background: #ffffff;
+      color: $button-color-secondary;
+      text-align: center;
+      font-size: 0.7em;
 
       i {
         position: absolute;
@@ -3396,38 +3567,37 @@ h1.fancy-header {
   }
 
   .slider-label {
+    margin: 0 4px;
     color: $text-color-lighter;
     font-size: 0.9em;
-    margin: 0 4px;
   }
 
   .slider-options {
-    padding: 0px 8px;
+    padding: 0 8px;
+    border-left: 1px solid $divider-color;
     font-size: 0.9em;
     opacity: 0.5;
-    border-left: 1px solid $divider-color;
   }
-
 }
 
 .flat-tabs {
   @include blank-list;
+
   display: block;
-  border-bottom: 1px solid $divider-color;
   margin-bottom: 20px;
+  border-bottom: 1px solid $divider-color;
 
   li {
     display: inline-block;
-    margin: 0px 15px;
+    margin: 0 15px;
   }
 
   a {
     display: block;
-    text-decoration: none;
-    color: $text-color-lighter;
-
-    border-bottom: 3px solid $page-background;
     padding-bottom: 3px;
+    border-bottom: 3px solid $page-background;
+    color: $text-color-lighter;
+    text-decoration: none;
 
     &:hover, &.active {
       border-bottom: 3px solid $button-color-secondary;
@@ -3436,16 +3606,20 @@ h1.fancy-header {
   }
 
   .control {
-    display: inline-block;
-    background: #fff;
-    border-radius: 2px;
-    width: 14px;
-    height: 14px;
-    text-align: center;
     position: relative;
     top: -1px;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    background: #ffffff;
+    text-align: center;
 
-    i { position: relative; top: 1px; font-size: 0.9em;}
+    i {
+      position: relative;
+      top: 1px;
+      font-size: 0.9em;
+    }
 
     &.active-control {
       background: $gold;
@@ -3457,91 +3631,94 @@ h1.fancy-header {
 .feedback-form {
   .main-input {
     @include clearfix;
-    margin-bottom: 60px;
+
     margin-top: 50px;
+    margin-bottom: 60px;
 
     .input, .button, span {
       display: inline-block;
-      line-height: 1em;
       padding: 10px 15px;
       font-size: 1.2em;
+      line-height: 1em;
     }
 
     .input {
       width: 55%;
       border: 1px solid $divider-color;
       color: $text-color-lighter;
-      text-decoration: none;
       text-align: left;
+      text-decoration: none;
 
       i {
-        float: right;
-        font-size: 0.8em;
         position: relative;
         top: 2px;
+        float: right;
+        font-size: 0.8em;
       }
     }
 
     .button {
       width: 25%;
+      border: 1px solid $button-color-secondary;
+      border-bottom: none;
+      background: $button-color-secondary;
       text-align: center;
       text-shadow: none;
-      background: $button-color-secondary;
-      border-bottom: none;
-      border: 1px solid $button-color-secondary;
     }
 
     @media screen and (max-width: 760px) {
-
       .input, .button {
         display: block;
-        width: 100%;
         margin-bottom: 10px;
+        width: 100%;
       }
     }
   }
 }
 
 .feedback-form-expanded {
-  max-width: 600px;
   position: relative;
   top: -30px;
   left: 20px;
-  background: darken($page-background, 5%);
   padding: 10px;
   padding-bottom: 1px;
+  max-width: 600px;
   border-radius: 4px;
+  background: darken($page-background, 5%);
 
   &:before {
-    content: " ";
-    display: block;
-    width: 0px;
-    height: 0px;
-    border: 10px solid rgba(0, 0, 0, 0);
-    border-bottom: 10px solid darken($page-background, 5%);
     position: absolute;
     top: -20px;
+    display: block;
+    width: 0;
+    height: 0;
+    border: 10px solid rgba(0, 0, 0, 0);
+    border-bottom: 10px solid darken($page-background, 5%);
+    content: " ";
   }
 
   @media screen and (max-width: 760px) {
-    left: 0px;
+    left: 0;
     max-width: none;
     width: 100%;
   }
 }
 
 .main-feedback {
-  .table-meta { top: -10px; }// Silly gfix to align the table controls to the flat tabs
+  .table-meta {
+    top: -10px;
+  }// Silly gfix to align the table controls to the flat tabs
 
   .feedback-item {
     @include clearfix;
-    border-bottom: 1px solid $divider-color;
-    padding-bottom: 20px;
+
     margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid $divider-color;
 
     &:last-child {
-      border-bottom: 0px;
-      padding-bottom: 0px;
+      padding-bottom: 0;
+      border-bottom: 0;
     }
   }
 
@@ -3552,122 +3729,138 @@ h1.fancy-header {
   }
 
   p {
-    font-size: 0.95em;
     font-weight: 100;
+    font-size: 0.95em;
   }
 
   .feedback-status {
-    background: $button-color-secondary;
-    color: #fff;
-    border-radius: 199px;
     display: inline-block;
     float: right;
-    padding: 0px 1em;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-    font-size: 0.8em;
-    text-transform: uppercase;
-    font-weight: 500;
+    padding: 0 1em;
     border-bottom: 1px solid $button-color-secondary-darker;
+    border-radius: 199px;
+    background: $button-color-secondary;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    font-weight: 500;
+    font-size: 0.8em;
   }
 
   .feedback-item-controls {
-    width: 100px;
     float: left;
+    width: 100px;
 
     a {
-      display: block;
       position: relative;
+      display: block;
+      margin-bottom: 10px;
+      padding: 5px 0;
+      width: 85px;
+      border: 1px solid $divider-color;
+      border-radius: 4px;
       color: inherit;
+      text-align: center;
       text-decoration: none;
       text-transform: uppercase;
       font-weight: 500;
-      width: 85px;
-      border-radius: 4px;
-      padding: 5px 0px;
-      text-align: center;
-      border: 1px solid $divider-color;
-      margin-bottom: 10px;
     }
 
     .i-agree {
       &:hover {
         border: 1px solid #14d3a1;
-        i { color: #14d3a1; opacity: 1; }
+        i {
+          color: #14d3a1;
+          opacity: 1;
+        }
       }
     }
 
     .star {
       div {
         display: inline-block;
-        font-size: 1.15em;
         margin-left: 10px;
+        font-size: 1.15em;
       }
 
-      i { color: #b6b158; opacity: 1;
+      i {
+        color: #b6b158;
+        opacity: 1;
       }
 
-      &:hover { border: 1px solid #b6b158;
-        i { color: #b6b158; opacity: 1; }
+      &:hover {
+        border: 1px solid #b6b158;
+        i {
+          color: #b6b158;
+          opacity: 1;
+        }
       }
     }
 
-    div { font-size: 0.9em; }
+    div {
+      font-size: 0.9em;
+    }
 
     i {
-      opacity: 0.5;
       font-size: 1.3em;
+      opacity: 0.5;
     }
 
     .counter {
-      line-height: 1em;
-      display: block;
       position: absolute;
       top: -7px;
       right: -10px;
-      background: #14d3a1;
-      color: #fff;
-      border-radius: 199px;
+      display: block;
       padding: 5px 7px;
-      font-size: 0.85em;
+      border-radius: 199px;
+      background: #14d3a1;
+      color: #ffffff;
       font-weight: 600;
+      font-size: 0.85em;
+      line-height: 1em;
     }
   }
 
   .feedback-item-content {
     overflow: hidden;
-    border-left: 1px solid $divider-color;
     padding-left: 15px;
+    border-left: 1px solid $divider-color;
 
     h1 {
       font-weight: 100;
       font-size: 1.3em;
 
       .text-tag {
+        top: -2px;
+        left: 0;
+        margin-right: 5px;
+        padding: 5px 5px;
         background: $grey;
         color: $text-color;
-        margin-right: 5px;
-        left: 0px;
-        top: -2px;
-        padding: 5px 5px;
-        &:after { display: none; }
+        &:after {
+          display: none;
+        }
       }
     }
 
     .comment {
+      margin: 5px 0;
       font-style: italic;
-      margin: 5px 0px;
     }
   }
 
   .feedback-item-meta {
     margin-top: 15px;
-    font-size: 0.9em;
     color: $text-color-lighter;
+    font-size: 0.9em;
 
     ul {
       @include blank-list;
 
-      li { display: inline-block; margin-right: 25px; }
+      li {
+        display: inline-block;
+        margin-right: 25px;
+      }
     }
 
     a {
@@ -3683,26 +3876,23 @@ h1.fancy-header {
 
 // Small feedback list
 .front-page-feedback {
-
   ul {
-
     li {
-
       span.thumbs {
-        cursor: default;
         display: inline-block;
-        border-radius: 4px;
+        padding: 4px;
         min-width: 45px;
+        border: 1px solid $divider-color;
+        border-radius: 4px;
         color: $text-color-lighter;
         font-weight: 500;
         font-size: 0.8em;
-        border: 1px solid $divider-color;
-        padding: 4px;
         line-height: 1em;
+        cursor: default;
 
         &:hover {
-          cursor: pointer;
           border: 1px solid $divider-color;
+          cursor: pointer;
         }
 
         i {
@@ -3712,7 +3902,6 @@ h1.fancy-header {
           color: $button-color;
         }
       }
-
     }
   }
 }
@@ -3725,34 +3914,37 @@ h1.fancy-header {
 .downloads {
   ul.download-list {
     @include blank-list;
+
     margin-top: 20px;
 
     > li {
       margin-bottom: 10px;
       padding-bottom: 10px;
-      border-bottom: 1px solid $divider-color;
       padding-left: 10px;
+      border-bottom: 1px solid $divider-color;
 
-      a { text-decoration: none; }
+      a {
+        text-decoration: none;
+      }
 
       p {
-        color: $text-color;
         margin-bottom: 10px;
+        color: $text-color;
         font-weight: 300;
       }
 
       h1 {
-        font-size: 1.25em;
         display: inline-block;
-        color: #3575bd;
         margin-top: 5px;
         margin-bottom: 5px;
+        color: #3575bd;
+        font-size: 1.25em;
 
         i {
-          font-size: 0.8em;
           position: relative;
           top: -2px;
           margin-right: 3px;
+          font-size: 0.8em;
         }
       }
       .date {
@@ -3768,12 +3960,13 @@ h1.fancy-header {
 
     ul {
       @include blank-list;
-      line-height: 1em;
+
       display: inline-block;
-      border-radius: 2px;
       overflow: hidden;
-      font-size: 0.8em;
+      border-radius: 2px;
       background: darken($surface-secondary, 5%);
+      font-size: 0.8em;
+      line-height: 1em;
 
       li {
         display: inline-block;
@@ -3781,23 +3974,27 @@ h1.fancy-header {
 
       a {
         display: block;
-        background: darken($surface-secondary, 5%);
-
-        color: lighten($text-color-lighter, 20%);
         padding: 8px 10px;
-        &:hover { background: darken($surface-secondary, 20%); color: #fff; }
+        background: darken($surface-secondary, 5%);
+        color: lighten($text-color-lighter, 20%);
+        &:hover {
+          background: darken($surface-secondary, 20%);
+          color: #ffffff;
+        }
       }
 
       i {
-        margin: 0px 3px;
+        margin: 0 3px;
         font-size: 1.3em;
       }
 
       .the-file {
         a {
           background: $button-color;
-          color: #fff;
-          &:hover { background: darken($button-color, 10%); }
+          color: #ffffff;
+          &:hover {
+            background: darken($button-color, 10%);
+          }
         }
       }
 
@@ -3806,12 +4003,12 @@ h1.fancy-header {
       }
 
       .the-cudos.has-cudos {
-        background: $button-color-secondary;
         border-left: 1px solid $button-color-secondary;
+        background: $button-color-secondary;
 
         a {
           background: $button-color-secondary;
-          color: #fff;
+          color: #ffffff;
         }
       }
     }
@@ -3821,24 +4018,20 @@ h1.fancy-header {
 // Downloads
 .front-page-downloads {
   ul {
-
     li {
-
-
       .file-icon {
         display: inline-block;
-        background: $button-color;
-        color: #fff;
-        border-radius: 2px;
-        vertical-align: middle;
         margin-right: 10px;
         padding: 5px;
-        text-align: center;
         min-width: 35px;
-
-        font-size: 9px;
-        font-weight: 500;
+        border-radius: 2px;
+        background: $button-color;
+        color: #ffffff;
+        vertical-align: middle;
+        text-align: center;
         text-transform: uppercase;
+        font-weight: 500;
+        font-size: 9px;
 
         &.file-download {
           background: $gold;
@@ -3848,7 +4041,6 @@ h1.fancy-header {
           line-height: 1em;
         }
       }
-
     }
   }
 }
@@ -3860,76 +4052,83 @@ h1.fancy-header {
 
 //Big list of articles
 .article-categories-expandable {
-  background: darken($page-background, 5%);
+  margin-bottom: 10px;
   padding: 20px;
   border-radius: $border-radius-small;
-  margin-bottom: 10px;
+  background: darken($page-background, 5%);
 
   header {
-    line-height: 1em;
-    padding-left: 5px;
     position: relative;
+    padding-left: 5px;
+    line-height: 1em;
 
     img {
-      vertical-align: middle;
-      margin-right: 10px;
-      opacity: 0.2;
       position: relative;
       top: -2px;
+      margin-right: 10px;
+      vertical-align: middle;
+      opacity: 0.2;
     }
 
     a {
-      text-decoration: none;
-      color: inherit;
-      display: block;
       @include clearfix;
 
+      display: block;
+      color: inherit;
+      text-decoration: none;
+
       &:hover {
-        h1 { text-decoration: underline; }
+        h1 {
+          text-decoration: underline;
+        }
       }
     }
   }
 
   // Place the tags and slide up/down to the top right
   .article-controls {
-    display: block;
     position: absolute;
     top: 3px;
-    right: 0px;
+    right: 0;
+    display: block;
 
-    &.single-line { top: -5px; }
+    &.single-line {
+      top: -5px;
+    }
   }
 
   h1, h2 {
-    font-weight: 400;
     display: block;
+    font-weight: 400;
   }
 
-  h1 { font-size: 1.2em; }
+  h1 {
+    font-size: 1.2em;
+  }
 
   h2 {
-    font-size: 0.85em;
     margin-top: 8px;
     color: $text-color-lighter;
+    font-size: 0.85em;
   }
 
   // Use the same list meta but reset the styles
   .list-meta {
-    text-align: left;
+    margin-top: 0;
     background: $page-background;
-    margin-top: 0px;
+    text-align: left;
 
     a {
+      position: relative;
+      top: -13px;
+      left: 0;
+      margin-left: 20px;
       color: $button-color;
       text-decoration: underline;
-      opacity: 1;
       text-transform: uppercase;
       font-weight: 600;
       font-size: 0.9em;
-      left: 0px;
-      margin-left: 20px;
-      position: relative;
-      top: -13px;
+      opacity: 1;
 
       span {
         color: inherit;
@@ -3940,24 +4139,25 @@ h1.fancy-header {
 
   ul {
     @include blank-list;
-    background: $page-background;
-    padding: 15px 20px;
+
     margin-top: 18px;
+    padding: 15px 20px;
     border-radius: 2px;
+    background: $page-background;
 
     li {
       margin-bottom: 12px;
 
       &:before {
-        content: " ";
+        position: relative;
+        top: -2px;
         display: inline-block;
+        margin-right: 10px;
         width: 5px;
         height: 5px;
         border-radius: 199px;
         background: $text-color-lighter;
-        margin-right: 10px;
-        position: relative;
-        top: -2px;
+        content: " ";
       }
     }
 
@@ -3965,17 +4165,19 @@ h1.fancy-header {
       color: inherit;
       text-decoration: none;
 
-      &:hover { color: #333; }
+      &:hover {
+        color: #333333;
+      }
     }
   }
 
   .text-tag {
-    font-size: 0.6em;
-    background: $button-color-secondary;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-    margin-left: 3px;
     position: relative;
     top: -1px;
+    margin-left: 3px;
+    background: $button-color-secondary;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    font-size: 0.6em;
 
     &.updated {
       background: $surface-secondary;
@@ -3986,66 +4188,67 @@ h1.fancy-header {
 
 // The article statuses (# of articles, new) on the top right
 .article-tag {
+  position: relative;
   display: inline-block;
+  margin-right: 4px;
   padding: 8px;
-  line-height: 1em;
-  background: #fff;
   border-bottom: 1px solid $divider-color;
-  font-size: 10px;
-  font-weight: 600;
+  border-radius: 2px;
+  background: #ffffff;
   color: $text-color-lighter;
   text-transform: uppercase;
-  border-radius: 2px;
-  margin-right: 4px;
-  position: relative;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 1em;
 
   &.new {
-    background: $button-color-secondary;
     border-bottom: 1px solid #70aa45;
+    background: $button-color-secondary;
     color: $page-background;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   }
 
   &.pointy {
     &:after {
-      content: " ";
+      position: absolute;
+      top: 35%;
+      right: -8px;
       display: block;
-      width: 0px;
-      height: 0px;
+      width: 0;
+      height: 0;
       border: 4px solid rgba(255, 255, 255, 0);
       border-left: 4px solid $page-background;
-      position: absolute;
-      right: -8px;
-      top: 35%;
+      content: " ";
     }
   }
 }
 
 // Pointing up/down
 .expandable-control {
+  position: relative;
   display: inline-block;
+  margin-left: 20px;
   padding: 10px 20px 10px 30px;
   color: $text-color-darker;
-  margin-left: 20px;
-  position: relative;
   line-height: 1px;
 
   i {
-    font-size: 1.3em;
-    line-height: 1px;// Small line height to avoid the large icon breaking the inline stuff
     position: relative;
     top: 2px;
+    font-size: 1.3em;
+    line-height: 1px;// Small line height to avoid the large icon breaking the inline stuff
   }
 
-  &:after {// Left border line (with :after - we need line larger than the element)
-    content: " ";
+  &:after {
+    position: absolute;
+    top: -7px;
+    left: 0;
     display: block;
     width: 1px;
     height: 40px;
-    position: absolute;
-    left: 0px;
-    top: -7px;
     background: rgba(0, 0, 0, 0.1);
+    // Left border line (with :after - we need line larger than the element)
+    content: " ";
   }
 }
 
@@ -4054,68 +4257,68 @@ h1.fancy-header {
   margin-bottom: 20px;
 
   header {
-    text-align: center;
-    margin-bottom: 10px;
     position: relative;
+    margin-bottom: 10px;
+    text-align: center;
 
     hr {
-      border: 0px;
-      height: 1px;
-      background: $divider-color;
+      position: relative;
+      top: -0.85em;
+      z-index: 99;
       margin: 0;
       padding: 0;
-      position: relative;
-      z-index: 99;
-      top: -0.85em;
+      height: 1px;
+      border: 0;
+      background: $divider-color;
     }
 
     span {
       display: block;
-      color: $text-color-lighter;
       padding-bottom: 10px;
+      color: $text-color-lighter;
     }
   }
 
   h1 {
+    position: relative;
+    z-index: 100;
+    display: inline-block;
+    padding-right: 2em;
+    padding-left: 2em;
+    background: $page-background;
+    color: $text-color-lighter;
+    font-weight: 400;
+    font-size: 1.1em;
     img {
-      vertical-align: middle;
       position: relative;
       top: -2px;
       padding-right: 5px;
-      opacity: 0.15;
       height: 18px;
+      vertical-align: middle;
+      opacity: 0.15;
     }
-
-    font-size: 1.1em;
-    font-weight: 400;
-    display: inline-block;
-    background: $page-background;
-    padding-left: 2em;
-    padding-right: 2em;
-    position: relative;
-    z-index: 100;
-    color: $text-color-lighter;
   }
 
 
   > ul {
-    list-style: none;
     margin: 0;
     padding: 0;
+    list-style: none;
 
     li {
       @include whitespace;
-      font-weight: 400;
-      background: no-repeat left 6px url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUVDMzZCQ0M0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUVDMzZCQ0Q0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowRTM2OTE4OTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowRTM2OTE4QTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PrQFEF8AAABmSURBVHjaYmRgYGQAAhYg5gNidgYI+AnEn4D4D1CWESQpAsRMDKjgHxC/ASkQAjI4oLo+QCUFoKb9ACmQZIDY8xKI/0IVMAOxOBD/x6UAZJ0ETAHMih9QK0CK+WFiRDkSrzcBAgwA9n0Wb7wLsOAAAAAASUVORK5CYII=);
-      line-height: 1.3em;
-      margin-bottom: 0.3em;
+
       margin: 12px;
-      padding: 0em 1.2em;
+      margin-bottom: 0.3em;
+      padding: 0 1.2em;
+      background: no-repeat left 6px url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUVDMzZCQ0M0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUVDMzZCQ0Q0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowRTM2OTE4OTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowRTM2OTE4QTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PrQFEF8AAABmSURBVHjaYmRgYGQAAhYg5gNidgYI+AnEn4D4D1CWESQpAsRMDKjgHxC/ASkQAjI4oLo+QCUFoKb9ACmQZIDY8xKI/0IVMAOxOBD/x6UAZJ0ETAHMih9QK0CK+WFiRDkSrzcBAgwA9n0Wb7wLsOAAAAAASUVORK5CYII=);
+      font-weight: 400;
+      line-height: 1.3em;
 
       a {
-        text-decoration: none;
-        color: $text-color;
         margin-bottom: 5px;
+        color: $text-color;
+        text-decoration: none;
 
         &:hover {
           color: $text-color-darker;
@@ -4129,76 +4332,81 @@ h1.fancy-header {
 
 
 .kb-simple-articles {
-
   ul {
     @include blank-list;
+
     line-height: 1.3em;
   }
 
   li {
     margin-bottom: 5px;
-    border-bottom: 1px solid $divider-color;
     padding: 15px 10px;
+    border-bottom: 1px solid $divider-color;
 
     &:first-child {
-      padding-top: 0px;
+      padding-top: 0;
     }
 
     &:last-child {
-      border-bottom: 0px;
+      border-bottom: 0;
     }
 
     img {
       float: left;
-      opacity: 0.3;
-      margin-right: 10px;
       margin-top: 1em;
+      margin-right: 10px;
+      opacity: 0.3;
     }
 
     h1 {
       @include whitespace;
-      font-size: 1.15em;
+
       margin-bottom: 8px;
+      font-size: 1.15em;
     }
 
     .meta {
       @include whitespace;
+
+      display: block;
       color: $text-color-lighter;
       font-size: 0.9em;
-      display: block;
     }
 
     a {
-      text-decoration: none;
       color: inherit;
-      &:hover { text-decoration: underline; }
-      span { color: $text-color-lighter; }
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+      span {
+        color: $text-color-lighter;
+      }
     }
   }
 }
 
 .top-articles-wide {
-
   ul {
     @include blank-list;
 
     li {
-      background: no-repeat 10px center url(../img/icon-article-large.png);
-      padding-left: 45px;
       margin-bottom: 15px;
       margin-left: 10px;
+      padding-left: 45px;
+      background: no-repeat 10px center url(../img/icon-article-large.png);
     }
 
     h1 {
+      margin-bottom: 5px;
       font-weight: 100;
       font-size: 1.3em;
       line-height: 1em;
-      margin-bottom: 5px;
     }
 
     a {
-      text-decoration: none;
       color: inherit;
+      text-decoration: none;
     }
 
     a:hover {
@@ -4207,14 +4415,13 @@ h1.fancy-header {
 
     .meta {
       display: block;
-      font-size: 0.9em;
       color: $text-color-lighter;
+      font-size: 0.9em;
 
       strong, a {
-        font-weight: inherit;
         color: $text-color;
+        font-weight: inherit;
       }
-
     }
   }
 }
@@ -4230,31 +4437,39 @@ h1.fancy-header {
   font-size: 0.9em;
 
   .updated {
-    margin-left: 10px
+    margin-left: 10px;
   }
 
   .agent-avatar {
-    margin-left: 4px;
     margin-right: 4px;
+    margin-left: 4px;
   }
 
-  span { margin-right: 10px; }
-  .comments { margin-left: 10px; }
-  i { margin-right: 2px; }
-  a { text-decoration: underline; }
+  span {
+    margin-right: 10px;
+  }
+  .comments {
+    margin-left: 10px;
+  }
+  i {
+    margin-right: 2px;
+  }
+  a {
+    text-decoration: underline;
+  }
 }
 
 .categories {
-
   ul.categories-article-list {
     @include blank-list;
+
     margin-top: 20px;
 
     li {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
       padding-left: 10px;
       border-bottom: 1px solid $divider-color;
-      padding-bottom: 15px;
-      margin-bottom: 15px;
     }
 
 
@@ -4263,16 +4478,16 @@ h1.fancy-header {
       font-size: 1em;
 
       h1 {
-        font-size: 1.2em;
         color: $button-color;
+        font-size: 1.2em;
       }
 
       .article-meta {
         color: $text-color-lighter;
 
         span {
-          margin-left: 0px;
-          margin-right: 0px;
+          margin-right: 0;
+          margin-left: 0;
         }
 
         .focus {
@@ -4292,47 +4507,49 @@ h1.fancy-header {
 }
 
 .kb-article {
-
   header, footer {
     @include clearfix;
     a {
-      text-decoration: none;
       color: $text-color;
+      text-decoration: none;
     }
 
-    h1 { margin-bottom: 10px; }
+    h1 {
+      margin-bottom: 10px;
+    }
   }
 
-  header, .padded { padding-left: 10px; }
+  header, .padded {
+    padding-left: 10px;
+  }
 
 
 
 
   p {
     margin-bottom: 10px;
-    line-height: 1.7em;
     font-weight: 300;
+    line-height: 1.7em;
   }
 
   .article-content {
-
     img {
+      margin: 10px;
       padding: 5px;
       border: 1px solid $divider-color;
-      margin: 10px;
     }
 
     img.left {
       float: left;
-      margin-left: 0px;
       margin-right: 10px;
       margin-bottom: 10px;
+      margin-left: 0;
     }
 
     img.full {
-      width: 100%;
-      margin: 0px;
+      margin: 0;
       margin-bottom: 10px;
+      width: 100%;
     }
 
     h2 {
@@ -4343,49 +4560,52 @@ h1.fancy-header {
 
 
   .rate-article {
+    margin: 30px 0;
     text-align: center;
-    margin: 30px 0px;
 
     a {
+      position: relative;
       display: inline-block;
-      color: #fff;
+      padding: 10px;
       border-radius: 2px;
-      color: #fff;
+      color: #ffffff;
+      color: #ffffff;
       text-decoration: none;
       font-size: 0.9em;
       line-height: 1.2em;
-      padding: 10px;
-      position: relative;
-
     }
 
     a:after {
-      content: " ";
-      display: block;
-      width: 0px;
-      border: 3px solid rgba(0, 0, 0, 0);
-      border-bottom: 3px solid #93d06e;
       position: absolute;
       top: -6px;
       right: 18px;
+      display: block;
+      width: 0;
+      border: 3px solid rgba(0, 0, 0, 0);
+      border-bottom: 3px solid #93d06e;
+      content: " ";
     }
 
     .rate-up {
-      background: $button-color-secondary;
       border-bottom: 1px solid darken($button-color-secondary, 20%);
-      &:hover { background: darken($button-color-secondary, 10%); }
+      background: $button-color-secondary;
+      &:hover {
+        background: darken($button-color-secondary, 10%);
+      }
 
       span {
-        border-left: 1px solid $divider-color;
-        padding: 3px 10px;
         margin-left: 10px;
+        padding: 3px 10px;
+        border-left: 1px solid $divider-color;
       }
     }
 
     .rate-down {
-      background: $red;
       border-bottom: 1px solid darken($red, 20%);
-      &:hover { background: darken($red, 10%); }
+      background: $red;
+      &:hover {
+        background: darken($red, 10%);
+      }
 
       &:after {
         left: 20px;
@@ -4393,9 +4613,9 @@ h1.fancy-header {
       }
 
       span {
-        border-right: 1px solid $divider-color;
-        padding: 3px 10px;
         margin-right: 10px;
+        padding: 3px 10px;
+        border-right: 1px solid $divider-color;
       }
     }
 
@@ -4410,14 +4630,14 @@ h1.fancy-header {
 
 
   .article-extras {
-    padding: 10px 10px;
-    background: $surface-main;
-    border-radius: 2px;
     margin-top: 20px;
-    font-weight: 100;
-    font-size: 0.9em;
+    padding: 10px 10px;
     border: 1px solid $divider-color;
     border-bottom: 2px solid $divider-color;
+    border-radius: 2px;
+    background: $surface-main;
+    font-weight: 100;
+    font-size: 0.9em;
 
     strong {
       font-weight: 500;
@@ -4429,15 +4649,15 @@ h1.fancy-header {
 
     li {
       &:before {
-        content: " ";
-        display: inline-block;
-        width: 5px;
-        height: 5px;
-        margin-right: 4px;
         position: relative;
         top: -2px;
-        background: darken($surface-main, 20%);
+        display: inline-block;
+        margin-right: 4px;
+        width: 5px;
+        height: 5px;
         border-radius: 99px;
+        background: darken($surface-main, 20%);
+        content: " ";
       }
     }
   }
@@ -4445,22 +4665,21 @@ h1.fancy-header {
 
 
   .related {
-
     ul {
-      font-size: 1em;
       margin: 0;
+      margin-top: 20px;
       padding: 0;
       list-style: none;
-      margin-top: 20px;
+      font-size: 1em;
 
       li {
-        margin-left: 5px;
         margin-bottom: 5px;
+        margin-left: 5px;
       }
 
       a {
-        text-decoration: none;
         color: $text-color;
+        text-decoration: none;
       }
 
       .text-tag {
@@ -4469,19 +4688,17 @@ h1.fancy-header {
       }
 
       i {
-        margin-right: 3px;
-        font-size: 0.85em;
         position: relative;
         top: -1px;
+        margin-right: 3px;
+        font-size: 0.85em;
       }
     }
   }
-
 }
 
 
 .kb-article-news {
-
   header {
     h1 {
       margin-bottom: 5px;
@@ -4508,64 +4725,60 @@ h1.fancy-header {
       .comment-info {
         .author, .avatar {
           display: inline-block;
-          margin: 0px;
+          margin: 0;
         }
       }
     }
 
     .blurb {
-      margin-left: 0px;
-      border: 0px;
+      margin-left: 0;
+      border: 0;
       border-bottom: 1px solid $divider-color;
     }
-
   }
 
   .agent-response {
     .blurb {
       margin-top: 10px;
-      border-bottom: 0px;
+      border-bottom: 0;
     }
   }
 
   .response {
+    margin-left: 0;
     padding-left: 10px;
     width: 100%;
-    margin-left: 0px;
 
     .response-meta {
-      text-align: left;
       position: relative;
-      top: 0px;
-      left: 0px;
-      width: 100%;
-      font-size: 1em;
+      top: 0;
+      left: 0;
       margin-top: 10px;
       margin-bottom: 10px;
+      width: 100%;
+      text-align: left;
+      font-size: 1em;
 
       span {
-        vertical-align: bottom;
+        position: relative;
         display: inline;
         float: none;
-        position: relative;
+        vertical-align: bottom;
       }
 
       .avatar {
-        vertical-align: bottom;
-        display: inline-block;
-        margin: 0px;
-        margin-right: 5px;
-        left: 0px;
-        float: none;
         position: relative;
+        left: 0;
+        display: inline-block;
+        float: none;
+        margin: 0;
+        margin-right: 5px;
+        vertical-align: bottom;
       }
 
       .author {
         font-size: 1em;
       }
-    }
-
-    .response-content {
     }
   }
 }
@@ -4576,20 +4789,21 @@ h1.fancy-header {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .dropdown-control {
-  background: $surface-secondary;
-  border: 1px solid $divider-color;
-  border-radius: $border-radius-main;
-  width: 25px;
-  height: 25px;
-
-  display: inline-block;
-  text-align: center;
   position: relative;
   top: -4px;
+  display: inline-block;
   margin-left: 5px;
+  width: 25px;
+  height: 25px;
+  border: 1px solid $divider-color;
+  border-radius: $border-radius-main;
+  background: $surface-secondary;
   color: $grey;
+  text-align: center;
 
-  &:hover { color: $text-color-darker; }
+  &:hover {
+    color: $text-color-darker;
+  }
 
   i {
     position: relative;
@@ -4599,27 +4813,29 @@ h1.fancy-header {
 }
 
 .dropdown-active {
-  display: block;
-  min-width: 220px;
   position: absolute;
-  background: $surface-secondary;
-  border: 1px solid $divider-color;
   right: 20px;
+  display: block;
+  padding: 0 15px;
+  min-width: 220px;
+  border: 1px solid $divider-color;
   border-radius: 2px;
+  background: $surface-secondary;
   text-align: left;
-  padding: 0px 15px;
 
   ul {
-    list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
+    list-style: none;
 
-    li { padding: 7px 0px; }
+    li {
+      padding: 7px 0;
+    }
   }
 
   .option {
-    border-top: 1px solid $divider-color;
     margin-top: 2px;
+    border-top: 1px solid $divider-color;
     a {
       color: $text-color-lighter;
       text-decoration: none;
@@ -4630,9 +4846,9 @@ h1.fancy-header {
     position: absolute;
     top: -25px;
     right: -1px;
-    border-bottom:0px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-bottom: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 
@@ -4641,60 +4857,70 @@ h1.fancy-header {
 // See agents.scss for the original stuff
 
 .ticket-agents, .agent-extras {
-  float: left;
-  width: 50%;
-  min-height: 40px;
-  margin: 5px 0px;
   position: relative;
+  float: left;
+  margin: 5px 0;
+  min-height: 40px;
+  width: 50%;
 
-  &.ticket-agents { .agent { width: 47%; } }
-  .agent-info {  width: 70%; }
+  &.ticket-agents {
+    .agent {
+      width: 47%;
+    }
+  }
+  .agent-info {
+    width: 70%;
+  }
 }
 
-.agent-extras {// The cc'ed people in this ticket
+.agent-extras {
+  padding-top: 7px;
+  // The cc'ed people in this ticket
   border-left: 1px solid $divider-color;
   text-align: right;
-  padding-top: 7px;
 }
 
 @media screen and (max-width: 760px) {
-
   .ticket-agents, .agent-extras {
     float: none;
     width: 100%;
+    border: 0;
     text-align: center;
-    border: 0px;
   }
 
   .agent-extras {
-    .dropdown-control { display: none; }
-
-    .agent-avatar {
-      float: left;
-      margin-right: 5px;
-      position: relative;
-      top: -5px;
+    .dropdown-control {
+      display: none;
     }
 
-    .grey { display: none; }
+    .agent-avatar {
+      position: relative;
+      top: -5px;
+      float: left;
+      margin-right: 5px;
+    }
+
+    .grey {
+      display: none;
+    }
 
     // Disable the dropdown styles and show the extra agents inline / float their avatars so they're all on the left
     .dropdown-active {
+      position: relative;
+      top: 0;
+      left: 0;
       display: inline;
+      padding: 0;
       width: 100%;
       border: none;
       background: none;
-      position: relative;
-      padding: 0;
-      left: 0px;
-      top: 0px;
 
       ul {
         display: inline;
 
         li {
           display: inline-block;
-          border: 0px;
+          border: 0;
 
           .agent-avatar {
             position: relative;
@@ -4708,15 +4934,17 @@ h1.fancy-header {
 
             a {
               display: block;
-              border-radius: 4px;
-              border: 2px solid $divider-color;
-              width: 100%;
-              color: $text-color;
               padding-top: 5px;
               padding-bottom: 5px;
+              width: 100%;
+              border: 2px solid $divider-color;
+              border-radius: 4px;
+              color: $text-color;
             }
 
-            .agent-avatar { display: none; }
+            .agent-avatar {
+              display: none;
+            }
           }
         }
       }
@@ -4729,28 +4957,28 @@ h1.fancy-header {
 
       .agent-info {
         display: block;
-        text-align: center;
         width: 100%;
+        text-align: center;
       }
     }
   }
 }
 
 .ticket-status {
-  text-decoration: none;
   position: relative;
   top: -5px;
-  font-size: 0.4em;
-  margin-left: 1em;
-  font-weight: bold;
-  line-height: 1em;
-  background: #d0ca6e;
-  color: #fff;
-  text-transform: uppercase;
   display: inline-block;
-  border-radius: 199px;
+  margin-left: 1em;
   padding: 0.4em 1em;
+  border-radius: 199px;
+  background: #d0ca6e;
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+  font-size: 0.4em;
+  line-height: 1em;
 
   &:hover {
     border-bottom: 0;
@@ -4760,15 +4988,14 @@ h1.fancy-header {
 
 
 .ticket-page {
-
   hr {
-    background: $divider-color;
-    height: 1px;
     margin: 0;
-    padding: 0;
-    border: 0;
     margin-top: 15px;
     margin-bottom: 15px;
+    padding: 0;
+    height: 1px;
+    border: 0;
+    background: $divider-color;
   }
 
   table {
@@ -4784,45 +5011,45 @@ h1.fancy-header {
   }
 
   h1 {
-    font-weight: 100;
     display: inline-block;
+    font-weight: 100;
   }
 
   // Ticket Header (Title, status and reference)
 
   header {
-    margin-bottom: 30px;
     position: relative;
+    margin-bottom: 30px;
 
     &:before {
-      content: ' ';
-      display: block;
-      height: 1px;
-      width: 100%;
-      background: $surface-secondary;
       position: absolute;
       top: 15px;
       z-index: 99;
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: $surface-secondary;
+      content: " ";
     }
 
     h1 {
       position: relative;
       z-index: 100;
-      background: $page-background;
       padding-right: 20px;
+      background: $page-background;
       font-size: 1.7em;
     }
 
     .ticket-reference {
-      background: $page-background;
-      padding-left: 20px;
+      position: relative;
+      top: 2px;
       z-index: 100;
       float: right;
+      padding-left: 20px;
+      background: $page-background;
       color: $text-color-lighter;
       font-weight: 100;
       font-size: 1.2em;
-      position: relative;
-      top: 2px;
     }
   }
 
@@ -4830,9 +5057,9 @@ h1.fancy-header {
     header {
       h1, .ticket-reference {
         display: block;
-        text-align: center;
         float: none;
-        padding: 0px 0px;
+        padding: 0 0;
+        text-align: center;
 
         .ticket-status {
           margin-top: 20px;
@@ -4849,29 +5076,29 @@ h1.fancy-header {
 
   .ticket-timeline {
     margin-top: 60px;
-
     //
     padding-left: 60px;
 
     p {
-      a {// Link underlines
-        border-bottom: 1px solid $button-color;
+      a {
         padding-bottom: 3px;
+        // Link underlines
+        border-bottom: 1px solid $button-color;
         text-decoration: none;
       }
     }
 
     // Vertical line to the left of the timeline
     &:before {
-      content: ' ';
+      position: absolute;
       display: block;
-      width: 1px;
+      margin-left: -32px;
       // Needs js, is taking the height of the screen ( needs to take the height of .ticket-timeline container)
       min-height: 4500px;
+      width: 1px;
       height: 100%;
       background: $divider-color;
-      position: absolute;
-      margin-left: -32px;
+      content: " ";
     }
   }
 
@@ -4888,8 +5115,8 @@ h1.fancy-header {
     }
 
     h1 {
+      margin: 0.6em 0;
       font-size: 1.1em;
-      margin: 0.6em 0em;
       line-height: 1em;
 
       span {
@@ -4898,14 +5125,14 @@ h1.fancy-header {
     }
 
     .badge {
+      position: absolute;
+      left: -50px;
       display: block;
-      background: $page-background;
       width: 36px;
       height: 36px;
       border-radius: 199px;
+      background: $page-background;
       text-align: center;
-      position: absolute;
-      left: -50px;
 
       img {
         position: relative;
@@ -4915,82 +5142,100 @@ h1.fancy-header {
 
       // We're adding to lines over and under the avatars to simulate a gap in the vertical line
       &:before, &:after {
-        content: ' ';
-        display: block;
-        background: $page-background;
-        height: 10px;
-        width: 36px;
         position: absolute;
+        display: block;
+        width: 36px;
+        height: 10px;
+        background: $page-background;
+        content: " ";
       }
 
-      &:before { top: -10px; }
-      &:after { bottom: -10px; }
+      &:before {
+        top: -10px;
+      }
+      &:after {
+        bottom: -10px;
+      }
     }
 
-    strong { font-weight: 400; }
+    strong {
+      font-weight: 400;
+    }
   }
 
   .comment {
-    padding: 20px;
     margin-top: 10px;
+    padding: 20px;
     font-weight: 300;
-    p:last-child { margin-bottom: 0px; }
+    p:last-child {
+      margin-bottom: 0;
+    }
   }
 
-  .agent-reply { @include generate-background-and-border($surface-main); }
-  .user-reply { @include generate-background-and-border($surface-secondary); }
+  .agent-reply {
+    @include generate-background-and-border($surface-main);
+  }
+  .user-reply {
+    @include generate-background-and-border($surface-secondary);
+  }
 
   .event-happened-at {
-    line-height: 1em;
     display: block;
-    font-size: 0.9em;
-    font-weight: 400;
     color: $text-color-lighter;
+    font-weight: 400;
+    font-size: 0.9em;
+    line-height: 1em;
   }
 
   // "This posted marked as" text
   .post-rating {
     margin-top: 20px;
-    line-height: 1em;
     font-size: 0.9em;
+    line-height: 1em;
 
     span {
       font-weight: 400;
 
       .face {
         display: inline-block;
+        margin-right: 3px;
+        padding: 5px;
         width: 20px;
         height: 20px;
-        color: #fff;
         border-radius: 199px;
+        color: #ffffff;
+        color: $page-background;
         text-align: center;
-        line-height: 0.9em;
-        padding: 5px;
         font-weight: 600;
         font-size: 11px;
-        color: $page-background;
-        margin-right: 3px;
+        line-height: 0.9em;
       }
 
       &.helpful {
         color: $button-color-secondary;
-        .face { background: $button-color-secondary; }
+        .face {
+          background: $button-color-secondary;
+        }
       }
 
       &.unhelpful {
         color: $red;
-        .face { background: $red; }
+        .face {
+          background: $red;
+        }
       }
     }
 
     &.not-rated {
       a {
-        color: #a2a2a2;
-        border-bottom: none;
         float: right;
         margin-top: -10px;
+        border-bottom: none;
+        color: #a2a2a2;
 
-        &:hover { color: $text-color; }
+        &:hover {
+          color: $text-color;
+        }
       }
     }
   }
@@ -4998,33 +5243,36 @@ h1.fancy-header {
   // Atachements
   a.attachement {
     @include generate-background-and-border(#f9f9f9);
-    border-radius: 2px;
+
     display: inline-block;
-    padding: 5px;
-    text-decoration: none;
-    color: #8ca6cd;
-    font-weight: 400;
     margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 2px;
+    color: #8ca6cd;
+    text-decoration: none;
+    font-weight: 400;
     font-size: 0.9em;
 
-    &:hover { background: #f1f1f1; }
+    &:hover {
+      background: #f1f1f1;
+    }
 
     img {
-      vertical-align: middle;
       margin-right: 20px;
       max-width: 80px;
       border-radius: 4px;
+      vertical-align: middle;
     }
 
     .file-type {
       display: inline-block;
+      margin-right: 15px;
       width: 25px;
       height: 25px;
-      color: #fff;
-      vertical-align: middle;
-      margin-right: 15px;
-      text-align: center;
       border-radius: 2px;
+      color: #ffffff;
+      vertical-align: middle;
+      text-align: center;
 
       i {
         position: relative;
@@ -5034,39 +5282,42 @@ h1.fancy-header {
       &.file-type-pdf {
         background: #ca1e00;
 
-        i { left: 1px; }
+        i {
+          left: 1px;
+        }
       }
 
-      &.file-type-download { background: $button-color; }
+      &.file-type-download {
+        background: $button-color;
+      }
     }
 
     .attachement-size {
-      margin-left: 10px;
       margin-right: 10px;
+      margin-left: 10px;
       opacity: 0.5;
     }
   }// End Atachements
-
-
 }// End All types of content posts on the timeline
 
 
 // Customer Satisfaction
 .post-satisfaction {
   @include generate-background-and-border($page-background);
-  border-radius: 2px;
-  padding: 20px;
+
   margin-top: 20px;
+  padding: 20px;
+  border-radius: 2px;
 
   h1 {
-    font-size: 0.8em;
+    margin-bottom: 0;
     font-weight: 300;
-    margin-bottom: 0px;
+    font-size: 0.8em;
   }
 
   h2 {
-    font-size: 0.9em;
     font-weight: 100;
+    font-size: 0.9em;
   }
 
   .pick-satisfaction {
@@ -5075,27 +5326,34 @@ h1.fancy-header {
 
     a {
       display: inline-block;
-      text-decoration: none;
-      color: inherit;
-      font-weight: 300;
       margin-right: 3%;
+      color: inherit;
+      text-decoration: none;
+      font-weight: 300;
 
-      span {// Smiley circles
-        line-height: 28px;
-        text-align: center;
-        color: #fff;
-        font-size: 1em;
+      span {
         display: inline-block;
-        border-radius: 199px;
-        background: $grey;
+        margin-right: 10px;
         width: 32px;
         height: 32px;
-        margin-right: 10px;
+        border-radius: 199px;
+        background: $grey;
+        color: #ffffff;
+        text-align: center;
+        font-size: 1em;
+        // Smiley circles
+        line-height: 28px;
       }
 
-      &.great:hover span {background: #93d06e; }
-      &.ok:hover span { background: #444; }
-      &.cant-get-no:hover span { background: #de7878; }
+      &.great:hover span {
+        background: #93d06e;
+      }
+      &.ok:hover span {
+        background: #444444;
+      }
+      &.cant-get-no:hover span {
+        background: #de7878;
+      }
     }
   }
 }
@@ -5104,30 +5362,33 @@ h1.fancy-header {
 
 .switch-link {
   @extend .button;
-  float: right;
+
   position: relative;
   top: -5px;
+  float: right;
 }
 
 
-.table-meta { position: relative; }
+.table-meta {
+  position: relative;
+}
 
 .table-controls {
   position: absolute;
-  right: 10px;
   top: -20px;
+  right: 10px;
+  padding: 0 5px;
   background: $page-background;
-  padding: 0px 5px;
 
   a {
+    position: relative;
     display: inline-block;
     width: 15px;
     height: 15px;
     border: 1px solid $divider-color;
-    background: $page-background;
     border-radius: 2px;
+    background: $page-background;
     text-align: center;
-    position: relative;
     text-decoration: none;
   }
 
@@ -5135,15 +5396,15 @@ h1.fancy-header {
     position: relative;
 
     &:before {
-      content: " ";
-      display: block;
-      border-radius: 99px;
-      width: 5px;
-      height: 5px;
-      background: $text-color-lighter;
       position: relative;
       top: 4px;
       left: 4px;
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 99px;
+      background: $text-color-lighter;
+      content: " ";
     }
   }
 
@@ -5153,26 +5414,26 @@ h1.fancy-header {
     span {
       position: absolute;
       top: 2px;
-      font-size: 9px;
-      font-weight: 700;
       left: 14px;
       display: block;
-      line-height: 1em;
       color: $text-color-lighter;
       text-transform: uppercase;
+      font-weight: 700;
+      font-size: 9px;
+      line-height: 1em;
     }
   }
 
   .expand-control {
-    background: #333;
-    border: 1px solid #333;
-    color: #fff;
+    border: 1px solid #333333;
+    background: #333333;
+    color: #ffffff;
 
     i {
-      font-size: 0.8em;
       position: absolute;
       top: 1px;
       left: 5px;
+      font-size: 0.8em;
     }
   }
 }
@@ -5181,42 +5442,44 @@ h1.fancy-header {
 
 .marked {
   padding: 2px 4px;
-  font-weight: 800;
   color: $text-color-darker;
+  font-weight: 800;
   &.search {
     background: $marked-search;
   }
 }
 
 .filter-matches {
-  font-size: 0.7em;
-  text-transform: uppercase;
-  font-weight: 800;
-  opacity: 0.5;
-  margin-bottom: 3px;
   position: relative;
   top: -4px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 0.7em;
+  opacity: 0.5;
 }
 
 .filter-text-results {
   margin-top: 15px;
-  font-style: italic;
-  font-size: 0.9em;
   margin-bottom: 6px;
   padding-left: 25px;
+  font-style: italic;
+  font-size: 0.9em;
 }
 
 
 
 
 .filter-warning {
+  margin-bottom: 7px;
+  padding: 5px 10px;
   background: $filter;
   color: $text-color-darker;
   font-size: 0.85em;
-  padding: 5px 10px;
-  margin-bottom: 7px;
 
-  i { margin-right: 10px; }
+  i {
+    margin-right: 10px;
+  }
 
   a {
     color: inherit;
@@ -5227,32 +5490,35 @@ h1.fancy-header {
 
 
 .user-ticket-list-expanded {
+  margin-bottom: 60px;
   padding: 10px 20px;
   border: 1px solid $divider-color;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-  margin-bottom: 60px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 
-  .user-ticket-list { margin-bottom: 0px; }
+  .user-ticket-list {
+    margin-bottom: 0;
+  }
 }
 
 
 .user-ticket-list {
-  width: 100%;
   margin-bottom: 60px;
+  width: 100%;
 
   td, td:first-child {
-    text-align: left;
-    vertical-align: middle;
     padding: 0;
+    vertical-align: middle;
+    text-align: left;
   }
 
   td.table-header {
+    margin-bottom: 100px;
     padding: $form-padding-vertical $form-padding-horizontal;
     padding-bottom: $form-padding-vertical + 0.5em;
-    margin-bottom: 100px;
     font-size: 0.9em;
 
-    &:first-child {// Align the first sorting link to the content
+    &:first-child {
+      // Align the first sorting link to the content
       padding-left: 32px;
     }
 
@@ -5260,7 +5526,9 @@ h1.fancy-header {
       color: $text-color-lighter;
       text-decoration: none;
 
-      &:hover { color: $text-color; }
+      &:hover {
+        color: $text-color;
+      }
     }
   }
 
@@ -5269,30 +5537,36 @@ h1.fancy-header {
   }
 
   .item-row a {
-    color: $text-color-darker;
-    text-decoration: none;
     display: block;
     padding: $form-padding-vertical $form-padding-horizontal;
     padding-left: $universal-left-padding;
+    color: $text-color-darker;
+    text-decoration: none;
     font-weight: 300;
 
     .focus {
-      font-weight: 800;
-      text-transform: uppercase;
-      color: $text-color-darker;
-      font-size: 0.8em;
       margin-right: 3px;
+      color: $text-color-darker;
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 0.8em;
     }
 
-    .positive { color: $button-color-secondary; }
+    .positive {
+      color: $button-color-secondary;
+    }
   }
 
 
   tr {
     border-bottom: 1px solid $divider-color;
 
-    &.last-in-line { border-bottom: 0px; }
-    &.first-in-line { border-bottom: 0px; }
+    &.last-in-line {
+      border-bottom: 0;
+    }
+    &.first-in-line {
+      border-bottom: 0;
+    }
 
     &.item-row:hover {
       background: $surface-secondary;
@@ -5302,43 +5576,42 @@ h1.fancy-header {
           background: $surface-secondary;
         }
       }
-
     }
   }
 
   .status-tag {
     display: inline-block;
+    margin-right: 5px;
     width: 16px;
     height: 16px;
-    line-height: 1.6em;
-    text-align: center;
-    font-size: 0.7em;
-    font-weight: 500;
-    background: red;
-    color: #fff;
     border-radius: 2px;
+    background: red;
     background: $gold;
+    color: #ffffff;
     vertical-align: middle;
-    margin-right: 5px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 0.7em;
+    line-height: 1.6em;
   }
 
   .info-block {
-    text-align: right;
+    position: relative;
     width: 200px;
     border-left: 1px solid $divider-color;
-    position: relative;
+    text-align: right;
 
     &:before, &:after {
-      content: " ";
+      position: absolute;
       display: block;
-      background: $page-background;
       width: 5px;
       height: 6px;
-      position: absolute;
+      background: $page-background;
+      content: " ";
     }
 
     &:before {
-      top: 0px;
+      top: 0;
       left: -3px;
     }
 
@@ -5349,23 +5622,23 @@ h1.fancy-header {
   }
 
   .person, .date {
-    font-size: 0.9em;
     display: block;
-    font-weight: 500;
     color: $text-color-darker;
+    font-weight: 500;
+    font-size: 0.9em;
   }
 
   .date {
-    font-weight: 300;
     color: $text-color-lighter;
+    font-weight: 300;
   }
 
   .avatar {
+    float: right;
+    margin-top: 5px;
+    margin-left: 10px;
     width: 22px;
     height: 22px;
     border-radius: 199px;
-    float: right;
-    margin-left: 10px;
-    margin-top: 5px;
   }
 }
