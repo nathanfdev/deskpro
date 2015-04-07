@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "75b9991b3d69072c9dd16bf29e77bb83",
+    "hash": "051d19538b2c083fb4ed9099322cb481",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1510,17 +1510,17 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "dev-master",
+            "version": "2.0.0",
             "target-dir": "Firebase/PHP-JWT",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "724b1fcfb88b7bbbbd92fddd5deb7518c3988267"
+                "reference": "ffcfd888ce1e4f2d70cac2dc9b7301038332fe57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/724b1fcfb88b7bbbbd92fddd5deb7518c3988267",
-                "reference": "724b1fcfb88b7bbbbd92fddd5deb7518c3988267",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/ffcfd888ce1e4f2d70cac2dc9b7301038332fe57",
+                "reference": "ffcfd888ce1e4f2d70cac2dc9b7301038332fe57",
                 "shasum": ""
             },
             "require": {
@@ -1551,7 +1551,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2015-02-12 15:57:00"
+            "time": "2015-04-01 18:46:38"
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
@@ -4101,7 +4101,6 @@
         "zircote/swagger-php": 20,
         "friendsofsymfony/elastica-bundle": 20,
         "fzaninotto/faker": 20,
-        "firebase/php-jwt": 20,
         "league/url": 20,
         "onelogin/php-saml": 20,
         "google/apiclient": 20,
