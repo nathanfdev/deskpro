@@ -3399,9 +3399,13 @@ class TicketController extends AbstractController
 
         $manager = $this->container->getCustomFieldManager();
         $new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
+        $custom_person_fields = array();
+        $custom_org_fields = array();
         if ($ticket->person) {
+            $custom_person_fields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($ticket->person);
             if ($org = $ticket->person->organization) {
                 $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+                $custom_org_fields = $this->container->getOrgFieldManager()->getDisplayArrayForObject($org);
             }
         }
 
@@ -3852,9 +3856,15 @@ class TicketController extends AbstractController
         if ($org = $person->organization) {
             $manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout, array('allow_edit' => true)));
         }
+        $custom_person_fields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person);
+        $custom_org_fields = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization)
+            : array();
 
         return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(
             'new_custom_fields' => $new_custom_fields->createView(),
+            'custom_person_fields' => $custom_person_fields,
+            'custom_org_fields' => $custom_org_fields,
         ));
     }
 
