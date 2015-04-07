@@ -119,7 +119,15 @@ class TicketController extends AbstractController
         $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
 
         $field_manager = $this->container->getTicketFieldManager();
+        $person_field_manager = $this->container->getPersonFieldManager();
+        $org_field_manager = $this->container->getOrgFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+        $person_fields_group = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $person_fields_group);
+        $org_fields_group = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_org_fields = $ticket->person->organization
+            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $org_fields_group)
+            : array();
 
         // new custom fields
         $new_field_manager = $this->container->getCustomFieldManager();
@@ -372,6 +380,8 @@ class TicketController extends AbstractController
 
             'custom_fields'              => $custom_fields,
             'new_custom_fields'          => $new_custom_fields->createView(),
+            'custom_person_fields'       => $custom_person_fields,
+            'custom_org_fields'          => $custom_org_fields,
 
             'show_related_content'       => $show_related_content,
             'linked_tickets'             => $linked_tickets,
@@ -1877,6 +1887,8 @@ class TicketController extends AbstractController
 
         $field_manager = $this->container->getTicketFieldManager();
         $new_field_manager = $this->container->getCustomFieldManager();
+        $person_field_manager = $this->container->getPersonFieldManager();
+        $org_field_manager = $this->container->getOrgFieldManager();
         $error_messages = array();
 
         $perms_before = $this->_getTicketPerms($ticket);
@@ -1916,6 +1928,12 @@ class TicketController extends AbstractController
                 }
                 if (isset($_REQUEST['custom_fields'])) {
                     $newticket->ticket_fields = $_REQUEST['custom_fields'];
+                }
+                if (isset($_REQUEST['custom_person_fields'])) {
+                    $newticket->custom_person_fields = $_REQUEST['custom_person_fields'];
+                }
+                if (isset($_REQUEST['custom_org_fields'])) {
+                    $newticket->custom_org_fields = $_REQUEST['custom_org_fields'];
                 }
 
                 if ($this->in->getString('actions.status') == 'resolved') {
@@ -1987,6 +2005,16 @@ class TicketController extends AbstractController
                         }
                         $this->em->flush();
                     }
+                    $post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
+                    if (!empty($post_custom_person_fields)) {
+                        $person_field_manager->saveFormToObject($post_custom_person_fields, $ticket->person);
+                        $this->em->persist($ticket->person);
+                    }
+                    $post_custom_org_fields = $this->request->request->get('custom_org_fields', array());
+                    if (!empty($post_custom_org_fields) && $this->person->organization) {
+                        $org_field_manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
+                        $this->em->persist($ticket->person->organization);
+                    }
                 }
 
                 $tm->saveTicket($ticket, $context);
@@ -1998,6 +2026,12 @@ class TicketController extends AbstractController
         }
 
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+        $group = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $group);
+        $group = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_org_fields =  $ticket->person->organization
+            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $group)
+            : array();
 
         $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, null, array('allow_edit' => true));
         if ($org = $ticket->person->organization) {
@@ -2021,6 +2055,8 @@ class TicketController extends AbstractController
             'ticket'              => $ticket,
             'ticket_options'      => $ticket_options,
             'custom_fields'       => $custom_fields,
+            'custom_person_fields'=> $custom_person_fields,
+            'custom_org_fields'   => $custom_org_fields,
             'new_custom_fields'   => $new_custom_fields->createView(),
         ));
 
@@ -2091,7 +2127,14 @@ class TicketController extends AbstractController
                         if (!$field) return false;
                         return $field->getOption('agent_required');
                         break;
+
                     case 'user_field':
+                        $field = $field_manager->getFieldFromId($x->getFieldId());
+                        if (!$field) return false;
+                        return $field->getOption('agent_required');
+                        break;
+
+                    case 'org_field':
                         $field = $field_manager->getFieldFromId($x->getFieldId());
                         if (!$field) return false;
                         return $field->getOption('agent_required');
