@@ -105,7 +105,7 @@ services:
             tags:
                 ticket_filter:
                     name: dbal_ticket_filter_compiler
-                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomDataTerm'
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm'
 
 
     #

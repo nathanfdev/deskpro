@@ -124,7 +124,7 @@ class DbalQueryBuilder
     {
         // this will create the real "new" param names, and replace the DbalQueryPart correctly
         foreach ($query_part->getParameters() as $param_name => $param_val) {
-            $new_param_name = $this->query->addParameter($param_name, $param_val);
+            $new_param_name = $this->addParameter($param_name, $param_val);
             $query_part->renameParam($param_name, $new_param_name);
         }
 
@@ -140,19 +140,25 @@ class DbalQueryBuilder
             // this allows multiple unique joins to reference each other
             foreach ($join_renames as $old => $new) {
                 $on = str_replace('{' . $old . '}', $new, $on);
+                $on = str_replace('{' . $new . '}', $new, $on);
             }
-            $join_alias = $this->query->addUniqueJoin($join_info['table'], $on, $join_info['type']);
+            $join_alias = $this->addUniqueJoin($join_info['table'], $on, $join_info['type']);
             $join_renames[$alias] = $join_alias;
             // everything still in the $query_part needs to be renamed to the real alias in the query
             $query_part->renameJoinAlias($alias, $join_alias);
         }
 
         foreach ($query_part->getJoins() as $join_alias => $join_info) {
-            $this->query->addJoin($join_info['table'], $join_info['on']);
+            $this->addJoin($join_info['table'], $join_info['on']);
         }
 
         if ($where = $query_part->getWhereString()) {
-            $this->query->setWherePart($where);
+            // now we must "inject" the proper join names into the WHERE clause
+            foreach ($join_renames as $old => $new) {
+                $where = str_replace('{' . $old . '}', $new, $where);
+                $where = str_replace('{' . $new . '}', $new, $where);
+            }
+            $this->setWhereString($where);
         }
     }
 }

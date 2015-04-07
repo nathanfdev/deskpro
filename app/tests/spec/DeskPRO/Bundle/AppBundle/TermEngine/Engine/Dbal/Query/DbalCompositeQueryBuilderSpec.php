@@ -31,68 +31,50 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use Orb\Util\Arrays;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompositeQueryBuilder;
 
-class DbalQueryManipulator
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompositeQueryBuilder
+ */
+class DbalCompositeQueryBuilderSpec extends ObjectBehavior
 {
-    /**
-     * @var TermEngineExpressionLanguage
-     */
-    private $expression_language;
-
-    public function __construct(TermEngineExpressionLanguage $expression_language)
+    function let(
+        DbalQuery $query
+    )
     {
-        $this->expression_language = $expression_language;
+        $this->beConstructedWith($query);
     }
 
-    public function ensureAgentPermissions(DbalQuery $query, DbalEngineContext $context)
+    function it_a_dbal_query_builder()
     {
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder');
     }
 
-    public function resolveParameters(DbalQuery $query, DbalEngineContext $context)
+    function it_doesnt_save_where_strings_to_the_real_dbal_query(
+        DbalQuery $query
+    )
     {
-        foreach ($query->getParameters() as $key => $val) {
-            $resolved = $this->resolveParam($val, $context);
-            if (is_array($resolved)) {
-                $resolved = Arrays::flatten($resolved); // always faltten arrays
-            }
-            if ($resolved !== $val) {
-                $query->replaceParameter($key, $resolved);
-            }
-        }
+        $query->setWherePart(Argument::any())->shouldNotBeCalled();
+
+        $this->setWhereString('ticket.id = 5');
     }
 
-    private function resolveParam($val, DbalEngineContext $context)
+    function it_collects_the_set_where_strings_and_stores_them_for_retrieval(
+        DbalQuery $query
+    )
     {
-        if (is_array($val)) {
-            $new_val = array();
+        $this->setWhereString('ticket.id = 5');
+        $this->setWhereString('ticket.id IN (3, 4)');
 
-            foreach ($val as $key => $value) {
-                $resolved_inside_array = $this->resolveParam($value, $context);
-                $new_val[$key] = $resolved_inside_array;
-            }
-
-            return $new_val;
-        }
-
-        if ($val instanceof TermEngineExpression) {
-            return $this->evalExpression($val, $context);
-        }
-
-        return $val;
-    }
-
-    private function evalExpression(TermEngineExpression $val, DbalEngineContext $context)
-    {
-        return $this->expression_language->evaluate(
-            (string)$val,
+        $this->getWhereStrings()->shouldBe(
             array(
-                'agent' => $context->getAgent()
+                'ticket.id = 5',
+                'ticket.id IN (3, 4)'
             )
         );
     }

@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompositeQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
@@ -118,13 +119,35 @@ abstract class DbalCompiler implements DbalCompilerInterface
     protected function compileTerm(TermInterface $term, DbalQueryBuilder $query_builder)
     {
         if ($term instanceof CompositeTermInterface) {
-            $query_builder->openBracket();
-            foreach ($term->getTerms() as $term) {
-                $this->compileSingleTerm($term, $query_builder);
+
+            // compile each term in the composite with a special DbalCompositeQueryBuilder instead
+            // of the normal DbalQueryBuilder so we can catch the WHERE strings and process them before writing.
+            $composite_query_builder = new DbalCompositeQueryBuilder($query_builder->getQuery());
+            foreach ($term->getTerms() as $child_term) {
+                $this->compileTerm($child_term, $composite_query_builder);
             }
-            $query_builder->endBracket();
+
+            // filter the where strings, and put each inside their own parenthesis
+            $where_strings = array();
+            foreach ($composite_query_builder->getWhereStrings() as $where_string) {
+                $where_string = trim($where_string);
+                if ($where_string) {
+                    $where_strings[] = sprintf('(%s)', $where_string);
+                }
+            }
+
+            // now we can compose the proper WHERE string for this composite term
+            $sep = $term->getOp() === TermInterface::OP_OR ? 'OR' : 'AND';
+            $where_string = implode(' ' . $sep . ' ', $where_strings);
+
+            // write it in its own parenthesis
+            $query_builder->setWhereString($where_string);
+
         } else {
+
+            // not a composite term, so compile it normally
             $this->compileSingleTerm($term, $query_builder);
+
         }
     }
 

@@ -35,9 +35,13 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Co
 
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\ApiTestCase;
@@ -76,7 +80,7 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
 
     public function testCompositeTermCompile()
     {
-        $term = new CompositeTerm(array(), TermInterface::OP_AND);
+        $term = new CompositeTerm(array(), TermInterface::OP_OR);
         $term->addTerm(new AgentTerm(array('agent_ids' => array(1))));
         $term->addTerm(new TicketStatusTerm(array('status' => array(Ticket::STATUS_RESOLVED))));
 
@@ -90,11 +94,48 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
             $dbal_query->getParameters()
         );
         $this->assertEquals(
-            '(ticket.agent_id IN (:ids_0)) AND (ticket.status IN (:status_0))',
+            '(ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))',
             $dbal_query->generateWhereString()
         );
         $this->assertEquals(
-            'SELECT * FROM tickets ticket WHERE ((ticket.agent_id IN (:ids_0)) AND (ticket.status IN (:status_0)))',
+            'SELECT * FROM tickets ticket WHERE ((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0)))',
+            (string)$dbal_query
+        );
+    }
+
+    public function testComplexEmbeddedCompositeTermCompile()
+    {
+        $composite_term1 = new CompositeTerm(array(), TermInterface::OP_OR);
+        $composite_term1->addTerm(new AgentTerm(array('agent_ids' => array(1))));
+        $composite_term1->addTerm(new TicketStatusTerm(array('status' => array(Ticket::STATUS_RESOLVED))));
+
+        $composite_term2 = new CompositeTerm(array(), TermInterface::OP_AND);
+        $composite_term2->addTerm(new DepartmentTerm(array('department_ids' => array(1, 2))));
+        $composite_term2->addTerm(new PersonEmailTerm(array('email' => 'chris.tickner@deskpro.com')));
+
+        $term = new CompositeTerm(array(), TermInterface::OP_OR);
+        $term->addTerm($composite_term1);
+        $term->addTerm(new AgentTeamTerm(array('agent_team_ids' => array('me'))));
+        $term->addTerm($composite_term2);
+
+        $dbal_query = $this->compiler->compile($term);
+
+        $this->assertEquals(
+            array(
+                'ids_0' => array(1),
+                'status_0' => array(Ticket::STATUS_RESOLVED),
+                'ids_1' => array(new TermEngineExpression('agent.getTeamIds()')),
+                'ids_2' => array(1, 2),
+                'email_0' => 'chris.tickner@deskpro.com',
+            ),
+            $dbal_query->getParameters()
+        );
+        $this->assertEquals(
+            '((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (people_emails.email = :email_0))',
+            $dbal_query->generateWhereString()
+        );
+        $this->assertEquals(
+            'SELECT * FROM tickets ticket LEFT JOIN people_emails ON (ticket.person_id = people_emails.person_id) WHERE (((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (people_emails.email = :email_0)))',
             (string)$dbal_query
         );
     }

@@ -73,7 +73,7 @@ class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTerm
             $query_part,
             array(
                 'participants' => array(
-                    'table' => 'ticket_participants',
+                    'table' => 'tickets_participants',
                     'on' => '{participants}.ticket_id = ticket.id',
                     'type' => DbalQuery::JOIN_LEFT
                 )
@@ -103,7 +103,7 @@ class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTerm
             $query_part,
             array(
                 'participants' => array(
-                    'table' => 'ticket_participants',
+                    'table' => 'tickets_participants',
                     'on' => '{participants}.ticket_id = ticket.id',
                     'type' => DbalQuery::JOIN_LEFT
                 )
@@ -132,7 +132,7 @@ class DbalTicketParticipantTermCompilerTest extends AbstractDbalTicketFilterTerm
             $query_part,
             array(
                 'participants' => array(
-                    'table' => 'ticket_participants',
+                    'table' => 'tickets_participants',
                     'on' => '{participants}.ticket_id = ticket.id',
                     'type' => DbalQuery::JOIN_LEFT
                 )

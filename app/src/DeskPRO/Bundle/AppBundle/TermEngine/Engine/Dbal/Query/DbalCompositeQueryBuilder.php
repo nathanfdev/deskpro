@@ -31,43 +31,22 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-
-class DbalCompositeTermCompiler extends AbstractDbalTermCompiler
+class DbalCompositeQueryBuilder extends DbalQueryBuilder
 {
-    public function doCompile(TermInterface $term)
+    /**
+     * @var array|null
+     */
+    protected $where_strings;
+
+    public function setWhereString($new_where_string)
     {
-        if (!$term instanceof CompositeTermInterface) {
-            throw new \InvalidArgumentException('expected a CompositeTermInterface, but got TermInterface');
-        }
+        $this->where_strings[] = $new_where_string;
+    }
 
-        $op = $term->getOp();
-
-        $isser = $this->isOp($op, TermInterface::OP_OR) ? 'OR' : 'AND';
-        $isser = ' ' . $isser . ' ';
-
-        $parts = array();
-        $compiler = $this->getCompiler();
-        foreach ($term->getTerms() as $child_term) {
-            $part = trim(
-                $compiler->getTermCompiler($child_term)->compile($child_term)
-            );
-            if ($part) {
-                // surround each term compilers output in parenthesis
-                // this is to be extra safe with the AND/OR boolean logic
-                $parts[] = '(' . $part . ')';
-            }
-        }
-
-        if (0 === count($parts)) {
-            return '';
-        }
-
-        return sprintf('(%s)', implode($isser, $parts));
+    public function getWhereStrings()
+    {
+        return $this->where_strings ?: array();
     }
 }

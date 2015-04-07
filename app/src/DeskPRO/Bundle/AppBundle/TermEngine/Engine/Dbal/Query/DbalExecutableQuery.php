@@ -416,7 +416,7 @@ class DbalExecutableQuery
      */
     protected function manipulateWhere($query)
     {
-// extra where
+        // extra where
         foreach ($this->and_where as $where) {
             $query->appendWhere(sprintf('AND (%s)', $where));
         }

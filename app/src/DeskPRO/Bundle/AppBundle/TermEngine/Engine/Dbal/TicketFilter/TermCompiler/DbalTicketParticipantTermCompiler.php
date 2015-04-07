@@ -50,7 +50,7 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
 
         $query_part->addUniqueJoin(
             'participants',
-            'ticket_participants',
+            'tickets_participants',
             '{participants}.ticket_id = ticket.id'
         );
 
