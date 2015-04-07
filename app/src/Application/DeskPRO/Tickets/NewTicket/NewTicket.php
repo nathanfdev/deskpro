@@ -81,6 +81,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
     public $custom_ticket_fields = array();
     public $custom_user_fields = array();
+    public $custom_org_fields = array();
 
     public $new_message;
 
@@ -501,6 +502,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $post_custom_fields = $this->custom_user_fields;
             if (!empty($post_custom_fields)) {
                 $user_field_manager->saveFormToObject($post_custom_fields, $person);
+            }
+            $org_field_manager = App::getSystemService('OrgFieldsManager');
+            if (!empty($this->custom_org_fields) && $person->organization) {
+                $org_field_manager->saveFormToObject($this->custom_org_fields, $person->organization);
             }
 
             $ticket_manager->saveTicket($ticket, $context);
