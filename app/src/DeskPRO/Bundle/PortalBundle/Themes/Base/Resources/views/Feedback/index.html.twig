@@ -10,7 +10,7 @@
     </header>
     {% include 'Theme:Feedback:form.html.twig' %}
     {% include 'Theme:Feedback:controls.html.twig' %}
-    {{ page.feedback_items()|raw }}
+    {{ feedback_items() }}
 </article>
-    {{ page.feedback_pager()|raw }}
+    {{ feedback_pager() }}
 {% endblock inner_content %}

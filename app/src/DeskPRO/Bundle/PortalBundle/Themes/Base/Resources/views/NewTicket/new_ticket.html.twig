@@ -1,6 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
+    {{ newticket_breadcrumbs() }}
     <div class="wrapper" id="new_ticket_page">
+        {{ newticket_header() }}
+
         {% if rerendering %}
             <strong>You have switched departments and the form fields have changed. Please review the form and submit again.</strong>
         {% endif %}

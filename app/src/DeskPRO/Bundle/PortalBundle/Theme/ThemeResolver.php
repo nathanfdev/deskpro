@@ -191,7 +191,7 @@ class ThemeResolver
     public function processTag(ThemeInterface $theme, $tag_name, array $arguments)
     {
         if (!$tag = $theme->resolveTag($tag_name)) {
-            return '';
+            return '[unknown tag: ' . htmlspecialchars($tag_name) . ']';
         }
 
         return $this->tag_processor->process($tag, $arguments);

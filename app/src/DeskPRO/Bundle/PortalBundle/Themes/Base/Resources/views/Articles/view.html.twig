@@ -1,10 +1,10 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ page.knowledgebase_breadcrumbs()|raw }}
-    {{ page.article()|raw }}
-    {{ page.article_ratings()|raw }}
-    {{ page.article_comments()|raw }}
+    {{ knowledgebase_breadcrumbs() }}
+    {{ article() }}
+    {{ article_ratings() }}
+    {{ article_comments() }}
     {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
-    {{ page.related_content()|raw }}
+    {{ related_content() }}
 {% endblock inner_content %}
