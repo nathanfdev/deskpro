@@ -14,4 +14,5 @@
     'portal.general.related-news'           => 'Related News',
     'portal.general.related-downloads'      => 'Related Files',
     'portal.general.related-feedback'       => 'Related Feedback',
+    'portal.general.attach-instructions'    => 'Click here to attach a file (or just drag & drop a file here)',
 );

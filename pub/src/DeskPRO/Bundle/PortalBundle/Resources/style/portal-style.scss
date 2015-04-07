@@ -272,6 +272,10 @@ hr {
   padding-left: $universal-left-padding;
 }
 
+.section-body {
+  padding-left: $universal-left-padding;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Page structure
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +284,7 @@ $grid-columns: 12;
 $tablet: new-breakpoint(max-width 760px 6);
 
 // Structure
-section, .wrapper {
+section {
   @include outer-container;
 }
 
@@ -350,6 +354,12 @@ section, .wrapper {
 .container, .row {
   @include row();
 }
+
+body .as-no-dpui { display: block; }
+body .as-dpui { display: none; }
+
+body.with-dpui .as-no-dpui { display: none; }
+body.with-dpui .as-dpui { display: block; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Buttons
@@ -517,6 +527,10 @@ button, .button, input[type="submit"] {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 input[type="text"], input[type="password"], textarea, select {
+  margin-bottom: 10px;
+}
+
+input[type="text"], input[type="password"], textarea {
   @include placeholder {
     color: $text-faded;
     font-weight: 400;
@@ -524,11 +538,14 @@ input[type="text"], input[type="password"], textarea, select {
     font-size: $font-mid;
   }
 
-  margin-bottom: 10px;
   padding: $form-padding-vertical $form-padding-horizontal;
   border: 0;
   background: $form-input;
   font-weight: 300;
+
+  &:focus {
+    outline: none;
+  }
 
   &.email {
     color: $button-color;
@@ -605,6 +622,8 @@ textarea {
 }
 
 .new-ticket-attachements {
+  cursor: pointer;
+
   .title {
     margin-top: 10px;
   }
@@ -644,6 +663,11 @@ textarea {
       opacity: $text-opacue;
     }
   }
+}
+
+// Hide 'add attachments' submit button when js-capable
+.with-dpui .deskpro-form-widget.field_more_attachments {
+  display: none;
 }
 
 .attach-file {
@@ -856,6 +880,10 @@ textarea {
     font-weight: lighter;
   }
 
+  .form-widget {
+    padding-left: $form-padding-horizontal;
+  }
+
   .subtitle {
     position: relative;
     top: -5px;
@@ -898,7 +926,6 @@ textarea {
   }
 
   select {
-    padding: $form-padding-vertical $form-padding-horizontal;
     border: 1px solid $form-border-color;
     border-bottom: 1px solid $form-border-color;
     border-radius: 2px;
@@ -1552,6 +1579,11 @@ form {
   }
 }
 
+.with-searchbox .top-bar {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
 // Live results
 .live-results-container {
   position: absolute;
@@ -1676,6 +1708,8 @@ form {
 // Add .single-item to .search-and-ticket for showing just the ticket create button
 // or just the search form at 100%
 .search-and-ticket {
+  background: shade($form-input, 10%);
+
   // End Structure
   $top-search-common-line-height: 20px;
   @include clearfix;
@@ -1788,7 +1822,7 @@ form {
       width: 20%;
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
-      background: shade($form-input, 10%);
+      background: shade($form-input, 20%);
       color: $text-color-lighter;
 
       &:hover {

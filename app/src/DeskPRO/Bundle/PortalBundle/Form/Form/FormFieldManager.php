@@ -132,9 +132,11 @@ class FormFieldManager
     protected function createCustomField(CustomDefAbstract $field, $agent_interface)
     {
         list($type, $value_name, $options) = $this->getFormType($field, $agent_interface);
-        if (!array_key_exists('label', $options)) {
-            $options['label'] = $field->getTitle();
-        }
+
+        // custom fields are implemented as a compount type
+        // and this label is for the 'data' attribute, whereas
+        // the real label will be on the parent form which is adding the field
+        $options['label'] = false;
         $options['help'] = $field->getDescription();
 
         return array($value_name, $type, $options);

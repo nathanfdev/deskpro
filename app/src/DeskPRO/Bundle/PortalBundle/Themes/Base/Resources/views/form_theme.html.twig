@@ -34,31 +34,49 @@
 
 {# TICKET ATTACHMENTS #}
 {% block ticket_message_attachment_widget %}
-{% if form.upload is defined %}
-    {{ form_widget(form.upload) }}
-{% else %}
-    <a href="{{ form.vars.data.blob.downloadUrl }}">
-        {% if form.vars.data.blob.is_image %}
-            <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
-        {% endif %}
-        {{ form.vars.data.blob.filename }}
-    </a>
-    [ {{ form_widget(form.delete) }} Delete? ]
-    {{ form_widget(form.blob_auth) }}
-{% endif %}
+    {% if form.upload is defined %}
+        {{ form_widget(form.upload) }}
+    {% else %}
+        <div
+            class="attach-row"
+            data-blob-id="{{ form.vars.data.blob.id }}"
+            data-blob-auth="{{ form.vars.data.blob.authcode }}"
+            data-blob-filename="{{ form.vars.data.blob.filename }}"
+            data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+            {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
+        >
+            <a href="{{ form.vars.data.blob.downloadUrl }}">
+                {% if form.vars.data.blob.is_image %}
+                    <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
+                {% endif %}
+                {{ form.vars.data.blob.filename }}
+            </a>
+            [ {{ form_widget(form.delete) }} Delete? ]
+            {{ form_widget(form.blob_auth) }}
+        </div>
+    {% endif %}
 {% endblock ticket_message_attachment_widget %}
 
 {% block ticket_message_attachment_collection_widget %}
     {% if prototype is defined %}
         {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
     {% endif %}
-    <div {{ block('widget_container_attributes') }}>
-        {%- if form.parent is empty -%}
-            {{ form_errors(form) }}
-        {%- endif -%}
-        {{- block('form_rows') -}}
-        {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
-        {{- form_rest(form) -}}
+    <div class="attach-field">
+        <div class="as-no-dpui">
+            <div {{ block('widget_container_attributes') }}>
+                {%- if form.parent is empty -%}
+                    {{ form_errors(form) }}
+                {%- endif -%}
+                {{- block('form_rows') -}}
+                {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+                {{- form_rest(form) -}}
+            </div>
+        </div>
+        <div class="as-dpui">
+            <div class="new-ticket-attachements">
+                <a class="attach-file"><i class="fa fa-link"></i> {{ phrase('portal.general.attach-instructions') }}</a>
+            </div>
+        </div>
     </div>
 {% endblock ticket_message_attachment_collection_widget %}
 
@@ -184,7 +202,7 @@ HEIRARCHY
 {% endblock %}
 
 {% block deskpro_heirarchical_choice_widget_expanded -%}
-    <div data-heirarcy="" {{ block('widget_container_attributes') }}>
+    <div {{ block('widget_container_attributes') }}>
         {%- for child in form %}
             {{- form_widget(child) -}}
             {{- form_label(child) -}}
@@ -251,7 +269,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
-    <div data-heirarcy="" {{ block('widget_container_attributes') }}>
+    <div {{ block('widget_container_attributes') }}>
         {%- for child in form %}
             {% if form.vars.choices[loop.index0] is defined %}
                 {% if form.vars.choices[loop.index0].data|length == 0 %}
@@ -318,7 +336,7 @@ END HEIRARCHY
 
 
 {% block entity_hierarchy_expanded -%}
-    <div data-heirarcy="" {{ block('widget_container_attributes') }}>
+    <div {{ block('widget_container_attributes') }}>
         {%- for child in form %}
             {% if form.vars.choices[loop.index0].data|length == 0 %}
                 {{- form_widget(child) -}}
@@ -333,7 +351,7 @@ END HEIRARCHY
     {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
         {% set required = false %}
     {%- endif -%}
-    <select dp-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+    <select dp-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
         {% if empty_value is not none -%}
             <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
         {%- endif %}

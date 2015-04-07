@@ -1,7 +1,7 @@
 {% extends 'ThemeParent::layout.html.twig' %}
 {% block body %}
 
-    <div class="world">
+    <div class="world with-searchbox">
         <section>
             <div class="column-full">
                 {{ alerts() }}
@@ -24,7 +24,7 @@
         </section>
         #}
 
-        <div class="wrapper">
+        <section>
             {{ flashes() }}
             <div class="column-half-plus">
                 {% block page_content %}

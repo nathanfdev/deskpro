@@ -51,13 +51,4 @@ class NewTicketController extends AbstractController
     {
         return $this->renderThemeView('Theme:NewTicket:Tag/breadcrumbs.html.twig');
     }
-
-    /**
-     * @Tag(name="newticket_header", esi=true)
-     * @TagHttpCache()
-     */
-    public function headerAction()
-    {
-        return $this->renderThemeView('Theme:NewTicket:Tag/header.html.twig');
-    }
 }

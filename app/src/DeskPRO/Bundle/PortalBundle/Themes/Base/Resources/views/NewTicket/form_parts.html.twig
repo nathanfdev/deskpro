@@ -1,0 +1,46 @@
+<div id="new_ticket_page">
+
+    <!-- BEGIN NEW TICKET FORM -->
+    <style>
+        .form-error {
+            color: red;
+            border: 1px solid red;
+        }
+    </style>
+    <div class="dp_ticket_form">
+        {{ form_errors(form) }}
+        {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+        <div class="dynamic-fields-container">
+            {% for widget in form.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
+                <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
+                    <div class="bucket {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}" data-field="{{ widget.vars.name }}">
+                        {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
+                        <div class="form-widget">
+                            {{ form_widget(widget) }}
+                        </div>
+                        {% if widget.vars.valid is defined %}
+                            {{ form_errors(widget) }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
+    <!-- END NEW TICKET FORM -->
+
+    <!-- BEGIN JS FORM -->
+    <div class="js_form_tpl" style="display: none;">
+        {% for widget in form_full.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
+            <div class="column-full deskpro-form-widget" data-field="{{ widget.vars.name }}">
+                <div class="bucket">
+                    {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
+                    {{ form_widget(widget) }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- END JS FORM -->
+
+</div>

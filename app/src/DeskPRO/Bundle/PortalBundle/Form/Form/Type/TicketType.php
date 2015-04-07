@@ -516,7 +516,7 @@ class TicketType extends AbstractType
             'ticket'            => $form_context->getTicket(),
             'property_path'     => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label'             => false,
+            'label'             => $field_def->getTitle(),
         );
 
         if ($ignore_validation) {
@@ -544,7 +544,7 @@ class TicketType extends AbstractType
             'person'            => $form_context->getPerson(),
             'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label'             => false,
+            'label'             => $field_def->getTitle(),
         );
 
         if ($ignore_validation) {

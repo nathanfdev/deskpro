@@ -1,16 +1,20 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
     {{ newticket_breadcrumbs() }}
-    <div class="wrapper" id="new_ticket_page">
-        {{ newticket_header() }}
+
+    <section>
+        <header class="section-header">
+            <h1>{{ phrase('portal.tickets.new-section-title') }}</h1>
+            <p>{{ phrase('portal.tickets.new-intro') }}</p>
+        </header>
+        <hr class="divider">
 
         {% if rerendering %}
-            <strong>You have switched departments and the form fields have changed. Please review the form and submit again.</strong>
+            <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
         {% endif %}
 
-        {% embed 'Theme:Form:ticket.html.twig' %}{% endembed %}
-        {% embed 'Theme:Form:ticket_js_tpl.html.twig' %}{% endembed %}
-    </div>
+        {% include 'Theme:NewTicket:form_parts.html.twig' %}
+    </section>
 {% endblock inner_content %}
 {% block doc_end %}
     <!-- DESKPRO_TICKET_DISPLAY -->
