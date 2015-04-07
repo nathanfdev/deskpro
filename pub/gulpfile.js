@@ -82,7 +82,8 @@ function getBundler(entryFile) {
       basedir:      './',
       cache:        {},
       packageCache: {},
-      fullPaths:    true
+      fullPaths:    true,
+      debug:        true
     })));
   } else {
     return browserify(entryFile, _.assign({}, watchify.args, {
@@ -90,7 +91,8 @@ function getBundler(entryFile) {
         './src'
       ],
       basedir:   './',
-      fullPaths: false
+      fullPaths: false,
+      debug:     true
     }));
   }
 }
@@ -115,9 +117,13 @@ function getBundlePipe(entryFile) {
 
     var dest = entryFile.split('/');
     dest.pop();
-    dest = dest.join('/')
+    dest = dest.join('/');
 
-    p = p.pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: '/pub/src-build/' + dest}))
+    // All bundles are in X/Y/Z/_Bundle.js
+    // so relative is:
+    var mapSourceRoot = '../../../../';
+
+    p = p.pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: mapSourceRoot}))
       .pipe(gulp.dest('src-build/' + dest));
 
     p.on('end', function () {
@@ -149,6 +155,10 @@ function getSassPipe(glob, noCache, dest) {
     dest = 'src-build';
   }
 
+  // All SCSS are in src/X/Y/Z/Resources/style/_.scss
+  // so relative is:
+  var mapSourceRoot = '../../../../../../src';
+
   if (noCache) {
     return gulp.src(glob)
       .pipe(sourcemaps.init())
@@ -156,7 +166,7 @@ function getSassPipe(glob, noCache, dest) {
       .on('end', function () {
         sassLogger.end(glob);
       })
-      .pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: '/pub/src-build'}))
+      .pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: mapSourceRoot}))
       .pipe(gulp.dest(dest));
   } else {
     return gulp.src(glob)
@@ -166,7 +176,7 @@ function getSassPipe(glob, noCache, dest) {
       .on('end', function () {
         sassLogger.end(glob);
       })
-      .pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: '/pub/src-build'}))
+      .pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: mapSourceRoot}))
       .pipe(gulp.dest(dest));
   }
 }
