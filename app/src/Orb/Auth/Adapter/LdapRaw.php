@@ -94,7 +94,7 @@ class LdapRaw implements FormLoginInterface, Loggable
         if (!$this->options['field_email']) $this->options['field_email'] = 'mail';
         if (!$this->options['field_username']) $this->options['field_username'] = 'uid';
 
-        if (!isset($this->options['accountFilterFormat'])) {
+        if (!isset($this->options['accountFilterFormat']) || !$this->options['accountFilterFormat']) {
             $this->options['accountFilterFormat']  = '(|(dn=%1$s)(mail=%1$s)(uid=%1$s))';
         }
     }
