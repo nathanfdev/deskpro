@@ -112,7 +112,7 @@ class TagOptionsListener implements EventSubscriberInterface
                     $tag_request->getOptionsResolver()->setAllowedValues($annotation->allowed_values);
                 }
 
-                $resolved_tag_options = $tag_request->getTagOptions();
+                $resolved_tag_options = $tag_request->getTagOptions($annotation->inherit_from);
 
                 $tag_request->attributes->set('options', $resolved_tag_options);
                 if ($request_backup) {

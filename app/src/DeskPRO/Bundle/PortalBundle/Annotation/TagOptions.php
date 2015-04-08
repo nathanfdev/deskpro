@@ -42,4 +42,11 @@ class TagOptions
     public $allowed_values        = array();
     public $allowed_types         = array();
     public $attribute_expressions = array();
+
+    /**
+     * An array of variables to read from the request attributes
+     * to merge into the current options.
+     * @var array
+     */
+    public $inherit_from          = array();
 }

@@ -97,6 +97,7 @@ class ArticlesController extends AbstractController
      *          "count": 10,
      *          "show_category_link": true
      *      },
+     *      inherit_from={"articles_options"},
      *      allowed_values={
      *          "style": {"forcat", "list", "small", "simple"}
      *      },

@@ -59,10 +59,24 @@ class TagRequest extends SymfonyRequest
     }
 
     /**
+     * @param array $collect_attr Array of attributes to fetch options from a parent request.
      * @return array
      */
-    public function getTagOptions()
+    public function getTagOptions(array $collect_attr = array())
     {
-        return $this->getOptionsResolver()->resolve($this->query->get('tag_options', array()));
+        $opts = $this->query->get('tag_options', array());
+
+        if ($collect_attr) {
+            foreach ($collect_attr as $attr) {
+                if ($this->attributes->has($attr)) {
+                    $v = $this->attributes->get($attr);
+                    if (is_array($v)) {
+                        $opts = array_merge($v, $opts);
+                    }
+                }
+            }
+        }
+
+        return $this->getOptionsResolver()->resolve($opts);
     }
 }
