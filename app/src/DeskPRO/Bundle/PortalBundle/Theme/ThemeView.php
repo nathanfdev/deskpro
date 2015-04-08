@@ -55,11 +55,10 @@ class ThemeView
     {
         $default_options = $this->calculateDefaultOptions($tag_name);
 
-        // explicit options uses [0] becasue twig passes all arguments directly here
-        // we are only interested in the first one, which must be a twig array
-        // page.tag({ array: 'here'}) - that first arg is $explicition_options[0]
-        if (count($explicit_options)) {
+        if (is_array($explicit_options) && !empty($explicit_options[0])) {
             $explicit_options = $explicit_options[0];
+        } else {
+            $explicit_options = array();
         }
 
         $options = array_merge($default_options, $explicit_options);

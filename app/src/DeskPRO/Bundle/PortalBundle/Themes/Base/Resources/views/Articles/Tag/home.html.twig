@@ -4,12 +4,13 @@
             <article class="article-categories">
                 <header>
                     <h1>
-                        <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}"> {{ category.title }}
-                        ({{ category.articles|length }})</h1>
+                        <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">{{ category.title }}</a>
+                        ({{ category.articles|length }})
+                    </h1>
                     <hr>
                 </header>
 
-                {{ knowledgebase_articles_forcat({ category: category }) }}
+                {{ this_knowledgebase_articles_forcat({ category: category })|raw }}
             </article>
         </div>
     {% endfor %}

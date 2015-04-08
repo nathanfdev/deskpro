@@ -3,19 +3,18 @@
         <article class="article-categories-expandable">
             <header>
                 <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
-                    <h1><img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-star.png') }}">{{ category.title }}</h1>
+                    <h1>{{ category.title }}</h1>
                     <div class="article-controls single-line">
-                        <span class="article-tag pointy">{{ category.articles|length }} articles</span>
+                        <span class="article-tag pointy">{{ phrase('portal.articles.x-articles', {count: category.articles|length}) }}</span>
                         <span class="expandable-control"><i class="fa fa-angle-up"></i></span>
                     </div>
                 </a>
             </header>
 
-            {{ knowledgebase_articles_simple() }}
+            {{ this_knowledgebase_articles_simple()|raw }}
 
             <div class="list-meta">
-                <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">View
-                    <span>{{ category.articles|length }}</span> articles</a>
+                <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">{{ phrase('portal.articles.view-x-articles', {count: category.articles|length}) }}</a>
             </div>
         </article>
     {% endfor %}

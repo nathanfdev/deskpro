@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\Common\Proxy\Proxy;
 
 /**
  * This helper generates hashes for data. It can accept an arbitrary set of data, and return the same hash of that data every time it is run.
@@ -44,16 +45,16 @@ class ArbitraryHasher
             return $input;
         }
 
-        if ($input instanceof DomainObject) {
+        if ($input instanceof DomainObject || $input instanceof Proxy || method_exists($input, 'getId')) {
             return $input->getId();
         }
 
-        if (is_object($input)) {
-            try {
-                return serialize($input);
-            } catch (\Exception $e) {
-                return spl_object_hash($input);
-            }
+        if ((is_array($input) || $input instanceof \ArrayAccess) && isset($input['id'])) {
+            return $input['id'];
+        }
+
+        if (is_object($input) && isset($input->id)) {
+            return $input->id;
         }
 
         if (is_array($input) || $input instanceof \Traversable) {
@@ -63,9 +64,21 @@ class ArbitraryHasher
                 $value[$key] = $this->collectInputs($val);
             }
 
+            if (isset($value['id'])) {
+                return $value['id'];
+            }
+
             sort($value);
 
             return $value;
+        }
+
+        if (is_object($input)) {
+            try {
+                return serialize($input);
+            } catch (\Exception $e) {
+                return spl_object_hash($input);
+            }
         }
 
         return $input;

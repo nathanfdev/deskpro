@@ -128,7 +128,7 @@ class NewsController extends AbstractController
      *      defaults={"is_subscribed":false},
      *      required={"post"},
      *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "post": "service('data.news').getPost(options['post'])"
@@ -136,7 +136,7 @@ class NewsController extends AbstractController
      * )
      * @Security("is_granted('USE_NEWS')")
      */
-    public function postAction(TagRequest $tag_request, array $options, News $post = null)
+    public function postAction(TagRequest $tag_request, array $options, News $post)
     {
         return $this->renderThemeView(
             'Theme:News:Tag/post.html.twig',
@@ -154,7 +154,7 @@ class NewsController extends AbstractController
      *      required={"post"},
      *      defaults={"style":"link"},
      *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "post": "service('data.news').getPost(options['post'])"
@@ -163,7 +163,7 @@ class NewsController extends AbstractController
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function postSubscriptionAction(TagRequest $tag_request, array $options, News $post = null)
+    public function postSubscriptionAction(TagRequest $tag_request, array $options, News $post)
     {
         $is_subscribed = false;
         if (
@@ -188,7 +188,7 @@ class NewsController extends AbstractController
      * @TagOptions(
      *      defaults={"category": null},
      *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}
+     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "category": "service('data.news').getCategory(options['category'])"
@@ -197,7 +197,7 @@ class NewsController extends AbstractController
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function categorySubscriptionAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
+    public function categorySubscriptionAction(TagRequest $tag_request, array $options, NewsCategory $category)
     {
         $is_subscribed = false;
         if (
@@ -223,7 +223,7 @@ class NewsController extends AbstractController
      *          "post": null
      *      },
      *      allowed_types={
-     *          "post":{"Application\DeskPRO\Entity\News","int","string","null"}
+     *          "post":{"Application\DeskPRO\Entity\News","int","string"}
      *      },
      *      attribute_expressions={
      *          "post": "service('data.news').getPost(options['post'])"
@@ -232,7 +232,7 @@ class NewsController extends AbstractController
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options, News $post = null)
+    public function commentsAction(TagRequest $tag_request, array $options, News $post)
     {
         $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
@@ -312,7 +312,7 @@ class NewsController extends AbstractController
      * @TagOptions(
      *      defaults={"post": null},
      *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "post": "service('data.news').getPost(options['post'])"
@@ -321,7 +321,7 @@ class NewsController extends AbstractController
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options, News $post = null)
+    public function ratingsAction(TagRequest $tag_request, array $options, News $post)
     {
         $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 

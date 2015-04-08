@@ -1,10 +1,10 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ download_breadcrumbs() }}
+    {{ this_download_breadcrumbs()|raw }}
     <h1>{{ category.realTitle }}</h1>
-    {{ download_category_subscription() }}
-    {{ downloads_list() }}
-    {{ downloads_files_items({ show_category_link: false }) }}
-    {{ downloads_pager() }}
+    {{ this_download_category_subscription()|raw }}
+    {{ this_downloads_list()|raw }}
+    {{ this_downloads_files_items({ show_category_link: false })|raw }}
+    {{ this_downloads_pager()|raw }}
 {% endblock inner_content %}

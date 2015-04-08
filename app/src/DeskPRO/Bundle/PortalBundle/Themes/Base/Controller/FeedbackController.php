@@ -100,14 +100,14 @@ class FeedbackController extends AbstractController
      * @TagOptions(
      *      required={"item"},
      *      allowed_types={
-     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "item": "service('data.feedback').getItem(options['item'])"
      *      }
      * )
      */
-    public function itemAction(TagRequest $tag_request, array $options, Feedback $item = null)
+    public function itemAction(TagRequest $tag_request, array $options, Feedback $item)
     {
         return $this->renderThemeView(
             'Theme:Feedback:Tag/item.html.twig',
@@ -174,7 +174,7 @@ class FeedbackController extends AbstractController
      * @TagOptions(
      *      defaults={"item": null},
      *      allowed_types={
-     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "item": "service('data.feedback').getItem(options['item'])"
@@ -183,7 +183,7 @@ class FeedbackController extends AbstractController
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options, Feedback $item = null)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options, Feedback $item)
     {
         return $this->renderThemeView(
             'Theme:Feedback:Tag/breadcrumbs.html.twig',
@@ -201,7 +201,7 @@ class FeedbackController extends AbstractController
      *          "item": null
      *      },
      *      allowed_types={
-     *          "item":{"Application\DeskPRO\Entity\Feedback","int","string","null"}
+     *          "item":{"Application\DeskPRO\Entity\Feedback","int","string"}
      *      },
      *      attribute_expressions={
      *          "item": "service('data.feedback').getItem(options['item'])"
@@ -210,7 +210,7 @@ class FeedbackController extends AbstractController
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options, Feedback $item = null)
+    public function commentsAction(TagRequest $tag_request, array $options, Feedback $item)
     {
         $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
 
@@ -226,7 +226,7 @@ class FeedbackController extends AbstractController
      * @TagOptions(
      *      defaults={"item": null},
      *      allowed_types={
-     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "item": "service('data.feedback').getItem(options['item'])"
@@ -235,7 +235,7 @@ class FeedbackController extends AbstractController
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options, Feedback $item = null)
+    public function ratingsAction(TagRequest $tag_request, array $options, Feedback $item)
     {
         $item   = $this->getFeedbackDataService()->getItem($options['item']);
         $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());

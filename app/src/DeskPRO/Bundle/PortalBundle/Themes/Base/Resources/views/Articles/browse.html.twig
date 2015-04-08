@@ -1,10 +1,10 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ knowledgebase_breadcrumbs() }}
+    {{ this_knowledgebase_breadcrumbs() }}
     <h1>{{ category.title }}</h1>
-    {{ knowledgebase_category_subscription() }}
-    {{ knowledgebase() }}
-    {{ knowledgebase_articles_simple({ show_category_link: false }) }}
-    {{ knowledgebase_pager() }}
+    {{ this_knowledgebase_category_subscription() }}
+    {{ this_knowledgebase() }}
+    {{ this_knowledgebase_articles_simple({ show_category_link: false }) }}
+    {{ this_knowledgebase_pager() }}
 {% endblock inner_content %}

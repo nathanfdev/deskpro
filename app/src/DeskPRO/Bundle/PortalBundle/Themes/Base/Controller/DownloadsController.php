@@ -128,7 +128,7 @@ class DownloadsController extends AbstractController
      *      defaults={"is_subscribed":false},
      *      required={"file"},
      *      allowed_types={
-     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"},
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string"},
      *          "is_subscribed": {"int","string","bool"}
      *      },
      *      attribute_expressions={
@@ -136,7 +136,7 @@ class DownloadsController extends AbstractController
      *      }
      * )
      */
-    public function fileAction(TagRequest $tag_request, array $options, Download $file = null)
+    public function fileAction(TagRequest $tag_request, array $options, Download $file)
     {
         $is_subscribed = $options['is_subscribed'];
 
@@ -157,14 +157,14 @@ class DownloadsController extends AbstractController
      *      required={"file"},
      *      defaults={"style":"link"},
      *      allowed_types={
-     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "file": "service('data.downloads').getDownload(options['file'])"
      *      }
      * )
      */
-    public function fileSubscriptionAction(TagRequest $tag_request, array $options, Download $file = null)
+    public function fileSubscriptionAction(TagRequest $tag_request, array $options, Download $file)
     {
         $is_subscribed = false;
         if (
@@ -189,7 +189,7 @@ class DownloadsController extends AbstractController
      * @TagOptions(
      *      defaults={"category": null},
      *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"}
+     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "category": "service('data.downloads').getCategory(options['category'])"
@@ -198,7 +198,7 @@ class DownloadsController extends AbstractController
      *
      * @Security("is_granted('USE_DOWNLOADS')")
      */
-    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options, DownloadCategory $category = null)
+    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options, DownloadCategory $category)
     {
         $is_subscribed = false;
         if (
@@ -224,7 +224,7 @@ class DownloadsController extends AbstractController
      *          "file": null
      *      },
      *      allowed_types={
-     *          "file":{"Application\DeskPRO\Entity\Download","int","string","null"}
+     *          "file":{"Application\DeskPRO\Entity\Download","int","string"}
      *      },
      *      attribute_expressions={
      *          "file": "service('data.downloads').getDownload(options['file'])"
@@ -233,7 +233,7 @@ class DownloadsController extends AbstractController
      *
      * @Security("is_granted('USE_DOWNLOADS')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options, Download $file = null)
+    public function commentsAction(TagRequest $tag_request, array $options, Download $file)
     {
         $comments = $this->getDownloadsDataService()->getDownloadComments($file, $this->getUser());
 
@@ -314,7 +314,7 @@ class DownloadsController extends AbstractController
      * @TagOptions(
      *      defaults={"file": null},
      *      allowed_types={
-     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "file": "service('data.downloads').getDownload(options['file'])"
@@ -323,7 +323,7 @@ class DownloadsController extends AbstractController
      *
      * @Security("is_granted('USE_DOWNLOADS')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options, Download $file = null)
+    public function ratingsAction(TagRequest $tag_request, array $options, Download $file)
     {
         $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
 

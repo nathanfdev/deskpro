@@ -118,6 +118,6 @@ class TagRequestFactory
             $new_attributes[$attr] = $val;
         }
 
-        return array_merge($new_attributes, array('_tag_name' => $tag->getName()));
+        return array_merge($arguments, $new_attributes, array('_tag_name' => $tag->getName()));
     }
 }

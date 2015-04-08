@@ -131,14 +131,14 @@ class ArticlesController extends AbstractController
      * @TagOptions(
      *      required={"article"},
      *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "article": "service('data.articles').getArticle(options['article'])"
      *      }
      * )
      */
-    public function articleAction(TagRequest $tag_request, array $options, Article $article = null)
+    public function articleAction(TagRequest $tag_request, array $options, Article $article)
     {
         return $this->renderThemeView(
             'Theme:Articles:Tag/article.html.twig',
@@ -156,14 +156,14 @@ class ArticlesController extends AbstractController
      *      required={"article"},
      *      defaults={"style":"link"},
      *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "article": "service('data.articles').getArticle(options['article'])"
      *      }
      * )
      */
-    public function articleSubscriptionAction(TagRequest $tag_request, array $options, Article $article = null)
+    public function articleSubscriptionAction(TagRequest $tag_request, array $options, Article $article)
     {
         $is_subscribed = false;
         if (
@@ -188,7 +188,7 @@ class ArticlesController extends AbstractController
      * @TagOptions(
      *      defaults={"category": null},
      *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}
+     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "category": "service('data.articles').getCategory(options['category'])"
@@ -197,7 +197,7 @@ class ArticlesController extends AbstractController
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function categorySubscriptionAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
+    public function categorySubscriptionAction(TagRequest $tag_request, array $options, ArticleCategory $category)
     {
         $is_subscribed = false;
         if (
@@ -223,7 +223,7 @@ class ArticlesController extends AbstractController
      *          "article": null
      *      },
      *      allowed_types={
-     *          "article":{"Application\DeskPRO\Entity\Article","int","string","null"}
+     *          "article":{"Application\DeskPRO\Entity\Article","int","string"}
      *      },
      *      attribute_expressions={
      *          "article": "service('data.articles').getArticle(options['article'])"
@@ -232,7 +232,7 @@ class ArticlesController extends AbstractController
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options, Article $article = null)
+    public function commentsAction(TagRequest $tag_request, array $options, Article $article)
     {
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
@@ -310,7 +310,7 @@ class ArticlesController extends AbstractController
      * @TagOptions(
      *      defaults={"article": null},
      *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
      *      },
      *      attribute_expressions={
      *          "article": "service('data.articles').getArticle(options['article'])"
@@ -319,7 +319,7 @@ class ArticlesController extends AbstractController
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options, Article $article = null)
+    public function ratingsAction(TagRequest $tag_request, array $options, Article $article)
     {
         $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 

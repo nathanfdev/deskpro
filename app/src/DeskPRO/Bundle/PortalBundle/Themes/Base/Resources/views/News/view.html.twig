@@ -1,10 +1,10 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ news_breadcrumbs() }}
-    {{ post() }}
-    {{ news_ratings() }}
-    {{ news_comments() }}
+    {{ this_news_breadcrumbs()|raw }}
+    {{ this_post()|raw }}
+    {{ this_news_ratings()|raw }}
+    {{ this_news_comments()|raw }}
     {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
-    {{ related_content() }}
+    {{ this_related_content()|raw }}
 {% endblock inner_content %}

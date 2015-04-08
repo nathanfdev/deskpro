@@ -145,7 +145,7 @@ class ArticlesDataService extends AbstractDataService
             ),
             function () use ($that, $article) {
                 if (!$article) { // we need some input
-                    return;
+                    return null;
                 }
 
                 if ($article instanceof Article) { // already have what you seek
@@ -177,7 +177,7 @@ class ArticlesDataService extends AbstractDataService
             ),
             function () use ($that, $category) {
                 if (!$category) { // we need some input
-                    return;
+                    return null;
                 }
 
                 if ($category instanceof ArticleCategory) { // already have what you seek

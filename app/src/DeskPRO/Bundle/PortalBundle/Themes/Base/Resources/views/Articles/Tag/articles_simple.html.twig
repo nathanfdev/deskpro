@@ -7,12 +7,11 @@
         {% endfor %}
     </ul>
 
-
     {% if show_category_link %}
         <div class="list-meta">
             <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
-                View <span>{{ pager|length }}</span> articles
-                <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}">
+                {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}
+                <i class="fa fa-caret-right"></i>
             </a>
         </div>
     {% endif %}
