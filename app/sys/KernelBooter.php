@@ -279,8 +279,10 @@ class KernelBooter
                 $kernel = new PortalKernel($env, $debug);
 
                 // add our reverse proxy
-                require_once DP_ROOT."/src/DeskPRO/bundle/PortalBundle/HttpCache/PortalHttpCache.php";
-                $kernel = new PortalHttpCache($kernel);
+                if (!isset($GLOBALS['DP_DISABLE_CACHE']) || !$GLOBALS['DP_DISABLE_CACHE']) {
+                    require_once DP_ROOT . "/src/DeskPRO/bundle/PortalBundle/HttpCache/PortalHttpCache.php";
+                    $kernel = new PortalHttpCache($kernel);
+                }
 
                 if ('dev' === $env) {
                     Debug::enable();
