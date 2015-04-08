@@ -381,12 +381,11 @@ define [
             @form.zones.reports = form.zones.reports || form.zones.admin
 
           if settings.teams
-            tids = []
+            tids = {}
             for team in form.teams
-              if team.value then tids.push(team.id)
-              tids.push(team.id)
+              tids[team.id] = team.value
             for team in @form.teams
-              team.value = team.id in tids
+              team.value = tids[team.id]
 
           if settings.groups
             gids = []
