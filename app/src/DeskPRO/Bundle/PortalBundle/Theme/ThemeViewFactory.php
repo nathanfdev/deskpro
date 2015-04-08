@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class ThemeViewFactory
 {
@@ -48,5 +50,10 @@ class ThemeViewFactory
     public function createView(array $options = array())
     {
         return new ThemeView($this->brand_stack, $options);
+    }
+
+    public function createViewFromRequest(Request $request, array $options = array())
+    {
+        return $this->createView($options);
     }
 }

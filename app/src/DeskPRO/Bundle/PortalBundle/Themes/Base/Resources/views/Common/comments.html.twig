@@ -1,10 +1,19 @@
 {% if comments|length %}
     {% for comment in comments %}
-    <li>
-        {# TODO: CN is this trusted html? #}
-        "{{ comment.content_html_plain|raw }}"
+        <div class="single-comment">
+            <div class="comment-info">
+                <span class="avatar">
+                  <span style="background: url({{ person_picture_url(comment.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-tiny"><a class="remove-agent" href="#"></a></span>
+                </span>
+                <span class="author">{{ comment.userName(true) }}</span>
+                <span class="date">{{ comment.date_created|date }}</span>
+            </div>
 
-        <strong>{{ comment.userName(true) }}</strong> at <i>{{ comment.date_created|date }}</i>
-    </li>
+            <div class="comment-content">
+                <div class="blurb">
+                    <p>{{ comment.content_html_plain|raw }}</p>
+                </div>
+            </div>
+        </div>
     {% endfor %}
 {% endif %}

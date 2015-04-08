@@ -11,7 +11,7 @@
                 </a>
             </header>
 
-            {{ this_knowledgebase_articles_simple()|raw }}
+            {{ this_knowledgebase_articles_simple() }}
 
             <div class="list-meta">
                 <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">{{ phrase('portal.articles.view-x-articles', {count: category.articles|length}) }}</a>

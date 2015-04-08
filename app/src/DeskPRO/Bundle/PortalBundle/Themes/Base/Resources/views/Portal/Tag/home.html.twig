@@ -3,16 +3,16 @@
     <div class="column-full">
         <article class="news front-page-news">
             <div class="large-title clearfix"><h1>News</h1></div>
-            {{ this_news_posts_pretty({ count: 2 })|raw }}
+            {{ this_news_posts_pretty({ count: 2 }) }}
         </article>
     </div>
 </section>
 {% endif %}
 
 {% if is_granted('USE_ARTICLES') %}
-<section>
-    {{ this_knowledgebase({ articles_options: { count: 5 }})|raw }}
-</section>
+    <section>
+        {{ this_knowledgebase({ articles_options: { count: 3 }}) }}
+    </section>
 {% endif %}
 
 <section>
@@ -20,7 +20,7 @@
     <div class="column-third">
         <article class="panel-tiny front-page-downloads">
             <div class="large-title clearfix"><h1>Recent News</h1></div>
-            {{ this_news_posts_list({ count: 5 })|raw }}
+            {{ this_news_posts_list({ count: 5 }) }}
         </article>
     </div>
     {% endif %}
@@ -29,7 +29,7 @@
     <div class="column-third">
         <article class="panel-tiny front-page-downloads">
             <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-            {{ this_feedback_items_list({ count: 5 })|raw }}
+            {{ this_feedback_items_list({ count: 5 }) }}
         </article>
     </div>
     {% endif %}
@@ -38,7 +38,7 @@
     <div class="column-third omega">
         <article class="panel-tiny front-page-downloads">
             <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-            {{ this_downloads_files_list({ count: 5 })|raw }}
+            {{ this_downloads_files_list({ count: 5 }) }}
         </article>
     </div>
     {% endif %}

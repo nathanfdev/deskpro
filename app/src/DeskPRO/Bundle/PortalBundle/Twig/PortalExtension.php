@@ -111,6 +111,9 @@ class PortalExtension extends \Twig_Extension
     {
         if ($person) {
             return $person->getPictureUrl($size, $secure);
+        } else {
+            //TODO default image
+            return null;
         }
     }
 

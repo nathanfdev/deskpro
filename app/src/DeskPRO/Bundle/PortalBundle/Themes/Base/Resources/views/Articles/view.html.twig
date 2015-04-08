@@ -1,9 +1,12 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
     {{ this_knowledgebase_breadcrumbs() }}
+
     {{ this_article() }}
+
     {{ this_article_ratings() }}
-    {{ this_article_comments() }}
-    {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
+
     {{ this_related_content() }}
+
+    {{ this_article_comments({new_comment_form: new_comment_form}) }}
 {% endblock inner_content %}

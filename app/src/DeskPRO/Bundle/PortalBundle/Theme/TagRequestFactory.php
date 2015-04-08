@@ -82,7 +82,7 @@ class TagRequestFactory
             $new_args[$key] = $value;
         }
 
-        $tag_options = array_merge($tag->getDefaultOptions(), array_merge($new_args, array('_tag_name' => $tag->getName())));
+        $tag_options = array_merge($tag->getDefaultOptions(), $new_args, array('_tag_name' => $tag->getName()));
 
         return array('tag_options' => $tag_options);
     }
@@ -118,6 +118,6 @@ class TagRequestFactory
             $new_attributes[$attr] = $val;
         }
 
-        return array_merge($arguments, $new_attributes, array('_tag_name' => $tag->getName()));
+        return array_merge($new_attributes, $arguments, array('_tag_name' => $tag->getName()));
     }
 }

@@ -1,1 +1,13 @@
-{% include 'Theme:Common:comments.html.twig' with { comments: comments } %}
+{% if comments|length or new_comment_form %}
+    <div class="comment-box">
+        <div class="titled-header">
+            <h1>{{ phrase('portal.general.comments-title', {count: comments|length}) }}</h1>
+        </div>
+
+        {% include 'Theme:Common:comments.html.twig' %}
+
+        {% if new_comment_form %}
+            {% include 'Theme:Common:comments_new_form.html.twig' %}
+        {% endif %}
+    </div>
+{% endif %}
