@@ -1,0 +1,29 @@
+<VirtualHost *:80>
+</VirtualHost>
+
+<VirtualHost *:8888>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot PATH
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride All
+	</Directory>
+	<Directory PATH>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	<IfModule mod_fastcgi.c>
+		AddHandler php5-fcgi .php
+		Action php5-fcgi /php5-fcgi
+		Alias /php5-fcgi /usr/lib/cgi-bin/php5-fcgi
+		FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -host 127.0.0.1:9000 -pass-header Authorization
+	</IfModule>
+
+	ErrorLog /var/log/apache2/error.log
+	LogLevel warn
+	CustomLog /var/log/apache2/access.log combined
+</VirtualHost>

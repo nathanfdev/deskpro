@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+require __DIR__.'/../../vendor/autoload.php';
+
+define('PHP_COVERALLS_COMPOSER_INSTALL', 1);
+define('PHP_COVERALLS_VERSION', '0.6.1');
+
+use Contrib\Bundle\CoverallsBundle\Console\Application;
+
+$app = new Application(realpath(__DIR__.'/../'), 'PHP client library for Coveralls API', PHP_COVERALLS_VERSION);
+$app->run();
