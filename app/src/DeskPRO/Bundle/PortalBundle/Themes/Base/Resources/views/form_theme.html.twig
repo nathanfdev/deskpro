@@ -12,7 +12,10 @@
     {% endif %}
 {%- endblock form_widget %}
 
-
+{% block email_widget -%}
+    {% set type = type|default('email') %}
+    {{- block('form_widget_simple') -}}
+{%- endblock email_widget %}
 
 {# A Checkbox #}
 {% block checkbox_widget -%}

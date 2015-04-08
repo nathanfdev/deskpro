@@ -11,9 +11,9 @@
         {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
         <div class="dynamic-fields-container">
-            {% for widget in form.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
+            {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
                 <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
-                    <div class="bucket {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}" data-field="{{ widget.vars.name }}">
+                    <div class="bucket {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}">
                         {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
                         <div class="form-widget">
                             {{ form_widget(widget) }}
@@ -32,11 +32,13 @@
 
     <!-- BEGIN JS FORM -->
     <div class="js_form_tpl" style="display: none;">
-        {% for widget in form_full.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
-            <div class="column-full deskpro-form-widget" data-field="{{ widget.vars.name }}">
+        {% for widget in form_full.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
+            <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
                 <div class="bucket">
                     {{ form_label(widget, null, {'label_attr': {'class': 'title'}}) }}
-                    {{ form_widget(widget) }}
+                    <div class="form-widget">
+                        {{ form_widget(widget) }}
+                    </div>
                 </div>
             </div>
         {% endfor %}

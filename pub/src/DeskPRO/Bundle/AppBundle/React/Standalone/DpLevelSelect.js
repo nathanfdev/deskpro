@@ -135,7 +135,8 @@ export class LevelSelect extends Component {
 
     return (
       <div className="level">
-        <div className="select">
+        <span className="level-indent"><i></i></span>
+        <div className="select-wrap">
           <select data-parent={parentId} defaultValue={subGroup ? subGroup.id : null} onChange={this.handleSelectChange.bind(this)}>
             <option value="0"></option>
             {group.map(function(o) {
