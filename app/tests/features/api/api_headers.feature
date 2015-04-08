@@ -9,6 +9,7 @@ Feature: JSON API Headers
 
   Scenario: I do not include the header flag in my request
     When I send a GET request to "/api/v2/sandbox_widgets"
+    Then the JSON node "headers" should not exist
 
   Scenario: I include the header flag in my request
     When I send a GET request to "/api/v2/sandbox_widgets?include_headers=1"

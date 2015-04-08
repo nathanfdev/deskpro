@@ -21,10 +21,10 @@ class CheckLabelTest extends AbstractEntityCheckTest
             return;
         }
 
-        $bogus        = new LabelTicket();
+        $bogus = new LabelTicket();
         $bogus->label = "bogus";
 
-        $ticket     = new Ticket();
+        $ticket = new Ticket();
         $ticket->id = $id;
         $ticket->labels->add($bogus);
         $ticket->labels->add($object);
@@ -65,7 +65,7 @@ class CheckLabelTest extends AbstractEntityCheckTest
      */
     public function createEntityObject($id)
     {
-        $object        = new LabelTicket();
+        $object = new LabelTicket();
         $object->label = $id;
 
         return $object;

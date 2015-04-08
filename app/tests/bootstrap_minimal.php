@@ -13,6 +13,7 @@ define('DP_TESTS_START_TIME', time());
 require_once DP_ROOT . '/sys/preboot.php';
 require_once DP_ROOT . '/sys/autoload.php';
 
+set_time_limit(0);
 ini_set('max_execution_time', 0);
 
 \Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT . '/vendor-src/php-utf8/');
