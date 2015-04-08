@@ -37,6 +37,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 abstract class AbstractDbalTermCompiler
@@ -68,6 +71,30 @@ abstract class AbstractDbalTermCompiler
     public function getEntityHelper()
     {
         return $this->helper_pool->getHelper('entity');
+    }
+
+    /**
+     * @return DbalStringHelper
+     */
+    public function getStringHelper()
+    {
+        return $this->helper_pool->getHelper('string');
+    }
+
+    /**
+     * @return DbalDateHelper
+     */
+    public function getDateHelper()
+    {
+        return $this->helper_pool->getHelper('date');
+    }
+
+    /**
+     * @return DbalNumericHelper
+     */
+    public function getNumericHelper()
+    {
+        return $this->helper_pool->getHelper('numeric');
     }
 
     /**

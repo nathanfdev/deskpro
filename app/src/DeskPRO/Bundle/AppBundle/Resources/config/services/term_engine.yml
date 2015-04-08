@@ -17,3 +17,18 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper
         tags:
             - { name: dbal_term_engine_helper }
+
+    term_engine.dbal.string_helper:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper
+        tags:
+            - { name: dbal_term_engine_helper }
+
+    term_engine.dbal.date_helper:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper
+        tags:
+            - { name: dbal_term_engine_helper }
+
+    term_engine.dbal.numeric_helper:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper
+        tags:
+            - { name: dbal_term_engine_helper }
