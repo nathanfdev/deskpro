@@ -164,6 +164,12 @@ class DbalQueryPart
      */
     public function addUniqueJoin($alias, $table, $on_condition, $type = DbalQuery::JOIN_LEFT)
     {
+        if ('alias' === $alias) {
+            throw new \InvalidArgumentException(
+                'cannot use the reserved join alias "alias". Use a different alias name.'
+            );
+        }
+
         $this->unique_joins[$alias] = array(
             'table' => $table,
             'on' => $on_condition,

@@ -90,15 +90,15 @@ class DbalQueryPartSpec extends ObjectBehavior
 
     function it_allows_adding_unique_joins()
     {
-        $this->addUniqueJoin('alias', 'table', '{alias}.id = ticket.something', DbalQuery::JOIN_RIGHT);
+        $this->addUniqueJoin('alias_1', 'table', '{alias_1}.id = ticket.something', DbalQuery::JOIN_RIGHT);
 
         $this->addUniqueJoin('alias_2', 'table', '{alias_2}.id = ticket.something_else');
 
         $this->getUniqueJoins()->shouldBeLike(
             array(
-                'alias' => array(
+                'alias_1' => array(
                     'table' => 'table',
-                    'on' => '{alias}.id = ticket.something',
+                    'on' => '{alias_1}.id = ticket.something',
                     'type' => DbalQuery::JOIN_RIGHT
                 ),
                 'alias_2' => array(
@@ -107,6 +107,15 @@ class DbalQueryPartSpec extends ObjectBehavior
                     'type' => DbalQuery::JOIN_LEFT
                 )
             )
+        );
+    }
+
+    function it_does_not_allow_alias_to_be_the_alias()
+    {
+        // {alias} is a reserved alias, and you CAN NOT set it as the alias of a unique join
+        $this->shouldThrow('\InvalidArgumentException')->during(
+            'addUniqueJoin',
+            array('alias', 'table', '{alias}.id = 4')
         );
     }
 
