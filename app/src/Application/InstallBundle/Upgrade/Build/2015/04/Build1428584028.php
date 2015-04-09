@@ -31,14 +31,18 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1413512384 extends AbstractBuild
+class Build1428584028 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Remove 'styles' table");
-        $this->execMutateSql("ALTER TABLE templates DROP FOREIGN KEY FK_6F287D8EBACD6074");
-        $this->execMutateSql("DROP INDEX IDX_6F287D8EBACD6074 ON templates");
-        $this->execMutateSql("ALTER TABLE templates DROP style_id");
-        $this->execMutateSql("DROP TABLE styles");
+        $this->out("add news and download subscriptions");
+        $this->execMutateSql("CREATE TABLE download_subscriptions (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, download_id INT DEFAULT NULL, category_id INT DEFAULT NULL, INDEX IDX_23B05F1D217BBB47 (person_id), INDEX IDX_23B05F1DC667AEAB (download_id), INDEX IDX_23B05F1D12469DE2 (category_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("CREATE TABLE news_subscriptions (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, news_id INT DEFAULT NULL, category_id INT DEFAULT NULL, INDEX IDX_5194E647217BBB47 (person_id), INDEX IDX_5194E647B5A459A0 (news_id), INDEX IDX_5194E64712469DE2 (category_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE download_subscriptions ADD CONSTRAINT FK_23B05F1D217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE download_subscriptions ADD CONSTRAINT FK_23B05F1DC667AEAB FOREIGN KEY (download_id) REFERENCES downloads (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE download_subscriptions ADD CONSTRAINT FK_23B05F1D12469DE2 FOREIGN KEY (category_id) REFERENCES download_categories (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE news_subscriptions ADD CONSTRAINT FK_5194E647217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE news_subscriptions ADD CONSTRAINT FK_5194E647B5A459A0 FOREIGN KEY (news_id) REFERENCES news (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE news_subscriptions ADD CONSTRAINT FK_5194E64712469DE2 FOREIGN KEY (category_id) REFERENCES news_categories (id) ON DELETE CASCADE");
     }
 }

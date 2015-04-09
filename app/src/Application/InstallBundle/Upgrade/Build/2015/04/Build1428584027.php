@@ -31,22 +31,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1421977484 extends AbstractBuild
+class Build1428584027 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Add default feedback status");
-        // high display_order
-        $this->execMutateSql("
-          INSERT INTO feedback_status_categories (status_type, title, display_order) VALUES ('active','Gathering Feedback',2001)
-        ");
-
-        $default_status_category = $this->container->getDb()->lastInsertId();
-
-        $this->execMutateSql("
-          UPDATE feedback SET status_category_id = ".$default_status_category.", status = 'active' WHERE status = 'new'
-        ");
-
-        $this->execMutateSql("REPLACE INTO settings SET name = 'portal.default_feedback_status_category_id', value = ".$default_status_category);
+        $this->out("Add visitor_id to ratings");
+        $this->execMutateSql("ALTER TABLE ratings ADD visitor_id VARCHAR(120) NOT NULL");
     }
 }

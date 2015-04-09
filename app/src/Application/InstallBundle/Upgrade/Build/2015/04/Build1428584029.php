@@ -31,12 +31,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1414032169 extends AbstractBuild
+class Build1428584029 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Brands are themeable");
-        $this->execMutateSql("ALTER TABLE brands ADD theme_id VARCHAR(256) DEFAULT NULL");
-        $this->execMutateSql("UPDATE brands SET theme_id = 'standard'");
+        $this->out("password reset data");
+        $this->execMutateSql("ALTER TABLE people ADD password_reset_code VARCHAR(255) DEFAULT NULL, ADD date_password_reset_requested DATETIME DEFAULT NULL");
     }
 }

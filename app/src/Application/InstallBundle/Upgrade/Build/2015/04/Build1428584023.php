@@ -32,65 +32,58 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Doctrine\DBAL\Connection;
+use Orb\Util\Strings;
 
-class Build1415210938 extends AbstractBuild
+class Build1428584023 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("update slugs on content items");
+        $this->out("slugify content categories");
 
+        /** var \Doctrine\DBAL\Connection $conn */
         $conn = $this->container->getDb();
 
-        $entity_tables = array(
-            'articles',
-            'downloads',
-            'feedback',
-            'news',
-        );
+        // wrap it all in a transaction
+        $that = $this;
+        $conn->transactional(function ($conn) use ($that) {
+                $cat_tables = array(
+                    'article_categories',
+                    'download_categories',
+                    'feedback_categories',
+                    'news_categories',
+                );
 
-        $conn->beginTransaction();
+                foreach ($cat_tables as $cat_table) {
+                    $that->addSlugCol($cat_table);
+                    $that->generateAndUpdateSlugForCategory($cat_table, $conn);
+                }
 
-        try {
-            foreach ($entity_tables as $table_name) {
-                $this->ensureNoDuplicateSlug($table_name, $conn);
+                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_62A97E9989D9B62 ON article_categories (slug)");
+                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_3317F15989D9B62 ON download_categories (slug)");
+                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_66FE6832989D9B62 ON feedback_categories (slug)");
+                $that->execMutateSql("CREATE UNIQUE INDEX UNIQ_D68C9111989D9B62 ON news_categories (slug)");
             }
+        );
+    }
 
-            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_BFDD3168989D9B62 ON articles (slug)");
-            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_4B73A4B5989D9B62 ON downloads (slug)");
-            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_D2294458989D9B62 ON feedback (slug)");
-            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_1DD39950989D9B62 ON news (slug)");
+    public function generateAndUpdateSlugForCategory($cat_table, Connection $conn)
+    {
+        $cat_rows = $conn->fetchAll('SELECT id,title FROM '.$cat_table);
 
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollback();
+        $existing_slugs = array();
+        foreach ($cat_rows as $cat) {
+            $slug = Strings::slugifyTitle($cat['title']);
+            // if we have this slug in the table already, we need to de-dupe and prepend the id
+            if (in_array($slug, $existing_slugs)) {
+                $slug = $cat['id'].'-'.$slug;
+            }
+            $existing_slugs[] = $slug;
+            $conn->update($cat_table, array('slug' => $slug), array('id' => $cat['id']));
         }
     }
 
-    protected function ensureNoDuplicateSlug($table_name, Connection $conn)
+    public function addSlugCol($cat_table)
     {
-        $content_rows = $conn->fetchAll(
-            "
-            SELECT id,slug
-            FROM $table_name
-            WHERE slug IN
-            (
-                SELECT slug
-                FROM $table_name
-                GROUP BY slug
-                HAVING count(slug) > 1
-            )
-            "
-        );
-
-        $existing_slugs = array();
-        foreach ($content_rows as $content_row) {
-            // if we have this slug in the table already, we need to de-dupe and prepend the id
-            $slug = $content_row['slug'];
-            if (in_array($slug, $existing_slugs)) {
-                $slug = $content_row['id'].'-'.$slug;
-            }
-            $existing_slugs[] = $slug;
-            $conn->update($table_name, array('slug' => $slug), array('id' => $content_row['id']));
-        }
+        $this->execMutateSql("ALTER TABLE $cat_table ADD slug VARCHAR(255) NOT NULL");
     }
 }

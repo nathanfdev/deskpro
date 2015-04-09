@@ -31,13 +31,17 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1413514082 extends AbstractBuild
+class Build1428584032 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Scope some settings to a brand");
-        $this->execMutateSql("ALTER TABLE settings ADD brand_id INT DEFAULT NULL");
-        $this->execMutateSql("ALTER TABLE settings ADD CONSTRAINT FK_E545A0C544F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
-        $this->execMutateSql("CREATE INDEX IDX_E545A0C544F5D008 ON settings (brand_id)");
+        $this->out("new brand settings table");
+        $this->execMutateSql("CREATE TABLE settings_brand (id INT AUTO_INCREMENT NOT NULL, brand_id INT NOT NULL, name VARCHAR(255) NOT NULL, value BLOB DEFAULT NULL, INDEX IDX_A48BBF1144F5D008 (brand_id), UNIQUE INDEX unique_settings_per_brand (name, brand_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE settings_brand ADD CONSTRAINT FK_A48BBF1144F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE settings DROP FOREIGN KEY FK_E545A0C544F5D008");
+        $this->execMutateSql("DROP INDEX unique_settings_per_brand ON settings");
+        $this->execMutateSql("DROP INDEX IDX_E545A0C544F5D008 ON settings");
+        $this->execMutateSql("ALTER TABLE settings DROP brand_id");
+        $this->execMutateSql("CREATE UNIQUE INDEX unique_setting_name ON settings (name)");
     }
 }

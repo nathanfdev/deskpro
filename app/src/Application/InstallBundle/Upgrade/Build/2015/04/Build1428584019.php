@@ -31,11 +31,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1420930318 extends AbstractBuild
+class Build1428584019 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Add visitor_id to ratings");
-        $this->execMutateSql("ALTER TABLE ratings ADD visitor_id VARCHAR(120) NOT NULL");
+        $this->out("Scope some settings to a brand");
+        $this->execMutateSql("ALTER TABLE settings ADD brand_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE settings ADD CONSTRAINT FK_E545A0C544F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_E545A0C544F5D008 ON settings (brand_id)");
     }
 }

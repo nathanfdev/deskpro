@@ -31,13 +31,66 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1413517088 extends AbstractBuild
+use Doctrine\DBAL\Connection;
+
+class Build1428584024 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Update settings");
-        $this->execMutateSql("ALTER TABLE settings DROP PRIMARY KEY");
-        $this->execMutateSql("ALTER TABLE settings ADD id INT PRIMARY KEY AUTO_INCREMENT NOT NULL");
-        $this->execMutateSql("CREATE UNIQUE INDEX unique_settings_per_brand ON settings (name, brand_id)");
+        $this->out("update slugs on content items");
+
+        $conn = $this->container->getDb();
+
+        $entity_tables = array(
+            'articles',
+            'downloads',
+            'feedback',
+            'news',
+        );
+
+        $conn->beginTransaction();
+
+        try {
+            foreach ($entity_tables as $table_name) {
+                $this->ensureNoDuplicateSlug($table_name, $conn);
+            }
+
+            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_BFDD3168989D9B62 ON articles (slug)");
+            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_4B73A4B5989D9B62 ON downloads (slug)");
+            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_D2294458989D9B62 ON feedback (slug)");
+            $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_1DD39950989D9B62 ON news (slug)");
+
+            $conn->commit();
+        } catch (\Exception $e) {
+            $conn->rollback();
+        }
+    }
+
+    protected function ensureNoDuplicateSlug($table_name, Connection $conn)
+    {
+        $content_rows = $conn->fetchAll(
+            "
+            SELECT id,slug
+            FROM $table_name
+            WHERE slug IN
+            (
+                SELECT slug
+                FROM $table_name
+                GROUP BY slug
+                HAVING count(slug) > 1
+            )
+            "
+        );
+
+        $existing_slugs = array();
+        foreach ($content_rows as $content_row) {
+            // if we have this slug in the table already, we need to de-dupe and prepend the id
+            $slug = $content_row['slug'];
+            if (in_array($slug, $existing_slugs)) {
+                $slug = $content_row['id'].'-'.$slug;
+            }
+            $existing_slugs[] = $slug;
+            $conn->update($table_name, array('slug' => $slug), array('id' => $content_row['id']));
+        }
     }
 }
