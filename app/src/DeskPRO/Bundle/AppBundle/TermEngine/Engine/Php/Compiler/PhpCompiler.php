@@ -110,9 +110,10 @@ abstract class PhpCompiler
     {
         $php_check = $this->getTermCompiler($term)->compile($term);
 
-        $method_code = '$check = false; ' . $php_check . ' return $check';
+        $method_code = '$check = false; ' . $php_check . ' return $check;';
 
         $method = new PhpMethod();
+        $method->addArgument('ticket', '\Application\DeskPRO\Entity\Ticket');
         $method->setCode($method_code);
 
         return $method;

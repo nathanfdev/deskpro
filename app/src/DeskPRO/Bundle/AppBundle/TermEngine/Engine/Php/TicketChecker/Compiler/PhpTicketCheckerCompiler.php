@@ -41,20 +41,37 @@ class PhpTicketCheckerCompiler extends PhpCompiler
 {
     public function enginePreCompile(PhpClass $php_class)
     {
+        $php_class->addDependencyInjection(
+            'context',
+            '\DeskPRO\Bundle\AppBundle\TermEngine\TermEngineContext'
+        );
+
+        $php_class->addDependencyInjection(
+            'expression_language',
+            '\DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage'
+        );
+
+        // this is the method the outside world will call (well, the engine will call it)
+        $ticket_check_method = new PhpMethod();
+        $ticket_check_method->setName('isTicketMatch');
+        $ticket_check_method->addArgument('ticket', '\Application\DeskPRO\Entity\Ticket');
+        // here we add logging, events, or whatever other hooks we want to before the main check
+        $ticket_check_method->setCode(
+            'return (bool) $this->mainCheck($ticket);'
+        );
+        $php_class->addMethod($ticket_check_method);
     }
 
     public function enginePostCompile(PhpClass $php_class)
     {
-        $ticket_check_method = new PhpMethod();
-
-        $ticket_check_method->setName('isTicketMatch');
-        $ticket_check_method->addArgument('ticket', 'Application\DeskPRO\Entity\Ticket');
-
-        // here we add logging, events, or whatever other hooks we want to before the main check
-        $ticket_check_method->setCode(
-            'return (bool) $this->mainCheck();'
+        // let the term compilers use this method to evaluate expressions
+        $evaluate_expression = new PhpMethod();
+        $evaluate_expression->setName('evaluateExpression');
+        $evaluate_expression->setVisibility('protected');
+        $evaluate_expression->addArgument('expression');
+        $evaluate_expression->setCode(
+            'return $this->expression_language
+    ->evaluate($expression, array(\'agent\' => $this->context->getAgent()));'
         );
-
-        $php_class->addMethod($ticket_check_method);
     }
 }

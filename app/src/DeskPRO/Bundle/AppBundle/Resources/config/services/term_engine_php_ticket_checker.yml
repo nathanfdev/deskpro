@@ -1,0 +1,119 @@
+services:
+
+    #
+    # ENGINE
+    #
+
+#    term_engine.php_ticket_checker.engine:
+#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
+#        arguments:
+#            - @term_engine.dbal_ticket_filters.engine.compiler
+#            - @term_engine.dbal_ticket_filters.engine.query_manipulator
+#            - @doctrine.dbal.default_connection
+
+#    term_engine.dbal_ticket_filters.engine.query_manipulator:
+#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator
+#        arguments:
+#            - @term_engine.expression_language
+#
+#    term_engine.dbal_ticket_filters.engine.compiler:
+#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler
+#        arguments:
+#            - @term_engine.dbal_ticket_filters.compiler
+#            - @term_engine.dbal.compiled_query_cacher
+
+    term_engine.php_ticket_checker.compiler:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler
+        arguments:
+            - @term_engine.php_ticket_checker.compiler.factory
+            - []  # the visitors added in compiler pass with tag "php_ticket_checker_visitor"
+
+    term_engine.php_ticket_checker.compiler.factory:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory
+        # compiler pass will add the term compilers on tag "php_ticket_checker_compiler"
+
+#    term_engine.dbal.compiled_query_cacher:
+#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher
+#        arguments:
+#            - @cache.one_day
+#            - @term_engine.dbal.compiled_query_serializer
+#
+#    term_engine.dbal.compiled_query_serializer:
+#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer
+
+
+    #
+    # TERM COMPILERS
+    #
+
+#    term_engine.php_ticket_checker.term_compiler
+#            abstract: true
+#            calls:
+#                - ['setHelperPool', ["@term_engine.dbal.helper_pool"]]
+
+#    term_engine.dbal_ticket_filters.compiler.ticket_status:
+#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketStatusTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+#            tags:
+#                ticket_filter:
+#                    name: dbal_ticket_filter_compiler
+#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm'
+
+    term_engine.php_ticket_checker.compiler.agent:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm'
+
+#    term_engine.dbal_ticket_filters.compiler.department:
+#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+#            tags:
+#                ticket_filter:
+#                    name: dbal_ticket_filter_compiler
+#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm'
+#
+#    term_engine.dbal_ticket_filters.compiler.person_email:
+#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalPersonEmailTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+#            tags:
+#                ticket_filter:
+#                    name: dbal_ticket_filter_compiler
+#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm'
+#
+#    term_engine.dbal_ticket_filters.compiler.agent_team:
+#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTeamTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+#            tags:
+#                ticket_filter:
+#                    name: dbal_ticket_filter_compiler
+#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm'
+#
+#    term_engine.dbal_ticket_filters.compiler.ticket_participant:
+#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketParticipantTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+#            tags:
+#                ticket_filter:
+#                    name: dbal_ticket_filter_compiler
+#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm'
+#
+#    term_engine.dbal_ticket_filters.compiler.ticket_custom_data:
+#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketCustomDataTermCompiler
+#            parent: term_engine.php_ticket_checker.term_compiler
+#            tags:
+#                ticket_filter:
+#                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm'
+
+
+    #
+    # VISITORS
+    #
+
+    term_engine.dbal_ticket_filters.logger_visitor:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Visitor\LoggingVisitor
+        arguments: [@logger]
+        tags:
+        - { name: dbal_ticket_filter_visitor }

@@ -43,6 +43,10 @@ class TermEnginePass implements CompilerPassInterface
         $this->addDbalTicketFilterTermCompilers($container);
         $this->addDbalTermCompilerHelpers($container);
         $this->addDbalTicketFilterVisitors($container);
+
+        $this->addPhpTicketCheckerTermCompilers($container);
+//        $this->addPhpTicketCheckerHelpers($container);
+        $this->addPhpTicketCheckerVisitors($container);
     }
 
     /**
@@ -68,11 +72,49 @@ class TermEnginePass implements CompilerPassInterface
     /**
      * @param ContainerBuilder $container
      */
+    private function addPhpTicketCheckerTermCompilers(ContainerBuilder $container)
+    {
+        $compiler_factory_def = $container->findDefinition('term_engine.php_ticket_checker.compiler.factory');
+
+        $tagged_compilers = $container->findTaggedServiceIds('php_ticket_checker_compiler');
+
+        $compiler_array = array();
+
+        foreach ($tagged_compilers as $id => $tags) {
+            foreach ($tags as $attributes) {
+                $compiler_array[$attributes['term']] = new Reference($id);
+            }
+        }
+
+        $compiler_factory_def->setArguments(array($compiler_array));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
     private function addDbalTicketFilterVisitors(ContainerBuilder $container)
     {
         $compiler_def = $container->findDefinition('term_engine.dbal_ticket_filters.compiler');
 
         $tagged_visitors = $container->findTaggedServiceIds('dbal_ticket_filter_visitor');
+
+        $visitors = array();
+
+        foreach ($tagged_visitors as $id => $tags) {
+            $visitors[] = new Reference($id);
+        }
+
+        $compiler_def->replaceArgument(1, $visitors);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function addPhpTicketCheckerVisitors(ContainerBuilder $container)
+    {
+        $compiler_def = $container->findDefinition('term_engine.php_ticket_checker.compiler');
+
+        $tagged_visitors = $container->findTaggedServiceIds('php_ticket_checker_visitor');
 
         $visitors = array();
 

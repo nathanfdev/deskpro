@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine;
 
 use Application\DeskPRO\Entity\Person;
 use PhpSpec\ObjectBehavior;
@@ -41,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext
  */
-class DbalEngineContextSpec extends ObjectBehavior
+class TermEngineContextSpec extends ObjectBehavior
 {
     function let(
         Person $person

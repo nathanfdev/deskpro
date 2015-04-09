@@ -227,7 +227,6 @@ PHPCODE;
         $this->extends = $extends;
     }
 
-
     public function getProperty($property_name)
     {
         if (array_key_exists($property_name, $this->properties)) {
@@ -262,7 +261,7 @@ PHPCODE;
         $this->addProperty($property, 'protected');
 
         // if this class has no constructor, we need to make one
-        if (!$constructor = $this->getMethod('__constructor')) {
+        if (!$constructor = $this->getMethod('__construct')) {
             $constructor = new PhpMethod();
             $constructor->setName('__construct');
             $this->addMethod($constructor);
