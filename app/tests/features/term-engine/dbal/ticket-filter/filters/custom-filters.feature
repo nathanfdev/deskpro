@@ -5,6 +5,7 @@ Feature: Custom Filters
 
   Background: Use the specific Term Engine data set
     Given I install the "term engine" data set
+    And I am using the DbalTicketFilterEngine
 
   Scenario: I construct a custom filter and evaluate it
     Given I set the context agent to agent

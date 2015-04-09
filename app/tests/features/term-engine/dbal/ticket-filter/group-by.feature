@@ -5,6 +5,7 @@ Feature: Group By
 
   Background: Use the specific Term Engine data set
     Given I install the "term engine" data set
+    And I am using the DbalTicketFilterEngine
 
   Scenario: I group tickets by agent (simple grouping)
     Given I set the context agent to agent

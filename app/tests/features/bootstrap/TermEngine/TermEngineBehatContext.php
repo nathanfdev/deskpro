@@ -77,12 +77,17 @@ class TermEngineBehatContext extends BaseContext
     /**
      * @var DbalExecutableQuery
      */
-    protected $executable_query;
+    protected $engine_evaluation;
 
     /**
      * @var mixed
      */
     protected $engine_result;
+
+    /**
+     * @var DbalTicketFilterEngine
+     */
+    protected $engine;
 
     /**
      * @Given I set the context agent to :who
@@ -97,11 +102,20 @@ class TermEngineBehatContext extends BaseContext
     }
 
     /**
-     * @Given I am using the PhpTicketCheckerEngine
+     * @Given I am using the :engine
      */
-    public function iAmUsingThePhpticketcheckerengine()
+    public function iAmUsingTheEngine($engine)
     {
-        throw new PendingException();
+        if ('DbalTicketFilterEngine' === $engine) {
+            $this->engine = $this->get('term_engine.dbal_ticket_filters.engine');
+            return;
+        }
+        if ('PhpTicketCheckerEngine' === $engine) {
+            $this->engine = $this->get('term_engine.dbal_ticket_filters.engine');
+            return;
+        }
+
+        throw new \InvalidArgumentException('engine "' . $engine . '" does not exist');
     }
 
     /**
@@ -109,7 +123,19 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iCheckTicketsWithTheFollowingIds(TableNode $table)
     {
-        throw new PendingException();
+        $expected_ids = array();
+
+        foreach ($table->getRows() as $vals) {
+            $expected_ids[] = current($vals);
+        }
+
+        $ticket_repo = $this->getEntityRepo('DeskPRO:Ticket');
+
+        $this->engine_result = array();
+        foreach ($expected_ids as $id) {
+            $ticket = $ticket_repo->find($id);
+            $this->engine_result[] = $this->engine_evaluation->isTicketMatch($ticket);
+        }
     }
 
     /**
@@ -117,7 +143,9 @@ class TermEngineBehatContext extends BaseContext
      */
     public function theAllOfTheChecksShouldMatch()
     {
-        throw new PendingException();
+        foreach ($this->engine_result as $bool) {
+            expect($bool)->toBe(true);
+        }
     }
 
     /**
@@ -125,7 +153,9 @@ class TermEngineBehatContext extends BaseContext
      */
     public function theNoneOfTheChecksShouldMatch()
     {
-        throw new PendingException();
+        foreach ($this->engine_result as $bool) {
+            expect($bool)->toBe(false);
+        }
     }
 
     /**
@@ -137,16 +167,8 @@ class TermEngineBehatContext extends BaseContext
             array('title' => $filter_name)
         );
 
-        $this->executable_query = $this->getDbalTicketFiltersEngine()
+        $this->engine_evaluation = $this->engine
             ->evaluate($filter, $this->engine_context);
-    }
-
-    /**
-     * @return DbalTicketFilterEngine
-     */
-    protected function getDbalTicketFiltersEngine()
-    {
-        return $this->get('term_engine.dbal_ticket_filters.engine');
     }
 
     /**
@@ -154,7 +176,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iExecForIds()
     {
-        $this->engine_result = $this->executable_query->fetchIds();
+        $this->engine_result = $this->engine_evaluation->fetchIds();
     }
 
     /**
@@ -162,7 +184,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iPrintLastRunQuery()
     {
-        print $this->executable_query->getLastRunSql();
+        print $this->engine_evaluation->getLastRunSql();
     }
 
     /**
@@ -170,7 +192,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iRunACountOnTheExecutableQuery()
     {
-        $this->engine_result = $this->executable_query->fetchCount();
+        $this->engine_result = $this->engine_evaluation->fetchCount();
     }
 
     /**
@@ -178,7 +200,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iSetTheQueryOptionpageTo($val)
     {
-        $this->executable_query->setPage($val);
+        $this->engine_evaluation->setPage($val);
     }
 
     /**
@@ -186,7 +208,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iSetTheQueryOptionCountTo($val)
     {
-        $this->executable_query->setCount($val);
+        $this->engine_evaluation->setCount($val);
     }
 
     /**
@@ -194,7 +216,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iAddTheCountGroupToTheExecutableQuery($group)
     {
-        $this->executable_query->addCountGroup($group);
+        $this->engine_evaluation->addCountGroup($group);
     }
 
     /**
@@ -202,7 +224,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iAppendIdDescToTheExecutableQueryOptionOrderby($field, $dir)
     {
-        $this->executable_query->addOrderBy($field, $dir);
+        $this->engine_evaluation->addOrderBy($field, $dir);
     }
 
     /**
@@ -210,7 +232,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iAppendDepartmentToTheQueryOptionGroupWhere($group_name, $val)
     {
-        $this->executable_query->addAndGroupWhere($group_name, $val);
+        $this->engine_evaluation->addAndGroupWhere($group_name, $val);
     }
 
     /**
@@ -291,7 +313,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iFetchTheGroupedCountFromTheExecutableQuery()
     {
-        $this->engine_result = $this->executable_query->fetchGroupedCount();
+        $this->engine_result = $this->engine_evaluation->fetchGroupedCount();
     }
 
     /**
