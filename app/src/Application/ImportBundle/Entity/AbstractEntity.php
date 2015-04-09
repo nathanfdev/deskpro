@@ -56,6 +56,8 @@ abstract class AbstractEntity implements EntityInterface
     }
 
     /**
+     * Set entity oid
+     *
      * @param int $oid
      *
      * @return $this

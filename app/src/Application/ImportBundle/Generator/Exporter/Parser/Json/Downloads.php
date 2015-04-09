@@ -122,13 +122,8 @@ final class Downloads extends AbstractParser
             if ($download['date_published']) {
                 $entity->setDatePublished(new DateTime($download['date_published']));
             }
-
             if ($download['attachment']) {
-                if (is_array($download['attachment'])) {
-                    $entity->setAttachment($this->exportAttachment($download['attachment']));
-                } else {
-                    $this->logError(sprintf('Invalid download attachment record found: %d', $download['oid']));
-                }
+                $entity->setAttachment($this->exportDownloadAttachment($download['attachment']));
             } else {
                 $this->logWarning(sprintf('No download attachment record found: %d', $download['oid']));
             }
@@ -150,21 +145,11 @@ final class Downloads extends AbstractParser
      *
      * @return Entity\Attachment|null
      */
-    private function exportAttachment(array $attachment)
+    private function exportDownloadAttachment(array $attachment)
     {
         try {
-            if ($this->isAttachmentValid($attachment)) {
-                $entity = new Entity\Attachment();
-                $entity
-                    ->setOid($attachment['oid'])
-                    ->setPersonEmail($attachment['person'])
-                    ->setBlobData($attachment['blob_data'])
-                    ->setBlobUrl($attachment['blob_url'])
-                    ->setBlobPath($attachment['blob_path'])
-                    ->setFileName($attachment['file_name'])
-                    ->setContentType($attachment['content_type'])
-                    ->setAsInline($attachment['is_inline']);
-
+            $entity = $this->exportAttachment($attachment);
+            if ($entity) {
                 return $entity;
             } else {
                 $this->logError('Invalid download attachment record found');
@@ -218,6 +203,7 @@ final class Downloads extends AbstractParser
         );
 
         return $this->hasRequiredColumns($download, $columns)
-            && $this->isArrayColumn($download, 'labels');
+            && $this->isArrayColumn($download, 'labels')
+            && (empty($download['attachment']) === false ? $this->isArrayColumn($download, 'attachment')  : true);
     }
 }

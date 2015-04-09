@@ -529,7 +529,7 @@ class KernelErrorHandler
                         }
                     }
 
-                    if (App::getMailer()->sendNow($message)) {
+                    if (App::getMailer()->send($message)) {
                         $fallback_send = false;
                     }
                 } catch (\Exception $e) {

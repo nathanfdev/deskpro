@@ -26,7 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage UserBundle
  */
 
 namespace Application\AgentBundle\Controller;
@@ -35,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
@@ -53,11 +57,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $return = $this->request->getReturnParam();
 
         if ($this->loginViaToken()) {
-            if ($return) {
-                return $this->redirect($return);
-            } else {
-                return $this->redirectRoute('agent');
-            }
+            if ($return) return $this->redirect($return);
+            else return $this->redirectRoute('agent');
         }
 
         $has_logged_out = $this->in->checkIsset('o');
@@ -71,16 +72,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         // Already logged in
         if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
-            if ($return) {
-                return $this->redirect($return);
-            }
+            if ($return) return $this->redirect($return);
 
-            // fastfix of redirect loop (with wrong scheme)
-            $url = $this->generateUrl($this->route_prefix, array(), UrlGeneratorInterface::ABSOLUTE_URL);
-            if (!$this->request->isCorrectScheme()) {
-                $url = str_replace('http://', 'https://', $url);
-            }
-
+            $url = App::getSetting('core.deskpro_url') . ($this->request->isIndexIncluded() ? 'index.php/' : '') . 'agent/';
             return $this->redirect($url);
         }
 
@@ -88,12 +82,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         if ($code = $this->in->getString('reset_code')) {
             $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
-            $person    = null;
+            $person = null;
             if ($code_data) {
                 $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
             }
 
-            if ($code_data and $person) {
+            if ($code_data AND $person) {
                 if ($this->in->getString('new_password')) {
                     $has_done_reset = true;
 
@@ -176,7 +170,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $browser = $this->container->get('browser_sniffer');
 
         return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
-            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE),
+            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
         ));
     }
 
@@ -187,7 +181,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             throw $this->createNotFoundException();
         }
 
-        $admin  = $this->container->getAgentData()->get($tmp->getData('admin_id'));
+        $admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
         $person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 
         if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
@@ -210,7 +204,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
-            'date_created' => date('Y-m-d H:i:s'),
+            'date_created' => date('Y-m-d H:i:s')
         ));
 
         return $this->redirectRoute('agent');

@@ -27,12 +27,17 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
+use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Exception;
+use DateTime;
 
 /**
- * Configuration of generator importer service.
+ * Configuration of generator importer service
  *
  * Class GeneratorConfig
+ * @package Application\ImportBundle\Generator
  */
 class GeneratorConfig
 {
@@ -40,6 +45,11 @@ class GeneratorConfig
      * @var string
      */
     private $exporter_type;
+
+    /**
+     * @var BatchConfigInterface
+     */
+    private $exporter_batch_config;
 
     /**
      * @var string
@@ -69,16 +79,6 @@ class GeneratorConfig
     /**
      * @var bool
      */
-    private $mark_done = true;
-
-    /**
-     * @var int
-     */
-    private $batch_size = 10;
-
-    /**
-     * @var bool
-     */
     private $verbose = false;
 
     /**
@@ -87,7 +87,12 @@ class GeneratorConfig
     private $dry_run = false;
 
     /**
-     * Returns an exporter type.
+     * @var bool
+     */
+    private $silent = false;
+
+    /**
+     * Returns an exporter type
      *
      * @return string
      */
@@ -97,20 +102,114 @@ class GeneratorConfig
     }
 
     /**
-     * Sets an exporter type (csv, json, osticket, zendesk).
+     * Does defined exporter support for batching?
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isBatchExporter()
+    {
+        if ( ! $this->exporter_type) {
+            throw new Exception('Exporter type is not defined');
+        }
+
+        $batch_exporters = array(
+            ExporterInterface::TYPE_JSON,
+            ExporterInterface::TYPE_OS_TICKET,
+            ExporterInterface::TYPE_ZENDESK,
+        );
+
+        return in_array($this->exporter_type, $batch_exporters, true);
+    }
+
+    /**
+     * Set an exporter type
+     * Supported types are csv, json, osticket and zendesk
      *
      * @param string $exporter_type
-     *
      * @return $this
      */
     public function setExporterType($exporter_type)
     {
         $this->exporter_type = $exporter_type;
-
         return $this;
     }
 
     /**
+     * Returns exporter batch config
+     *
+     * @return BatchConfigInterface
+     */
+    public function getExporterBatchConfig()
+    {
+        return $this->exporter_batch_config;
+    }
+
+    /**
+     * Returns retry after timeout
+     *
+     * @return int
+     */
+    public function getRetryWaitTimeout()
+    {
+        $current_time = new DateTime();
+
+        if ($this->exporter_batch_config) {
+            $config = $this->exporter_batch_config;
+
+            if ($config instanceof Exporter\Parser\BatchRetryAfterConfigInterface && $config->getRetryAfterTime()) {
+                if ($config->getRetryAfterTime() > $current_time) {
+                    return $config->getRetryAfterTime()->getTimestamp() - $current_time->getTimestamp();
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Set exporter batch config
+     *
+     * @param BatchConfigInterface $config
+     *
+     * @return $this
+     * @throws Exception
+     */
+    public function setExporterBatchConfig(BatchConfigInterface $config = null)
+    {
+        if ($config) {
+            if ( ! $this->exporter_type) {
+                throw new Exception('Exporter type is not defined');
+            }
+            if ($this->exporter_type !== $config->getExporterType()) {
+                throw new Exception(sprintf(
+                    'Unable to set batch config up, it is supposed to be `%s`, `%s` given',
+                    $this->exporter_type, $config->getExporterType()
+                ));
+            }
+        }
+
+        $this->exporter_batch_config = $config;
+        return $this;
+    }
+
+    /**
+     * Returns generation type
+     *
+     * @return string
+     */
+    public function getGenerationType()
+    {
+        if ($this->writer_type === Writer\WriterInterface::TYPE_JSON) {
+            return 'Exporting';
+        }
+
+        return 'Importing';
+    }
+
+    /**
+     * Returns a writer type
+     *
      * @return string
      */
     public function getWriterType()
@@ -119,19 +218,32 @@ class GeneratorConfig
     }
 
     /**
-     * @param string $writer_type
+     * Returns true if a writer is specified
      *
+     * @return bool
+     */
+    public function hasWriter()
+    {
+        return $this->writer_type !== null;
+    }
+
+    /**
+     * Set a writer type
+     * Supported types are json, deskpro
+     *
+     * @param string $writer_type
      * @return $this
      */
     public function setWriterType($writer_type)
     {
         $this->writer_type = $writer_type;
-
         return $this;
     }
 
     /**
-     * @return array
+     * Returns a collection of entity types to be affected by the importer tool
+     *
+     * @return string[]
      */
     public function getEntityTypes()
     {
@@ -139,18 +251,31 @@ class GeneratorConfig
     }
 
     /**
-     * @param string $record_type
+     * Check if config has an entity type
      *
+     * @param string $type
+     * @return bool
+     */
+    public function hasEntityType($type)
+    {
+        return in_array($type, $this->entity_types, true);
+    }
+
+    /**
+     * Add an entity type to be affected
+     *
+     * @param string $record_type
      * @return $this
      */
     public function addEntityType($record_type)
     {
         $this->entity_types[] = $record_type;
-
         return $this;
     }
 
     /**
+     * Input path of exporting data
+     *
      * @return string
      */
     public function getInputPath()
@@ -160,15 +285,14 @@ class GeneratorConfig
 
     /**
      * Some of the exporters need an input path
-     * Returns true if the input path must be specified.
+     * Returns true if the input path must be specified
      *
-     * @throws Exception
      * @return bool
-     *
+     * @throws Exception
      */
     public function needInputPath()
     {
-        if (! $this->exporter_type) {
+        if ( ! $this->exporter_type) {
             throw new Exception('Exporter type is not defined');
         }
 
@@ -181,18 +305,21 @@ class GeneratorConfig
     }
 
     /**
-     * @param string $input_path
+     * Set an input path
      *
+     * @param string $input_path
      * @return $this
      */
     public function setInputPath($input_path)
     {
         $this->input_path = $input_path;
-
         return $this;
     }
 
     /**
+     * Returns an output path
+     * Uses to collect generated json files
+     *
      * @return string
      */
     public function getOutputPath()
@@ -201,18 +328,56 @@ class GeneratorConfig
     }
 
     /**
-     * @param string $output_path
+     * Set an output path
      *
+     * @param string $output_path
      * @return $this
      */
     public function setOutputPath($output_path)
     {
         $this->output_path = $output_path;
-
         return $this;
     }
 
     /**
+     * Returns batch file dir location
+     *
+     * @return null|string
+     */
+    public function getBatchFileDir()
+    {
+        if ($this->output_path) {
+            return $this->output_path;
+        } else {
+            if ($this->input_path) {
+                return $this->input_path;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns batch file path location
+     *
+     * @return null|string
+     */
+    public function getBatchFilePath()
+    {
+        if ($this->output_path) {
+            return $this->output_path . WriterInterface::OUTPUT_BATCH_FILE;
+        } else {
+            if ($this->input_path) {
+                return $this->input_path . WriterInterface::INPUT_BATCH_FILE;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a log path
+     *
      * @return string
      */
     public function getLogPath()
@@ -221,58 +386,20 @@ class GeneratorConfig
     }
 
     /**
-     * @param string $log_path
+     * Set a log path
      *
+     * @param string $log_path
      * @return $this
      */
     public function setLogPath($log_path)
     {
         $this->log_path = $log_path;
-
         return $this;
     }
 
     /**
-     * @return boolean
-     */
-    public function isMarkDone()
-    {
-        return $this->mark_done;
-    }
-
-    /**
-     * @param boolean $mark_done
+     * Is verbose mode enabled
      *
-     * @return $this
-     */
-    public function setMarkDone($mark_done)
-    {
-        $this->mark_done = (bool) $mark_done;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBatchSize()
-    {
-        return $this->batch_size;
-    }
-
-    /**
-     * @param int $batch_size
-     *
-     * @return $this
-     */
-    public function setBatchSize($batch_size)
-    {
-        $this->batch_size = (int) $batch_size;
-
-        return $this;
-    }
-
-    /**
      * @return boolean
      */
     public function isVerbose()
@@ -281,19 +408,20 @@ class GeneratorConfig
     }
 
     /**
-     * @param boolean $verbose
+     * Set verbose mode
+     * All output messages are shown in console
      *
+     * @param boolean $verbose
      * @return $this
      */
     public function setVerbose($verbose)
     {
-        $this->verbose = (bool) $verbose;
-
+        $this->verbose = (bool)$verbose;
         return $this;
     }
 
     /**
-     * A writer does not flush data.
+     * Returns true if a writer does not flush data
      *
      * @return boolean
      */
@@ -303,16 +431,57 @@ class GeneratorConfig
     }
 
     /**
-     * A writer does not flush data.
+     * Set a writer not to flush data
      *
      * @param boolean $dry_run
-     *
      * @return $this
      */
     public function setDryRun($dry_run)
     {
-        $this->dry_run = (bool) $dry_run;
-
+        $this->dry_run = (bool)$dry_run;
         return $this;
+    }
+
+    /**
+     * Is silent mode
+     *
+     * @return boolean
+     */
+    public function isSilent()
+    {
+        return $this->silent;
+    }
+
+    /**
+     * Set silent mode
+     * No progressbar or output messages
+     *
+     * @param boolean $silent
+     * @return $this
+     */
+    public function setSilent($silent)
+    {
+        $this->silent = (bool)$silent;
+        return $this;
+    }
+
+    /**
+     * Shows progressbar
+     *
+     * @return bool
+     */
+    public function isProgressbarEnabled()
+    {
+        return $this->verbose === false && $this->silent === false;
+    }
+
+    /**
+     * Shows output
+     *
+     * @return bool
+     */
+    public function isConsoleOutputEnabled()
+    {
+        return $this->verbose && $this->silent === false;
     }
 }

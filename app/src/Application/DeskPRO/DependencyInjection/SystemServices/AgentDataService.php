@@ -492,7 +492,7 @@ class AgentDataService
         } else {
             try {
                 $team = $this->getTeam($team);
-                if ($team) {
+                if (!$team) {
                     return false;
                 }
                 $team_id = $team->id;

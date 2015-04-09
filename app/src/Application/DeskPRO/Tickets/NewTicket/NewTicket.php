@@ -37,6 +37,7 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Input\Parser\CcListParser;
+use Orb\Util\Strings;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form.
@@ -338,6 +339,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
         $ticket_message['person']  = $person;
         $ticket_message['ticket']  = $ticket;
+        $this->ticket->message = Strings::linkify($this->ticket->message);
         if ($this->ticket->message_is_html) {
             $ticket_message->setMessageHtml($this->ticket->message);
         } else {

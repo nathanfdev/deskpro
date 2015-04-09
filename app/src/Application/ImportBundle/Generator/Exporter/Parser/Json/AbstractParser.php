@@ -27,15 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
+use Application\ImportBundle\Entity;
+use Exception;
 
 /**
- * Abstract json parser.
+ * Abstract json parser
  *
  * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
@@ -45,7 +47,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param JsonReaderInterface $reader
      */
@@ -56,22 +58,22 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
     /**
      * Get json reader config
-     * todo add support to exclude done files.
      *
      * @param string $record_type
-     *
      * @return JsonConfig
      */
     protected function getReaderConfig($record_type)
     {
-        return new JsonConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        return new JsonConfig(sprintf(
+            '%s/%d/%s',
+            $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
+        ));
     }
 
     /**
-     * Exports custom fields.
+     * Exports custom fields
      *
      * @param array $custom_fields
-     *
      * @return Entity\Collection
      */
     protected function exportCustomFields(array $custom_fields)
@@ -85,6 +87,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 } else {
                     $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid custom field record `%d` found (Skipping): %s',
@@ -97,10 +100,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Returns a custom field entity.
+     * Returns a custom field entity
      *
      * @param array $custom_field
-     *
      * @return Entity\CustomField|null
      */
     protected function exportCustomField(array $custom_field)
@@ -115,14 +117,40 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             return $entity;
         }
 
-        return;
+        return null;
     }
 
     /**
-     * Check if an attachment has all required columns.
+     * Returns an attachment entity
      *
      * @param array $attachment
+     * @return Entity\Attachment|null
+     */
+    protected function exportAttachment(array $attachment)
+    {
+        if ($this->isAttachmentValid($attachment)) {
+            $entity = new Entity\Attachment();
+            $entity
+                ->setDestination('attachment_' . $attachment['oid'])
+                ->setOid($attachment['oid'])
+                ->setPersonEmail($attachment['person'])
+                ->setBlobData($attachment['blob_data'])
+                ->setBlobData($attachment['blob_url'])
+                ->setBlobData($attachment['blob_path'])
+                ->setFileName($attachment['file_name'])
+                ->setContentType($attachment['content_type'])
+                ->setAsInline($attachment['is_inline']);
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if an attachment has all required columns
      *
+     * @param array $attachment
      * @return bool
      */
     protected function isAttachmentValid(array $attachment)
@@ -142,10 +170,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Check if custom field has all required columns.
+     * Check if custom field has all required columns
      *
      * @param array $custom_field
-     *
      * @return bool
      */
     protected function isCustomFieldValid(array $custom_field)
@@ -157,5 +184,20 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         );
 
         return $this->hasRequiredColumns($custom_field, $columns);
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
     }
 }

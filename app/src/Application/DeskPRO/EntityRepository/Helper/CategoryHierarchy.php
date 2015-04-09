@@ -514,6 +514,7 @@ class CategoryHierarchy
             SELECT category_id
             FROM {$tbl}
             WHERE usergroup_id IN (?)
+            GROUP BY category_id
         ", array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
 
         return $cat_ids;

@@ -255,7 +255,8 @@ class CleanupDaily extends AbstractJob
                 continue;
             }
 
-            unlink($file);
+            @unlink($file);
+            @unlink($file.'.zip');
             App::getOrm()->remove($entry);
             $num++;
         }

@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\Actions\NullAction;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -268,6 +269,11 @@ class ActionsFactory
                 $options = array('template' => $value['template_name'], 'agents' => !empty($value['agents']) ? $value['agents'] : array());
                 break;
 
+            case 'delete':
+                $name = 'Status';
+                $options = array('status' => 'hidden.deleted');
+                break;
+
             case 'set_user_email_template_newticket':
             case 'set_user_email_template_newticket_agent':
             case 'set_user_email_template_newticket_validate':
@@ -316,14 +322,6 @@ class ActionsFactory
             return $this->createModifierObject($modifier_class, $options);
         }
 
-        $plugin_action = $this->getPluginAction($name);
-        if ($plugin_action) {
-            $action_class = $plugin_action['action_class'];
-            $options      = $plugin_action->getSetupObject()->filterActionOptions($options);
-
-            return $this->createActionObject($action_class, $options);
-        }
-
         return new NullAction();
     }
 
@@ -345,18 +343,5 @@ class ActionsFactory
         $obj = Util::callUserConstructorArray($action_class, $args);
 
         return $obj;
-    }
-
-    protected function getPluginAction($name)
-    {
-        if ($this->plugin_actions === null) {
-            $this->plugin_actions = App::getEntityRepository('DeskPRO:TicketTriggerPluginActions')->getActivePluginActions(true);
-        }
-
-        if (isset($this->plugin_actions[$name])) {
-            return $this->plugin_actions[$name];
-        } else {
-            return false;
-        }
     }
 }

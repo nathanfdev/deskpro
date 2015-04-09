@@ -26,7 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
@@ -48,9 +50,9 @@ class InReplyToDetector implements TicketDetectorInterface
      */
     protected $_found_person = null;
 
+
     /**
-     * @param AbstractReader $reader
-     *
+     * @param  AbstractReader $reader
      * @return Ticket|null
      */
     public function findExistingTicket(AbstractReader $reader)
@@ -92,11 +94,10 @@ class InReplyToDetector implements TicketDetectorInterface
 
         $matches = null;
         if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+
             foreach ($matches as $m) {
                 $tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
-                if (!$tac) {
-                    continue;
-                }
+                if (!$tac) continue;
 
                 $ticket = $tac->ticket;
                 if (!$ticket->isArchived()) {
@@ -104,6 +105,7 @@ class InReplyToDetector implements TicketDetectorInterface
 
                     return $ticket;
                 }
+
             }
         }
 
@@ -112,11 +114,13 @@ class InReplyToDetector implements TicketDetectorInterface
         #------------------------------
 
         $matches = null;
-        if (preg_match_all('#PTAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('#(?:PTAC|TICKET)\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+
             foreach ($matches as $m) {
                 $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
                 if ($ticket && !$ticket->isArchived()) {
+
                     $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
                     return $ticket;
@@ -124,13 +128,12 @@ class InReplyToDetector implements TicketDetectorInterface
             }
         }
 
-        return;
+        return null;
     }
 
     /**
-     * @param Ticket         $ticket
-     * @param AbstractReader $reader
-     *
+     * @param  Ticket                                                                               $ticket
+     * @param  AbstractReader                                                                       $reader
      * @return \Application\DeskPRO\Entity\Person|\Application\DeskPRO\Entity\TicketAccessCode|null
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
@@ -139,16 +142,15 @@ class InReplyToDetector implements TicketDetectorInterface
             return $this->_found_person;
         }
 
-        return;
+        return null;
     }
 
     /**
      * Add unknown users, the reply code in the address is the PTAC
-     * so basically a passowrd.
+     * so basically a passowrd
      *
-     * @param Ticket         $ticket
-     * @param AbstractReader $reader
-     *
+     * @param  Ticket         $ticket
+     * @param  AbstractReader $reader
      * @return bool
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)

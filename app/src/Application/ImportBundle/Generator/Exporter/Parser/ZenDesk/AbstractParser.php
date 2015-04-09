@@ -28,11 +28,14 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Exception;
+use DateTime;
 
 /**
- * Abstract zenDesk parser.
+ * Abstract zenDesk parser
  *
  * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
@@ -42,12 +45,42 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
-     * Constructor.
+     * @var DateTime
+     */
+    protected $end_time;
+
+    /**
+     * Constructor
      *
      * @param ZenDeskReaderInterface $reader
      */
     public function __construct(ZenDeskReaderInterface $reader)
     {
         $this->reader = $reader;
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
+    }
+
+    /**
+     * Returns current end time
+     *
+     * @return DateTime
+     */
+    public function getCurrentEndTime()
+    {
+        return $this->end_time;
     }
 }

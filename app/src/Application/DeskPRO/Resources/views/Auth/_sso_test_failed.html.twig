@@ -1,18 +1,19 @@
 <!doctype html>
 <html>
 <head>
-	<title>Verified</title>
+    <title>Verified</title>
 </head>
 <body>
 <h1>Failed</h1>
 <script type="text/javascript">
-	parent.window.USERSOURCE_TEST_SCOPE.$apply(function () {
-		parent.window.USERSOURCE_TEST_SCOPE.is_verified = false;
-		parent.window.USERSOURCE_TEST_SCOPE.is_error = true;
-		parent.window.USERSOURCE_TEST_SCOPE.loading = false;
-		parent.window.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
-		parent.window.USERSOURCE_TEST_SCOPE.person = null;
-	});
+    parent.window.USERSOURCE_TEST_SCOPE.$apply(function () {
+        parent.window.USERSOURCE_TEST_SCOPE.is_verified = false;
+        parent.window.USERSOURCE_TEST_SCOPE.is_error = true;
+        parent.window.USERSOURCE_TEST_SCOPE.loading = false;
+        parent.window.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
+        parent.window.USERSOURCE_TEST_SCOPE.person = null;
+        parent.window.USERSOURCE_TEST_SCOPE.display_errors = '{{ display_errors|escape('js') }}';
+    });
 </script>
 </body>
 </html>

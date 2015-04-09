@@ -33,7 +33,6 @@ namespace Application\EmailBundle\Queue;
 
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Psr\Log\LoggerInterface;
 
 class QueueProc
@@ -131,8 +130,6 @@ class QueueProc
             }
         } catch (\Exception $e) {
             $this->logger->error(sprintf("Unexpected exception raised: %s [%s]: %s", get_class($e), $e->getCode(), $e->getMessage()));
-            KernelErrorHandler::logException($e);
-
             $this->source_mapper->markSourceError($r, 'failed');
         }
     }

@@ -27,15 +27,17 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Application\ImportBundle\Generator;
+use Exception;
 
 /**
  * Check export command
- * Read and parse an external data to check if it's valid.
+ * Read and parse an external data to check if it's valid
  *
  * Class CheckExportCommand
+ * @package Application\ImportBundle\Command
  */
 class CheckExportCommand extends AbstractExportCommand
 {
@@ -57,13 +59,28 @@ class CheckExportCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config     = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
-        $logger     = $this->createLogger($config, $output);
-        $generator  = $this->createGenerator($config, $output, $logger);
+        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+        if ($config->needInputPath() &&  ! $config->getInputPath()) {
+            throw new Exception('Input path must be specified');
+        }
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
+
+        $logger    = $this->createLogger($config, $output);
+        $generator = $this->createGenerator($config, $logger);
+
+        if ($config->getRetryWaitTimeout()) {
+            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
+
+            return;
+        }
+
+        $this->createAndSetProgressBar($generator, $output);
 
         $exceptions = $generator->validate();
         foreach ($exceptions as $exception) {
-            /* @var Generator\Validator\ValidatorConstraintException $exception */
+            /** @var Generator\Validator\ValidatorConstraintException $exception */
             $logger->critical($exception);
         }
 

@@ -282,6 +282,8 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $logger->info('Begin send test');
 
         $failed = array();
+
+        try {
         $sent   = $raw_tr->sendRawMessage(
             $this->in->getString('test_email.from'),
             array($this->in->getString('test_email.to')),
@@ -291,6 +293,11 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         if ($failed) {
             $logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
+        }
+
+        } catch (\Exception $e) {
+            $sent = 0;
+            $logger->error($e->getMessage());
         }
 
         $logger->info(sprintf('Sent %d messages', $sent));

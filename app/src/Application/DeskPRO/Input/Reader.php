@@ -45,6 +45,14 @@ class Reader extends BaseReader
     const REQUEST  = 'req';
     const COOKIE   = 'cookie';
 
+    protected $do_not_clean = array(
+        'password' => 1,
+        'password2' => 1,
+        'new_password' => 1,
+        'new_password2' => 1,
+        'current_password' => 1,
+    );
+
     /**
      * Gets a string.
      *
@@ -55,7 +63,9 @@ class Reader extends BaseReader
      */
     public function getString($name, $source_name = null)
     {
-        return $this->getCleanValue($name, 'str', $source_name, null);
+        return isset($this->do_not_clean[$name])
+            ? $this->getCleanValue($name, 'raw', $source_name)
+            : $this->getCleanValue($name, 'str', $source_name, null);
     }
 
     /**

@@ -26,23 +26,26 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
 namespace DeskPRO\Kernel;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\HttpFoundation\Request;
-use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Application\DeskPRO\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\Config\ConfigCache;
+
+use Application\DeskPRO\App;
 
 class DpKernel extends AbstractKernel
 {
@@ -61,6 +64,7 @@ class DpKernel extends AbstractKernel
      */
     protected $container;
 
+
     /**
      * @param string $environment
      * @param bool   $debug
@@ -70,9 +74,9 @@ class DpKernel extends AbstractKernel
     {
         parent::__construct($environment, $debug);
 
-        $name            = explode("\\", get_class($this));
-        $name            = array_pop($name);
-        $this->name      = $name;
+        $name = explode("\\", get_class($this));
+        $name = array_pop($name);
+        $this->name = $name;
         $this->interface = $interface;
 
         if (!defined('DP_DEBUG')) {
@@ -88,25 +92,25 @@ class DpKernel extends AbstractKernel
         register_shutdown_function('DeskPRO\\Kernel\\KernelErrorHandler::shutdownCheckFatalError');
     }
 
+
     /**
      * {@inheritDoc}
      */
     public function boot()
     {
-        if ($this->has_booted) {
-            return;
-        }
+        if ($this->has_booted) return;
         $this->has_booted = true;
 
         parent::boot();
 
         $this->container->kernel = $this;
-        App::$container          = $this->container;
+        App::$container = $this->container;
 
         if ($this->container->has('deskpro.sys_events_loader')) {
             $this->container->get('deskpro.sys_events_loader');
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -124,9 +128,9 @@ class DpKernel extends AbstractKernel
             // If the container doesnt exist and we're in prod, then means we're installing an update.
             // Halt now. This prevents the system from trying to generate the cache itself,
             // even though the new files will be installed in a second.
-            $cache_file = $this->getCacheDir().'/'.$this->getContainerClass().'.php';
+            $cache_file = $this->getCacheDir().$this->getContainerClass().'.php';
             if (!is_file($cache_file)) {
-                echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates'.$cache_file);
+                echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
                 exit;
             }
         }
@@ -140,42 +144,43 @@ class DpKernel extends AbstractKernel
         libxml_disable_entity_loader($v);
     }
 
+
     /**
      * {@inheritDoc}
      */
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir().'/../');
+        $env_dir = realpath($this->getCacheDir() . '/../');
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }
-        if (!file_exists($env_dir.'/doctrine-proxies')) {
-            mkdir($env_dir.'/doctrine-proxies', 0777, true);
+        if (!file_exists($env_dir . '/doctrine-proxies')) {
+            mkdir($env_dir . '/doctrine-proxies', 0777, true);
         }
-        if (!file_exists($env_dir.'/twig-compiled')) {
-            @mkdir($env_dir.'/twig-compiled', 0777, true);
+        if (!file_exists($env_dir . '/twig-compiled')) {
+            @mkdir($env_dir . '/twig-compiled', 0777, true);
         }
 
         @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir.'/doctrine-proxies', 0777);
-        @chmod($env_dir.'/twig-compiled', 0777);
+        @chmod($env_dir . '/doctrine-proxies', 0777);
+        @chmod($env_dir . '/twig-compiled', 0777);
 
         // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
+        $dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
         if (file_exists($dql_cache)) {
             @unlink($dql_cache);
         }
 
         // cache the container
-        $dumper  = new PhpDumper($container);
+        $dumper = new PhpDumper($container);
         $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
         if (!$this->debug) {
             $content = self::stripComments($content);
         }
 
         // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
+        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
         $content = str_replace('dev//', 'dev/', $content);
@@ -185,12 +190,13 @@ class DpKernel extends AbstractKernel
         $cache->write($content, $container->getResources());
     }
 
+
     /**
      * {@inheritDoc}
      */
     protected function getContainerClass()
     {
-        $parts    = explode('\\', get_class($this));
+        $parts = explode('\\', get_class($this));
         $basename = array_pop($parts);
 
         $container_name = $basename;
@@ -205,6 +211,7 @@ class DpKernel extends AbstractKernel
         return $container_name;
     }
 
+
     /**
      * @return string
      */
@@ -212,6 +219,7 @@ class DpKernel extends AbstractKernel
     {
         return DP_ROOT.'/sys';
     }
+
 
     /**
      * @return string
@@ -222,39 +230,41 @@ class DpKernel extends AbstractKernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud/';
             } else {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'/';
             }
         }
 
         return $cache_dir;
     }
 
+
     /**
      * @deprecated Use dp_get_log_dir()
-     *
      * @return string
      */
     public function getLogDir()
     {
         if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT.'/sys/load_config.php';
+            require_once DP_ROOT . '/sys/load_config.php';
         }
 
         return dp_get_log_dir();
     }
+
 
     /**
      * {@inheritDoc}
      */
     protected function getKernelParameters()
     {
-        $params            = parent::getKernelParameters();
+        $params = parent::getKernelParameters();
         $params['DP_ROOT'] = DP_ROOT;
 
         return $params;
     }
+
 
     /**
      * @return string
@@ -264,6 +274,7 @@ class DpKernel extends AbstractKernel
         return $this->interface;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -271,6 +282,7 @@ class DpKernel extends AbstractKernel
     {
         return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
     }
+
 
     /**
      * {@inheritDoc}
@@ -289,6 +301,7 @@ class DpKernel extends AbstractKernel
         return $bundle_dirs;
     }
 
+
     /**
      * @param LoaderInterface $loader
      */
@@ -297,6 +310,7 @@ class DpKernel extends AbstractKernel
         $loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -304,6 +318,7 @@ class DpKernel extends AbstractKernel
     {
         // Nothing, we handle the class cache as part of the build and include it in KernelBooter
     }
+
 
     /**
      * {@inheritDoc}
@@ -358,10 +373,9 @@ class DpKernel extends AbstractKernel
      * Returns a Response if the kernel shouldnt route and pass control off to a controller.
      * Returns null if things should progress normally.
      *
-     * @param Request $request
-     * @param int     $type
-     * @param bool    $catch
-     *
+     * @param  Request               $request
+     * @param  int                   $type
+     * @param  bool                  $catch
      * @return null|RedirectResponse
      */
     protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
@@ -382,23 +396,30 @@ class DpKernel extends AbstractKernel
                 try {
                     if (!$this->container->getSetting('user.portal_enabled')) {
                         $response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
-
                         return $response;
                     }
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) {}
             }
         }
 
-        $deskproUrl = App::getSetting('core.deskpro_url');
-        if ($deskproUrl) {
-            if (false === $correctScheme = $request->isCorrectScheme($deskproUrl)) {
+        // Exclude ajax requests
+        if ($request->isXmlHttpRequest()) {
+            return null;
+        }
+
+        $correct_scheme    = true;
+        $correct_host      = true;
+        $deskpro_url       = App::getSetting('core.deskpro_url');
+        $enable_correction = App::getSetting('core.deskpro_url_autocorrect');
+
+        if ($deskpro_url) {
+            if (false === $correct_scheme = $request->isCorrectScheme($deskpro_url)) {
                 $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
-                $request->attributes->set($interface.'.wrong_scheme', true);
+                $request->attributes->set($interface . '.wrong_scheme', true);
             }
-            if (false === $correctHost = $request->isCorrectHost($deskproUrl)) {
+            if (false === $correct_host = $request->isCorrectHost($deskpro_url)) {
                 $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
-                $request->attributes->set($interface.'.wrong_host', true);
+                $request->attributes->set($interface . '.wrong_host', true);
             }
         }
 
@@ -409,91 +430,71 @@ class DpKernel extends AbstractKernel
             || '/api/' === substr($path, 0, 5)
             || ('admin' === $this->interface)
         ) {
-            return;
-        }
-
-        if ('agent' === $this->interface && (!$correctHost || !$correctScheme)) {
-            $url = $request->getScheme().'://'.$request->getHttpHost().'/agent/login';
-
-            return new RedirectResponse($url, 301);
-        }
-
-        // Exclude ajax requests
-        if ($request->isXmlHttpRequest()) {
-            return;
+            return null;
         }
 
         $qs = $request->getQueryString();
         if ($qs) {
-            $path .= '?'.$qs;
+            $path .= '?' . $qs;
         }
 
         if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
             // Force no index.php
             if ($request->isIndexIncluded()) {
-                $r_path   = '/'.ltrim(rtrim($request->getBasePath(), '/').$path, '/');
+                $r_path = '/' . ltrim(rtrim($request->getBasePath(), '/') . $path, '/');
                 $response = new RedirectResponse($r_path, 301);
-
                 return $response;
             }
         } else {
             // Force index.php
             if (!$request->isIndexIncluded()) {
-                $r_path   = '/'.ltrim(rtrim($request->getBasePath(), '/').'/index.php'.$path, '/');
+                $r_path = '/' . ltrim(rtrim($request->getBasePath(), '/') . '/index.php' . $path, '/');
                 $response = new RedirectResponse($r_path, 301);
-
                 return $response;
             }
         }
 
         $is_installed = App::getSetting('core.setup_initial');
         if (!$is_installed) {
-            return;
+            return null;
+        }
+
+        if (!$enable_correction) {
+            return null;
         }
 
         if (!$this->shouldApplyUrlCorrections($request)) {
-            return;
+            return null;
         }
 
-        if (null === $info = $request->getCorrectInfo($deskproUrl)) {
-            return;
+        if (null === $info = $request->getCorrectInfo($deskpro_url)) {
+            return null;
         }
 
-        if ($request->isIndexIncluded()) {
-            $path = '/index.php'.$path;
+        $do_correction = !$correct_scheme || !$correct_host;
+
+        // Redirect back to agent login screen because we do
+        // auto-redirect stuff in JS and show warning
+        if ('agent' === $this->interface && $do_correction) {
+            $url = $request->getScheme() . '://' . $request->getHttpHost() . '/' . ltrim(rtrim($request->getBasePath(), '/') . (@$GLOBALS['DP_CONFIG']['rewrite_urls'] ? '' : '/index.php') . '/agent/login', '/');
+            return new RedirectResponse($url, 301);
         }
 
-        $do_correction = !$correctScheme || !$correctHost;
-
-        if ($request->query->has('__debug_dp_autocorrect_url')) {
-            $content   = array();
-            $content[] = "URL:            ".App::getSetting('core.deskpro_url');
-            $content[] = "Correct Host:   ".$info['port'] ? ($info['host'].':'.$info['port']) : $info['host'];
-            $content[] = "Correct Scheme: ".$info['scheme'];
-            $content[] = "Now Host:       ".$request->getHttpHost();
-            $content[] = "Now Scheme:     ".$request->getScheme();
-            $content[] = "";
-            $content[] = "Correction required? ".($do_correction ? "Yes" : "No").".";
-            $content   = implode("\n", $content);
-
-            $response = new Response();
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'debug_autocorrect.txt');
-            $response->setContent($content);
-
-            return $response;
+        if (!@$GLOBALS['DP_CONFIG']['rewrite_urls']) {
+            $path = '/index.php' . $path;
         }
 
         if ($do_correction) {
-            $url      = App::getSetting('core.deskpro_url').ltrim($path, '/');
+            $url = App::getSetting('core.deskpro_url') . ltrim($path, '/');
             $response = new RedirectResponse($url, 301);
             $response->headers->setCookie(new Cookie('dp_autocorrect_url', '1', 0, '/'));
 
             return $response;
         }
 
-        return;
+        return null;
     }
+
 
     /**
      * Executed after the requests is handled, right before it is returned to the user.
@@ -515,20 +516,20 @@ class DpKernel extends AbstractKernel
         }
 
         if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
-            $loc   = $this->container->get('templating.locator');
+            $loc = $this->container->get('templating.locator');
             $write = array();
 
             $write[] = sprintf("=== BEGIN REQUEST %s ===\nURL: %s", date('D, jS M Y H:i:s'), defined('DP_REQUEST_URL') ? DP_REQUEST_URL : 'unknown');
 
             foreach ($loc->getLoadedTemplates() as $x => $info) {
                 $info['origin'] = str_replace(DP_ROOT, '', $info['origin']);
-                $write[]        = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
+                $write[] = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
             }
 
             $write[] = '';
             $write[] = '';
-            $write   = implode("\n", $write);
-            file_put_contents($this->getLogDir().'/template_use.log', $write, \FILE_APPEND);
+            $write = implode("\n", $write);
+            file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
         }
 
         if ('agent' === $this->interface || 'admin' === $this->interface || 'reports' === $this->interface) {
@@ -537,8 +538,7 @@ class DpKernel extends AbstractKernel
     }
 
     /**
-     * @param Request $request
-     *
+     * @param  Request $request
      * @return bool
      */
     protected function shouldApplyUrlCorrections(Request $request)
@@ -589,7 +589,7 @@ class DpKernel extends AbstractKernel
     }
 
     /**
-     * Checks settings/triggers to see if the helpdesk is offline.
+     * Checks settings/triggers to see if the helpdesk is offline
      *
      * @return bool
      */
@@ -606,7 +606,7 @@ class DpKernel extends AbstractKernel
 
         // Offline file is inserted on cmdline upgrade,
         // we want to disable all access
-        if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger')) {
+        if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
             return true;
         }
 
@@ -614,7 +614,7 @@ class DpKernel extends AbstractKernel
     }
 
     /**
-     * Checks settings to see if an auto-upgrade is pending.
+     * Checks settings to see if an auto-upgrade is pending
      *
      * @return bool
      */

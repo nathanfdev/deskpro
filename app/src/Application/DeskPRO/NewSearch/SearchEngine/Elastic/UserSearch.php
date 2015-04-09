@@ -38,6 +38,7 @@ use Orb\Util\Arrays;
 class UserSearch implements UserSearchInterface
 {
     const MAX_LEN = 315;
+    const MAX_LEN_CONTENT = 2000;
 
     /**
      * @var \Elastica\Index
@@ -153,6 +154,80 @@ class UserSearch implements UserSearchInterface
         $filtered_query = new Query\Filtered($qs, $filter);
         $res            = $search->search($filtered_query, array('limit' => 500));
         $objects        = $this->transformer->transform($res->getResults());
+
+        return new ResultSet($objects);
+    }
+
+    /**
+     * @param  SearchContextInterface $context
+     * @param  string $content
+     * @param  array $options
+     * @return ResultSet
+     */
+    public function similarTo(SearchContextInterface $context, $content, array $options = null)
+    {
+        $search = $this->index->createSearch();
+        $filter = new Filter\BoolOr();
+
+        $limit_types = isset($options['limit_types']) ? $options['limit_types'] : null;
+        if ($limit_types && !is_array($limit_types)) {
+            $limit_types = explode(',', $limit_types);
+            $limit_types = Arrays::func($limit_types, 'trim');
+        }
+        if ($limit_types) {
+            $limit_types = Arrays::removeFalsey($limit_types);
+        }
+
+        if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
+            $search->addType('article');
+            $f = new Filter\Bool();
+            $f->addMust(new Filter\Term(array('_type' => 'article')));
+            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
+            $filter->addFilter($f);
+        }
+        if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
+            $search->addType('news');
+            $f = new Filter\Bool();
+            $f->addMust(new Filter\Term(array('_type' => 'news')));
+            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
+            $filter->addFilter($f);
+        }
+        if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
+            $search->addType('download');
+            $f = new Filter\Bool();
+            $f->addMust(new Filter\Term(array('_type' => 'download')));
+            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
+            $filter->addFilter($f);
+        }
+        if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
+            $search->addType('feedback');
+            $f = new Filter\Bool();
+            $f->addMust(new Filter\Term(array('_type' => 'feedback')));
+            $f->addMustNot(new Filter\Term(array('status' => 'hidden')));
+            $f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $filter->addFilter($f);
+        }
+
+        if (!$search->getTypes()) {
+            return new ResultSet();
+        }
+
+        if (isset($content[self::MAX_LEN_CONTENT])) {
+            $content = substr($content, 0, self::MAX_LEN_CONTENT);
+        }
+
+        $like_query = new Query\MoreLikeThis();
+        $like_query->setFields(array('title', 'labels', 'content'));
+        $like_query->setLikeText($this->escapeQueryStringTerm($content));
+        $like_query->setMinTermFrequency(1);
+        $like_query->setMinDocFrequency(1);
+
+        $filtered_query = new Query\Filtered($like_query, $filter);
+        $res = $search->search($filtered_query, array('limit' => 500));
+        $objects = $this->transformer->transform($res->getResults());
 
         return new ResultSet($objects);
     }

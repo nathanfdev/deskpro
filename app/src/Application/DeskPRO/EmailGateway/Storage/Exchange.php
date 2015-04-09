@@ -55,6 +55,7 @@ use EWSType_ItemResponseShapeType;
 use EWSType_MessageType;
 use EWSType_MoveItemType;
 use EWSType_NonEmptyArrayOfBaseFolderIdsType;
+use EWSType_NonEmptyArrayOfFoldersType;
 use EWSType_NonEmptyArrayOfBaseItemIdsType;
 use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
 use EWSType_NonEmptyArrayOfPathsToElementType;
@@ -256,12 +257,12 @@ class Exchange
     private function createFolder($name)
     {
         $request                                            = new EWSType_CreateFolderType();
-        $request->Folders                                   = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+        $request->Folders                      = new EWSType_NonEmptyArrayOfFoldersType();
         $request->Folders->Folder                           = new EWSType_FolderType();
         $request->Folders->Folder->DisplayName              = $name;
         $request->ParentFolderId                            = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
         $request->ParentFolderId->DistinguishedFolderId     = new \stdClass();
-        $request->ParentFolderId->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_FOLDER_ROOT;
+        $request->ParentFolderId->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_ROOT;
 
         $response = $this->service->CreateFolder($request);
 
@@ -313,7 +314,7 @@ class Exchange
 
         // use a distinguished folder name to find folders inside it
         $request->ParentFolderIds->DistinguishedFolderId     = new EWSType_DistinguishedFolderIdType();
-        $request->ParentFolderIds->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_FOLDER_ROOT;
+        $request->ParentFolderIds->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_ROOT;
 
         // request
         $response = $this->service->FindFolder($request);

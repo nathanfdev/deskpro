@@ -71,6 +71,12 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             'raw' => $raw,
         ));
 
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('bcc',      'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\Bcc');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('cc',       'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\Cc');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('from',     'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\From');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('reply-to', 'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\ReplyTo');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('to',       'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\To');
+
         $data = array(
             'from'        => $this->_readAddresses($message, 'from', true),
             'tos'         => $this->_readAddresses($message, 'to'),

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2949df831a96cdd6df27ddd02f7efd61",
+    "hash": "24eb50e4af648e8e2340e8f0c3091e33",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1369,12 +1369,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "65978aa4e9ffca3bb632225ad8c6320077d80d85"
+                "reference": "efb77c10dfb75485998a843154bbc44d8124c4d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/65978aa4e9ffca3bb632225ad8c6320077d80d85",
-                "reference": "65978aa4e9ffca3bb632225ad8c6320077d80d85",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/efb77c10dfb75485998a843154bbc44d8124c4d1",
+                "reference": "efb77c10dfb75485998a843154bbc44d8124c4d1",
                 "shasum": ""
             },
             "require": {
@@ -1419,7 +1419,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2015-03-23 09:47:20"
+            "time": "2015-04-07 10:34:31"
         },
         {
             "name": "doctrine/orm",
@@ -1549,16 +1549,16 @@
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.0.1",
+            "version": "1.0.0-rc.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "d24439ada0704948deef0d3eda2ea20fd8db1747"
+                "reference": "9fa415bcc5fdffab3c639503620a04960b567038"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/d24439ada0704948deef0d3eda2ea20fd8db1747",
-                "reference": "d24439ada0704948deef0d3eda2ea20fd8db1747",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/9fa415bcc5fdffab3c639503620a04960b567038",
+                "reference": "9fa415bcc5fdffab3c639503620a04960b567038",
                 "shasum": ""
             },
             "type": "library",
@@ -1584,7 +1584,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-05-21 20:20:46"
+            "time": "2014-04-28 18:54:38"
         },
         {
             "name": "evenement/evenement",
@@ -1634,17 +1634,17 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "dev-master",
+            "version": "2.0.0",
             "target-dir": "Firebase/PHP-JWT",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "0cb1d5a8c4efd6576814247617fc8463042c6fc7"
+                "reference": "ffcfd888ce1e4f2d70cac2dc9b7301038332fe57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/0cb1d5a8c4efd6576814247617fc8463042c6fc7",
-                "reference": "0cb1d5a8c4efd6576814247617fc8463042c6fc7",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/ffcfd888ce1e4f2d70cac2dc9b7301038332fe57",
+                "reference": "ffcfd888ce1e4f2d70cac2dc9b7301038332fe57",
                 "shasum": ""
             },
             "require": {
@@ -1675,7 +1675,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2015-04-01 18:56:25"
+            "time": "2015-04-01 18:46:38"
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
@@ -2420,16 +2420,16 @@
         },
         {
             "name": "league/url",
-            "version": "3.2.1",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/url.git",
-                "reference": "74ae626949e967fd20511d074835ae6ff67d97ae"
+                "reference": "a096be483bec9abcae34f4e21ec74696f7beed55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/url/zipball/74ae626949e967fd20511d074835ae6ff67d97ae",
-                "reference": "74ae626949e967fd20511d074835ae6ff67d97ae",
+                "url": "https://api.github.com/repos/thephpleague/url/zipball/a096be483bec9abcae34f4e21ec74696f7beed55",
+                "reference": "a096be483bec9abcae34f4e21ec74696f7beed55",
                 "shasum": ""
             },
             "require": {
@@ -2464,12 +2464,13 @@
                 }
             ],
             "description": "League/url is a lightweight PHP Url manipulating library",
+            "homepage": "http://url.thephpleague.com",
             "keywords": [
                 "parse_url",
                 "php",
                 "url"
             ],
-            "time": "2014-11-27 10:14:00"
+            "time": "2015-03-26 10:07:42"
         },
         {
             "name": "leth/ip-address",
@@ -2735,12 +2736,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/onelogin/php-saml.git",
-                "reference": "5d6315a3ea685cf81efc6bd1abdb329f5f072e95"
+                "reference": "bad8f6508052abd4af127643f6cb7b26add06917"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/5d6315a3ea685cf81efc6bd1abdb329f5f072e95",
-                "reference": "5d6315a3ea685cf81efc6bd1abdb329f5f072e95",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/bad8f6508052abd4af127643f6cb7b26add06917",
+                "reference": "bad8f6508052abd4af127643f6cb7b26add06917",
                 "shasum": ""
             },
             "require": {
@@ -2778,7 +2779,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2015-03-05 01:58:03"
+            "time": "2015-04-09 12:02:15"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -3473,16 +3474,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.4.0",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "db32c18eba00b121c145575fcbcd4d4d24e6db74"
+                "reference": "eab81d02569310739373308137284e0158424330"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/db32c18eba00b121c145575fcbcd4d4d24e6db74",
-                "reference": "db32c18eba00b121c145575fcbcd4d4d24e6db74",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/eab81d02569310739373308137284e0158424330",
+                "reference": "eab81d02569310739373308137284e0158424330",
                 "shasum": ""
             },
             "require": {
@@ -3518,7 +3519,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2015-01-17 09:51:32"
+            "time": "2015-04-08 04:46:07"
         },
         {
             "name": "phpunit/phpcov",
@@ -5399,12 +5400,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "330cdde52e5f9ddfcea9caa29db7c464b73a7abd"
+                "reference": "08aa372545bdf44f9e34cd007df61d69c5d2443f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/330cdde52e5f9ddfcea9caa29db7c464b73a7abd",
-                "reference": "330cdde52e5f9ddfcea9caa29db7c464b73a7abd",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/08aa372545bdf44f9e34cd007df61d69c5d2443f",
+                "reference": "08aa372545bdf44f9e34cd007df61d69c5d2443f",
                 "shasum": ""
             },
             "require": {
@@ -5425,7 +5426,7 @@
             ],
             "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
-            "time": "2015-03-10 18:26:31"
+            "time": "2015-04-08 08:46:37"
         },
         {
             "name": "zendframework/zend-queue",
@@ -5751,11 +5752,11 @@
         "zendframework/zendoauth": 20,
         "zendframework/zend-queue": 20,
         "satooshi/php-coveralls": 20,
+        "erusev/parsedown": 5,
         "deskpro/deskpro-api-php": 20,
         "zircote/swagger-php": 20,
         "friendsofsymfony/elastica-bundle": 20,
         "fzaninotto/faker": 20,
-        "firebase/php-jwt": 20,
         "onelogin/php-saml": 20,
         "google/apiclient": 20,
         "zendesk/zendesk_api_client_php": 20,

@@ -164,7 +164,7 @@ class TicketFilter extends AbstractEntityRepository
         try {
             $teams = $agent_data = App::$container->getAgentData()->getTeamsForAgent($agent);
         } catch (\InvalidArgumentException $e) {
-            return arary();
+            return array();
         }
 
         if ($teams) {

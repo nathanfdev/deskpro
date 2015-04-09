@@ -32,12 +32,30 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback importer.
+ * DeskPro feedback importer
  *
  * Class Feedback
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Feedback extends AbstractImporter implements SkipDuplicateInterface
 {
+    /**
+     * @var BlobAdapterInterface
+     */
+    private $blob_adapter;
+
+    /**
+     * Constructor
+     *
+     * @param Mapper\Collection    $mappers
+     * @param BlobAdapterInterface $blob_adapter
+     */
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    {
+        parent::__construct($mappers);
+        $this->blob_adapter = $blob_adapter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -55,7 +73,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_ratings']		= $fval->num_ratings;
      * $record['popularity']		= $fval->popularity;
      *
-     * @var Entity\Feedback
+     * @var Entity\Feedback $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -73,15 +91,21 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setDatePublished($entity->getDatePublished())
             ->setViewsCount($entity->getViewCount());
 
-        $this->records->add($feedback);
+        foreach ($entity->getAttachments() as $attachment) {
+            $feedback->addAttachment($this->createAttachment(
+                $attachment,
+                $entity->getPersonEmail()
+            ));
+        }
 
+        $this->records->add($feedback);
         return $this->records;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Feedback
+     * @var Entity\Feedback $entity
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -92,13 +116,12 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * Returns an feedback category by title
-     * Creates a new feedback category if not found.
+     * Creates a new feedback category if not found
      *
      * @param string $title
      *
-     * @throws \Exception
      * @return DeskPROEntity\FeedbackCategory|null
-     *
+     * @throws \Exception
      */
     private function findOrCreateFeedbackCategory($title)
     {
@@ -120,11 +143,30 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the feedback category mapper.
+     * Returns the importing DeskPro doctrine feedback attachment entity
      *
-     * @throws \Exception
+     * @param Entity\Attachment $entity
+     * @param string            $person_email
+     *
+     * @return DeskPROEntity\FeedbackAttachment
+     */
+    private function createAttachment(Entity\Attachment $entity, $person_email)
+    {
+        $email = $entity->getPersonEmail() ? : $person_email;
+        $attachment = new DeskPROEntity\FeedbackAttachment();
+        $attachment
+            ->setPerson($this->getPersonMapper()->findOneByEmail($email))
+            ->setBlob($this->blob_adapter->createByAttachment($entity));
+
+        $this->records->add($attachment);
+        return $attachment;
+    }
+
+    /**
+     * Returns the feedback category mapper
+     *
      * @return Mapper\FeedbackCategory
-     *
+     * @throws \Exception
      */
     private function getFeedbackCategoryMapper()
     {

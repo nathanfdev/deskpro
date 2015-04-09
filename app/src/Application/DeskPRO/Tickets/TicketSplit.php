@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitFrom;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitTo;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -154,7 +155,9 @@ class TicketSplit implements PersonContextInterface
         $message_ids = array();
 
         $first = null;
+        $firstAgent = null;
         foreach ($messages as $m) {
+            /** @var $m TicketMessage */
             $message_ids[] = $m->id;
             $this->ticket->messages->removeElement($m);
             $new_ticket->addMessage($m);
@@ -163,14 +166,41 @@ class TicketSplit implements PersonContextInterface
                 $first = $m;
             }
 
+            if ($m->person['is_agent'] && !$firstAgent) {
+                $firstAgent = $m;
+            }
+
             foreach ($m->attachments as $attach) {
                 $attach->ticket = $new_ticket;
             }
         }
 
-        if ($first) {
+        /**
+         * set dates:
+         * date_feedback_rating -> copy (and make sure to copy feedback_rating as well)
+         * date_created -> date_created of the first message in the ticket
+         * date_first_agent_assign -> do not copy (i.e., null)
+         * date_first_agent_reply -> date_created of first agent message in the ticket
+         * date_resolved -> null if not resolved
+         * date_archived -> null if not archived
+         * date_status -> right now (i.e., new \DateTime())
+         * date_agent_waiting -> if status is awaiting_user, then NOW. else, null
+         * date_user_waiting -> if status is awaiting_agent, then NOW. else, null
+         * total_to_first_reply should be seconds between date_created and date_first_agent_reply
+         * total_user_waiting set to total_to_first_reply
+         */
+        $new_ticket->date_feedback_rating = $this->ticket->date_feedback_rating;
+        $new_ticket->feedback_rating = $this->ticket->feedback_rating;
             $new_ticket->date_created = $first->date_created;
-        }
+        $new_ticket->date_first_agent_assign = null;
+        $new_ticket->date_first_agent_reply = $firstAgent ? $firstAgent->date_created : null;
+        $new_ticket->date_resolved = $this->ticket->date_resolved;
+        $new_ticket->date_archived = $this->ticket->date_archived;
+        $new_ticket->date_status = new \DateTime();
+        $new_ticket->date_agent_waiting = Ticket::STATUS_AWAITING_USER === $this->ticket->status ? new \DateTime() : null;
+        $new_ticket->date_user_waiting = Ticket::STATUS_AWAITING_AGENT === $this->ticket->status ? new \DateTime() : null;
+        $new_ticket->total_to_first_reply = $firstAgent ? $firstAgent->date_created->getTimestamp() - $first->date_created->getTimestamp() : null;
+        $new_ticket->total_user_waiting = $new_ticket->total_to_first_reply;
 
         $new_ticket->creation_system = Ticket::CREATED_WEB_AGENT;
 

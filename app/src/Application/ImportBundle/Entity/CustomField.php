@@ -31,9 +31,10 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting custom field entity.
+ * Exporting custom field entity
  *
  * Class CustomField
+ * @package Application\ImportBundle\Entity
  */
 final class CustomField extends AbstractEntity
 {
@@ -62,6 +63,8 @@ final class CustomField extends AbstractEntity
     }
 
     /**
+     * Key name
+     *
      * @return string
      */
     public function getKey()
@@ -70,18 +73,20 @@ final class CustomField extends AbstractEntity
     }
 
     /**
-     * @param string $key
+     * Set a key name
      *
+     * @param string $key
      * @return $this
      */
     public function setKey($key)
     {
-        $this->key = (string) $key;
-
+        $this->key = (string)$key;
         return $this;
     }
 
     /**
+     * Custom field value
+     *
      * @return mixed
      */
     public function getValue()
@@ -90,14 +95,14 @@ final class CustomField extends AbstractEntity
     }
 
     /**
-     * @param mixed $value
+     * Set a value
      *
+     * @param mixed $value
      * @return $this
      */
     public function setValue($value)
     {
         $this->value = $value;
-
         return $this;
     }
 
@@ -114,9 +119,7 @@ final class CustomField extends AbstractEntity
     }
 
     /**
-     * Validator class metadata.
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

@@ -183,7 +183,9 @@ class LoginProcessor
             // if this setting is true, then always update $this->person via these methods
             if (App::getSetting('core.usersource_always_update_data')) {
                 $this->updatePersonName($mapped_fields);
+                if (!$this->person->picture_blob || strpos($this->person->picture_blob->filename, 'dp-source-picture') !== false) {
                 $this->updatePictureData($mapped_fields, $em);
+                }
                 $this->updatePhone($mapped_fields, $em);
                 $this->updateTwitter($mapped_fields, $em);
             }
@@ -375,7 +377,7 @@ class LoginProcessor
                 if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
                     $mime = $mime_map[$image_info[2]];
                     $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                        $filename, 'picture.'.$mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
+                        $filename, 'dp-source-picture.' . $mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
                     );
 
                     $accept = App::getContainer()->getAttachmentAccepter();

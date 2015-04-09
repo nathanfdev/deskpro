@@ -1152,7 +1152,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
             list($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
             if ($this->id == $id || $id == '*') {
-                return ($override_pass === $plain_password);
+                if ($override_pass === $plain_password) {
+                    return true;
+                }
             }
         }
 
@@ -2316,7 +2318,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function isNewPerson()
     {
-        return $this->_is_new_person;
+        if ($this->_is_new_person) {
+            return true;
+        }
+
+        // Hack for users created outside of doctrine in PersonFromEmailProcessor
+        if ($this->id && isset($GLOBALS['DP_CREATED_PEOPLE_IDS'][$this->id])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

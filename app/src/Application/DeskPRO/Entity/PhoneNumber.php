@@ -181,6 +181,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array( 'fieldName'    => 'person',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
                                        'inversedBy'   => 'phone_numbers',
+                                        'cascade'     => array('persist'),
                                        'joinColumns'  => array( 0 => array( 'name'                 => 'person_id',
                                                                             'referencedColumnName' => 'id',
                                                                             'nullable'             => true,

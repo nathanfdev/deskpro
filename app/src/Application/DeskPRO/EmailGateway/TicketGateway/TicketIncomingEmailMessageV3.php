@@ -168,7 +168,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 
         $this->body = trim($this->body, " >\n\r");
 
-        $this->body = nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8'));
+        $this->body = Strings::text2html($this->body, 'plaintext-email');
 
         if ($token_replace_callback) {
             $this->body = call_user_func($token_replace_callback, $this->body, $inline_images);

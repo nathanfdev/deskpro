@@ -34,6 +34,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 use Application\DeskPRO\Translate\JsExporter;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -211,6 +212,11 @@ class InterfaceController extends AbstractController
         }
 
         $file = $data->getData('file');
+
+        if ($data->getData('url')) {
+            $response = new RedirectResponse($data->getData('url'));
+            return $response;
+        }
 
         if (!file_exists($file)) {
             throw new NotFoundHttpException();

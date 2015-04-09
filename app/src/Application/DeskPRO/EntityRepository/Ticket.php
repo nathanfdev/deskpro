@@ -721,19 +721,17 @@ class Ticket extends AbstractEntityRepository
     {
         $ids = array();
         foreach ($people as $p) {
-            $ids[] = $p->id;
-        }
-
-        if (!$ids) {
-            return array();
+	        $ids[] = $p['id'];
         }
 
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
-            SELECT person_id, COUNT(*)
-            FROM tickets
-            WHERE person_id IN (?)
+            SELECT person_id, COUNT(person_id) FROM (
+				SELECT person_id FROM tickets WHERE person_id IN (?)
+				UNION ALL
+				SELECT person_id FROM tickets_participants WHERE person_id IN (?)
+			) a
             GROUP BY person_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+        ', array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
     }
 
     /**

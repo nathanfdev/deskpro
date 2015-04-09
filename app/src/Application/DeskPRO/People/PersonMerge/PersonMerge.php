@@ -75,7 +75,7 @@ class PersonMerge implements PersonContextInterface
         $this->other_person = $other_person;
         $this->setPersonContext($person_performer);
 
-        if ($person == $other_person) {
+        if ($person === $other_person) {
             throw new \InvalidArgumentException("You cannot merge a person with itself");
         }
     }

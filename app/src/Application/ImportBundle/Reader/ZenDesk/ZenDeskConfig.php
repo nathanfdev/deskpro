@@ -28,11 +28,13 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Exception;
+use DateTime;
 
 /**
- * ZenDesk reader config.
+ * ZenDesk reader config
  *
  * Class ZenDeskConfig
+ * @package Application\ImportBundle\Reader\ZenDesk
  */
 class ZenDeskConfig
 {
@@ -60,51 +62,26 @@ class ZenDeskConfig
     private $api_token;
 
     /**
-     * How many times to try an API call before re-throwing an error?
-     *
-     * @var int
+     * @var DateTime
      */
-    private $try_count = 6;
+    private $initial_time;
 
     /**
-     * The number of seconds between try attempts
-     * when the attempts are errors;.
+     * Constructor
      *
-     * @var int
+     * @param string   $subdomain
+     * @param string   $username
+     * @param DateTime $initial_time
      */
-    private $try_time_error  = 6;
-
-    /**
-     * The number of seconds between try attempts
-     * when the attempts are rate limit errors.
-     *
-     * @var int
-     */
-    private $try_time_ratelimit  = 15;
-
-    /**
-     * The number of seconds between try attempts increases
-     * by this number every time. So try #2 is $try_time_ratelimit,
-     * try #3 is $try_time_ratelimit+$try_time_inc, etc.
-     *
-     * @var int
-     */
-    private $try_time_inc = 15;
-
-    /**
-     * Constructor.
-     *
-     * @param string $subdomain
-     * @param string $username
-     */
-    public function __construct($subdomain, $username)
+    public function __construct($subdomain, $username, DateTime $initial_time)
     {
-        $this->subdomain = $subdomain;
-        $this->username  = $username;
+        $this->subdomain    = $subdomain;
+        $this->username     = $username;
+        $this->initial_time = $initial_time;
     }
 
     /**
-     * Returns the subdomain.
+     * Returns the subdomain
      *
      * @return string
      */
@@ -114,7 +91,7 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns the username or email.
+     * Returns the username or email
      *
      * @return int
      */
@@ -124,21 +101,29 @@ class ZenDeskConfig
     }
 
     /**
-     * Set the auth api token.
+     * Returns initial start time
+     *
+     * @return DateTime
+     */
+    public function getInitialTime()
+    {
+        return $this->initial_time;
+    }
+
+    /**
+     * Set the auth api token
      *
      * @param string $api_token
-     *
      * @return $this
      */
     public function setApiToken($api_token)
     {
         $this->api_token = $api_token;
-
         return $this;
     }
 
     /**
-     * Returns the api token if it's defined.
+     * Returns the api token if it's defined
      *
      * @return string
      */
@@ -148,21 +133,19 @@ class ZenDeskConfig
     }
 
     /**
-     * Set the auth password.
+     * Set the auth password
      *
      * @param string $password
-     *
      * @return $this
      */
     public function setPassword($password)
     {
         $this->password = $password;
-
         return $this;
     }
 
     /**
-     * Returns the api password if it's defined.
+     * Returns the api password if it's defined
      *
      * @return string
      */
@@ -172,11 +155,10 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns a text value indicating the type of authorization configured.
+     * Returns a text value indicating the type of authorization configured
      *
-     * @throws Exception
      * @return string
-     *
+     * @throws Exception
      */
     public function getAuthType()
     {
@@ -191,11 +173,10 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns auth password or token by auth type.
+     * Returns auth password or token by auth type
      *
-     * @throws Exception
      * @return string
-     *
+     * @throws Exception
      */
     public function getAuthValue()
     {

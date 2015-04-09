@@ -27,12 +27,14 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting download entity.
+ * Exporting download entity
  *
  * Class Download
+ * @package Application\ImportBundle\Entity
  */
 final class Download extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
@@ -70,7 +72,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * Download category.
+     * Download category
      *
      * @return string
      */
@@ -80,21 +82,19 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * Set a download category.
+     * Set a download category
      *
      * @param string $category
-     *
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
-
         return $this;
     }
 
     /**
-     * Download attachment.
+     * Download attachment
      *
      * @return Attachment
      */
@@ -104,16 +104,14 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * Set a download attachment.
+     * Set a download attachment
      *
      * @param Attachment $attachment
-     *
      * @return $this
      */
     public function setAttachment(Attachment $attachment = null)
     {
         $this->attachment = $attachment;
-
         return $this;
     }
 
@@ -131,12 +129,11 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
     /**
-     * Number of downloads.
+     * Number of downloads
      *
      * @return int
      */
@@ -146,16 +143,14 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * Set a number of downloads.
+     * Set a number of downloads
      *
      * @param int $num_downloads
-     *
      * @return $this
      */
     public function setNumDownloads($num_downloads)
     {
-        $this->num_downloads = $num_downloads;
-
+        $this->num_downloads = (int)$num_downloads;
         return $this;
     }
 
@@ -173,7 +168,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public function addLabel($label)
     {
         $this->labels[] = $label;
-
         return $this;
     }
 
@@ -182,7 +176,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -208,9 +202,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * Validator class metadata.
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

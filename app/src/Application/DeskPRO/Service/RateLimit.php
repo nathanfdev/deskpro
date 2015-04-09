@@ -32,10 +32,15 @@ use Application\DeskPRO\EntityRepository\RateLimitLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
+use Leth\IPAddress\IP\Address;
+use Leth\IPAddress\IP\NetworkAddress;
 
 class RateLimit
 {
     const KEY = 'rate_limit';
+
+	const DISABLED = 'core.rate_limit_disabled';
+    const IPS = 'core.rate_limit_ips';
 
     const ACT_LOGIN          = 'login';
     const ACT_REGISTRATION   = 'registration';
@@ -56,6 +61,11 @@ class RateLimit
         $this->container = $continer;
     }
 
+	protected function isNoop()
+	{
+		return (int) $this->container->getSetting(self::DISABLED);
+	}
+
     /**
      * save action.
      *
@@ -67,6 +77,10 @@ class RateLimit
      */
     public function saveAction($action)
     {
+		if ($this->isNoop()) {
+			return false;
+		}
+
         if (!$this->container->isScopeActive('request')) {
             return false;
         }
@@ -158,6 +172,10 @@ class RateLimit
      */
     public function isActionLimited($action)
     {
+		if ($this->isNoop()) {
+			return false;
+		}
+
         if (!$this->container->isScopeActive('request')) {
             return false;
         }
@@ -165,8 +183,29 @@ class RateLimit
         /** @var Request $request */
         $request = $this->container->get('request');
         $person  = $request->getSession()->getPerson();
-        $ip      = $request->getClientIp();
+		if ($this->isWhitelisted($ip = $request->getClientIp())) {
+            return false;
+        }
 
         return (bool) $this->getResponse($action, $person, $ip);
+    }
+
+    protected function isWhitelisted($ip)
+    {
+        $ip = ip2long($ip);
+        $whitelisted = json_decode($this->container->getSetting(self::IPS), 1) ?: array();
+        foreach ($whitelisted as $wip) {
+            @list ($subnet, $bits) = explode('/', $wip);
+            $subnet = ip2long($subnet);
+
+            if (!$bits) {
+                if ($ip === $subnet) return true;
+            } else {
+                $mask = -1 << (32 - $bits);
+                $subnet &= $mask; # nb: in case the supplied subnet wasn't correctly aligned
+                if (($ip & $mask) === $subnet) return true;
+            }
+        }
+        return false;
     }
 }

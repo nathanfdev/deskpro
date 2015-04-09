@@ -97,7 +97,12 @@
      */
     'core.deskpro_url' => '',
 
-    /*
+    /**
+     * Auto-correct the URL?
+     */
+    'core.deskpro_url_autocorrect' => true,
+
+    /**
      * The name of the DeskPRO helpdesk
      */
     'core.deskpro_name' => 'DeskPRO',
@@ -322,11 +327,11 @@
     /*
      * Show the share widget (twitter/facebook/linkedin/gplus)
      */
-    'core.show_share_widget'   => true,
-    'core.show_share_facebook' => true,
-    'core.show_share_twitter'  => true,
-    'core.show_share_linkedin' => true,
-    'core.show_share_gplus'    => true,
+    'core.show_share_widget'   => false,
+    'core.show_share_facebook' => false,
+    'core.show_share_twitter'  => false,
+    'core.show_share_linkedin' => false,
+    'core.show_share_gplus'    => false,
 
     /*
      * Enable the KB?

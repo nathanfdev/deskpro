@@ -156,8 +156,8 @@ class CsvUpload
                 return array(
                     'status'   => 'completed',
                     'message'  => $task['run_status'],
-                    'imported' => $data['imported'],
-                    'failed'   => $data['failed'],
+                    'imported' => @$data['imported'] ?: 0,
+                    'failed' => @$data['failed'] ?: 0,
                     'log'      => $logBlob ? $logBlob->getDownloadUrl(true) : null,
                 );
             }

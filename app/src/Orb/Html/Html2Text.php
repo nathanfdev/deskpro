@@ -47,6 +47,8 @@ use Orb\Util\Strings;
  */
 class Html2Text
 {
+    private $bq_level = 0;
+
     /**
      * @param string $html
      *
@@ -73,8 +75,9 @@ class Html2Text
         $html = Strings::standardEol($html);
 
         // nbsp's
-        $html = str_replace('&nbsp;', ' ', $html);
-        $html = preg_replace('#\x{00a0}#u', ' ', $html);
+        $html = trim($html);
+        $html = str_replace('&nbsp;', 'xxxDP_NBSP_PLACExxx', $html);
+        $html = preg_replace('#\x{00a0}#u', 'xxxDP_NBSP_PLACExxx', $html);
 
         $html = '<?xml version="1.0" encoding="UTF-8"?>'."\n".$html;
 
@@ -83,8 +86,10 @@ class Html2Text
             throw new \InvalidArgumentException("Error loading HTML into DOMDocument");
         }
 
+        $this->bq_level = 0;
+
         $txt = $this->convertNode($doc);
-        $txt = Strings::trimLines($txt);
+        $txt = str_replace('xxxDP_NBSP_PLACExxx', ' ', $txt);
         $txt = trim($txt);
 
         return $txt;
@@ -107,7 +112,6 @@ class Html2Text
         }
 
         $nextName = $this->getNextChildName($node);
-        //$prevName = $this->getPrevChildName($node);
 
         $name = strtolower($node->nodeName);
 
@@ -133,17 +137,16 @@ class Html2Text
                 $output = '<DP_BR>';
                 break;
 
-            case 'td':
-                $output = '<DP_SP>';
+            case 'tr':
+                $output = '<DP_BR_P>';
                 break;
 
             case 'p':
-            case 'div':
-            case 'tr':
-            case 'thead':
-            case 'tbody':
-            case 'tfoot':
                 $output = '<DP_BR>';
+                break;
+
+            case 'div':
+                $output = '<DP_BR_P>';
                 break;
         }
 
@@ -152,7 +155,15 @@ class Html2Text
             for ($i = 0; $i < $len; $i++) {
                 $n = $node->childNodes->item($i);
                 if ($n) {
+                    $is_bq = false;
+                    if ($n instanceof DOMElement && ($n->getAttribute('data-dp-type') === 'blockquote' || strtolower($n->nodeName) == 'blockquote')) {
+                        $is_bq = true;
+                        $this->bq_level++;
+                    }
                     $text = $this->convertNode($n, $_depth+1);
+                    if ($is_bq) {
+                        $this->bq_level--;
+                    }
                     $output .= $text;
                 }
             }
@@ -160,14 +171,6 @@ class Html2Text
 
         // end whitespace
         switch ($name) {
-            case 'style':
-            case 'head':
-            case 'title':
-            case 'meta':
-            case 'script':
-                // ignore these tags
-                return '';
-
             case 'h1':
             case 'h2':
             case 'h3':
@@ -177,26 +180,17 @@ class Html2Text
                 $output .= '<DP_BR>';
                 break;
 
-            case 'td':
-                $output .= '<DP_SP>';
-                break;
-
             case 'p':
             case 'br':
-                if ($nextName != "div") {
                     $output .= '<DP_BR>';
-                }
                 break;
 
             case 'div':
-                // add one line only if the next child isn't a div
-                if ($nextName != "div" && $nextName != null) {
-                    $output .= '<DP_BR>';
-                }
+                $output .= '<DP_BR_P>';
                 break;
 
             case 'a':
-                if (!trim(str_replace('<DP_BR>', '', $output))) {
+                if (!trim(str_replace(array('<DP_BR>', '<DP_BR_P>', 'xxxDP_NBSP_PLACExxx'), '', $output))) {
                     $output = '';
                 } else {
                     $href = $node->getAttribute("href");
@@ -224,13 +218,32 @@ class Html2Text
                 break;
         }
 
-        $output = Strings::trimLines($output);
         $output = str_replace("\n", ' ', $output);
-        $output = preg_replace('#[ ]+#', ' ', $output); // multiple spaces to single
+
+        $output = trim($output);
+
+        if ($node instanceof DOMElement && ($node->getAttribute('data-dp-type') === 'blockquote' || $name == 'blockquote')) {
+            $output = '<DP_BLOCKQUOTE_BEGIN_'.$this->bq_level.'>'.$output.'<DP_BLOCKQUOTE_END_'.$this->bq_level.'>';
+            if ($name == 'blockquote') {
+                $output .= "<DP_BR>"; // a real blockquote el has whitespace after it
+            }
+        }
+
         if ($_depth == 0) {
+            $output = preg_replace('#<DP_BR_P>\s*<DP_BR>#m', '<DP_BR>', $output);
+            $output = preg_replace('#<DP_BR>\s*<DP_BR_P>#m', '<DP_BR>', $output);
+            $output = preg_replace_callback('#(<DP_BR_P>\s*)+#m', function($m) {
+                return str_repeat("\n", min(2, substr_count($m[1], '<DP_BR_P>')));
+            }, $output);
             $output = str_replace('<DP_BR>', "\n", $output);
             $output = str_replace('<DP_SP>', " ", $output);
+
+            $output = preg_replace_callback('#<DP_BLOCKQUOTE_BEGIN_(\d+)>(.*?)<DP_BLOCKQUOTE_END_\\1>#ms', function($m) {
+                $s = str_repeat('>', $m[1]) . ' ';
+                return Strings::modifyLines(trim($m[2]), $s);
+            }, $output);
         }
+        $output = preg_replace('#[ ]+#', ' ', $output); // multiple spaces to single
 
         $output = trim($output);
 

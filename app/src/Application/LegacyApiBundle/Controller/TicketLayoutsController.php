@@ -39,6 +39,15 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 
+/**
+ * Simple ticket layouts CRUD
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_layout",
+ * 	description="Operations about Ticket layouts",
+ * 	basePath="/api"
+ * )
+ */
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -57,6 +66,39 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # get
     ####################################################################################################################
 
+	/**
+     * @param int $dep_id
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get ticket layout for given department",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="Ticket department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/default",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get default ticket layout",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function getAction($dep_id = 0)
     {
         $is_default    = false;
@@ -101,6 +143,19 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # stats
     ####################################################################################################################
 
+	/**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/stats",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Show layout statistic by departments",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function getLayoutStatsAction()
     {
         $deps_with_layouts = $this->db->fetchAllCol("
@@ -136,6 +191,77 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # save
     ####################################################################################################################
 
+	/**
+     * @param int $dep_id
+     * @return Response
+     * @throws \Exception
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing department layout by department ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="Department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[user]",
+     *				description="Layout user",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[agent]",
+     *				description="Layout agent",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+
+     * @SWG\Api(
+     * 	path="/ticket_layouts/default",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update default ticket layout",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="Department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[user]",
+     *				description="Layout user",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[agent]",
+     *				description="Layout agent",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAction($dep_id = 0)
     {
         if ($dep_id) {
@@ -205,6 +331,30 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # delete
     ####################################################################################################################
 
+    /**
+     * @param $dep_id
+     * @return Response
+     * @throws \Exception
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete department ticket layout by department ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function deleteAction($dep_id)
     {
         $dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
@@ -221,6 +371,30 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # get-field-status
     ####################################################################################################################
 
+    /**
+     * Get field use statistic
+     * @param $field_id
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/fields/{field_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get field use statistic",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="field_id",
+     *				description="Field ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getFieldStatusAction($field_id)
     {
         $dm = $this->getContainer()->getTicketDepartments();
@@ -281,6 +455,29 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # save-field-status
     ####################################################################################################################
 
+	/**
+     * @param $field_id
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/fields/{field_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save field status",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="field_id",
+     *				description="Field ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveFieldStatusAction($field_id)
     {
         $enable_user_layouts  = $this->in->getArrayOfUInts('enable_user_layouts');

@@ -28,28 +28,36 @@
 namespace Application\ImportBundle\Generator;
 
 /**
- * Generator interface.
+ * Generator interface
  *
  * Interface GeneratorInterface
+ * @package Application\ImportBundle\Generator
  */
 interface GeneratorInterface extends GeneratorConfigAwareInterface
 {
     /**
-     * Returns count of records of all types to be exported.
+     * Returns generator configuration
+     *
+     * @return GeneratorConfig
+     */
+    public function getConfig();
+
+    /**
+     * Returns a count of records of all types to be exported
      *
      * @return int
      */
     public function getTotalRecordsCount();
 
     /**
-     * Generates and writes collection of entities.
+     * Generates and writes a collection of entities
      *
      * @throws GeneratorException
      */
     public function generate();
 
     /**
-     * Validates exporting collection.
+     * Validates exporting collection
      *
      * @return Validator\ExceptionCollection
      */

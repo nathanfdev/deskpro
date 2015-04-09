@@ -26,8 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
  *
+ * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Custom person data.
+ * Custom person data
  */
 class CustomDataPerson extends CustomDataAbstract
 {
@@ -65,6 +66,31 @@ class CustomDataPerson extends CustomDataAbstract
         return $this->person['id'];
     }
 
+    /**
+     * Set a field
+     *
+     * @param CustomDefPerson $field
+     * @return $this
+     */
+    public function setField(CustomDefPerson $field = null)
+    {
+        $this->setModelField('field', $field);
+        return $this;
+    }
+
+    /**
+     * Set a root field
+     *
+     * @param CustomDefPerson $field
+     * @return $this
+     */
+    public function setRootField(CustomDefPerson $field = null)
+    {
+        $this->setModelField('root_field', $field);
+        return $this;
+    }
+
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -73,15 +99,15 @@ class CustomDataPerson extends CustomDataAbstract
     {
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'custom_data_person', 'indexes' => array( 'obj_id_idx' => array( 'columns' => array( 0 => 'person_id')), 'field_id_idx' => array( 'columns' => array( 0 => 'field_id', 1 => 'person_id')))));
+        $metadata->setPrimaryTable(array( 'name' => 'custom_data_person', 'indexes' => array( 'obj_id_idx' => array( 'columns' => array( 0 => 'person_id', ), ), 'field_id_idx' => array( 'columns' => array( 0 => 'field_id', 1 => 'person_id', ), ), ), ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'value'));
-        $metadata->mapField(array( 'fieldName' => 'input', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'input'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'value', ));
+        $metadata->mapField(array( 'fieldName' => 'input', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'input', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'root_field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'root_field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'root_field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'root_field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 
         $events = array(
             Events::prePersist,
@@ -93,7 +119,7 @@ class CustomDataPerson extends CustomDataAbstract
             $metadata->addEntityListener(
                 $event,
                 'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener',
-                'on'.ucfirst($event)
+                'on' . ucfirst($event)
             );
         }
     }

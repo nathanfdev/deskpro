@@ -26,7 +26,7 @@
     'user.tickets.fields_department'                   => 'Department',
     'user.tickets.fields_priority'                     => 'Priority',
     'user.tickets.fields_product'                      => 'Product',
-    'user.tickets.flash_new_ticket_login'              => 'Your ticket has been submitted. Log in to view it now.',
+    'user.tickets.flash_new_ticket_login'              => 'You have to login to submit this ticket.',
     'user.tickets.flash_new_ticket_validating_email'   => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
     'user.tickets.form_error_captcha'                  => 'Please enter the code',
     'user.tickets.form_error_captcha_invalid'          => 'The code you entered is incorrect.',

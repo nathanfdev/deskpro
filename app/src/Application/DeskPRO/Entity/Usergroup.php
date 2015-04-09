@@ -157,6 +157,18 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * Set title
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+        return $this;
+    }
+
+    /**
      * Generate a key for a set of usergroups. These same usergroups
      * will always generate the same key.
      *

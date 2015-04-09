@@ -33,9 +33,10 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro ticket importer.
+ * DeskPro ticket importer
  *
  * Class Ticket
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Ticket extends AbstractImporter
 {
@@ -50,7 +51,7 @@ final class Ticket extends AbstractImporter
     private $blob_adapter;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param Mapper\Collection    $mappers
      * @param TicketManager        $manager
@@ -75,7 +76,7 @@ final class Ticket extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Ticket
+     * @var Entity\Ticket $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -123,71 +124,66 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($ticket);
-
         return $this->records;
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket message entity.
+     * Returns the importing DeskPro doctrine ticket message entity
      *
-     * @param Entity\TicketMessage $importing_entity
-     *
+     * @param Entity\TicketMessage $entity
      * @return DeskPROEntity\TicketMessage
      */
-    private function createTicketMessage(Entity\TicketMessage $importing_entity)
+    private function createTicketMessage(Entity\TicketMessage $entity)
     {
         $message = new DeskPROEntity\TicketMessage();
         $message
-            ->setPersonId($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail())->getId())
-            ->setDateCreated($importing_entity->getDateCreated());
+            ->setPersonId($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail())->getId())
+            ->setDateCreated($entity->getDateCreated());
 
-        if ($importing_entity->getMessageText()) {
-            $message->setMessageText($importing_entity->getMessageText());
+        if ($entity->getMessageText()) {
+            $message->setMessageText($entity->getMessageText());
         }
-        if ($importing_entity->getMessageHtml()) {
-            $message->setMessageText($importing_entity->getMessageHtml());
+        if ($entity->getMessageHtml()) {
+            $message->setMessageHtml($entity->getMessageHtml());
         }
-        foreach ($importing_entity->getAttachments() as $importing_attachment) {
+        foreach ($entity->getAttachments() as $attachment) {
             $message->addAttachment($this->createAttachment(
-                $importing_attachment,
-                $importing_entity->getPersonEmail()
+                $attachment,
+                $entity->getPersonEmail()
             ));
         }
 
         $this->records->add($message);
-
         return $message;
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket message attachment entity.
+     * Returns the importing DeskPro doctrine ticket message attachment entity
      *
-     * @param Entity\Attachment $importing_entity
-     * @param string            $message_person_email
+     * @param Entity\Attachment $entity
+     * @param string            $person_email
      *
      * @return DeskPROEntity\TicketAttachment
      */
-    private function createAttachment(Entity\Attachment $importing_entity, $message_person_email)
+    private function createAttachment(Entity\Attachment $entity, $person_email)
     {
-        $email      = $importing_entity->getPersonEmail() ?: $message_person_email;
+        $email = $entity->getPersonEmail() ? : $person_email;
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($importing_entity));
+            ->setBlob($this->blob_adapter->createByAttachment($entity));
 
         $this->records->add($attachment);
-
         return $attachment;
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket participant entity.
+     * Returns the importing DeskPro doctrine ticket participant entity
      *
      * @param string $email
      *
-     * @throws Mapper\MapperException
      * @return DeskPROEntity\TicketParticipant
-     *
+     * @throws Mapper\MapperException
      */
     private function createParticipant($email)
     {
@@ -195,19 +191,17 @@ final class Ticket extends AbstractImporter
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
         $this->records->add($participant);
-
         return $participant;
     }
 
     /**
      * Returns a department by title
-     * Creates a new department if not found.
+     * Creates a new department if not found
      *
      * @param string $title
      *
-     * @throws \Exception
      * @return DeskPROEntity\Department|null
-     *
+     * @throws \Exception
      */
     private function findOrCreateTicketDepartment($title)
     {
@@ -233,24 +227,25 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket priority by title
-     * Creates a new ticket priority if not found.
+     * Creates a new ticket priority if not found
      *
-     * @param string $title
+     * @param Entity\TicketPriority $entity
      *
-     * @throws \Exception
      * @return DeskPROEntity\TicketPriority|null
-     *
+     * @throws \Exception
      */
-    private function findOrCreateTicketPriority($title)
+    private function findOrCreateTicketPriority(Entity\TicketPriority $entity = null)
     {
         $priority = null;
-        if ($title) {
-            $priority = $this->getTicketPriorityMapper()->findOneByTitle($title, false);
+        if ($entity) {
+            $priority = $this->getTicketPriorityMapper()->findOneByTitle($entity->getTitle(), false);
             if ($priority) {
                 $this->logInfo(sprintf('Found existing ticket priority `%s`', $priority->getTitle()));
             } else {
                 $priority = new DeskPROEntity\TicketPriority();
-                $priority->setRealTitle($title);
+                $priority
+                    ->setRealTitle($entity->getTitle())
+                    ->setPriority($entity->getValue());
 
                 $this->records->add($priority);
                 $this->logWarning(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
@@ -262,13 +257,12 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket category by title
-     * Creates a new ticket category if not found.
+     * Creates a new ticket category if not found
      *
      * @param string $title
      *
-     * @throws \Exception
      * @return DeskPROEntity\TicketCategory|null
-     *
+     * @throws \Exception
      */
     private function findOrCreateTicketCategory($title)
     {
@@ -290,70 +284,66 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity.
+     * Returns custom def person entity
      *
-     * @param Entity\CustomField $importing_entity
+     * @param Entity\CustomField $entity
      *
-     * @throws ImporterException
      * @return DeskPROEntity\CustomDataTicket
-     *
+     * @throws ImporterException
      */
-    private function createCustomData(Entity\CustomField $importing_entity)
+    private function createCustomData(Entity\CustomField $entity)
     {
-        $person_def = $this->getCustomDefTicketMapper()->findOneByTitle($importing_entity->getKey());
-        $entity     = new DeskPROEntity\CustomDataTicket();
+        $ticket_def   = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getKey());
+        $custom_field = new DeskPROEntity\CustomDataTicket();
 
-        switch ($person_def->getTypeName()) {
+        switch ($ticket_def->getTypeName()) {
             case Entity\CustomField::FIELD_TYPE_TEXT:
             case Entity\CustomField::FIELD_TYPE_TEXTAREA:
-                $entity
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($importing_entity->getValue());
+                $custom_field
+                    ->setField($ticket_def)
+                    ->setRootField($ticket_def)
+                    ->setValue($entity->getValue());
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_TOGGLE:
-                $entity
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($importing_entity->getValue() ? 1 : 0);
+                $custom_field
+                    ->setField($ticket_def)
+                    ->setRootField($ticket_def)
+                    ->setValue($entity->getValue() ? 1 : 0);
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_DATE:
-                $entity
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($importing_entity->getValue() ? strtotime($importing_entity->getValue()) : 0);
+                $custom_field
+                    ->setField($ticket_def)
+                    ->setRootField($ticket_def)
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
 
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
-                // todo choice def from persons or tickets
-                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($importing_entity->getValue());
-                $entity
+                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getValue());
+                $custom_field
                     ->setField($choice_def)
-                    ->setRootField($person_def)
+                    ->setRootField($ticket_def)
                     ->setValue(1);
 
                 break;
 
             default:
-                throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
+                throw new ImporterException('Unknown custom field type `%s`', $ticket_def->getTypeName());
         }
 
-        $this->records->add($entity);
-
-        return $entity;
+        $this->records->add($custom_field);
+        return $custom_field;
     }
 
     /**
-     * Returns the ticket department mapper.
+     * Returns the ticket department mapper
      *
-     * @throws \Exception
      * @return Mapper\TicketDepartment
-     *
+     * @throws \Exception
      */
     private function getTicketDepartmentMapper()
     {
@@ -361,11 +351,10 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket priority mapper.
+     * Returns the ticket priority mapper
      *
-     * @throws \Exception
      * @return Mapper\TicketPriority
-     *
+     * @throws \Exception
      */
     private function getTicketPriorityMapper()
     {
@@ -373,11 +362,10 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket category mapper.
+     * Returns the ticket category mapper
      *
-     * @throws \Exception
      * @return Mapper\TicketCategory
-     *
+     * @throws \Exception
      */
     private function getTicketCategoryMapper()
     {
@@ -385,11 +373,10 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the custom def person mapper.
+     * Returns the custom def person mapper
      *
-     * @throws \Exception
      * @return Mapper\CustomDefTicket
-     *
+     * @throws \Exception
      */
     private function getCustomDefTicketMapper()
     {

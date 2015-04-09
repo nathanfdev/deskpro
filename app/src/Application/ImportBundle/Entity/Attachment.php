@@ -27,13 +27,14 @@
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
 
 /**
- * Exporting attachment entity.
+ * Exporting attachment entity
  *
  * Class Attachment
+ * @package Application\ImportBundle\Entity
  */
 final class Attachment extends AbstractEntity implements PersonAwareInterface
 {
@@ -94,11 +95,12 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
     /**
+     * Blob data
+     *
      * @return string
      */
     public function getBlobData()
@@ -107,18 +109,20 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $blob_data
+     * Set blob data
      *
+     * @param string $blob_data
      * @return $this
      */
     public function setBlobData($blob_data)
     {
         $this->blob_data = $blob_data;
-
         return $this;
     }
 
     /**
+     * Blob url
+     *
      * @return string
      */
     public function getBlobUrl()
@@ -127,18 +131,20 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $blob_url
+     * Set a blob url
      *
+     * @param string $blob_url
      * @return $this
      */
     public function setBlobUrl($blob_url)
     {
         $this->blob_url = $blob_url;
-
         return $this;
     }
 
     /**
+     * Blob path
+     *
      * @return string
      */
     public function getBlobPath()
@@ -147,18 +153,20 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $blob_path
+     * Set a blob path
      *
+     * @param string $blob_path
      * @return $this
      */
     public function setBlobPath($blob_path)
     {
         $this->blob_path = $blob_path;
-
         return $this;
     }
 
     /**
+     * File name
+     *
      * @return string
      */
     public function getFileName()
@@ -167,18 +175,20 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $file_name
+     * Set file name
      *
+     * @param string $file_name
      * @return $this
      */
     public function setFileName($file_name)
     {
         $this->file_name = $file_name;
-
         return $this;
     }
 
     /**
+     * Content type
+     *
      * @return string
      */
     public function getContentType()
@@ -187,14 +197,14 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $content_type
+     * Set content type
      *
+     * @param string $content_type
      * @return $this
      */
     public function setContentType($content_type)
     {
         $this->content_type = $content_type;
-
         return $this;
     }
 
@@ -208,13 +218,11 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
 
     /**
      * @param boolean $is_inline
-     *
      * @return $this
      */
     public function setAsInline($is_inline)
     {
-        $this->is_inline = (bool) $is_inline;
-
+        $this->is_inline = (bool)$is_inline;
         return $this;
     }
 
@@ -236,9 +244,7 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Validator class metadata.
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

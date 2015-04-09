@@ -45,6 +45,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->addOption('original-from-email', null, InputOption::VALUE_REQUIRED);
         $this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
         $this->addOption('with-image', null, InputOption::VALUE_NONE);
+        $this->addOption('plaintext', null, InputOption::VALUE_NONE);
         $this->addOption('attach', null, InputOption::VALUE_REQUIRED);
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED);
         $this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
@@ -90,6 +91,22 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         }
 
         if (!$input->getOption('with-image') && !$input->getOption('attach')) {
+            if ($input->getOption('plaintext')) {
+                $source = <<<SRC
+Date: Mon, 10 Dec 2012 19:15:33 +0000
+$from_lines
+To: %TO_EMAIL%
+Message-ID: <$uid@test-message>
+Subject: $subject
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+
+$email_pre
+Test Message
+%MSG_UID%
+$fwd_footer
+SRC;
+            } else {
             $source = <<<SRC
 Date: Mon, 10 Dec 2012 19:15:33 +0000
 $from_lines
@@ -125,6 +142,7 @@ $fwd_footer_html
 --50c634de_3222e7cd_af2f--
 
 SRC;
+            }
         } else {
             if ($input->getOption('attach')) {
                 $file     = file_get_contents($input->getOption('attach'));

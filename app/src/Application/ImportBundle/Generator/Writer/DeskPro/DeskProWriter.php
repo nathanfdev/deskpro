@@ -76,6 +76,16 @@ final class DeskProWriter extends AbstractWriter
     /**
      * {@inheritdoc}
      */
+    public function prepare()
+    {
+        if ( ! $this->config->getInputPath()) {
+            $this->createOutputDirIfNotExist();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function writeData(EntityInterface $entity)
     {
         $importers = $this->getImporters($entity);

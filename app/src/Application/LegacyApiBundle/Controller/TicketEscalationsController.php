@@ -26,19 +26,31 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage ApiBundle
  */
 
-namespace Application\LegacyApiBundle\Controller;
+namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketEscalation;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 
+/**
+ * Operations about Ticket escalations
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_escalations",
+ * 	description="Operations about Ticket escalations",
+ * 	basePath="/api"
+ * )
+ */
 class TicketEscalationsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -53,10 +65,19 @@ class TicketEscalationsController extends AbstractController implements Protecte
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
-
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get list of ticket escalations",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function listAction()
     {
         $escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
@@ -75,7 +96,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         }
 
         return $this->createApiResponse(array(
-            'escalations' => $data,
+            'escalations' => $data
         ));
     }
 
@@ -83,6 +104,29 @@ class TicketEscalationsController extends AbstractController implements Protecte
     # get
     ####################################################################################################################
 
+    /**
+     * @param $id
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get escalation by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getAction($id)
     {
         $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
@@ -92,22 +136,137 @@ class TicketEscalationsController extends AbstractController implements Protecte
         }
 
         $trans = new LegacyTermsTransformer();
-        $crit  = $trans->toFilterTerms($esc->terms);
+        $crit = $trans->toFilterTerms($esc->terms);
         $crit2 = $trans->toFilterTerms($esc->terms_any);
 
-        $esc              = $this->getApiData($esc);
-        $esc['terms']     = $crit->exportToArray();
+        $esc = $this->getApiData($esc);
+        $esc['terms'] = $crit->exportToArray();
         $esc['terms_any'] = $crit2->exportToArray();
 
         return $this->createApiResponse(array(
-            'escalation' => $esc,
+            'escalation' => $esc
         ));
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing escalation by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="title",
+     *				description="Escalation name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="event_trigger",
+     *				description="Event trigger name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="event_trigger_time",
+     *				description="When to run event_trigger",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="terms",
+     *				description="Criteria for trigger run",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="terms_any",
+     *				description="Filter",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="actions",
+     *				description="Array of actions to perform",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create new escalation",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="title",
+     *				description="Escalation name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="event_trigger",
+     *				description="Event trigger name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="event_trigger_time",
+     *				description="When to run event_trigger",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="terms",
+     *				description="Criteria for trigger run",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="terms_any",
+     *				description="Filter",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="actions",
+     *				description="Array of actions to perform",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAction($id)
     {
         if ($id) {
@@ -120,8 +279,8 @@ class TicketEscalationsController extends AbstractController implements Protecte
             $esc = new TicketEscalation();
         }
 
-        $esc->title              = $this->in->getString('title');
-        $esc->event_trigger      = $this->in->getString('event_trigger');
+        $esc->title = $this->in->getString('title');
+        $esc->event_trigger = $this->in->getString('event_trigger');
         $esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
 
         $crit = new FilterTerms();
@@ -129,7 +288,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
             $crit->addTermFromArray($term_info);
         }
 
-        $trans      = new LegacyTermsTransformer();
+        $trans = new LegacyTermsTransformer();
         $esc->terms = $trans->toLegacyTerms($crit);
 
         $crit = new FilterTerms();
@@ -137,7 +296,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
             $crit->addTermFromArray($term_info);
         }
 
-        $trans          = new LegacyTermsTransformer();
+        $trans = new LegacyTermsTransformer();
         $esc->terms_any = $trans->toLegacyTerms($crit);
 
         $actions = new TriggerActions();
@@ -152,14 +311,33 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'escalation_id' => $esc->id,
+            'escalation_id' => $esc->id
         ));
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete escalation by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function deleteAction($id)
     {
         $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
@@ -172,14 +350,57 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'old_id' => $id,
+            'old_id' => $id
         ));
     }
 
-    ####################################################################################################################
-    # toggle-trigger
-    ####################################################################################################################
-
+    /**
+     * Enable/disable escalation.
+     * @param $id
+     * @param $is_enabled - controlled by router
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations/{id}/enable",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Enable escalation by id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations/{id}/disable",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Disable escalation by id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function toggleEscalationAction($id, $is_enabled)
     {
         $trigger = $this->em->find('DeskPRO:TicketEscalation', $id);
@@ -194,10 +415,28 @@ class TicketEscalationsController extends AbstractController implements Protecte
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
-
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_escalations/run_order",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update escalation run order",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="run_order",
+     *				description="Escalation ID",
+     *				paramType="query",
+     *				required=true,
+     *				type="integer[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveRunOrderAction()
     {
         $run_order = $this->in->getCleanValueArray('run_order', 'uint', 'discard');

@@ -163,6 +163,16 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * @param $end_action
+     * @return $this
+     */
+    public function setEndAction($end_action)
+    {
+        $this->setModelField('end_action', $end_action);
+        return $this;
+    }
+
     public function setStatus($status)
     {
         if ($status == 'approve') {

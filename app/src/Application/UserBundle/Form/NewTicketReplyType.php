@@ -47,7 +47,7 @@ class NewTicketReplyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('message', 'textarea');
+        $builder->add('message', 'textarea', array('filter_clean' => false));
 
         $builder->add('new_upload', 'file', array('required' => false));
 

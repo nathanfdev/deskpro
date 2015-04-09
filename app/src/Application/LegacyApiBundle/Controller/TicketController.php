@@ -1391,6 +1391,52 @@ class TicketController extends AbstractController implements ProtectedController
 
     /**
      * @SWG\Api(
+     * 	path="/tickets/{ticket_id}/link/{link_ticket_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Links two tickets",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="ticket_id",
+     *				description="ID of the Ticket that needs to be linked with.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="link_ticket_id",
+     *				description="ID of the Ticket that needs to be linked.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="is_parent",
+     *				description="Make the second the parent ticket",
+     *				paramType="path",
+     *				required=false,
+     *				type="boolean"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     * 	)
+     * )
+     */
+    public function linkTicketAction($ticket_id, $link_ticket_id)
+    {
+        $ticket = $this->_getTicketOr404($ticket_id);
+        $other_ticket = $this->_getTicketOr404($link_ticket_id);
+
+        $this->in->getBool('is_parent')
+            ? $ticket->parent_ticket = $other_ticket
+            : $other_ticket->parent_ticket = $ticket;
+
+        $this->em->flush();
+        return $this->createSuccessResponse();
+    }
+
+    /**
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/spam",
      * 	@SWG\Operation(
      * 		method="POST",

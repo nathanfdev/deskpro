@@ -44,6 +44,8 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Handles viewing and editing a person.
@@ -677,6 +679,11 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
                             'person' => $person,
                         ));
+
+                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                            $message->prepare();
+                        });
+
                         $this->container->getMailer()->send($message);
                     }
                 }
@@ -1144,6 +1151,28 @@ class PersonController extends AbstractController
             'person_id'    => $person['id'],
             'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note)),
         ));
+    }
+
+    /**
+     * @param $note_id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function deleteNoteAction($note_id)
+    {
+        if (!$this->person->hasPerm('agent_people.notes')) {
+            throw new AccessDeniedException;
+        }
+
+        if (!$note = $this->em->find('DeskPRO:PersonNote', $note_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $this->em->remove($note);
+        $this->em->flush();
+        return $this->createJsonResponse(array('success' => true));
     }
 
     ############################################################################

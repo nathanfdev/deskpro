@@ -1,13 +1,12 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_ImportCsv_Ctrl_ImportCsv extends Admin_Ctrl_Base
 
-    @CTRL_ID   = 'Admin_ImportCsv_Ctrl_ImportCsv'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['Api', 'Growl', '$http']
+    @CTRL_ID = 'Admin_ImportCsv_Ctrl_ImportCsv'
+    @CTRL_AS = 'Ctrl'
+    @DEPS = ['Api', 'Growl', '$http']
 
     init: ->
-
-      @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload') }
+      @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload')}
       @$scope.fileUploadResults = null
       @$scope.fileSelected = false
       @$scope.processStarted = false
@@ -39,7 +38,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     ###
 
     setupUploadListeners: ->
-
       @$scope.$on('fileuploaddone', (e, data) =>
         @$scope.fileUploadResults = data.result
         @$scope.fileSelected = false
@@ -66,7 +64,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   ###
 
     startImport: ->
-
       field_maps = []
 
       # construct field mappings
@@ -101,10 +98,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         filename: filename
         options: options
 
-      }).then( (result) =>
-
-        @stopSpinner('saving', true).then( =>
-
+      }).then((result) =>
+        @stopSpinner('saving', true).then(=>
           if result.data.error
             @$scope.importErrors.no_email = true if result.data.error == 'no_email'
             @$scope.importErrors.no_move = true if result.data.error == 'no_move'
@@ -125,7 +120,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     ###
 
     selectMapping: (column_id, selected_field) ->
-
       for key of @$scope.importSettings.showExtraMappings
         @$scope.importSettings.showExtraMappings[key][column_id] = false
 

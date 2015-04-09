@@ -134,7 +134,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             }
         }
         if ($header_bcc_raw) {
-            foreach ($header_cc_raw as $email) {
+            foreach ($header_bcc_raw as $email) {
                 $bccs[] = $email;
             }
         }

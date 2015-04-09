@@ -27,16 +27,18 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Entity;
+use Orb\Util\Strings;
 use DateTime;
 
 /**
- * Feedback json file parser.
+ * Feedback json file parser
  *
  * Class Feedback
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Feedback extends AbstractParser
 {
@@ -75,11 +77,13 @@ final class Feedback extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
@@ -92,10 +96,9 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Returns a feedback entity.
+     * Returns a feedback entity
      *
      * @param array $feedback
-     *
      * @return Entity\Feedback
      */
     private function exportFeedback(array $feedback)
@@ -103,7 +106,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_'.$feedback['oid'])
+                ->setDestination('feedback_' . $feedback['oid'])
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -126,14 +129,50 @@ final class Feedback extends AbstractParser
                 $entity->addLabel($label);
             }
 
+            $attachments = $this->exportAttachments($feedback['attachments']);
+            foreach ($attachments as $attachment) {
+                /** @var Entity\Attachment $attachment */
+                $entity->addAttachment($attachment);
+            }
+
             return $entity;
         }
 
-        return;
+        return null;
     }
 
     /**
-     * Returns record type reader config.
+     * Returns a collection of the feedback item attachments
+     *
+     * @param array $attachments
+     * @return Entity\Collection
+     */
+    private function exportAttachments(array $attachments)
+    {
+        $collection = new Entity\Collection();
+        foreach ($attachments as $num => $attachment) {
+            try {
+                $entity = $this->exportAttachment($attachment);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid feedback attachment record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid feedback attachment record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
@@ -143,10 +182,9 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Check if feedback has all required columns.
+     * Check if feedback has all required columns
      *
      * @param array $feedback
-     *
      * @return bool
      */
     private function isFeedbackValid(array $feedback)
@@ -167,9 +205,11 @@ final class Feedback extends AbstractParser
             'labels',
             'date_created',
             'date_published',
+            'attachments',
         );
 
         return $this->hasRequiredColumns($feedback, $columns)
-            && $this->isArrayColumn($feedback, 'labels');
+            && $this->isArrayColumn($feedback, 'labels')
+            && $this->isArrayColumn($feedback, 'attachments');
     }
 }

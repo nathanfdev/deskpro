@@ -27,12 +27,14 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting news entity.
+ * Exporting news entity
  *
  * Class News
+ * @package Application\ImportBundle\Entity
  */
 final class News extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
@@ -73,11 +75,12 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
     /**
+     * News category
+     *
      * @return string
      */
     public function getCategory()
@@ -86,14 +89,14 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     }
 
     /**
-     * @param string $category
+     * Set news category
      *
+     * @param string $category
      * @return $this
      */
     public function setCategory($category)
     {
-        $this->category = (string) $category;
-
+        $this->category = (string)$category;
         return $this;
     }
 
@@ -110,8 +113,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      */
     public function addLabel($label)
     {
-        $this->labels[] = (string) $label;
-
+        $this->labels[] = (string)$label;
         return $this;
     }
 
@@ -120,7 +122,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -144,9 +146,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     }
 
     /**
-     * Validator class metadata.
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

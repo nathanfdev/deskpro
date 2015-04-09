@@ -253,14 +253,6 @@ class SearchController extends AbstractController
     public function similarToAction($content_type)
     {
         $content = isset($_REQUEST['content']) ? (string) $_REQUEST['content'] : '';
-        $content = Strings::utf8_accents_to_ascii($content);
-        $content = strtolower($content);
-        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
-        $content = preg_replace('#\s+#', ' ', $content);
-        $content = explode(' ', $content);
-        $content = array_filter($content, function ($s) { return isset($s[2]); });
-        $content = array_unique($content);
-        $content = implode(' ', $content);
 
         if (!$content) {
             return $this->render('UserBundle:Search:similar-to.html.twig', array(
@@ -270,7 +262,7 @@ class SearchController extends AbstractController
 
         $se      = $this->container->getSearchEngine();
         $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-        $results = $se->getUserSearch()->search($context, $content, array('limit_types' => array($content_type)));
+        $results = $se->getUserSearch()->similarTo($context, $content, array('limit_types' => array($content_type)));
 
         return $this->render('UserBundle:Search:similar-to.html.twig', array(
             'results' => $results->getTypedResults(),

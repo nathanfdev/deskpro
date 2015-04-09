@@ -55,12 +55,16 @@ class Organization extends AbstractEntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('o')
             ->from('DeskPRO:Organization', 'o')
-            ->where('o.name = :name')
-            ->setParameter('name', $name);
+            ->where('LOWER(o.name) = :name')
+            ->setParameter('name', mb_strtolower($name))
+            ->setMaxResults(1);
 
         $query = $qb->getQuery();
+        if ($res = $query->getResult()) {
+            return reset($res);
+        }
 
-        return $query->getOneOrNullResult();
+        return null;
     }
 
     /**

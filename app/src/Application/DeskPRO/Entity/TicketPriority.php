@@ -89,17 +89,40 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
      */
     public function setRealTitle($title)
     {
-        $this->title = $title;
-
+        $this->setModelField('title', $title);
         return $this;
     }
 
     /**
+     * Returns real title
+     *
      * @return string
      */
     public function getRealTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set priority
+     *
+     * @param int $priority
+     * @return $this
+     */
+    public function setPriority($priority)
+    {
+        $this->setModelField('priority', (int)$priority);
+        return $this;
+    }
+
+    /**
+     * Returns priority
+     *
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
     }
 
     /**

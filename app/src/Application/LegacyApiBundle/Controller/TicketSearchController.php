@@ -26,10 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage ApiBundle
  */
 
-namespace Application\LegacyApiBundle\Controller;
+namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
@@ -153,6 +156,13 @@ class TicketSearchController extends AbstractController
      *				paramType="query",
      *				required=false,
      *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="is_hold",
+     *				description="If specified, requires the ticke to be on hold (1) or not on hold (0)",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean"
      *			),
      *			@SWG\Parameter(
      *				name="sla_completed",
@@ -312,6 +322,7 @@ class TicketSearchController extends AbstractController
             'sla_id'          => TicketSearch::TERM_SLA,
             'sla_status'      => TicketSearch::TERM_SLA_STATUS,
             'sla_completed'   => TicketSearch::TERM_SLA_COMPLETED,
+            'is_hold'         => TicketSearch::TERM_HOLD,
         );
 
         $date_search_map = array(
@@ -326,10 +337,10 @@ class TicketSearchController extends AbstractController
 
         $terms = array();
 
-        foreach ($search_map as $input => $search_key) {
+        foreach ($search_map AS $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
-                $op      = $this->in->getString($search_key.'_op') ?: 'contains';
+                $op = $this->in->getString($search_key . '_op') ?: 'contains';
                 $terms[] = array('type' => $search_key, 'op' => $op, 'options' => $value);
             }
         }
@@ -343,7 +354,7 @@ class TicketSearchController extends AbstractController
         }
 
         if ($ref = $this->in->getString('ref')) {
-            $op      = $this->in->getString('ref_op') ?: 'contains';
+            $op = $this->in->getString('ref_op') ?: 'contains';
             $terms[] = array('type' => 'ref', 'op' => $op, 'options' => array('ref' => $ref));
         }
 
@@ -376,7 +387,7 @@ class TicketSearchController extends AbstractController
             if (!$date) {
                 try {
                     $date = \DateTime::createFromFormat('Y-m-d', $date_input, new \DateTimeZone('UTC'));
-                    $date->setTime(0, 0, 0);
+                    $date->setTime(0,0,0);
                 } catch (\Exception $e) {
                     $date = null;
                 }
@@ -395,8 +406,8 @@ class TicketSearchController extends AbstractController
             $date2 = null;
 
             if (strpos($raw, '/') !== false) {
-                $op                              = 'between';
-                list($date1_input, $date2_input) = explode('/', $raw, 2);
+                $op = 'between';
+                list ($date1_input, $date2_input) = explode('/', $raw, 2);
 
                 $date1 = $proc_date_input($date1_input);
                 $date2 = $proc_date_input($date2_input);
@@ -406,9 +417,10 @@ class TicketSearchController extends AbstractController
                 }
 
                 $options = array('date1' => $date1, 'date2' => $date2);
+
             } else {
                 $op_sym = $raw[0];
-                $raw    = substr($raw, 1);
+                $raw = substr($raw, 1);
 
                 if ($op_sym == '<' || $op_sym == '<=') {
                     $op = 'lt';
@@ -430,10 +442,10 @@ class TicketSearchController extends AbstractController
         }
 
         foreach ($this->container->getSystemService('ticket_fields_manager')->getFields() as $field) {
-            if ($this->in->checkIsset("field.".$field->getId())) {
+            if ($this->in->checkIsset("field." . $field->getId())) {
                 $in_val = $this->in->getString('field.'.$field->getId());
                 if ($in_val) {
-                    $terms[] = array('type' => 'ticket_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
+                    $terms[] = array('type' => 'ticket_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
                 }
             }
         }
@@ -459,30 +471,39 @@ class TicketSearchController extends AbstractController
         $result_cache = $this->getApiSearchResult('ticket', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\TicketSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $helper = \Application\AgentBundle\Controller\Helper\TicketResults::newFromResultCache($this, $result_cache);
 
         return $this->createApiResponse(array(
-            'page'     => $page,
+            'page' => $page,
             'per_page' => $per_page,
-            'total'    => $helper->getCount(),
+            'total' => $helper->getCount(),
             'cache_id' => $result_cache->id,
-            'tickets'  => $this->getApiData($helper->getTicketsForPage($page, $per_page)),
+            'tickets' => $this->getApiData($helper->getTicketsForPage($page, $per_page))
         ));
     }
 
     /**
-     * Get a map of filters.
-     */
+	 * Get a map of filters.
+     *
+     * @SWG\Api(
+     * 	path="/tickets/filters",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get a map of filters",
+     * 		notes="Find all ticket filters (system and custom)",
+     *		type="array",
+     *  )
+     * )
+     *
+	 */
     public function getFiltersAction()
     {
         $filters = $this->_getFiltersApi()->getFiltersForPerson($this->person);
-        $data    = array('filters' => $this->getApiData($filters));
+        $data = array('filters' => $this->getApiData($filters));
 
         if ($this->in->getBool('with_counts')) {
             $all_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($filters);
@@ -494,17 +515,38 @@ class TicketSearchController extends AbstractController
         return $this->createApiResponse($data);
     }
 
+
+
     /**
      * Execute a filter and return results.
      *
      * @param int $filter_id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     *  path="/tickets/filters/{filter_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary=" Execute a filter and return results",
+     * 		notes="",
+     *		type="array",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="filter_id",
+     *				description="Filter ID should be executed",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function getFilterAction($filter_id)
     {
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -522,12 +564,23 @@ class TicketSearchController extends AbstractController
             'per_page' => $per_page,
             'total'    => $total,
             'tickets'  => $this->getApiData($tickets),
-            'filter'   => $filter->toApiData(true),
+            'filter'   => $filter->toApiData(true)
         ));
     }
 
     /**
-     * Get array of filters and counts.
+	 * Get array of filters and counts
+     *
+     * @SWG\Api(
+     * 	path="/tickets/filters/count",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get array of filters and counts",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     *
      */
     public function getFilterCountsAction()
     {
@@ -535,7 +588,7 @@ class TicketSearchController extends AbstractController
         $all_counts = Arrays::castToType($all_counts, 'int', 'int');
 
         return $this->createApiResponse(array(
-            'filter_counts' => $all_counts,
+            'filter_counts' => $all_counts
         ));
     }
 
@@ -547,11 +600,25 @@ class TicketSearchController extends AbstractController
         return App::getApi('tickets.filters');
     }
 
+	/**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/tickets/quick-stats",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Returns all today created or resolved tickets and tickets awaiting their agent",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     *
+     */
     public function getQuickStatsAction()
     {
         $stats = array();
         $today = $this->person->getDateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0,0,0);
         $today->setTimezone(\Orb\Util\Dates::tzUtc());
         $today = $today->format('Y-m-d H:i:s');
 

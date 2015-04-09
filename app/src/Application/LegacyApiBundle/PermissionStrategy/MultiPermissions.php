@@ -35,6 +35,10 @@ namespace Application\LegacyApiBundle\PermissionStrategy;
 
 use Application\LegacyApiBundle\ApiUser;
 
+/**
+ * Checks a PermissionStrategyInterface depending on a 'type' (i.e., an action name).
+ * Lets you specificy specific permissions based on the request, rather than a controller-wide permission scheme.
+ */
 class MultiPermissions implements PermissionStrategyInterface
 {
     /**
@@ -74,6 +78,10 @@ class MultiPermissions implements PermissionStrategyInterface
      */
     public function userHasPermission(ApiUser $api_user, $context_info = null)
     {
+        if (empty($this->perms)) {
+            return true;
+        }
+
         if ($this->fn) {
             $type = $this->fn($context_info);
         } else {
@@ -84,11 +92,25 @@ class MultiPermissions implements PermissionStrategyInterface
             }
         }
 
-        if (!isset($this->perms[$type])) {
+        $check_perms = null;
+
+        if ($type == 'default') {
+            if (isset($this->perms['default'])) {
+                $check_perms = $this->perms['default'];
+            }
+        } else {
+            if (isset($this->perms[$type])) {
+                $check_perms = $this->perms[$type];
+            } else if (isset($this->perms['default'])) {
+                $check_perms = $this->perms['default'];
+            }
+        }
+
+        if (!$check_perms) {
             return true;
         }
 
-        foreach ($this->perms[$type] as $p) {
+        foreach ($check_perms as $p) {
             if (!$p->userHasPermission($api_user, $context_info)) {
                 return false;
             }

@@ -32,6 +32,8 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 
 class FieldDisplayArray implements \ArrayAccess
@@ -152,8 +154,10 @@ class FieldDisplayArray implements \ArrayAccess
                 break;
 
             case 'formViewCriteria':
-                if ($this->field_def->handler_class == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice' && !$this->field_def->getOption('multiple')) {
                     $handler = $this->field_def->getHandler();
+
+                if ($handler instanceof Choice && !$this->field_def->getOption('multiple')) {
+
                     $handler->enableMultiple();
 
                     $field_group = $this->field_group;
@@ -171,6 +175,8 @@ class FieldDisplayArray implements \ArrayAccess
                         $form     = $field_group->getForm();
                         $formView = $form->createView();
                         $formView = $formView[$this->data['name']];
+	                } elseif ($handler instanceof Date) {
+
                     } else {
                         $form     = $f->getForm();
                         $formView = $form->createView();
@@ -179,6 +185,10 @@ class FieldDisplayArray implements \ArrayAccess
                     $this->data['formViewCriteria'] = $formView;
 
                     $handler->disableMultiple();
+                } elseif ($handler instanceof Date) {
+	                $this->data['form'] = $handler->getSearchCriteriaForm($this->data['value']);
+	                $this->data['formView'] = $this->data['form']->createView();
+	                $this->data['formViewCriteria'] = $this->data['formView'];
                 } else {
                     $this->initValue('formView');
                     $this->data['formViewCriteria'] = $this->data['formView'];

@@ -28,127 +28,152 @@
 namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
- * Os ticket reader interface.
+ * Os ticket reader interface
  *
  * Interface OsTicketReaderInterface
+ * @package Application\ImportBundle\Reader\OsTicket
  */
 interface OsTicketReaderInterface
 {
     /**
-     * Returns total count of people records
-     * todo batch support offset?
+     * Returns total count of staff records
      *
+     * @param int $min_id
      * @return int
      */
-    public function getPeopleCount();
+    public function getStaffCount($min_id);
+
+    /**
+     * Returns total count of users records
+     *
+     * @param int $min_id
+     * @return int
+     */
+    public function getUsersCount($min_id);
 
     /**
      * Returns total count of ticket records
-     * todo batch support offset?
      *
+     * @param int $min_id
      * @return int
      */
-    public function getTicketsCount();
+    public function getTicketsCount($min_id);
 
     /**
-     * Returns staff.
+     * Returns staff
      *
      * @param int $limit
-     * @param int $offset
+     * @param int $min_id
      *
      * @return mixed
      */
-    public function findStaff($limit, $offset);
+    public function findStaff($limit, $min_id);
 
     /**
-     * Returns users.
+     * Returns users
      *
      * @param int $limit
-     * @param int $offset
+     * @param int $min_id
      *
      * @return mixed
      */
-    public function findUsers($limit, $offset);
+    public function findUsers($limit, $min_id);
 
     /**
-     * Returns tickets.
+     * Returns tickets
      *
      * @param int $limit
-     * @param int $offset
+     * @param int $min_id
      *
      * @return array|false
      */
-    public function findTickets($limit, $offset);
+    public function findTickets($limit, $min_id);
 
     /**
-     * Returns ticket messages.
+     * Returns ticket messages
      *
      * @param int $ticket_id
-     *
      * @return mixed
      */
     public function findMessages($ticket_id);
 
     /**
-     * Returns ticket message attachments.
+     * Returns ticket message attachments
      *
      * @param int $message_id
-     *
      * @return array
      */
     public function findMessageAttachments($message_id);
 
     /**
-     * Returns department.
+     * Returns a ticket department
      *
      * @param int $id
-     *
      * @return mixed
      */
     public function findDepartmentById($id);
 
     /**
-     * Returns staff email by id.
+     * Returns a person organization
      *
      * @param int $id
+     * @return mixed
+     */
+    public function findOrganizationNameById($id);
+
+    /**
+     * Returns an user group
      *
+     * @param int $id
+     * @return mixed
+     */
+    public function findUserGroupNameById($id);
+
+    /**
+     * Returns staff email by id
+     *
+     * @param int $id
      * @return mixed
      */
     public function findStaffEmailById($id);
 
     /**
-     * Returns user email by id.
+     * Returns user email by id
      *
      * @param int $id
-     *
      * @return mixed
      */
     public function findUserEmailById($id);
 
     /**
-     * Returns team name by id.
+     * Returns team name by id
      *
      * @param int $id
-     *
      * @return mixed
      */
     public function findTeamNameById($id);
 
     /**
-     * Returns timezone by id.
+     * Returns timezone by id
      *
      * @param int $id
-     *
      * @return mixed
      */
     public function findTimezoneById($id);
 
     /**
-     * Returns ticket message attachment by id.
+     * Returns ticket message attachment by id
      *
      * @param int $file_id
-     *
      * @return mixed
      */
     public function findAttachmentData($file_id);
+
+    /**
+     * Returns ticket priority
+     *
+     * @param int $id
+     * @return array
+     */
+    public function findTicketPriority($id);
 }

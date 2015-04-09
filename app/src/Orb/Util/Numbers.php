@@ -256,6 +256,10 @@ class Numbers
             $num_pages = 1;
         }
 
+        if ($page > $num_pages) {
+            $page = $num_pages;
+        }
+
         $range_start = max(1, $page - floor(($pad-1) / 2));
         $range_end   = max(min($num_pages, $page + floor(($pad-1) / 2)), $pad);
 

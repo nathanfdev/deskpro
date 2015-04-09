@@ -2107,6 +2107,7 @@ class Strings
      * Does a "real" trim, triming other whitespace like non-breaking spaces.
      *
      * @param $string
+     * @return string
      */
     public static function trimWhitespace($string)
     {
@@ -2131,13 +2132,41 @@ class Strings
         $body = preg_replace('#</div>#i', "<br />", $body);
         $body = preg_replace('#<br[^>]*>#i', "\n", $body);
         $body = preg_replace('#<p[^>]*>#i', "\n", $body);
-        $body = strip_tags($body);
+        $body = Strings::stripTags($body);
         $body = Strings::decodeHtmlEntities($body);
         $body = preg_replace('#\x{00a0}#u', ' ', $body); // nbsp's
         $body = trim($body);
 
         return $body;
     }
+
+
+    /**
+     * Converts a plain-text string into HTML.
+     *
+     * @param string $string
+     * @param string $wrap_class
+     * @return string
+     */
+    public static function text2html($string, $wrap_class = null)
+    {
+        $body = self::standardEol($string);
+        $body = self::convert4ByteCharsToHtmlEntities($body);
+        $body = str_replace("\t", '    ', $body);
+
+        $body = @htmlspecialchars($body, ENT_QUOTES, 'UTF-8');
+        $body = nl2br($body, true);
+        $body = preg_replace_callback('#( {2,})#', function($m) {
+            return str_repeat('&nbsp;', strlen($m[1]));
+        }, $body);
+
+        if ($wrap_class) {
+            return '<div class="'.$wrap_class.'">'.$body.'</div>';
+        } else {
+            return $body;
+        }
+    }
+
 
     /**
      * Remove all empty lines in a string.
@@ -2309,11 +2338,14 @@ class Strings
     public static function prepareWysiwygHtml($html)
     {
         $html = preg_replace('#<p></p>#', '', $html);
-        $html = preg_replace('#<p>\s+</p>#', '<br>', $html);
+        $html = preg_replace('#<p>\s*</p>#', '<br>', $html);
         $html = preg_replace('#<br\s*/?></p>#', '</p>', $html);
-        $html = str_replace(array('<p', '</p>'), array('<div', '</div>'), $html);
+        $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
         $html = preg_replace('#(<br\s*/?>)\s*</div>#', '</div>', $html);
         $html = preg_replace('#<div[^>]*>\s*(<br\s*/?>)?\s*</div>\s*#i', "<br />\n", $html);
+        $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
+        $html = preg_replace('#<p(\b)#', '<div$1', $html);
+        $html = preg_replace('#<div[^>]+class="dp-signature-start"[^>]*>#', '<div>', $html);
         do {
             $original = $html;
             $html     = preg_replace('#<div>(.*)</div>\s*?#siU', "\\1<br />\n", $html);
@@ -2321,8 +2353,12 @@ class Strings
         } while ($original != $html);
 
         $html = preg_replace('#(<br\s*/?>\s*)+$#', '', $html);
+        $html = preg_replace('#\x{00a0}#u', ' ', $html);
+        $html = preg_replace_callback('#( {2,})#', function($m) {
+            return str_repeat('&nbsp;', strlen($m[1]));
+        }, trim($html));
 
-        return trim($html);
+        return $html;
     }
 
     /**

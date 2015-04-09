@@ -50,6 +50,10 @@ class UpgradeController extends AbstractController
 
     public function indexAction()
     {
+        if ($this->container->getSetting('disable_admin_deskpro_updates')) {
+            return $this->redirectRoute('admin');
+        }
+
         $token               = new ApiToken();
         $token->scope        = ApiToken::SCOPE_SESSION;
         $token->person       = $this->person;

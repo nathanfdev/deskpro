@@ -57,6 +57,12 @@ $collection->create('api_deskpro_info', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_deskpro_dpspecial', array(
+    'path'        => '/deskpro/dp_special/{action}',
+    'controller'  => 'ApiBundle:Misc:dpSpecial',
+    'methods'     => array('GET', 'POST'),
+));
+
 $collection->create('api_me_lastlogin', array(
     'path'        => '/me/last-login',
     'controller'  => 'LegacyApiBundle:Misc:getLastLogin',
@@ -227,6 +233,13 @@ $collection->create('api_tickets_ticket_merge', array(
     'controller'    => 'LegacyApiBundle:Ticket:mergeTicket',
     'requirements'  => array('ticket_id' => '\\d+', 'merge_ticket_id' => '\\d+'),
     'methods'                            => array('POST'),
+));
+
+$collection->create('api_tickets_ticket_link', array(
+    'path'          => '/tickets/{ticket_id}/link/{link_ticket_id}',
+    'controller'    => 'ApiBundle:Ticket:linkTicket',
+    'requirements'  => array('ticket_id' => '\\d+', 'link_ticket_id' => '\\d+'),
+    'methods'       => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_spam', array(
@@ -3207,6 +3220,20 @@ $collection->create('api_emailstatus_sendmail_delete', array(
     'controller'   => 'LegacyApiBundle:EmailStatus:deleteSendmail',
     'requirements' => array('id' => '\d+'),
     'methods'                    => array('DELETE'),
+));
+
+$collection->create('api_emailstatus_sendmail_get_summary', array(
+    'path'         => '/email_status/sendmail/{id}/summary',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailSummary',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmail_get_rendered', array(
+    'path'         => '/email_status/sendmail/{id}/rendered',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailRendered',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
 ));
 
 $collection->create('api_emailstatus_sendmail_resend', array(

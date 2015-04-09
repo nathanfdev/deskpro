@@ -125,11 +125,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                     $organization->getId(), $organization->getName()
                 ));
             } else {
-                $entity = new DeskPROEntity\Organization();
-                $entity->setName($title);
+                $organization = new DeskPROEntity\Organization();
+                $organization->setName($title);
 
                 $this->records->add($organization);
-                $this->logWarning(sprintf('Creating new organization `%s`', $entity->getName()));
+                $this->logWarning(sprintf('Creating new organization `%s`', $organization->getName()));
             }
         }
 

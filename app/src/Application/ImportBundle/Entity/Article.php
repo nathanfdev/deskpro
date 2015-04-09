@@ -27,13 +27,16 @@
 
 namespace Application\ImportBundle\Entity;
 
-use DateTime;
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Application\DeskPRO;
+use DateTime;
 
 /**
- * Exporting article entity.
+ * Exporting article entity
  *
  * Class Article
+ * @package Application\ImportBundle\Entity
  */
 final class Article extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
@@ -84,11 +87,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
     /**
+     * End action
+     *
      * @return string
      */
     public function getEndAction()
@@ -97,15 +101,34 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * @param string $end_action
+     * Set end action
      *
+     * @param string $end_action
      * @return $this
      */
     public function setEndAction($end_action)
     {
         $this->end_action = $end_action;
-
         return $this;
+    }
+
+    /**
+     * Checks if end action is valid
+     *
+     * @return bool
+     */
+    public function isEndActionValid()
+    {
+        if ($this->end_action) {
+            $actions = array(
+                DeskPRO\Entity\Article::END_ACTION_ARCHIVE,
+                DeskPRO\Entity\Article::END_ACTION_DELETE,
+            );
+
+            return in_array($this->end_action, $actions, true);
+        }
+
+        return true;
     }
 
     /**
@@ -114,13 +137,15 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function getStatus()
     {
         if ($this->date_end) {
-            return 'archived';
+            return DeskPRO\Entity\ContentAbstract::STATUS_ARCHIVED;
         }
 
         return parent::getStatus();
     }
 
     /**
+     * Returns date end of publishing
+     *
      * @return DateTime
      */
     public function getDateEnd()
@@ -129,18 +154,20 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * @param DateTime $date_end
+     * Set date end of publishing
      *
+     * @param DateTime $date_end
      * @return $this
      */
     public function setDateEnd(DateTime $date_end)
     {
         $this->date_end = $date_end;
-
         return $this;
     }
 
     /**
+     * Returns article categories
+     *
      * @return array
      */
     public function getCategories()
@@ -149,14 +176,14 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * @param string $category
+     * Add a new category
      *
+     * @param string $category
      * @return $this
      */
     public function addCategory($category)
     {
-        $this->categories[] = (string) $category;
-
+        $this->categories[] = (string)$category;
         return $this;
     }
 
@@ -173,8 +200,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      */
     public function addLabel($label)
     {
-        $this->labels[] = (string) $label;
-
+        $this->labels[] = (string)$label;
         return $this;
     }
 
@@ -183,7 +209,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -209,12 +235,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Validator class metadata.
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata->addGetterConstraint('endActionValid', new Constraints\True());
     }
 }

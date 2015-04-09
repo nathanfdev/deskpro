@@ -427,7 +427,7 @@ class TaskController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/task/{task_id}",
+     * 	path="/tasks/{task_id}",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a Task.",
@@ -435,7 +435,7 @@ class TaskController extends AbstractController
      *			@SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be updated",
-     *				paramType="query",
+     *				paramType="path",
      *				required=false,
      *				type="integer"
      *			),

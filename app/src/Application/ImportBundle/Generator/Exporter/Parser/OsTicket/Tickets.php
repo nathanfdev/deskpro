@@ -29,8 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use DateTime;
-use Exception;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
  * OsTicket tickets parser.
@@ -40,6 +39,11 @@ use Exception;
 final class Tickets extends AbstractParser
 {
     /**
+     * @var int
+     */
+    private $tickets_min_id;
+
+    /**
      * {@inheritdoc}
      */
     public function getEntityType()
@@ -48,11 +52,21 @@ final class Tickets extends AbstractParser
     }
 
     /**
+     * Returns current tickets offset
+     *
+     * @return int
+     */
+    public function getCurrentTicketsMinId()
+    {
+        return $this->tickets_min_id ? : $this->getBatchConfig()->getTicketsMinId();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getCount()
     {
-        return $this->reader->getTicketsCount();
+        return $this->reader->getTicketsCount($this->getCurrentTicketsMinId());
     }
 
     /**
@@ -60,34 +74,63 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        if (!($this->config->getBatchSize() > 0)) {
-            throw new Exception('Invalid batch size set up');
-        }
-
-        $offset     = 0;
+        $this->entities_loaded = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->reader->findTickets($this->config->getBatchSize(), $offset)) {
-            $offset += count($batch);
-
+        while ($batch = $this->reader->findTickets($this->getReaderBatchSize(), $this->getCurrentTicketsMinId())) {
             foreach ($batch as $num => $ticket) {
                 $this->advanceProgressBar();
+                $offsetNum = $num + $this->entities_loaded;
 
-                if ($this->hasRequiredTicketColumns($ticket) === false) {
-                    $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num + $offset));
+                try {
+                    $entity = $this->exportTicket($ticket);
+                    if ($entity) {
+                        $collection->attach($entity);
+                        $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
+                        $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $offsetNum));
+                    }
+
+                } catch (NoColumnException $e) {
+                    $this->logWarning(sprintf(
+                        'Invalid ticket record `%d` found (Skipping): %s',
+                        $num, $e->getMessage()
+                    ));
+                }
+
+                if (isset($ticket['ticket_id'])) {
+                    $this->tickets_min_id = $ticket['ticket_id'];
+                }
+            }
+
+            $this->entities_loaded += count($batch);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a ticket entity
+     *
+     * @param array $ticket
+     * @return Entity\Ticket|null
+     */
+    private function exportTicket(array $ticket)
+    {
+        if ($this->isTicketValid($ticket)) {
                     $entity = new Entity\Ticket();
                     $entity
-                        ->setDestination('ticket_'.($num + $offset))
+                ->setDestination('ticket_' . $ticket['ticket_id'])
+                ->setOid($ticket['ticket_id'])
                         ->setRef($ticket['number'])
                         ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
                         ->setPersonEmail($this->reader->findUserEmailById($ticket['user_id']))
                         ->setAgentEmail($this->reader->findUserEmailById($ticket['staff_id']))
                         ->setAgentTeam($this->reader->findUserEmailById($ticket['team_id']))
                         ->setStatus($this->getTicketStatus($ticket))
-                        ->setDateCreated(new DateTime($ticket['created']))
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created']))
                         ->setSubject($ticket['subject'])
-                        ->setPriority($ticket['priority_id']);
+                ->setPriority($this->exportPriority($ticket['priority_id']));
 
                     $messages = $this->exportMessages($ticket['ticket_id']);
                     foreach ($messages as $message) {
@@ -95,13 +138,33 @@ final class Tickets extends AbstractParser
                         $entity->addMessage($message);
                     }
 
-                    $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            return $entity;
                 }
+
+        return null;
             }
+
+    /**
+     * Returns a ticket priority entity
+     *
+     * @param int $id
+     * @return Entity\TicketPriority|null
+     */
+    private function exportPriority($id)
+    {
+        if ($id) {
+            $priority = $this->reader->findTicketPriority($id);
+            $entity   = new Entity\TicketPriority();
+            $entity
+                ->setDestination('priority')
+                ->setOid($priority['priority_id'])
+                ->setTitle($priority['priority_desc'])
+                ->setValue($priority['priority_urgency']);
+
+            return $entity;
         }
 
-        return $collection;
+        return null;
     }
 
     /**
@@ -117,14 +180,44 @@ final class Tickets extends AbstractParser
         $collection = new Entity\Collection();
 
         foreach ($messages as $num => $message) {
-            if ($this->hasRequiredMessageColumns($message) === false) {
-                $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
+            try {
+                $entity = $this->exportMessage($num, $message);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
             } else {
+                    $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid ticket message record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a ticket message entity
+     *
+     * @param int   $num
+     * @param array $message
+     *
+     * @return Entity\TicketMessage|null
+     */
+    private function exportMessage($num, array $message)
+    {
+        if ($this->isMessageValid($message)) {
                 $entity = new Entity\TicketMessage();
                 $entity
+                ->setDestination('message_' . $num)
+                ->setOid($num)
                     ->setPersonEmail($this->getMessagePersonEmail($message))
-                    ->setDateCreated(new DateTime($message['created']))
-                    ->setMessageText($message['body']);
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($message['created']))
+                ->setMessageHtml($message['body']);
 
                 $attachments = $this->exportAttachments($message['id']);
                 foreach ($attachments as $attachment) {
@@ -132,11 +225,10 @@ final class Tickets extends AbstractParser
                     $entity->addAttachment($attachment);
                 }
 
-                $collection->attach($entity);
-            }
+            return $entity;
         }
 
-        return $collection;
+        return null;
     }
 
     /**
@@ -150,10 +242,39 @@ final class Tickets extends AbstractParser
     {
         $collection  = new Entity\Collection();
         $attachments = $this->reader->findMessageAttachments($message_id);
+
         foreach ($attachments as $num => $attachment) {
-            if ($this->hasRequiredAttachmentColumns($attachment) === false) {
-                $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
+            try {
+                $entity = $this->exportAttachment($num, $attachment);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
             } else {
+                    $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid ticket message attachment record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an attachment entity
+     *
+     * @param int   $num
+     * @param array $attachment
+     *
+     * @return Entity\Attachment|null
+     */
+    private function exportAttachment($num, array $attachment)
+    {
+        if ($this->isAttachmentValid($attachment)) {
                 $entity = new Entity\Attachment();
                 $entity
                     ->setOid($num)
@@ -161,11 +282,10 @@ final class Tickets extends AbstractParser
                     ->setFileName($attachment['name'])
                     ->setContentType($attachment['type']);
 
-                $collection->attach($entity);
-            }
+            return $entity;
         }
 
-        return $collection;
+        return null;
     }
 
     /**
@@ -214,9 +334,9 @@ final class Tickets extends AbstractParser
      *
      * @return bool
      */
-    private function hasRequiredTicketColumns(array $ticket)
+    private function isTicketValid(array $ticket)
     {
-        return $this->hasRequiredColumns($ticket, array(
+        $columns = array(
             'ticket_id',
             'number',
             'dept_id',
@@ -228,7 +348,9 @@ final class Tickets extends AbstractParser
             'priority_id',
             'isanswered',
             'closed',
-        ));
+        );
+
+        return $this->hasRequiredColumns($ticket, $columns);
     }
 
     /**
@@ -238,16 +360,18 @@ final class Tickets extends AbstractParser
      *
      * @return bool
      */
-    private function hasRequiredMessageColumns(array $message)
+    private function isMessageValid(array $message)
     {
-        return $this->hasRequiredColumns($message, array(
+        $columns = array(
             'id',
             'thread_type',
             'staff_id',
             'user_id',
             'created',
             'body',
-        ));
+        );
+
+        return $this->hasRequiredColumns($message, $columns);
     }
 
     /**
@@ -257,12 +381,14 @@ final class Tickets extends AbstractParser
      *
      * @return bool
      */
-    private function hasRequiredAttachmentColumns(array $attachment)
+    private function isAttachmentValid(array $attachment)
     {
-        return $this->hasRequiredColumns($attachment, array(
+        $columns = array(
             'file_id',
             'name',
             'type',
-        ));
+        );
+
+        return $this->hasRequiredColumns($attachment, $columns);
     }
 }

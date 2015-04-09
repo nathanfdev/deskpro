@@ -32,9 +32,10 @@ use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
 /**
- * Generator json writer.
+ * Generator json writer
  *
  * Class JsonWriter
+ * @package Application\ImportBundle\Generator\Writer\Json
  */
 final class JsonWriter extends AbstractWriter
 {
@@ -44,7 +45,7 @@ final class JsonWriter extends AbstractWriter
     private $mapping;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param Destination\Collection $mapping
      */
@@ -64,91 +65,96 @@ final class JsonWriter extends AbstractWriter
     /**
      * {@inheritdoc}
      */
+    public function prepare()
+    {
+        $this->createOutputDirIfNotExist();
+        $this->createOutputEntityDirsIfNotExist($this->entity_types);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function writeData(Entity\EntityInterface $entity)
     {
-        if (! $this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
+        $data = $entity->toArray();
         $path = $this->getEntityPath($entity);
-        $data = json_encode($entity->toArray());
 
-        if ($this->config->isDryRun()) {
-            $this->logInfo(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
-        } else {
-            $this->createOutputDirsIfNotExist();
-
-            if (@file_exists($path)) {
-                $this->logWarning(sprintf('File `%s` already exists (Override).', $path));
-            } else {
-                $this->logInfo(sprintf('Generate a new file `%s`', $path));
-            }
-            if (@file_put_contents($path, $data) === false) {
-                $this->logWarning(sprintf('Unable to write file `%s`', $path));
-            }
-        }
-
-        return true;
+        return $this->writeJsonFile($data, $path);
     }
 
     /**
-     * Returns the entity file path.
+     * Make output batch entity directories if not exist
      *
-     * @param Entity\EntityInterface $entity
-     *
-     * @throws \Exception
-     * @return string
-     *
-     */
-    private function getEntityPath(Entity\EntityInterface $entity)
-    {
-        foreach ($this->mapping as $destination) {
-            /* @var Destination\DestinationInterface $destination */
-            if ($entity->getType() === $destination->getEntityType()) {
-                return $this->getDestinationOutputPath($destination).$entity->getDestination().'.json';
-            }
-        }
-
-        throw new Exception(sprintf('Entity `%s` not supported', get_class($entity)));
-    }
-
-    /**
-     * Make output directories if not exist.
-     *
+     * @param array $entity_types
      * @throws \Exception
      */
-    private function createOutputDirsIfNotExist()
+    private function createOutputEntityDirsIfNotExist(array $entity_types)
     {
-        if (!$this->config->getOutputPath()) {
-            throw new Exception('Output path is not defined');
-        }
-        if (!is_dir($this->config->getOutputPath())) {
-            if (!mkdir($this->config->getOutputPath(), 0777, true)) {
-                throw new Exception(sprintf('Unable to create output dir `%s`', $this->config->getOutputPath()));
-            }
-        }
-
         foreach ($this->mapping as $destination) {
-            /* @var Destination\DestinationInterface $destination */
-            $path = $this->getDestinationOutputPath($destination);
+            /** @var Destination\DestinationInterface $destination */
+            if (in_array($destination->getEntityType(), $entity_types, true)) {
+                $path = $this->getDestinationOutputPath($destination);
 
-            if (!is_dir($path)) {
-                if (!mkdir($path, 0777, true)) {
-                    throw new Exception(sprintf('Unable to create output dir `%s`', $path));
+                if (is_dir($path) === false) {
+                    if (mkdir($path, 0777, true) === false) {
+                        throw new Exception(sprintf('Unable to create output dir `%s`', $path));
+                    }
                 }
             }
         }
     }
 
     /**
-     * Returns destination path.
+     * Returns batch output path
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function getBatchOutputPath()
+    {
+        if ( ! $this->config) {
+            throw new Exception('Generator configuration is not defined');
+        }
+        if ($this->config->isBatchExporter()) {
+            if ( ! $this->batch_config) {
+                throw new Exception('Batch configuration is not defined');
+            }
+
+            return $this->config->getOutputPath() . $this->batch_config->getId() . '/';
+
+        } else {
+            return $this->config->getOutputPath() . '1/';
+        }
+    }
+
+    /**
+     * Returns destination path
      *
      * @param Destination\DestinationInterface $destination
      *
      * @return string
+     * @throws Exception
      */
     private function getDestinationOutputPath(Destination\DestinationInterface $destination)
     {
-        return $this->config->getOutputPath().$destination->getEntityOutputPath();
+        return $this->getBatchOutputPath() . $destination->getEntityOutputPath();
+    }
+
+    /**
+     * Returns the entity file path
+     *
+     * @param Entity\EntityInterface $entity
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function getEntityPath(Entity\EntityInterface $entity)
+    {
+        $destination = $this->mapping->getByEntityType($entity->getType());
+        return $this->getDestinationOutputPath($destination) . $entity->getDestination() . '.json';
     }
 }

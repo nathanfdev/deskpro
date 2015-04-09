@@ -93,7 +93,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 
         $data                    = array();
         $data['ticket']          = $ticket->toApiData();
-        $data['person_context']  = $context->getPersonContext()->toApiData();
+        $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
         $data['event_performer'] = $context->getEventPerformer();
         $data['event_type']      = $context->getEventType();
         $data['event_method']    = $context->getEventMethod();

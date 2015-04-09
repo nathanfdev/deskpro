@@ -27,15 +27,17 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Exception;
 
 /**
- * Base data generator class methods.
+ * Base data exporter class methods
  *
  * Class AbstractExporter
+ * @package Application\ImportBundle\Generator\Exporter
  */
 abstract class AbstractExporter extends AbstractGenerator implements ExporterInterface
 {
@@ -45,7 +47,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
     private $parsers;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param Parser\Collection $parsers
      */
@@ -59,7 +61,12 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function getCountByType($type)
     {
-        return $this->getParserByType($type)->getCount();
+        $parser = $this->getParserByType($type);
+        if ($parser instanceof Parser\NotSupportedInterface) {
+            return 0;
+        }
+
+        return $parser->getCount();
     }
 
     /**
@@ -67,35 +74,41 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function exportByType($type)
     {
-        return $this->getParserByType($type)->export();
+        $this->logNotice(sprintf('Parsing `%s` entities', $type));
+
+        $parser = $this->getParserByType($type);
+        if ($parser instanceof Parser\NotSupportedInterface) {
+            $this->logNotice(sprintf('Entity `%s` is not supported', $type));
+
+            return new Entity\Collection();
+        }
+
+        return $parser->export();
     }
 
     /**
-     * Get parser by record type.
+     * Get parser by record type
      *
      * @param string $type
      *
-     * @throws Exception
      * @return Parser\ParserInterface
-     *
+     * @throws Exception
      */
-    private function getParserByType($type)
+    protected function getParserByType($type)
     {
-        if (! $this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
-
-        $this->logNotice(sprintf('Parsing `%s` entities', $type));
 
         $parser = $this->parsers->getByEntityType($type);
         $parser->setConfig($this->config);
 
         if ($this->logger && $parser instanceof LoggerAwareInterface) {
-            /* @var LoggerAwareInterface $parser */
+            /** @var LoggerAwareInterface $parser */
             $parser->setLogger($this->logger);
         }
         if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
-            /* @var ProgressBarAwareInterface $parser */
+            /** @var ProgressBarAwareInterface $parser */
             $parser->setProgressBarHelper($this->progress_bar);
         }
 

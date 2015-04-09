@@ -39,4 +39,12 @@ interface UserSearchInterface
      * @return ResultSet
      */
     public function search(SearchContextInterface $context, $query, array $options = null);
+
+    /**
+     * @param  SearchContextInterface $context
+     * @param  string                 $content
+     * @param  array                  $options
+     * @return ResultSet
+     */
+    public function similarTo(SearchContextInterface $context, $content, array $options = null);
 }

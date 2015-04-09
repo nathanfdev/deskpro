@@ -1,5 +1,6 @@
 define [
-  'angular'
+  'angular',
+  'DeskPRO/Directive/DpDateTimePicker'
 ], (
   angular
 ) ->
@@ -13,7 +14,8 @@ define [
     'angularMoment',
     'blueimp.fileupload',
     'deskpro.option_builder',
-    'deskpro.category_builder'
+    'deskpro.category_builder',
+    'dp.datetimepicker'
   ])
 
   ReportsModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->

@@ -28,26 +28,78 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
+use Exception;
 
 /**
- * Abstract osTicket parser.
+ * Abstract osTicket parser
  *
  * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
+    const MAX_BATCH_SIZE = 1000;
+
     /**
      * @var OsTicketReaderInterface
      */
     protected $reader;
 
     /**
-     * Constructor.
+     * @var int
+     */
+    protected $entities_loaded = 0;
+
+    /**
+     * Constructor
      *
      * @param OsTicketReaderInterface $reader
      */
     public function __construct(OsTicketReaderInterface $reader)
     {
         $this->reader = $reader;
+    }
+
+    /**
+     * Returns reader batch size
+     *
+     * @return int
+     */
+    protected function getReaderBatchSize()
+    {
+        $batch_size = self::MAX_BATCH_SIZE;
+        if ($this->getBatchConfig()->getBatchSize() < $batch_size) {
+            $batch_size = $this->getBatchConfig()->getBatchSize();
+        }
+        if ($this->getEntitiesLeftToLoad() < $batch_size) {
+            $batch_size = $this->getEntitiesLeftToLoad();
+        }
+
+        return $batch_size;
+    }
+
+    /**
+     * Returns count of entities to load in a batch
+     *
+     * @return int
+     */
+    protected function getEntitiesLeftToLoad()
+    {
+        return $this->getBatchConfig()->getBatchSize() - $this->entities_loaded;
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
     }
 }

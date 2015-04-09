@@ -28,13 +28,14 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
  * ZenDesk news parser.
  *
  * Class News
  */
-final class News extends AbstractParser
+final class News extends AbstractParser implements NotSupportedInterface
 {
     /**
      * {@inheritdoc}

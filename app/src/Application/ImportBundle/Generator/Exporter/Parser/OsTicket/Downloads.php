@@ -28,13 +28,14 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NotSupportedInterface;
 
 /**
  * OsTicket downloads parser.
  *
  * Class Downloads
  */
-final class Downloads extends AbstractParser
+final class Downloads extends AbstractParser implements NotSupportedInterface
 {
     /**
      * {@inheritdoc}

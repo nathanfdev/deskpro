@@ -26,27 +26,31 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage ApiBundle
  */
 
-namespace Application\LegacyApiBundle\Controller;
+namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\File\File;
 
 class MiscController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
-        if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction') {
-            return;
+        if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction' || $action == 'dpSpecialAction') {
+            return null;
         }
 
         return parent::preAction($action, $arguments);
@@ -55,7 +59,7 @@ class MiscController extends AbstractController
     protected function _checkRateLimit($action, $arguments = null)
     {
         if ($action == 'getRateLimitAction') {
-            return;
+            return null;
         }
 
         return parent::_checkRateLimit($action, $arguments);
@@ -75,23 +79,23 @@ class MiscController extends AbstractController
         $data = array();
 
         // The home page for the helpdesk (used in links and such)
-        $data['helpdesk_url'] = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/').'/';
+        $data['helpdesk_url'] = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/') . '/';
 
         // The base URL for deskpro URLs (will include /index.php/ if required)
         $data['deskpro_url']  = $data['helpdesk_url'];
 
         if (defined('DPC_SITE_DOMAIN')) {
-            $data['api_url']    = 'https://'.DPC_SITE_DOMAIN.'/index.php/api/';
-            $data['asset_url']  = '//'.DPC_SITE_DOMAIN.'/web/';
-            $data['widget_url'] = '//'.DPC_SITE_DOMAIN.'/';
+            $data['api_url']    = 'https://' . DPC_SITE_DOMAIN . '/index.php/api/';
+            $data['asset_url']  = '//' . DPC_SITE_DOMAIN . '/web/';
+            $data['widget_url'] = '//' . DPC_SITE_DOMAIN . '/';
         } else {
-            $data['api_url'] = $data['helpdesk_url'].'index.php/api/';
+            $data['api_url'] = $data['helpdesk_url'] . 'index.php/api/';
 
             $data['asset_url'] = dp_get_config('assets_full_url');
             if (!$data['asset_url']) {
                 $data['asset_url'] = $this->container->getSetting('core.deskpro_url');
                 $data['asset_url'] = trim(str_replace('/index.php', '', $data['asset_url']), '/');
-                $data['asset_url'] .= (dp_get_config('static_path') ?: '/web').'/';
+                $data['asset_url'] .= (dp_get_config('static_path') ?: '/web') . '/';
             }
             $data['asset_url'] = preg_replace('#^https?://#', '//', $data['asset_url']);
 
@@ -121,7 +125,7 @@ class MiscController extends AbstractController
 
             if ($person) {
                 $identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
-                $result   = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+                $result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
 
                 return $result;
             }
@@ -133,11 +137,12 @@ class MiscController extends AbstractController
 
         $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
         foreach ($usersources as $us) {
-            /* @var $us \Application\DeskPRO\Entity\Usersource */
+
+            /** @var $us \Application\DeskPRO\Entity\Usersource */
             $adapter = $us->getAdapter()->getAuthAdapter();
             $adapter->setFormData(array(
                 'username' => $email,
-                'password' => $password,
+                'password' => $password
             ));
 
             try {
@@ -148,10 +153,10 @@ class MiscController extends AbstractController
 
             if ($result->isValid()) {
                 $login_processor = new LoginProcessor($us, $result->getIdentity());
-                $person          = $login_processor->getPerson();
+                $person = $login_processor->getPerson();
 
                 $identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
-                $result   = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+                $result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
 
                 return $result;
             }
@@ -176,6 +181,7 @@ class MiscController extends AbstractController
         $result = $this->_authLocalInput($this->in->getString('email'), $this->in->getString('password'));
 
         if (!$result->isValid()) {
+
             // Send alert
             $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
@@ -204,7 +210,7 @@ class MiscController extends AbstractController
                     'ip_address'   => dp_get_user_ip_address(),
                     'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
                     'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-                    'date_created' => date('Y-m-d H:i:s'),
+                    'date_created' => date('Y-m-d H:i:s')
                 ));
             }
 
@@ -236,14 +242,14 @@ class MiscController extends AbstractController
             'ip_address'   => dp_get_user_ip_address(),
             'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-            'date_created' => date('Y-m-d H:i:s'),
+            'date_created' => date('Y-m-d H:i:s')
         ));
 
         /** @var ApiToken $token */
         $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
         if (!$token) {
-            $token         = new \Application\DeskPRO\Entity\ApiToken();
-            $token->scope  = 'client';
+            $token = new \Application\DeskPRO\Entity\ApiToken();
+            $token->scope = 'client';
             $token->person = $person;
         } elseif ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
             $token->regenerateToken();
@@ -254,8 +260,8 @@ class MiscController extends AbstractController
         $this->em->flush();
 
         $data = array(
-            'success'   => true,
-            'api_token' => $token->getKeyString(),
+            'success' => true,
+            'api_token' => $token->getKeyString()
         );
 
         if ($this->in->getBool('return_info')) {
@@ -266,10 +272,10 @@ class MiscController extends AbstractController
                 $api_url = preg_replace('#^http://#', 'https://', $api_url);
             }
 
-            $data['api_url']       = $api_url;
+            $data['api_url'] = $api_url;
             $data['helpdesk_info'] = array(
                 'url'  => App::getSetting('core.deskpro_url'),
-                'name' => App::getSetting('core.helpdesk_name'),
+                'name' => App::getSetting('core.helpdesk_name')
             );
             $data['person_id']    = $person->getId();
             $data['person_info']  = $person->toApiData(true);
@@ -284,7 +290,7 @@ class MiscController extends AbstractController
 
         $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
         if (!$token) {
-            $token         = new \Application\DeskPRO\Entity\ApiToken();
+            $token = new \Application\DeskPRO\Entity\ApiToken();
             $token->person = $person;
         } elseif ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
             $token->regenerateToken();
@@ -295,8 +301,8 @@ class MiscController extends AbstractController
         $this->em->flush();
 
         $data = array(
-            'success'   => true,
-            'api_token' => $token->getKeyString(),
+            'success' => true,
+            'api_token' => $token->getKeyString()
         );
 
         if ($this->in->getBool('return_info')) {
@@ -306,10 +312,10 @@ class MiscController extends AbstractController
                 $api_url .= 'index.php/';
             }
 
-            $data['api_url']       = $api_url;
+            $data['api_url'] = $api_url;
             $data['helpdesk_info'] = array(
                 'url'  => App::getSetting('core.deskpro_url'),
-                'name' => App::getSetting('core.helpdesk_name'),
+                'name' => App::getSetting('core.helpdesk_name')
             );
             $data['person_id']    = $person->getId();
             $data['person_info']  = $person->toApiData(true);
@@ -321,11 +327,11 @@ class MiscController extends AbstractController
     public function uploadAction()
     {
         $accept = $this->container->getAttachmentAccepter();
-        $error  = null;
+        $error = null;
 
         $path = $this->in->getString('path');
         if ($path && strpos($path, 'dp_file:icons:') === 0) {
-            $path = preg_replace('#^dp_file:icons:(\.\./){4}#', DP_WEB_ROOT.'/web/', $path);
+            $path = preg_replace('#^dp_file:icons:(\.\./){4}#', DP_WEB_ROOT . '/web/', $path);
             $path = str_replace('\\', '/', $path);
             $path = realpath($path);
             if (!$path || !is_file($path) || strpos($path, DP_WEB_ROOT) !== 0 || Strings::getExtension($path) != 'png') {
@@ -334,7 +340,7 @@ class MiscController extends AbstractController
 
             $blob = $this->container->getBlobStorage()->createBlobRecordFromFile($path, pathinfo($path, PATHINFO_BASENAME), 'image/png');
         } else {
-            $file  = $this->request->files->get('file');
+            $file = $this->request->files->get('file');
             $error = $accept->getError($file, 'agent');
 
             if (!$error && $this->in->getBool('is_image')) {
@@ -344,7 +350,7 @@ class MiscController extends AbstractController
                 $error = $accept->getError($file, 'only_images', true);
             }
             if ($error) {
-                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
+                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 
                 return $this->createApiErrorResponse($error['error_code'], $message);
             }
@@ -373,7 +379,7 @@ class MiscController extends AbstractController
     {
         if (!App::getSetting('core.api_rate_limit')) {
             return $this->createApiResponse(array(
-                'limit' => 0,
+                'limit' => 0
             ));
         }
 
@@ -384,10 +390,10 @@ class MiscController extends AbstractController
         }
 
         return $this->createApiResponse(array(
-            'limit'       => App::getSetting('core.api_rate_limit'),
-            'remaining'   => max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']),
+            'limit' => App::getSetting('core.api_rate_limit'),
+            'remaining' => max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']),
             'reset_stamp' => $this->rate_info['reset_stamp'],
-            'reset_date'  => gmdate('r', $this->rate_info['reset_stamp']),
+            'reset_date' => gmdate('r', $this->rate_info['reset_stamp'])
         ));
     }
 
@@ -410,10 +416,8 @@ class MiscController extends AbstractController
     }
 
     /**
-     * get current login lockout time.
-     *
+     * get current login lockout time
      * @param null $email
-     *
      * @return int|mixed
      */
     protected function getLoginLockoutTime($email = null)
@@ -429,16 +433,81 @@ class MiscController extends AbstractController
         $context = $person['is_agent'] ? 'agent' : 'user';
 
         // 0 if disabled
-        if (!$this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.enabled')) {
+        if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
             return 0;
         }
 
         /** @var LoginLog $rep */
-        $rep         = $this->em->getRepository('DeskPRO:LoginLog');
-        $maxAttempts = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'attempts');
-        $checkTime   = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'attempts_time');
-        $lockTime    = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'lock_time');
+        $rep = $this->em->getRepository('DeskPRO:LoginLog');
+        $maxAttempts = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts');
+        $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
+        $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
 
         return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
+    }
+
+    /**
+     * Special action codes (internal system use)
+     *
+     * @param string $action
+     * @return \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     */
+    public function dpSpecialAction($action)
+    {
+        if (!defined('DP_API_SPECIAL_CODE')) {
+            throw $this->createAccessDeniedException('DP_API_SPECIAL_CODE is not defined');
+        }
+
+        if ($this->in->getString('SC') != DP_API_SPECIAL_CODE) {
+            throw $this->createAccessDeniedException('DP_API_SPECIAL_CODE invalid');
+        }
+
+        switch ($action) {
+            case 'agent_login_token':
+
+                if (!($agent_id = $this->in->getUInt('agent_id'))) {
+                    foreach ($this->container->getAgentData()->getAgents() as $agent) {
+                        if ($agent->can_admin) {
+                            $agent_id = $agent->id;
+                            break;
+                        }
+                    }
+                }
+
+                $agent = $this->container->getAgentData()->get($agent_id);
+                if (!$agent) {
+                    throw $this->createNotFoundException();
+                }
+
+                $secret = sha1($agent->secret_string . $agent->salt);
+                $token = Util::generateStaticSecurityToken($secret, 300);
+
+                $data = array(
+                    'agent_id'    => $agent->id,
+                    'agent_name'  => $agent->getDisplayName(),
+                    'agent_email' => $agent->getPrimaryEmailAddress(),
+                    'valid_until' => date('Y-m-d H:i:s', time()+300),
+                    'login_token' => $token,
+                    'login_url'   => App::getRouter()->generateUrl('user') . 'agent/login?tok=' . $agent->getId() . '-' . $token,
+                );
+
+                return $this->createApiResponse($data);
+
+            case 'list_agents':
+
+                $data = array('agents' => array());
+
+                foreach ($this->container->getAgentData()->getAgents() as $agent) {
+                    $data['agents'][$agent->id] = array(
+                        'agent_id'    => $agent->id,
+                        'agent_name'  => $agent->getDisplayName(),
+                        'agent_email' => $agent->getPrimaryEmailAddress(),
+                    );
+                }
+
+                return $this->createApiResponse($data);
+        }
+
+        throw $this->createNotFoundException();
     }
 }

@@ -35,6 +35,15 @@ use Application\DeskPRO\Tickets\TicketPurger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
 
+/**
+ * All you wanted to know about ticket statuses but frightened to ask!
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_statuses",
+ * 	description="Operations about Ticket status",
+ * 	basePath="/api"
+ * )
+ */
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -49,6 +58,20 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # get-status
     ####################################################################################################################
 
+    /**
+     * @SWG\Api(
+     * 	path="/ticket_statuses/stats",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Overall ticket statistic",
+     * 		notes="Tickets grouped by their status and counted",
+     *		type="array",
+     *
+     *  )
+     * )
+     *
+     * @return Response
+     */
     public function getStatsAction()
     {
         $stats = $this->db->fetchAllKeyValue("
@@ -76,6 +99,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # get-archived-info
     ####################################################################################################################
 
+	/**
+     * @SWG\Api(
+     * 	path="/ticket_statuses/archived",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Return archivation settings",
+     * 		notes="",
+     *  )
+     * )
+     *
+     * @return Response
+     *
+     */
     public function getArchivedInfoAction()
     {
         $info = array(
@@ -92,6 +128,35 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # save-archived-settings
     ####################################################################################################################
 
+	/**
+     * @return Response
+     *
+     * @SWG\Api(
+     *  path="/ticket_statuses/archived/settings",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save archivator settings",
+     * 		notes="",
+     *		type="array",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="enabled",
+     *				description="Should be tickets be archived?",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean"
+     *			),
+     *      @SWG\Parameter(
+     *				name="auto_archive_time",
+     *				description="When tickets have to be archived?",
+     *				paramType="query",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveArchivedSettingsAction()
     {
         $this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
@@ -100,6 +165,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse();
     }
 
+    /**
+     * @SWG\Api(
+     * 	path="/ticket_statuses/archived/reset-search-tables",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Clean search status",
+     * 		notes="",
+     *  )
+     * )
+     *
+     * @return Response
+     *
+     */
     public function resetSearchTablesAction()
     {
         $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
@@ -111,6 +189,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # get-deleted-info
     ####################################################################################################################
 
+    /**
+     * @SWG\Api(
+     * 	path="/ticket_statuses/deleted",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Return deleted tickets autopurge settings",
+     * 		notes="",
+     *  )
+     * )
+     *
+     * @return Response
+     *
+     */
     public function getDeletedInfoAction()
     {
         $info = array(
@@ -122,6 +213,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         ));
     }
 
+	/**
+     * Purge deleted tickets manually
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_statuses/deleted/purge",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Purge deleted tickets manually",
+     * 		notes="Will return count for purged tickets",
+     *  )
+     * )
+     */
     public function purgeDeletedAction()
     {
         $purger = new TicketPurger($this->db);
@@ -136,6 +240,27 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # save-deleted-settings
     ####################################################################################################################
 
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     *  path="/ticket_statuses/deleted/settings",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save deleted tickets autopurge settings",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameter(
+     *				name="auto_archive_time",
+     *				description="When tickets have to be pruged automatically?",
+     *				paramType="query",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveDeletedSettingsAction()
     {
         $this->settings->setSetting('core_tickets.hard_delete_time', $this->in->getUint('auto_purge_time'));
@@ -147,6 +272,18 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # get-spam-info
     ####################################################################################################################
 
+    /**
+     * @SWG\Api(
+     * 	path="/ticket_statuses/spam",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Return spam autodelete settings",
+     * 		notes="",
+     *  )
+     * )
+     * @return Response
+     *
+     */
     public function getSpamInfoAction()
     {
         $info = array(
@@ -158,6 +295,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         ));
     }
 
+	/**
+     * Purge spam tickets manually
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_statuses/spam/purge",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Purge spam tickets manually",
+     * 		notes="Will return count for purged tickets",
+     *  )
+     * )
+     */
     public function purgeSpamAction()
     {
         $purger = new TicketPurger($this->db);
@@ -172,6 +322,27 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     # save-spam-settings
     ####################################################################################################################
 
+	/**
+     * @return Response
+     *
+     * @SWG\Api(
+     *  path="/ticket_statuses/spam/settings",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save spam autopurge settings",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameter(
+     *				name="auto_archive_time",
+     *				description="When spam tickets have to be pruged automatically?",
+     *				paramType="query",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveSpamSettingsAction()
     {
         $this->settings->setSetting('core_tickets.spam_delete_time', $this->in->getUint('auto_purge_time'));

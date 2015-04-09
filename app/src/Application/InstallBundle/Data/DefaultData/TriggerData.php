@@ -109,6 +109,13 @@ class TriggerData extends AbstractDefaultData
         $trigger->is_enabled    = true;
         $trigger->sys_name      = 'default_newticket_byagent';
         $trigger->title         = "Send user new ticket by agent";
+
+        $set = new TriggerTermComposite();
+        $set->add(new CheckAgentMessage('isset', array('message'=> '')));
+        $set->add(new CheckUserIsEmailed('not'));
+        $set->setOperator('AND');
+        $trigger->terms->addTerm($set);
+
         $trigger->actions->addAction(new SendUserEmail(array(
             'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
             'do_cc_users' => true,
