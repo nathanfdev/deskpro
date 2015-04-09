@@ -39,7 +39,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 /**
  * Operations about ticket filters
  * Class TicketFiltersController
- * @package Application\ApiBundle\Controller
+ * @package Application\LegacyApiBundle\Controller
  *
  * @SWG\Resource(
  * 	resourcePath="/ticket_filters",

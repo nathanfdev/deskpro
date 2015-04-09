@@ -215,7 +215,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
             return $response;
         } else {
-            $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
+            $response = new \Application\LegacyApiBundle\HttpFoundation\JsonResponse();
 
             // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
             if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos(

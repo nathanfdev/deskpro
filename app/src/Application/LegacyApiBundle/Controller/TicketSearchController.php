@@ -32,7 +32,7 @@
  * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
