@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
@@ -69,7 +69,7 @@ class DbalTicketFilterEngine extends DbalEngine
         $this->connection = $connection;
     }
 
-    public function evaluate(Filter $filter, DbalEngineContext $context)
+    public function evaluate(Filter $filter, TermEngineContext $context)
     {
         $compiled_query = $this->compiler->compile($filter);
 

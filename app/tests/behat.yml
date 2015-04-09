@@ -15,7 +15,7 @@ api:
                 - DpBehat\Api\AuthContext:
                     em: @doctrine.orm.default_entity_manager
                     user_details: @user_details
-                - DpBehat\TermEngine\DbalCompilerContext
+                - DpBehat\TermEngine\TermEngineBehatContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

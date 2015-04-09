@@ -34,7 +34,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler;
@@ -66,7 +66,7 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
 
     function it_creates_an_executable_query_for_a_filter_using_given_context(
         Filter $filter,
-        DbalEngineContext $context,
+        TermEngineContext $context,
         DbalTicketFilterEngineCompiler $compiler,
         DbalQueryManipulator $query_manipulator,
         DbalQuery $compiled_query

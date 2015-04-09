@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use Orb\Util\Arrays;
@@ -50,11 +51,11 @@ class DbalQueryManipulator
         $this->expression_language = $expression_language;
     }
 
-    public function ensureAgentPermissions(DbalQuery $query, DbalEngineContext $context)
+    public function ensureAgentPermissions(DbalQuery $query, TermEngineContext $context)
     {
     }
 
-    public function resolveParameters(DbalQuery $query, DbalEngineContext $context)
+    public function resolveParameters(DbalQuery $query, TermEngineContext $context)
     {
         foreach ($query->getParameters() as $key => $val) {
             $resolved = $this->resolveParam($val, $context);
@@ -67,7 +68,7 @@ class DbalQueryManipulator
         }
     }
 
-    private function resolveParam($val, DbalEngineContext $context)
+    private function resolveParam($val, TermEngineContext $context)
     {
         if (is_array($val)) {
             $new_val = array();
@@ -87,7 +88,7 @@ class DbalQueryManipulator
         return $val;
     }
 
-    private function evalExpression(TermEngineExpression $val, DbalEngineContext $context)
+    private function evalExpression(TermEngineExpression $val, TermEngineContext $context)
     {
         return $this->expression_language->evaluate(
             (string)$val,

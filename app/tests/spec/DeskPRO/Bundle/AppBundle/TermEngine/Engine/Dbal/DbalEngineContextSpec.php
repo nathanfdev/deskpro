@@ -36,10 +36,10 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 use Application\DeskPRO\Entity\Person;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext
  */
 class DbalEngineContextSpec extends ObjectBehavior
 {

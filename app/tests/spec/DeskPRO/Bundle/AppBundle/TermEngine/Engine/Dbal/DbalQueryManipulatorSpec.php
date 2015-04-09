@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
@@ -56,7 +56,7 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
 
     function it_will_manipulate_agent_permissions(
         DbalQuery $query,
-        DbalEngineContext $engine_context
+        TermEngineContext $engine_context
     )
     {
         $this->ensureAgentPermissions($query, $engine_context);
@@ -64,7 +64,7 @@ class DbalQueryManipulatorSpec extends ObjectBehavior
 
     function it_will_resolve_query_parameters(
         DbalQuery $query,
-        DbalEngineContext $engine_context,
+        TermEngineContext $engine_context,
         TermEngineExpressionLanguage $expression_language,
         Person $person
     )

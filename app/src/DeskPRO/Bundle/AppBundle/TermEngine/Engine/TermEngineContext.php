@@ -31,11 +31,11 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use Application\DeskPRO\Entity\Person;
 
-class DbalEngineContext
+class TermEngineContext
 {
     /**
      * @var Person

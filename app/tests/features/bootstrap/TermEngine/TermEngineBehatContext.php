@@ -43,11 +43,11 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpBehat\BaseContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
 
-class DbalCompilerContext extends BaseContext
+class TermEngineBehatContext extends BaseContext
 {
     /**
      * @var TermInterface
@@ -70,7 +70,7 @@ class DbalCompilerContext extends BaseContext
     protected $compiled;
 
     /**
-     * @var DbalEngineContext
+     * @var TermEngineContext
      */
     protected $engine_context;
 
@@ -93,47 +93,39 @@ class DbalCompilerContext extends BaseContext
 
         $agent = $ud->getWho($who);
 
-        $this->engine_context = new DbalEngineContext($agent);
+        $this->engine_context = new TermEngineContext($agent);
     }
 
     /**
-     * @Given I set the executable query page to :val
+     * @Given I am using the PhpTicketCheckerEngine
      */
-    public function iSetTheQueryOptionpageTo($val)
+    public function iAmUsingThePhpticketcheckerengine()
     {
-        $this->executable_query->setPage($val);
+        throw new PendingException();
     }
 
     /**
-     * @Given I set the executable query count to :val
+     * @When I check tickets with the following ids:
      */
-    public function iSetTheQueryOptionCountTo($val)
+    public function iCheckTicketsWithTheFollowingIds(TableNode $table)
     {
-        $this->executable_query->setCount($val);
+        throw new PendingException();
     }
 
     /**
-     * @When I add the count group :group to the executable query
+     * @Then the all of the checks should match
      */
-    public function iAddTheCountGroupToTheExecutableQuery($group)
+    public function theAllOfTheChecksShouldMatch()
     {
-        $this->executable_query->addCountGroup($group);
+        throw new PendingException();
     }
 
     /**
-     * @When I append :field :dir to the executable query order
+     * @Then the none of the checks should match
      */
-    public function iAppendIdDescToTheExecutableQueryOptionOrderby($field, $dir)
+    public function theNoneOfTheChecksShouldMatch()
     {
-        $this->executable_query->addOrderBy($field, $dir);
-    }
-
-    /**
-     * @Given I append :group_name = :val to the executable query andGroupWhere
-     */
-    public function iAppendDepartmentToTheQueryOptionGroupWhere($group_name, $val)
-    {
-        $this->executable_query->addAndGroupWhere($group_name, $val);
+        throw new PendingException();
     }
 
     /**
@@ -179,6 +171,46 @@ class DbalCompilerContext extends BaseContext
     public function iRunACountOnTheExecutableQuery()
     {
         $this->engine_result = $this->executable_query->fetchCount();
+    }
+
+    /**
+     * @Given I set the executable query page to :val
+     */
+    public function iSetTheQueryOptionpageTo($val)
+    {
+        $this->executable_query->setPage($val);
+    }
+
+    /**
+     * @Given I set the executable query count to :val
+     */
+    public function iSetTheQueryOptionCountTo($val)
+    {
+        $this->executable_query->setCount($val);
+    }
+
+    /**
+     * @When I add the count group :group to the executable query
+     */
+    public function iAddTheCountGroupToTheExecutableQuery($group)
+    {
+        $this->executable_query->addCountGroup($group);
+    }
+
+    /**
+     * @When I append :field :dir to the executable query order
+     */
+    public function iAppendIdDescToTheExecutableQueryOptionOrderby($field, $dir)
+    {
+        $this->executable_query->addOrderBy($field, $dir);
+    }
+
+    /**
+     * @Given I append :group_name = :val to the executable query andGroupWhere
+     */
+    public function iAppendDepartmentToTheQueryOptionGroupWhere($group_name, $val)
+    {
+        $this->executable_query->addAndGroupWhere($group_name, $val);
     }
 
     /**
