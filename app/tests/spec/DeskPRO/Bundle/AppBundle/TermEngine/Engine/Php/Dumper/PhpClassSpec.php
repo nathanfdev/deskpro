@@ -1,0 +1,244 @@
+<?php
+/**************************************************************************\
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper;
+
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
+
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass
+ */
+class PhpClassSpec extends ObjectBehavior
+{
+    function it_has_a_mutable_name()
+    {
+        $this->getName()->shouldBe(null);
+
+        $this->setName('FilterTickets');
+
+        $this->getName()->shouldBe('FilterTickets');
+    }
+
+    function it_has_a_collection_of_properties()
+    {
+        $this->getProperties()->shouldBe(array());
+
+        $this->addProperty('ticket');
+        $this->addProperty('em', 'protected', 'null');
+
+        $this->getProperties()->shouldBe(
+            array(
+                'ticket' => array(
+                    'name' => 'ticket',
+                    'visibility' => 'public',
+                    'default' => null
+                ),
+                'em' => array(
+                    'name' => 'em',
+                    'visibility' => 'protected',
+                    'default' => 'null'
+                ),
+            )
+        );
+
+        $this->removeProperty('ticket');
+
+        $this->getProperties()->shouldBe(
+            array(
+                'em' => array(
+                    'name' => 'em',
+                    'visibility' => 'protected',
+                    'default' => 'null'
+                ),
+            )
+        );
+    }
+
+    function it_has_a_collection_of_methods(
+        PhpMethod $method1,
+        PhpMethod $method2
+    )
+    {
+        $method1->getName()->willReturn('m1');
+        $method2->getName()->willReturn('m2');
+
+        $this->getMethods()->shouldBe(array());
+        $this->addMethod($method1);
+        $this->addMethod($method2);
+
+        $this->getMethods()->shouldBe(array('m1' => $method1, 'm2' => $method2));
+    }
+
+    function it_will_generate_a_random_name_and_assign_it_to_a_method_if_added_with_no_name_and_return_it(
+        PhpMethod $method1
+    )
+    {
+        $method1->getName()->willReturn(null);
+        $method1->setName(Argument::type('string'))->shouldBeCalled();
+
+        $returned_method_name = $this->addMethod($method1);
+
+        expect(strlen($returned_method_name->getWrappedObject()) > 5)->toBe(true);
+
+    }
+
+    function it_throws_if_a_method_with_that_name_already_exists(
+        PhpMethod $method1,
+        PhpMethod $method2
+    )
+    {
+        $method1->getName()->willReturn('m1');
+        $method2->getName()->willReturn('m1');
+
+        $this->getMethods()->shouldBe(array());
+        $this->addMethod($method1);
+
+        $this->shouldThrow('\InvalidArgumentException')->during(
+            'addMethod',
+            array($method2)
+        );
+
+        $this->getMethods()->shouldBe(array('m1' => $method1));
+    }
+
+    function it_can_implement_or_extend()
+    {
+        $this->getImplements()->shouldBe(array());
+        $this->getExtends()->shouldBe(null);
+
+        $this->addImplement('\StdClass');
+        $this->addImplement('\IteratorAggregate');
+        $this->setExtends('\DeskPRO\Bundle\AppBundle\SomeClass');
+
+        $this->getImplements()->shouldBe(array('\StdClass', '\IteratorAggregate'));
+        $this->getExtends()->shouldBe('\DeskPRO\Bundle\AppBundle\SomeClass');
+    }
+
+    function it_creates_a_string_of_itself(
+        PhpMethod $method1,
+        PhpMethod $method2
+    )
+    {
+        $method1->getName()->willReturn('isTicketCheck');
+        $method1->__toString()->willReturn(
+            'public function isTicketCheck(Ticket $ticket, PhpContext $context)
+{
+    do_something($ticket, $context);
+}'
+        );
+
+        $method2->getName()->willReturn('verify');
+        $method2->__toString()->willReturn(
+            'protected function verify(Ticket $ticket)
+{
+    return do_something_else($ticket);
+}'
+        );
+
+        $this->addMethod($method1);
+        $this->addMethod($method2);
+
+        $this->setName('xyz_class');
+        $this->addImplement('\DeskPRO\Bundle\AppBundle\TermEngine\Something');
+        $this->addImplement('\Countable');
+        $this->setExtends('\ArrayObject');
+        $this->addProperty('ticket', 'protected', 'null');
+        $this->addProperty('enabled', null, 'false');
+        $this->addProperty('simple', null, 'simple string');
+        $this->addProperty('test');
+
+        $this->__toString()->shouldBeLike(
+            'class xyz_class extends \ArrayObject implements \DeskPRO\Bundle\AppBundle\TermEngine\Something, \Countable
+{
+protected $ticket = null;
+public $enabled = false;
+public $simple = \'simple string\';
+public $test;
+
+public function isTicketCheck(Ticket $ticket, PhpContext $context)
+{
+    do_something($ticket, $context);
+}
+
+protected function verify(Ticket $ticket)
+{
+    return do_something_else($ticket);
+}
+}'
+        );
+    }
+
+    function its_string_works_in_simplest_case()
+    {
+        $this->setName('MyClass444444444444444');
+        $this->__toString()->shouldBe(
+            'class MyClass444444444444444
+{
+
+
+
+}'
+        );
+    }
+
+    function its_string_works_with_just_an_extends()
+    {
+        $this->setName('MyClass444444444444444');
+        $this->setExtends('\ArrayAccess');
+        $this->__toString()->shouldBe(
+            'class MyClass444444444444444 extends \ArrayAccess
+{
+
+
+
+}'
+        );
+    }
+
+    function its_string_works_with_just_an_implement()
+    {
+        $this->setName('MyClass444444444444444');
+        $this->addImplement('\Countable');
+        $this->__toString()->shouldBe(
+            'class MyClass444444444444444 implements \Countable
+{
+
+
+
+}'
+        );
+    }
+}
