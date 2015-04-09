@@ -346,11 +346,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
         $ticket_message['person']  = $person;
         $ticket_message['ticket']  = $ticket;
-        $this->ticket->message = Strings::linkify($this->ticket->message);
         if ($this->ticket->message_is_html) {
-            $ticket_message->setMessageHtml($this->ticket->message);
+            $ticket_message->setMessageHtml(Strings::linkifyHtml($this->ticket->message));
         } else {
-            $ticket_message->setMessageText($this->ticket->message);
+            $ticket_message->setMessageHtml(Strings::linkifyHtml(Strings::text2html($this->ticket->message)));
         }
         if (!$ticket_message['message']) {
             $ticket_message['message'] = '(no message)';
