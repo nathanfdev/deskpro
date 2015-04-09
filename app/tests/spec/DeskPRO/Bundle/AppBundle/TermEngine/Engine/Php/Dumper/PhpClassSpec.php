@@ -85,6 +85,14 @@ class PhpClassSpec extends ObjectBehavior
                 ),
             )
         );
+
+        $this->getProperty('em')->shouldBe(
+            array(
+                'name' => 'em',
+                'visibility' => 'protected',
+                'default' => 'null'
+            )
+        );
     }
 
     function it_has_a_collection_of_methods(
@@ -100,6 +108,9 @@ class PhpClassSpec extends ObjectBehavior
         $this->addMethod($method2);
 
         $this->getMethods()->shouldBe(array('m1' => $method1, 'm2' => $method2));
+
+        $this->getMethod('m1')->shouldBe($method1);
+        $this->getMethod('m2')->shouldBe($method2);
     }
 
     function it_will_generate_a_random_name_and_assign_it_to_a_method_if_added_with_no_name_and_return_it(
@@ -238,6 +249,48 @@ protected function verify(Ticket $ticket)
 
 
 
+}'
+        );
+    }
+
+    function it_allows_helper_methods_for_generating_constructor()
+    {
+        $this->addDependencyInjection('context', '\DeskPRO\Bundle\AppBundle\TermEngine\TermEngineContext');
+
+        $this->getProperties()->shouldBe(
+            array(
+                'context' => array(
+                    'name' => 'context',
+                    'visibility' => 'protected',
+                    'default' => null
+                )
+            )
+        );
+
+        $method = $this->getMethod('__construct');
+
+        $method->getName()->shouldBe('__construct');
+        $method->getArguments()->shouldBe(
+            array(
+                'context' => array(
+                    'name' => 'context',
+                    'type' => '\DeskPRO\Bundle\AppBundle\TermEngine\TermEngineContext',
+                    'default' => null
+                )
+            )
+        );
+
+        $this->setName('my_class');
+
+        $this->__toString()->shouldBeLike(
+            'class my_class
+{
+protected $context;
+
+public function __construct(\DeskPRO\Bundle\AppBundle\TermEngine\TermEngineContext $context)
+{
+    $this->context = $context;
+}
 }'
         );
     }

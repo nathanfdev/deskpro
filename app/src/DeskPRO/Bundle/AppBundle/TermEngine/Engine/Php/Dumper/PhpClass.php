@@ -67,6 +67,12 @@ PHPCODE;
 
     protected function generateClassDeclaration()
     {
+        if (!$this->getName()) {
+            // if nothing was declared as the name, we need a name to make the
+            // class declaration, so we'll make a unique name.
+            $this->setName(uniqid('class'));
+        }
+
         $declaration = 'class ';
         $declaration .= $this->getName();
         if ($extends = $this->getExtends()) {
@@ -221,4 +227,51 @@ PHPCODE;
         $this->extends = $extends;
     }
 
+
+    public function getProperty($property_name)
+    {
+        if (array_key_exists($property_name, $this->properties)) {
+            return $this->properties[$property_name];
+        }
+
+        return null;
+    }
+
+    public function getMethod($method_name)
+    {
+        foreach ($this->methods as $method) {
+            if ($method_name == $method->getName()) {
+                return $method;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Just a shortcut to help make the constructor.
+     *
+     * It add a property on the class, generates a constructor if none
+     * exists, and adds the argument + sets the proeprty on construction.
+     *
+     * @param $property
+     * @param $type
+     */
+    public function addDependencyInjection($property, $type)
+    {
+        $this->addProperty($property, 'protected');
+
+        // if this class has no constructor, we need to make one
+        if (!$constructor = $this->getMethod('__constructor')) {
+            $constructor = new PhpMethod();
+            $constructor->setName('__construct');
+            $this->addMethod($constructor);
+        }
+
+        $constructor->addArgument($property, $type);
+
+        $code = $constructor->getCode();
+        $code .= '$this->' . $property . ' = $' . $property . ';';
+        $constructor->setCode($code);
+    }
 }
