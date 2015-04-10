@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompi
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class PhpAgentTermCompiler extends AbstractPhpTermCompiler
@@ -47,8 +48,29 @@ class PhpAgentTermCompiler extends AbstractPhpTermCompiler
      */
     protected function doCompile(TermInterface $term)
     {
+        $op = $term->getOp();
+        $ids = $term->getOption('agent_ids');
+
+        $use_ids = array();
+        foreach ($ids as $id) {
+            if ($id === AgentTerm::ID_ME) {
+                $id = '$this->evaluateExpression(\'agent.getId()\')';
+            }
+
+            $use_ids[] = $id;
+        }
+
+        $check = '';
+        $check .= '$check = ';
+        if ($this->isOp($op, TermInterface::OP_NOT)) {
+            $check .= '!';
+        }
+        $check .= 'in_array($ticket->getAgentId(), array(';
+        $check .= implode(',', $use_ids);
+        $check .= '));';
+
         return new PhpCheck(
-            '$check = true;'
+            $check
         );
     }
 }

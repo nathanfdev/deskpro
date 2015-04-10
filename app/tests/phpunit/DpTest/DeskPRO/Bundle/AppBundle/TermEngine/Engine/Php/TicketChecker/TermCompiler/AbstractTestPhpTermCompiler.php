@@ -63,35 +63,27 @@ abstract class AbstractTestPhpTermCompiler extends ApiTestCase
         );
     }
 
-    protected function assertTrueTicketCheck(PhpCheck $php_check, $ticket_prophecy)
+    protected function assertTicketCheck(PhpCheck $php_check, $result, $ticket_prophecy)
     {
         $ticket = $ticket_prophecy->reveal();
 
-        $check = false;
+        $result = (bool)$result;
+
+        $check = !$result;
 
         eval($php_check->getCheckCode());
 
-        $this->assertTrue($check);
-    }
-
-    protected function assertFalseTicketCheck(PhpCheck $php_check, $ticket_prophecy)
-    {
-        $ticket = $ticket_prophecy->reveal();
-
-        $check = true;
-
-        eval($php_check->getCheckCode());
-
-        $this->assertFalse($check);
+        $this->assertSame($result, $check, 'ticket check result is correct');
     }
 
     protected function createTicketProphecy($agent_id)
     {
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        if (!$agent_id) {
+            $agent_id = null;
+        }
         $ticket->getAgentId()->willReturn($agent_id);
 
         return $ticket;
     }
-
-
 }
