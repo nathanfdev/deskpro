@@ -35,7 +35,8 @@ namespace DpTest;
 
 use DeskPRO\Kernel\ApiKernel;
 use DeskPRO\Kernel\PortalKernel;
+use Prophecy\PhpUnit\ProphecyTestCase;
 
-class DeskProTestCase extends \PHPUnit_Framework_TestCase
+abstract class DeskProTestCase extends ProphecyTestCase
 {
 }

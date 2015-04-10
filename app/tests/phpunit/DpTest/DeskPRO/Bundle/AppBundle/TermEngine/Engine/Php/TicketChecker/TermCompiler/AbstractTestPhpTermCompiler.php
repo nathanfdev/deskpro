@@ -31,17 +31,67 @@
  * @package DeskPRO
  */
 
-namespace DpTest;
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-use DeskPRO\Kernel\ApiKernel;
 
-abstract class ApiTestCase extends AbstractKernelAwareTestCase
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionProvider;
+use DpTest\ApiTestCase;
+
+abstract class AbstractTestPhpTermCompiler extends ApiTestCase
 {
-    /**
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected function getContainer()
+    protected function evaluateExpression($expression)
     {
-        return $this->getApiKernel()->getContainer();
+
+        //
+        // this method simulates the evaluateExpression method on the result PhpTicketCheckerInterface
+        // in the tests assertions below, eval() will use this method
+        //
+
+        $lang = new TermEngineExpressionLanguage(null, array(new TermEngineExpressionProvider()));
+
+        $agent = $this->prophesize('Application\DeskPRO\Entity\Person');
+        $agent->getId()->willReturn(2); // in these tests, ME is always agent id=2
+
+        return $lang->evaluate(
+            $expression,
+            array(
+                'agent' => $agent->reveal() // in these tests, ME is always agent id=2
+            )
+        );
     }
+
+    protected function assertTrueTicketCheck(PhpCheck $php_check, $ticket_prophecy)
+    {
+        $ticket = $ticket_prophecy->reveal();
+
+        $check = false;
+
+        eval($php_check->getCheckCode());
+
+        $this->assertTrue($check);
+    }
+
+    protected function assertFalseTicketCheck(PhpCheck $php_check, $ticket_prophecy)
+    {
+        $ticket = $ticket_prophecy->reveal();
+
+        $check = true;
+
+        eval($php_check->getCheckCode());
+
+        $this->assertFalse($check);
+    }
+
+    protected function createTicketProphecy($agent_id)
+    {
+        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getAgentId()->willReturn($agent_id);
+
+        return $ticket;
+    }
+
+
 }
