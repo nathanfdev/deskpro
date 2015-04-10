@@ -18,16 +18,16 @@ Feature: All Tickets Filter (PhpTicketCheckerEngine)
       | 15 |
     Then the all of the checks should match
 
-#  Scenario: I check non-matching tickets
-#    Given I set the context agent to agent
-#    When I evaluate the filter "All"
-#    And I check tickets with the following ids:
-#      | 22 |
-#      | 23 |
-#      | 24 |
-#      | 25 |
-#      | 26 |
-#      | 27 |
-#      | 28 |
-#    Then the none of the checks should match
+  Scenario: I check non-matching tickets
+    Given I set the context agent to agent
+    When I evaluate the filter "All"
+    And I check tickets with the following ids:
+      | 22 |
+      | 23 |
+      | 24 |
+      | 25 |
+      | 26 |
+      | 27 |
+      | 28 |
+    Then the none of the checks should match
 
