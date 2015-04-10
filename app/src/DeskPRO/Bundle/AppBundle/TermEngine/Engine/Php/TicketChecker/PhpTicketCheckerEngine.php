@@ -35,12 +35,12 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpFile;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerInterface;
 
-class PhpTicketCheckerEngine
+class PhpTicketCheckerEngine extends PhpEngine
 {
     /**
      * @var PhpTicketCheckerCompiler
