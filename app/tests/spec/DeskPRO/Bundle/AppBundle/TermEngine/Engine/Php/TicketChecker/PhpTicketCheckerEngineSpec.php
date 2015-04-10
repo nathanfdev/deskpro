@@ -31,51 +31,45 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler\PhpCompiler;
+use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine;
 
-class PhpTicketCheckerCompiler extends PhpCompiler
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
+ */
+class PhpTicketCheckerEngineSpec extends ObjectBehavior
 {
-    public function enginePreCompile(PhpClass $php_class)
+    function it_evals_the_compiler_result_and_returns_the_compiled_checker(
+        PhpTicketCheckerCompiler $compiler,
+        TermEngineExpressionLanguage $expression_language,
+        Filter $filter,
+        TermEngineContext $context,
+        TermInterface $term,
+        PhpClass $compiled_class
+    )
     {
-        $php_class->addImplement(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerInterface'
+        $this->beConstructedWith($compiler, $expression_language);
+
+        $filter->getTerm()->willReturn($term);
+        $compiler->compile($term)->willReturn($compiled_class);
+        $compiled_class->getName()->willReturn('myclass');
+        $compiled_class->__toString()->willReturn(
+            '
+            class myclass  {
+                public function __construct($context, $expression_lang) {}
+            }
+            '
         );
 
-        $php_class->addDependencyInjection(
-            'context',
-            '\DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext'
-        );
-
-        $php_class->addDependencyInjection(
-            'expression_language',
-            '\DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage'
-        );
-
-        // this is the method the outside world will call (well, the engine will call it)
-        $ticket_check_method = new PhpMethod();
-        $ticket_check_method->setName('isTicketMatch');
-        $ticket_check_method->addArgument('ticket', '\Application\DeskPRO\Entity\Ticket');
-        // here we add logging, events, or whatever other hooks we want to before the main check
-        $ticket_check_method->setCode(
-            'return (bool) $this->mainCheck($ticket);'
-        );
-        $php_class->addMethod($ticket_check_method);
-    }
-
-    public function enginePostCompile(PhpClass $php_class)
-    {
-        // let the term compilers use this method to evaluate expressions
-        $evaluate_expression = new PhpMethod();
-        $evaluate_expression->setName('evaluateExpression');
-        $evaluate_expression->setVisibility('protected');
-        $evaluate_expression->addArgument('expression');
-        $evaluate_expression->setCode(
-            'return $this->expression_language
-    ->evaluate($expression, array(\'agent\' => $this->context->getAgent()));'
-        );
+        $this->evaluate($filter, $context)->shouldBeAnInstanceOf('myclass');
     }
 }

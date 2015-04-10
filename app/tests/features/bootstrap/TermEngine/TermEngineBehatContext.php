@@ -46,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerInterface;
 
 class TermEngineBehatContext extends BaseContext
 {
@@ -75,7 +76,7 @@ class TermEngineBehatContext extends BaseContext
     protected $engine_context;
 
     /**
-     * @var DbalExecutableQuery
+     * @var DbalExecutableQuery|PhpTicketCheckerInterface
      */
     protected $engine_evaluation;
 
@@ -111,7 +112,7 @@ class TermEngineBehatContext extends BaseContext
             return;
         }
         if ('PhpTicketCheckerEngine' === $engine) {
-            $this->engine = $this->get('term_engine.php_ticket_checker.compiler');
+            $this->engine = $this->get('term_engine.php_ticket_checker.engine');
             return;
         }
 

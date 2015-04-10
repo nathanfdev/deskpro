@@ -4,15 +4,14 @@ services:
     # ENGINE
     #
 
-#    term_engine.php_ticket_checker.engine:
-#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
-#        arguments:
-#            - @term_engine.dbal_ticket_filters.engine.compiler
-#            - @term_engine.dbal_ticket_filters.engine.query_manipulator
-#            - @doctrine.dbal.default_connection
+    term_engine.php_ticket_checker.engine:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
+        arguments:
+            - @term_engine.php_ticket_checker.compiler
+            - @term_engine.expression_language
 
-#    term_engine.dbal_ticket_filters.engine.query_manipulator:
-#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator
+#    term_engine.dbal_ticket_filters.engine.event_dispatcher:
+#        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener
 #        arguments:
 #            - @term_engine.expression_language
 #
