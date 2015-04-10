@@ -38,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\Ph
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class PhpAgentTermCompilerTestPhpTermCompiler extends AbstractTestPhpTermCompiler
+class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
 {
     /**
      * @var PhpAgentTermCompiler
@@ -196,5 +196,16 @@ class PhpAgentTermCompilerTestPhpTermCompiler extends AbstractTestPhpTermCompile
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(21));
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(2)); // me
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(15));
+    }
+
+    protected function createTicketProphecy($agent_id)
+    {
+        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        if (!$agent_id) {
+            $agent_id = null;
+        }
+        $ticket->getAgentId()->willReturn($agent_id);
+
+        return $ticket;
     }
 }

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,59 +31,44 @@
  * @package DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-
-use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionProvider;
-use DpTest\ApiTestCase;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-abstract class AbstractTestPhpTermCompiler extends ApiTestCase
+class PhpTicketStatusTermCompiler extends AbstractPhpTermCompiler
 {
-    protected function evaluateExpression($expression)
+    /**
+     * Take a term and return a PhpCheck representing the term's query conditions.
+     *
+     * @param TermInterface $term
+     * @return PhpCheck
+     */
+    protected function doCompile(TermInterface $term)
     {
+        $op = $term->getOp();
+        $status_codes = $term->getOption('status');
 
-        //
-        // this method simulates the evaluateExpression method on the result PhpTicketCheckerInterface
-        // in the tests assertions below, eval() will use this method
-        //
-
-        $lang = new TermEngineExpressionLanguage(null, array(new TermEngineExpressionProvider()));
-
-        $agent = $this->prophesize('Application\DeskPRO\Entity\Person');
-        $agent->getId()->willReturn(2); // in these tests, ME is always agent id=2
-
-        return $lang->evaluate(
-            $expression,
-            array(
-                'agent' => $agent->reveal() // in these tests, ME is always agent id=2
-            )
+        // quote the strings
+        $status_codes = array_map(
+            function ($val) {
+                return "'$val'";
+            },
+            $status_codes
         );
-    }
 
-    protected function assertTicketCheck(PhpCheck $php_check, $result, $ticket_prophecy)
-    {
-        $ticket = $ticket_prophecy->reveal();
-
-        $result = (bool)$result;
-
-        $check = !$result;
-
-        eval($php_check->getCheckCode());
-
-        $this->assertSame($result, $check, 'ticket check result is correct');
-    }
-
-    protected function createTicketProphecy($agent_id)
-    {
-        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
-        if (!$agent_id) {
-            $agent_id = null;
+        $check = '';
+        $check .= '$check = ';
+        if ($this->isOp($op, TermInterface::OP_NOT)) {
+            $check .= '!';
         }
-        $ticket->getAgentId()->willReturn($agent_id);
+        $check .= 'in_array($ticket->getStatusCode(), array(';
+        $check .= implode(',', $status_codes);
+        $check .= '));';
 
-        return $ticket;
+        return new PhpCheck(
+            $check
+        );
     }
 }
