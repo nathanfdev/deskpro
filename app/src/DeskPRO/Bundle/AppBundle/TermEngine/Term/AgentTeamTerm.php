@@ -43,11 +43,6 @@ class AgentTeamTerm extends AbstractTerm
      */
     const TEAM_ID_ME = 'me';
 
-    /**
-     * A special string id to represent tickets with no agent team assigned
-     */
-    const TEAM_ID_UNASSIGNED = 'unassigned';
-
     protected $op = TermInterface::OP_IS;
 
     public function setDefaultOptions(OptionsResolver $resolver)

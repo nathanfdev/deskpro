@@ -43,11 +43,6 @@ class AgentTerm extends AbstractTerm
      */
     const ID_ME = 'me';
 
-    /**
-     * A special string ID that represents no agent assigned
-     */
-    const ID_UNASSIGNED = 'unassigned';
-
     protected $op = TermInterface::OP_IS;
 
     public function setDefaultOptions(OptionsResolver $options_resolver)
