@@ -35,9 +35,11 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,30 +50,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class PhpTermCompilerFactorySpec extends ObjectBehavior
 {
     function let(
-        DbalAgentTermCompiler $agent_compiler,
-        DbalDepartmentTermCompiler $department_compiler
+        PhpAgentTermCompiler $agent_compiler,
+        PhpTicketStatusTermCompiler $status_compiler
     )
     {
         $this->beConstructedWith(
             array(
                 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm' => $agent_compiler,
-                'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' => $department_compiler,
+                'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm' => $status_compiler,
             )
         );
     }
 
     function it_finds_the_right_compiler(
         DbalAgentTermCompiler $agent_compiler,
-        DbalDepartmentTermCompiler $department_compiler
+        PhpTicketStatusTermCompiler $status_compiler
     )
     {
         $this->getCompiler(New AgentTerm())->shouldBe($agent_compiler);
-        $this->getCompiler(new DepartmentTerm())->shouldBe($department_compiler);
+        $this->getCompiler(new TicketStatusTerm())->shouldBe($status_compiler);
     }
 
     function it_throws_an_exception_if_no_compiler_found(
         DbalAgentTermCompiler $agent_compiler,
-        DbalDepartmentTermCompiler $department_compiler
+        PhpTicketStatusTermCompiler $status_compiler
     )
     {
         $this->shouldThrow('\InvalidArgumentException')->during('getCompiler', array(new FakeTerm()));
