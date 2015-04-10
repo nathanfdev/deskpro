@@ -31,20 +31,31 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 
-class DbalNumericHelper implements TermCompilerHelperInterface
+class TermCompilerHelperPool
 {
-
     /**
-     * An identifier for this helper
-     *
-     * @return string
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface[]
      */
-    public function getId()
+    private $helpers;
+
+    public function __construct(array $helpers)
     {
-        return 'numeric';
+        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface $helper */
+        foreach ($helpers as $helper) {
+            $this->helpers[$helper->getId()] = $helper;
+        }
+    }
+
+    public function getHelper($id)
+    {
+        if (!array_key_exists($id, $this->helpers)) {
+            throw new \InvalidArgumentException(sprintf('no helper with the id "%s" exists', $id));
+        }
+
+        return $this->helpers[$id];
     }
 }

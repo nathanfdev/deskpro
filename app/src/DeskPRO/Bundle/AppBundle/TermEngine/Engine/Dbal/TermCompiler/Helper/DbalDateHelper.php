@@ -33,9 +33,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 
-class DbalDateHelper implements DbalHelperInterface
+class DbalDateHelper implements TermCompilerHelperInterface
 {
 
     /**

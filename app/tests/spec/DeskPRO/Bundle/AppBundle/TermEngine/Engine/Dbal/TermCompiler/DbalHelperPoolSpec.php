@@ -33,19 +33,19 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperPool;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperPool
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
  */
 class DbalHelperPoolSpec extends ObjectBehavior
 {
     function let(
-        DbalHelperInterface $helper1,
-        DbalHelperInterface $helper2
+        \DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface $helper1,
+        TermCompilerHelperInterface $helper2
     )
     {
         $helper1->getId()->willReturn('helper1');
@@ -55,8 +55,8 @@ class DbalHelperPoolSpec extends ObjectBehavior
     }
 
     function it_allows_you_to_get_helpers(
-        DbalHelperInterface $helper1,
-        DbalHelperInterface $helper2
+        TermCompilerHelperInterface $helper1,
+        \DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface $helper2
     )
     {
         $this->getHelper('helper1')->shouldBe($helper1);

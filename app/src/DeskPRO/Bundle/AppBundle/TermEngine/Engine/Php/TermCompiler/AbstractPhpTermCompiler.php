@@ -33,11 +33,43 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
 
 abstract class AbstractPhpTermCompiler
 {
+    /**
+     * @var TermCompilerHelperPool
+     */
+    private $helper_pool;
+
+    public function setHelperPool(TermCompilerHelperPool $helper_pool)
+    {
+        $this->helper_pool = $helper_pool;
+    }
+
+    /**
+     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
+     *
+     * @param $id
+     * @return TermCompilerHelperInterface
+     */
+    public function getHelper($id)
+    {
+        return $this->helper_pool->getHelper($id);
+    }
+
+    /**
+     * @return MethodCheckHelper
+     */
+    public function getMethodCheckHelper()
+    {
+        return $this->helper_pool->getHelper('method_check');
+    }
+
     /**
      * Use this shortcut to see if two op codes are the same.
      *

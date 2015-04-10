@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,31 +31,14 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
-
-class DbalHelperPool
+interface TermCompilerHelperInterface
 {
     /**
-     * @var DbalHelperInterface[]
+     * An identifier for this helper
+     *
+     * @return string
      */
-    private $helpers;
-
-    public function __construct(array $helpers)
-    {
-        /** @var DbalHelperInterface $helper */
-        foreach ($helpers as $helper) {
-            $this->helpers[$helper->getId()] = $helper;
-        }
-    }
-
-    public function getHelper($id)
-    {
-        if (!array_key_exists($id, $this->helpers)) {
-            throw new \InvalidArgumentException(sprintf('no helper with the id "%s" exists', $id));
-        }
-
-        return $this->helpers[$id];
-    }
+    public function getId();
 }

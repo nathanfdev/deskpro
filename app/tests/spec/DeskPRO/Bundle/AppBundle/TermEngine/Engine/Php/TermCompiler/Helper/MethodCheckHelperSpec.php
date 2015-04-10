@@ -31,20 +31,49 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
 
-class DbalNumericHelper implements TermCompilerHelperInterface
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper
+ */
+class MethodCheckHelperSpec extends ObjectBehavior
 {
-
-    /**
-     * An identifier for this helper
-     *
-     * @return string
-     */
-    public function getId()
+    function it_is_a_helper()
     {
-        return 'numeric';
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface');
+        $this->getId()->shouldBe('method_check');
+    }
+
+    function it_makes_a_check_with_a_method_name_and_an_array_of_inputs()
+    {
+        $php_check = $this->checkContains('$ticket->getAgentId()', TermInterface::OP_IS, array(1, 2));
+
+        $php_check->getCheckCode()->shouldBeLike('$check = in_array($ticket->getAgentId(), array(1,2));');
+    }
+
+    function it_works_with_String_inputs()
+    {
+        $php_check = $this->checkContains('$ticket->getAgentId()', TermInterface::OP_IS, array(1, 'homer'));
+
+        $php_check->getCheckCode()->shouldBeLike('$check = in_array($ticket->getAgentId(), array(1,\'homer\'));');
+    }
+
+    function it_works_with_Expression_inputs()
+    {
+        $php_check = $this->checkContains(
+            '$ticket->getAgentId()',
+            TermInterface::OP_IS,
+            array(1, 'homer', new TermEngineExpression('agent.getId()'))
+        );
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = in_array($ticket->getAgentId(), array(1,\'homer\',$this->evaluateExpression(\'agent.getId()\')));'
+        );
     }
 }
