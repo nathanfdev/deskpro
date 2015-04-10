@@ -8,13 +8,8 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine
         arguments:
             - @term_engine.dbal_ticket_filters.engine.compiler
-            - @term_engine.dbal_ticket_filters.engine.query_manipulator
+            - @event_dispatcher
             - @doctrine.dbal.default_connection
-
-    term_engine.dbal_ticket_filters.engine.query_manipulator:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator
-        arguments:
-            - @term_engine.expression_language
 
     term_engine.dbal_ticket_filters.engine.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler
@@ -117,3 +112,14 @@ services:
         arguments: [@logger]
         tags:
         - { name: dbal_ticket_filter_visitor }
+
+    #
+    # Event Listeners
+    #
+
+    term_engine.dbal_ticket_filters.query_manipulator:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener
+        arguments:
+            - @term_engine.expression_language
+        tags:
+          - { name: kernel.event_subscriber }

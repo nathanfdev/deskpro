@@ -31,53 +31,26 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use Doctrine\DBAL\Connection;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
 
-class DbalTicketFilterEngine extends DbalEngine
+/**
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent
+ */
+class DbalEngineEventSpec extends ObjectBehavior
 {
-    /**
-     * @var DbalTicketFilterEngineCompiler
-     */
-    private $compiler;
-
-    /**
-     * @var DbalQueryManipulatorListener
-     */
-    private $event_dispatcher;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    public function __construct(
-        DbalTicketFilterEngineCompiler $compiler,
-        EventDispatcherInterface $event_dispatcher,
-        Connection $connection
+    function it_has_a_query_and_a_context(
+        DbalQuery $query,
+        TermEngineContext $context
     )
     {
-        $this->compiler = $compiler;
-        $this->event_dispatcher = $event_dispatcher;
-        $this->connection = $connection;
-    }
-
-    public function evaluate(Filter $filter, TermEngineContext $context)
-    {
-        $compiled_query = $this->compiler->compile($filter);
-
-        $event = new DbalEngineEvent($compiled_query, $context);
-        $this->event_dispatcher->dispatch(DbalEngineEvents::MANIPULATE_QUERY, $event);
-
-        return new DbalExecutableQuery($compiled_query, $this->connection);
+        $this->beConstructedWith($query, $context);
+        $this->getQuery()->shouldBe($query);
+        $this->getContext()->shouldBe($context);
     }
 }

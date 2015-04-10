@@ -31,27 +31,37 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener
  */
-class DbalQueryManipulatorSpec extends ObjectBehavior
+class DbalQueryManipulatorListenerSpec extends ObjectBehavior
 {
     function let(
         TermEngineExpressionLanguage $expression_language
     )
     {
         $this->beConstructedWith($expression_language);
+    }
+
+    function it_is_an_event_subscriber()
+    {
+        $this->shouldBeAnInstanceOf('Symfony\Component\EventDispatcher\EventSubscriberInterface');
+        $this->getSubscribedEvents()->shouldBe(
+            array(
+                DbalEngineEvents::MANIPULATE_QUERY => 'onManipulateQuery'
+            )
+        );
     }
 
     function it_will_manipulate_agent_permissions(

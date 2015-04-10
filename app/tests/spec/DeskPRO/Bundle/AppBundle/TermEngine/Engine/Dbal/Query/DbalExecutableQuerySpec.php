@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;

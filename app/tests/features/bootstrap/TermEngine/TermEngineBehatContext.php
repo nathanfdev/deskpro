@@ -111,7 +111,7 @@ class TermEngineBehatContext extends BaseContext
             return;
         }
         if ('PhpTicketCheckerEngine' === $engine) {
-            $this->engine = $this->get('term_engine.dbal_ticket_filters.engine');
+            $this->engine = $this->get('term_engine.php_ticket_checker.compiler');
             return;
         }
 

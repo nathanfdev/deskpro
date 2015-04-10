@@ -31,15 +31,18 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use Orb\Util\Arrays;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DbalQueryManipulator
+class DbalQueryManipulatorListener implements EventSubscriberInterface
 {
     /**
      * @var TermEngineExpressionLanguage
@@ -49,6 +52,28 @@ class DbalQueryManipulator
     public function __construct(TermEngineExpressionLanguage $expression_language)
     {
         $this->expression_language = $expression_language;
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            DbalEngineEvents::MANIPULATE_QUERY => 'onManipulateQuery'
+        );
+    }
+
+    /**
+     * When this event is fired from the DbalEngine, ensure agent
+     * permissions are set on the query, and resolve query parameters.
+     *
+     * @param DbalEngineEvent $event
+     */
+    public function onManipulateQuery(DbalEngineEvent $event)
+    {
+        $query = $event->getQuery();
+        $context = $event->getContext();
+
+        $this->ensureAgentPermissions($query, $context);
+        $this->resolveParameters($query, $context);
     }
 
     public function ensureAgentPermissions(DbalQuery $query, TermEngineContext $context)

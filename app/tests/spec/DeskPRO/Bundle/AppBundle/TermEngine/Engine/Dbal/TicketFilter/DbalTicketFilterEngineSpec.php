@@ -34,8 +34,9 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalQueryManipulator;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
@@ -44,6 +45,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine
@@ -52,11 +54,11 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
 {
     function let(
         DbalTicketFilterEngineCompiler $compiler,
-        DbalQueryManipulator $query_manipulator,
+        EventDispatcher $event_dispatcher,
         Connection $connection
     )
     {
-        $this->beConstructedWith($compiler, $query_manipulator, $connection);
+        $this->beConstructedWith($compiler, $event_dispatcher, $connection);
     }
 
     function it_is_a_dbal_engine()
@@ -68,17 +70,16 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
         Filter $filter,
         TermEngineContext $context,
         DbalTicketFilterEngineCompiler $compiler,
-        DbalQueryManipulator $query_manipulator,
+        EventDispatcher $event_dispatcher,
         DbalQuery $compiled_query
     )
     {
         $compiler->compile($filter)->willReturn($compiled_query);
 
-        $query_manipulator->ensureAgentPermissions($compiled_query, $context)
-            ->shouldBeCalled();
-
-        $query_manipulator->resolveParameters($compiled_query, $context)
-            ->shouldBeCalled();
+        $event_dispatcher->dispatch(
+            DbalEngineEvents::MANIPULATE_QUERY,
+            Argument::any()
+        )->shouldBeCalled();
 
         $executable_query = $this->evaluate($filter, $context);
 

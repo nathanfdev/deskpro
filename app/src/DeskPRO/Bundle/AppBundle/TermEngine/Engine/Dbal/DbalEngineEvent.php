@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,53 +31,36 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use Doctrine\DBAL\Connection;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\Event;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 
-class DbalTicketFilterEngine extends DbalEngine
+class DbalEngineEvent extends Event
 {
-    /**
-     * @var DbalTicketFilterEngineCompiler
-     */
-    private $compiler;
+    protected $query;
+    protected $context;
 
-    /**
-     * @var DbalQueryManipulatorListener
-     */
-    private $event_dispatcher;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    public function __construct(
-        DbalTicketFilterEngineCompiler $compiler,
-        EventDispatcherInterface $event_dispatcher,
-        Connection $connection
-    )
+    public function __construct(DbalQuery $query, TermEngineContext $context)
     {
-        $this->compiler = $compiler;
-        $this->event_dispatcher = $event_dispatcher;
-        $this->connection = $connection;
+        $this->query = $query;
+        $this->context = $context;
     }
 
-    public function evaluate(Filter $filter, TermEngineContext $context)
+    /**
+     * @return DbalQuery
+     */
+    public function getQuery()
     {
-        $compiled_query = $this->compiler->compile($filter);
+        return $this->query;
+    }
 
-        $event = new DbalEngineEvent($compiled_query, $context);
-        $this->event_dispatcher->dispatch(DbalEngineEvents::MANIPULATE_QUERY, $event);
-
-        return new DbalExecutableQuery($compiled_query, $this->connection);
+    /**
+     * @return TermEngineContext
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 }
