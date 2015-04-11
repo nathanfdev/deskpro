@@ -50,12 +50,26 @@ class MethodCheckHelperSpec extends ObjectBehavior
         $this->getId()->shouldBe('method_check');
     }
 
+
+    //
+    // CONTAINS
+    //
+
     function it_makes_a_check_with_a_method_name_and_an_array_of_inputs()
     {
         $php_check = $this->checkContains('$ticket->getAgentId()', TermInterface::OP_IS, array(1, 2));
 
         $php_check->getCheckCode()->shouldBeLike(
             '$check = in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,2)));'
+        );
+    }
+
+    function it_makes_a_NOT_check_with_a_method_name_and_an_array_of_inputs()
+    {
+        $php_check = $this->checkContains('$ticket->getAgentId()', TermInterface::OP_NOT, array(1, 2));
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = !in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,2)));'
         );
     }
 
@@ -91,6 +105,64 @@ class MethodCheckHelperSpec extends ObjectBehavior
 
         $php_check->getCheckCode()->shouldBeLike(
             '$check = in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,\'homer\',$this->evaluateExpression(\'agent.getTeamIds()\'))));'
+        );
+    }
+
+
+    //
+    // EQUALITY
+    //
+
+    function it_checks_if_equal_by_default()
+    {
+        $php_check = $this->checkEquality(
+            '$ticket->getPersonEmailAddress()',
+            TermInterface::OP_IS,
+            'chris.tickner@gmail.com'
+        );
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = ($ticket->getPersonEmailAddress() == \'chris.tickner@gmail.com\');'
+        );
+    }
+
+    function it_checks_if_identical_with_bool_flag()
+    {
+        $php_check = $this->checkEquality(
+            '$ticket->getPersonEmailAddress()',
+            TermInterface::OP_IS,
+            'chris.tickner@gmail.com',
+            true
+        );
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = ($ticket->getPersonEmailAddress() === \'chris.tickner@gmail.com\');'
+        );
+    }
+
+    function it_checks_if_not_equal()
+    {
+        $php_check = $this->checkEquality(
+            '$ticket->getPersonEmailAddress()',
+            TermInterface::OP_NOT,
+            'chris.tickner@gmail.com'
+        );
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = ($ticket->getPersonEmailAddress() != \'chris.tickner@gmail.com\');'
+        );
+    }
+
+    function it_checks_equality_of_expressions_too()
+    {
+        $php_check = $this->checkEquality(
+            '$ticket->getAgentId()',
+            TermInterface::OP_IS,
+            new TermEngineExpression('agent.getId()')
+        );
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = ($ticket->getAgentId() == $this->evaluateExpression(\'agent.getId()\'));'
         );
     }
 }

@@ -46,20 +46,15 @@ class MethodCheckHelper implements TermCompilerHelperInterface
         return 'method_check';
     }
 
+    /**
+     * @param $method_call
+     * @param $op
+     * @param array $input
+     * @return PhpCheck
+     */
     public function checkContains($method_call, $op, array $input)
     {
-        $array = array();
-        foreach ($input as $in) {
-            if (is_string($in)) {
-                $array[] = "'$in'";
-            } elseif ($in instanceof TermEngineExpression) {
-                $array[] = '$this->evaluateExpression(\'' . (string)$in . '\')';
-            } else {
-                $array[] = $in;
-            }
-        }
-
-        $array = Arrays::flatten($array); // flatten arrays
+        $array = $this->filterInput($input);
 
         $check = '';
         $check .= '$check = ';
@@ -74,5 +69,59 @@ class MethodCheckHelper implements TermCompilerHelperInterface
         return new PhpCheck(
             $check
         );
+    }
+
+    /**
+     * @param $method_call
+     * @param $op
+     * @param $input
+     * @param bool $check_identical
+     * @return PhpCheck
+     */
+    public function checkEquality($method_call, $op, $input, $check_identical = false)
+    {
+        // we turn it into an array to use the same filtering logic as the contains check
+        $array = $this->filterInput(array($input));
+        $input = current($array);
+
+        $check = '';
+        $check .= '$check = (';
+        $check .= $method_call;
+        $check .= ' ';
+        if (strtolower($op) == strtolower(TermInterface::OP_NOT)) {
+            $check .= '!=';
+        } else {
+            $check .= '==';
+        }
+        if ($check_identical) {
+            $check .= '=';
+        }
+        $check .= ' ';
+        $check .= $input;
+        $check .= ');';
+
+        return new PhpCheck(
+            $check
+        );
+    }
+
+    /**
+     * @param array $input
+     * @return array
+     */
+    protected function filterInput(array $input)
+    {
+        $array = array();
+        foreach ($input as $in) {
+            if (is_string($in)) {
+                $array[] = "'$in'";
+            } elseif ($in instanceof TermEngineExpression) {
+                $array[] = '$this->evaluateExpression(\'' . (string)$in . '\')';
+            } else {
+                $array[] = $in;
+            }
+        }
+
+        return Arrays::flatten($array); // always flatten
     }
 }
