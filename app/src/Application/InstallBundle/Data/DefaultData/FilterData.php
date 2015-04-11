@@ -124,7 +124,7 @@ class FilterData extends AbstractDefaultData
         $term->addTerm(
             new AgentTerm(
                 array(
-                    'agent_ids' => array(AgentTerm::ID_UNASSIGNED)
+                    'agent_ids' => array(0)
                 ),
                 TermInterface::OP_IS
             )
@@ -132,7 +132,7 @@ class FilterData extends AbstractDefaultData
         $term->addTerm(
             new AgentTeamTerm(
                 array(
-                    'agent_team_ids' => array(AgentTeamTerm::TEAM_ID_UNASSIGNED)
+                    'agent_team_ids' => array(0)
                 ),
                 TermInterface::OP_IS
             )
