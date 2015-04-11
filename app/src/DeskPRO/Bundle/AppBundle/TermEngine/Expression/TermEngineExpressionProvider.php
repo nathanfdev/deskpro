@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Expression;
 
 
+use Orb\Util\Arrays;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -45,6 +46,16 @@ class TermEngineExpressionProvider implements ExpressionFunctionProviderInterfac
      */
     public function getFunctions()
     {
-        return array();
+        return array(
+            new ExpressionFunction(
+                'flatten_array',
+                function ($input) {
+                    return sprintf('(\Orb\Util\Arrays::flatten(%1$s))', $input);
+                },
+                function ($input) {
+                    return Arrays::flatten($input);
+                }
+            )
+        );
     }
 }
