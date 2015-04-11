@@ -33,7 +33,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalStringHelper implements DbalHelperInterface
 {
@@ -46,5 +48,59 @@ class DbalStringHelper implements DbalHelperInterface
     public function getId()
     {
         return 'string';
+    }
+
+    /**
+     * OP_IS:      field =        string1 OR  field =        string2
+     * OP_NOT:     field !=       string1 AND field !=       string2
+     * OP_HAS:     field LIKE     string1 OR  field LIKE     string2
+     * OP_NOT_HAS: field NOT LIKE string1 AND field NOT LIKE string2
+     *
+     * @param $field_name
+     * @param $op
+     * @param array $strings
+     * @param bool $wildcard_postfix
+     * @param bool $wildcard_prefix
+     * @return DbalQueryPart
+     */
+    public function buildQueryPart($field_name, $op, array $strings, $wildcard_postfix = false, $wildcard_prefix = false)
+    {
+        $part = new DbalQueryPart();
+        if ($wildcard_prefix || $wildcard_postfix) {
+            if (TermInterface::OP_IS === $op) {
+                $op = TermInterface::OP_HAS;
+            } elseif (TermInterface::OP_NOT === $op) {
+                $op = TermInterface::OP_NOT_HAS;
+            }
+        }
+
+        switch($op) {
+            case TermInterface::OP_NOT:
+                $sql_op = ' != ';
+                break;
+            case TermInterface::OP_HAS:
+                $sql_op = ' LIKE ';
+                break;
+            case TermInterface::OP_NOT_HAS:
+                $sql_op = ' NOT LIKE ';
+                break;
+            case TermInterface::OP_IS:
+            default:
+                $sql_op = ' = ';
+                break;
+        }
+
+        $parts = $values = array();
+        foreach ($strings as $k => $string) {
+            $prefix = $wildcard_prefix ? '%' : '';
+            $postfix = $wildcard_postfix ? '%' : '';
+            $parts[] = $field_name . $sql_op . ':string' . $k;
+            $part->setParameter('string' . $k, $prefix . trim($string, "%") . $postfix);
+        }
+
+        $and_or = TermInterface::OP_NOT === $op || TermInterface::OP_NOT_HAS ? ' AND ' : ' OR ';
+        $part->setWhereString(implode($and_or, $parts));
+
+        return $part;
     }
 }

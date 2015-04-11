@@ -31,27 +31,21 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TicketIdTerm extends AbstractTerm
+class DbalTicketIdTermCompiler extends AbstractDbalTermCompiler
 {
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function doCompile(TermInterface $term)
     {
-        $resolver->setRequired(
-            array(
-                'ticket_ids' => array(),
-            )
-        );
+        $ids = $term->getOption('ticket_ids');
 
-        $resolver->setAllowedTypes(
-            array(
-                'ticket_ids' => 'array',
-            )
+        return $this->getNumericHelper()->buildQueryPart(
+            'ticket.id',
+            $term->getOp(),
+            $ids
         );
     }
 }

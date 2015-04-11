@@ -45,120 +45,21 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 
-abstract class DbalCompiler implements DbalCompilerInterface
+class DbalTicketIdTermCompiler extends DbalCompiler
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
+     * @inheritdoc
      */
-    protected $compiler_factory;
-
-    /**
-     * @var VisitorInterface[]
-     */
-    protected $visitors;
-
-    public function __construct(
-        DbalTermCompilerFactory $compiler_factory,
-        array $visitors
-    )
+    protected function enginePreCompile(DbalQueryBuilder $query_writer)
     {
-        $this->compiler_factory = $compiler_factory;
-        $this->visitors = $visitors;
+
     }
 
     /**
-     * An opportunity for this engine implemention to alter the query before compile starts
-     *
-     * @param DbalQueryBuilder $query_writer
-     * @return void
+     * @inheritdoc
      */
-    abstract protected function enginePreCompile(DbalQueryBuilder $query_writer);
-
-    /**
-     * An opportunity for this engine implemention to alter the query after compile is completed
-     *
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
-     * @return void
-     */
-    abstract protected function enginePostCompile(DbalQueryBuilder $query_writer);
-
-    /**
-     * @param TermInterface $term
-     * @return DbalQuery
-     */
-    public function compile(TermInterface $term)
+    protected function enginePostCompile(DbalQueryBuilder $query_writer)
     {
-        // let visitors alter the term
-        foreach ($this->visitors as $visitor) {
-            $visitor->visit($term);
-        }
 
-        $query_builder = new DbalQueryBuilder(new DbalQuery());
-
-        // engine pre hook
-        $this->enginePreCompile($query_builder);
-
-        $this->compileTerm($term, $query_builder);
-
-        // engine post hook
-        $this->enginePostCompile($query_builder);
-
-        // result is a DbalQuery
-        return $query_builder->getQuery();
-    }
-
-    public function getTermCompiler(TermInterface $term)
-    {
-        return $this->compiler_factory->getCompiler($term);
-    }
-
-    /**
-     * @param TermInterface $term
-     * @param $query_builder
-     */
-    protected function compileTerm(TermInterface $term, DbalQueryBuilder $query_builder)
-    {
-        if ($term instanceof CompositeTermInterface) {
-
-            // compile each term in the composite with a special DbalCompositeQueryBuilder instead
-            // of the normal DbalQueryBuilder so we can catch the WHERE strings and process them before writing.
-            $composite_query_builder = new DbalCompositeQueryBuilder($query_builder->getQuery());
-            foreach ($term->getTerms() as $child_term) {
-                $this->compileTerm($child_term, $composite_query_builder);
-            }
-
-            // filter the where strings, and put each inside their own parenthesis
-            $where_strings = array();
-            foreach ($composite_query_builder->getWhereStrings() as $where_string) {
-                $where_string = trim($where_string);
-                if ($where_string) {
-                    $where_strings[] = sprintf('(%s)', $where_string);
-                }
-            }
-
-            // now we can compose the proper WHERE string for this composite term
-            $sep = $term->getOp() === TermInterface::OP_OR ? 'OR' : 'AND';
-            $where_string = implode(' ' . $sep . ' ', $where_strings);
-
-            // write it in its own parenthesis
-            $query_builder->setWhereString($where_string);
-
-        } else {
-
-            // not a composite term, so compile it normally
-            $this->compileSingleTerm($term, $query_builder);
-
-        }
-    }
-
-    /**
-     * @param TermInterface $term
-     * @param DbalQueryBuilder $query_builder
-     */
-    protected function compileSingleTerm(TermInterface $term, DbalQueryBuilder $query_builder)
-    {
-        // use term compilers to write the query and return the complete WHERE string
-        $query_part = $this->getTermCompiler($term)->compile($term);
-        $query_builder->writeQueryPart($query_part);
     }
 }

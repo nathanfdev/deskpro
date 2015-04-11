@@ -36,7 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TicketIdTerm extends AbstractTerm
+class TicketSubjectTerm extends AbstractTerm
 {
     protected $op = TermInterface::OP_IS;
 
@@ -44,13 +44,13 @@ class TicketIdTerm extends AbstractTerm
     {
         $resolver->setRequired(
             array(
-                'ticket_ids' => array(),
+                'subjects' => array(),
             )
         );
 
         $resolver->setAllowedTypes(
             array(
-                'ticket_ids' => 'array',
+                'subjects' => 'array',
             )
         );
     }
