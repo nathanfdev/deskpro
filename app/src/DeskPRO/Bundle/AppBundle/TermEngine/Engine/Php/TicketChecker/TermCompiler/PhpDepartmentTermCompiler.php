@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompi
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class PhpDepartmentTermCompiler extends AbstractPhpTermCompiler
