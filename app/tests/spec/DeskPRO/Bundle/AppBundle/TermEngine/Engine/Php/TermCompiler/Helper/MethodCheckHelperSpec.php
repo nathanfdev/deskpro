@@ -54,14 +54,18 @@ class MethodCheckHelperSpec extends ObjectBehavior
     {
         $php_check = $this->checkContains('$ticket->getAgentId()', TermInterface::OP_IS, array(1, 2));
 
-        $php_check->getCheckCode()->shouldBeLike('$check = in_array($ticket->getAgentId(), array(1,2));');
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,2)));'
+        );
     }
 
     function it_works_with_String_inputs()
     {
         $php_check = $this->checkContains('$ticket->getAgentId()', TermInterface::OP_IS, array(1, 'homer'));
 
-        $php_check->getCheckCode()->shouldBeLike('$check = in_array($ticket->getAgentId(), array(1,\'homer\'));');
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,\'homer\')));'
+        );
     }
 
     function it_works_with_Expression_inputs()
@@ -73,7 +77,20 @@ class MethodCheckHelperSpec extends ObjectBehavior
         );
 
         $php_check->getCheckCode()->shouldBeLike(
-            '$check = in_array($ticket->getAgentId(), array(1,\'homer\',$this->evaluateExpression(\'agent.getId()\')));'
+            '$check = in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,\'homer\',$this->evaluateExpression(\'agent.getId()\'))));'
+        );
+    }
+
+    function it_optionally_allows_a_second_input_an_expression_to_also_check()
+    {
+        $php_check = $this->checkContains(
+            '$ticket->getAgentId()',
+            TermInterface::OP_IS,
+            array(1, 'homer', new TermEngineExpression('agent.getTeamIds()'))
+        );
+
+        $php_check->getCheckCode()->shouldBeLike(
+            '$check = in_array($ticket->getAgentId(), \Orb\Util\Arrays::flatten(array(1,\'homer\',$this->evaluateExpression(\'agent.getTeamIds()\'))));'
         );
     }
 }

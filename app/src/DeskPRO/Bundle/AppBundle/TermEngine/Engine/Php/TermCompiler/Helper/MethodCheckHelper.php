@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Orb\Util\Arrays;
 
 class MethodCheckHelper implements TermCompilerHelperInterface
 {
@@ -58,15 +59,17 @@ class MethodCheckHelper implements TermCompilerHelperInterface
             }
         }
 
+        $array = Arrays::flatten($array); // flatten arrays
 
         $check = '';
         $check .= '$check = ';
         if (strtolower($op) == strtolower(TermInterface::OP_NOT)) {
             $check .= '!';
         }
-        $check .= 'in_array(' . $method_call . ', array(';
+        $check .= 'in_array(' . $method_call . ', ';
+        $check .= '\Orb\Util\Arrays::flatten(array(';
         $check .= implode(',', $array);
-        $check .= '));';
+        $check .= ')));';
 
         return new PhpCheck(
             $check
