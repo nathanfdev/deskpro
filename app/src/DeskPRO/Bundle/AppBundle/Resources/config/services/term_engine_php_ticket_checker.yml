@@ -51,14 +51,6 @@ services:
             calls:
                 - ['setHelperPool', ["@term_engine.php.helper_pool"]]
 
-#    term_engine.dbal_ticket_filters.compiler.ticket_status:
-#            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketStatusTermCompiler
-#            parent: term_engine.php_ticket_checker.term_compiler
-#            tags:
-#                ticket_filter:
-#                    name: dbal_ticket_filter_compiler
-#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm'
-
     term_engine.php_ticket_checker.compiler.agent:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler
@@ -90,6 +82,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm'
+
+    term_engine.php_ticket_checker.compiler.person_email:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpPersonEmailTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm'
 
 #    term_engine.dbal_ticket_filters.compiler.department:
 #            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler
@@ -129,7 +129,7 @@ services:
 #            tags:
 #                ticket_filter:
 #                    name: dbal_ticket_filter_compiler
-                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm'
+#                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm'
 
 
     #
@@ -151,7 +151,7 @@ services:
     term_engine.php.helper_pool:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
 
-    term_engine.php.entity_helper:
+    term_engine.php.method_check:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper
         tags:
             - { name: php_term_engine_helper }
