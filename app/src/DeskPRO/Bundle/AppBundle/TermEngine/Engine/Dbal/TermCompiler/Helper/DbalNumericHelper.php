@@ -50,6 +50,13 @@ class DbalNumericHelper implements DbalHelperInterface
         return 'numeric';
     }
 
+    /**
+     * @param $field_name
+     * @param $op
+     * @param array $num
+     * @param null $num2
+     * @return DbalQueryPart
+     */
     public function buildQueryPart($field_name, $op, array $num, $num2 = null)
     {
         $part = new DbalQueryPart();

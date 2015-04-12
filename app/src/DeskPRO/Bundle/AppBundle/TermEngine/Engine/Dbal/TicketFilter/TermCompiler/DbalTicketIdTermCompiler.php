@@ -40,12 +40,14 @@ class DbalTicketIdTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)
     {
-        $ids = $term->getOption('ticket_ids');
+        $num = $term->getOption('num');
+        $num2 = $term->getOption('num2');
 
         return $this->getNumericHelper()->buildQueryPart(
             'ticket.id',
             $term->getOp(),
-            $ids
+            $num,
+            $num2
         );
     }
 }

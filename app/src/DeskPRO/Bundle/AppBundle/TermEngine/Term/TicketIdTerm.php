@@ -44,13 +44,20 @@ class TicketIdTerm extends AbstractTerm
     {
         $resolver->setRequired(
             array(
-                'ticket_ids' => array(),
+                'num',
             )
         );
 
         $resolver->setAllowedTypes(
             array(
-                'ticket_ids' => 'array',
+                'num' => 'array',
+                'num2' => 'integer',
+            )
+        );
+
+        $resolver->setDefaults(
+            array(
+                'num2' => null,
             )
         );
     }

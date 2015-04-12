@@ -43,11 +43,15 @@ class DbalTicketSubjectTermCompiler extends AbstractDbalTermCompiler
     public function doCompile(TermInterface $term)
     {
         $subject = $term->getOption('subject');
+        $prefix = $term->getOption('wildcard_prefix');
+        $postfix = $term->getOption('wildcard_postfix');
 
         return $this->getStringHelper()->buildQueryPart(
             'ticket.subject',
             $term->getOp(),
-            is_array($subject) ? $subject : array($subject)
+            $subject,
+            $prefix,
+            $postfix
         );
     }
 }

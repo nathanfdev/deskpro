@@ -44,13 +44,22 @@ class TicketSubjectTerm extends AbstractTerm
     {
         $resolver->setRequired(
             array(
-                'subjects' => array(),
+                'subject' => array(),
             )
         );
 
         $resolver->setAllowedTypes(
             array(
-                'subjects' => 'array',
+                'subject' => 'array',
+                'wildcard_prefix' => 'boolean',
+                'wildcard_postfix' => 'boolean',
+            )
+        );
+
+        $resolver->setDefaults(
+            array(
+                'wildcard_prefix' => false,
+                'wildcard_postfix' => false,
             )
         );
     }

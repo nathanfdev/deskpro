@@ -42,12 +42,16 @@ class DbalTicketDateCreatedTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)
     {
-        $date = $term->getOption('date_created');
+        $date = $term->getOption('date');
+        $date2 = $term->getOption('date2');
+        $ignore = $term->getOption('ignore_time');
 
         return $this->getDateHelper()->buildQueryPart(
             'ticket.date_created',
             $term->getOp(),
-            $date
+            $date,
+            $date2,
+            $ignore
         );
     }
 }

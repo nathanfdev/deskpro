@@ -63,7 +63,7 @@ class DbalStringHelper implements DbalHelperInterface
      * @param bool $wildcard_prefix
      * @return DbalQueryPart
      */
-    public function buildQueryPart($field_name, $op, array $strings, $wildcard_postfix = false, $wildcard_prefix = false)
+    public function buildQueryPart($field_name, $op, array $strings, $wildcard_prefix = false, $wildcard_postfix = false)
     {
         $part = new DbalQueryPart();
         if ($wildcard_prefix || $wildcard_postfix) {

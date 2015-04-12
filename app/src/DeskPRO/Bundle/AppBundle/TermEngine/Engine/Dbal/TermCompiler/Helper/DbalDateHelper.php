@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
 
 class DbalDateHelper implements DbalHelperInterface
@@ -46,5 +47,13 @@ class DbalDateHelper implements DbalHelperInterface
     public function getId()
     {
         return 'date';
+    }
+
+
+    public function buildQueryPart($field_name, $op, \DateTime $date, \DateTime $date2, $ignore_time = false)
+    {
+        $part = new DbalQueryPart();
+
+        return $part;
     }
 }

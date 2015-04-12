@@ -44,13 +44,22 @@ class TicketDateCreatedTerm extends AbstractTerm
     {
         $resolver->setRequired(
             array(
-                'date_created',
+                'date',
             )
         );
 
         $resolver->setAllowedTypes(
             array(
-                'date_created' => 'datetime',
+                'date' => 'datetime',
+                'date2' => 'datetime',
+                'ignore_time' => 'boolean',
+            )
+        );
+
+        $resolver->setDefaults(
+            array(
+                'date2' => null,
+                'ignore_time' => false,
             )
         );
     }
