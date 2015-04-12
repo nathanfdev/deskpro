@@ -74,6 +74,8 @@ class DbalStringHelper implements DbalHelperInterface
             } elseif (TermInterface::OP_NOT === $op) {
                 $op = TermInterface::OP_NOT_HAS;
             }
+        } elseif (TermInterface::OP_HAS === $op || TermInterface::OP_NOT_HAS === $op) {
+            $wildcard_postfix = $wildcard_prefix = true;
         }
 
         switch($op) {
@@ -100,7 +102,7 @@ class DbalStringHelper implements DbalHelperInterface
             $part->setParameter('string' . $k, $prefix . trim($string, "%") . $postfix);
         }
 
-        $and_or = TermInterface::OP_NOT === $op || TermInterface::OP_NOT_HAS ? ' AND ' : ' OR ';
+        $and_or = (TermInterface::OP_NOT === $op || TermInterface::OP_NOT_HAS === $op) ? ' AND ' : ' OR ';
         $part->setWhereString(implode($and_or, $parts));
 
         return $part;
