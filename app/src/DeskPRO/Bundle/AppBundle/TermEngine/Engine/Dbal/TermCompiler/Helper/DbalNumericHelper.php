@@ -103,7 +103,7 @@ class DbalNumericHelper implements DbalHelperInterface
         }
 
         $part->setParameter('num', $num);
-        if (null !== $num2) {
+        if (null !== $num2 && (TermInterface::OP_RANGE === $op || TermInterface::OP_NOT_RANGE === $op)) {
             $part->setParameter('num2', $num2);
         }
 
