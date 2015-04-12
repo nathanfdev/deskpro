@@ -66,6 +66,8 @@ class DbalStringHelper implements DbalHelperInterface
     public function buildQueryPart($field_name, $op, array $strings, $wildcard_prefix = false, $wildcard_postfix = false)
     {
         $part = new DbalQueryPart();
+        $strings = array_unique(array_map('strval', $strings));
+
         if ($wildcard_prefix || $wildcard_postfix) {
             if (TermInterface::OP_IS === $op) {
                 $op = TermInterface::OP_HAS;

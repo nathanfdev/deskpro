@@ -61,8 +61,7 @@ class DbalNumericHelper implements DbalHelperInterface
     {
         $part = new DbalQueryPart();
 
-        array_map('intval', $num);
-        array_unique($num);
+        $num = array_unique(array_map('intval', $num));
         $num = $num ?: array(0);
 
         $where = $field_name . ' ';
