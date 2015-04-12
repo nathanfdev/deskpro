@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use PhpSpec\ObjectBehavior;
@@ -41,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
  */
-class DbalHelperPoolSpec extends ObjectBehavior
+class TermCompilerHelperPoolSpec extends ObjectBehavior
 {
     function let(
         \DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface $helper1,
