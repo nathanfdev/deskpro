@@ -632,6 +632,10 @@ define [
           @email_sysaccount_error = res.data.error_info.emails.join(', ')
         if res?.data?.error_code == 'invalid_phone_number'
           @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info?.primary_phone
+        if res?.data?.errors?.errors
+          res.data.errors.errors.map (error) =>
+            if 'agent.primary_phone.number' == error.prop
+              @invalid_phone_error = error.message
 
         @stopSpinner('saving', true)
         @applyErrorResponseToView(res)
