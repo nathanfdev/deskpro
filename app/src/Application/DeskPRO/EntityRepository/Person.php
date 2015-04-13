@@ -308,7 +308,11 @@ class Person extends AbstractEntityRepository
      */
     public function findOneByEmail($email, $for_write = false)
     {
-        $email = mb_strtolower($email);
+        if (function_exists('mb_strtolower')) {
+            $email = mb_strtolower($email);
+        } else {
+            $email = strtolower($email);
+        }
         if (App::getDb()->isTransactionActive() && $for_write) {
             $person = $this->getEntityManager()->createQuery("
                 SELECT p
