@@ -1648,6 +1648,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
+        // TODO: this is only 1 level deep for the hierarchy. fine for now, but may need to change.
         foreach ($this->custom_data as $data) {
             if ($data->field->parent and $data->field->parent['id'] == $field_id) {
                 return true;

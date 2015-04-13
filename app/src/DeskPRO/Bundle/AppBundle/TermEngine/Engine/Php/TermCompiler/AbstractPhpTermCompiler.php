@@ -70,6 +70,11 @@ abstract class AbstractPhpTermCompiler
         return $this->helper_pool->getHelper('method_check');
     }
 
+    public function turnArrayIntoPhpArrayString(array $values = array())
+    {
+        return 'array(' . implode(',', $values) . ')';
+    }
+
     /**
      * Use this shortcut to see if two op codes are the same.
      *

@@ -98,6 +98,14 @@ services:
                 ticket_filter:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipantTerm'
+
+    term_engine.php_ticket_checker.compiler.ticket_custom_data:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketCustomDataTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomDataTerm'
 #
 #    term_engine.dbal_ticket_filters.compiler.person_email:
 #            class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalPersonEmailTermCompiler

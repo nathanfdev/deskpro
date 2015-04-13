@@ -114,9 +114,9 @@ class MethodCheckHelper implements TermCompilerHelperInterface
         $array = array();
         foreach ($input as $in) {
             if (is_string($in)) {
-                $array[] = "'$in'";
+                $array[] = "'" . addslashes($in) . "'";
             } elseif ($in instanceof TermEngineExpression) {
-                $array[] = '$this->evaluateExpression(\'' . (string)$in . '\')';
+                $array[] = '$this->evaluateExpression(\'' . addslashes((string)$in) . '\')';
             } else {
                 $array[] = $in;
             }
