@@ -36,7 +36,6 @@ class RelativeDate extends \DateTime
     {
         $time = $actualDate ? $actualDate->getTimestamp() : time();
         $timezone = $timezone ?: ($actualDate ? $actualDate->getTimezone() : null);
-        parent::__construct('@' . $time, $timezone);
-        $relativeDateOrTime && $this->modify($relativeDateOrTime);
+        parent::__construct('@' . $time . ' ' . $relativeDateOrTime, $timezone);
     }
 }
