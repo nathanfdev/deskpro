@@ -140,7 +140,7 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     {
         $term = new AgentTerm(
             array(
-                'agent_ids' => array(1, 2, 15, 0)
+                'agent_ids' => array(1, 2, 15, null)
             ),
             TermInterface::OP_IS
         );
@@ -265,6 +265,69 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
             )
         );
 
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
+    }
+
+    public function testThatEmptyArraysAndNullsCountAsUnassigned()
+    {
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array()
+            ),
+            TermInterface::OP_IS
+        );
+
+        $query_part = $this->term_compiler->compile($term);
+
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id IS NULL'
+        );
+
+        $this->assertNoParameters($query_part);
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
+    }
+
+    public function testThatEmptyArraysAndNullsCountAsUnassigned2()
+    {
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(null)
+            ),
+            TermInterface::OP_IS
+        );
+
+        $query_part = $this->term_compiler->compile($term);
+
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id IS NULL'
+        );
+
+        $this->assertNoParameters($query_part);
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
+    }
+
+    public function testThatEmptyArraysAndNullsCountAsUnassigned3()
+    {
+        $term = new AgentTerm(
+            array(
+                'agent_ids' => array(null, null, null)
+            ),
+            TermInterface::OP_IS
+        );
+
+        $query_part = $this->term_compiler->compile($term);
+
+        $this->assertWhere(
+            $query_part,
+            'ticket.agent_id IS NULL'
+        );
+
+        $this->assertNoParameters($query_part);
         $this->assertNoJoins($query_part);
         $this->assertNoUniqueJoins($query_part);
     }

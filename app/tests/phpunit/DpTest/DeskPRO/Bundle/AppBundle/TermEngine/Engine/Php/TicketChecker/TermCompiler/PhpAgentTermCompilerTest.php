@@ -202,7 +202,7 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     {
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
         if (!$agent_id) {
-            $agent_id = null;
+            $agent_id = 0;
         }
         $ticket->getAgentId()->willReturn($agent_id);
 

@@ -50,25 +50,10 @@ class PhpTicketStatusTermCompiler extends AbstractPhpTermCompiler
         $op = $term->getOp();
         $status_codes = $term->getOption('status');
 
-        // quote the strings
-        $status_codes = array_map(
-            function ($val) {
-                return "'$val'";
-            },
+        return $this->getMethodCheckHelper()->checkContains(
+            '$ticket->getStatusCode()',
+            $op,
             $status_codes
-        );
-
-        $check = '';
-        $check .= '$check = ';
-        if ($this->isOp($op, TermInterface::OP_NOT)) {
-            $check .= '!';
-        }
-        $check .= 'in_array($ticket->getStatusCode(), array(';
-        $check .= implode(',', $status_codes);
-        $check .= '));';
-
-        return new PhpCheck(
-            $check
         );
     }
 }

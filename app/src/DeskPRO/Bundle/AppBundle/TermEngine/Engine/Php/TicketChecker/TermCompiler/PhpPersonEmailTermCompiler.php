@@ -31,31 +31,31 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalHelperPool
+class PhpPersonEmailTermCompiler extends AbstractPhpTermCompiler
 {
     /**
-     * @var DbalHelperInterface[]
+     * Take a term and return a PhpCheck representing the term's query conditions.
+     *
+     * @param TermInterface $term
+     * @return PhpCheck
      */
-    private $helpers;
-
-    public function __construct(array $helpers)
+    protected function doCompile(TermInterface $term)
     {
-        /** @var DbalHelperInterface $helper */
-        foreach ($helpers as $helper) {
-            $this->helpers[$helper->getId()] = $helper;
-        }
-    }
+        $op = $term->getOp();
+        $email = $term->getOption('email');
 
-    public function getHelper($id)
-    {
-        if (!array_key_exists($id, $this->helpers)) {
-            throw new \InvalidArgumentException(sprintf('no helper with the id "%s" exists', $id));
-        }
-
-        return $this->helpers[$id];
+        return $this->getMethodCheckHelper()->checkEquality(
+            '$ticket->getPersonEmailAddress()',
+            $op,
+            $email
+        );
     }
 }

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,40 +31,14 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperPool;
-
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperPool
- */
-class DbalHelperPoolSpec extends ObjectBehavior
+interface TermCompilerHelperInterface
 {
-    function let(
-        DbalHelperInterface $helper1,
-        DbalHelperInterface $helper2
-    )
-    {
-        $helper1->getId()->willReturn('helper1');
-        $helper2->getId()->willReturn('helper2');
-
-        $this->beConstructedWith(array($helper1, $helper2));
-    }
-
-    function it_allows_you_to_get_helpers(
-        DbalHelperInterface $helper1,
-        DbalHelperInterface $helper2
-    )
-    {
-        $this->getHelper('helper1')->shouldBe($helper1);
-        $this->getHelper('helper2')->shouldBe($helper2);
-    }
-
-    function it_throws_exception_if_id_does_not_exist()
-    {
-        $this->shouldThrow('\InvalidArgumentException')->during('getHelper', array('invalid'));
-    }
+    /**
+     * An identifier for this helper
+     *
+     * @return string
+     */
+    public function getId();
 }

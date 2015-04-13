@@ -31,42 +31,97 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Orb\Util\Arrays;
 
-class PhpAgentTermCompiler extends AbstractPhpTermCompiler
+class MethodCheckHelper implements TermCompilerHelperInterface
 {
+    public function getId()
+    {
+        return 'method_check';
+    }
+
     /**
-     * Take a term and return a PhpCheck representing the term's query conditions.
-     *
-     * @param TermInterface $term
+     * @param $method_call
+     * @param $op
+     * @param array $input
      * @return PhpCheck
      */
-    protected function doCompile(TermInterface $term)
+    public function checkContains($method_call, $op, array $input)
     {
-        $op = $term->getOp();
-        $ids = $term->getOption('agent_ids');
+        $array = $this->filterInput($input);
 
-        $input = array_map(
-            function ($id) {
-                if ($id === AgentTerm::ID_ME) {
-                    $id = new TermEngineExpression('agent.getId()');
-                }
+        $check = '';
+        $check .= '$check = ';
+        if (strtolower($op) == strtolower(TermInterface::OP_NOT)) {
+            $check .= '!';
+        }
+        $check .= 'in_array(' . $method_call . ', ';
+        $check .= '\Orb\Util\Arrays::flatten(array(';
+        $check .= implode(',', $array);
+        $check .= ')));';
 
-                return $id;
-            },
-            $ids
+        return new PhpCheck(
+            $check
         );
+    }
 
-        return $this->getMethodCheckHelper()->checkContains(
-            '$ticket->getAgentId()',
-            $op,
-            $input
+    /**
+     * @param $method_call
+     * @param $op
+     * @param $input
+     * @param bool $check_identical
+     * @return PhpCheck
+     */
+    public function checkEquality($method_call, $op, $input, $check_identical = false)
+    {
+        // we turn it into an array to use the same filtering logic as the contains check
+        $array = $this->filterInput(array($input));
+        $input = current($array);
+
+        $check = '';
+        $check .= '$check = (';
+        $check .= $method_call;
+        $check .= ' ';
+        if (strtolower($op) == strtolower(TermInterface::OP_NOT)) {
+            $check .= '!=';
+        } else {
+            $check .= '==';
+        }
+        if ($check_identical) {
+            $check .= '=';
+        }
+        $check .= ' ';
+        $check .= $input;
+        $check .= ');';
+
+        return new PhpCheck(
+            $check
         );
+    }
+
+    /**
+     * @param array $input
+     * @return array
+     */
+    protected function filterInput(array $input)
+    {
+        $array = array();
+        foreach ($input as $in) {
+            if (is_string($in)) {
+                $array[] = "'$in'";
+            } elseif ($in instanceof TermEngineExpression) {
+                $array[] = '$this->evaluateExpression(\'' . (string)$in . '\')';
+            } else {
+                $array[] = $in;
+            }
+        }
+
+        return Arrays::flatten($array); // always flatten
     }
 }

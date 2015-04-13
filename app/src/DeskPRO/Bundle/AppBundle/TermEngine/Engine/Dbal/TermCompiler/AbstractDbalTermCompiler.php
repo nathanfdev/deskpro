@@ -33,32 +33,32 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 abstract class AbstractDbalTermCompiler
 {
     /**
-     * @var DbalHelperPool
+     * @var TermCompilerHelperPool
      */
     private $helper_pool;
 
-    public function setHelperPool(DbalHelperPool $helper_pool)
+    public function setHelperPool(TermCompilerHelperPool $helper_pool)
     {
         $this->helper_pool = $helper_pool;
     }
 
     /**
-     * Get a registered helper by ID (DbalHelperInterface::getId())
+     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
      *
      * @param $id
-     * @return DbalHelperInterface
+     * @return TermCompilerHelperInterface
      */
     public function getHelper($id)
     {

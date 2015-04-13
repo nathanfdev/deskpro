@@ -33,11 +33,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalNumericHelper implements DbalHelperInterface
+class DbalNumericHelper implements TermCompilerHelperInterface
 {
 
     /**

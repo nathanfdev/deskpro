@@ -45,7 +45,7 @@ class TermEnginePass implements CompilerPassInterface
         $this->addDbalTicketFilterVisitors($container);
 
         $this->addPhpTicketCheckerTermCompilers($container);
-//        $this->addPhpTicketCheckerHelpers($container);
+        $this->addPhpTermCompilerHelpers($container);
         $this->addPhpTicketCheckerVisitors($container);
     }
 
@@ -130,6 +130,21 @@ class TermEnginePass implements CompilerPassInterface
         $helper_pool = $container->findDefinition('term_engine.dbal.helper_pool');
 
         $helper_tags = $container->findTaggedServiceIds('dbal_term_engine_helper');
+
+        $helpers = array();
+
+        foreach ($helper_tags as $id => $tags) {
+            $helpers[] = new Reference($id);
+        }
+
+        $helper_pool->setArguments(array($helpers));
+    }
+
+    private function addPhpTermCompilerHelpers(ContainerBuilder $container)
+    {
+        $helper_pool = $container->findDefinition('term_engine.php.helper_pool');
+
+        $helper_tags = $container->findTaggedServiceIds('php_term_engine_helper');
 
         $helpers = array();
 

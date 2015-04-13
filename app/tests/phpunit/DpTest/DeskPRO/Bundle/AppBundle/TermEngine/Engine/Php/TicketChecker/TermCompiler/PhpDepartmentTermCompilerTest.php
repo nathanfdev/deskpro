@@ -33,47 +33,67 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionProvider;
-use DpTest\ApiTestCase;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-abstract class AbstractPhpTermCompilerTest extends ApiTestCase
+class PhpDepartmentTermCompilerTest extends AbstractPhpTermCompilerTest
 {
-    protected function evaluateExpression($expression)
+    /**
+     * @var PhpTicketStatusTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
     {
-
-        //
-        // this method simulates the evaluateExpression method on the result PhpTicketCheckerInterface
-        // in the tests assertions below, eval() will use this method
-        //
-
-        $lang = new TermEngineExpressionLanguage(null, array(new TermEngineExpressionProvider()));
-
-        $agent = $this->prophesize('Application\DeskPRO\Entity\Person');
-        $agent->getId()->willReturn(2); // in these tests, ME is always agent id=2
-        $agent->getTeamIds()->willReturn(array(2)); // in these tests, ME is always agent id=2
-
-        return $lang->evaluate(
-            $expression,
-            array(
-                'agent' => $agent->reveal() // in these tests, ME is always agent id=2
-            )
-        );
+        $this->term_compiler = $this->get('term_engine.php_ticket_checker.compiler.department');
     }
 
-    protected function assertTicketCheck(PhpCheck $php_check, $result, $ticket_prophecy)
+    public function testCompileIs()
     {
-        $ticket = $ticket_prophecy->reveal();
+        $term = new DepartmentTerm(
+            array(
+                'department_ids' => array(1, 2, 15)
+            )
+        );
 
-        $result = (bool)$result;
+        $php_check = $this->term_compiler->compile($term);
 
-        $check = !$result;
+        $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(1));
+        $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(15));
+        $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(2));
+        $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(7));
+        $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(13));
 
-        eval($php_check->getCheckCode());
+    }
 
-        $this->assertSame($result, $check, 'ticket check result is correct');
+    public function testCompileIsNot()
+    {
+        $term = new DepartmentTerm(
+            array(
+                'department_ids' => array(1, 2, 15)
+            ),
+            TermInterface::OP_NOT
+        );
+
+        $php_check = $this->term_compiler->compile($term);
+
+        $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(7));
+        $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(13));
+        $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(2));
+        $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(15));
+    }
+
+    protected function createTicketProphecy($dep)
+    {
+        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        if (!$dep) {
+            $dep = 0;
+        }
+        $ticket->getDepartmentId()->willReturn($dep);
+
+        return $ticket;
     }
 }
