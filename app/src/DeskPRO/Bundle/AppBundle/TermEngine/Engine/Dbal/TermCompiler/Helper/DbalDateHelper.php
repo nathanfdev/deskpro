@@ -55,6 +55,11 @@ class DbalDateHelper implements DbalHelperInterface
     {
         $part = new DbalQueryPart();
 
+        $date = clone $date;
+        if ($date2) {
+            $date2 = clone $date2;
+        }
+
         if ($ignore_time) {
             $date->setTime(0, 0, 0);
             $date2 = $date2 ?: clone $date;
