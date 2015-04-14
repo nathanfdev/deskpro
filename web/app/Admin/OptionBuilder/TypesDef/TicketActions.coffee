@@ -596,6 +596,7 @@ define [
       options.extraOptions = [
         {title: 'No Team', value: 0},
         {title: 'Current Agent\'s Team', value: -1}
+        {title: 'Team of currently assigned agent', value: -2}
       ]
       def = @getStandardSelect(options)
       return def
