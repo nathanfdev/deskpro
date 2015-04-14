@@ -87,22 +87,11 @@ abstract class PhpCompiler
 
         $main_method = $this->compileTerm($term, $php_class);
 
+        // we alter this "mainCheck" method's arguments in the enginePostCompile hook
         $main_method->setName('mainCheck');
-        // we alter the mainCheck method's arguments in the engine postCompile hook
         $php_class->addMethod($main_method);
 
         $this->enginePostCompile($php_class);
-
-        // use the term compiler to get a PhpTicketChecker
-        // use it to create a PhpMethod
-
-        // set that PhpMethod as the "main method" on the class by naming it
-        // "check". Let the others be random names.
-
-        // add our boiler plate "isTicketMatch" method to the class and call this main
-        // method to get the final response value
-
-        // return the PhpClass object
 
         return $php_class;
     }

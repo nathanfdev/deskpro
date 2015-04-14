@@ -31,57 +31,24 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvent;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvent
  */
-class PhpTicketCheckerEngineSpec extends ObjectBehavior
+class PhpEngineEventSpec extends ObjectBehavior
 {
-    function it_evals_the_compiler_result_and_returns_the_compiled_checker(
-        PhpTicketCheckerCompiler $compiler,
-        TermEngineExpressionLanguage $expression_language,
-        Filter $filter,
-        TermEngineContext $context,
-        TermInterface $term,
-        PhpClass $compiled_class,
-        EventDispatcherInterface $event_dispatcher
+    function it_has_access_to_the_context(
+        TermEngineContext $context
     )
     {
-        $this->beConstructedWith($compiler, $expression_language, $event_dispatcher);
+        $this->beConstructedWith($context);
 
-        $filter->getTerm()->willReturn($term);
-        $event_dispatcher->dispatch(
-            PhpEngineEvents::PRE_COMPILE,
-            Argument::type('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent')
-        )->shouldBeCalled();
-        $compiler->compile($term)->willReturn($compiled_class);
-        $compiled_class->getName()->willReturn('myclass');
-        $compiled_class->__toString()->willReturn(
-            '
-            class myclass  {
-                public function __construct($context, $expression_lang) {}
-            }
-            '
-        );
-        $event_dispatcher->dispatch(
-            PhpEngineEvents::POST_COMPILE,
-            Argument::type('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent')
-        )->shouldBeCalled();
-
-        $this->evaluate($filter, $context)->shouldBeAnInstanceOf('myclass');
+        $this->getContext()->shouldBe($context);
     }
 }

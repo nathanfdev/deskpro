@@ -36,9 +36,13 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpFile;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngine;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhpTicketCheckerEngine extends PhpEngine
 {
@@ -52,13 +56,20 @@ class PhpTicketCheckerEngine extends PhpEngine
      */
     private $expression_language;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $event_dispatcher;
+
     public function __construct(
         PhpTicketCheckerCompiler $compiler,
-        TermEngineExpressionLanguage $expression_language
+        TermEngineExpressionLanguage $expression_language,
+        EventDispatcherInterface $event_dispatcher
     )
     {
         $this->compiler = $compiler;
         $this->expression_language = $expression_language;
+        $this->event_dispatcher = $event_dispatcher;
     }
 
     /**
@@ -71,7 +82,14 @@ class PhpTicketCheckerEngine extends PhpEngine
      */
     public function evaluate(Filter $filter, TermEngineContext $context)
     {
+        $event = new PhpEnginePreCompileEvent($context, $filter);
+        $this->event_dispatcher->dispatch(PhpEngineEvents::PRE_COMPILE, $event);
+
         $php_class = $this->compiler->compile($filter->getTerm());
+
+        $event = new PhpEnginePostCompileEvent($context, $filter, $php_class);
+        $this->event_dispatcher->dispatch(PhpEngineEvents::POST_COMPILE, $event);
+
         $php_file = new PhpFile();
         $php_file->setClass($php_class);
 
