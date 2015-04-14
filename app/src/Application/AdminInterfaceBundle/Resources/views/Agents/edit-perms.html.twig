@@ -28,7 +28,7 @@
 			<input
 				dp-slider-switch
 				ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
-				ng-change="EditCtrl.updateHasPermOverridesStatus()"
+				ng-change="{% if 'use' == permname %}EditCtrl.changeUse('{{ typename }}'){% else %}EditCtrl.updateHasPermOverridesStatus(){% endif %}"
 				is-on="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
 				is-locked="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
 				{% if opts.toggleName %}

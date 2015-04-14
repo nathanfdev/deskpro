@@ -117,6 +117,13 @@ define [
 
 
 
+    changeUse: (type) ->
+      return if !@perm_form[type]? || true == @perm_form[type].use
+      for perm of @perm_form[type]
+        @perm_form[type][perm] = false
+
+
+
     changeAllPerms: (type, section) ->
       return if !@perm_form? || !@deps_perms?
 
@@ -145,6 +152,14 @@ define [
     updateAllPermsState: ->
       return if !@perm_form?
 
+      # check "use" state first
+      for section, perms of @perm_form
+        for perm of perms
+          if 'use' != perm && perms.use? && (perms[perm] || @ugEffectivePerms[section]?[perm])
+            perms.use = true
+            break
+
+      # and this one is for "toggle all"
       for section, perms of @perm_form
         enabled = true
         for perm of perms
