@@ -64,6 +64,8 @@ class TicketStatusTermSpec extends ObjectBehavior
 
         $resolver->setAllowedTypes(array('status' => 'array'))->shouldBeCalled();
 
+        $resolver->setNormalizer('status', Argument::type('callable'))->shouldBeCalled();
+
         $this->setDefaultOptions($resolver);
     }
 }

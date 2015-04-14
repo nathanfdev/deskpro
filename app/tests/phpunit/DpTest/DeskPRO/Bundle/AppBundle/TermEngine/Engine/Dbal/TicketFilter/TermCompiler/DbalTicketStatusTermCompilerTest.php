@@ -215,4 +215,30 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
         $this->assertNoJoins($query_part);
         $this->assertNoUniqueJoins($query_part);
     }
+
+    public function testThatHiddensWorkWithVerboseNames()
+    {
+        $term = new TicketStatusTerm(
+            array(
+                'status' => array(
+                    'hidden.' . Ticket::HIDDEN_STATUS_SPAM,
+                    'hidden.' . Ticket::HIDDEN_STATUS_DELETED
+                )
+            )
+        );
+
+        $query_part = $this->term_compiler->compile($term);
+
+        $this->assertParameters(
+            $query_part,
+            array(
+                'status_hidden' => Ticket::STATUS_HIDDEN,
+                'hidden_status' => array(Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED)
+            )
+        );
+
+        $this->assertWhere($query_part, 'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)');
+        $this->assertNoJoins($query_part);
+        $this->assertNoUniqueJoins($query_part);
+    }
 }

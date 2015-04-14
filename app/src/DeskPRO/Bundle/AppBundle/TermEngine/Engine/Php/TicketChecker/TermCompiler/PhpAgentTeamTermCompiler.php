@@ -54,7 +54,7 @@ class PhpAgentTeamTermCompiler extends AbstractPhpTermCompiler
 
         $ids = array_map(
             function ($id) {
-                if ($id == AgentTeamTerm::TEAM_ID_ME) {
+                if ($id === AgentTeamTerm::TEAM_ID_ME) {
                     $id = new TermEngineExpression('agent.getTeamIds()');
                 }
 

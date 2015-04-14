@@ -77,5 +77,6 @@ class PhpTicketCheckerCompiler extends PhpCompiler
             'return $this->expression_language
     ->evaluate($expression, array(\'agent\' => $this->context->getAgent()));'
         );
+        $php_class->addMethod($evaluate_expression);
     }
 }

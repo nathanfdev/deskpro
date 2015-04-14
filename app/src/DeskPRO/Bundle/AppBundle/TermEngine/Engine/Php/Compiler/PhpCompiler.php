@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
@@ -106,9 +107,32 @@ abstract class PhpCompiler
         return $php_class;
     }
 
+    /**
+     * @param TermInterface $term
+     * @param PhpClass $php_class
+     * @return PhpMethod
+     */
     protected function compileTerm(TermInterface $term, PhpClass $php_class)
     {
-        $php_check = $this->getTermCompiler($term)->compile($term);
+        if ($term instanceof CompositeTermInterface) {
+            $method_checks = array();
+            $php_check = '';
+
+            /** @var TermInterface $child_term */
+            foreach ($term->getTerms() as $child_term) {
+                $method = $this->compileTerm($child_term, $php_class);
+                $method_checks[] = '$this->' . $php_class->addMethod($method) . '($ticket)';
+            }
+
+            $sep = (strtolower($term->getOp()) === strtolower(TermInterface::OP_AND)) ? ' && ' : ' || ';
+
+            $php_check .= 'if (';
+            $php_check .= implode($sep, $method_checks);
+            $php_check .= ') { $check = true; }';
+
+        } else {
+            $php_check = $this->getTermCompiler($term)->compile($term);
+        }
 
         $method_code = '$check = false; ' . $php_check . ' return $check;';
 

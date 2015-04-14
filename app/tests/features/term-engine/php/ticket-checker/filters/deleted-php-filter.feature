@@ -1,7 +1,7 @@
-Feature: All Tickets Filter (PhpTicketCheckerEngine)
-  In order to easily check if a ticket matches this filter
+Feature: Deleted Filter
+  In order to easily filter an agents tickets
   As a developer
-  I want to use the php engine with this filter
+  I want to use the term engine with this filter
 
   Background: Use the specific Term Engine data set
     Given I install the "term engine" data set
@@ -9,25 +9,20 @@ Feature: All Tickets Filter (PhpTicketCheckerEngine)
 
   Scenario: I check matching tickets
     Given I set the context agent to agent
-    When I evaluate the filter "All"
+    When I evaluate the filter "Deleted"
     And I check tickets with the following ids:
-      | 11 |
-      | 12 |
-      | 13 |
-      | 14 |
-      | 15 |
-    Then the all of the checks should match
+      | 28 |
+    Then all of the checks should match
 
   Scenario: I check non-matching tickets
     Given I set the context agent to agent
-    When I evaluate the filter "All"
+    When I evaluate the filter "Deleted"
     And I check tickets with the following ids:
+      | 20 |
+      | 21 |
       | 22 |
       | 23 |
       | 24 |
-      | 25 |
-      | 26 |
-      | 27 |
-      | 28 |
-    Then the none of the checks should match
-
+      | 1  |
+      | 9  |
+    Then none of the checks should match
