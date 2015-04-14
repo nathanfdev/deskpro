@@ -31,15 +31,15 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass
  */
 class PhpClassSpec extends ObjectBehavior
 {
@@ -96,8 +96,8 @@ class PhpClassSpec extends ObjectBehavior
     }
 
     function it_has_a_collection_of_methods(
-        PhpMethod $method1,
-        PhpMethod $method2
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod $method1,
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod $method2
     )
     {
         $method1->getName()->willReturn('m1');
@@ -114,7 +114,7 @@ class PhpClassSpec extends ObjectBehavior
     }
 
     function it_will_generate_a_random_name_and_assign_it_to_a_method_if_added_with_no_name_and_return_it(
-        PhpMethod $method1
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod $method1
     )
     {
         $method1->getName()->willReturn(null);
@@ -128,7 +128,7 @@ class PhpClassSpec extends ObjectBehavior
 
     function it_throws_if_a_method_with_that_name_already_exists(
         PhpMethod $method1,
-        PhpMethod $method2
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod $method2
     )
     {
         $method1->getName()->willReturn('m1');
@@ -160,7 +160,7 @@ class PhpClassSpec extends ObjectBehavior
 
     function it_creates_a_string_of_itself(
         PhpMethod $method1,
-        PhpMethod $method2
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod $method2
     )
     {
         $method1->getName()->willReturn('isTicketCheck');

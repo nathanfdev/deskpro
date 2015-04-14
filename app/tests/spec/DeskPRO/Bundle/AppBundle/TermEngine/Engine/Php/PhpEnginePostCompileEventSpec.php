@@ -34,7 +34,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

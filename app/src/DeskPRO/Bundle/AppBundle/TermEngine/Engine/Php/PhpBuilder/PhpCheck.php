@@ -31,48 +31,41 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
-
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck
- */
-class PhpCheckSpec extends ObjectBehavior
+class PhpCheck
 {
-    function it_is_just_a_holder_for_php_code()
+    /**
+     * This is a PHP string that will be executed. You must set the $check variable
+     * to true or false, with no return statements.
+     *
+     * @var string|null
+     */
+    protected $check_code;
+
+    public function __construct($check_code = null)
     {
-        $this->getCheckCode()->shouldBe(null);
-
-        $this->setCheckCode('$check = true;');
-
-        $this->getCheckCode()->shouldBe('$check = true;');
+        $this->check_code = $check_code;
     }
 
-    function it_can_be_constructed_with_the_check_code()
+    /**
+     * @return string|null
+     */
+    public function getCheckCode()
     {
-        $this->beConstructedWith(
-            '$check = true;'
-        );
-
-        $this->getCheckCode()->shouldBe('$check = true;');
+        return $this->check_code;
     }
 
-    function it_does_a_to_string_that_trims_the_code()
+    /**
+     * @param mixed $check_code
+     */
+    public function setCheckCode($check_code)
     {
-        $this->setCheckCode('$check = true;');
-        $this->__toString()->shouldBe('$check = true;');
+        $this->check_code = $check_code;
+    }
 
-
-        $this->setCheckCode(
-            '
-
-
-
-        $check = true;                                     '
-        );
-        $this->__toString()->shouldBe('$check = true;');
+    public function __toString()
+    {
+        return trim($this->check_code);
     }
 }

@@ -34,8 +34,8 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler\PhpCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
 
 class PhpTicketCheckerCompiler extends PhpCompiler
 {

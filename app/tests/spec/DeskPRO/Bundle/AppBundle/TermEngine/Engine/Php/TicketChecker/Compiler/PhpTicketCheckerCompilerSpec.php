@@ -33,8 +33,8 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -96,7 +96,7 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
         $term_compiler->compile($term)->willReturn($php_check);
 
         $this->compile($term)->shouldReturnAnInstanceOf(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass'
+            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass'
         );
     }
 }

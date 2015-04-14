@@ -31,15 +31,15 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper;
+namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpFile;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpFile;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpFile
+ * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpFile
  */
 class PhpFileSpec extends ObjectBehavior
 {
@@ -71,7 +71,7 @@ class PhpFileSpec extends ObjectBehavior
     }
 
     function it_can_hold_a_single_class(
-        PhpClass $class
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass $class
     )
     {
         $this->getClass()->shouldBe(null);
@@ -82,7 +82,7 @@ class PhpFileSpec extends ObjectBehavior
     }
 
     function it_can_convert_to_string(
-        PhpClass $class
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass $class
     )
     {
         $class->__toString()->willReturn(
@@ -123,7 +123,7 @@ class MyClass extends \SplFileInfo
     }
 
     function it_will_work_without_a_namespace(
-        PhpClass $class
+        \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass $class
     )
     {
         $class->__toString()->willReturn(

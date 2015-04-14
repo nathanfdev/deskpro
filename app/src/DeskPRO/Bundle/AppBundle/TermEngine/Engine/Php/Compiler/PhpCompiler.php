@@ -34,11 +34,11 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 
 abstract class PhpCompiler
 {
@@ -61,7 +61,7 @@ abstract class PhpCompiler
     /**
      * An opportunity for this engine implemention to alter the query before compile starts
      *
-     * @param PhpClass $php_class
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass $php_class
      * @return void
      */
     abstract protected function enginePreCompile(PhpClass $php_class);
@@ -98,7 +98,7 @@ abstract class PhpCompiler
 
     /**
      * @param TermInterface $term
-     * @param PhpClass $php_class
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass $php_class
      * @return PhpMethod
      */
     protected function compileTerm(TermInterface $term, PhpClass $php_class)

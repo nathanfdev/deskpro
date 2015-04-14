@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 class PhpMethod
 {

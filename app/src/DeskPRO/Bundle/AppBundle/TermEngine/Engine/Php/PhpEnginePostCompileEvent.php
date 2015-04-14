@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 
 class PhpEnginePostCompileEvent extends PhpEngineEvent
@@ -45,7 +45,7 @@ class PhpEnginePostCompileEvent extends PhpEngineEvent
     private $filter;
 
     /**
-     * @var PhpClass
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass
      */
     private $php_class;
 
@@ -62,7 +62,7 @@ class PhpEnginePostCompileEvent extends PhpEngineEvent
     }
 
     /**
-     * @return PhpClass
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass
      */
     public function getPhpClass()
     {
