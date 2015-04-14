@@ -47,6 +47,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('post', null, InputOption::VALUE_NONE, 'Send a POST request (default when data is sent)');
         $this->addOption('put', null, InputOption::VALUE_NONE, 'Send a PUT request');
         $this->addOption('delete', null, InputOption::VALUE_NONE, 'Send a DELETE request');
+        $this->addOption('v2', null, InputOption::VALUE_NONE, 'Use v2 api');
         $this->addOption('url', null, InputOption::VALUE_REQUIRED, 'Use this API url instead of generating the URL automatically based on the current helpdesk.');
         $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database.');
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
@@ -58,6 +59,12 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $req_type = 'GET';
+
+        if ($input->getOption('v2')) {
+            $v2 = '/v2/';
+        } else {
+            $v2 = '';
+        }
 
         #------------------------------
         # Get the data to post
@@ -112,13 +119,13 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 if (strpos($base_url, '/index.php/') === false) {
                     $base_url .= 'index.php/';
                 }
-                $base_url .= 'api/';
+                $base_url .= "api/$v2";
             }
             if (!preg_match('#^https?://#', $base_url)) {
                 $base_url = "http://".$base_url;
             }
         } else {
-            $base_url = trim(App::getSetting('core.deskpro_url'), '/').'/index.php/api/';
+            $base_url = trim(App::getSetting('core.deskpro_url'), '/')."/index.php/api/$v2";
         }
         $path = trim($input->getArgument('path'), '/');
 
@@ -159,9 +166,16 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $http_client = new \Guzzle\Http\Client($base_url, array(
             'ssl.certificate_authority' => false,
         ));
-        $http_client->setDefaultHeaders(array(
-            'X-DeskPRO-API-Key' => $api_key,
-        ));
+
+        $headers = array();
+
+        if ($v2) {
+            $headers['Authorization'] = 'key ' . $api_key;
+        } else {
+            $headers['X-DeskPRO-API-Key'] = $api_key;
+        }
+
+        $http_client->setDefaultHeaders($headers);
 
         switch ($req_type) {
             case 'GET':
