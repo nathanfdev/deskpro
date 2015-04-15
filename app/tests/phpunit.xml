@@ -1,4 +1,4 @@
-<phpunit bootstrap="bootstrap_minimal.php">
+<phpunit bootstrap="bootstrap_minimal.php" backupGlobals="false">
     <testsuites>
         <testsuite name="deskpro">
             <directory>phpunit</directory>
