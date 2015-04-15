@@ -57,17 +57,17 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
     {
         $this->beConstructedWith($factory, array());
         $factory->getCompiler($term)->willReturn($term_compiler);
+        $php_check->getVariables()->willReturn(array());
         $term_compiler->compile($term)->willReturn($php_check);
         $php_check->__toString()->willReturn('');
     }
 
     function it_is_a_php_compiler(
-        PhpClass $php_class
+        PhpCheck $php_check
     )
     {
         $this->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler\PhpCompiler');
-        $this->enginePreCompile($php_class);
-        $this->enginePostCompile($php_class);
+        $this->enginePostCompile($php_check);
     }
 
     function it_will_pass_the_term_to_all_visitors(
@@ -96,7 +96,7 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
         $term_compiler->compile($term)->willReturn($php_check);
 
         $this->compile($term)->shouldReturnAnInstanceOf(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass'
+            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck'
         );
     }
 }

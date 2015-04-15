@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 
@@ -47,13 +48,13 @@ class PhpEnginePostCompileEvent extends PhpEngineEvent
     /**
      * @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass
      */
-    private $php_class;
+    private $php_check;
 
-    public function __construct(TermEngineContext $context, Filter $filter, PhpClass $php_class)
+    public function __construct(TermEngineContext $context, Filter $filter, PhpCheck $php_check)
     {
         parent::__construct($context);
         $this->filter = $filter;
-        $this->php_class = $php_class;
+        $this->php_check = $php_check;
     }
 
     public function getFilter()
@@ -64,8 +65,8 @@ class PhpEnginePostCompileEvent extends PhpEngineEvent
     /**
      * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass
      */
-    public function getPhpClass()
+    public function getPhpCheck()
     {
-        return $this->php_class;
+        return $this->php_check;
     }
 }
