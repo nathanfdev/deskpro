@@ -1030,6 +1030,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Check if any of the given ids are a participant.
+     *
+     * If any given ID is a participant person ID, this is true. Else false.
+     *
+     * @param array $person_ids
+     * @return bool
+     */
+    public function hasAnyParticipantId(array $person_ids)
+    {
+        $person_ids = Arrays::flatten($person_ids);
+        foreach ($person_ids as $id) {
+            if ($this->hasParticipantPerson($id)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Add a participant.
      *
      * @param $person_or_id

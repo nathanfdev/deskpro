@@ -53,30 +53,12 @@ class PhpTicketCustomDataTermCompiler extends AbstractPhpTermCompiler
         $values = $term->getOption('values');
         $input = $term->getOption('input');
 
-        $check_code = '';
-        $check_code .= 'if (!$ticket->hasCustomField(' . $field_id . ')) {';
-        $check_code .= ' $check = ' . ($this->isOp($op, TermInterface::OP_NOT) ? 'true' : 'false') . ';';
-        $check_code .= '} else {';
-        $check_code .= '$custom_data = $ticket->getCustomDataForField(' . $field_id . ');';
-        if (count($values)) {
-            $check_code .= '$check = ';
-            if ($this->isOp($op, TermInterface::OP_NOT)) {
-                $check_code .= '!';
-            }
-            $check_code .= 'in_array($custom_data->getValue(), ';
-            $check_code .= $this->turnArrayIntoPhpArrayString($values);
-            $check_code .= ');';
-        } else {
-            $check_code .= '$check ';
-            if ($this->isOp($op, TermInterface::OP_NOT)) {
-                $check_code .= '!=';
-            } else {
-                $check_code .= '==';
-            }
-            $check_code .= "'" . addslashes($input) . "';'";
-        }
-        $check_code .= '}';
+        $check = new PhpCheck('custom_field_check(ticket, :field_id, :op, :values, :input)');
+        $check->setVariable('field_id', $term->getOption('field_id'));
+        $check->setVariable('op', $term->getOp());
+        $check->setVariable('values', $term->getOption('values'));
+        $check->setVariable('input', $term->getOption('input'));
 
-        return new PhpCheck($check_code);
+        return $check;
     }
 }
