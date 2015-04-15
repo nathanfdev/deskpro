@@ -273,6 +273,13 @@ class ServerReqs
                 'readMore'       => '',
                 'recommendation' => true,
             ),
+
+            'zlib_check' => array(
+                'description'    => 'Checking for the <a href="http://php.net/manual/en/book.zlib.php">Zlib Compression</a>',
+                'error'          => 'We recommend enabling the Zlib Compression.',
+                'readMore'       => '',
+                'recommendation' => true,
+            ),
         );
 
         $recommendOpcache = version_compare(phpversion(), '5.5.0', '<')
