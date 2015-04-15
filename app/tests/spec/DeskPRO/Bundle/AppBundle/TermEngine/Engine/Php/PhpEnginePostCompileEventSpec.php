@@ -34,6 +34,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use PhpSpec\ObjectBehavior;
@@ -45,9 +46,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
  */
 class PhpEnginePostCompileEventSpec extends ObjectBehavior
 {
-    function let(TermEngineContext $context, Filter $filter, PhpClass $php_class)
+    function let(TermEngineContext $context, Filter $filter, PhpCheck $php_check)
     {
-        $this->beConstructedWith($context, $filter, $php_class);
+        $this->beConstructedWith($context, $filter, $php_check);
     }
 
     function it_is_a_phpengine_event()
@@ -60,8 +61,8 @@ class PhpEnginePostCompileEventSpec extends ObjectBehavior
         $this->getFilter()->shouldBe($filter);
     }
 
-    function it_also_has_the_compiled_php_class(PhpClass $php_class)
+    function it_also_has_the_compiled_php_class(PhpCheck $php_check)
     {
-        $this->getPhpClass()->shouldBe($php_class);
+        $this->getPhpCheck()->shouldBe($php_check);
     }
 }

@@ -10,6 +10,7 @@ services:
             - @term_engine.php_ticket_checker.compiler
             - @term_engine.expression_language
             - @event_dispatcher
+            - @term_engine.php.helper_pool
 
     term_engine.php_ticket_checker.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler
