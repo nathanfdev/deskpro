@@ -52,6 +52,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database.');
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
         $this->addOption('printr', null, InputOption::VALUE_NONE, 'Output as PHP array');
+        $this->addOption('as-form', null, InputOption::VALUE_NONE, 'For PUT/POST requests, send the data payload as a form instead of JSON which is the default');
         $this->addArgument('path', InputArgument::REQUIRED, 'The API endpoint to request');
         $this->addArgument('data', InputArgument::OPTIONAL, 'Data to send. This should be a JSON-encoded string. Specify a PHP file that returns an array by prefixing the string with @. E.g., @/my-data.php');
     }
@@ -65,6 +66,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         } else {
             $v2 = '';
         }
+
+        $as_form = $input->getOption('as-form');
 
         #------------------------------
         # Get the data to post
@@ -163,10 +166,6 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         # Make the request
         #------------------------------
 
-        $http_client = new \Guzzle\Http\Client($base_url, array(
-            'ssl.certificate_authority' => false,
-        ));
-
         $headers = array();
 
         if ($v2) {
@@ -175,7 +174,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             $headers['X-DeskPRO-API-Key'] = $api_key;
         }
 
-        $http_client->setDefaultHeaders($headers);
+        $http_client = new \Guzzle\Http\Client($base_url, array(
+            'ssl.certificate_authority' => false,
+            'request.options' => array('headers' => $headers)
+        ));
 
         switch ($req_type) {
             case 'GET':
@@ -191,11 +193,19 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 break;
 
             case 'POST':
-                $request = $http_client->post($path, null, $data);
+                if ($as_form) {
+                    $request = $http_client->post($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
+                } else {
+                    $request = $http_client->post($path, array('Content-Type' => 'application/json'), json_encode($data));
+                }
                 break;
 
             case 'PUT':
-                $request = $http_client->post($path, null, $data);
+                if ($as_form) {
+                    $request = $http_client->put($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
+                } else {
+                    $request = $http_client->put($path, array('Content-Type' => 'application/json'), json_encode($data));
+                }
                 break;
 
             case 'DELETE':
