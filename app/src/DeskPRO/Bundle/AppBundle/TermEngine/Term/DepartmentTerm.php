@@ -34,7 +34,11 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class DepartmentTerm extends AbstractTerm
 {
@@ -53,5 +57,55 @@ class DepartmentTerm extends AbstractTerm
                 'department_ids' => 'array'
             )
         );
+    }
+
+    public function doValidate(ExecutionContextInterface $validator_context)
+    {
+        // note we should not us the $options property directly when validating,
+        // because the resolver will give the real options we care about after
+        // all is said and done
+
+        $dep_ids = $this->getOption('department_ids');
+        $op = $this->getOp();
+
+        if (!in_array($op, array(TermInterface::OP_IS, TermInterface::OP_NOT))) {
+
+            // here is how to add an error to the term:
+            $validator_context->buildViolation(('unsupported operation'))->atPath('op')->addViolation();
+
+        }
+
+        // note that to use external services as validators, we can do that
+        // by adding a @Assert\Callback on the class itself.
+    }
+
+    /**
+     * @Assert\Callback
+     *
+     * NOTE: This will be abstract, so each term wont need this
+     *
+     * @param ExecutionContextInterface $validator_context
+     */
+    public function validate(ExecutionContextInterface $validator_context)
+    {
+        // TODO: this should be in the abstract term, and the reason we need it is
+        // because we use OptionsResolver Component to get options from the term.
+        // if the OptionsResolver throws an exception, we need to turn that
+        // into an error. Note that these are unlikely, so can probably just be
+        // a 1-liner error
+
+        // when the validator component attempts to validate this term, this
+        // method is called, so you can set as many errors as you'd like.
+
+        try {
+            $this->doValidate($validator_context);
+        } catch (MissingOptionsException $e) {
+            // options resolver can throw a few more exceptions, check the namespace
+        } catch (InvalidOptionsException $e) {
+            // options resolver can throw a few more exceptions, check the namespace
+        } catch (\InvalidArgumentException $e) {
+            // we might be ale to get away with just this base \InvalidArgumentException
+            // if we don't use the exception type to make the error string
+        }
     }
 }
