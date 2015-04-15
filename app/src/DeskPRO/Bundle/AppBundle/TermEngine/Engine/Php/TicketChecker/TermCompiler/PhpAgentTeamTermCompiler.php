@@ -52,21 +52,28 @@ class PhpAgentTeamTermCompiler extends AbstractPhpTermCompiler
         $op = $term->getOp();
         $ids = $term->getOption('agent_team_ids');
 
-        $ids = array_map(
-            function ($id) {
-                if ($id === AgentTeamTerm::TEAM_ID_ME) {
-                    $id = new TermEngineExpression('agent.getTeamIds()');
-                }
+        $check_me = false;
+        $check_ids = array();
+        foreach ($ids as $id) {
+            if ($id === AgentTeamTerm::TEAM_ID_ME) {
+                $check_me = 'agent.getTeamIds()';
+            } else {
+                $check_ids[] = (int)$id;
+            }
+        }
 
-                return $id;
-            },
-            $ids
-        );
+        $check = 'check_contains(ticket.getAgentTeamId(), :op, :ids';
+        if ($check_me) {
+            $check .= sprintf(', %s', $check_me);
+        }
+        $check .= ')';
 
-        return $this->getMethodCheckHelper()->checkContains(
-            '$ticket->getAgentTeamId()',
-            $op,
-            $ids
+        return new PhpCheck(
+            $check,
+            array(
+                'op' => $op,
+                'ids' => $check_ids
+            )
         );
     }
 }

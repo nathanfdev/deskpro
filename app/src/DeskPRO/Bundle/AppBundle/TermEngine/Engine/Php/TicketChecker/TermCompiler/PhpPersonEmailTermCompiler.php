@@ -52,10 +52,15 @@ class PhpPersonEmailTermCompiler extends AbstractPhpTermCompiler
         $op = $term->getOp();
         $email = $term->getOption('email');
 
-        return $this->getMethodCheckHelper()->checkEquality(
-            '$ticket->getPersonEmailAddress()',
-            $op,
-            $email
+        $check = 'ticket.getPersonEmailAddress()';
+        $check .= $this->isOp($op, TermInterface::OP_IS) ? ' == ' : ' != ';
+        $check .= ':email';
+
+        return new PhpCheck(
+            $check,
+            array(
+                'email' => $email
+            )
         );
     }
 }

@@ -51,52 +51,31 @@ class PhpTicketParticipantTermCompiler extends AbstractPhpTermCompiler
         $op = $term->getOp();
         $ids = $term->getOption('person_ids');
 
+        $use_me = false;
         $use_ids = array();
         foreach ($ids as $id) {
             if ($id == TicketParticipantTerm::ID_ME) {
-                $id = '$this->evaluateExpression(\'agent.getId()\')';
+                $use_me = 'agent.getId()';
             } else {
-                $id = (int)$id;
-            }
-            if ($id) {
-                $use_ids[] = $id;
+                $use_ids[] = (int)$id;
             }
         }
 
-        $sub_checks = array();
-        foreach ($use_ids as $id) {
-            $sub_checks[] = $this->makeSubCheck($op, $id);
-        }
-
-        $check_code = '';
-        $check_code .= '$check = (';
-        if (count($sub_checks)) {
-            $check_code .= implode($this->isOp($op, TermInterface::OP_IS) ? ' || ' : ' && ', $sub_checks);
+        if ($this->isOp($op, TermInterface::OP_IS)) {
+            $prefix = '';
         } else {
-            // no ids were in the array, treat as asking for "no participants"
-            $check_code .= '$check = ';
-            if ($this->isOp($op, TermInterface::OP_IS)) {
-                $check_code .= '!'; // IS no participants
-            }
-            $check_code .= 'count($ticket->getParticipantPeopleIds())';
+            $prefix = 'not ';
         }
-        $check_code .= ');';
 
-        return new PhpCheck($check_code);
-    }
-
-    protected function makeSubCheck($op, $id)
-    {
-        $check = '(';
-        $check .= '$ticket->hasParticipantPerson(' . $id . ')';
-        $check .= ' ';
-        if ($this->isOp($op, TermInterface::OP_NOT)) {
-            $check .= '!=';
+        if ($use_me && count($use_ids)) {
+            $check = new PhpCheck($prefix . 'ticket.hasAnyParticipantId([:ids, agent.getId()])');
+            $check->setVariable('ids', $use_ids);
+        } elseif ($use_me) {
+            $check = new PhpCheck($prefix . 'ticket.hasAnyParticipantId([agent.getId()])');
         } else {
-            $check .= '==';
+            $check = new PhpCheck($prefix . 'ticket.hasAnyParticipantId(:ids)');
+            $check->setVariable('ids', $use_ids);
         }
-        $check .= ' true';
-        $check .= ')';
 
         return $check;
     }

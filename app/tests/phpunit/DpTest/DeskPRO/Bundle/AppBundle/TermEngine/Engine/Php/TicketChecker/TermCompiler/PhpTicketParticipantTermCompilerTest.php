@@ -61,45 +61,19 @@ class PhpTicketParticipantTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $php_check = $this->term_compiler->compile($term);
 
+        $ticket = $this->createTicketProphecy();
+
+        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(true);
         $this->assertTicketCheck(
             $php_check,
             true,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    9 => false,
-                )
-            )
+            $ticket
         );
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    9 => true,
-                )
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    9 => false,
-                )
-            )
-        );
+        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(false);
         $this->assertTicketCheck(
             $php_check,
             false,
-            $this->createTicketProphecy(
-                array(
-                    4 => false,
-                    9 => false,
-                )
-            )
+            $ticket
         );
     }
 
@@ -114,149 +88,25 @@ class PhpTicketParticipantTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $php_check = $this->term_compiler->compile($term);
 
+        $ticket = $this->createTicketProphecy();
+
+        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(true);
         $this->assertTicketCheck(
             $php_check,
             false,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    9 => false,
-                )
-            )
+            $ticket
         );
-        $this->assertTicketCheck(
-            $php_check,
-            false,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    9 => true,
-                )
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            false,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    9 => false,
-                )
-            )
-        );
+        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(false);
         $this->assertTicketCheck(
             $php_check,
             true,
-            $this->createTicketProphecy(
-                array(
-                    4 => false,
-                    9 => false,
-                )
-            )
+            $ticket
         );
     }
 
-    public function testCompileIsWithMe()
-    {
-        $term = new TicketParticipantTerm(
-            array(
-                'person_ids' => array(4, TicketParticipantTerm::ID_ME)
-            )
-        );
-
-        $php_check = $this->term_compiler->compile($term);
-
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    2 => false, // me
-                )
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    2 => true, // me
-                )
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array(
-                    4 => true,
-                    2 => false, // me
-                )
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            false,
-            $this->createTicketProphecy(
-                array(
-                    4 => false,
-                    2 => false, // me
-                )
-            )
-        );
-    }
-
-    public function testCompileIsNoParticipants()
-    {
-        $term = new TicketParticipantTerm(
-            array(
-                'person_ids' => array()
-            )
-        );
-
-        $php_check = $this->term_compiler->compile($term);
-
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array(
-                    2 => false, // me
-                )
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            true,
-            $this->createTicketProphecy(
-                array()
-            )
-        );
-        $this->assertTicketCheck(
-            $php_check,
-            false,
-            $this->createTicketProphecy(
-                array(
-                    4 => true, // there is a participant
-                )
-            )
-        );
-    }
-
-    protected function createTicketProphecy($participants = array())
+    protected function createTicketProphecy()
     {
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
-
-        $participant_ids = array();
-        foreach ($participants as $id => $is_participant) {
-            $ticket->hasParticipantPerson($id)->willReturn((bool)$is_participant);
-            if ($is_participant) {
-                $participant_ids[] = $id;
-            }
-        }
-        $ticket->getParticipantPeopleIds()->willReturn($participant_ids);
 
         return $ticket;
     }

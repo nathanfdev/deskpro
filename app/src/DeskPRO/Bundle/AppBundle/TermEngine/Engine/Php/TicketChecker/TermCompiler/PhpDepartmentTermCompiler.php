@@ -50,10 +50,12 @@ class PhpDepartmentTermCompiler extends AbstractPhpTermCompiler
         $op = $term->getOp();
         $ids = $term->getOption('department_ids');
 
-        return $this->getMethodCheckHelper()->checkContains(
-            '$ticket->getDepartmentId()',
-            $op,
-            $ids
+        return new PhpCheck(
+            'check_contains(ticket.getDepartmentId(), :op, :ids)',
+            array(
+                'op' => $op,
+                'ids' => $ids
+            )
         );
     }
 }
