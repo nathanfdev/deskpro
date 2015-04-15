@@ -40,6 +40,7 @@ use DeskPRO\Kernel\License;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Orb\Util\Files;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -68,12 +69,12 @@ class ServerReportFile
     /**
      * @var string
      */
-    protected $archive_file = '';
+    public $archive_file = '';
 
     /**
      * @var array - this is mapping array between file name and method of this class that creates file content
      */
-    protected $files_added_to_archive = array(
+    public $files_added_to_archive = array(
         'phpinfo-web.html'      => '_createPhpInfoFile',
         'phpinfo-cli.txt'       => '_createCliInfoFile',
         'errorlog-deskpro.txt'  => '_createDeskPROErrorLog',
@@ -92,11 +93,17 @@ class ServerReportFile
     );
 
     /**
+     * @var OutputInterface
+     */
+    protected $oi;
+
+    /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, OutputInterface $output = null)
     {
         $this->em = $em;
+        $this->oi = $output;
 
         $this->tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('dpd', true);
 
@@ -171,6 +178,8 @@ class ServerReportFile
 
             die("Error : " . $archive->errorInfo(true));
         }
+
+        return $this->archive_file;
     }
 
     /**
@@ -180,7 +189,12 @@ class ServerReportFile
     {
         foreach($this->files_added_to_archive as $file_name => $func) {
 
-            $this->$func($file_name);
+            $this->oi && $this->oi->writeln(sprintf('Generating "%s"', $file_name));
+            if (false === $this->$func($file_name)) {
+                $this->oi && $this->oi->writeln('');
+            } else {
+                $this->oi && $this->oi->writeln('Success');
+            }
         }
     }
 
@@ -203,6 +217,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -225,6 +240,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -251,6 +267,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -284,6 +301,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -310,6 +328,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -330,6 +349,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir . '/' . $file_name, $file);
         } catch(IOException $e) {
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -362,6 +382,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -400,6 +421,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -438,6 +460,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -504,6 +527,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -524,6 +548,7 @@ class ServerReportFile
             $this->_createFile($this->tmpdir . '/' . 'templates.txt', $out);
         } catch(IOException $e) {
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -553,6 +578,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -599,6 +625,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -643,6 +670,7 @@ class ServerReportFile
         } catch(IOException $e) {
 
             echo $e->getMessage();
+            return false;
         }
     }
 
