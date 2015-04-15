@@ -49,11 +49,69 @@ class TermEngineExpressionProvider implements ExpressionFunctionProviderInterfac
         return array(
             new ExpressionFunction(
                 'flatten_array',
-                function ($input) {
+                function ($arguments, $input) {
                     return sprintf('(\Orb\Util\Arrays::flatten(%1$s))', $input);
                 },
-                function ($input) {
+                function ($arguments, $input) {
                     return Arrays::flatten($input);
+                }
+            ),
+            new ExpressionFunction(
+                'check_contains',
+                function ($arguments, $input, $op) {
+
+                    // get any args, since we allow arbitrary args
+                    $args = func_get_args();
+                    $arg_num = func_num_args();
+                    $contains = array();
+                    for ($i = 0; $i < $arg_num; $i++) {
+                        if ($i > 1) {
+                            $contains[] = $args[$i];
+                        }
+                    }
+
+                    return sprintf(
+                        '$helper_pool->getHelper(\'method_check\')->checkContains(%1$s, %1$s, %1$s)',
+                        $input,
+                        $op,
+                        var_export($contains, true)
+                    );
+                },
+                function ($arguments, $input, $op) {
+
+                    // get any args, since we allow arbitrary args
+                    $args = func_get_args();
+                    $arg_num = func_num_args();
+                    $contains = array();
+                    for ($i = 0; $i < $arg_num; $i++) {
+                        if ($i > 2) {
+                            $contains[] = $args[$i];
+                        }
+                    }
+
+                    return $arguments['helper_pool']->getHelper('method_check')->checkContains($input, $op, $contains);
+                }
+            ),
+            new ExpressionFunction(
+                'custom_field_check',
+                function ($arguments, $ticket, $field_id, $op, $values, $input) {
+                    return sprintf(
+                        '$helper_pool->getHelper(\'method_check\')->checkCustomField(%1$s, %1$s, %1$s, %1$s)',
+                        $arguments['ticket'],
+                        var_export($field_id, true),
+                        var_export($op, true),
+                        var_export($values, true),
+                        var_export($input, true)
+                    );
+                },
+                function ($arguments, $ticket, $field_id, $op, $values, $input) {
+                    return $arguments['helper_pool']->getHelper('method_check')->checkCustomField(
+                        $arguments['ticket'],
+                        $field_id,
+                        $op,
+                        $values,
+                        $input
+                    );
                 }
             )
         );
