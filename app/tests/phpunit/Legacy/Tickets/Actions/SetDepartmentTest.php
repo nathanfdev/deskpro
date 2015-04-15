@@ -4,15 +4,21 @@ namespace DpUnitTests\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\SetDepartment;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use DpTest\ApiTestCase;
 use DpTestingMocks\ContainerMock;
 use DpTest\DeskProTestCase;
 
-class SetDepartmentTest extends DeskProTestCase
+class SetDepartmentTest extends ApiTestCase
 {
     /**
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
     private $container;
+
+    public function setUp()
+    {
+        $this->installDataSet('fresh');
+    }
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
