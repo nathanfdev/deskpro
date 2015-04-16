@@ -48,16 +48,16 @@ class TicketIdTerm extends AbstractTerm
             )
         );
 
-        $resolver->setAllowedTypes(
-            array(
-                'num' => 'array',
-                'num2' => 'integer',
-            )
-        );
-
         $resolver->setDefaults(
             array(
                 'num2' => null,
+            )
+        );
+
+        $resolver->setAllowedTypes(
+            array(
+                'num' => 'array',
+                'num2' => array('integer', 'null'),
             )
         );
     }

@@ -44,15 +44,7 @@ class TicketSubjectTerm extends AbstractTerm
     {
         $resolver->setRequired(
             array(
-                'subject' => array(),
-            )
-        );
-
-        $resolver->setAllowedTypes(
-            array(
-                'subject' => 'array',
-                'wildcard_prefix' => 'boolean',
-                'wildcard_postfix' => 'boolean',
+                'subject',
             )
         );
 
@@ -60,6 +52,19 @@ class TicketSubjectTerm extends AbstractTerm
             array(
                 'wildcard_prefix' => false,
                 'wildcard_postfix' => false,
+            )
+        );
+
+        $resolver->setAllowedTypes(
+            array(
+                'subject' => 'array',
+                /**
+                 * todo https://github.com/symfony/symfony/issues/12586
+                 * https://github.com/symfony/symfony/commit/a0e3757bf06a42cad076f5d64f4e0904bafee64a
+                 * This PR was submitted for the 2.3 branch but it was merged into the 2.7 branch instead
+                 */
+//                'wildcard_prefix' => 'boolean',
+//                'wildcard_postfix' => 'boolean',
             )
         );
     }

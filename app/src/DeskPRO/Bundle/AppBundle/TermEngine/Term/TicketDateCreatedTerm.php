@@ -48,18 +48,23 @@ class TicketDateCreatedTerm extends AbstractTerm
             )
         );
 
-        $resolver->setAllowedTypes(
-            array(
-                'date' => 'datetime',
-                'date2' => 'datetime',
-                'ignore_time' => 'boolean',
-            )
-        );
-
         $resolver->setDefaults(
             array(
                 'date2' => null,
                 'ignore_time' => false,
+            )
+        );
+
+        $resolver->setAllowedTypes(
+            array(
+                'date' => 'datetime',
+                'date2' => array('datetime', 'null'),
+                /**
+                 * todo https://github.com/symfony/symfony/issues/12586
+                 * https://github.com/symfony/symfony/commit/a0e3757bf06a42cad076f5d64f4e0904bafee64a
+                 * This PR was submitted for the 2.3 branch but it was merged into the 2.7 branch instead
+                 */
+//                'ignore_time' => 'boolean',
             )
         );
     }

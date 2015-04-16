@@ -225,7 +225,7 @@ class DbalNumericHelperSpec extends ObjectBehavior
 
     function it_handles_the_multiple_LT_case()
     {
-        $num = array(1, 2, 3);
+        $num = array(2, 1, 3);
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_LT, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id < :num');
@@ -242,7 +242,7 @@ class DbalNumericHelperSpec extends ObjectBehavior
 
     function it_handles_the_multiple_LTE_case()
     {
-        $num = array(1, 2, 3);
+        $num = array(2, 1, 3);
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_LTE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id <= :num');
