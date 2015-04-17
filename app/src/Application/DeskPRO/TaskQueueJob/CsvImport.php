@@ -37,10 +37,7 @@ namespace Application\DeskPRO\TaskQueueJob;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
-use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Form\Type\PersonPhoneNumbersType;
-use Application\DeskPRO\Form\Type\PhoneNumberType;
-use Orb\Util\PhoneNumbers;
 
 class CsvImport extends AbstractJob
 {
@@ -404,11 +401,18 @@ class CsvImport extends AbstractJob
                     $form = App::$container->getFormFactory()->create(new PersonPhoneNumbersType(), $person);
                     $form->submit(array('phone_numbers' => array(array('number' => $column_value))));
                     if (!$form->isValid()) {
-                        $this->log(array('Invalid phone number "%s"', $column_value));
-                    }
-                    // todo wtf?!
-                    foreach ($person->phone_numbers as $pn) {
-                        $pn->person = $person;
+                        $this->log(array(sprintf('Invalid phone number "%s"', $column_value)));
+                        // todo
+                        foreach ($person->phone_numbers as $pn) {
+                            if (!$pn['number']) {
+                                $person->phone_numbers->removeElement($pn);
+                            }
+                        }
+                    } else {
+                        // todo wtf?!
+                        foreach ($person->phone_numbers as $pn) {
+                            $pn->person = $person;
+                        }
                     }
 
                     break;
@@ -552,8 +556,7 @@ class CsvImport extends AbstractJob
 
             $message = $mailer->createMessage();
             $message->setToPerson($person);
-            $message->setSubject($this->_data['welcome_subject']);
-            $message->setBody($this->_replaceMessagePlaceholders($this->_data['welcome_message'], $person));
+            $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array('person' => $person));
 
             $mailer->send($message);
         }

@@ -29,63 +29,44 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Commands
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\ServerReportFile\ServerReportFile;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Goes through soft-deleted tickets that were deleted long ago,
- * and permanantly removes them now.
- */
-class HardDeleteTickets extends AbstractJob
+class GenerateReportFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-    const DEFAULT_INTERVAL = 86400;
+    const ARG_FILECHECK = 'without-filecheck';
 
-    public function run()
+    protected function configure()
     {
-        $secs = App::getSetting('core_tickets.hard_delete_time');
+        $this->setDefinition(array(
+            new InputOption(self::ARG_FILECHECK, null, InputOption::VALUE_NONE, 'Disables files integrity check.')
+        ))->setName('dp:generate-report-file');
+    }
 
-        // 0 means disable
-        if ($secs < 1) {
-            return;
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $srf = new ServerReportFile(
+            $this->getContainer()->get('doctrine.orm.entity_manager'),
+            $output
+        );
+
+        $prop = new \ReflectionProperty($srf, 'files_added_to_archive');
+        unset($srf->files_added_to_archive['phpinfo-web.html']);
+
+        if ($input->getOption(self::ARG_FILECHECK)) {
+            unset($srf->files_added_to_archive['file-integrity.txt']);
         }
 
-        $date_cut = date('Y-m-d H:i:s', time() - $secs);
+        $file = $srf->createArchive();
 
-        #------------------------------
-        # find tickets to proc
-        #------------------------------
-
-        $ticket_ids = App::getDb()->fetchAllCol("
-            SELECT tickets_deleted.ticket_id
-            FROM tickets_deleted
-            LEFT JOIN tickets ON (tickets.id = tickets_deleted.ticket_id)
-            WHERE tickets_deleted.date_created < ?
-            AND tickets.id IS NOT NULL
-            AND tickets.hidden_status = 'deleted'
-            LIMIT 5000
-        ", array($date_cut));
-
-        foreach ($ticket_ids as $ticket_id) {
-
-            App::getDb()->beginTransaction();
-
-            try {
-                // Ticket log already has the deletion record, we're doing the physical delete of the actual rows here
-                App::getDb()->delete('tickets_search_active', array('id' => $ticket_id));
-                App::getDb()->delete('tickets', array('id' => $ticket_id));
-                App::getDb()->commit();
-            } catch (\Exception $e) {
-                App::getDb()->rollback();
-                throw $e; // rethrow for error logging etc
-            }
-        }
-
-        if ($ticket_ids) {
-            $this->logStatus("Removed " . count($ticket_ids) . " old soft-deleted tickets");
-        }
+        $output->writeln(sprintf('Report file saved to: %s', $file));
     }
 }

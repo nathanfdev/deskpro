@@ -1370,6 +1370,11 @@ class AgentsController extends AbstractController implements ProtectedController
             }
         }
 
+        $email_validator = $this->container->getSystemService('email_address_validator');
+        $agent_emails = array_filter($agent_emails, function ($e) use ($email_validator) {
+            return $email_validator->isValidUserEmail($e);
+        });
+
         $agent_emails = Arrays::removeFalsey($agent_emails);
         $agent_emails = Arrays::func($agent_emails, 'strtolower');
 

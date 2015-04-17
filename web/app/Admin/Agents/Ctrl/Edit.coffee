@@ -117,6 +117,13 @@ define [
 
 
 
+    changeUse: (type) ->
+      return if !@perm_form[type]? || true == @perm_form[type].use
+      for perm of @perm_form[type]
+        @perm_form[type][perm] = false
+
+
+
     changeAllPerms: (type, section) ->
       return if !@perm_form? || !@deps_perms?
 
@@ -145,6 +152,14 @@ define [
     updateAllPermsState: ->
       return if !@perm_form?
 
+      # check "use" state first
+      for section, perms of @perm_form
+        for perm of perms
+          if 'use' != perm && perms.use? && (perms[perm] || @ugEffectivePerms[section]?[perm])
+            perms.use = true
+            break
+
+      # and this one is for "toggle all"
       for section, perms of @perm_form
         enabled = true
         for perm of perms
@@ -381,12 +396,11 @@ define [
             @form.zones.reports = form.zones.reports || form.zones.admin
 
           if settings.teams
-            tids = []
+            tids = {}
             for team in form.teams
-              if team.value then tids.push(team.id)
-              tids.push(team.id)
+              tids[team.id] = team.value
             for team in @form.teams
-              team.value = team.id in tids
+              team.value = tids[team.id]
 
           if settings.groups
             gids = []
@@ -633,6 +647,10 @@ define [
           @email_sysaccount_error = res.data.error_info.emails.join(', ')
         if res?.data?.error_code == 'invalid_phone_number'
           @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info?.primary_phone
+        if res?.data?.errors?.errors
+          res.data.errors.errors.map (error) =>
+            if 'agent.primary_phone.number' == error.prop
+              @invalid_phone_error = error.message
 
         @stopSpinner('saving', true)
         @applyErrorResponseToView(res)

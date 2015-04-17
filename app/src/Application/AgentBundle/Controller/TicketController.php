@@ -3371,14 +3371,15 @@ class TicketController extends AbstractController
 
         if ($message && count($message->attachments)) {
             $attachments = array();
+            $storage = $this->container->getBlobStorage();
+
             foreach ($message->attachments as $attach) {
-                $new_blob = clone $attach->blob;
 
-                $this->em->detach($new_blob);
-
-                $this->em->persist($new_blob);
-
-                $this->em->flush();
+                $new_blob = $storage->createBlobRecordFromString(
+                    $storage->copyBlobRecordToString($attach->blob),
+                    $attach->blob['filename'],
+                    $attach->blob['content_type']
+                );
 
                 $attach_data = array();
 

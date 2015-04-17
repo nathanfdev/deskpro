@@ -25,67 +25,55 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
- */
+namespace Application\DeskPRO\CacheClearer;
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+use Orb\Util\Env;
+use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
+use Symfony\Component\Process\Process;
 
-use Application\DeskPRO\App;
-
-/**
- * Goes through soft-deleted tickets that were deleted long ago,
- * and permanantly removes them now.
- */
-class HardDeleteTickets extends AbstractJob
+class CacheDirClearer implements CacheClearerInterface
 {
-    const DEFAULT_INTERVAL = 86400;
-
-    public function run()
+    public function clear($cache_dir)
     {
-        $secs = App::getSetting('core_tickets.hard_delete_time');
+        $cwd = getcwd();
 
-        // 0 means disable
-        if ($secs < 1) {
-            return;
-        }
+        $cache_dir = rtrim(str_replace('\\', '/', $cache_dir), '/');
 
-        $date_cut = date('Y-m-d H:i:s', time() - $secs);
+        $cache_dir_name = trim(basename($cache_dir), '_');
 
-        #------------------------------
-        # find tickets to proc
-        #------------------------------
+        $dirs = array(
+            DP_ROOT.'/sys/cache',
+            dp_get_cache_dir()
+        );
 
-        $ticket_ids = App::getDb()->fetchAllCol("
-            SELECT tickets_deleted.ticket_id
-            FROM tickets_deleted
-            LEFT JOIN tickets ON (tickets.id = tickets_deleted.ticket_id)
-            WHERE tickets_deleted.date_created < ?
-            AND tickets.id IS NOT NULL
-            AND tickets.hidden_status = 'deleted'
-            LIMIT 5000
-        ", array($date_cut));
+        $dirs = array_unique($dirs);
 
-        foreach ($ticket_ids as $ticket_id) {
+        foreach ($dirs as $dir) {
+            if (!is_dir($dir)) {
+                continue;
+            }
 
-            App::getDb()->beginTransaction();
+            chdir($dir);
+            $sub_dirs = glob('*', GLOB_ONLYDIR);
 
-            try {
-                // Ticket log already has the deletion record, we're doing the physical delete of the actual rows here
-                App::getDb()->delete('tickets_search_active', array('id' => $ticket_id));
-                App::getDb()->delete('tickets', array('id' => $ticket_id));
-                App::getDb()->commit();
-            } catch (\Exception $e) {
-                App::getDb()->rollback();
-                throw $e; // rethrow for error logging etc
+            foreach ($sub_dirs as $d) {
+                if (trim($d, '_') == $cache_dir_name) {
+                    continue;
+                }
+
+                if (Env::isWindows()) {
+                    $p = new Process("rmdir /s /q $d", $dir);
+                } else {
+                    $p = new Process("rm -rf $d", $dir);
+                }
+
+                $p->run();
             }
         }
 
-        if ($ticket_ids) {
-            $this->logStatus("Removed " . count($ticket_ids) . " old soft-deleted tickets");
-        }
+        chdir($cwd);
+
+        // Also reset memory because we'll need it when the cache is re-warmed in a second
+        @ini_set('memory_limit', '384M');
     }
 }
