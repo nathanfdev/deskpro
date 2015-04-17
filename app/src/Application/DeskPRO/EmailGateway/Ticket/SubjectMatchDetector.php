@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
@@ -75,6 +76,9 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     protected $enable_exact_subject = false;
 
 
+    protected $enable_same_account = null;
+
+
     /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
      * This will look for PTAC/TAC 'headers' in the body text.
@@ -82,6 +86,15 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     public function enableBouncedMode()
     {
         $this->is_bounce_mode = true;
+    }
+
+
+    /**
+     * @param EmailAccount $account
+     */
+    public function enableSameAccountSubjectMatching(EmailAccount $account)
+    {
+        $this->enable_same_account = $account;
     }
 
 
@@ -154,7 +167,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      *
      * @param  AbstractReader $reader
      * @param $subject
-     * @return null
+     * @return null|Ticket
      */
     public function _findExistingTicketStandard(AbstractReader $reader, $subject)
     {
@@ -169,15 +182,26 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         // Also including FW|FWDxxx here to catch cases where a user uses fwd to reply to an email they just sent.
         $common_prefix_re = '#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i';
 
+        $extra_join = '';
+        $extra_where = '';
+
+        if ($this->enable_same_account) {
+            $this->getLogger()->logDebug("[SubjectMatchDetector] Same account requirement is enabled. Must match: {$this->enable_same_account->id}");
+            $extra_join = "LEFT JOIN email_sources ON (email_sources.object_id = tickets.id AND email_sources.object_type = 'ticket')";
+            $extra_where = "AND email_sources.email_account_id = {$this->enable_same_account->id}";
+        }
+
         $ticket_ids = array();
 
         if ($this->enable_exact_subject) {
             $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: ' . $subject);
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
-                SELECT id
+                SELECT tickets.id
                 FROM tickets
-                WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
-                ORDER BY id DESC
+                $extra_join
+                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'resolved', 'hidden'))
+                $extra_where
+                ORDER BY tickets.id DESC
                 LIMIT 20
             ", array($subject, $subject, $this->_time_cutoff)));
         }
@@ -202,10 +226,12 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
                 // Now lets try to find it...
                 $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
-                    SELECT id
+                    SELECT tickets.id
                     FROM tickets
-                    WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
-                    ORDER BY id DESC
+                    $extra_join
+                    WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'resolved', 'hidden'))
+                    $extra_where
+                    ORDER BY tickets.id DESC
                     LIMIT 20
                 ", array($subject_re, $subject_re, $this->_time_cutoff)));
             }
@@ -243,7 +269,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      *
      * @param  AbstractReader $reader
      * @param $subject
-     * @return null
+     * @return null|Ticket
      */
     public function _findExistingTicketExtra(AbstractReader $reader, $subject)
     {
@@ -256,6 +282,15 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         if (strpos($subject, ':') === false) {
             return null;
+        }
+
+        $extra_join = '';
+        $extra_where = '';
+
+        if ($this->enable_same_account) {
+            $this->getLogger()->logDebug("[SubjectMatchDetector] Same account requirement is enabled. Must match: {$this->enable_same_account->id}");
+            $extra_join = "LEFT JOIN email_sources ON (email_sources.object_id = tickets.id AND email_sources.object_type = 'ticket')";
+            $extra_where = "AND email_sources.email_account_id = {$this->enable_same_account->id}";
         }
 
         // Strip off Re: prefix (and alternatives in some other langs)
@@ -276,10 +311,12 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
             // Now lets try to find it...
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
-                SELECT id
+                SELECT tickets.id
                 FROM tickets
-                WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
-                ORDER BY id DESC
+                $extra_join
+                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'resolved', 'hidden'))
+                $extra_where
+                ORDER BY tickets.id DESC
                 LIMIT 20
             ", array($subject_re, $subject_re, $this->_time_cutoff)));
         }
