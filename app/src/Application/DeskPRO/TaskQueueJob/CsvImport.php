@@ -556,8 +556,7 @@ class CsvImport extends AbstractJob
 
             $message = $mailer->createMessage();
             $message->setToPerson($person);
-            $message->setSubject($this->_data['welcome_subject']);
-            $message->setBody($this->_replaceMessagePlaceholders($this->_data['welcome_message'], $person));
+            $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array('person' => $person));
 
             $mailer->send($message);
         }
