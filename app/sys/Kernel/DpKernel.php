@@ -230,9 +230,9 @@ class DpKernel extends AbstractKernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment;
             }
         }
 
