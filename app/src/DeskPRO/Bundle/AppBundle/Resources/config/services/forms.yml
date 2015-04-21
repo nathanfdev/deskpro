@@ -15,3 +15,20 @@ services:
       class: DeskPRO\Bundle\AppBundle\Form\Type\SandboxWidgetType
       tags:
           - { name: form.type, alias: sandbox_widget }
+
+  form.filter:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\FilterType
+      tags:
+          - { name: form.type, alias: filter }
+
+  form.term_engine.term:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
+      arguments:
+          - @form.term_engine.term_transformer
+      tags:
+          - { name: form.type, alias: term_engine_term }
+
+  form.term_engine.term_transformer:
+      class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
+      arguments:
+          - @term_to_json_converter
