@@ -34,13 +34,16 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
 
 
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\FOSRestController as BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @RouteResource("filters")
@@ -60,6 +63,42 @@ class FiltersController extends BaseController implements ClassResourceInterface
      */
     public function postAction(Request $request)
     {
-        return View::create(array('test' => 'test'));
+        $filter = new Filter();
+
+        return $this->handleFormSubmission($request, $filter);
+    }
+
+    /**
+     * we will be making this more abstract for general use by other controllers
+     */
+    protected function handleFormSubmission(Request $request, Filter $filter)
+    {
+        $status = $filter->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'filter', $filter)->getForm();
+
+        $submitted = $request->request->all();
+
+        if (!count($submitted)) {
+            throw new BadRequestHttpException();
+        }
+
+        $form->submit($submitted, $request->getMethod() !== 'PUT');
+
+        if ($form->isValid()) {
+
+            $this->getDoctrine()->getManager()->persist($filter);
+            $this->getDoctrine()->getManager()->flush($filter);
+
+//            return View::create(
+//                $this->createRepresentation($filter),
+//                $status,
+//                array(
+//                    'Location' => $this->generateUrl('get_sandbox_widgets', array('id' => $filter->getId()))
+//                )
+//            );
+        }
+
+        throw new InvalidFormException($form); // let our listeners generate the form error response
     }
 }
