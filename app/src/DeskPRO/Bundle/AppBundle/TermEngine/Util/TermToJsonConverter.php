@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Util;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Orb\Util\Strings;
 
 class TermToJsonConverter
 {
@@ -66,6 +67,27 @@ class TermToJsonConverter
         return $this->unserializeArrayToTerm($serialized_array);
     }
 
+    public function getTermTypeCode(TermInterface $term)
+    {
+        // remove namespace and remove "Term" from the end of the class name, lowercase.
+        // DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm convert to: "ticket_status"
+        return strtolower(
+            Strings::camelCaseToUnderscore(
+                substr(join('', array_slice(explode('\\', get_class($term)), -1)), 0, -4)
+            )
+        );
+    }
+
+    public function getTermClassForTypeCode($term_type_code)
+    {
+        // "ticket_status" to classname: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm
+        return 'DeskPRO\\Bundle\\AppBundle\\TermEngine\\Term\\' . ucfirst(
+            Strings::underscoreToCamelCase(
+                $term_type_code
+            )
+        ) . 'Term';
+    }
+
     /**
      * @param TermInterface $term
      * @return array
@@ -74,8 +96,8 @@ class TermToJsonConverter
     {
         if ($term instanceof CompositeTermInterface) {
             $serialized = array(
-                'class' => get_class($term),
-                'serialized' => $term->serialize(),
+                'type' => $this->getTermTypeCode($term),
+                'data' => $term->serialize(),
                 'terms' => array()
             );
 
@@ -87,8 +109,8 @@ class TermToJsonConverter
         }
 
         return array(
-            'class' => get_class($term),
-            'serialized' => $term->serialize()
+            'type' => $this->getTermTypeCode($term),
+            'data' => $term->serialize()
         );
     }
 
@@ -97,9 +119,9 @@ class TermToJsonConverter
      */
     private function unserializeArrayToTerm($serialized_array)
     {
-        $class = $serialized_array['class'];
-        $term = new $class($serialized_array['serialized']['options']);
-        $term->setOp($serialized_array['serialized']['op']);
+        $class = $this->getTermClassForTypeCode($serialized_array['type']);
+        $term = new $class($serialized_array['data']['options']);
+        $term->setOp($serialized_array['data']['op']);
 
         if ($term instanceof CompositeTermInterface) {
             foreach ($serialized_array['terms'] as $term_array) {
