@@ -280,7 +280,7 @@ class KernelBooter
 
                 // add our reverse proxy
                 if (!isset($GLOBALS['DP_DISABLE_CACHE']) || !$GLOBALS['DP_DISABLE_CACHE']) {
-                    require_once DP_ROOT . "/src/DeskPRO/bundle/PortalBundle/HttpCache/PortalHttpCache.php";
+                    require_once DP_ROOT . "/src/DeskPRO/Bundle/PortalBundle/HttpCache/PortalHttpCache.php";
                     $kernel = new PortalHttpCache($kernel);
                 }
 
