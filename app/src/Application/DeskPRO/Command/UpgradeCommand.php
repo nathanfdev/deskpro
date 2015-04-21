@@ -51,12 +51,15 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
              ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
              ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
              ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
+             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
              ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         set_time_limit(0);
+
+        $ignore_errors = $input->getOption('ignore-errors');
 
         if ($input->getOption('reset')) {
             @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
@@ -184,7 +187,11 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             if ($ret) {
                 $logger->notice("--> Error status: $ret");
 
-                return $ret;
+                if (!$ignore_errors) {
+                    return $ret;
+                } else {
+                    $this->getContainer()->getDb()->update('settings', array('value' => $next_id), array('name' => 'core.deskpro_build'));
+                }
             }
 
             $manager->reset();
