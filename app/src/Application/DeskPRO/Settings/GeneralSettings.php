@@ -173,7 +173,6 @@ class GeneralSettings
 	    $this->rate_limit_disabled = (bool) $this->settings->get(RateLimit::DISABLED);
         $this->rate_limit_ips = json_decode($this->settings->get(RateLimit::IPS, 1) ?: array());
     }
-    }
 
     /**
      * @param array $array

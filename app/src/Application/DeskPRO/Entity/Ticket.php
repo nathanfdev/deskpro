@@ -657,6 +657,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->subject;
     }
 
+    public function getPlainSubject()
+    {
+        return $this->subject;
+    }
+
     /**
      * Alias for getSubject.
      *
