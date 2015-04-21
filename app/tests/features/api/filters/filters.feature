@@ -11,41 +11,49 @@ Feature: /filters endpoint
     When I send a POST request to "/api/v2/filters" with body:
     """
     {
-      title: "My Sales Tickets",
-      term: {
-        type: "composite",
-        data: {
-          op: "and"
-        },
-        terms: [
-          {
-            type: "agent",
-            data: {
-              op: "is",
-              options: {
-                "agent_ids": ["me"]
-              }
-            }
-          },
-          {
-            type: "ticket_status",
-            data: {
-              "op": "is",
-              "options": {
-                "status": ["awaiting_agent"]
-              }
-            }
-          },
-            type: "department",
-            data: {
-              "op": "is",
-              "options": {
-                "department_ids": [2]
-              }
-            }
-        ]
-      },
-      display_order: 5
+       "title": "My Sales Tickets",
+       "term": {
+          "type": "composite",
+          "data": {
+             "op": "and"
+          },
+          "terms": [
+             {
+                "type": "agent",
+                "data": {
+                   "op": "is",
+                   "options": {
+                      "agent_ids": [
+                         "me"
+                      ]
+                   }
+                }
+             },
+             {
+                "type": "ticket_status",
+                "data": {
+                   "op": "is",
+                   "options": {
+                      "status": [
+                         "awaiting_agent"
+                      ]
+                   }
+                }
+             },
+             {
+                "type": "department",
+                "data": {
+                   "op": "is",
+                   "options": {
+                      "department_ids": [
+                         2
+                      ]
+                   }
+                }
+             }
+          ]
+       },
+       "display_order": 5
     }
     """
     Then the response should be in JSON
