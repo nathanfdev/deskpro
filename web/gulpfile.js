@@ -9,7 +9,7 @@ var gulp       = require('gulp'),
     finclude   = require('gulp-file-include'),
     path       = require('path'),
     rename     = require('gulp-rename'),
-    rjs        = require('gulp-r'),
+    rjs        = require('gulp-requirejs'),
     plumber    = require('gulp-plumber'),
     debug      = require('gulp-debug'),
     using      = require('gulp-using'),
@@ -264,76 +264,55 @@ gulp.task('loader', ['clean'], function () {
 // RJS
 //------------------------------
 
-gulp.task('rjs', ['coffee', 'loader'], function () {
-  var loadFiles = [
-    './app/Admin/AdminLoad.js',
-    './app/Admin/Cloud/CloudAdminLoad.js',
-    './app/AdminUpgrade/AdminUpgradeLoad.js',
-    './app/AdminStart/AdminStartLoad.js',
-    './app/Reports/ReportsLoad.js'
-  ];
+var rjsLoadFiles = [
+  './app/Admin/AdminLoad.js',
+  './app/Admin/Cloud/CloudAdminLoad.js',
+  './app/AdminUpgrade/AdminUpgradeLoad.js',
+  './app/AdminStart/AdminStartLoad.js',
+  './app/Reports/ReportsLoad.js',
+  './app/Agent/AgentLoad.js'
+];
 
-  var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
+function addRjsTask(rjsBundle) {
+  var bundleName = rjsBundle.replace(/^.*\/(.*?)\.js$/, '$1');
+  var taskName   = 'rjs-' + bundleName.replace(/Load$/, '').toLowerCase();
 
-  return gulp.src(loadFiles, {base: './'})
-    .pipe(using({prefix: '<< Build --'}))
-    .pipe(rjs(rjsConfig))
-    .pipe(rename(function (path) {
-      switch (path.basename.replace(/\.js$/, '')) {
-        case 'AdminLoad':
-          path.dirname = 'Admin';
-          break;
-        case 'AgentLoad':
-          path.dirname = 'Agent';
-          break;
-        case 'CloudAdminLoad':
-          path.dirname = 'Admin/Cloud';
-          break;
-        case 'AdminUpgradeLoad':
-          path.dirname = 'AdminUpgrade';
-          break;
-        case 'AdminStartLoad':
-          path.dirname = 'AdminStart';
-          break;
-        case 'ReportsLoad':
-          path.dirname = 'Reports';
-          break;
-      }
+  var target;
+  switch (bundleName) {
+    case 'AdminLoad':        target = 'Admin/AdminLoad.min.js'; break;
+    case 'CloudAdminLoad':   target = 'Admin/Cloud/CloudAdminLoad.min.js'; break;
+    case 'AdminUpgradeLoad': target = 'AdminUpgrade/AdminUpgradeLoad.min.js'; break;
+    case 'AdminStartLoad':   target = 'AdminStart/AdminStartLoad.min.js'; break;
+    case 'ReportsLoad':      target = 'Reports/ReportsLoad.min.js'; break;
+    case 'AgentLoad':        target = 'Agent/AgentLoad.min.js'; break;
+  }
 
-      if (path.extname != '.map') {
-        path.extname = '.min.js';
-      }
-    }))
-    .pipe(gulp.dest('./app-build/'))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
-});
+  gulp.task(taskName, ['coffee', 'loader'], function () {
+    var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
+    rjsConfig.out  =  target;
+    rjsConfig.name = bundleName;
 
-gulp.task('rjs-agent', ['coffee', 'loader'], function () {
-  var loadFiles = [
-    './app/Agent/AgentLoad.js'
-  ];
+    if (bundleName == 'AgentLoad') {
+      rjsConfig.paths.jquery = "empty:";
+    }
 
-  // Hack for agent interface
-  // jquery is included independantly and is version 1.7
-  var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
-  rjsConfig.paths.jquery = "empty:";
+    return gulp.src(rjsBundle)
+      .pipe(using({prefix: '<< Build --'}))
+      .pipe(rjs(rjsConfig))
+      .pipe(gulp.dest('./app-build/'));
+  });
 
-  return gulp.src(loadFiles, {base: './'})
-    .pipe(using({prefix: '<< Build --'}))
-    .pipe(rjs(rjsConfig))
-    .pipe(rename(function (path) {
-      switch (path.basename.replace(/\.js$/, '')) {
-        case 'AgentLoad':
-          path.dirname = 'Agent';
-          break;
-      }
+  return taskName;
+}
 
-      if (path.extname != '.map') {
-        path.extname = '.min.js';
-      }
-    }))
-    .pipe(gulp.dest('./app-build/'))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+var rjsTasks = [];
+
+for (var x = 0; x < rjsLoadFiles.length; x++) {
+  rjsTasks.push(addRjsTask(rjsLoadFiles[x]));
+}
+
+gulp.task('rjs', rjsTasks, function (cb) {
+  cb();
 });
 
 //------------------------------
