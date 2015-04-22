@@ -70,7 +70,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
      */
     public function getAction($id)
     {
-        $filter = $this->getDoctrine()->getRepository('App:Filter')->find($id);
+        $filter = $this->get('data.filters')->getFilter($id);
 
         if (!$filter) {
             throw $this->createNotFoundException();
