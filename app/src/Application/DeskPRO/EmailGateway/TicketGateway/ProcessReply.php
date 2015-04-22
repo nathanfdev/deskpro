@@ -98,6 +98,28 @@ class ProcessReply extends ProcessAbstract
                 'newreply',
                 'email'
             );
+
+            $this->person->loadHelper('PermissionsManager');
+            if (!$this->person->PermissionsManager->TicketChecker->canReply($this->ticket)) {
+                if (!$this->ticket_email->is_bounce && !$this->reader->isFromRobot()) {
+                    $message = App::getMailer()->createMessage();
+                    $message->setTemplate('DeskPRO:emails_agent:error-no-reply-perm.html.twig', array(
+                        'ticket'  => $this->ticket,
+                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                        'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    ));
+                    $message->setTo($this->reader->getFromAddress()->getEmail());
+
+                    App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                        $message->prepare();
+                    });
+
+                    App::getMailer()->send($message);
+                }
+
+                $this->setError('perm_insufficient');
+                return null;
+            }
         }
 
         $executor_context->setEmailContext($this->reader);
