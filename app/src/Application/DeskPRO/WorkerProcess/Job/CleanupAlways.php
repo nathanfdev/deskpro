@@ -74,6 +74,7 @@ class CleanupAlways extends AbstractJob
             'agent_chat.new-message'
         );
 
+        // We fetch first, then delete in small batches to reduce locking
         $ids = App::getDb()->fetchAllCol("
             SELECT id FROM client_messages
             WHERE (
