@@ -37,9 +37,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class TermEngineTermType extends AbstractType
 {

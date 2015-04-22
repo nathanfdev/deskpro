@@ -84,7 +84,7 @@ class TermEngineTermTransformer implements DataTransformerInterface
             return '';
         }
 
-        return $this->converter->toJson($value);
+        return $this->converter->termToArray($value);
     }
 
     /**
@@ -117,6 +117,6 @@ class TermEngineTermTransformer implements DataTransformerInterface
             return null;
         }
 
-        return $this->converter->toTerm($value);
+        return $this->converter->arrayToTerm($value);
     }
 }

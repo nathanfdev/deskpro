@@ -64,7 +64,7 @@ class TermToJsonConverter
     {
         $serialized_array = json_decode($json, true);
 
-        return $this->unserializeArrayToTerm($serialized_array);
+        return $this->arrayToTerm($serialized_array);
     }
 
     public function getTermTypeCode(TermInterface $term)
@@ -92,13 +92,15 @@ class TermToJsonConverter
      * @param TermInterface $term
      * @return array
      */
-    private function termToArray(TermInterface $term)
+    public function termToArray(TermInterface $term)
     {
         if ($term instanceof CompositeTermInterface) {
-            $serialized = array(
-                'type' => $this->getTermTypeCode($term),
-                'data' => $term->serialize(),
-                'terms' => array()
+            $serialized = array_merge(
+                array(
+                    'type' => $this->getTermTypeCode($term),
+                    'terms' => array()
+                ),
+                $term->serialize()
             );
 
             foreach ($term->getTerms() as $term) {
@@ -108,24 +110,30 @@ class TermToJsonConverter
             return $serialized;
         }
 
-        return array(
-            'type' => $this->getTermTypeCode($term),
-            'data' => $term->serialize()
+        return array_merge(
+            array(
+                'type' => $this->getTermTypeCode($term)
+            ),
+            $term->serialize()
         );
     }
 
     /**
      * @param $serialized_array
      */
-    private function unserializeArrayToTerm($serialized_array)
+    public function arrayToTerm($serialized_array)
     {
         $class = $this->getTermClassForTypeCode($serialized_array['type']);
-        $term = new $class($serialized_array['data']['options']);
-        $term->setOp($serialized_array['data']['op']);
+        $options = array_key_exists(
+            'options',
+            $serialized_array
+        ) ? $serialized_array['options'] : array();
+        $term = new $class($options);
+        $term->setOp($serialized_array['op']);
 
         if ($term instanceof CompositeTermInterface) {
             foreach ($serialized_array['terms'] as $term_array) {
-                $term->addTerm($this->unserializeArrayToTerm($term_array));
+                $term->addTerm($this->arrayToTerm($term_array));
             }
         }
 
