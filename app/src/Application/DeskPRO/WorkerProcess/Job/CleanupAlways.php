@@ -65,7 +65,7 @@ class CleanupAlways extends AbstractJob
         #------------------------------
 
         // client messages are nearly instant, so this timesnip is very low
-        $datetime = date('Y-m-d H:i:s', time() - 120);
+        $datetime = date('Y-m-d H:i:s', time() - 1800);
 
         // Long-lived channels are still deleted after 14 days
         $datetime2 = date('Y-m-d H:i:s', time() - 1209600);
