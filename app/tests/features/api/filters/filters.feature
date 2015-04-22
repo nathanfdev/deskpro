@@ -72,6 +72,46 @@ Feature: /filters endpoint
     And the JSON node "data.term.terms[0].options.agent_ids[0]" should be equal to "me"
     And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
 
+  Scenario: I GET filters
+    When I send a GET request to "/api/v2/filters"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data[0].title" should be equal to "My Sales Tickets"
+    And the JSON node "data[0].term.type" should be equal to "composite"
+    And the JSON node "data[0].term.op" should be equal to "and"
+    And the JSON node "data[0].term.terms[0].type" should be equal to "agent"
+    And the JSON node "data[0].term.terms[0].options.agent_ids[0]" should be equal to "me"
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/filters/1"
+
+  Scenario: I modify a filter
+    When I send a PUT request to "/api/v2/filters/1" with body:
+    """
+    {
+      "title": "NEW TITLE"
+    }
+    """
+    Then the response status code should be 204
+    And the response should be empty
+
+  Scenario: I verify the resource from the PUT above was actually updated
+    When I send a GET request to "/api/v2/filters/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data.title" should be equal to "NEW TITLE"
+    And the JSON node "data.term.type" should be equal to "composite"
+    And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
+
   Scenario: I fail to GET a filter
     When I send a GET request to "/api/v2/filters/101"
+    Then the response status code should be 404
+
+  Scenario: I DELETE a filter
+    When I send a DELETE request to "/api/v2/filters/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+
+  Scenario: I fail to GET the deleted filter
+    When I send a GET request to "/api/v2/filters/1"
     Then the response status code should be 404

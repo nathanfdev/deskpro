@@ -44,12 +44,52 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @RouteResource("filters")
  */
 class FiltersController extends BaseController implements ClassResourceInterface
 {
+    /**
+     * @ApiDoc(
+     *      description="get a list of filters",
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     */
+    public function cgetAction(Request $request)
+    {
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = $this->get('data.filters')->getFiltersPager($page, $count);
+
+        if (!$pager) {
+            throw $this->createNotFoundException();
+        }
+
+        return View::create(
+            $this->createRepresentation($pager),
+            Response::HTTP_OK
+        );
+    }
+
     /**
      * @ApiDoc(
      *      description="get a filter",
@@ -98,6 +138,67 @@ class FiltersController extends BaseController implements ClassResourceInterface
         $filter = new Filter();
 
         return $this->handleFormSubmission($request, $filter);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="modify a filter",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      input={"class"="filter","name"=""},
+     *      statusCodes={
+     *          204="Updated",
+     *          404="Not Found",
+     *          400="Bad Request"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\Filter"
+     * )
+     */
+    public function putAction(Request $request, $id)
+    {
+        $filter = $this->get('data.filters')->getFilter($id);
+
+        if (!$filter) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->handleFormSubmission($request, $filter);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="delete a filter",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Deleted",
+     *          404="Not Found"
+     *      }
+     * )
+     */
+    public function deleteAction($id)
+    {
+        $filter = $this->get('data.filters')->getFilter($id);
+
+        $this->getDoctrine()->getManager()->remove($filter);
+        $this->getDoctrine()->getManager()->flush();
+
+        return View::create(
+            array(),
+            Response::HTTP_OK
+        );
     }
 
     /**

@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use Doctrine\ORM\EntityManager;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 class FiltersDataService extends AbstractDataService
 {
@@ -75,6 +77,37 @@ class FiltersDataService extends AbstractDataService
                 }
 
                 return $filters_repo->find($filter);
+            }
+        );
+    }
+
+
+    /**
+     * @param $page
+     * @param $count
+     * @return PagerFanta
+     */
+    public function getFiltersPager($page, $count)
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(
+            array(
+                'getFiltersPager',
+                $page,
+                $count
+            ),
+            function () use ($em, $page, $count) {
+                $qb = $em->createQueryBuilder();
+
+                $qb->select('f')
+                    ->from('App:Filter', 'f');
+
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($count);
+                $pager->setCurrentPage($page);
+
+                return $pager;
             }
         );
     }
