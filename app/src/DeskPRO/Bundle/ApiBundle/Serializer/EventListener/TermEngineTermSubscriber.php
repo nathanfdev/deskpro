@@ -31,77 +31,49 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Doctrine;
+namespace DeskPRO\Bundle\ApiBundle\Serializer\EventListener;
 
-
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
-use JMS\Serializer\Annotation as Serializer;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * @Serializer\ExclusionPolicy("ALL")
+ * JMS Handler
  */
-class NotifyPropertyChangeEntity implements NotifyPropertyChanged
+class TermEngineTermSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var PropertyChangedListener[]
+     * @var TermToJsonConverter
      */
-    private $_listeners = array();
+    private $converter;
 
-    public function __getPropValue__($k)
+    public function __construct(TermToJsonConverter $converter)
     {
-        return $this->$k;
+        $this->converter = $converter;
     }
 
-    public function __setPropValue__($k, $v)
+    public function onPostSerialize(
+        ObjectEvent $event
+    )
     {
-        $this->$k = $v;
-    }
+        $obj = $event->getObject();
+        $visitor = $event->getVisitor();
 
-    public function __hasRunLoad__()
-    {
-        return true;
-    }
-
-    public function addPropertyChangedListener(PropertyChangedListener $listener)
-    {
-        $this->setModelField('_listeners[]', $listener);
-    }
-
-    protected function setModelField($field, $value)
-    {
-        $old = null;
-        if (property_exists($this, $field)) {
-            $old = $this->$field;
+        if ($obj instanceof TermInterface && $visitor instanceof JsonSerializationVisitor) {
+            $type = $this->converter->getTermTypeCode($obj);
+            $visitor->addData('type', $type);
         }
+    }
 
-        // Detect fields that did not change
-        if (is_null($value) && is_null($old)) {
-            return;
-        } elseif (is_scalar($value)) {
-            if (is_numeric($value) && is_numeric($old)) {
-                if ($value == $old) {
-                    return;
-                }
-            } else {
-                if ($value === $old) {
-                    return;
-                }
-            }
-        } elseif ($value instanceof \DateTime) {
-            if ($old instanceof \DateTime && $value->getTimestamp() == $old->getTimestamp()) {
-                return;
-            }
-        } elseif (is_object($value) && isset($value->id) && is_object($old) && isset($old->id)) {
-            if ($value->id == $old->id) {
-                return;
-            }
-        }
-
-        $this->$field = $value;
-
-        foreach ($this->_listeners as $listener) {
-            $listener->propertyChanged($this, $field, $old, $value);
-        }
+    public static function getSubscribedEvents()
+    {
+        return array(
+            array(
+                'event' => 'serializer.post_serialize',
+                'method' => 'onPostSerialize'
+            )
+        );
     }
 }

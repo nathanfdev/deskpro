@@ -45,3 +45,10 @@ services:
       class: DeskPRO\Bundle\ApiBundle\EventListener\ApiExceptionListener
       tags:
         - { name: kernel.event_subscriber }
+
+  term_engine.serializer.jms_subscriber:
+      class: DeskPRO\Bundle\ApiBundle\Serializer\EventListener\TermEngineTermSubscriber
+      arguments:
+        - @term_to_json_converter
+      tags:
+        - { name: jms_serializer.event_subscriber }

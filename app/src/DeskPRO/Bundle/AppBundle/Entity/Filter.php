@@ -37,10 +37,18 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository")
  * @ORM\Table(name="filters")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("get_filters", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class Filter extends NotifyPropertyChangeEntity
 {
@@ -48,24 +56,28 @@ class Filter extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     * @Serializer\Expose()
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(name="title", type="string")
+     * @Serializer\Expose()
      */
     protected $title;
 
     /**
      * @var TermInterface
      * @ORM\Column(name="term", type="term_engine_term")
+     * @Serializer\Expose()
      */
     protected $term;
 
     /**
      * @var int
      * @ORM\Column(name="display_order", type="integer")
+     * @Serializer\Expose()
      */
     protected $display_order;
 
@@ -90,12 +102,14 @@ class Filter extends NotifyPropertyChangeEntity
     /**
      * @var \DateTime
      * @ORM\Column(name="date_created", type="datetime")
+     * @Serializer\Expose()
      */
     protected $date_created;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="date_updated", type="datetime")
+     * @Serializer\Expose()
      */
     protected $date_updated;
 
