@@ -72,6 +72,6 @@ Feature: /filters endpoint
     And the JSON node "data.term.terms[0].options.agent_ids[0]" should be equal to "me"
     And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
 
-  Scenario: I fail to GET a widget
-    When I send a GET request to "/api/v2/sandbox_widgets/101"
+  Scenario: I fail to GET a filter
+    When I send a GET request to "/api/v2/filters/101"
     Then the response status code should be 404

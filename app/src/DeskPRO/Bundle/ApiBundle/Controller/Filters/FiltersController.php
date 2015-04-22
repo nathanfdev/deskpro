@@ -72,6 +72,10 @@ class FiltersController extends BaseController implements ClassResourceInterface
     {
         $filter = $this->getDoctrine()->getRepository('App:Filter')->find($id);
 
+        if (!$filter) {
+            throw $this->createNotFoundException();
+        }
+
         return View::create(
             $this->createRepresentation($filter),
             Response::HTTP_OK
