@@ -485,6 +485,53 @@ DeskPRO.Agent.RteEditor = {
 
 		}, textarea.data('redactor')));
 
+    var origSyncCode = api.syncCode;
+    api.syncCode = $.proxy(function(html) {
+      var copy = $('<div/>').html(this.$editor.html());
+      var didChange, counter = 0;
+
+      // This unwraps breaks that appear within other elements,
+      // which can lead to multiple newlines appearing in the result
+      // Before: Foo<i><br/></i>Bar
+      // After:  Foo<br/>Bar
+      do {
+        didChange = false;
+        copy.find('br').each(function () {
+          var me = $(this);
+          var parent = me.parent();
+
+          // Only count text nodes
+          if (!parent.is('p, div, span, em, strong, i, b, font, a')) {
+            return;
+          }
+
+          // has text node (Node.TEXT_NODE), ignore
+          if (parent.contents().filter(function () {
+              return this.nodeType === 3;
+            }).length) {
+            return;
+          }
+
+          // has other nodes
+          if (parent.find('> *').not('br').length) {
+            return;
+          }
+
+          var brHtml = [];
+          for (var x = 0, len = parent.find('> br').length; x < len; x++) {
+            brHtml.push('<br/>');
+          }
+
+          // Otherwise we are just wrapping a br
+          parent.replaceWith($(brHtml.join('')));
+          didChange = true;
+        });
+
+      } while (didChange && counter++ < 40); //counter as safety
+
+      this.$el.val(copy.html());
+    }, api);
+
     var origPasteCleanup = api.pasteClean;
     api.pasteCleanUp = $.proxy(function(html) {
       var parent = this.getParentNode();
