@@ -787,16 +787,16 @@ class ServerChecks
         # Zlib
         #------------------------------
 
-        if ($type == 'zlib_check' || $type == 'all') {
-            $this->getLogger()->log("[CHECK] Checking if the Zlib Compression is enabled", Logger::DEBUG);
-            if ((int)ini_get('zlib.output_compression')) {
-                $this->getLogger()->log("[OK] Zlib Compression enabled", Logger::DEBUG);
+        if ($type == 'zlib_ext' || $type == 'all') {
+            $this->getLogger()->log("[CHECK] Checking if the zlib extension is enabled", Logger::DEBUG);
+            if (extension_loaded('zlib')) {
+                $this->getLogger()->log("[OK] zlib installed", Logger::DEBUG);
             } else {
-                $msg = "We recommend enabling the Zlib Compression.";
+                $msg = "The zlib extension is required";
                 $this->getLogger()->log("$msg", Logger::INFO);
-                $this->server_errors['zlib_check'] = array(
+                $this->server_errors['zlib_ext'] = array(
                     'message' => $msg,
-                    'level' => 'recommended'
+                    'level' => 'fatal'
                 );
             }
         }

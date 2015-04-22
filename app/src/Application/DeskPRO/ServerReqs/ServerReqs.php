@@ -274,9 +274,9 @@ class ServerReqs
                 'recommendation' => true,
             ),
 
-            'zlib_check' => array(
-                'description'    => 'Checking for the <a href="http://php.net/manual/en/book.zlib.php">Zlib Compression</a>',
-                'error'          => 'We recommend enabling the Zlib Compression.',
+            'zlib_ext' => array(
+                'description'    => 'Checking for the <a href="http://php.net/manual/en/book.zlib.php">zlib</a> extension',
+                'error'          => 'We recommend enabling the zlib extension.',
                 'readMore'       => '',
                 'recommendation' => true,
             ),

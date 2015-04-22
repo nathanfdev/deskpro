@@ -690,6 +690,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($this->container->getSetting('core_tickets.gateway_enable_subject_match')) {
             $m = new SubjectMatchDetector();
 
+            if ($this->account && $this->container->getSetting('core_tickets.enable_same_account_subject_matching')) {
+                $m->enableSameAccountSubjectMatching($this->account);
+            }
             if ($this->container->getSetting('core_tickets.enable_exact_subject_matching')) {
                 $m->enableExactSubjectMatching();
             }

@@ -167,6 +167,23 @@ class TicketSettings
         }
         if ($wh) {
             $this->working_hours = $wh;
+        } else {
+            $this->working_hours = array (
+                'timezone' => 'UTC',
+                'start_hour' => 9,
+                'start_min' => 0,
+                'end_hour' => 17,
+                'end_min' => 0,
+                'holidays' => array(),
+                'work_days' => array(),
+            );
+        }
+
+        if (!$this->working_hours['holidays']) {
+            $this->working_hours['holidays'] = array();
+        }
+        if (!$this->working_hours['work_days']) {
+            $this->working_hours['work_days'] = array();
         }
 
         $this->from_email_headers = explode(',', $this->settings->get('core_email.from_email_headers'));
