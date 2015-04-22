@@ -34,10 +34,10 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
 
 
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -50,6 +50,34 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class FiltersController extends BaseController implements ClassResourceInterface
 {
+    /**
+     * @ApiDoc(
+     *      description="get a filter",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\Filter"
+     * )
+     */
+    public function getAction($id)
+    {
+        $filter = $this->getDoctrine()->getRepository('App:Filter')->find($id);
+
+        return View::create(
+            $this->createRepresentation($filter),
+            Response::HTTP_OK
+        );
+    }
+
     /**
      * @ApiDoc(
      *      description="create a sandbox widget",
@@ -90,13 +118,13 @@ class FiltersController extends BaseController implements ClassResourceInterface
             $this->getDoctrine()->getManager()->persist($filter);
             $this->getDoctrine()->getManager()->flush($filter);
 
-//            return View::create(
-//                $this->createRepresentation($filter),
-//                $status,
-//                array(
-//                    'Location' => $this->generateUrl('get_sandbox_widgets', array('id' => $filter->getId()))
-//                )
-//            );
+            return View::create(
+                $this->createRepresentation($filter),
+                $status,
+                array(
+                    'Location' => $this->generateUrl('get_filters', array('id' => $filter->getId()))
+                )
+            );
         }
 
         throw new InvalidFormException($form); // let our listeners generate the form error response
