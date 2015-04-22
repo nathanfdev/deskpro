@@ -215,9 +215,9 @@ class ChoiceField extends CustomFieldAbstract
         do {
             $changed = false;
             foreach ($choices as $ch) {
-                if ($ch->getOption('parent_id') && isset($removed_ids[$ch->getOption('parent_id')])) {
+                if (@$removed_ids[$ch->getOption('parent_id')] && !@$removed_ids[$ch->id]) {
                     $this->_em->remove($ch);
-                    $removed_id[$ch->id] = true;
+                    $removed_ids[$ch->id] = true;
                     $changed = true;
                 }
             }
