@@ -2240,6 +2240,7 @@ class TicketController extends AbstractController
 
                 $tm = $this->container->getTicketManager();
                 $tm->markAsManaged($ticket);
+                $context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
                 $tm->saveTicket($ticket, $context);
                 $this->db->commit();
             }

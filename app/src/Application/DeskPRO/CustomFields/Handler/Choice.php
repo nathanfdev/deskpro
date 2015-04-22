@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Arrays;
 
 /**
@@ -97,11 +98,12 @@ class Choice extends HandlerAbstract
         foreach ($children as $child) {
             $id = $child['id'];
             if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-                $parent_title = '';
-                if ($child->getOption('parent_id')) {
-                    $parent_title = $children[$child->getOption('parent_id')]->getTitle() . ' > ';
+                $title = $child['title'];
+                while ($parent = @$children[$child->getOption('parent_id')]) {
+                    $title = $parent['title'] . ' > ' . $title;
+                    $child = $parent;
                 }
-                $val[] = $parent_title . $child['title'];
+                $val[] = $title;
             }
         }
 
@@ -110,41 +112,36 @@ class Choice extends HandlerAbstract
         return $val;
     }
 
-    public function getFormField($data = null)
+    public function getFormField($data = null, $availableOnly = false)
     {
         $options = array();
 
         $selected_options = array();
 
         $children = $this->getFieldChildren();
-
-        // Add options
         $has_children = array();
+
         foreach ($children as $child) {
-            if ($child->getOption('parent_id')) {
-                $has_children[$child->getOption('parent_id')] = true;
+            if ($parent = $child->getOption('parent_id')) {
+                $has_children[$parent] = 1;
             }
         }
 
         foreach ($children as $child) {
-            if (isset($has_children[$child->getId()])) {
-                if (!$this->expanded && !isset($options[$child->getTitle()])) {
-                    $options[$child->getTitle()] = array();
-                }
-            } elseif ($child->getOption('parent_id')) {
-                if (!$this->expanded) {
-                    $title = $children[$child->getOption('parent_id')]->getTitle();
-                    if (!isset($options[$title])) {
-                        $options[$title] = array();
-                    }
-                    $options[$title][$child->getId()] = $child->getTitle();
-                } else {
-                    $title = $children[$child->getOption('parent_id')]->getTitle();
-                    $options[$child->getId()] = $title . ' > ' . $child->getTitle();
-                }
-            } else {
-                $options[$child->getId()] = $child->getTitle();
+            // skip parent nodes
+            if ($availableOnly && @$has_children[$child['id']]) {
+                continue;
             }
+
+            $title = $child['title'];
+            $id = $child['id'];
+            /** @var $child CustomDefAbstract */
+            while ($parent = @$children[$child->getOption('parent_id')]) {
+                $title = $parent['title'] . ' > ' . $title;
+                $child = $parent;
+            }
+
+            $options[$id] = $title;
         }
 
         foreach ($children as $child) {
@@ -164,41 +161,12 @@ class Choice extends HandlerAbstract
         $field_opts = array(
             'choices' => $options,
             'required' => false,
+            'multiple' => $this->multiple,
+            'expanded' => $this->expanded,
+            'empty_value' => $this->expanded ? false : '',
         );
-        if ($this->multiple) {
-            $field_opts['multiple'] = true;
-        }
-        if ($this->expanded) {
-            $field_opts['expanded'] = true;
-        }
 
-        $is_radio = false;
-        if ($this->expanded && !$this->multiple) {
-            $is_radio = true;
-        }
-        $is_check = false;
-        if ($this->expanded && $this->multiple) {
-            $is_check = true;
-        }
-
-        $req_opt = false;
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $req_opt = $this->field_def->getOption('required');
-        } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $req_opt = $this->field_def->getOption('agent_required');
-        }
-        if ($is_radio || $is_check) {
-            $field_opts['empty_value'] = false;
-        } else {
-            $field_opts['empty_value'] = '';
-        }
-
-        $field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);
-        if ($setData) {
-            $field_choice->setData($setData);
-        }
-
-        return $field_choice;
+        return App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', $setData, $field_opts);
     }
 
     public function getDataFromForm(array $form_data)
@@ -319,3 +287,5 @@ class Choice extends HandlerAbstract
         return 'id';
     }
 }
+
+
