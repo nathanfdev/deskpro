@@ -207,6 +207,7 @@ class TemplatingExtension extends \Twig_Extension
             'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
             'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
             'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'strip_html'             => new \Twig_Filter_Method($this, 'stripHtml'),
 
             'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
 
@@ -510,6 +511,11 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return $ret;
+    }
+
+    public function stripHtml($str)
+    {
+        return Strings::html2Text($str);
     }
 
     public function stripLinebreaks($str)
