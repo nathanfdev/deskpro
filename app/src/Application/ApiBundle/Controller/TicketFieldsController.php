@@ -38,7 +38,12 @@ use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\Tickets\TicketCategories;
 
 /**
  * Operations about Ticket fields
@@ -598,6 +603,109 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $this->settings->setSetting('core_tickets.field_validation_ticket_pri_user_required', $this->in->getBoolInt('user_required'));
         $this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
+
+        return $this->createSuccessResponse();
+    }
+
+    public function convertAction($type)
+    {
+        $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3) . 'y') : substr($type, 0, -1);
+        $field_manager = $this->container->getTicketFieldManager();
+        $rep_tickets = $this->em->getRepository('DeskPRO:Ticket');
+        $rep_layouts = $this->em->getRepository('DeskPRO:TicketLayout');
+        $conn = $this->em->getConnection();
+        /** @var TicketCategories $service */
+        $service = $this->container->getSystemService('ticket_' . $type);
+
+        $default = $this->settings->get('core.default_ticket_cat');
+
+        $data = array(
+            'title' => ucfirst($singular),
+            'description' => '',
+            'is_enabled' => true,
+            'handler_class' => 'Application\DeskPRO\CustomFields\Handler\Choice',
+            'field_type' => 'select',
+            'default_value' => $default ? "cb_$default" : null,
+            'choices_structure' => array(),
+        );
+
+//        todo
+//        $this->settings->get('core_tickets.field_validation_ticket_cat_user_required');
+//        $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required');
+
+        /**
+         * copy children
+         */
+        foreach ($service->getFlatArray() as $entry) {
+            $data['choices_structure'][] = array(
+                'id' => 'cb_' . $entry['object']['id'],
+                '@is_new' => true,
+                'title' => $entry['object']['title'],
+                'parent_id' => $entry['object']['parent'] ? ('cb_' . $entry['object']['parent']['id']) : null,
+                'display_order' => $entry['object']['display_order'],
+            );
+        }
+
+        $field = $this->container->getTicketFieldManager()->createNewDefEntity();
+        $field->handler_class = $data['handler_class'];
+        $helper = new CustomFieldHelper($this);
+        $helper->saveFormToField($field, $data);
+
+
+
+        /**
+         * Layouts
+         */
+        foreach ($rep_layouts->findAll() as $ticket_layout) {
+            /** @var $layout TicketLayout */
+            foreach (array('user', 'agent') as $type) {
+                $layout = clone $ticket_layout->{$type . '_layout'};
+                if ($old_layout_field = $layout->get($singular)) {
+                    $old_layout_field = $old_layout_field->exportToArray();
+                    $new_layout_field = new LayoutField('ticket_field', $field['id']);
+                    $new_layout_field->setOptionsFromArray($old_layout_field['options']);
+                    $layout->remove($singular);
+                    $layout->add($new_layout_field);
+                    $ticket_layout->{$type . '_layout'} = $layout;
+                }
+            }
+        }
+        $this->em->flush();
+
+
+
+        /**
+         * Migrate values
+         */
+        foreach ($field->children as $child) {
+
+            if (!$cb = $child->getOption('cb')) {
+                continue;
+            }
+
+            /**
+             * default value
+             */
+            if ('cb_' . $cb === $field['default_value']) {
+                $field['default_value'] = $child['id'];
+            }
+
+            /**
+             * set ticket field values
+             */
+            foreach ($rep_tickets->findBy(array($singular => $cb)) as $ticket) {
+                $field_manager->saveFormToObject(array('field_' . $field['id'] => $child['id']), $ticket);
+            }
+        }
+        $this->em->flush();
+
+
+
+        /**
+         * cleanup tickets and disable built in field
+         */
+//        $conn->executeQuery(sprintf('update tickets set %1$s = null', $singular . '_id'));
+//        $this->settings->setSetting('core.use_ticket_' . $singular, false);
 
         return $this->createSuccessResponse();
     }

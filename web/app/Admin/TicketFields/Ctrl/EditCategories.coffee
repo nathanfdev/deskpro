@@ -77,4 +77,25 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         @applyErrorResponseToView(info)
       )
 
+    showConvert: (type) ->
+      api = @Api
+      @$modal.open({
+        templateUrl: @getTemplatePath('TicketFields/convert-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.type = 'Category'
+          $scope.plural_type = 'categories'
+          $scope.dismiss = -> $modalInstance.dismiss()
+
+          $scope.doConvert = ->
+            $scope.is_loading = true
+            api.sendPost('/ticket_fields/convert/categories').then(
+              ->
+                $scope.is_loading = false
+                $modalInstance.dismiss()
+              ->
+                $scope.is_loading = false
+            )
+        ]
+      });
+
   Admin_TicketFields_Ctrl_EditCategories.EXPORT_CTRL()

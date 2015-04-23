@@ -233,6 +233,7 @@ class ChoiceField extends CustomFieldAbstract
 
             $ch = $this->_field->createChild();
             $ch->setTitle($cinfo['title']);
+            $ch->setOption('cb', str_replace('cb_', '', $cinfo['id']));
 
             $choices[$cinfo['id']] = $ch;
             $this->_em->persist($ch);

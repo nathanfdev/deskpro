@@ -129,7 +129,8 @@ class Choice extends HandlerAbstract
 
         foreach ($children as $child) {
             // skip parent nodes
-            if ($availableOnly && @$has_children[$child['id']]) {
+            // todo disabled for now. should we have only children in options list?
+            if (false && $availableOnly && @$has_children[$child['id']]) {
                 continue;
             }
 

@@ -54,4 +54,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         @applyErrorResponseToView(info)
       )
 
+    showConvert: ->
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('Agents/copy-settings-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+        ]
+      });
+
   Admin_TicketFields_Ctrl_EditWorkflows.EXPORT_CTRL()
