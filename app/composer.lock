@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7f9bb746d03d588b0b2bd17c343976dd",
+    "hash": "4d7fda7de26ae7f689050425fadd226d",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -6427,16 +6427,16 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "0.9.x-dev",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "4c9c869cb7618dda7f624ee9329be8bcfbcd8232"
+                "reference": "be361d2f1224a6b9ebcf42bf06006a8db2639368"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/4c9c869cb7618dda7f624ee9329be8bcfbcd8232",
-                "reference": "4c9c869cb7618dda7f624ee9329be8bcfbcd8232",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/be361d2f1224a6b9ebcf42bf06006a8db2639368",
+                "reference": "be361d2f1224a6b9ebcf42bf06006a8db2639368",
                 "shasum": ""
             },
             "require": {
@@ -6479,7 +6479,7 @@
                 "json",
                 "service discovery"
             ],
-            "time": "2015-02-13 15:19:21"
+            "time": "2015-04-17 10:15:41"
         }
     ],
     "packages-dev": [],
