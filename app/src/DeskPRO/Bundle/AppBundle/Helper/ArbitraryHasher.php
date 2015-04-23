@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 
 /**
  * This helper generates hashes for data. It can accept an arbitrary set of data, and return the same hash of that data every time it is run.
@@ -33,7 +34,7 @@ class ArbitraryHasher
             sort($inputs);
         }
 
-        $v =  md5(json_encode($inputs));
+        $v = md5(json_encode($inputs));
 
         return $v;
     }
@@ -44,7 +45,7 @@ class ArbitraryHasher
             return $input;
         }
 
-        if ($input instanceof DomainObject) {
+        if ($input instanceof DomainObject || $input instanceof NotifyPropertyChangeEntity) {
             return $input->getId();
         }
 
