@@ -108,11 +108,12 @@ class SourceSender
         try {
             if (!fwrite($fp, $this->bs->copyBlobRowIdToString($sendmail['blob_id']))) {
                 $this->logger->error(sprintf("Failed writing source blob"));
-                throw new \RuntimeException(sprintf("Failed writing source blob"));
+                throw new RawTransportException(sprintf("Failed writing source blob"));
             }
             rewind($fp);
         } catch (\InvalidArgumentException $e) {
             $this->logger->error(sprintf("Email source blob does not exist"));
+            throw new \RuntimeException(sprintf("Email source blob does not exist"));
         }
 
         try {

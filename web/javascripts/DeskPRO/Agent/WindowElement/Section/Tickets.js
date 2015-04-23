@@ -617,7 +617,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				this.setFilterCount(filterId, newCount);
 
 				// If we are currently viewing this filter that is out of date, we need to refresh it now
-				if (viewingFilterId == filterId && refreshUrl) {
+				if (viewingFilterId == filterId) {
 					viewingFilter.queuePostChangeEvent(function() {
 						viewingFilter.refreshCursor(null, true);
 					});
