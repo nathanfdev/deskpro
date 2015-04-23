@@ -93,7 +93,7 @@ class TermEngineTermSubscriberSpec extends ObjectBehavior
         $converter->getTermTypeCode($term)->willReturn('agent');
 
         // now we SHOULD call this...
-        $visitor->addData('type', 'agent');
+        $visitor->addData('type', 'agent')->shouldBeCalled();
 
         // run it
         $this->onPostSerialize($event);

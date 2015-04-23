@@ -76,6 +76,11 @@ Feature: /filters endpoint
     When I send a GET request to "/api/v2/filters"
     Then the response should be in JSON
     And the response status code should be 200
+    And the JSON node "meta" should exist
+    And the JSON node "meta.count" should be equal to 1
+    And the JSON node "meta.page" should be equal to 1
+    And the JSON node "meta.total_pages" should be equal to 1
+    And the JSON node "meta.total_count" should be equal to 1
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "My Sales Tickets"
     And the JSON node "data[0].term.type" should be equal to "composite"
