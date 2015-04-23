@@ -59,13 +59,15 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *              "name"="page",
      *              "requirement"="\d+",
      *              "description"="the page you are requesting",
-     *              "dataType"="integer"
+     *              "dataType"="integer",
+     *              "required"=false
      *          },
      *          {
      *              "name"="count",
      *              "requirement"="\d+",
      *              "description"="results per page",
-     *              "dataType"="integer"
+     *              "dataType"="integer",
+     *              "required"=false
      *          }
      *      },
      *      statusCodes={
@@ -124,7 +126,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
 
     /**
      * @ApiDoc(
-     *      description="create a sandbox widget",
+     *      description="create a filter",
      *      input={"class"="filter","name"=""},
      *      statusCodes={
      *          201="Created",
