@@ -833,6 +833,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
+
+    window.setTimeout(function() {
+      if (self.wrapper.find('.with-handler-failed')[0]) {
+        DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {
+          DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+          self.closeSelf();
+        });
+      }
+    }, 1500);
 	},
 
 	setTicketReplyBox: function(rb) {
