@@ -8,6 +8,20 @@ Feature: /filters endpoint
     And my request is authenticated
 
   @reinstall
+  Scenario: I POST an empty body and see all required field errors
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
+    And the JSON node "message" should be equal to "Request input is invalid."
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.term.errors[0].code" should be equal to "required"
+
   Scenario: Successfully create a filter
     When I send a POST request to "/api/v2/filters" with body:
     """

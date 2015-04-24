@@ -214,10 +214,6 @@ class FiltersController extends BaseController implements ClassResourceInterface
 
         $submitted = $request->request->all();
 
-        if (!count($submitted)) {
-            throw new BadRequestHttpException();
-        }
-
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {

@@ -39,6 +39,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository")
@@ -64,6 +65,7 @@ class Filter extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(name="title", type="string")
      * @Serializer\Expose()
+     * @Assert\NotNull()
      */
     protected $title;
 
@@ -71,6 +73,7 @@ class Filter extends NotifyPropertyChangeEntity
      * @var TermInterface
      * @ORM\Column(name="term", type="term_engine_term")
      * @Serializer\Expose()
+     * @Assert\NotNull()
      */
     protected $term;
 
