@@ -709,7 +709,7 @@ pageMeta.lang = {{ {
 				</td>
 			</tr></tbody>
 			{% endif %}
-			{% if ticket.real_total_user_waiting and ticket.real_total_user_waiting > 0 %}
+			{% if ticket.real_total_user_waiting %}
 			<tbody><tr>
 				<th>{{ phrase('agent.tickets.total_user_waiting_time') }}:</th>
 				<td>
