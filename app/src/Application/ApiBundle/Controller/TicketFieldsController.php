@@ -39,11 +39,13 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\Tickets\TicketCategories;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Operations about Ticket fields
@@ -610,14 +612,25 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
     public function convertAction($type)
     {
         $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3) . 'y') : substr($type, 0, -1);
-        $field_manager = $this->container->getTicketFieldManager();
-        $rep_tickets = $this->em->getRepository('DeskPRO:Ticket');
+        if (!in_array($singular, array('category', 'priority', 'workflow', 'product'))) {
+            throw new NotFoundHttpException;
+        }
+
         $rep_layouts = $this->em->getRepository('DeskPRO:TicketLayout');
         $conn = $this->em->getConnection();
         /** @var TicketCategories $service */
         $service = $this->container->getSystemService('ticket_' . $type);
 
-        $default = $this->settings->get('core.default_ticket_cat');
+        $short = array(
+            'category' => 'cat',
+            'priority' => 'pri',
+            'product' => 'prod',
+            'workflow' => 'work',
+        );
+        $short = $short[$singular];
+        $default = 'prod' === $short
+            ? $this->settings->get('core.default_product_id')
+            : $this->settings->get('core.default_ticket_' . $short);
 
         $data = array(
             'title' => ucfirst($singular),
@@ -629,9 +642,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             'choices_structure' => array(),
         );
 
-//        todo
-//        $this->settings->get('core_tickets.field_validation_ticket_cat_user_required');
-//        $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required');
+        if ($this->settings->get('core_tickets.field_validation_ticket_' . $short . '_user_required')) {
+            $data['min_length'] = 1;
+            $data['validation_type'] = 'required';
+        }
+        if ($this->settings->get('core_tickets.field_validation_ticket_' . $short . '_agent_required')) {
+            $data['agent_min_length'] = 1;
+            $data['agent_validation_type'] = 'required';
+        }
+
 
         /**
          * copy children
@@ -660,8 +679,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             /** @var $layout TicketLayout */
             foreach (array('user', 'agent') as $type) {
                 $layout = clone $ticket_layout->{$type . '_layout'};
-                if ($old_layout_field = $layout->get($singular)) {
-                    $old_layout_field = $old_layout_field->exportToArray();
+                if ($layout->has($singular)) {
+                    $old_layout_field = $layout->get($singular)->exportToArray();
                     $new_layout_field = new LayoutField('ticket_field', $field['id']);
                     $new_layout_field->setOptionsFromArray($old_layout_field['options']);
                     $layout->remove($singular);
@@ -677,27 +696,122 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         /**
          * Migrate values
          */
+        $cb_map = array();
         foreach ($field->children as $child) {
 
             if (!$cb = $child->getOption('cb')) {
                 continue;
             }
+            $cb_map[$cb] = $child['id'];
 
             /**
              * default value
              */
             if ('cb_' . $cb === $field['default_value']) {
                 $field['default_value'] = $child['id'];
+                $this->em->flush($field);
             }
+
+
 
             /**
              * set ticket field values
              */
-            foreach ($rep_tickets->findBy(array($singular => $cb)) as $ticket) {
-                $field_manager->saveFormToObject(array('field_' . $field['id'] => $child['id']), $ticket);
+            $offset = 0;
+            $limit = 100;
+            $q = 'select id from tickets where ' . $singular . '_id = :cb limit %d, %d';
+            $stmt = $conn->prepare('
+                insert into custom_data_ticket (ticket_id, field_id, root_field_id, value, input)
+                values (:tid, ' . $child['id'] . ', ' . $field['id'] . ', 1, "")
+            ');
+
+            while ($rows = $conn->fetchAll(sprintf($q, $offset, $limit), array('cb' => $cb))) {
+                foreach ($rows as $row) {
+                    $stmt->execute(array('tid' => $row['id']));
+                }
+                $offset += $limit;
             }
         }
-        $this->em->flush();
+
+
+
+        /**
+         * update ticket filters
+         */
+        $offset = 0;
+        $limit = 100;
+        $like = '%\"' . $singular . '\"%';
+        $q = 'select id, terms from ticket_filters where terms like "%s" limit %d, %d';
+        while ($rows = $conn->fetchAll(sprintf($q, $like, $offset, $limit))) {
+            foreach ($rows as $row) {
+                if (!$terms = json_decode($row['terms'], 1)) continue;
+                foreach ($terms as &$term) {
+                    if ($singular !== $term['type']) continue;
+                    if (!$options = @$term['options'][$singular]) continue;
+                    $term['type'] = 'ticket_field[' . $field['id'] . ']';
+                    $term['options'] = array();
+                    foreach ($options as $val) {
+                        if ($val = @$cb_map[$val]) {
+                            $term['options']['custom_fields']['field_' . $field['id']][] = $val;
+                        }
+                    }
+                }
+                $conn->executeUpdate('update ticket_filters set terms = :terms where id = :id', array(
+                    'terms' => json_encode($terms),
+                    'id' => $row['id'],
+                ));
+            }
+            $offset += $limit;
+        }
+
+
+
+        /**
+         * update ticket triggers
+         */
+        $offset = 0;
+        $limit = 100;
+        $check = '%\"Check' . ucfirst($singular) . '\"%';
+        $set = '%\"Set' . ucfirst($singular) . '\"%';
+        $q = 'select id, terms, actions from ticket_triggers where terms like "%s" or actions like "%s" limit %d, %d';
+        while ($rows = $conn->fetchAll(sprintf($q, $check, $set, $offset, $limit))) {
+            foreach ($rows as $row) {
+
+                if ($terms = json_decode($row['terms'], 1)) {
+                    foreach ($terms['@DATA']['terms'] as &$set_terms) {
+                        foreach ($set_terms['set_terms'] as &$term) {
+                            if ('Check' . ucfirst($singular) !== $term['type']) continue;
+                            if (!$vals = @$term['options'][$singular . '_ids']) continue;
+                            $term['type'] = 'CheckTicketField' . $field['id'];
+                            $term['options'] = array('field_id' => $field['id']);
+                            foreach ($vals as $val) {
+                                if ($val = @$cb_map[$val]) {
+                                    $term['options']['value'][] = $val;
+                                }
+                            }
+                        }
+                    }
+                    $conn->executeUpdate('update ticket_triggers set terms = :terms where id = :id', array(
+                        'terms' => json_encode($terms),
+                        'id' => $row['id'],
+                    ));
+                }
+
+                if ($actions = json_decode($row['actions'], 1)) {
+                    foreach ($actions['@DATA']['actions'] as &$action) {
+                        if ('Set' . ucfirst($singular) !== $action['type']) continue;
+                        if (!$val = @$cb_map[$action['options'][$singular . '_id']]) continue;
+                        $action['type'] = 'SetTicketField' . $field['id'];
+                        $action['options'] = array('value' => $val, 'field_id' => $field['id']);
+                    }
+                    $conn->executeUpdate('update ticket_triggers set actions = :actions where id = :id', array(
+                        'actions' => json_encode($actions),
+                        'id' => $row['id'],
+                    ));
+                }
+            }
+            $offset += $limit;
+        }
 
 
 
@@ -707,6 +821,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 //        $conn->executeQuery(sprintf('update tickets set %1$s = null', $singular . '_id'));
 //        $this->settings->setSetting('core.use_ticket_' . $singular, false);
 
-        return $this->createSuccessResponse();
+        return $this->getCustomFieldAction($field['id']);
     }
 }
