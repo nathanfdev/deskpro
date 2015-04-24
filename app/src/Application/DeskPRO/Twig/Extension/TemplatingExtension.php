@@ -49,7 +49,9 @@ use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -1240,6 +1242,15 @@ class TemplatingExtension extends \Twig_Extension
             $url = App::getSetting('core.deskpro_url');
             $url = trim(str_replace('/index.php', '', $url), '/');
             $url .= (App::getConfig('static_path') ?: '/web') . '/';
+        }
+
+        /** @var Request $r */
+        $r = $this->container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+
+        // If the current request is https, then all urls sholud be https even if the
+        // helpdesk url isn't explicitly set to use https
+        if ($r && $r->isSecure() && strtolower(substr($url, 0, 7)) === 'http://') {
+            $url = 'https://' . substr($url, 7);
         }
 
         return $url . ltrim($location, '/');
