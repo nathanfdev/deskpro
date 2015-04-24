@@ -522,6 +522,20 @@ class FilterChangeDetector
             $context->getVars()->set('filter_change_set', $set);
         }
 
+        foreach ($set->getChangedFilters() as $change) {
+            $added_aids   = array_map(function($a) { return $a->id; }, $change->getAgentsAdded());
+            $removed_aids = array_map(function($a) { return $a->id; }, $change->getAgentsRemoved());
+
+            if ($added_aids || $removed_aids) {
+                $logger->info(sprintf(
+                    "[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)",
+                    $change->getFilter()->id,
+                    implode(', ', $added_aids ?: array('none')),
+                    implode(', ', $removed_aids ?: array('none'))
+                ));
+            }
+        }
+
         return $set;
     }
 }

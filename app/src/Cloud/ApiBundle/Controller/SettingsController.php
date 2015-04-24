@@ -123,7 +123,7 @@ class SettingsController extends BaseSettingsController
             }
 
         } else {
-            $set_settings['cloud_custom_domain'] = null;
+            $set_settings['core.cloud_custom_domain'] = null;
 
             $set_settings['core.cloud_url_ssl'] = (bool)$in_settings->get('cloud_url_ssl');
             if ($set_settings['core.cloud_url_ssl']) {

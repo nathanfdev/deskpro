@@ -12,3 +12,12 @@ if (function_exists('curl_init')) {
         }
     }
 }
+
+// PHP bug in some versions of PHP where gzopen is replaced by gzopen64
+// https://bugs.php.net/bug.php?id=53829
+if (extension_loaded('zlib') && !function_exists('gzopen') && function_exists('gzopen64')) {
+    function gzopen() {
+        $args = func_get_args();
+        return call_user_func_array('gzopen64', $args);
+    }
+}
