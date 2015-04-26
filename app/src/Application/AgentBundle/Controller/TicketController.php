@@ -2126,6 +2126,46 @@ class TicketController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
+    public function getDataHoldersAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        $field_manager = $this->container->getTicketFieldManager();
+        $new_field_manager = $this->container->getCustomFieldManager();
+        $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+        $new_custom_fields = $new_field_manager->createFormForOwner(
+            $ticket,
+            $ticket->person,
+            null,
+            array('allow_edit' => true)
+        );
+
+        if ($org = $ticket->person->organization) {
+            $new_field_manager->merge(
+                $new_custom_fields,
+                $new_field_manager->createFormForOwner($ticket, $org, null, array('allow_edit' => true))
+            );
+        }
+
+        $data = array('data' => array());
+        $data['data']['can_view'] = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+
+        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+        $data['holders'] = $this->renderView(
+            'AgentBundle:Ticket:view-page-display-holders.html.twig',
+            array(
+                'ticket' => $ticket,
+                'ticket_options' => $ticket_options,
+                'custom_fields' => $custom_fields,
+                'new_custom_fields' => $new_custom_fields->createView(),
+            )
+        );
+
+        $data['labels'] = $ticket->getLabelManager()->getLabelsArray();
+
+        return $this->createJsonResponse($data);
+    }
+
     public function ajaxSaveSubjectAction($ticket_id)
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify_fields');
