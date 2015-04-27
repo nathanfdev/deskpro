@@ -233,7 +233,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				options.dataType = 'json';
 
-				DeskPRO_Window.getMessageChanneler().poller.pause();
+        // passing true to cancel the current poll if it is active
+        // or else we might end up with a weird case where the current
+        // request comes back before the poll request, and order might matter (eg count refreshes)
+				DeskPRO_Window.getMessageChanneler().poller.pause(true);
 				return $.ajax(options);
 			},
 

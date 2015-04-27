@@ -2395,6 +2395,18 @@ $collection->create('api_server_settings_save', array(
 # General Settings
 ########################################################################################################################
 
+$collection->create('api_general_settings_get_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:getLogoBlob',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_general_settings_set_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:setLogoBlob',
+    'methods'     => array('POST'),
+));
+
 $collection->create('api_general_settings', array(
     'path'        => '/general_settings',
     'controller'  => 'ApiBundle:Settings:generalSettings',

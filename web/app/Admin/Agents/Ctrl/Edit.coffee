@@ -509,6 +509,7 @@ define [
           # todo
           @service.agents.get(@agentId).then (agent) =>
             @service.agents._removeModel agent
+          @$scope.$parent?.ListCtrl.deletedCount++
           @$state.go('agents.agents')
         )
 
@@ -528,7 +529,7 @@ define [
 
           $scope.doDelete = (options) ->
             $scope.is_loading = true
-            deleteAgent(options).then(-> $modalInstance.dismiss())
+            deleteAgent(options).then -> $modalInstance.dismiss()
         ]
       })
 

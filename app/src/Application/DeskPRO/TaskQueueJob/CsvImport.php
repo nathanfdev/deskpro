@@ -96,7 +96,7 @@ class CsvImport extends AbstractJob
             'field_maps' => false,
             'new_custom_map' => false,
             'skip_first' => true,
-	        'update_if_exists' => true,
+            'update_if_exists' => true,
             'welcome_email' => false,
             'welcome_from_name' => '',
             'welcome_from_email' => '',
@@ -260,7 +260,7 @@ class CsvImport extends AbstractJob
         $secondary_emails = array();
         $addresses = array();
         $errors = array();
-	    $send_welcome = true;
+        $send_welcome = true;
 
         foreach ($field_maps AS $column_id => $info) {
             if (empty($info['map'])) {
@@ -289,12 +289,12 @@ class CsvImport extends AbstractJob
                 }
 
                 if ($old = $person_em->findOneByEmail($column_value)) {
-	                if (!$this->_data['update_if_exists']) {
-		                $errors[] = sprintf('Email %s already exist', $column_value);
-		                continue;
-	                }
-	                $person = $old;
-	                $send_welcome = false;
+                    if (!$this->_data['update_if_exists']) {
+                        $errors[] = sprintf('Email %s already exist', $column_value);
+                        continue;
+                    }
+                    $person = $old;
+                    $send_welcome = false;
                 }
 
                 $primary_email = strtolower($column_value);
@@ -308,12 +308,12 @@ class CsvImport extends AbstractJob
                     break;
                 }
                 if ($old = $person_em->findOneByEmail($column_value)) {
-	                if (!$this->_data['update_if_exists']) {
-		                $errors[] = sprintf('Email %s already exist', $column_value);
-		                break;
-	                }
-	                $person = $old;
-	                $send_welcome = false;
+                    if (!$this->_data['update_if_exists']) {
+                        $errors[] = sprintf('Email %s already exist', $column_value);
+                        break;
+                    }
+                    $person = $old;
+                    $send_welcome = false;
                 }
 
                 $secondary_emails[] = strtolower($column_value);
@@ -329,7 +329,7 @@ class CsvImport extends AbstractJob
             return false;
         }
 
-	    $emails = array_flip($person->getEmailAddresses());
+        $emails = array_flip($person->getEmailAddresses());
         !isset($emails[$primary_email]) && $person->addEmailAddressString($primary_email);
 
         array_unique($secondary_emails);
@@ -337,7 +337,7 @@ class CsvImport extends AbstractJob
             if ($secondary_email == $primary_email) {
                 continue;
             }
-	        !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
+            !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
         }
 
         foreach ($field_maps AS $column_id => $info) {
@@ -435,16 +435,16 @@ class CsvImport extends AbstractJob
                     $addresses[$info['label']][$map_field] = $column_value;
                     break;
 
-	            case 'language':
-					$language = is_numeric($column_value)
-						? $em->find('DeskPRO:Language', $column_value)
-						: $em->getRepository('DeskPRO:Language')->getByTitle($column_value);
+                case 'language':
+                    $language = is_numeric($column_value)
+                        ? $em->find('DeskPRO:Language', $column_value)
+                        : $em->getRepository('DeskPRO:Language')->getByTitle($column_value);
 
-					if ($language) {
-						$person->language = $language;
-					}
+                    if ($language) {
+                        $person->language = $language;
+                    }
 
-		            break;
+                    break;
 
                 default:
                     $custom_field_id = false;
@@ -460,14 +460,14 @@ class CsvImport extends AbstractJob
                         $custom_field = $this->_custom_fields[$custom_field_id];
                         if ($custom_field->isChoiceType()) {
                             $selected_childs = array();
-	                        $test_value = mb_strtolower($column_value);
-	                        $multiple = !empty($custom_field['options']['multiple']);
+                            $test_value = mb_strtolower($column_value);
+                            $multiple = !empty($custom_field['options']['multiple']);
 
-	                        // find an existing option by title
+                            // find an existing option by title
                             foreach ($custom_field->getAllChildren() AS $child_field) {
                                 if (mb_strtolower($child_field->getTitle()) === $test_value) {
                                     $selected_childs[$child_field['id']] = $child_field;
-	                                if (!$multiple) break;
+                                    if (!$multiple) break;
                                 }
                             }
 
@@ -478,21 +478,21 @@ class CsvImport extends AbstractJob
                                 $selected_child->display_order = count($custom_field->getAllChildren()) + 1;
                                 $custom_field->addChild($selected_child);
                                 $em->persist($selected_child);
-	                            $selected_childs[] = $selected_child;
+                                $selected_childs[] = $selected_child;
                             }
 
                             // associate it
                             if ($selected_childs) {
-	                            $person->custom_data->clear();
-	                            foreach ($selected_childs as $child) {
-		                            $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
-		                            $custom_data->person = $person;
-		                            $custom_data->field = $child;
-		                            $custom_data->root_field = $custom_field;
-		                            $custom_data->value = 1;
-		                            $em->persist($custom_data);
-		                            $person->addCustomData($custom_data);
-	                            }
+                                $person->custom_data->clear();
+                                foreach ($selected_childs as $child) {
+                                    $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
+                                    $custom_data->person = $person;
+                                    $custom_data->field = $child;
+                                    $custom_data->root_field = $custom_field;
+                                    $custom_data->value = 1;
+                                    $em->persist($custom_data);
+                                    $person->addCustomData($custom_data);
+                                }
                             }
                         } else if ($custom_field->getTypeName() == 'date') {
                             if (ctype_digit($column_value)) {
@@ -557,6 +557,9 @@ class CsvImport extends AbstractJob
             $message = $mailer->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array('person' => $person));
+            App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                $message->prepare();
+            });
 
             $mailer->send($message);
         }
@@ -589,15 +592,15 @@ class CsvImport extends AbstractJob
         $contact->applyFormData($data);
 
 
-	    foreach ($person->contact_data as $cd) {
-		    // todo?
-		    /** @var $cd PersonContactData */
-		    if (mb_strtolower($cd->getSearchString()) === mb_strtolower($contact->getSearchString())) {
-			    return;
-		    }
-	    }
+        foreach ($person->contact_data as $cd) {
+            // todo?
+            /** @var $cd PersonContactData */
+            if (mb_strtolower($cd->getSearchString()) === mb_strtolower($contact->getSearchString())) {
+                return;
+            }
+        }
 
-	    $contact->person = $person;
+        $contact->person = $person;
         App::getOrm()->persist($contact);
 
         return $contact;

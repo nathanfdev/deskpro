@@ -54,6 +54,8 @@ class TicketSettings
     public $timelog_enabled                = false;
     /** @var bool */
     public $timelog_autostart              = false;
+    /** @var bool */
+    public $billing_on_reply               = false;
 
     /** @var bool */
     public $billinglog_enabled             = false;
@@ -128,6 +130,7 @@ class TicketSettings
 
         $this->timelog_enabled            = (bool)$this->settings->get('core_tickets.enable_timelog');
         $this->timelog_autostart          = (bool)$this->settings->get('core_tickets.billing_auto_timer');
+        $this->billing_on_reply           = (bool)$this->settings->get('core_tickets.billing_on_reply');
 
         $this->billinglog_enabled         = (bool)$this->settings->get('core_tickets.enable_billing');
         $this->billinglog_currency        = $this->settings->get('core_tickets.billing_currency');
@@ -210,6 +213,7 @@ class TicketSettings
             'kbsuggest_web_enabled',
             'timelog_enabled',
             'timelog_autostart',
+            'billing_on_reply',
             'billinglog_enabled',
             'billinglog_currency',
             'lock_auto_enabled',
@@ -268,8 +272,10 @@ class TicketSettings
 
         if ($this->timelog_enabled) {
             $this->settings->setSetting('core_tickets.billing_auto_timer',   (int)$this->timelog_autostart);
+            $this->settings->setSetting('core_tickets.billing_on_reply',   (int)$this->billing_on_reply);
         } else {
             $this->settings->setSetting('core_tickets.billing_auto_timer',   0);
+            $this->settings->setSetting('core_tickets.billing_on_reply',   0);
         }
 
         $this->settings->setSetting('core_tickets.enable_billing',       (int)$this->billinglog_enabled);

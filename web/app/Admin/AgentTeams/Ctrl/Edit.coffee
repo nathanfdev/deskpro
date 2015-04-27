@@ -54,7 +54,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
     onFileSelect: (files) ->
-      @$scope.uploading = false
+      @$scope.uploading = true
       file = files[0]
 
       @$upload.upload({
