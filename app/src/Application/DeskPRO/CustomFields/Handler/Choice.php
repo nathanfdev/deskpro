@@ -36,6 +36,8 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Form\Type\DpChoice;
+use Doctrine\ORM\EntityRepository;
 use Orb\Util\Arrays;
 
 /**
@@ -85,20 +87,24 @@ class Choice extends HandlerAbstract
     protected function _getRenderableString($data)
     {
         $val = array();
+        $children = $this->getFieldChildren();
 
-        if ($this->field_def->field_manager) {
-            $children = $this->field_def->field_manager->getFieldChildren($this->field_def);
-        } else {
-            $children = $this->field_def['children'];
+        if (!isset($data['children'])) {
+            return null;
         }
 
-        // Index array
-        $children = \Orb\Util\Arrays::keyFromData($children, 'id');
+        foreach ($data['children'] as $id => $v) {
+            if (!isset($v['value']) || (!$child = @$children[$id])) {
+                continue;
+            }
 
-        foreach ($children as $child) {
-            $id = $child['id'];
-            if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-                $title = $child['title'];
+            $title = $child['title'];
+
+            if (!$this->multiple && !$this->expanded) {
+                // leaf title for single choice
+                $val[] = $title;
+            } else {
+                // full path for multiple and expanded
                 while ($parent = @$children[$child->getOption('parent_id')]) {
                     $title = $parent['title'] . ' > ' . $title;
                     $child = $parent;
@@ -107,67 +113,76 @@ class Choice extends HandlerAbstract
             }
         }
 
-        $val = implode(', ', $val);
-
-        return $val;
+        return implode(', ', $val);
     }
 
     public function getFormField($data = null, $availableOnly = false)
     {
-        $options = array();
-
-        $selected_options = array();
-
         $children = $this->getFieldChildren();
-        $has_children = array();
+        $choices = array();
+        $selected = array();
+        $map = array();
 
-        foreach ($children as $child) {
-            if ($parent = $child->getOption('parent_id')) {
-                $has_children[$parent] = 1;
-            }
-        }
+        foreach ($children as $id => $child) {
 
-        foreach ($children as $child) {
-            // skip parent nodes
-            // todo disabled for now. should we have only children in options list?
-            if (false && $availableOnly && @$has_children[$child['id']]) {
-                continue;
-            }
+            // used only in single/collapsed
+            $map[$id] = new \StdClass();
+            $map[$id]->id = $id;
+            $map[$id]->title = $child['title'];
 
+
+            // add choices
             $title = $child['title'];
-            $id = $child['id'];
-            /** @var $child CustomDefAbstract */
             while ($parent = @$children[$child->getOption('parent_id')]) {
-                $title = $parent['title'] . ' > ' . $title;
+                $title = $parent['title'].' > '.$title;
                 $child = $parent;
             }
+            $choices[$id] = $title;
 
-            $options[$id] = $title;
+
+            // set values
+            if (!isset($data['children'][$id]['value'])) {
+                continue;
+            }
+            $selected[] = $id;
+        }
+
+        // build tree for single select
+        if (!$this->multiple) {
+            $selected = reset($selected) ?: null;
         }
 
         foreach ($children as $child) {
-            $id = $child['id'];
-            if (!$child['handler_class']) {
-                if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-                    $selected_options[] = $id;
-                }
+            if ($parent = @$map[$child->getOption('parent_id')]) {
+                $parent->children[] = $map[$child['id']];
+                unset($choices[$parent->id]);
             }
         }
 
-        $setData = $selected_options;
-        if (!$this->multiple && is_array($setData)) {
-            $setData = array_pop($setData);
-        }
+        // required
+        $required = defined('DP_INTERFACE') && (
+                ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+                ||
+                ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+            );
 
         $field_opts = array(
-            'choices' => $options,
-            'required' => false,
+            'choices' => $choices,
+            'required' => $required,
             'multiple' => $this->multiple,
             'expanded' => $this->expanded,
-            'empty_value' => $this->expanded ? false : '',
+            'empty_value' => $this->expanded || $required ? false : '',
+            'attr' => array(
+                'data-map' => json_encode($map),
+            ),
         );
 
-        return App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', $setData, $field_opts);
+        return App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            new DpChoice(),
+            $selected,
+            $field_opts
+        );
     }
 
     public function getDataFromForm(array $form_data)

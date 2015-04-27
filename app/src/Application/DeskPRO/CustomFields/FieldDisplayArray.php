@@ -131,7 +131,7 @@ class FieldDisplayArray implements \ArrayAccess
                 }
                 $handler = $this->field_def->getHandler();
 
-                $f = $handler->getFormField($this->data['value'], $handler instanceof Choice ? true : false);
+            $f = $handler->getFormField($this->data['value']);
 
                 if ($field_group) {
                     $did_add = false;
