@@ -2993,6 +2993,13 @@ $collection->create('api_ticket_fields_setenabled', array(
     'methods'     => array('POST'),
 ));
 
+$collection->create('api_ticket_fields_convert', array(
+    'path'        => '/ticket_fields/convert/{type}',
+    'controller'  => 'ApiBundle:TicketFields:convert',
+    'methods'     => array('POST'),
+    'requirements' => array('type' => 'categories|workflows|priorities|products'),
+));
+
 ########################################################################################################################
 # SMS Channel
 ########################################################################################################################
