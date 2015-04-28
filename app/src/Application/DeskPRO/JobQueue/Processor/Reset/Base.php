@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,49 +25,74 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JobQueue\JobQueue;
+use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
+use Application\DeskPRO\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-namespace Application\DeskPRO\Command;
-
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+abstract class Base extends AbstractJobProcessor
 {
     /**
-     * {@inheritDoc}
+     * @var JobQueue
      */
-    protected function configure()
+    protected $queue;
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var DeskproContainer
+     */
+    protected $container;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(DeskproContainer $container, JobQueue $queue)
     {
-        $this->setName('dp:test');
+        parent::__construct($container->getEm()->getConnection());
+        $this->queue = $queue;
+        $this->em = $container->getEm();
+        $this->container = $container;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @inheritdoc
      */
-    public function getContainer()
+    public function setDataOptions(OptionsResolverInterface $resolver)
     {
-        return parent::getContainer();
+        $resolver->setDefaults(array(
+            'context_person_id' => null,
+            'limit' => 100,
+            'offset' => 0,
+        ));
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function process(array $data, array $job)
     {
-        $c = $this->getContainer();
-        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
+        $total = (int) $this->doProcess($data, $job);
 
-        echo __FILE__;
-        echo "\n";
-        return 0;
+        if ($total === $data['limit']) {
+            $data['offset'] = $data['offset'] + $total;
+            $new = $this->queue->add($this::JOB_TYPE, $data);
+
+            $jobs = $this->em->getRepository('DeskPRO:Job')->findBy(array('depends_on_job' => $job['id']));
+            foreach ($jobs as $dep) {
+                $dep->depends_on_job = $new;
+            }
+            $this->em->flush();
+        }
+
+        return true;
     }
+
+    abstract protected function doProcess(array $data);
 }

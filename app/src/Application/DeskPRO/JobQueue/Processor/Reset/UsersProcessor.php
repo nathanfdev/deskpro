@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,49 +25,56 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
+use Application\DeskPRO\People\Purger;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-namespace Application\DeskPRO\Command;
-
-use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class UsersProcessor extends Base
 {
+    const JOB_TYPE = 'reset.users';
+
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    protected function configure()
+    public function setDataOptions(OptionsResolverInterface $resolver)
     {
-        $this->setName('dp:test');
+        $resolver->setDefaults(array(
+            'context_person_id' => null,
+            'limit' => 100,
+            'offset' => 0,
+            'labeled_by' => null,
+        ));
     }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
+    protected function doProcess(array $data)
     {
-        return parent::getContainer();
+        $count = 0;
+
+        foreach ($this->getPersons($data) as $person) {
+            $count++;
+            if (@$data['context_person_id'] === $person['id']) continue;
+            $purger = new Purger($person, $this->em);
+            $purger->purge();
+        }
+
+        return $count;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function getPersons(array $data)
     {
-        $c = $this->getContainer();
-        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
+        $limit = (int) @$data['limit'];
+        $offset = (int) @$data['offset'];
+        $rep = $this->em->getRepository('DeskPRO:Person');
 
-        echo __FILE__;
-        echo "\n";
-        return 0;
+        if ($data['labeled_by']) {
+            return $this->em->createQuery('SELECT p FROM DeskPRO:Person p JOIN p.labels l WHERE l.label = :label')
+                ->setParameter('label', $data['labeled_by'])
+                ->setMaxResults($limit)
+                ->setFirstResult($offset)
+                ->getResult();
+        }
+
+        return $rep->findBy(array('is_agent' => false), null, $limit, $offset);
     }
 }
