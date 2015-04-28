@@ -289,9 +289,16 @@ class TicketViewController extends AbstractController
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-        $user_field_manager = $this->container->getSystemService('person_fields_manager');
+        $user_field_manager = $this->container->getPersonFieldManager();
+        $org_field_manager = $this->container->getOrgFieldManager();
         $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('custom_user_fields', 'form');
         $custom_user_fields = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
+        $custom_org_fields_form = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_org_fields = $ticket->person->organization
+            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $custom_org_fields_form)
+            : array();
+        $vars['custom_user_fields'] = $custom_user_fields;
+        $vars['custom_org_fields'] = $custom_org_fields;
 
         // new custom fields, without layout (handled on client side)
         $new_field_manager = $this->container->getCustomFieldManager();
@@ -340,6 +347,7 @@ class TicketViewController extends AbstractController
 
                 $newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
                 $newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
+                $newticket->custom_org_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 
                 if ($validator->isValid($newticket)) {
                     $newticket->save();
@@ -373,6 +381,7 @@ class TicketViewController extends AbstractController
                 'newticket' => $newticket,
                 'custom_fields' => $custom_fields,
                 'custom_user_fields' => $custom_user_fields,
+                'custom_org_fields' => $custom_org_fields,
                 'errors' => $errors,
                 'error_fields' => $error_fields,
                 'ticket_display_js' => $ticket_display_js,
