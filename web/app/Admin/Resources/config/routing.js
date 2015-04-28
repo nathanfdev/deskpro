@@ -2125,6 +2125,16 @@ define(function() {
   });
 
   //###
+  //# Imports
+  //###
+  routes.push({
+    id:           'server.imports',
+    url:          '/imports',
+    templateName: 'Server/server-imports.html',
+    controller:   'Admin_Server_Ctrl_ServerImportsList'
+  });
+
+  //###
   //# Cron
   //###
   routes.push({
