@@ -25,6 +25,15 @@ define [
       @criteriaTypeDef.setVar 'object_type', 'escalation'
       @actionsTypeDef.setVar 'object_type', 'escalation'
 
+      growl = @Growl
+      # we need to suppress alerts when process initiated by this event
+      @$scope.$on 'trigger.save', =>
+        @Growl =
+          success: =>
+          error: =>
+            # right, double 'then'
+        @saveForm().then().then => @Growl = growl
+
 
 
     updateCriteriaOptionTypes: ->

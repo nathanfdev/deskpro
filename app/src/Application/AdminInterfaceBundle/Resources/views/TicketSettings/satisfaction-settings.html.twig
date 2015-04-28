@@ -35,6 +35,7 @@
 
 						<div class="inner-group" ng-show="settings.satisfaction_enabled && ctrl.esc"
 							 ng-controller="Admin_TicketEscalations_Ctrl_EditSatisfaction as ctrl"
+               ng-init="setCtrlParams()"
 								>
 							<label>
 								<input type="checkbox" ng-model="ctrl.esc.is_enabled" ng-change="ctrl.escData.saveEnabledState(ctrl.esc)" />
