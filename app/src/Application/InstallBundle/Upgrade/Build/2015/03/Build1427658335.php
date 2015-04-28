@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,37 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\RoundRobinAgent;
-
-class RoundRobin extends AbstractEntityRepository
+class Build1427658335 extends AbstractBuild
 {
-    /** @var array|null */
-    protected $availableAgents = null;
-
-    /**
-     * @param \Application\DeskPRO\Entity\RoundRobin $robin
-     * @param array                                  $agents
-     */
-    public function setAgents(\Application\DeskPRO\Entity\RoundRobin $robin, array $agents = array())
+    public function run()
     {
-        $robin->agents->clear();
-        $this->_em->flush();
-        $sort = 0;
-
-        foreach ($agents as $agentData) {
-            $agentRef = new RoundRobinAgent();
-            $agentRef->robin = $robin;
-            $agentRef->agent  = $this->_em->getReference('DeskPRO:Person', $agentData['id']);
-            $this->_em->persist($agentRef);
-            $agentRef['sort'] = ++$sort;
-            $robin->agents->add($agentRef);
-        }
-
-        $this->_em->flush();
+        $this->out("Upgrade Round Robin");
+		$this->execMutateSql("ALTER TABLE round_robin ADD online_only TINYINT(1) NOT NULL");
     }
 }

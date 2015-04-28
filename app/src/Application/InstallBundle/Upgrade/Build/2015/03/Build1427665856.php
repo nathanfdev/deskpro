@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,37 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\RoundRobinAgent;
-
-class RoundRobin extends AbstractEntityRepository
+class Build1427665856 extends AbstractBuild
 {
-    /** @var array|null */
-    protected $availableAgents = null;
-
-    /**
-     * @param \Application\DeskPRO\Entity\RoundRobin $robin
-     * @param array                                  $agents
-     */
-    public function setAgents(\Application\DeskPRO\Entity\RoundRobin $robin, array $agents = array())
+    public function run()
     {
-        $robin->agents->clear();
-        $this->_em->flush();
-        $sort = 0;
-
-        foreach ($agents as $agentData) {
-            $agentRef = new RoundRobinAgent();
-            $agentRef->robin = $robin;
-            $agentRef->agent  = $this->_em->getReference('DeskPRO:Person', $agentData['id']);
-            $this->_em->persist($agentRef);
-            $agentRef['sort'] = ++$sort;
-            $robin->agents->add($agentRef);
-        }
-
-        $this->_em->flush();
+        $this->out("Upgrade Round Robin Log");
+        $this->execMutateSql("DROP TABLE IF EXISTS log_round_robin");
+		$this->execMutateSql("CREATE TABLE round_robin_log (id INT AUTO_INCREMENT NOT NULL, rr_id INT DEFAULT NULL, ticket_id INT NOT NULL, ticket_subject VARCHAR(255) NOT NULL, actions LONGBLOB NOT NULL COMMENT '(DC2Type:array)', created DATETIME NOT NULL, INDEX IDX_4CB426EE1D063087 (rr_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
+		$this->execMutateSql("ALTER TABLE round_robin_log ADD CONSTRAINT FK_4CB426EE1D063087 FOREIGN KEY (rr_id) REFERENCES round_robin (id)");
     }
 }

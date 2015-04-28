@@ -2327,6 +2327,12 @@ $collection->create('api_roundrobins_delete', array(
     'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_roundrobins_logs', array(
+    'path'        => '/round_robin/{id}/logs',
+    'controller'  => 'ApiBundle:RoundRobin:logs',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Start Settings
 ########################################################################################################################
