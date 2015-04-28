@@ -113,6 +113,10 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		return this.input.select2('val') || [];
 	},
 
+  setLabels: function (labels) {
+    labels = labels || [];
+    this.input.select2('val', labels);
+  },
 
 	/**
 	 * Get labels serialized as a form array suitable with jQuery.ajax
