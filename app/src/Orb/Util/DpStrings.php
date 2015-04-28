@@ -25,61 +25,42 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Tickets
- */
 
-namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\RefGenerator\RefGeneratorInterface;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\DpStrings;
-use Orb\Util\Strings;
+namespace Orb\Util;
 
-class VerifyRef implements TicketSaveActionInterface
+
+use Orb\Data\BadWords;
+
+class DpStrings
 {
-    /**
-     * @var RefGeneratorInterface
-     */
-    private $ref_generator;
+	static public function hasBadString($string)
+	{
+		$string = strtolower($string);
+		foreach (BadWords::$words as $word => $k) {
+			if (false !== strpos($string, $word)) {
+				return true;
+			}
+		}
 
+		return false;
+	}
 
-    /**
-     * @param RefGeneratorInterface $ref_generator
-     */
-    public function __construct(RefGeneratorInterface $ref_generator)
-    {
-        $this->ref_generator = $ref_generator;
-    }
+	static public function random($len = 8, $chars = null)
+	{
+		do {
+			$str = Strings::random($len, $chars);
+		} while (self::hasBadString($str));
 
+		return $str;
+	}
 
-    /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
-     */
-    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-    {
-        if ($context->getEventType() == 'noop') {
-            return;
-        }
+	static public function randomPronounceable($len = 10, $dash_len = 0)
+	{
+		do {
+			$str = Strings::randomPronounceable($len, $dash_len);
+		} while (self::hasBadString($str));
 
-        if (!$ticket->ref || (isset($ticket->__dp_is_autogen_ref) && $ticket->__dp_is_autogen_ref)) {
-            $ticket->__dp_is_autogen_ref = false;
-            try {
-                $ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
-            } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
-
-                $ref = DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . DpStrings::random(4, Strings::CHARS_NUM) . '-' . DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
-                $ticket->ref = $ref;
-            }
-        }
-    }
-
+		return $str;
+	}
 }
