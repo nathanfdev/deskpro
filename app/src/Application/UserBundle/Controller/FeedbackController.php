@@ -122,16 +122,6 @@ class FeedbackController extends AbstractController
             $category_path = array();
         }
 
-        /** @var RateLimit $rateLimit */
-        $rateLimit = $this->get(RateLimit::KEY);
-        $captcha = null;
-        $captcha_html = '';
-        $isActionLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_FEEDBACK);
-        if ($isActionLimited || ($this->container->getSetting('user.publish_captcha') && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId()))) {
-            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
-            $captcha_html = $captcha->getHtml();
-        }
-
         $feedback_cats  = $structure->getFeedbackRootCategories();
         $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
@@ -223,12 +213,25 @@ class FeedbackController extends AbstractController
         #------------------------------
         # New feedback submitted
         #------------------------------
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $captcha = null;
+        $captcha_html = '';
 
         $errors = $error_fields = null;
         $is_submitted = false;
         if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit') && ($this->person->id || !$this->settings->get('core.interact_require_login'))) {
 
             $this->ensureStandardRequestToken();
+
+            $isActionLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_FEEDBACK);
+            if ($isActionLimited || ($this->container->getSetting(
+                        'user.publish_captcha'
+                    ) && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId()))
+            ) {
+                $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
+                $captcha_html = $captcha->getHtml();
+            }
 
             $is_submitted = true;
             $validator = new \Application\UserBundle\Validator\NewFeedbackValidator();

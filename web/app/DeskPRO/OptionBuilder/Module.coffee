@@ -33,7 +33,7 @@ define [
             <table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
               <tr>
                 <td style="vertical-align: middle; padding: 0; margin: 0;"><div class="dp-ob-row-tag-wrap"></div></td>
-                <td style="vertical-align: middle; padding: 0; margin: 0;" width="1"><input type="checkbox" id="{{rowOpts.withCheckId}}" ng-if="rowOpts.withCheck" ng-model="rowOpts.rowEnabled" ng-disabled="rowOpts.isFixedOn" /></td>
+                <td style="vertical-align: middle; padding: 0; margin: 0;" width="1"><input type="checkbox" id="{{rowOpts.withCheckId}}" class="rowOpts-withCheck" ng-if="rowOpts.withCheck" ng-model="rowOpts.rowEnabled" ng-disabled="rowOpts.isFixedOn" /></td>
                 <td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
                   <div class="dp-ob-row-content-wrap" ng-class="{'as-post-render': doShow}">
                     <div class="dp-ob-row-content-placeholder" ng-if="!doShow">

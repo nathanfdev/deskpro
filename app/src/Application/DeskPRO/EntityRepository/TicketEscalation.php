@@ -72,20 +72,6 @@ class TicketEscalation extends AbstractEntityRepository
                 'default_time' => 1814400,// 60 * 60 * 24 * 21
                 'default_status' => 'resolved',
             ),
-            4 => array(
-                'title' => 'Set status to archived when ticket has been resolved',
-                'sys_name' => 'statuses_resolved_set_archived',
-                'event' => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_RESOLVED,
-                'default_time' => 7776000,// 60 * 60 * 24 * 90
-                'default_status' => 'archived',
-            ),
-            5 => array(
-                'title' => 'Set status to archived when ticket has been resolved',
-                'sys_name' => 'statuses_resolved_set_archived_2',
-                'event' => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_RESOLVED,
-                'default_time' => 8640000,// 60 * 60 * 24 * 100
-                'default_status' => 'archived',
-            ),
         ),
     );
 

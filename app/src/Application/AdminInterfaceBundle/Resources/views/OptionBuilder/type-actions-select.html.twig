@@ -3,7 +3,7 @@
 		<table class="display-table">
 			<tr>
 				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
-				<td ng-show="rowOpts.rowEnabled">
+				<td ng-show="rowOpts.rowEnabled" class="row-options">
 					<select
 						ng-if="!multiselect"
 						ui-select2="{dropdownAutoWidth:true}"
