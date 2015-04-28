@@ -34,6 +34,8 @@ define [
       else
         return @Api.sendPost("/ticket_escalations/#{escId}/disable")
 
+    saveEnabledState: (esc) ->
+      @saveEnabledStateById esc.id, esc.is_enabled
 
     ###
       # Save order of escalations
@@ -104,6 +106,20 @@ define [
 
       return deferred.promise
 
+    loadEditSpecialEscalation: (type, id) ->
+      deferred = @$q.defer()
+
+      @Api.sendGet("/ticket_escalations/#{type}/#{id}").then(
+        (result) =>
+          data =
+            escalation: result.data.escalation
+            form: @getFormMapper().getFormFromModel result.data.escalation
+          deferred.resolve(data)
+      , ->
+        deferred.reject()
+      )
+
+      deferred.promise
 
     ###
       # Saves a form model and applies the form model to the macro model

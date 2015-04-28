@@ -10,33 +10,23 @@ define [
 
     init: ->
       @list = []
+      @list_satisfaction = []
+      @list_statuses = []
       @escData = @DataService.get('TicketEscalations')
 
-      @sortedListOptions = {
-        axis: 'y',
-        handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
-
-          orders = []
-          $list.find('li').each(->
-            id = parseInt($(this).data('id'))
-            console.log(id)
-
-            if id
-              orders.push(id)
-          )
-
-          @escData.saveRunOrder(orders).then( =>
-            @pingElement('run_orders')
-          )
-      }
 
     initialLoad: ->
       promise = @escData.loadList()
       promise.then( (list) =>
+        return if !list
 
-        @list = list
+        list.map (item) =>
+          if 'satisfaction' == item.sys_type
+            @list_satisfaction.push item
+          else if 'statuses' == item.sys_type
+            @list_statuses.push item
+          else
+            @list.push item
 
         if @$state.current.name == 'tickets.ticket_escalations'
           if @list[0]
@@ -58,6 +48,8 @@ define [
         if v.id == esc
           esc = v
           break
+
+      return if esc.sys_name?
 
       inst = @$modal.open({
         templateUrl: @getTemplatePath('TicketEscalations/delete-modal.html'),

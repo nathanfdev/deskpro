@@ -3302,14 +3302,14 @@ $collection->create('api_ticket_triggers_getcustomactions', array(
 $collection->create('api_ticket_triggers_getspecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'ApiBundle:TicketTriggers:get',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_updatespecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'ApiBundle:TicketTriggers:save',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 
@@ -3358,7 +3358,7 @@ $collection->create('api_ticket_triggers_enabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/enable',
     'defaults'     => array('is_enabled' => true),
     'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 
@@ -3366,7 +3366,7 @@ $collection->create('api_ticket_triggers_disabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/disable',
     'defaults'     => array('is_enabled' => false),
     'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 
@@ -3419,6 +3419,20 @@ $collection->create('api_ticket_escalations_update', array(
     'path'        => '/ticket_escalations/{id}',
     'controller'  => 'ApiBundle:TicketEscalations:save',
     'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_escalations_getspecial', array(
+    'path'         => '/ticket_escalations/{special_type}/{id}',
+    'controller'   => 'ApiBundle:TicketEscalations:get',
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_escalations_updatespecial', array(
+    'path'         => '/ticket_escalations/{special_type}/{id}',
+    'controller'   => 'ApiBundle:TicketEscalations:save',
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_escalations_delete', array(

@@ -541,6 +541,14 @@ define(function() {
   });
 
   routes.push({
+    id: 'tickets.triggers.editsatisfaction',
+    url: '/{id:satisfaction\-[0-2]}',
+    templateName: 'TicketTriggers/edit-satisfaction.html',
+    controller: 'Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger',
+    data: { stateMarkId: "tickets.triggers" }
+  });
+
+  routes.push({
     id: 'tickets.triggers.edit',
     url: '/{id:[0-9]+}',
     templateName: 'TicketTriggers/edit.html',
@@ -660,6 +668,19 @@ define(function() {
     url: '/{id:[0-9]+}',
     templateName: 'TicketEscalations/edit.html',
     controller: 'Admin_TicketEscalations_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'tickets.ticket_escalations.editsatisfaction',
+    url: '/satisfaction',
+    templateName: 'TicketEscalations/edit-satisfaction.html',
+    controller: 'Admin_TicketEscalations_Ctrl_EditSatisfaction'
+  });
+  routes.push({
+    id: 'tickets.ticket_escalations.editstatuses',
+    url: '/statuses/{id:[0-9]+}',
+    templateName: 'TicketEscalations/edit-statuses.html',
+    controller: 'Admin_TicketEscalations_Ctrl_EditStatuses'
   });
 
   //###
