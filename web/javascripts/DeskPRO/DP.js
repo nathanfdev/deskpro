@@ -130,7 +130,7 @@ var DP = {
 	},
 
 	select: function(el, options) {
-		if (el.data('select2')) {
+    if (el.data('select2') || el.data('no-select2')) {
 			return;
 		}
 

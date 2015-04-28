@@ -230,6 +230,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
+    this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
+
 		last.detach().appendTo(this.display);
 	},
 

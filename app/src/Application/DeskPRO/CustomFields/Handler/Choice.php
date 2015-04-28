@@ -178,6 +178,7 @@ class Choice extends HandlerAbstract
             'attr' => array(
                 'data-map' => json_encode($root),
                 'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
+                'data-no-select2' => 1,
             ),
         );
 
