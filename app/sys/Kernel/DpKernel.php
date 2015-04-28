@@ -128,9 +128,9 @@ class DpKernel extends AbstractKernel
             // If the container doesnt exist and we're in prod, then means we're installing an update.
             // Halt now. This prevents the system from trying to generate the cache itself,
             // even though the new files will be installed in a second.
-            $cache_file = $this->getCacheDir().$this->getContainerClass().'.php';
+            $cache_file = $this->getCacheDir().'/'.$this->getContainerClass().'.php';
             if (!is_file($cache_file)) {
-                echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+                echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates');
                 exit;
             }
         }
@@ -230,9 +230,9 @@ class DpKernel extends AbstractKernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment;
             }
         }
 
@@ -396,26 +396,32 @@ class DpKernel extends AbstractKernel
                 try {
                     if (!$this->container->getSetting('user.portal_enabled')) {
                         $response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
-
                         return $response;
                     }
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) {}
             }
         }
 
-        $deskproUrl = App::getSetting('core.deskpro_url');
-        if ($deskproUrl) {
-            if (false === $correctScheme = $request->isCorrectScheme($deskproUrl)) {
+        // Exclude ajax requests
+        if ($request->isXmlHttpRequest()) {
+            return null;
+        }
+
+        $correct_scheme    = true;
+        $correct_host      = true;
+        $deskpro_url       = App::getSetting('core.deskpro_url');
+        $enable_correction = App::getSetting('core.deskpro_url_autocorrect');
+
+        if ($deskpro_url) {
+            if (false === $correct_scheme = $request->isCorrectScheme($deskpro_url)) {
                 $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
                 $request->attributes->set($interface . '.wrong_scheme', true);
             }
-            if (false === $correctHost = $request->isCorrectHost($deskproUrl)) {
+            if (false === $correct_host = $request->isCorrectHost($deskpro_url)) {
                 $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
                 $request->attributes->set($interface . '.wrong_host', true);
             }
         }
-
 
         if (
             (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
@@ -424,18 +430,6 @@ class DpKernel extends AbstractKernel
             || '/api/' === substr($path, 0, 5)
             || ('admin' === $this->interface)
         ) {
-            return null;
-        }
-
-        if ('agent' === $this->interface && (!$correctHost || !$correctScheme)) {
-            $url = $request->getScheme() . '://' . $request->getHttpHost() . '/agent/login';
-            return new RedirectResponse($url, 301);
-        }
-
-
-
-        // Exclude ajax requests
-        if ($request->isXmlHttpRequest()) {
             return null;
         }
 
@@ -465,37 +459,29 @@ class DpKernel extends AbstractKernel
             return null;
         }
 
+        if (!$enable_correction) {
+            return null;
+        }
+
         if (!$this->shouldApplyUrlCorrections($request)) {
             return null;
         }
 
-        if (null === $info = $request->getCorrectInfo($deskproUrl)) {
+        if (null === $info = $request->getCorrectInfo($deskpro_url)) {
             return null;
         }
 
-        if ($request->isIndexIncluded()) {
-            $path = '/index.php' . $path;
+        $do_correction = !$correct_scheme || !$correct_host;
+
+        // Redirect back to agent login screen because we do
+        // auto-redirect stuff in JS and show warning
+        if ('agent' === $this->interface && $do_correction) {
+            $url = $request->getScheme() . '://' . $request->getHttpHost() . '/' . ltrim(rtrim($request->getBasePath(), '/') . (@$GLOBALS['DP_CONFIG']['rewrite_urls'] ? '' : '/index.php') . '/agent/login', '/');
+            return new RedirectResponse($url, 301);
         }
 
-        $do_correction = !$correctScheme || !$correctHost;
-
-        if ($request->query->has('__debug_dp_autocorrect_url')) {
-
-            $content = array();
-            $content[] = "URL:            " . App::getSetting('core.deskpro_url');
-            $content[] = "Correct Host:   " . $info['port'] ? ($info['host'] . ':' . $info['port']) : $info['host'];
-            $content[] = "Correct Scheme: " . $info['scheme'];
-            $content[] = "Now Host:       " . $request->getHttpHost();
-            $content[] = "Now Scheme:     " . $request->getScheme();
-            $content[] = "";
-            $content[] = "Correction required? " . ($do_correction ? "Yes" : "No") . ".";
-            $content = implode("\n", $content);
-
-            $response = new Response();
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'debug_autocorrect.txt');
-            $response->setContent($content);
-            return $response;
+        if (!@$GLOBALS['DP_CONFIG']['rewrite_urls']) {
+            $path = '/index.php' . $path;
         }
 
         if ($do_correction) {

@@ -99,6 +99,10 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         }
         $data = parent::toApiData($primary, $deep, $visited);
 
+        // otherwise may potentially be encoded in json as an object
+        // because we might have removed agents above and caused keys to have gaps
+        $data['agents'] = array_values($data['agents']);
+
         return $data;
     }
 

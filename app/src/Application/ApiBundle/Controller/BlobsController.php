@@ -47,7 +47,7 @@ class BlobsController extends AbstractController
      */
     public function uploadAction()
     {
-        $file = $this->request->files->get('upfile');
+        $file = $this->request->files->get('upfile') ?: @reset($this->request->files->all()) ?: null;
         $accept = $this->container->getAttachmentAccepter();
 
         $context = 'agent';

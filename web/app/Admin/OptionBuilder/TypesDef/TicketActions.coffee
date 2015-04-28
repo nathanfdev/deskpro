@@ -596,6 +596,7 @@ define [
       options.extraOptions = [
         {title: 'No Team', value: 0},
         {title: 'Current Agent\'s Team', value: -1}
+        {title: 'Team of currently assigned agent', value: -2}
       ]
       def = @getStandardSelect(options)
       return def
@@ -826,7 +827,7 @@ define [
           return {
             getViewValue: (value = {}, data) ->
               return {
-                value: value.options.color
+                value: value.options?.color || 'red'
               }
             getValue: (model = {}, data) ->
               value = {}

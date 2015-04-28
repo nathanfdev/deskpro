@@ -43,8 +43,18 @@ DeskPRO.Agent.RteEditor = {
       execCommandCallback: function(api, cmd) {
         api.$editor.find('blockquote').attr('style', null).addClass('dp-bq');
         api.$editor.find('pre').attr('style', null).addClass('dp-pre');
-        api.$editor.find('font').each(function(n) {
-          $(this).replaceWith($('<span/>').html(n.innerHTML));
+        api.$editor.find('font').each(function(x, n) {
+          n = $(n);
+          var el = $('<span/>').html(n.html());
+
+          if (n.attr('style')) {
+            el.attr('style', n.attr('style'));
+          }
+          if (n.attr('color') && !el.css('color')) {
+            el.css('color', n.attr('color'));
+          }
+
+          $(this).replaceWith(el);
         });
       }
 		};
@@ -474,6 +484,53 @@ DeskPRO.Agent.RteEditor = {
 			}, this), 1);
 
 		}, textarea.data('redactor')));
+
+    var origSyncCode = api.syncCode;
+    api.syncCode = $.proxy(function(html) {
+      var copy = $('<div/>').html(this.$editor.html());
+      var didChange, counter = 0;
+
+      // This unwraps breaks that appear within other elements,
+      // which can lead to multiple newlines appearing in the result
+      // Before: Foo<i><br/></i>Bar
+      // After:  Foo<br/>Bar
+      do {
+        didChange = false;
+        copy.find('br').each(function () {
+          var me = $(this);
+          var parent = me.parent();
+
+          // Only count text nodes
+          if (!parent.is('p, div, span, em, strong, i, b, font, a')) {
+            return;
+          }
+
+          // has text node (Node.TEXT_NODE), ignore
+          if (parent.contents().filter(function () {
+              return this.nodeType === 3;
+            }).length) {
+            return;
+          }
+
+          // has other nodes
+          if (parent.find('> *').not('br').length) {
+            return;
+          }
+
+          var brHtml = [];
+          for (var x = 0, len = parent.find('> br').length; x < len; x++) {
+            brHtml.push('<br/>');
+          }
+
+          // Otherwise we are just wrapping a br
+          parent.replaceWith($(brHtml.join('')));
+          didChange = true;
+        });
+
+      } while (didChange && counter++ < 40); //counter as safety
+
+      this.$el.val(copy.html());
+    }, api);
 
     var origPasteCleanup = api.pasteClean;
     api.pasteCleanUp = $.proxy(function(html) {

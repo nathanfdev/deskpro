@@ -33,8 +33,12 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
         deferred.resolve([])
         return deferred.promise
 
+      phrases = []
+      for n in savePhrases
+        phrases.push n if 'user.general.helpdesk_by' != n.name
+
       @Api.sendPostJson("/langs/#{langId}/phrases", {
-        phrases: savePhrases
+        phrases: phrases
       }).success(->
         deferred.resolve(savePhrases)
       ).error(->

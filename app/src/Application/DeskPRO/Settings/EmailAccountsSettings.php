@@ -54,6 +54,8 @@ class EmailAccountsSettings
 
     protected $other_values = array(
         'core_tickets.enable_dupe_checking' => true,
+        'core_tickets.gateway_enable_subject_match' => true,
+        'core_tickets.enable_same_account_subject_matching' => false,
         'core_tickets.enable_exact_subject_matching' => false,
     );
 
