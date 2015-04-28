@@ -102,7 +102,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
           @Api.sendGet("/agent_groups/#{params[1]}").success( (data) =>
             return if not data || not data.group.members
 
-            for a in data.team.members
+            for a in data.group.members
               agent = findAgent(a.id)
               if agent then @handleAgent(agent)
               @sortAgents()
