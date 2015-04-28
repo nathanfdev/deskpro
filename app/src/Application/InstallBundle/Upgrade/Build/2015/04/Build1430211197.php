@@ -38,12 +38,23 @@ class Build1430211197 extends AbstractBuild
 {
     public function run()
     {
+        $sh = $this->getSchemaHelper();
+
         $this->out("Upgrade Round Robin");
-		$this->execMutateSql("ALTER TABLE round_robin DROP FOREIGN KEY FK_A56034E1C0E3DE5");
-		$this->execMutateSql("DROP INDEX IDX_A56034E1C0E3DE5 ON round_robin");
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+
+        $fk = $sh->findForeignKey('round_robin', 'next_agent_id', 'people', 'id');
+        $sh->getSchemaManager()->dropForeignKey($fk, 'round_robin');
+
+        $idx = $sh->findIndex('round_robin', array('next_agent_id'));
+        if ($idx) {
+            $sh->getSchemaManager()->dropIndex($idx, 'round_robin');
+        }
+
 		$this->execMutateSql("ALTER TABLE round_robin CHANGE next_agent_id last_agent_id INT DEFAULT NULL");
 		$this->execMutateSql("ALTER TABLE round_robin ADD CONSTRAINT FK_A56034E14C753495 FOREIGN KEY (last_agent_id) REFERENCES people (id) ON DELETE SET NULL");
 		$this->execMutateSql("CREATE INDEX IDX_A56034E14C753495 ON round_robin (last_agent_id)");
         $this->execMutateSql("UPDATE round_robin SET last_agent_id = NULL");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
     }
 }

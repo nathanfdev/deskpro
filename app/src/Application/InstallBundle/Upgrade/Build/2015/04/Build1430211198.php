@@ -38,10 +38,20 @@ class Build1430211198 extends AbstractBuild
 {
     public function run()
     {
+        $sh = $this->getSchemaHelper();
+
         $this->out("Upgrade Agent-Team relations");
-		$this->execMutateSql("ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03217BBB47");
-		$this->execMutateSql("ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03296CD8AE");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+
+        $fk = $sh->findForeignKey('agent_team_members', 'person_id', 'people', 'id');
+        $sh->getSchemaManager()->dropForeignKey($fk, 'agent_team_members');
+
+        $fk = $sh->findForeignKey('agent_team_members', 'team_id', 'agent_teams', 'id');
+        $sh->getSchemaManager()->dropForeignKey($fk, 'agent_team_members');
+
 		$this->execMutateSql("ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03296CD8AE FOREIGN KEY (team_id) REFERENCES agent_teams (id) ON DELETE CASCADE");
+
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
     }
 }
