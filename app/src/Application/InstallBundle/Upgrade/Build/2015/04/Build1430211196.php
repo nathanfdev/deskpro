@@ -34,13 +34,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1424633221 extends AbstractBuild
+class Build1430211196 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Mail Tracking");
-		$this->execMutateSql("CREATE TABLE sendmail_source_statuses (id INT AUTO_INCREMENT NOT NULL, sendmail_source_id INT DEFAULT NULL, user_email VARCHAR(255) NOT NULL, event_type VARCHAR(255) NOT NULL, event_info VARCHAR(255) NOT NULL, details LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_7DB3604F2E621D8C (sendmail_source_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE sendmail_source_statuses ADD CONSTRAINT FK_7DB3604F2E621D8C FOREIGN KEY (sendmail_source_id) REFERENCES sendmail_sources (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE sendmail_sources ADD num_targets INT NOT NULL, ADD num_pending INT NOT NULL, ADD num_error INT NOT NULL, ADD num_complete INT NOT NULL");
+        $this->out("Upgrade Round Robin Log");
+        $this->execMutateSql("DROP TABLE IF EXISTS log_round_robin");
+		$this->execMutateSql("CREATE TABLE round_robin_log (id INT AUTO_INCREMENT NOT NULL, rr_id INT DEFAULT NULL, ticket_id INT NOT NULL, ticket_subject VARCHAR(255) NOT NULL, actions LONGBLOB NOT NULL COMMENT '(DC2Type:array)', created DATETIME NOT NULL, INDEX IDX_4CB426EE1D063087 (rr_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
+		$this->execMutateSql("ALTER TABLE round_robin_log ADD CONSTRAINT FK_4CB426EE1D063087 FOREIGN KEY (rr_id) REFERENCES round_robin (id)");
     }
 }

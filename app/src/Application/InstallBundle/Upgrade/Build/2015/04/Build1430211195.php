@@ -34,13 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1427665856 extends AbstractBuild
+class Build1430211195 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Upgrade Round Robin Log");
-        $this->execMutateSql("DROP TABLE IF EXISTS log_round_robin");
-		$this->execMutateSql("CREATE TABLE round_robin_log (id INT AUTO_INCREMENT NOT NULL, rr_id INT DEFAULT NULL, ticket_id INT NOT NULL, ticket_subject VARCHAR(255) NOT NULL, actions LONGBLOB NOT NULL COMMENT '(DC2Type:array)', created DATETIME NOT NULL, INDEX IDX_4CB426EE1D063087 (rr_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
-		$this->execMutateSql("ALTER TABLE round_robin_log ADD CONSTRAINT FK_4CB426EE1D063087 FOREIGN KEY (rr_id) REFERENCES round_robin (id)");
+        $this->out("Upgrade Round Robin");
+		$this->execMutateSql("ALTER TABLE round_robin ADD online_only TINYINT(1) NOT NULL");
     }
 }

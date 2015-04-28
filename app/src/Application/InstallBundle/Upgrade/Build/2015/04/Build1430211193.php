@@ -34,11 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1427658335 extends AbstractBuild
+class Build1430211193 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Upgrade Round Robin");
-		$this->execMutateSql("ALTER TABLE round_robin ADD online_only TINYINT(1) NOT NULL");
+        $this->out("Escalation Upgrade Class");
+		$this->execMutateSql("ALTER TABLE ticket_escalations ADD sys_name VARCHAR(255) DEFAULT NULL");
     }
 }

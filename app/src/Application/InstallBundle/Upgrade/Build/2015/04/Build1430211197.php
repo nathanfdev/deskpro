@@ -34,11 +34,16 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1421558026 extends AbstractBuild
+class Build1430211197 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Escalation Upgrade Class");
-		$this->execMutateSql("ALTER TABLE ticket_escalations ADD sys_name VARCHAR(255) DEFAULT NULL");
+        $this->out("Upgrade Round Robin");
+		$this->execMutateSql("ALTER TABLE round_robin DROP FOREIGN KEY FK_A56034E1C0E3DE5");
+		$this->execMutateSql("DROP INDEX IDX_A56034E1C0E3DE5 ON round_robin");
+		$this->execMutateSql("ALTER TABLE round_robin CHANGE next_agent_id last_agent_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE round_robin ADD CONSTRAINT FK_A56034E14C753495 FOREIGN KEY (last_agent_id) REFERENCES people (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_A56034E14C753495 ON round_robin (last_agent_id)");
+        $this->execMutateSql("UPDATE round_robin SET last_agent_id = NULL");
     }
 }
