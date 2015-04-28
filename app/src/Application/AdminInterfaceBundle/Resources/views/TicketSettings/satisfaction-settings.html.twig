@@ -39,7 +39,7 @@
 							<label>
 								<input type="checkbox" ng-model="ctrl.esc.is_enabled" ng-change="ctrl.escData.saveEnabledState(ctrl.esc)" />
 								<h4>
-									Send user an email (<a href="#" ng-click="$event.preventDefault(); $event.stopPropagation(); editSatisfactionTemplate()">edit template</a>) after being resolved for  <dp-time-with-unit ng-model="ctrl.form.event_trigger_time"/>
+									Send user an email requesting feedback (<a href="#" ng-click="$event.preventDefault(); $event.stopPropagation(); editSatisfactionTemplate()">edit template</a>) after a ticket has been resolved for  <dp-time-with-unit ng-model="ctrl.form.event_trigger_time"/>
 								</h4>
 							</label>
 							<span class="help-block">
@@ -48,7 +48,6 @@
 						</div>
 
 						{% for id, feedback in {2: 'positive', 1: 'neutral', 0: 'negative'} %}
-
 							<div class="inner-group" ng-show="settings.satisfaction_enabled && ctrl.trigger"
 								 ng-controller="Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger as ctrl"
 								 ng-init="setCtrlParams({{ id }})"
@@ -61,7 +60,7 @@
 												{{ phrase('adm.satisfaction.trigger_' ~ feedback ~ '_title') }}
 											</h4>
 										</label>
-										<article>
+										<article ng-show="ctrl.trigger.is_enabled">
 											<dp-option-builder types-def="ctrl.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixOn: []}" option-types="actionOptionTypes">
 												<add-btn-label>Action</add-btn-label>
 											</dp-option-builder>

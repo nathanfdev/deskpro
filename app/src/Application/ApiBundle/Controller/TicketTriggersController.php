@@ -215,6 +215,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                 $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
                 if (!$trigger) {
                     $trigger = new TicketTrigger();
+                    $trigger->is_enabled = false;
                     $edit = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                     $edit->applyToTrigger($trigger);
                     $this->em->persist($trigger);

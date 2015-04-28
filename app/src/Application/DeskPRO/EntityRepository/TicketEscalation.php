@@ -125,7 +125,7 @@ class TicketEscalation extends AbstractEntityRepository
         $esc['sys_name'] = $def['sys_name'];
         $esc['event_trigger'] = $def['event'];
         $esc['event_trigger_time'] = $def['default_time'];
-        $esc['is_enabled'] = true;
+        $esc['is_enabled'] = false;
 
         if (@$def['default_template']) {
             $esc->actions->addAction(new SendUserEmail(array(
