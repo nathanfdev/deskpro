@@ -33,6 +33,7 @@ namespace Application\ImportBundle\ValueImporter;
 
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Value\TicketValue;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
@@ -164,14 +165,14 @@ class TicketValueImporter extends AbstractValueImporter
 
         //Ref
         if (!$tval->ref) {
-            $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
+            $record['ref'] = DpStrings::random(10, Strings::CHARS_ALPHANUM_IU);
         } else {
             $query = 'SELECT id FROM tickets WHERE ref = ?';
 
             $duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
 
             if ($duplicateRef) {
-                $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
+                $record['ref'] = DpStrings::random(10, Strings::CHARS_ALPHANUM_IU);
             } else {
                 $record['ref'] = $tval->ref;
             }

@@ -8,6 +8,8 @@
  * contacts data.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_ReferenceItemResponseType.
  */
 class EWSType_AcceptSharingInvitationType extends EWSType
 {

@@ -41,12 +41,18 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Handles viewing and editing a person
@@ -141,6 +147,15 @@ class PersonController extends AbstractController
             }
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
+
+	    $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+		    'type' => new PhoneNumberType(),
+		    'allow_add' => true,
+		    'allow_delete' => true,
+		    'options' => array(
+			    'label' => false
+		    ),
+	    ))->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         if ($session) {
@@ -673,23 +688,27 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
                             'person' => $person
                         ));
-                        $message->enableQueueHint();
+
+                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                            $message->prepare();
+                        });
+
                         $this->container->getMailer()->send($message);
                     }
                 }
                 break;
-                        case 'upload-vcard':
-                                $blobId = $this->in->getUint('blob_id');
+        case 'upload-vcard':
+                $blobId = $this->in->getUint('blob_id');
 
-                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
 
-                                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-                                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
 
-                                $vCardReader->applyToPerson($content, $person);
+                $vCardReader->applyToPerson($content, $person);
 
-                                break;
+                break;
 
             default:
                 return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
@@ -850,7 +869,7 @@ class PersonController extends AbstractController
     # save-contact-data
     ############################################################################
 
-    public function saveContactDataAction($person_id)
+    public function saveContactDataAction(Request $request, $person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
@@ -872,6 +891,15 @@ class PersonController extends AbstractController
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
         $added = array();
+
+	    $phones_form = $this->createForm('collection', $person->phone_numbers, array(
+		    'type' => new PhoneNumberType(),
+		    'allow_add' => true,
+		    'allow_delete' => true,
+		    'options' => array(
+			    'label' => false
+		    ),
+	    ));
 
         try {
 
@@ -986,8 +1014,25 @@ class PersonController extends AbstractController
             throw $e;
         }
 
+	    $phones_form->handleRequest($request);
+	    if ($phones_form->isValid()) {
+		    foreach ($phones_form->getData() as $phone) {
+			    if ($phone->person) continue;
+			    $phone->person = $person;
+			    $this->em->persist($phone);
+		    }
+		    $this->em->flush();
+	    } else {
+		    foreach ($phones_form->getErrors(true, true) as $error) {
+			    /** @var $error FormError */
+			    $errors[] = $error->getMessage();
+		    }
+	    }
+
         // Reset display array
-        $contact_data_array = array();
+        $contact_data_array = array(
+	        'phone_numbers' => $phones_form->createView(),
+        );
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
                 $contact_data_array[$cd->contact_type] = array();
@@ -1121,6 +1166,28 @@ class PersonController extends AbstractController
             'person_id' => $person['id'],
             'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note))
         ));
+    }
+
+    /**
+     * @param $note_id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function deleteNoteAction($note_id)
+    {
+        if (!$this->person->hasPerm('agent_people.notes')) {
+            throw new AccessDeniedException;
+        }
+
+        if (!$note = $this->em->find('DeskPRO:PersonNote', $note_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $this->em->remove($note);
+        $this->em->flush();
+        return $this->createJsonResponse(array('success' => true));
     }
 
     ############################################################################
@@ -1385,7 +1452,7 @@ class PersonController extends AbstractController
 
         if ($this->in->getString('newperson.set_password')) {
             $password = 'generate' === $this->in->getString('newperson.set_password_radio') || !$this->in->getString('newperson.new_password')
-                ? Strings::random(8)
+                ? DpStrings::random(8)
                 : $this->in->getString('newperson.new_password');
             $newperson->password = $password;
         }
@@ -1461,7 +1528,7 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
                             'person' => $person
                         ));
-                        $mailer->sendNow($message);
+                        $mailer->send($message);
                     }
 
                     return $this->createJsonResponse(array(
@@ -1509,7 +1576,7 @@ class PersonController extends AbstractController
                     'person' => $person
                 ));
 
-                $mailer->sendNow($message);
+                $mailer->send($message);
             }
 
             return $this->createJsonResponse(array(

@@ -83,15 +83,22 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
     public function apply(Ticket $ticket)
     {
         $agent_team_id = $this->agent_team_id;
+        $person = null;
 
-        if ($agent_team_id == -1) {
-            // Invalid context
-            if (!$this->person_context OR !$this->person_context['is_agent']) {
+        if ($agent_team_id < 0) {
+
+            if ($agent_team_id == -1) {
+                $person = $this->person_context;
+            } elseif (-2 === $agent_team_id) {
+                $person = $ticket->person;
+            }
+
+            if (!$person || !$person['is_agent']) {
                 return;
             }
 
-            $this->person_context->loadHelper('AgentTeam');
-            $agent_team_id = $this->person_context->getHelper('AgentTeam')->getPrimaryTeamId();
+            $person->loadHelper('AgentTeam');
+            $agent_team_id = $person->getHelper('AgentTeam')->getPrimaryTeamId();
 
             // Invalid agent team (eg. agent has no teams)
             if (!$agent_team_id) {

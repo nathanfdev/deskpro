@@ -737,7 +737,7 @@ class PeopleSearchController extends AbstractController
             $q = $this->in->getString('term');
         }
 
-        $limit       = $this->in->getUint('limit') ?: 100;
+        $limit       = $this->in->getUint('limit') ?: 250;
         $with_agents = $this->in->getBool('with_agents');
         $exclude_org = $this->in->getUint('exclude_org');
 
@@ -832,6 +832,8 @@ class PeopleSearchController extends AbstractController
 
         $email_ids = array();
 
+        $tm = $this->container->getTicketManager();
+
         $this->db->beginTransaction();
         try {
             $ids = array();
@@ -854,8 +856,12 @@ class PeopleSearchController extends AbstractController
 
                     foreach ($ticket_ids as $ticket_id) {
                         $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-                        $ticket->setStatus('awaiting_agent');
-                        $this->em->persist($ticket);
+                        if ($ticket) {
+                            $context = $tm->createAgentExecutorContext($this->person, 'newreply', 'web');
+                            $tm->markAsManaged($ticket);
+                            $ticket->setStatus('awaiting_agent');
+                            $tm->saveTicket($ticket, $context);
+                        }
                     }
                 }
             }

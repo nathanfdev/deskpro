@@ -98,6 +98,28 @@ class ProcessReply extends ProcessAbstract
                 'newreply',
                 'email'
             );
+
+            $this->person->loadHelper('PermissionsManager');
+            if (!$this->person->PermissionsManager->TicketChecker->canReply($this->ticket)) {
+                if (!$this->ticket_email->is_bounce && !$this->reader->isFromRobot()) {
+                    $message = App::getMailer()->createMessage();
+                    $message->setTemplate('DeskPRO:emails_agent:error-no-reply-perm.html.twig', array(
+                        'ticket'  => $this->ticket,
+                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                        'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    ));
+                    $message->setTo($this->reader->getFromAddress()->getEmail());
+
+                    App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                        $message->prepare();
+                    });
+
+                    App::getMailer()->send($message);
+                }
+
+                $this->setError('perm_insufficient');
+                return null;
+            }
         }
 
         $executor_context->setEmailContext($this->reader);
@@ -156,7 +178,7 @@ class ProcessReply extends ProcessAbstract
             $executor_context->getVars()->set('is_bounce_message', true);
         }
 
-        $message = new TicketMessage();
+        $message = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
@@ -220,8 +242,7 @@ class ProcessReply extends ProcessAbstract
             $has_reply_codes = true;
         }
 
-        $message->message_hash = null;
-        $message->initHashCode();
+        $message->resetHashCode();
 
         // - Only add the message if we have an actual message
         // This allows email replies with action codes but no reply,

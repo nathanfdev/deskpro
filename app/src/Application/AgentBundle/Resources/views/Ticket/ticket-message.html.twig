@@ -129,6 +129,17 @@
 							</td>
 						</tr>
 					{% endif %}
+					{% if app.getSetting('rdns_ticket_messages') and app.isAppAllowed('deskpro_ticket_hostnames') %}
+						<tr>
+							<th>{{ phrase('agent.general.hostname') }}:</th>
+							<td>
+								<span class="dp_hostname_val">{{ message.hostname|default('Unknown') }}</span>
+								{% if app.getSetting('rdns_ticket_messages') and message.ip_address %}
+									<i class="fa fa-refresh dp_hostname_reload" data-ip="{{ message.ip_address }}" style="margin-left: 5px; cursor: pointer; color: #aaa;" title="Refresh"></i>
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
 				</table>
 			</div>
 		</header>
@@ -150,7 +161,7 @@
 								{{ phrase('agent.tickets.long_message_clipped') }} <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">{{ phrase('agent.tickets.view_entire_in_new_win') }} &rarr;</a>
 							</div>
 						{% else %}
-							{{message.message_html|safe_link_urls_html }}
+							{{message.message_html|raw}}
 							{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="{{ phrase('agent.tickets.view_full_quoted_message') }}">&bull; &bull; &bull;</em></div>{% endif %}
 						{% endif %}
 					</div>

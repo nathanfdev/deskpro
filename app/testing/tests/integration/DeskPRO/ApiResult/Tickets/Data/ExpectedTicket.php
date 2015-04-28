@@ -166,8 +166,7 @@ return array(
                     'id' => 1,
                     'email' => 'admin@example.com',
                 ),
-            'primary_phone_number_text' => '',
-            'primary_phone_number_region' => '',
+            'primary_phone' => array(),
             'usergroup_ids' =>
                 array(
                     0 => 2,

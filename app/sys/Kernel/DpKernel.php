@@ -33,12 +33,13 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -57,6 +58,11 @@ class DpKernel extends AbstractKernel
      * @var string
      */
     private $interface;
+
+    /**
+     * @var DeskproContainer
+     */
+    protected $container;
 
 
     /**
@@ -122,9 +128,9 @@ class DpKernel extends AbstractKernel
             // If the container doesnt exist and we're in prod, then means we're installing an update.
             // Halt now. This prevents the system from trying to generate the cache itself,
             // even though the new files will be installed in a second.
-            $cache_file = $this->getCacheDir().$this->getContainerClass().'.php';
+            $cache_file = $this->getCacheDir().'/'.$this->getContainerClass().'.php';
             if (!is_file($cache_file)) {
-                echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+                echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates');
                 exit;
             }
         }
@@ -177,6 +183,7 @@ class DpKernel extends AbstractKernel
         $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
+        $content = str_replace('dev//', 'dev/', $content);
         // Empty logs dir that isn't used (we get it from conf)
         $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
 
@@ -223,9 +230,9 @@ class DpKernel extends AbstractKernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment;
             }
         }
 
@@ -339,6 +346,7 @@ class DpKernel extends AbstractKernel
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\EmailBundle\EmailBundle(),
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
@@ -372,36 +380,26 @@ class DpKernel extends AbstractKernel
      */
     protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
+        $path = $request->getPathInfo();
+
         if ($this->interface == 'user' && $this->container) {
             if (
-                !preg_match('#^/widget/#', $request->getPathInfo())
-                && !preg_match('#^/chat/#', $request->getPathInfo())
-                && !preg_match('#^/tickets/new-simple#', $request->getPathInfo())
-                && !preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
-                && !preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
-                && !preg_match('#^/logout#', $request->getPathInfo())
-                && !preg_match('#^/login#', $request->getPathInfo())
-                && (!isset($_REQUEST['_partial']) || $_REQUEST['_partial'] != 'overlayWidget')
+                '/widget/' !== substr($path, 0, 8)
+                && '/chat/' !== substr($path, 0, 6)
+                && '/tickets/new-simple' !== substr($path, 0, 19)
+                && '/tickets/new/thanks-simple/' !== substr($path, 0, 27)
+                && '/accept-temp-upload' !== substr($path, 0, 19)
+                && '/logout' !== substr($path, 0, 7)
+                && '/login' !== substr($path, 0, 6)
+                && 'overlayWidget' !== $request->get(Request::PARTIAL_REQUEST_KEY)
             ) {
                 try {
                     if (!$this->container->getSetting('user.portal_enabled')) {
                         $response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
-
                         return $response;
                     }
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) {}
             }
-        }
-
-        if (
-            (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
-            || strpos($request->getPathInfo(), '/admin/') === 0
-            || strpos($request->getPathInfo(), '/agent/login') === 0
-            || strpos($request->getPathInfo(), '/api/') === 0
-            || (defined('DP_INTERFACE') && DP_INTERFACE == 'admin')
-        ) {
-            return null;
         }
 
         // Exclude ajax requests
@@ -409,7 +407,31 @@ class DpKernel extends AbstractKernel
             return null;
         }
 
-        $path = $request->getPathInfo();
+        $correct_scheme    = true;
+        $correct_host      = true;
+        $deskpro_url       = App::getSetting('core.deskpro_url');
+        $enable_correction = App::getSetting('core.deskpro_url_autocorrect');
+
+        if ($deskpro_url) {
+            if (false === $correct_scheme = $request->isCorrectScheme($deskpro_url)) {
+                $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
+                $request->attributes->set($interface . '.wrong_scheme', true);
+            }
+            if (false === $correct_host = $request->isCorrectHost($deskpro_url)) {
+                $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
+                $request->attributes->set($interface . '.wrong_host', true);
+            }
+        }
+
+        if (
+            (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
+            || '/admin/' === substr($path, 0, 7)
+            || '/agent/login' === substr($path, 0, 12)
+            || '/api/' === substr($path, 0, 5)
+            || ('admin' === $this->interface)
+        ) {
+            return null;
+        }
 
         $qs = $request->getQueryString();
         if ($qs) {
@@ -418,16 +440,16 @@ class DpKernel extends AbstractKernel
 
         if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
             // Force no index.php
-            if (strpos($request->getRequestUri(), '/index.php') !== false) {
-                $response = new RedirectResponse(rtrim($request->getBasePath(), '/') . $path, 301);
-
+            if ($request->isIndexIncluded()) {
+                $r_path = '/' . ltrim(rtrim($request->getBasePath(), '/') . $path, '/');
+                $response = new RedirectResponse($r_path, 301);
                 return $response;
             }
         } else {
             // Force index.php
-            if (strpos($request->getRequestUri(), '/index.php') === false) {
-                $response = new RedirectResponse(rtrim($request->getBasePath(), '/') . '/index.php' . $path, 301);
-
+            if (!$request->isIndexIncluded()) {
+                $r_path = '/' . ltrim(rtrim($request->getBasePath(), '/') . '/index.php' . $path, '/');
+                $response = new RedirectResponse($r_path, 301);
                 return $response;
             }
         }
@@ -437,56 +459,33 @@ class DpKernel extends AbstractKernel
             return null;
         }
 
+        if (!$enable_correction) {
+            return null;
+        }
+
         if (!$this->shouldApplyUrlCorrections($request)) {
             return null;
         }
 
-        $now_path = $request->getPathInfo();
-        if (strpos($request->getRequestUri(), '/index.php/') !== false) {
-            $now_path = '/index.php' . $now_path;
-        }
-
-        $urlinfo        = parse_url(App::getSetting('core.deskpro_url'));
-        if (!$urlinfo || empty($urlinfo['host']) || empty($urlinfo['scheme'])) {
+        if (null === $info = $request->getCorrectInfo($deskpro_url)) {
             return null;
         }
 
-        $correct_host   = strtolower($urlinfo['host']);
-        if (!empty($urlinfo['port'])) {
-            $correct_host .= ':' . $urlinfo['port'];
-        }
-        $correct_scheme = strtolower($urlinfo['scheme']);
-        $now_host       = strtolower($request->getHttpHost());
-        $now_scheme     = strtolower($request->getScheme());
+        $do_correction = !$correct_scheme || !$correct_host;
 
-        $do_correction = false;
-        if ($correct_scheme == 'https' && $now_scheme != 'https') {
-            $do_correction = true;
-        } elseif ($now_host != $correct_host) {
-            $do_correction = true;
+        // Redirect back to agent login screen because we do
+        // auto-redirect stuff in JS and show warning
+        if ('agent' === $this->interface && $do_correction) {
+            $url = $request->getScheme() . '://' . $request->getHttpHost() . '/' . ltrim(rtrim($request->getBasePath(), '/') . (@$GLOBALS['DP_CONFIG']['rewrite_urls'] ? '' : '/index.php') . '/agent/login', '/');
+            return new RedirectResponse($url, 301);
         }
 
-        if (isset($_GET['__debug_dp_autocorrect_url'])) {
-
-            $content = array();
-            $content[] = "URL:            " . App::getSetting('core.deskpro_url');
-            $content[] = "Correct Host:   " . $correct_host;
-            $content[] = "Correct Scheme: " . $correct_scheme;
-            $content[] = "Now Host:       " . $request->getHttpHost();
-            $content[] = "Now Scheme:     " . $request->getScheme();
-            $content[] = "";
-            $content[] = "Correction required? " . ($do_correction ? "Yes" : "No") . ".";
-            $content = implode("\n", $content);
-
-            $response = new Response();
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'debug_autocorrect.txt');
-            $response->setContent($content);
-            return $response;
+        if (!@$GLOBALS['DP_CONFIG']['rewrite_urls']) {
+            $path = '/index.php' . $path;
         }
 
         if ($do_correction) {
-            $url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
+            $url = App::getSetting('core.deskpro_url') . ltrim($path, '/');
             $response = new RedirectResponse($url, 301);
             $response->headers->setCookie(new Cookie('dp_autocorrect_url', '1', 0, '/'));
 
@@ -507,7 +506,7 @@ class DpKernel extends AbstractKernel
     {
         global $DP_CONFIG;
 
-        if (!(defined('install') && DP_INTERFACE == 'install')) {
+        if (!(defined('install') && 'install' === $this->interface)) {
             if (session_id() != '') {
                 if ($this->container->isServiceInitialized('session')) {
                     $this->container->get('session')->save();
@@ -533,7 +532,7 @@ class DpKernel extends AbstractKernel
             file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
         }
 
-        if (defined('DP_INTERFACE') && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'admin' || DP_INTERFACE == 'reports')) {
+        if ('agent' === $this->interface || 'admin' === $this->interface || 'reports' === $this->interface) {
             $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         }
     }
@@ -564,17 +563,19 @@ class DpKernel extends AbstractKernel
                     return false;
                 }
 
+                $path = $request->getPathInfo();
+
                 // Dont auto-redirect these URLs that are used
                 // in widgets and callbacks
                 if (
-                    preg_match('#^/widget/#', $request->getPathInfo())
-                    || preg_match('#^/chat/#', $request->getPathInfo())
-                    || preg_match('#^/tickets/new-simple#', $request->getPathInfo())
-                    || preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
-                    || preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
-                    || preg_match('#^/logout#', $request->getPathInfo())
-                    || ($request->getMethod() != 'GET' && preg_match('#^/login#', $request->getPathInfo()))
-                    || isset($_REQUEST['_partial'])
+                    '/widget/' === substr($path, 0, 8)
+                    || '/chat/' === substr($path, 0, 6)
+                    || '/tickets/new-simple' === substr($path, 0, 19)
+                    || '/tickets/new/thanks-simple/' === substr($path, 0, 27)
+                    || '/accept-temp-upload' === $path
+                    || '/logout' === substr($path, 0, 7)
+                    || ($request->getMethod() !== 'GET' && '/login' === substr($path, 0, 6))
+                    || $request->isPartial()
                 ) {
                     return false;
                 }
@@ -599,7 +600,7 @@ class DpKernel extends AbstractKernel
         }
 
         // Offline setting applies to all but admin
-        if (App::getSetting('core.helpdesk_disabled') && (DP_INTERFACE == 'user' || DP_INTERFACE == 'agent' || DP_INTERFACE == 'cron')) {
+        if (App::getSetting('core.helpdesk_disabled') && ('user' === $this->interface || 'agent' === $this->interface || 'cron' === $this->interface)) {
             return true;
         }
 

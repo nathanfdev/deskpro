@@ -44,6 +44,9 @@ class GlobalVariables extends BaseGlobalVariables
     /** @var array */
     protected $variables = array();
 
+    /** @var array simple cache of isAppAllowed() multiple calls */
+    protected $app_allowed_checks = array();
+
     public function setVariable($name, $value)
     {
         $this->variables[$name] = $value;
@@ -347,13 +350,7 @@ class GlobalVariables extends BaseGlobalVariables
     public function getReturnUrl()
     {
         $request = App::getRequest();
-
-        // Cant recreate a post, so back to home
-        if ($request->getMethod() == 'POST') {
-            return App::getSetting('core.deskpro_url');
-        }
-
-        return $request->getRequestUri();
+        return $request->getReturnParam() ?: $request->getRequestUri();
     }
 
     public function isCloud()
@@ -369,6 +366,34 @@ class GlobalVariables extends BaseGlobalVariables
     public function isAppInstalled($name)
     {
         return App::getContainer()->getAppManager()->isPackageInstalled($name);
+    }
+
+    public function isAppAllowed($name)
+    {
+        $person = App::getSession()->getPerson();
+        $k = sha1($name . '|' . $person['id']);
+
+        if (isset($this->app_allowed_checks[$k])) {
+            return $this->app_allowed_checks[$k];
+        }
+
+        if (!$this->isAppInstalled($name)) {
+            return $this->app_allowed_checks[$k] = false;
+        }
+
+        $cont = App::getContainer();
+
+        if (!$app = $cont->getAppManager()->getPackageApp($name)) {
+            return $this->app_allowed_checks[$k] = false;
+        }
+
+        if ('set' !== $app->perm_type) {
+            return $this->app_allowed_checks[$k] = true;
+        }
+
+        $perms = $cont->getAppPerms();
+
+        return $this->app_allowed_checks[$k] = $perms->checkPersonPermission($app, $person);
     }
 
     public function getAppService($name)
@@ -415,5 +440,10 @@ class GlobalVariables extends BaseGlobalVariables
     public function __toString()
     {
         return '[app]';
+    }
+
+    public function canResetDemo()
+    {
+        return true;
     }
 }

@@ -8,9 +8,38 @@
  * UpdateItem operation.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_ItemChangeDescriptionType.
  */
 class EWSType_AppendToItemFieldType extends EWSType
 {
+    /**
+     * Represents an Exchange calendar item.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_CalendarItemType
+     */
+    public $CalendarItem;
+
+    /**
+     * Represents an Exchange contact item.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_ContactItemType
+     */
+    public $Contact;
+
+    /**
+     * Represents a distribution list.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_DistributionListType
+     */
+    public $DistributionList;
+
     /**
      * Identifies extended MAPI properties to append.
      *
@@ -48,40 +77,13 @@ class EWSType_AppendToItemFieldType extends EWSType
     public $Item;
 
     /**
-     * Represents an Exchange e-mail message.
+     * Represents a meeting cancellation in the Exchange store.
      *
      * @since Exchange 2007
      *
-     * @var EWSType_MessageType
+     * @var EWSType_MeetingCancellationMessageType
      */
-    public $Message;
-
-    /**
-     * Represents an Exchange calendar item.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_CalendarItemType
-     */
-    public $CalendarItem;
-
-    /**
-     * Represents an Exchange contact item.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_ContactItemType
-     */
-    public $Contact;
-
-    /**
-     * Represents a distribution list.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_DistributionListType
-     */
-    public $DistributionList;
+    public $MeetingCancellation;
 
     /**
      * Represents a meeting in the Exchange store.
@@ -111,13 +113,13 @@ class EWSType_AppendToItemFieldType extends EWSType
     public $MeetingResponse;
 
     /**
-     * Represents a meeting cancellation in the Exchange store.
+     * Represents an Exchange e-mail message.
      *
      * @since Exchange 2007
      *
-     * @var EWSType_MeetingCancellationMessageType
+     * @var EWSType_MessageType
      */
-    public $MeetingCancellation;
+    public $Message;
 
     /**
      * Represents a task in the Exchange store.

@@ -200,9 +200,10 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($this->reader->getId());
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
+        $ticket_message->withNewSubject = $ticket->subject;
 
         $body = $fwd_cutter->getForwardedMessage();
         $body = $this->cleanBodyText($body);
@@ -218,9 +219,9 @@ class ProcessAgentFwd extends ProcessAbstract
         $agent_ticket_message = null;
         if ($agent_reply) {
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
-            $agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
+            $agent_reply = Strings::text2html($agent_reply, 'plaintext-email');
 
-            $agent_ticket_message = new TicketMessage();
+            $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
@@ -246,6 +247,47 @@ class ProcessAgentFwd extends ProcessAbstract
 
             $blob->is_temp = false;
             App::getOrm()->persist($blob);
+        }
+
+        if ($id = $ticket_message['email_message_id']) {
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message by id: ' . $id);
+
+            if (App::getOrm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
+                /** @var $old TicketMessage */
+                $this->setError('duplicate_message');
+                $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $id);
+                return null;
+            }
+        }
+
+
+        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: ' . $ticket_message->getMessageHash());
+        if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
+            $this->setError('duplicate_message');
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $dupe_message->getId());
+
+            $message = App::getMailer()->createMessage();
+            $message->setSuppressAutoreplies(true);
+            $message->setTemplate('DeskPRO:emails_agent:error-dupe-forward.html.twig', array(
+                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                'error'   => $this->error,
+                'old_ticket_id' => $dupe_message->ticket->id,
+            ));
+            $message->setTo($this->reader->getFromAddress()->getEmail());
+            $message->attach(\Swift_Attachment::newInstance(
+                $this->reader->getRawSource(),
+                'message.eml',
+                'message/rfc822'
+            ));
+
+            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                $message->prepare();
+            });
+
+            App::getMailer()->send($message);
+
+            return null;
         }
 
         $tracker_extras = array(
@@ -356,7 +398,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] (Agent) Reading text');
             $agent_reply = trim($this->reader->getBodyText()->body_utf8);
             if ($agent_reply) {
-                $agent_reply = nl2br(@htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
+                $agent_reply = Strings::text2html($agent_reply, 'plaintext-email');
             }
         }
 
@@ -440,9 +482,10 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($user_reader->getId());
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
+        $ticket_message->withNewSubject = $ticket->subject;
 
         if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading html');
@@ -455,7 +498,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $body = $this->cleaner->clean($body, 'html_email_postclean');
         } else {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading text');
-            $body = nl2br(@htmlspecialchars(trim($user_reader->getBodyText()->body_utf8), \ENT_QUOTES, 'UTF-8'));
+            $body = Strings::text2html($user_reader->getBodyText()->body_utf8, 'plaintext-email');
         }
         $ticket_message->setMessageHtml($body);
 
@@ -470,7 +513,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($agent_reply) {
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 
-            $agent_ticket_message = new TicketMessage();
+            $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
@@ -528,6 +571,35 @@ class ProcessAgentFwd extends ProcessAbstract
             App::getOrm()->persist($blob);
         }
 
+        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: Checking for dupe message: ' . $ticket_message->getMessageHash());
+        if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
+            $this->setError('duplicate_message');
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: duplicate message ' . $dupe_message->getId());
+
+            $message = App::getMailer()->createMessage();
+            $message->setSuppressAutoreplies(true);
+            $message->setTemplate('DeskPRO:emails_agent:error-dupe-forward.html.twig', array(
+                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                'error'   => $this->error,
+                'old_ticket_id' => $dupe_message->ticket->id,
+            ));
+            $message->setTo($this->reader->getFromAddress()->getEmail());
+            $message->attach(\Swift_Attachment::newInstance(
+                $this->reader->getRawSource(),
+                'message.eml',
+                'message/rfc822'
+            ));
+
+            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                $message->prepare();
+            });
+
+            App::getMailer()->send($message);
+
+            return null;
+        }
+
         #------------------------------
         # Reply actions
         #------------------------------
@@ -563,7 +635,7 @@ class ProcessAgentFwd extends ProcessAbstract
         return array(
             'via'                  => 'fwd',
             'ticket'               => $ticket,
-            'ticket_message'       => $agent_ticket_message,
+            'ticket_message'       => $ticket_message,
             'agent_ticket_message' => $agent_ticket_message,
             'user_ticket_message'  => $ticket_message
         );

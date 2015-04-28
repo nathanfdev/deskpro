@@ -195,7 +195,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $account_manager = App::$container->getEmailAccountManager();
 
             if (ctype_digit($account_id)) {
-                if ($account_manager->hasAcccount($account_id)) {
+                if (!$account_manager->hasAcccount($account_id)) {
                     $output->writeln("<error>No account with ID $account_id</error>");
 
                     return 1;

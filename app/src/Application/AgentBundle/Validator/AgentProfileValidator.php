@@ -53,8 +53,8 @@ class AgentProfileValidator extends AbstractValidator
     {
         $this->profile = $profile;
 
-        if (!PhoneNumbers::looksEmpty($this->profile->primary_phone_number_text)) {
-            if (!PhoneNumbers::isValid($this->profile->primary_phone_number_text)) {
+        if (!PhoneNumbers::looksEmpty($this->profile->primary_phone['number'])) {
+            if (!PhoneNumbers::isValid($this->profile->primary_phone['number'])) {
                 $this->addError('phone_number.invalid');
             }
         }
@@ -81,8 +81,10 @@ class AgentProfileValidator extends AbstractValidator
             /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
             $password_validator = App::$container->getSystemService('password_policy_validator');
 
-            if (!$password_validator->checkPassword($this->profile->password, $this->profile->getPerson())) {
+            $error = null;
+            if (!$password_validator->checkPassword($this->profile->password, $this->profile->getPerson(), $error)) {
                 $this->addError('password.invalid');
+                $this->addError('password.invalid.' . $error);
             } elseif ($this->profile->password != $this->profile->password2) {
                 $this->addError('password.mismatch');
             }

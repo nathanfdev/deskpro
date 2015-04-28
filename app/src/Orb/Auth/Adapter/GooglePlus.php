@@ -106,12 +106,16 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     );
                 }
 
+                if (empty($attrs['payload']) || empty($attrs['payload']['sub'])) {
+                    throw new \Exception('Google API payload was changed.');
+                }
+
                 $identity = new Identity(
-                    $attrs['payload']['id'],
+                    $attrs['payload']['sub'],
                     array(
                         'email'          => $attrs['payload']['email'],
                         'email_verified' => $attrs['payload']['email_verified'],
-                        'id'             => $attrs['payload']['id']
+                        'sub'            => $attrs['payload']['sub']
                     )
                 );
                 $identity->setFriendlyIdentity($attrs['payload']['email']);

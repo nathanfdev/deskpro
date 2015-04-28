@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\People\Agents\Type;
 
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,7 +50,7 @@ class EditAgentType extends AbstractType
         $builder->add('name', 'text', array('required' => true));
         $builder->add('override_name', 'text', array('required' => false));
 
-        $builder->add('primary_phone_number_text', 'text', array('required' => false));
+	    $builder->add('primary_phone', new PhoneNumberType());
 
         $builder->add('emails', 'collection', array(
             'type'         => 'email',

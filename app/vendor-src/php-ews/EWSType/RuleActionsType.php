@@ -14,7 +14,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Represents the categories that are stamped on e-mail messages.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ArrayOfStringsType
      */
@@ -23,7 +23,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Identifies the ID of the folder that e-mail items will be copied to.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_TargetFolderIdType
      */
@@ -32,7 +32,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Indicates whether messages are to be moved to the Deleted Items folder.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var boolean
      */
@@ -42,7 +42,7 @@ class EWSType_RuleActionsType extends EWSType
      * Indicates the e-mail addresses to which messages are to be forwarded as
      * attachments.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ArrayOfEmailAddressesType
      */
@@ -51,7 +51,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Indicates the e-mail addresses to which messages are to be forwarded.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ArrayOfEmailAddressesType
      */
@@ -60,7 +60,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Specifies the importance that is to be stamped on messages.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ImportanceChoicesType
      */
@@ -69,7 +69,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Indicates whether messages are to be marked as read.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var boolean
      */
@@ -78,7 +78,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Identifies the ID of the folder that e-mail items will be moved to.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_TargetFolderIdType
      */
@@ -88,7 +88,7 @@ class EWSType_RuleActionsType extends EWSType
      * Indicates whether messages are to be permanently deleted and not saved to
      * the Deleted Items folder.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var boolean
      */
@@ -97,7 +97,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Indicates the e-mail addresses to which messages are to be redirected.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ArrayOfEmailAddressesType
      */
@@ -107,7 +107,7 @@ class EWSType_RuleActionsType extends EWSType
      * Indicates the mobile phone numbers to which a Short Message Service (SMS)
      * alert is to be sent.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ArrayOfEmailAddressesType
      */
@@ -117,7 +117,7 @@ class EWSType_RuleActionsType extends EWSType
      * Indicates the ID of the template message that is to be sent as a reply to
      * incoming messages.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_ItemIdType
      */
@@ -126,7 +126,7 @@ class EWSType_RuleActionsType extends EWSType
     /**
      * Indicates whether subsequent rules are to be evaluated.
      *
-     * @since Exchange 2010 SP1
+     * @since Exchange 2010
      *
      * @var boolean
      */

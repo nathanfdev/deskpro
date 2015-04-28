@@ -814,50 +814,35 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					}
 				}
 
-				var newShortcutCode = snippet.shortcut_code;
+				var newShortcutCode = snippet.shortcut_code,
+						key;
 
 				if (self.snippet_typename == 'tickets') {
-					if (oldShortcutCode && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode]) {
-						var idx = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode].indexOf(snippet.id);
-						if (idx !== -1) {
-							window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode].splice(idx, 1);
-						}
-						if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode].length) {
-							delete window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode];
-						}
-					}
-					if (newShortcutCode) {
-						if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode]) {
-							window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode] = [];
-						}
-						if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].indexOf(snippet.id) === -1) {
-							window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].push(snippet.id);
-						}
-
-						if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].length > 1) {
-							DeskPRO_Window.showAlert("Note: There are " + window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].length + " snippets with the shortcode '" + newShortcutCode + "'. When using this shortcode, all matching snippets will be inserted.");
-						}
-					}
+					key = 'DESKPRO_TICKET_SNIPPET_SHORTCODES';
 				} else if (self.snippet_typename == 'chat') {
-					if (oldShortcutCode && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode]) {
-						var idx = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode].indexOf(snippet.id);
+					key = 'DESKPRO_CHAT_SNIPPET_SHORTCODES';
+				}
+
+				if (key) {
+					if (oldShortcutCode && window[key][oldShortcutCode]) {
+						var idx = window[key][oldShortcutCode].indexOf(snippet.id);
 						if (idx !== -1) {
-							window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode].splice(idx, 1);
+							window[key][oldShortcutCode].splice(idx, 1);
 						}
-						if (!window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode].length) {
-							delete window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode];
+						if (!window[key][oldShortcutCode].length) {
+							delete window[key][oldShortcutCode];
 						}
 					}
 					if (newShortcutCode) {
-						if (!window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode]) {
-							window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode] = [];
+						if (!window[key][newShortcutCode]) {
+							window[key][newShortcutCode] = [];
 						}
-						if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].indexOf(snippet.id) === -1) {
-							window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].push(snippet.id);
+						if (window[key][newShortcutCode].indexOf(snippet.id) === -1) {
+							window[key][newShortcutCode].push(snippet.id);
 						}
 
-						if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].length > 1) {
-							DeskPRO_Window.showAlert("Note: There are " + window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].length + " snippets with the shortcode '" + newShortcutCode + "'. When using this shortcode, all matching snippets will be inserted.");
+						if (window[key][newShortcutCode].length > 1) {
+							DeskPRO_Window.showAlert("Note: There are " + window[key][newShortcutCode].length + " snippets with the shortcode '" + newShortcutCode + "'. When using this shortcode, all matching snippets will be inserted.");
 						}
 					}
 				}
@@ -872,9 +857,23 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		//------------------------------
 
 		editSnippetEl.find('.delete-snippet-trigger').on('click', function(ev) {
-			var snippet = self.editingSnippet;
+			var snippet = self.editingSnippet,
+					key;
+
 			editSnippetEl.find('.overlay-footer').addClass('loading');
 			self.snippetDriver.deleteSnippet(snippet.id, function(snippet_id) {
+
+				if (self.snippet_typename == 'tickets') {
+					key = 'DESKPRO_TICKET_SNIPPET_SHORTCODES';
+				} else if (self.snippet_typename == 'chat') {
+					key = 'DESKPRO_CHAT_SNIPPET_SHORTCODES';
+				}
+
+				if (window[key] && window[key][snippet.shortcut_code]) {
+					var idx = window[key][snippet.shortcut_code].indexOf(snippet.id);
+					idx > -1 && window[key][snippet.shortcut_code].splice(idx, 1);
+				}
+
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 				self.snippetEditOverlay.close();
 

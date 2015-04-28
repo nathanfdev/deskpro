@@ -130,4 +130,15 @@ $collection->create('jira_token', array(
 	'controller'  => 'AdminInterfaceBundle:Jira:token',
 ));
 
+
+########################################################################################################################
+# Download authcoded files
+########################################################################################################################
+
+$collection->create('admin_download_export_file', array(
+	'path'        => '/export/download/{code}',
+	'controller'  => 'AdminInterfaceBundle:Interface:downloadExportFile',
+	'methods'     => array('GET'),
+));
+
 return $collection;

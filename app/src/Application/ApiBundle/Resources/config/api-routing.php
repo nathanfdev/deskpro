@@ -55,6 +55,12 @@ $collection->create('api_deskpro_info', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_deskpro_dpspecial', array(
+    'path'        => '/deskpro/dp_special/{action}',
+    'controller'  => 'ApiBundle:Misc:dpSpecial',
+    'methods'     => array('GET', 'POST'),
+));
+
 $collection->create('api_me_lastlogin', array(
     'path'        => '/me/last-login',
     'controller'  => 'ApiBundle:Misc:getLastLogin',
@@ -224,6 +230,13 @@ $collection->create('api_tickets_ticket_merge', array(
     'path'          => '/tickets/{ticket_id}/merge/{merge_ticket_id}',
     'controller'    => 'ApiBundle:Ticket:mergeTicket',
     'requirements'  => array('ticket_id' => '\\d+', 'merge_ticket_id' => '\\d+'),
+    'methods'       => array('POST'),
+));
+
+$collection->create('api_tickets_ticket_link', array(
+    'path'          => '/tickets/{ticket_id}/link/{link_ticket_id}',
+    'controller'    => 'ApiBundle:Ticket:linkTicket',
+    'requirements'  => array('ticket_id' => '\\d+', 'link_ticket_id' => '\\d+'),
     'methods'       => array('POST'),
 ));
 
@@ -433,20 +446,6 @@ $collection->create('api_tickets_slas', array(
 $collection->create('api_tickets_sla', array(
     'path'          => '/tickets/slas/{sla_id}',
     'controller'    => 'ApiBundle:Ticket:getSla',
-    'requirements'  => array('sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_tickets_sla_people', array(
-    'path'          => '/tickets/slas/{sla_id}/people',
-    'controller'    => 'ApiBundle:Ticket:getSlaPeople',
-    'requirements'  => array('sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_tickets_sla_organizations', array(
-    'path'          => '/tickets/slas/{sla_id}/organizations',
-    'controller'    => 'ApiBundle:Ticket:getSlaOrganizations',
     'requirements'  => array('sla_id' => '\\d+'),
     'methods'       => array('GET'),
 ));
@@ -706,34 +705,6 @@ $collection->create('api_people_person_clear_session', array(
     'controller'    => 'ApiBundle:Person:clearSession',
     'requirements'  => array('person_id' => '\\d+'),
     'methods'       => array('POST'),
-));
-
-$collection->create('api_people_person_slas', array(
-    'path'          => '/people/{person_id}/slas',
-    'controller'    => 'ApiBundle:Person:getPersonSlas',
-    'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_people_person_slas_post', array(
-    'path'          => '/people/{person_id}/slas',
-    'controller'    => 'ApiBundle:Person:postPersonSlas',
-    'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
-));
-
-$collection->create('api_people_person_sla', array(
-    'path'          => '/people/{person_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Person:getPersonSla',
-    'requirements'  => array('person_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_people_person_sla_delete', array(
-    'path'          => '/people/{person_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Person:deletePersonSla',
-    'requirements'  => array('person_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_people_person_notes', array(
@@ -1121,34 +1092,6 @@ $collection->create('api_organizations_organization_chats', array(
     'controller'    => 'ApiBundle:Organization:getOrganizationChats',
     'requirements'  => array('organization_id' => '\\d+'),
     'methods'       => array('GET'),
-));
-
-$collection->create('api_organizations_organization_slas', array(
-    'path'          => '/organizations/{organization_id}/slas',
-    'controller'    => 'ApiBundle:Organization:getOrganizationSlas',
-    'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_organizations_organization_slas_post', array(
-    'path'          => '/organizations/{organization_id}/slas',
-    'controller'    => 'ApiBundle:Organization:postOrganizationSlas',
-    'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
-));
-
-$collection->create('api_organizations_organization_sla', array(
-    'path'          => '/organizations/{organization_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Organization:getOrganizationSla',
-    'requirements'  => array('organization_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_organizations_organization_sla_delete', array(
-    'path'          => '/organizations/{organization_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Organization:deleteOrganizationSla',
-    'requirements'  => array('organization_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_billing_charges', array(
@@ -2384,6 +2327,12 @@ $collection->create('api_roundrobins_delete', array(
     'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_roundrobins_logs', array(
+    'path'        => '/round_robin/{id}/logs',
+    'controller'  => 'ApiBundle:RoundRobin:logs',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Start Settings
 ########################################################################################################################
@@ -2451,6 +2400,18 @@ $collection->create('api_server_settings_save', array(
 ########################################################################################################################
 # General Settings
 ########################################################################################################################
+
+$collection->create('api_general_settings_get_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:getLogoBlob',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_general_settings_set_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:setLogoBlob',
+    'methods'     => array('POST'),
+));
 
 $collection->create('api_general_settings', array(
     'path'        => '/general_settings',
@@ -3275,6 +3236,20 @@ $collection->create('api_emailstatus_sendmail_delete', array(
     'controller'   => 'ApiBundle:EmailStatus:deleteSendmail',
     'requirements' => array('id' => '\d+'),
     'methods'      => array('DELETE'),
+));
+
+$collection->create('api_emailstatus_sendmail_get_summary', array(
+    'path'         => '/email_status/sendmail/{id}/summary',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailSummary',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmail_get_rendered', array(
+    'path'         => '/email_status/sendmail/{id}/rendered',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailRendered',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
 ));
 
 $collection->create('api_emailstatus_sendmail_resend', array(
@@ -4437,6 +4412,46 @@ $collection->create('api_import_csv_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_import_csv_logs', array(
+    'path'        => '/import_csv_logs',
+    'controller'  => 'ApiBundle:CsvUpload:logs',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_import_csv_clean', array(
+    'path'        => '/import_csv_clean',
+    'controller'  => 'ApiBundle:CsvUpload:clean',
+    'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
+# CRM Export CSV
+########################################################################################################################
+
+$collection->create('api_export_csv_start', array(
+    'path'        => '/export/start',
+    'controller'  => 'ApiBundle:CsvExport:start',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_export_csv_stop', array(
+    'path'        => '/export/stop',
+    'controller'  => 'ApiBundle:CsvExport:stop',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_export_csv_status', array(
+    'path'        => '/export/status',
+    'controller'  => 'ApiBundle:CsvExport:status',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_export_list_files', array(
+    'path'        => '/export/list',
+    'controller'  => 'ApiBundle:CsvExport:list',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # CRM User Rules
 ########################################################################################################################
@@ -4939,6 +4954,23 @@ $collection->create('api_apps_jira', array(
 	'path'         => '/apps/jira',
 	'controller'   => 'ApiBundle:Apps:jiraSettings',
 	'methods'      => array('GET'),
+));
+
+
+########################################################################################################################
+# Reset Demo
+########################################################################################################################
+
+$collection->create('api_reset_demo_run', array(
+    'path'        => '/reset-demo',
+    'controller'  => 'ApiBundle:ResetDemo:run',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_reset_demo_status', array(
+    'path'        => '/reset-demo/status',
+    'controller'  => 'ApiBundle:ResetDemo:status',
+    'methods'     => array('GET'),
 ));
 
 return $collection;

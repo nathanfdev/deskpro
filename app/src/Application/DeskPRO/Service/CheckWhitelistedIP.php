@@ -90,7 +90,6 @@ class CheckWhitelistedIP
         $message = $container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);
         $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-        $message->disableQueueHint();
 
         $container->getMailer()->send($message);
 

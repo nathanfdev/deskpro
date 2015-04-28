@@ -5,6 +5,7 @@
             <article class="form-horizontal dp-form">
                 <div class="panel panel-fill indent">
                     <div class="panel-body">
+
                         <div class="form-group">
                             <div class="col-lg-3">
                                 <h3>{{phrase('adm.round_robins.title')}} *</h3>
@@ -18,13 +19,28 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-3">
+                                <h3>{{ phrase('adm.round_robins.online_title') }}</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="inner-group">
+                                    <label>
+                                        <input type="checkbox" ng-model="EditCtrl.robin.online_only" />
+                                        {{ phrase('adm.round_robins.online_description') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-lg-3">
                                 <h3>{{phrase('adm.round_robins.agents')}} *</h3>
                             </div>
                             <div class="col-lg-9">
                                 <ul class="dp-item-list checkbox-list" ui-sortable="EditCtrl.sortedListOptions"  ng-model="EditCtrl.robin.agents"
-                                    style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:350px;">
+                                    style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:400px;">
 
                                     <li ng-repeat="agent in EditCtrl.agents" ui-sortable="EditCtrl.sortedListOptions" class="with-drag-handle"
                                             ng-class="EditCtrl.robin.agents.indexOf(agent) > -1 ? 'sortable' : ''">
@@ -35,8 +51,17 @@
 
                                             <input type="checkbox" ng-checked="EditCtrl.robin.agents.indexOf(agent) > -1"
                                                     ng-click="EditCtrl.handleAgent(agent); EditCtrl.sortAgents();" />
-                                            {{ ng_var('agent.display_name') }}
-                                            <span ng-if="EditCtrl.robin.next === agent" class="label label-default">{{ phrase('adm.round_robins.next') }} </span>
+
+                                            <span ng-class="EditCtrl.robin.online_only && !agent.is_online_now && 'text-muted'">
+                                                {{ ng_var('agent.display_name') }}
+                                            </span>
+                                            <span ng-if="EditCtrl.robin.next === agent" class="label label-default">
+                                                {{ phrase('adm.round_robins.next') }}
+                                            </span>
+                                            &nbsp;
+                                            <span ng-if="EditCtrl.robin.online_only && agent.is_online_now">
+                                                <i class="fa fa-lightbulb-o"></i> online
+                                            </span>
                                         </label>
 
                                     </li>
@@ -68,6 +93,17 @@
                                     </optgroup>
                                 </select>
                                 &nbsp;<button class="btn btn-default" type="button" ng-click="EditCtrl.handleBulk()">Add</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="EditCtrl.robin.id">
+                            <div class="col-lg-3">
+                                <h3>{{ phrase('adm.round_robins.logs_title') }}</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <button ng-click="EditCtrl.showLogs()" class="btn btn-default" type="button">
+                                    {{ phrase('adm.round_robins.logs_view') }}
+                                </button>
                             </div>
                         </div>
 

@@ -1,19 +1,22 @@
 define ['DeskPRO/Util/Util'], (Util) ->
   class EditAgentNotifPrefs
+
+
+
     constructor: (prefsTable) ->
       @prefsTable = prefsTable
+
+
 
     getFilterSubs: ->
       filterSubs = {}
 
       getFilterSubObj = (id) ->
         if filterSubs[id] then return filterSubs[id]
-        filterSubs[id] = {
+        filterSubs[id] =
           filter_id: id,
           email: [],
           alert: []
-        }
-        return filterSubs[id]
 
       for groupName in ['sys_filters', 'custom_filters']
         for typeName in ['email', 'alert']
@@ -28,8 +31,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
                   subObj[typeName].push(opt.name)
 
       vals = Util.values(filterSubs)
-      vals = vals.filter((a) -> return true if a != "" and a != false and a != 0)
-      return vals
+      vals.filter((a) -> return true if a != "" and a != false and a != 0)
+
+
 
     getOtherSubs: ->
       appSubs = {}
@@ -41,9 +45,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
           email: [],
           alert: []
         }
-        return appSubs[id]
 
-      for groupName in ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter']
+      for groupName in ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter', 'account']
         if not @prefsTable.subs[groupName]? then continue
 
         for row in @prefsTable.subs[groupName].rows
@@ -59,5 +62,4 @@ define ['DeskPRO/Util/Util'], (Util) ->
                 subObj.alert.push(shortName)
 
       vals = Util.values(appSubs)
-      vals = vals.filter((a) -> return true if a != "" and a != false and a != 0)
-      return vals
+      vals.filter((a) -> return true if a != "" and a != false and a != 0)

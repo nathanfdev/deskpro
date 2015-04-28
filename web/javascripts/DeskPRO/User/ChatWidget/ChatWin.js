@@ -645,6 +645,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		//data.author_name, data.content, data.author_type, data.metadata
 
+		data.author_name = Orb.escapeHtml(data.author_name);
+
 		if (data.author_type == 'user') {
 			if (!message.trim().length) {
 				return;
@@ -737,6 +739,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 
 		console.log('DpChat:handleIncomingMessage: %o', data);
+    DeskPRO_Window.playLibrarySound('pop');
 
 		this.addMessageRow(data);
 

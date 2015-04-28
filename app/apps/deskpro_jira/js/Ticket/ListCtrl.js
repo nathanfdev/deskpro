@@ -18,6 +18,7 @@ define([
 
     $scope.$on('ticket.new_reply', function($event, ticket, action){
 
+      if (ticket.id !== $ticket.id) return;
       if (!ticket.message) return;
 
       if ('send_comment' === action) {
@@ -45,6 +46,7 @@ define([
     });
 
     $scope.$on('ticket.updated', function($event, ticket){
+      if (ticket.id !== $ticket.id) return;
       if (!issues.length) return;
       if (ticket.subject) {
 	      issues.each(function(issue){

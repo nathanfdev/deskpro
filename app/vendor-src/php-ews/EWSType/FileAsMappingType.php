@@ -13,7 +13,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "company".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -22,7 +22,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name, first name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var
      */
@@ -31,7 +31,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "company last name first name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -40,7 +40,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "company last name first name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -49,7 +49,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "display name".
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -58,7 +58,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping to use when no mapping is defined.
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -67,7 +67,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "first name".
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -76,7 +76,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "first name last name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -85,7 +85,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name, first name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -94,7 +94,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name, first name company".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -103,7 +103,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name first name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -112,7 +112,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name first name company".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -121,7 +121,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name first name middle name suffix".
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -130,7 +130,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name first name suffix".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -139,7 +139,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name".
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -148,7 +148,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "last name first name".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -157,7 +157,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping for "lasy name first name company".
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -166,7 +166,7 @@ class EWSType_FileAsMappingType extends EWSType
     /**
      * File as mapping to use when no mapping is desired.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */

@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO\Translate\Loader;
+use Application\DeskPRO\App;
 
 /**
  * Loads phrases from the database.
@@ -74,7 +75,14 @@ class DbLoader implements LoaderInterface
         // Langs to fetch in order of pri
         $langs = array();
         if ($language) {
-            $langs[] = $language->getId(); // the chosen lang
+            if (!$language->getId()) {
+                //todo default lang should be injected somehow,
+                //but theres a problem of cyclic depends so this is an ok solution for now
+                $language = App::$container->getLanguageData()->getDefault();
+            }
+            if ($language && $language->getId()) {
+                $langs[] = $language->getId(); // the chosen lang
+            }
         }
         $langs[] = $this->default_lang_id; // default deskpro lang
         $langs[] = 0; // system use

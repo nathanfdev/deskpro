@@ -1,0 +1,61 @@
+services:
+  swiftmailer.mailer.default:
+    class: Application\EmailBundle\SwiftMailer\Mailer
+    arguments: [@swiftmailer.mailer.default.transport, @email.message_factory, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.mailer }
+
+  swiftmailer.mailer.default.transport:
+    class: Application\EmailBundle\SwiftMailer\Transport\DeskproTransport
+    arguments: [@email.source_mapper, @email.email_account_manager, @swiftmailer.mailer.default.transport.eventdispatcher, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.transport }
+
+  email.log_collector:
+    class: Application\EmailBundle\Log\LogCollector
+
+  email.message_factory:
+    class: Application\EmailBundle\SwiftMailer\Message\MessageFactory
+    arguments: [@templating]
+
+  email.email_account_manager:
+    class: Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\EmailAccountManagerService
+    factory_method: create
+    arguments: [@service_container]
+
+  deskpro.blob_storage:
+    class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
+    factory_method: create
+    arguments: [@service_container]
+
+  email.raw_transport_factory:
+    class: Application\EmailBundle\Mail\RawTransport\RawTransportFactory
+    arguments: [@logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.raw_transport }
+
+  email.queue_runner:
+    class: Application\EmailBundle\Queue\QueueRunner
+    arguments: [@database_connection, @email.queue_processor, @email.source_mapper, @email.source_sender, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.queue }
+
+  email.queue_processor:
+    class: Application\EmailBundle\Queue\QueueProc
+    arguments: [@email.source_mapper, @email.source_sender, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.queue }
+
+  email.source_mapper:
+    class: Application\EmailBundle\SourceMapper\SourceMapperInterface
+    factory_class: Application\EmailBundle\SourceMapper\DeskproSourceMapperFactory
+    factory_method: getSourceMapper
+    arguments: [@service_container]
+
+  email.source_sender:
+      class: Application\EmailBundle\Queue\SourceSender
+      arguments: [@email.email_account_manager, @deskpro.blob_storage, @logger]
+      tags:
+        - { name: monolog.logger, channel: dp.email.out.transport }

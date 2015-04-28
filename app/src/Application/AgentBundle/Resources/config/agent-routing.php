@@ -187,11 +187,6 @@ $collection->create('agent_browser_requirements', array(
     'controller'  => 'AgentBundle:Login:browserRequirements',
 ));
 
-$collection->create('agent_browser_requirements_ie_compat', array(
-    'path'        => '/browser-requirements/ie-compat-mode',
-    'controller'  => 'AgentBundle:Login:ieCompatMode',
-));
-
 $collection->create('agent_login', array(
     'path'        => '/login',
     'controller'  => 'AgentBundle:Login:index',
@@ -453,6 +448,13 @@ $collection->create('agent_people_ajaxsave_note', array(
     'requirements'  => array('person_id' => '\\d+'),
 ));
 
+$collection->create('agent_people_notes_delete', array(
+    'path'          => '/people/notes/{note_id}',
+    'controller'    => 'AgentBundle:Person:deleteNote',
+    'requirements'  => array('note_id' => '\\d+'),
+    'methods'       => array('DELETE'),
+));
+
 $collection->create('agent_people_ajaxsave_file', array(
     'path'          => '/people/{person_id}/ajax-save-file',
     'controller'    => 'AgentBundle:Person:ajaxSaveFile',
@@ -626,6 +628,13 @@ $collection->create('agent_org_ajaxsave_note', array(
     'path'          => '/organizations/{organization_id}/ajax-save-note',
     'controller'    => 'AgentBundle:Organization:ajaxSaveNote',
     'requirements'  => array('organization_id' => '\\d+'),
+));
+
+$collection->create('agent_org_notes_delete', array(
+    'path'          => '/organizations/notes/{note_id}',
+    'controller'    => 'AgentBundle:Organization:deleteNote',
+    'requirements'  => array('note_id' => '\\d+'),
+    'methods'       => array('DELETE'),
 ));
 
 $collection->create('agent_org_ajaxsave_file', array(
@@ -1038,6 +1047,15 @@ $collection->create('agent_ticket_ajax_save_actions', array(
     'controller'    => 'AgentBundle:Ticket:ajaxSaveActions',
     'requirements'  => array('ticket_id' => '\\d+'),
 ));
+
+$collection->create(
+    'agent_ticket_ajax_get_dataholders',
+    array(
+        'path' => '/tickets/{ticket_id}/dataholders',
+        'controller' => 'AgentBundle:Ticket:getDataHolders',
+        'requirements' => array('ticket_id' => '\\d+'),
+    )
+);
 
 $collection->create('agent_ticket_message_raw', array(
     'path'          => '/tickets/{ticket_id}/message-details/{message_id}/view-raw',

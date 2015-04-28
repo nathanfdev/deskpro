@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
+use Doctrine\ORM\Query;
 
 class TmpData extends AbstractEntityRepository
 {
@@ -57,8 +58,52 @@ class TmpData extends AbstractEntityRepository
      * @param  string        $name
      * @return TmpDataEntity
      */
-    public function getByName($name)
+    public function getByName($name, $expired = null)
     {
-        return $this->findOneBy(array('name' => $name));
+        $q = 'select t from DeskPRO:TmpData t where t.name = :name ';
+        $params = array('name' => $name);
+
+        if (true === $expired) {
+            $q .= 'and t.date_expire <= :date';
+            $params['date'] = new \DateTime();
+        }
+
+        if (false === $expired) {
+            $q .= 'and t.date_expire > :date';
+            $params['date'] = new \DateTime();
+        }
+
+        return $this->getEntityManager()->createQuery($q)->setParameters($params)->getResult();
+    }
+
+    /**
+     * @param TmpDataEntity $data
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function removeDupes(TmpDataEntity $data)
+    {
+        if (!$data['name']) {
+            return;
+        }
+        $this->getEntityManager()->getConnection()->executeQuery(
+            sprintf('delete from %s where name = :name and id != :id', $this->getTableName()),
+            array('name' => $data['name'], 'id' => $data['id']),
+            array(\PDO::PARAM_STR, \PDO::PARAM_INT)
+        );
+    }
+
+    /**
+     * @param $name
+     * @param $time
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getCountByName($name, $time)
+    {
+        $time = time() - (int) $time;
+        return (int) $this->getEntityManager()->getConnection()->executeQuery(
+            sprintf('select count(*) from %s where name = :name and date_created > :date', $this->getTableName()),
+            array('name' => $name, 'date' => date('Y-m-d H:i:s', $time))
+        )->fetchColumn();
     }
 }

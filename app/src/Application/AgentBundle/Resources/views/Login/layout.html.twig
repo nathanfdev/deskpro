@@ -758,6 +758,25 @@
 	}
 </style>
 <script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/mootools/mootools-core.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/Orb/Util/TimeAgo.js') }}"></script>
+
+{% if app.request.get('agent.wrong_scheme') %}
+{# when we have wrong scheme, ping https and redirect if its available #}
+<script>
+	var pingResponseHandler = function(data) {
+		if ('object' === typeof data && 'pong' === data.response) {
+			window.location.href = '{{ url_full('agent_login', {'return': app.returnUrl }) }}';
+		}
+	};
+	$(function(){
+		var scriptSrc = '{{ url_full('user', {_sys: 'ping', type: 'jsonp', callback: 'pingResponseHandler'}) }}';
+		$('head').append('<script type="text/javascript" src="' + scriptSrc + '"/>');
+	});
+</script>
+{% endif %}
+
 {% block head %}{% endblock %}
 </head>
 <body>
@@ -770,14 +789,16 @@
 		{% if logo_blob %}
 			<div class="client-logo">
 				<div id="client_logo_img">
-					<div class="img" {% if logo_blob %}style="background-image: url({{ logo_blob.getThumbnailUrl('360x100') }}&size-fit=1)"{% endif %}></div>
+					<div class="img" style="background-image: url({{ logo_blob.getThumbnailUrl('360x100') }}&size-fit=1)"></div>
 				</div>
 			</div>
 		{% endif %}
 
+		{% if not app.request.get('agent.wrong_scheme') and not app.request.get('agent.wrong_host') %}
 		<div class="dialog-box">
 			{% block content %}{% endblock %}
 		</div>
+		{% endif %}
 		<div class="deskpro-logo">
 	</div>
 </div>

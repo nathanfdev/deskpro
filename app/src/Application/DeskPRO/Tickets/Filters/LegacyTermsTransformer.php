@@ -365,6 +365,13 @@ class LegacyTermsTransformer
                     'options' => $options->all()
                 );
 
+            case 'FilterCreationSystem':
+                return array(
+                    'type'    => 'creation_system',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all()
+                );
+
             case 'FilterOrgName':
                 return array(
                     'type'    => 'org_name',
@@ -408,13 +415,28 @@ class LegacyTermsTransformer
             case 'FilterTicketField':
                 $t = $term->getTermOptions();
                 $fid = $t['field_id'];
+                $value = @$t['value'] ?: null;
+
+                if ($t->has('date1')) {
+                    $value = 'date|' . $t['date1'];
+                }
+                if ($t->has('date2')) {
+                    $value .= '|' . $t['date2'];
+                }
+
+                if ($t->has('date1_relative')) {
+                    $value = 'date_relative|' . (int) $t['date1_relative'] . ' ' . $t['date1_relative_type'];
+                }
+                if ($t->has('date2_relative')) {
+                    $value .= '|' . (int) $t['date2_relative'] . ' ' . $t['date2_relative_type'];
+                }
 
                 return array(
                     'type'    => "ticket_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null
+                            "field_{$fid}" => $value
                         )
                     )
                 );
@@ -683,6 +705,9 @@ class LegacyTermsTransformer
             case 'date_last_user_reply':
                 return new Terms\FilterDateLastUserReply($op, $options);
 
+            case 'creation_system':
+                return new Terms\FilterCreationSystem($op, array('creation_system' => @$options['creation_system']));
+
             case 'person_name':
                 return new Terms\FilterUserName($op, array(
                     'name' => @$options['name'] ?: ''
@@ -796,9 +821,25 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts = array();
+                $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+
+                $parts = is_string($new_opts['value'])
+                    ? explode('|', $new_opts['value'])
+                    : array();
+
+                if ($field = array_shift($parts)) {
+                    foreach ($parts as $k => $part) {
+                        if ('date_relative' === $field) {
+                            @list($interval, $type) = explode(' ', $part);
+                            $new_opts['date' . ($k + 1) . '_relative'] = $interval;
+                            $new_opts['date' . ($k + 1) . '_relative_type'] = $type;
+                        } else {
+                            $new_opts[$field . ($k + 1)] = $part;
+                        }
+                    }
+                }
 
                 return new Terms\FilterTicketField($op, $new_opts);
 

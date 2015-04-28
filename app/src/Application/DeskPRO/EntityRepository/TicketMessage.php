@@ -243,4 +243,27 @@ class TicketMessage extends AbstractEntityRepository
 
         return false;
     }
+
+    public function getDupeByMessageID($emailId)
+    {
+        $q = '
+            SELECT ei FROM DeskPRO:TicketMessageEmailId ei
+            JOIN ei.message eim
+            WHERE ei.email_id = :id and eim.date_created > :date
+            ORDER BY eim.date_created DESC
+            ';
+
+        $old = $this->getEntityManager()
+            ->createQuery($q)
+            ->setMaxResults(1)
+            ->setParameter('id', $emailId)
+            ->setParameter('date', new \DateTime('-60 days'))
+            ->getResult();
+
+        if ($old) {
+            return reset($old);
+        }
+
+        return null;
+    }
 }

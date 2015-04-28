@@ -27,6 +27,8 @@ class OAuthWrapper
 	protected $client;
 	protected $service;
 
+	protected $ssl_authority = true;
+
 	public function __construct(JIRA $service, $callbackUrl = null)
 	{
 		$this->service = $service;
@@ -46,6 +48,15 @@ class OAuthWrapper
 
 		$this->tokens = $this->service->getTokens();
 		$this->callback_url = $callbackUrl;
+
+		if ($authority = $service->getSSLAuthority()) {
+			if ('system' === $authority) {
+				$this->ssl_authority = $authority;
+			}
+			if ('disabled' === $authority) {
+				$this->ssl_authority = false;
+			}
+		}
 	}
 
 	/**
@@ -109,7 +120,15 @@ class OAuthWrapper
 		parse_str($body, $tokens);
 
 		if (empty($tokens)) {
-			throw new \Exception("An error occurred while requesting oauth token credentials");
+			throw new \Exception(sprintf(
+				'Bad response from host. Expected urlencoded string but "%s" received.', substr($body, 0, 200)
+			), 1003);
+		}
+
+		if (!isset($tokens['oauth_token'])) {
+			throw new \Exception(
+				'Bad response from host. No OAuth token provided.'
+			, 1004);
 		}
 
 		return $this->tokens = $tokens;
@@ -130,7 +149,9 @@ class OAuthWrapper
 		$token = $token ?: (isset($this->tokens['oauth_token']) ? $this->tokens['oauth_token'] : null);
 		$secret = $tokenSecret ?: (isset($this->tokens['oauth_token_secret']) ? $this->tokens['oauth_token_secret'] : null);
 
-		$this->client = new Client($this->base_url);
+		$this->client = new Client($this->base_url, array(
+			Client::SSL_CERT_AUTHORITY => $this->ssl_authority,
+		));
 		$privateKey = $this->private_key;
 
 		$plugin = new OauthPlugin(array(

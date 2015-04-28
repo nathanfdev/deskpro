@@ -530,6 +530,9 @@ class TicketLogGenerator
                     'from_name'  => $new['from_name'],
                     'from_email' => $new['from_email'],
                     'template'   => $new['template'],
+
+                    'sendmail_source_id' => $new['sendmail_source_id'],
+                    'id_after'           => $new['sendmail_source_id'],
                 );
 
             case 'split_to':

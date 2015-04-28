@@ -25,20 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\ImporterCommandStatusCallback;
-use Application\ImportBundle\ImporterFactory;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Exception;
 
-class ImportCommand extends ContainerAwareCommand
+/**
+ * Import command
+ * Read and parse an external data and import it to database
+ *
+ * Class ImportCommand
+ * @package Application\ImportBundle\Command
+ */
+class ImportCommand extends AbstractGenerateCommand
 {
     /**
      * {@inheritDoc}
@@ -47,48 +48,43 @@ class ImportCommand extends ContainerAwareCommand
     {
         $this->setName('dp:import:run');
         $this->setHelp("Executes the importer.");
-        $this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
-        $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
+
+        parent::configure();
     }
-
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
 
     /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $factory = new ImporterFactory($this->getContainer(), $input);
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        try {
-            $config       = $factory->createImporterConfig();
-            $config->mode = 'live';
-        } catch (\InvalidArgumentException $e) {
-            $output->writeln("<error>Config Error</error>");
-            $output->writeln("Message: " . $e->getMessage());
-            $output->writeln("");
-            $output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
-            $output->writeln("");
+        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+        $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
 
-            return 1;
+        if ($config->needInputPath() && ! $config->getInputPath()) {
+            throw new Exception('Input path must be specified');
+        }
+        if ($config->isBatchExporter() && ! $config->getOutputPath() && ! $config->getInputPath()) {
+            throw new Exception(sprintf(
+                'Output or input path must be specified for batch exporter `%s`',
+                $config->getExporterType()
+            ));
+        }
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
-        $config->log_path = null;
+        $logger    = $this->createLogger($config, $output);
+        $generator = $this->createGenerator($config, $logger);
 
-        $importer = $factory->createImporter($config);
-        $importer->setStatusCallback(new ImporterCommandStatusCallback($this, $output));
-        $importer->processImports();
+        if ($config->getRetryWaitTimeout()) {
+            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
 
-        echo "\n";
+            return;
+        }
 
-        return 0;
+        $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output, $logger);
     }
 }

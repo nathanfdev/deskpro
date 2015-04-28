@@ -24,6 +24,7 @@ define([
 
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
+  'DeskPRO/Directive/DpDateTimePicker',
 
   'Reports/App/App',
 

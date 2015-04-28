@@ -228,6 +228,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
             // Reset user session
             $this->db->delete('sessions', array('person_id' => $this->person->id));
+            $this->db->delete('api_token', array('person_id' => $this->person->id));
 
             return $this->redirectRoute('user_login');
         }
@@ -332,6 +333,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
      */
     public function setDefaultEmailAction($email_id)
     {
+        $this->ensureStandardRequestToken();
+
         $email = $this->person->getEmailId($email_id);
 
         if (!$email) {
@@ -362,6 +365,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
      */
     public function removeEmailAction($email_id)
     {
+        $this->ensureStandardRequestToken();
+
         $email = $this->person->getEmailId($email_id);
 
         if (!$email) {
@@ -402,6 +407,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
     public function removeEmailValidatingAction($email_id)
     {
+        $this->ensureStandardRequestToken();
+
         $validating_email = $this->em->find('DeskPRO:PersonEmailValidating', $email_id);
 
         if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
@@ -429,6 +436,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
         // Already have this email on their account
         if ($this->person->findEmailAddress($email_address)) {
+            return $this->redirectRoute('user_profile');
+        }
+
+        if (!$this->person->checkPassword($this->in->getString('current_password'))) {
+            $this->session->setFlash('new_email_invalid_password', 1);
             return $this->redirectRoute('user_profile');
         }
 
@@ -491,7 +503,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             $message = $container->getMailer()->createMessage();
             $message->setTo($validating_email->getEmail(), $person->getDisplayName());
             $message->setTemplate('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
-            $message->enableQueueHint();
 
             $container->getMailer()->send($message);
         });

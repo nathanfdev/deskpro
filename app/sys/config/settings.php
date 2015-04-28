@@ -98,6 +98,11 @@
     'core.deskpro_url' => '',
 
     /**
+     * Auto-correct the URL?
+     */
+    'core.deskpro_url_autocorrect' => true,
+
+    /**
      * The name of the DeskPRO helpdesk
      */
     'core.deskpro_name' => 'DeskPRO',
@@ -221,14 +226,20 @@
     'core.email_source_storetime_rejection' => 1296000, // 15 days
 
     /**
+     * How long to store sendmail sources
+     */
+    'core.sendmail_source_storetime' => 1728000, // 20 days
+    'core.sendmail_source_storetime_error' => 3456000, // 40 days
+
+    /**
+     * Adapter to store log files under.
+     */
+    'core.filestorage_method_logs' => 'db',
+
+    /**
      * How long to store ticket manager logs for
      */
     'core.ticket_manager_log_storetime' => 604800, // 7 days
-
-    /**
-     * When to use the mail queue: never, hint, always
-     */
-    'core.use_mail_queue'  => 'hint',
 
     //'core.disqus_shortname' => '',
     //'core.facebook_comments_num_posts' => 10,
@@ -303,24 +314,15 @@
     'core.deskpro_source_enabled' => true,
 
     /**
-     * True if we always replace local name (fname, lname, name) with usersource name on every login if usersource provides one.
+     * True if we always replace local name (fname, lname, name) and other data with usersource data on every login.
      * False means we only do this on first login with that usersource.
      */
-    'core.usersource_login_always_update_name' => true,
+    'core.usersource_always_update_data' => true,
 
     /**
      * True to have links from chat intercepted and sent through the security page
      */
     'core.agent_intercept_external_link' => false,
-
-    /**
-     * Show the share widget (twitter/facebook/linkedin/gplus)
-     */
-    'core.show_share_widget' => true,
-    'core.show_share_facebook' => true,
-    'core.show_share_twitter' => true,
-    'core.show_share_linkedin' => true,
-    'core.show_share_gplus' => true,
 
     /**
      * Enable the KB?
@@ -462,8 +464,6 @@
 
     'core_tickets.use_ref' => false,
 
-    'core_tickets.gateway_enable_subject_match' => true,
-
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
     'core.allow_arbitrary_gateway_address' => 1,
@@ -475,6 +475,12 @@
 
     // See TicketMessage::checkDupeMessage
     'core_tickets.enable_dupe_checking' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector
+    'core_tickets.gateway_enable_subject_match' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableSameAccountMatching
+    'core_tickets.enable_same_account_subject_matching' => false,
 
     // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableExactSubjectMatching
     'core_tickets.enable_exact_subject_matching' => false,
@@ -552,6 +558,27 @@
      * How often to clean up scheduled task log
      */
     'core_misc.cleanup_task_logs' => 604800, // 7 days
+
+    /**
+     * Server to use for rDNS lookups
+     */
+    'rdns_server' => '8.8.8.8',
+
+    /**
+     * How long to cache rdns lookups
+     */
+    'rdns_timeout' => '18000',
+
+    /**
+     * True to enable rdns on ticket messages when an IP is available
+     */
+    'rdns_ticket_messages' => false,
+
+    /**
+     * True to have hostnames visible on the ticket in a list rather that just
+     * in the hover area
+     */
+    'rdns_ticket_showprops' => false,
 
     ####################################################################################################################
     # core_email
@@ -816,6 +843,64 @@
     'agent.ip_security.enabled'            => false,
     'agent.ip_security.mode'               => 'agents,admins',
     'agent.ip_security.whitelist_lifetime' => 1814400,
+
+    ####################################################################################################################
+    # login account lockout
+    ####################################################################################################################
+
+    'user.login_rate_limit.enabled'         => true,
+    'user.login_rate_limit.attempts'        => 20,
+    'user.login_rate_limit.attempts_time'   => 900,
+    'user.login_rate_limit.lock_time'       => 900,
+    'agent.login_rate_limit.enabled'        => true,
+    'agent.login_rate_limit.attempts'       => 20,
+    'agent.login_rate_limit.attempts_time'  => 900,
+    'agent.login_rate_limit.lock_time'      => 900,
+
+    ####################################################################################################################
+    # rate limit
+    ####################################################################################################################
+
+    'rate_limit.login.limit'                            => 3,
+    'rate_limit.login.time'                             => 15 * 60, // 15 min
+    'rate_limit.login.response'                         => 'captcha',
+
+    'rate_limit.registration.limit'                     => 3,
+    'rate_limit.registration.time'                      => 15 * 60, // 15 min
+    'rate_limit.registration.response'                  => 'captcha',
+
+    'rate_limit.reset_password.limit'                   => 3,
+    'rate_limit.reset_password.time'                    => 15 * 60, // 15 min
+    'rate_limit.reset_password.response'                => 'captcha',
+
+    'rate_limit.token_exchange.limit'                   => 50,
+    'rate_limit.token_exchange.time'                    => 15 * 60, // 15 min
+    'rate_limit.token_exchange.response'                => 'captcha',
+
+    'rate_limit.submit_comment.limit'                   => 3,
+    'rate_limit.submit_comment.time'                    => 15 * 60, // 15 min
+    'rate_limit.submit_comment.response'                => 'captcha',
+
+    'rate_limit.submit_feedback.limit'                  => 3,
+    'rate_limit.submit_feedback.time'                   => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.response'               => 'captcha',
+
+    'rate_limit.submit_ticket.limit'                    => 3,
+    'rate_limit.submit_ticket.time'                     => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.response'                 => 'captcha',
+
+    'rate_limit.submit_comment.guest.limit'             => 3,
+    'rate_limit.submit_comment.guest.time'              => 15 * 60, // 15 min
+    'rate_limit.submit_comment.guest.response'          => 'captcha',
+
+    'rate_limit.submit_feedback.guest.limit'            => 3,
+    'rate_limit.submit_feedback.guest.time'             => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.guest.response'         => 'captcha',
+
+    'rate_limit.submit_ticket.guest.limit'              => 3,
+    'rate_limit.submit_ticket.guest.time'               => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.guest.response'           => 'captcha',
+
 
     ####################################################################################################################
     # user_style

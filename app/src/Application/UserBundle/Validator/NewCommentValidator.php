@@ -42,6 +42,8 @@ use Orb\Validator\AbstractValidator;
 
 class NewCommentValidator extends AbstractValidator implements PersonContextInterface
 {
+    const CAPTCHA_TYPE = 'new_comment';
+
     /**
      * @var \Application\DeskPRO\Comments\NewComment
      */
@@ -86,7 +88,7 @@ class NewCommentValidator extends AbstractValidator implements PersonContextInte
         if (!$this->captcha) {
             if (App::getSetting('user.publish_captcha')) {
                 if ($this->person_context && (!$this->person_context->getId() || App::getSetting('user.always_show_captcha'))) {
-                    $this->captcha = App::getSystemObject('form_captcha', array('type' => 'new_comment'));
+                    $this->captcha = App::getSystemObject('form_captcha', array('type' => self::CAPTCHA_TYPE));
                 }
             }
         }

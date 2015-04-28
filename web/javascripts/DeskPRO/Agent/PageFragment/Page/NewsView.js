@@ -234,7 +234,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
-			html.push('The permalink to this post on the website is:<br />');
+			html.push($(this).data('prompt') + '<br />');
 			html.push('<input type="text" style="width:80%;" />');
 			html.push('</div>');
 
@@ -289,21 +289,21 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
 		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				endDate.data('val', timestamp);
-				endDate.text(dateText);
-
-				self.updateAutoUnPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 
 		endDate.on('click', function() {
-			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
+			$('.auto-unpublish .end-date-input', optWrap).datetimepicker('show');
 		});
 	},
 
@@ -374,21 +374,21 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
 		var dateInput = $('.auto-publish .pub-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				pubDate.data('val', timestamp);
-				pubDate.text(dateText);
-
-				self.updateAutoPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 
 		pubDate.on('click', function() {
-			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
+			$('.auto-publish .pub-date-input', optWrap).datetimepicker('show');
 		});
 	},
 
@@ -707,7 +707,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		this.getEl('editslug').on('click', function(ev) {
 			Orb.cancelEvent(ev);
-			DeskPRO_Window.showPrompt("Enter new URL slug (only letters, numbers, dashes and underscores)", function(newSlug) {
+			DeskPRO_Window.showPrompt($(this).data('prompt'), function(newSlug) {
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({

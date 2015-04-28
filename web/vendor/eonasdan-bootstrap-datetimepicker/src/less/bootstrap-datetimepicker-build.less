@@ -1,0 +1,33 @@
+// Import boostrap variables including default color palette and fonts
+@import "../../../../bower_components/bootstrap/less/variables.less";
+@import "../../../../bower_components/bootstrap/less/mixins/vendor-prefixes.less";
+
+// Import datepicker component
+@import "_bootstrap-datetimepicker.less";
+
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.collapse {
+  display: none;
+
+  &.in      { display: block; }
+  tr&.in    { display: table-row; }
+  tbody&.in { display: table-row-group; }
+}
+
+.collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  .transition(height .35s ease);
+}

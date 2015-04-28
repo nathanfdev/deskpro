@@ -271,6 +271,13 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago)
 }
 JS;
 
+        $ls = $this->container->getLanguageData();
+        $locale = null;
+        if ($defaultLanguage = $ls->getDefault()) {
+            $locale = $defaultLanguage['locale'];
+        }
+        $js[] = sprintf('window.DESKPRO_DEFAULT_LANG = "%s";', $locale);
+
         $js = implode("\n", $js);
 
         $response = $this->response;
@@ -679,18 +686,27 @@ JS;
     {
         $inserted = false;
 
-        $message = $this->in->getString('message');
+        // plain text message isnt really used, so dont want to spend a lot of
+        // effort cleaning it, so just stripping html it on the off chance it's ever used in a template somehwere
+        $message = Strings::stripTags(Strings::html2Text($this->in->getCleanValue('message', 'string', null, array('noclean' => true))));
+
         $extras = $this->in->getCleanValueArray('extras');
         $draft = null;
         if ($message) {
-            $message_html = Strings::trimHtml($this->in->getHtmlCore('message'));
+            $message_html = trim($this->in->getHtml('message'));
             $message_html = Strings::prepareWysiwygHtml($message_html);
 
             $message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message_html);
-            $message_test = Strings::trimHtml($message_test);
-            if ($message_test && !Strings::compareHtml($message_test, $this->person->getSignatureHtml())) {
+
+            if ($message_test
+                && (
+                    !$this->person->getSignatureHtml()
+                    ||
+                    !Strings::compareHtml($message_test, $this->person->getSignatureHtml())
+                )
+            ) {
                 $draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft(
-                    $content_type, $content_id, $message, $message_html, $extras
+                    $content_type, $content_id, $message_html, $message_html, $extras
                 );
                 if ($draft) {
                     $inserted = $draft->id;
@@ -716,7 +732,7 @@ JS;
 
             App::getDb()->insert('client_messages', array(
                 'channel' => 'agent.ticket-draft-updated',
-                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array(
                     'ticket_id'      => $content_id,

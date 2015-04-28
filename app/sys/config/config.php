@@ -11,7 +11,6 @@ $container->setParameter('http_kernel.class', 'Application\\DeskPRO\\HttpKernel\
 $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\ControllerResolver');
 $container->setParameter('debug.controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\TraceableControllerResolver');
 $container->setParameter('session.class', 'Application\\DeskPRO\\HttpFoundation\\Session');
-$container->setParameter('swiftmailer.class', 'Application\\DeskPRO\\Mail\\Mailer');
 $container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
 $container->setParameter('file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
@@ -44,6 +43,12 @@ $container->setParameter('form.type_extension.csrf.enabled', false);
 ############################################################################
 # Services
 ############################################################################
+
+// dp.cache_clearer.cachedir
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\CacheClearer\\CacheDirClearer');
+$definition->addTag('kernel.cache_clearer');
+$container->setDefinition('dp.cache_clearer.cachedir', $definition);
 
 // templating.engine.jsonphp
 $definition = new Definition();
@@ -101,24 +106,6 @@ $definition->setFactoryMethod('create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
 
-// swiftmailer.mailer
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailerFactory');
-$definition->setFactoryMethod('create');
-$definition->setArguments(array(
-    new Reference('service_container')
-));
-$container->setDefinition('swiftmailer.mailer', $definition);
-
-// swiftmailer.transport.dp_delegating
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
-$definition->setArguments(array(
-    new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
-));
-$container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
-
 // doctrine.dbal.connection_factory
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
@@ -168,6 +155,11 @@ $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 $definition = new Definition();
 $definition->setClass('Browser');
 $container->setDefinition('browser_sniffer', $definition);
+
+// deskpro.logging.null_handler
+$definition = new Definition();
+$definition->setClass('Orb\\Logger\\Handler\\NullHandler');
+$container->setDefinition('deskpro.logging.null_handler', $definition);
 
 // deskpro.service_urls
 $definition = new Definition();
@@ -291,8 +283,14 @@ $container->loadFromExtension('framework', array(
 $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
-            'type' => 'null'
-        )
+            'type' => 'service',
+            'id'   => 'deskpro.logging.null_handler',
+        ),
+        'email_log_collector' => array(
+            'type' => 'service',
+            'id' => 'email.log_collector',
+            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport')
+        ),
     )
 ));
 
@@ -317,7 +315,13 @@ $container->loadFromExtension('doctrine', array(
         'auto_generate_proxy_classes' => false,
         'default_entity_manager' => 'default',
         'entity_managers' => array(
-            'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')), 'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory')
+            'default' => array(
+                'mappings' => array(
+                    'DeskPRO'     => array('type' => 'staticphp'),
+                    'EmailBundle' => array('type' => 'staticphp'),
+                ),
+                'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory'
+            )
         )
     ),
     'dbal' => array(
@@ -327,14 +331,6 @@ $container->loadFromExtension('doctrine', array(
             'read' => array('host' => 'from_user_config.db_read', 'logging' => true)
         )
     )
-));
-
-############################################################################
-# Swiftmailer Configuration
-############################################################################
-
-$container->loadFromExtension('swiftmailer', array(
-    'transport' => 'dp_delegating'
 ));
 
 ############################################################################
@@ -355,6 +351,18 @@ $container->loadFromExtension(
                             'ngram_filter_3'  => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 3,
+                                'max_gram'    => 20,
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                            ),
+                            'edge_ngram_filter_3'  => array(
+                                'type'        => 'edgeNGram',
+                                'min_gram'    => 3,
+                                'max_gram'    => 20,
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                            ),
+                            'edge_ngram_filter_4'  => array(
+                                'type'        => 'edgeNGram',
+                                'min_gram'    => 4,
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
@@ -390,6 +398,11 @@ $container->loadFromExtension(
                             ),
                         ),
                         'analyzer' => array(
+                            'title_content_analyzer' => array(
+                                'type'      => 'custom',
+                                'tokenizer' => 'standard',
+                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding', 'edge_ngram_filter_4')
+                            ),
                             'text_content_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
@@ -398,7 +411,7 @@ $container->loadFromExtension(
                             'name_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding', 'ngram_filter_3')
+                                'filter'    => array('lowercase', 'asciifolding', 'edge_ngram_filter_3')
                             ),
                             'email_analyzer' => array(
                                 'type'      => 'custom',
@@ -417,11 +430,11 @@ $container->loadFromExtension(
                 'types'    => array(
                     'article'           => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_ids' => array('type' => 'integer'),
-                            'labels'       => array(),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss')
@@ -438,8 +451,8 @@ $container->loadFromExtension(
                     ),
                     'news'              => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
-                            'labels'       => array(),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
@@ -459,8 +472,8 @@ $container->loadFromExtension(
                     ),
                     'download'          => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
-                            'labels'       => array(),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
@@ -480,8 +493,8 @@ $container->loadFromExtension(
                     ),
                     'feedback'          => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
-                            'labels'       => array(),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),

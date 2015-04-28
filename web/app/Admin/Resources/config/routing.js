@@ -251,6 +251,16 @@ define(function() {
     controller: 'Admin_Main_Ctrl_BareList'
   });
 
+  //###
+  //# Reset Demo
+  //###
+  routes.push({
+    id: 'setup.reset_demo',
+    url: '/reset-demo',
+    templateName: 'Settings/reset-demo.html',
+    controller: 'Admin_Settings_Ctrl_ResetDemo'
+  });
+
   //##################################################################################################################
   // Agents
   //##################################################################################################################
@@ -1465,6 +1475,16 @@ define(function() {
     url: '/import',
     templateName: 'ImportCsv/import-csv.html',
     controller: 'Admin_ImportCsv_Ctrl_ImportCsv'
+  });
+
+  //###
+  //# Export
+  //###
+  routes.push({
+    id: 'crm.export',
+    url: '/export',
+    templateName: 'ExportCsv/export-csv.html',
+    controller: 'Admin_ExportCsv_Ctrl_ExportCsv'
   });
 
   //##################################################################################################################

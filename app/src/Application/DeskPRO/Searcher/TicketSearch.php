@@ -183,7 +183,9 @@ class TicketSearch extends SearcherAbstract
     {
         $person_search->setMode(PersonSearch::MODE_ANY);
         $this->person_search = $person_search;
-        $this->person_search->setPerson($this->getPersonContext());
+        if ($this->person) {
+            $this->person_search->setPerson($this->person);
+        }
     }
 
 
@@ -1806,7 +1808,7 @@ class TicketSearch extends SearcherAbstract
                             case 'input':
                             case 'value':
 
-                                if (is_array($choice)) {
+                                if (is_array($choice) && !isset($choice['date1'])) {
                                     $choice = array_pop($choice);
                                 }
 
@@ -1853,6 +1855,29 @@ class TicketSearch extends SearcherAbstract
 
                                         $wheres[] = $w;
 
+                                        break;
+                                    case self::OP_LTE:
+                                    case self::OP_GTE:
+                                        $op = self::OP_LTE === $op ? '<=' : '>=';
+                                        $_parts = explode('|', $choice);
+                                        if ('date' === @$_parts[0] && @$_parts[1]) {
+                                            $wheres[] = "$field $op " . (int) $_parts[1];
+                                        } elseif ('date_relative' === @$_parts[0]) {
+                                            @list($i, $g) = @$_parts[1];
+                                            $wheres[] = "$field $op " . strtotime('-' . (int) $i . ' ' . $g);
+                                        }
+                                        break;
+                                    case self::OP_BETWEEN:
+                                        $_parts = explode('|', $choice);
+                                        if ('date' === @$_parts[0] && @$_parts[1] && @$_parts[2]) {
+                                            $d1 = (int) $_parts[1];
+                                            $d2 = (int) $_parts[2];
+                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                        } else if ('date_relative' === @$_parts[0]) {
+                                            $d1 = strtotime('-' . $_parts[1]);
+                                            $d2 = strtotime('-' . $_parts[2]);
+                                            $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                        }
                                         break;
                                 }
 
@@ -2296,7 +2321,7 @@ class TicketSearch extends SearcherAbstract
 
                 case self::TERM_DATE_ARCHIVED:
                     if ($ticket['status'] != Ticket::STATUS_ARCHIVED) return false;
-                    if (!$this->_testDateMatch($ticket['date_archived'], $op, $choice)) return false;
+                    if (!$this->_testDateMatch($ticket['ddoesTicketMatchate_archived'], $op, $choice)) return false;
                     break;
 
                 case self::TERM_DATE_RESOLVED:

@@ -48,3 +48,23 @@
         </div>
     </fieldset>
 </form>
+
+<script>
+	function validateEmail(email) {
+		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test(email);
+	}
+
+	$(function(){
+		var $mail = $('input[name="DP_TECHNICAL_EMAIL"]').on('keyup', function(){ $mail.css('box-shadow', 'none'); });
+
+		$('form').on('submit', function(){
+			if (!validateEmail($mail.val())) {
+				$mail.css({
+					boxShadow: '0 0 3pt 2pt red'
+				});
+				return false;
+			}
+		});
+	});
+</script>

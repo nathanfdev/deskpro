@@ -32,6 +32,7 @@
  */
 
 namespace Application\DeskPRO\Settings;
+use Application\DeskPRO\Service\RateLimit;
 use Orb\Util\Arrays;
 
 class GeneralSettings
@@ -43,6 +44,8 @@ class GeneralSettings
 
     /** @var string */
     public $deskpro_name;
+    /** @var  bool */
+    public $deskpro_url_autocorrect;
     /** @var string */
     public $deskpro_url;
     /** @var bool */
@@ -90,6 +93,12 @@ class GeneralSettings
     /** @var bool */
     protected $isCloud;
 
+	/** @var bool */
+	protected $rate_limit_disabled;
+
+    /** @var array */
+    protected $rate_limit_ips;
+
     /**
      * @param Settings $settings
      */
@@ -109,6 +118,7 @@ class GeneralSettings
     public function resetSettings()
     {
         $this->deskpro_name = $this->settings->get('core.deskpro_name');
+        $this->deskpro_url_autocorrect = (bool)$this->settings->get('core.deskpro_url_autocorrect');
         $this->deskpro_url  = $this->settings->get('core.deskpro_url');
 
         $this->helpdesk_disabled = (bool) $this->settings->get('core.helpdesk_disabled');
@@ -159,6 +169,8 @@ class GeneralSettings
 
         if (!$this->attach_agent_must_exts) $this->attach_agent_must_exts = array();
         if (!$this->attach_agent_not_exts)  $this->attach_agent_not_exts = array();
+	    $this->rate_limit_disabled = (bool) $this->settings->get(RateLimit::DISABLED);
+        $this->rate_limit_ips = json_decode($this->settings->get(RateLimit::IPS, 1) ?: array());
     }
 
 
@@ -184,27 +196,29 @@ class GeneralSettings
     public function toArray()
     {
         $export_settings = array(
-            'deskpro_name'           => $this->deskpro_name,
-            'deskpro_url'            => $this->deskpro_url,
-            'helpdesk_disabled'      => $this->helpdesk_disabled,
+            'deskpro_name'              => $this->deskpro_name,
+            'deskpro_url_autocorrect'   => $this->deskpro_url_autocorrect,
+            'deskpro_url'               => $this->deskpro_url,
+            'helpdesk_disabled'         => $this->helpdesk_disabled,
             'helpdesk_disabled_message' => $this->helpdesk_disabled_message,
-            'default_timezone'       => $this->default_timezone,
-            'task_reminder_time'     => $this->task_reminder_time,
-            'site_name'              => $this->site_name,
-            'site_url'               => $this->site_url,
-            'default_from_email'     => $this->default_from_email,
-            'date_fulltime'          => $this->date_fulltime,
-            'date_full'              => $this->date_full,
-            'date_day'               => $this->date_day,
-            'date_day_short'         => $this->date_day_short,
-            'date_time'              => $this->date_time,
-            'attach_user_must_exts'  => $this->attach_user_must_exts,
-            'attach_user_not_exts'   => $this->attach_user_not_exts,
-            'attach_user_maxsize'    => $this->attach_user_maxsize,
-            'attach_agent_must_exts' => $this->attach_agent_must_exts,
-            'attach_agent_not_exts'  => $this->attach_agent_not_exts,
-            'attach_agent_maxsize'   => $this->attach_agent_maxsize,
-
+            'default_timezone'          => $this->default_timezone,
+            'task_reminder_time'        => $this->task_reminder_time,
+            'site_name'                 => $this->site_name,
+            'site_url'                  => $this->site_url,
+            'default_from_email'        => $this->default_from_email,
+            'date_fulltime'             => $this->date_fulltime,
+            'date_full'                 => $this->date_full,
+            'date_day'                  => $this->date_day,
+            'date_day_short'            => $this->date_day_short,
+            'date_time'                 => $this->date_time,
+            'attach_user_must_exts'     => $this->attach_user_must_exts,
+            'attach_user_not_exts'      => $this->attach_user_not_exts,
+            'attach_user_maxsize'       => $this->attach_user_maxsize,
+            'attach_agent_must_exts'    => $this->attach_agent_must_exts,
+            'attach_agent_not_exts'     => $this->attach_agent_not_exts,
+            'attach_agent_maxsize'      => $this->attach_agent_maxsize,
+            'rate_limit_disabled'       => $this->rate_limit_disabled,
+            'rate_limit_ips'            => $this->rate_limit_ips,
         );
 
         return $export_settings;
@@ -235,10 +249,10 @@ class GeneralSettings
         }
 
         if (!$this->isCloud) {
+            $this->settings->setSetting('core.deskpro_url_autocorrect', (bool)$this->deskpro_url_autocorrect);
             $this->settings->setSetting('core.helpdesk_disabled', (bool) $this->helpdesk_disabled);
             $this->settings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
 
-            // todo? legacy code
             @file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
         }
 
@@ -278,5 +292,11 @@ class GeneralSettings
         $this->settings->setSetting('core.attach_agent_maxsize', (int)$this->attach_agent_maxsize);
         $this->settings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
         $this->settings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
+
+        $this->settings->setSetting(RateLimit::DISABLED, (bool) $this->rate_limit_disabled);
+        if (!is_array($this->rate_limit_ips)) {
+            $this->rate_limit_ips = array();
+        }
+        $this->settings->setSetting(RateLimit::IPS, json_encode($this->rate_limit_ips));
     }
 }

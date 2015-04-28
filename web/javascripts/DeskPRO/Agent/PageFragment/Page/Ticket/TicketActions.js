@@ -331,7 +331,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		DP.console.log('Applying macro %d', this.macroId);
 
-		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json';
+		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json',
+      self = this;
 
 		$.ajax({
 			url: url,
@@ -341,6 +342,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			success: function(data) {
 
 				if (data.error) {
+          if (data.error_messages) {
+
+            var prop = self.page.changeManager.getPropertyManager('status');
+            self.page.changeManager.setInstantChange(prop, 'awaiting_agent');
+
+            var list = self.page.getEl('field_errors').find('ul').empty();
+            Array.each(data.error_messages, function(msg) {
+              var li = $('<li/>');
+              li.text(msg);
+              li.appendTo(list);
+            });
+
+            self.page.getEl('field_errors').show().addClass('on');
+
+            self.page.getEl('field_edit_start').click();
+            self.page.getEl('field_edit_cancel').show();
+            self.page.getEl('field_edit_save').show();
+            self.page.getEl('field_edit_controls').removeClass('loading');
+
+            return DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+          }
+
 					DeskPRO_Window.showAlert("The macro was not applied because you do not have permission to perform one or more of the defined actions.");
 					return;
 				}

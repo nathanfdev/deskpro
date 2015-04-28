@@ -66,7 +66,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 			
 			if (confirm("Are you sure you want to link the current to this ticket?")) {
 				$.ajax({
-					url: '/agent/tickets/' + self.page.meta.ticket_id + '/link/' + $(this).attr('ticket-id'),
+					url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/link/' + $(this).attr('ticket-id'),
 					data: {"isParent" : isParent ? 1 : 0},
 					type: 'POST',
 					dataType: 'json',

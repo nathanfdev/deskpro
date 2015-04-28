@@ -7,6 +7,8 @@
  * Represents a Tentative reply to a meeting request.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_WellKnownResponseObjectType.
  */
 class EWSType_TentativelyAcceptItemType extends EWSType
 {

@@ -245,7 +245,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         $state->clearState();
 
         // The user key used in various signings
-        $user_key = \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
+        $user_key = \Orb\Util\DpStrings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
 
         #------------------------------
         # Initiate the request on the service

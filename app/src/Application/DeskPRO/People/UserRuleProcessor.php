@@ -67,6 +67,19 @@ class UserRuleProcessor
 
 
     /**
+     * @param Person $person
+     */
+    public function newContact(Person $person)
+    {
+        $email = $person->getPrimaryEmail();
+
+        if ($email) {
+            $this->newEmail($person, $email);
+        }
+    }
+
+
+    /**
      * @param \Application\DeskPRO\Entity\Person      $person
      * @param \Application\DeskPRO\Entity\PersonEmail $email
      */

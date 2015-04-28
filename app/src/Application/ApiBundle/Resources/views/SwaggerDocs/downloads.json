@@ -42,7 +42,7 @@
                             "name": "usergroup_id[]",
                             "type": "string",
                             "required": false,
-                            "description": "comma seperated IDs of user group that has access. If not provided, defaults to all users."
+                            "description": "comma separated IDs of usergroup that has access. If not provided, defaults to all users."
                         }
                     ]
                 }

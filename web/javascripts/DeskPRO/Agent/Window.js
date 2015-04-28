@@ -233,7 +233,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				options.dataType = 'json';
 
-				DeskPRO_Window.getMessageChanneler().poller.pause();
+        // passing true to cancel the current poll if it is active
+        // or else we might end up with a weird case where the current
+        // request comes back before the poll request, and order might matter (eg count refreshes)
+				DeskPRO_Window.getMessageChanneler().poller.pause(true);
 				return $.ajax(options);
 			},
 
@@ -589,6 +592,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// All target=blanks need to null out window.opener
 		$(document).on('click', 'a[target="_blank"]', function(ev) {
+      // colorbox image previews from tickets
+      // open an inline overlay
+      if ($(this).hasClass('cboxElement')) {
+        return;
+      }
+
 			ev.preventDefault();
 			var o = window.open($(this).attr('href'));
 			o.opener = null;
@@ -2329,6 +2338,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setListPage(page, routeData.isBackgroundLoad || false);
 
 			if (callback) callback(page);
+			$(document).trigger('textareaexpander_expanded');
 		}).bind(this));
 
 		if (routeData && !routeData.isBackgroundLoad) {

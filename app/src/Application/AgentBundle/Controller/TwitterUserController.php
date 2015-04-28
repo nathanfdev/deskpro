@@ -350,7 +350,7 @@ class TwitterUserController extends AbstractController
 
             App::getDb()->insert('client_messages', array(
                 'channel' => 'agent.twitter-friend',
-                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array('action' => 'new', 'account_id' => $account->id))
             ));
@@ -368,7 +368,7 @@ class TwitterUserController extends AbstractController
                 if ($follower->is_archived != $old) {
                     App::getDb()->insert('client_messages', array(
                         'channel' => 'agent.twitter-follower',
-                        'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                        'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                         'date_created' => date('Y-m-d H:i:s'),
                         'data' => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id))
                     ));
@@ -403,7 +403,7 @@ class TwitterUserController extends AbstractController
 
             App::getDb()->insert('client_messages', array(
                 'channel' => 'agent.twitter-friend',
-                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array('action' => 'removed', 'account_id' => $account->id))
             ));
@@ -433,7 +433,7 @@ class TwitterUserController extends AbstractController
             if ($follower->is_archived != $old) {
                 App::getDb()->insert('client_messages', array(
                     'channel' => 'agent.twitter-follower',
-                    'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                    'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                     'date_created' => date('Y-m-d H:i:s'),
                     'data' => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id))
                 ));

@@ -231,7 +231,7 @@
                             "name": "usergroup_id[]",
                             "type": "integer",
                             "required": false,
-                            "description": "ID of user group that has access. If not provided, defaults to all users."
+                            "description": "ID of usergroup that has access. If not provided, defaults to all users."
                         }
                     ]
                 }
@@ -298,7 +298,7 @@
                             "name": "usergroup_id[]",
                             "type": "integer",
                             "required": false,
-                            "description": "ID of user group that has access. If not provided, defaults to all users."
+                            "description": "ID of usergroup that has access. If not provided, defaults to all users."
                         }
                     ],
                     "responseMessages": [

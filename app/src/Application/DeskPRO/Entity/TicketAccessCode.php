@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -73,7 +74,7 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $len = Ticket::TAC_AUTHCODE_LEN;
-        $this->auth = Strings::random($len, Strings::CHARS_KEY);
+        $this->auth = DpStrings::random($len, Strings::CHARS_KEY);
     }
 
     /**

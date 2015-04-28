@@ -130,11 +130,11 @@
 
 							<div class="form-group with-border">
 								<div class="col-lg-3">
-									<h3>{{ phrase('agent.general.description') }} *</h3>
+									<h3>{{ phrase('agent.general.description') }}</h3>
 								</div>
 								<div class="col-lg-9">
-									<div class="inner-group" dp-error-class="form_props.description">
-										<textarea class="form-control" name="description" ng-model="EditCtrl.form.description" style="width: 50%; height: 80px;" required></textarea>
+									<div class="inner-group">
+										<textarea class="form-control" name="description" ng-model="EditCtrl.form.description" style="width: 50%; height: 80px;"></textarea>
 									</div>
 								</div>
 							</div>
@@ -337,7 +337,11 @@
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="0" /> Use date at time of submission</label>
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="date" /> Specific date</label>
 										<p ng-show="EditCtrl.form.date.default_mode == 'date'">
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.default_value" style="width: 50%;" datepicker-popup />
+											<input type="text" class="form-control"
+											       ng-model="EditCtrl.form.date.default_value"
+											       style="width: 50%;"
+											       dp-datetime-popup="DD MMMM YYYY"
+													/>
 										</p>
 									</div>
 								</div>
@@ -371,15 +375,24 @@
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.valid_dates_mode" value="range" /> Days before/after</label>
 										<p ng-show="EditCtrl.form.date.valid_dates_mode == 'date'">
 											Between
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_date1" style="width: 150px;" placeholder="Start date" datepicker-popup />
+											<input type="text" class="form-control"
+											       ng-model="EditCtrl.form.date.date_valid_date1"
+											       style="width: 150px;" placeholder="Start date"
+											       dp-datetime-popup="DD MMMM YYYY"
+													/>
 											and
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_date2" style="width: 150px;" placeholder="Start end" datepicker-popup />
+											<input type="text" class="form-control"
+											       ng-model="EditCtrl.form.date.date_valid_date2"
+											       style="width: 150px;"
+											       placeholder="Start end"
+											       dp-datetime-popup="DD MMMM YYYY"
+													/>
 										</p>
 										<p ng-show="EditCtrl.form.date.valid_dates_mode == 'range'">
 											Date selected must be between
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate1" style="width: 80px;" placeholder="Start date" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate1" style="width: 80px;" placeholder="Days before" />
 											and
-											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate2" style="width: 80px;" placeholder="Start end" />
+											<input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate2" style="width: 80px;" placeholder="Days after" />
 											days from the time of submission
 										</p>
 									</div>
@@ -429,7 +442,11 @@
                                     <div class="inner-group">
                                         <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="0" /> Use date and time at the point of submission</label>
                                         <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="date" /> Specific date/time</label>
-                                        <datetimepicker ng-if="EditCtrl.form.datetime.default_mode == 'date'" ng-model="EditCtrl.form.datetime.default_value"></datetimepicker>
+	                                    <input type="text" class="form-control" style="width: 50%;"
+	                                           ng-model="EditCtrl.form.datetime.default_value"
+	                                           ng-if="EditCtrl.form.datetime.default_mode == 'date'"
+	                                           dp-datetime-popup="DD MMMM YYYY HH:mm"
+			                                    />
                                     </div>
                                 </div>
                             </div>
@@ -462,15 +479,25 @@
                                         <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.valid_dates_mode" value="range" /> Days before/after</label>
                                         <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'date'">
                                             Between
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_date1" style="width: 150px;" placeholder="Start date" datepicker-popup />
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.datetime.date_valid_date1"
+                                                   style="width: 150px;"
+                                                   placeholder="Start date"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+		                                            />
                                             and
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_date2" style="width: 150px;" placeholder="Start end" datepicker-popup />
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.datetime.date_valid_date2"
+                                                   style="width: 150px;"
+                                                   placeholder="End date"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+		                                            />
                                         </p>
                                         <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'range'">
                                             Date selected must be between
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate1" style="width: 80px;" placeholder="Start date" />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate1" style="width: 80px;" placeholder="Days before" />
                                             and
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate2" style="width: 80px;" placeholder="Start end" />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate2" style="width: 80px;" placeholder="Days after" />
                                             days from the time of submission
                                         </p>
                                     </div>
@@ -600,7 +627,6 @@
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
 							<li ng-show="form_props.title.$error.required">{{ phrase('adm.custom_fields.title_error') }}</li>
-							<li ng-show="form_props.description.$error.required">{{ phrase('adm.custom_fields.description_error') }}</li>
 						</ul>
 					</div>
 

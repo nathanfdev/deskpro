@@ -47,7 +47,7 @@ use Orb\Util\Strings;
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
     /**
-     * @var \Application\DeskPRO\Entity\TicketCategory
+     * @var \Application\DeskPRO\Entity\DownloadCategory
      */
     protected $category;
 
@@ -117,6 +117,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @param Blob $blob
+     * @return $this
      */
     public function setBlob(Blob $blob = null)
     {
@@ -128,6 +129,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         } else {
             $this->setModelField('blob', null);
         }
+
+        return $this;
     }
 
 
@@ -283,6 +286,15 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
+    /**
+     * @param DownloadCategory $category
+     * @return $this
+     */
+    public function setCategory(DownloadCategory $category = null)
+    {
+        $this->setModelField('category', $category);
+        return $this;
+    }
 
     /**
      * Add a label
@@ -294,6 +306,17 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $this->labels->add($label);
     }
 
+    /**
+     * Set downloads count
+     *
+     * @param int $num_downloads
+     * @return $this
+     */
+    public function setNumDownloads($num_downloads)
+    {
+        $this->setModelField('num_downloads', $num_downloads);
+        return $this;
+    }
 
     /**
      * @return string
@@ -301,7 +324,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function getContentDesc()
     {
         $content = $this->content;
-        $content = strip_tags($content);
+        $content = Strings::html2Text($content);
         $content = str_replace("\n", ' ', $content);
         $content = preg_replace('# {2,}#', ' ', $content);
 

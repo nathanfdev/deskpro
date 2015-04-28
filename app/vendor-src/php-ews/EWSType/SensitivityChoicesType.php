@@ -11,7 +11,7 @@
 class EWSType_SensitivityChoicesType extends EWSType
 {
     /**
-     * Indiciates theat the item is confidential.
+     * Indicates that the item is confidential.
      *
      * @since Exchange 2007
      *
@@ -20,7 +20,7 @@ class EWSType_SensitivityChoicesType extends EWSType
     const CONFIDENTIAL = 'Confidential';
 
     /**
-     * Indiciates theat the item has a normal sensativity.
+     * Indicates that the item has a normal sensitivity.
      *
      * @since Exchange 2007
      *
@@ -29,7 +29,7 @@ class EWSType_SensitivityChoicesType extends EWSType
     const NORMAL = 'Normal';
 
     /**
-     * Indiciates theat the item is personal.
+     * Indicates that the item is personal.
      *
      * @since Exchange 2007
      *
@@ -38,7 +38,7 @@ class EWSType_SensitivityChoicesType extends EWSType
     const PERSONAL = 'Personal';
 
     /**
-     * Indiciates theat the item is private.
+     * Indicates that the item is private.
      *
      * @since Exchange 2007
      *

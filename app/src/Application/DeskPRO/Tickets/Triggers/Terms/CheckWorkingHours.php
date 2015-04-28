@@ -95,8 +95,8 @@ class CheckWorkingHours extends AbstractTriggerTerm
 
         $working_hours = new OptionsArray($working_hours);
         $wh = new WorkHoursSet(
-            $working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_minute', 0) * 60,
-            $working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_minute', 0) * 60,
+            $working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_min', 0) * 60,
+            $working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_min', 0) * 60,
             $working_hours->get('work_days', array(1, 2, 3, 4, 5)),
             $working_hours->get('timezone', $working_hours->get('timezone', 'UTC')),
             $working_hours->get('holidays', array())

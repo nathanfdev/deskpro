@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
@@ -151,8 +152,9 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         $repo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         $agents = $repo->getPeopleResultsFromIds($agents);
         foreach ($agents as $agent) {
-            if ($agent->primary_phone_number) {
-                $numbers[] = $agent->primary_phone_number_text;
+	        /** @var $agent Person */
+            if ($pn = $agent->getPrimaryPhoneNumber()) {
+                $numbers[] = $pn['number'];
             }
         }
         $numbers = array_unique($numbers);

@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @agentId = parseInt(@$stateParams.id)
+      @service = @DataService.get 'Agents'
       return
 
     initialLoad: ->
@@ -24,6 +25,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       promise = @Api.sendPost("/agents/deleted/#{@agentId}/undelete")
       promise.then( =>
         @stopSpinner('saving', true)
+        @service.all true
         @$state.go('agents.agents.edit', {id: @agentId})
       , (res) =>
         @stopSpinner('saving', true)
