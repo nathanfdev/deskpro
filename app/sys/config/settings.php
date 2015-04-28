@@ -464,8 +464,6 @@
 
     'core_tickets.use_ref' => false,
 
-    'core_tickets.gateway_enable_subject_match' => true,
-
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
     'core.allow_arbitrary_gateway_address' => 1,
@@ -477,6 +475,12 @@
 
     // See TicketMessage::checkDupeMessage
     'core_tickets.enable_dupe_checking' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector
+    'core_tickets.gateway_enable_subject_match' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableSameAccountMatching
+    'core_tickets.enable_same_account_subject_matching' => false,
 
     // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableExactSubjectMatching
     'core_tickets.enable_exact_subject_matching' => false,

@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\People\PersonContextInterface;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class SlaClientMessageSender implements PersonContextInterface
@@ -89,7 +90,7 @@ class SlaClientMessageSender implements PersonContextInterface
     {
         $this->queue[] = array(
             'channel'       => self::CHANNEL,
-            'auth'          => Strings::random(15, Strings::CHARS_KEY),
+            'auth'          => DpStrings::random(15, Strings::CHARS_KEY),
             'date_created'  => date('Y-m-d H:i:s'),
             'data'          => serialize(array(
                 'ticket_id'             => $ticket->id,

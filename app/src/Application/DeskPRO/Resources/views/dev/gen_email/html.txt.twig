@@ -1,0 +1,50 @@
+Date: {{ "now"|date('r') }}
+From: {{ from_line }}
+To: {{ to_email }}
+Message-ID: <{{ uid }}@test-message>
+Subject: {{ subject }}
+Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="50c634de_3222e7cd_af2f"
+
+--50c634de_3222e7cd_af2f
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+{{ message|strip_html }}
+
+{% if as_reply %}
+  {% if as_agent %}
+    === {{ phrase('agent.emails.reply_above_line') }} ===
+
+
+  {% endif %}
+  (#{{ access_code }})
+{% endif %}
+
+
+--50c634de_3222e7cd_af2f
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+{{ message }}
+
+{% if as_reply %}
+  <br/><br/>
+  {% if as_agent %}
+    === <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} ===<br /><br />
+  {% else %}
+    <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
+  {% endif %}
+
+  <span class="dp-replycode" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">(#{{ access_code}})</span>
+
+  {% if as_agent %}
+    <!--DP_TOP_MARK--><a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
+  {% else %}
+    <!--DP_BOTTOM_MARK--><a class="DP_BOTTOM_MARK dp_marker_link" id="DP_BOTTOM_MARK" name="DP_BOTTOM_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
+  {% endif %}
+{% endif %}
+
+--50c634de_3222e7cd_af2f--

@@ -540,7 +540,7 @@ class Person extends AbstractEntityRepository
         $rows = App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM people
-            WHERE is_agent IN (0, 1)
+            WHERE people.is_deleted = 0
         ");
 
         if ($only_users) {

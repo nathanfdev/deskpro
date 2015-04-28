@@ -49,7 +49,9 @@ use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -207,6 +209,7 @@ class TemplatingExtension extends \Twig_Extension
             'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
             'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
             'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'strip_html'             => new \Twig_Filter_Method($this, 'stripHtml'),
 
             'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
 
@@ -510,6 +513,11 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return $ret;
+    }
+
+    public function stripHtml($str)
+    {
+        return Strings::html2Text($str);
     }
 
     public function stripLinebreaks($str)
@@ -1234,6 +1242,15 @@ class TemplatingExtension extends \Twig_Extension
             $url = App::getSetting('core.deskpro_url');
             $url = trim(str_replace('/index.php', '', $url), '/');
             $url .= (App::getConfig('static_path') ?: '/web') . '/';
+        }
+
+        /** @var Request $r */
+        $r = $this->container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+
+        // If the current request is https, then all urls sholud be https even if the
+        // helpdesk url isn't explicitly set to use https
+        if ($r && $r->isSecure() && strtolower(substr($url, 0, 7)) === 'http://') {
+            $url = 'https://' . substr($url, 7);
         }
 
         return $url . ltrim($location, '/');

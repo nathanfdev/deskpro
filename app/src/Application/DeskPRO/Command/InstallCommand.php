@@ -40,6 +40,7 @@ use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -256,7 +257,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         ));
         App::getDb()->replace('settings', array(
             'name' => 'core.install_key',
-            'value' => Strings::random(20, Strings::CHARS_KEY),
+            'value' => DpStrings::random(20, Strings::CHARS_KEY),
         ));
         App::getDb()->replace('settings', array(
             'name' => 'core.deskpro_version',

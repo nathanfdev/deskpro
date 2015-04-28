@@ -441,4 +441,9 @@ class GlobalVariables extends BaseGlobalVariables
     {
         return '[app]';
     }
+
+    public function canResetDemo()
+    {
+        return true;
+    }
 }

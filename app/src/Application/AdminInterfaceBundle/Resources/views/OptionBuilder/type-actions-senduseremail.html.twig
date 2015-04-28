@@ -22,6 +22,8 @@
 									<optgroup label="Other User Emails">
 										<option value="DeskPRO:emails_user:ticket-rate.html.twig">Request user feedabck</option>
 										<option value="DeskPRO:emails_user:ticket-new-validate-email.html.twig">New ticket requires validation (auto-response)</option>
+										<option value="DeskPRO:emails_user:ticket-awaiting-warn.html.twig">Warn about awaiting ticket</option>
+										<option value="DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig">Final warn about awaiting ticket</option>
 									</optgroup>
 									<optgroup label="Custom Emails">
 										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>

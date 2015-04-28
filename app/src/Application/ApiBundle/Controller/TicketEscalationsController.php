@@ -38,9 +38,11 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketEscalation;
+use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Operations about Ticket escalations
@@ -81,19 +83,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     public function listAction()
     {
         $escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
-
-        $data = array();
-        foreach ($escalations as $esc) {
-            $row = array(
-                'id'                 => $esc->id,
-                'title'              => $esc->title,
-                'is_enabled'         => $esc->is_enabled,
-                'event_trigger'      => $esc->event_trigger,
-                'event_trigger_time' => $esc->event_trigger_time,
-            );
-
-            $data[] = $row;
-        }
+        $data = $this->getApiData($escalations, false);
 
         return $this->createApiResponse(array(
             'escalations' => $data
@@ -127,12 +117,14 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *  )
      * )
      */
-    public function getAction($id)
+    public function getAction($id, $special_type = null)
     {
-        $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+        /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
+        $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
+        $esc = $special_type ? $rep->getSpecialEscalation($special_type, $id) : $rep->find($id);
 
         if (!$esc) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException;
         }
 
         $trans = new LegacyTermsTransformer();
@@ -267,14 +259,15 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *  )
      * )
      */
-    public function saveAction($id)
+    public function saveAction($id, $special_type = null)
     {
-        if ($id) {
-            $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+        /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
+        $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
 
-            if (!$esc) {
-                throw $this->createNotFoundException();
-            }
+        if ($special_type) {
+            $esc = $rep->getSpecialEscalation($special_type, $id);
+        } elseif ($id) {
+            $esc = $rep->find($id);
         } else {
             $esc = new TicketEscalation();
         }
@@ -343,7 +336,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
         if (!$esc) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException;
         }
 
         $this->em->remove($esc);
@@ -405,7 +398,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     {
         $trigger = $this->em->find('DeskPRO:TicketEscalation', $id);
         if (!$trigger) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException;
         }
 
         $trigger->is_enabled = $is_enabled;

@@ -2,10 +2,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
   class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings'
     @CTRL_AS   = 'TicketSettings'
-    @DEPS      = []
+    @DEPS      = ['$modal']
 
     init: ->
       @settings = null
+      @$scope.escalation_days = 3
+
+      @$scope.editSatisfactionTemplate = =>
+        @$modal.open({
+          templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+          resolve:
+            templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
+        })
 
     initialLoad: ->
       data_promise = @Api.sendDataGet({
@@ -25,7 +34,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
         @settings = angular.copy(@$scope.settings)
       )
 
-      @headerSortList = {
+      @headerSortList =
         axis: 'y',
         handle: '.drag-handle',
         update: (ev, data) =>
@@ -37,9 +46,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
           )
 
           @$scope.settings.from_email_headers = newOrder
-      }
 
-      return @$q.all([data_promise])
+      @$q.all [data_promise]
 
     isDirtyState: ->
       if not @settings then return false
@@ -71,5 +79,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
       )
+
+      @$scope.$broadcast 'trigger.save'
 
   Admin_TicketSettings_Ctrl_TicketSettings.EXPORT_CTRL()
