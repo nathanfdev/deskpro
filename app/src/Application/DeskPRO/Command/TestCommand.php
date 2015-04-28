@@ -35,7 +35,8 @@
 
 namespace Application\DeskPRO\Command;
 
-use Orb\Util\Strings;
+use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,7 +64,10 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo DP_ROOT;
+        $c = $this->getContainer();
+        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
+
+        echo __FILE__;
         echo "\n";
         return 0;
     }

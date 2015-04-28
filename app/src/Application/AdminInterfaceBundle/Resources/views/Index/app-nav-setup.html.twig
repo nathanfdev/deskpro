@@ -25,6 +25,15 @@
 					<i class="fa fa-caret-right"></i>
 				</a>
 			</li>
+            {% if app.canResetDemo %}
+            <li dp-state-mark="setup.reset_demo">
+                <a href="{{ ng_href('setup.reset_demo') }}">
+                    <i class="fa fa-trash-o"></i>
+                    <span>Reset Demo</span>
+                    <i class="fa fa-caret-right"></i>
+                </a>
+            </li>
+            {% endif %}
 		</ul>
 	</nav>
 {% endblock %}

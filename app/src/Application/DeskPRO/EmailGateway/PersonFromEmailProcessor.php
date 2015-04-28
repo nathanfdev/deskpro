@@ -173,8 +173,15 @@ class PersonFromEmailProcessor
             ));
 
             // Create new person record (no chance of conflicts here)
-            $db->insert('people', Arrays::removeFalsey($tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES)));
+            $p_array = $tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES);
+            $p_array['date_created'] = date('Y-m-d H:i:s', time() - 5);// overwrting time because we'll set it for real below
+            $db->insert('people', Arrays::removeFalsey($p_array));
             $person_id = $db->lastInsertId();
+
+            // Since we are 'manually' inserting the user here, Person->isNew will think
+            // it already existed, so we need this hack to override it
+            if (!isset($GLOBALS['DP_CREATED_PEOPLE_IDS'])) $GLOBALS['DP_CREATED_PEOPLE_IDS'] = array();
+            $GLOBALS['DP_CREATED_PEOPLE_IDS'][$person_id] = $person_id;
 
             // Attempt to create email record,
             // this may fail (races)
@@ -227,6 +234,14 @@ class PersonFromEmailProcessor
             $person = $this->createPerson($from);
             $this->is_running = false;
         }
+
+        $user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
+        $user_rule_proc->newRegister($person);
+
+        // We need to manually persist the record again
+        // so doctrine hooks are run (e.g., to insert into search index)
+        $person->date_created = new \DateTime();
+        App::$container->getEm()->persist($person);
 
         return $person;
     }

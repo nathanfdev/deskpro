@@ -93,7 +93,25 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->id;
     }
 
+    /**
+     * @param int $value
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+        return $this;
+    }
 
+    /**
+     * @param string $input
+     * @return $this
+     */
+    public function setInput($input)
+    {
+        $this->setModelField('input', $input);
+        return $this;
+    }
 
     /**
      * Get the value or input.
@@ -102,7 +120,16 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function getData()
     {
-        return $this->value ? $this->value : $this->input;
+        $type = !empty($this->field) ? $this->field->getTypeName() : 'text';
+
+        switch ($type) {
+            case 'toggle':
+            case 'date':
+            case 'datetime':
+                return $this->value;
+            default:
+                return $this->value ? $this->value : $this->input;
+        }
     }
 
 

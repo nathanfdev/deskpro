@@ -1396,6 +1396,52 @@ class TicketController extends AbstractController implements ProtectedController
 
     /**
      * @SWG\Api(
+     * 	path="/tickets/{ticket_id}/link/{link_ticket_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Links two tickets",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="ticket_id",
+     *				description="ID of the Ticket that needs to be linked with.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="link_ticket_id",
+     *				description="ID of the Ticket that needs to be linked.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="is_parent",
+     *				description="Make the second the parent ticket",
+     *				paramType="path",
+     *				required=false,
+     *				type="boolean"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
+     * 	)
+     * )
+     */
+    public function linkTicketAction($ticket_id, $link_ticket_id)
+    {
+        $ticket = $this->_getTicketOr404($ticket_id);
+        $other_ticket = $this->_getTicketOr404($link_ticket_id);
+
+        $this->in->getBool('is_parent')
+            ? $ticket->parent_ticket = $other_ticket
+            : $other_ticket->parent_ticket = $ticket;
+
+        $this->em->flush();
+        return $this->createSuccessResponse();
+    }
+
+    /**
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/spam",
      * 	@SWG\Operation(
      * 		method="POST",
@@ -2508,64 +2554,6 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiResponse(array('sla' => $sla->toApiData()));
-    }
-
-    /**
-     * @SWG\Api(
-     * 	path="/tickets/slas/{sla_id}/people",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets list of people that automatically apply this SLA.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
-     * 	)
-     * )
-     */
-    public function getSlaPeopleAction($sla_id)
-    {
-        $sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
-        if (!$sla) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
-        }
-
-        return $this->createApiResponse(array('people' => $this->getApiData($sla->people)));
-    }
-
-    /**
-     * @SWG\Api(
-     * 	path="/tickets/slas/{sla_id}/organizations",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets list of organizations that automatically apply this SLA.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
-     * 	)
-     * )
-     */
-    public function getSlaOrganizationsAction($sla_id)
-    {
-        $sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
-        if (!$sla) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
-        }
-
-        return $this->createApiResponse(array('organizations' => $this->getApiData($sla->organizations)));
     }
 
     /**

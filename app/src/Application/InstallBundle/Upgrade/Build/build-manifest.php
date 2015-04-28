@@ -1684,4 +1684,54 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421925247'
 	),
 
+	1422460026 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1422460026.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1422460026'
+	),
+
+	1424282191 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282191.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282191'
+	),
+
+	1424282192 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282192.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282192'
+	),
+
+	1424282193 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282193.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282193'
+	),
+
+	1424282194 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282194.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282194'
+	),
+
+	1424282195 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282195.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282195'
+	),
+
+	1424282196 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282196.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282196'
+	),
+
+	1424282197 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282197.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282197'
+	),
+
+	1424282198 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424282198.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424282198'
+	),
+
+	1424633221 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424633221.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\deskpro/www/app/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424633221'
+	),
+
 );

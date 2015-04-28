@@ -148,6 +148,8 @@ class FilterChangeDetector
                 $agent_scopes[] = $filter->person;
             }
 
+            $agent_scopes = array_filter($agent_scopes, function($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
+
             if (!$agent_scopes) {
                 continue;
             }
@@ -256,6 +258,10 @@ class FilterChangeDetector
         $start = microtime(true);
         foreach ($filter_checks as $filter_check) {
             foreach ($filter_check['scopes'] as $agent) {
+
+                if (!$agent->is_agent) {
+                    $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
+                }
 
                 // Already done checks in a previous iteration
                 if (isset($agent_perm_cache[$agent->id])) {
@@ -514,6 +520,20 @@ class FilterChangeDetector
 
         if ($context) {
             $context->getVars()->set('filter_change_set', $set);
+        }
+
+        foreach ($set->getChangedFilters() as $change) {
+            $added_aids   = array_map(function($a) { return $a->id; }, $change->getAgentsAdded());
+            $removed_aids = array_map(function($a) { return $a->id; }, $change->getAgentsRemoved());
+
+            if ($added_aids || $removed_aids) {
+                $logger->info(sprintf(
+                    "[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)",
+                    $change->getFilter()->id,
+                    implode(', ', $added_aids ?: array('none')),
+                    implode(', ', $removed_aids ?: array('none'))
+                ));
+            }
         }
 
         return $set;

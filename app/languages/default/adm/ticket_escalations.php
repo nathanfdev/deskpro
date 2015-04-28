@@ -5,4 +5,5 @@
     'adm.ticket_escalations.no_escalations'    => 'You have not created any escalations yet.',
     'adm.ticket_escalations.count_escalations' => '{{count}} Escalation|{{count}} Escalations',
     'adm.ticket_escalations.new_escalation'    => 'New Escalation',
+    'adm.ticket_escalations.warning'           => 'Note: Escalations only affect tickets created from this point onwards. This new escalation will NOT run on existing tickets that already exist in the helpdesk.',
 );

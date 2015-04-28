@@ -155,7 +155,7 @@ class ProcessNew extends ProcessAbstract
                     $txt = substr($txt, 0, 25000);
                 }
 
-                $email_info->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+                $email_info->body = Strings::text2html($txt, 'plaintext-email');
                 $email_info->body_is_html = false;
             }
 
@@ -283,7 +283,7 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($this->reader->getId());
         $ticket_message->person = $this->person;
         $ticket_message->message_raw = $email_info->body_raw;
         $ticket_message->setMessageHtml($email_info->body);
@@ -314,6 +314,8 @@ class ProcessNew extends ProcessAbstract
         #------------------------------
         # Check for dupe first
         #------------------------------
+
+        $ticket_message->resetHashCode();
 
         if ($this->person && !$this->person->isNewPerson()) {
             if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {

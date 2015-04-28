@@ -8,20 +8,11 @@
  * folder.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_ItemIdType.
  */
 class EWSType_FolderIdType extends EWSType
 {
-    /**
-     * Contains a string that identifies a folder in the Exchange store.
-     *
-     * This attribute is required.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    public $Id;
-
     /**
      * Contains a string that identifies a version of a folder that is
      * identified by the Id attribute.
@@ -34,4 +25,15 @@ class EWSType_FolderIdType extends EWSType
      * @var string
      */
     public $ChangeKey;
+
+    /**
+     * Contains a string that identifies a folder in the Exchange store.
+     *
+     * This attribute is required.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    public $Id;
 }

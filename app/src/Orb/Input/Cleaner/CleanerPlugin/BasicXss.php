@@ -273,7 +273,8 @@ class __DP_CI_Security {
                 }
 
                 $replace = array();
-                $matches = array_unique(array_map('strtolower', $matches[0]));
+                $matches = array_values(array_unique(array_map('strtolower', $matches[0])));
+                $c = count($matches);
                 for ($i = 0; $i < $c; $i++)
                 {
                     if (($char = array_search($matches[$i].';', $_entities, TRUE)) !== FALSE)
@@ -296,45 +297,6 @@ class __DP_CI_Security {
         return $str;
     }
 
-    public function sanitize_filename($str, $relative_path = FALSE)
-    {
-        $bad = array(
-            '../', '<!--', '-->', '<', '>',
-            "'", '"', '&', '$', '#',
-            '{', '}', '[', ']', '=',
-            ';', '?', '%20', '%22',
-            '%3c',		// <
-            '%253c',	// <
-            '%3e',		// >
-            '%0e',		// >
-            '%28',		// (
-            '%29',		// )
-            '%2528',	// (
-            '%26',		// &
-            '%24',		// $
-            '%3f',		// ?
-            '%3b',		// ;
-            '%3d'		// =
-        );
-
-        if ( ! $relative_path)
-        {
-            $bad[] = './';
-            $bad[] = '/';
-        }
-
-        $str = remove_invisible_characters($str, FALSE);
-
-        do
-        {
-            $old = $str;
-            $str = str_replace($bad, '', $str);
-        }
-        while ($old !== $str);
-
-        return stripslashes($str);
-    }
-
     protected function _compact_exploded_words($matches)
     {
         return preg_replace('/\s+/s', '', $matches[1]).$matches[2];
@@ -354,34 +316,44 @@ class __DP_CI_Security {
             unset($evil_attributes[array_search('xmlns', $evil_attributes)]);
         }
 
-        do {
-            $count = 0;
-            $attribs = array();
+        $str = preg_replace_callback('#<([^>]*)>#', function ($m) use ($evil_attributes) {
+            $str = $m[1];
+            do {
+                $count = 0;
+                $attribs = array();
 
-            // find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
-            preg_match_all('/(?<!\w)('.implode('|', $evil_attributes).')\s*=\s*(\042|\047)([^\\2]*?)(\\2)/is', $str, $matches, PREG_SET_ORDER);
+                // find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
+                preg_match_all('/(?<!\w)(' . implode('|', $evil_attributes) . ')\s*=\s*(\042|\047)([^\\2]*?)(\\2)/is', $str, $matches, PREG_SET_ORDER);
 
-            foreach ($matches as $attr)
-            {
-                $attribs[] = preg_quote($attr[0], '/');
-            }
+                foreach ($matches as $attr) {
+                    $attribs[] = $attr[0];
+                }
 
-            // find occurrences of illegal attribute strings without quotes
-            preg_match_all('/(?<!\w)('.implode('|', $evil_attributes).')\s*=\s*([^\s>]*)/is', $str, $matches, PREG_SET_ORDER);
+                // find occurrences of illegal attribute strings without quotes
+                preg_match_all('/(?<!\w)(' . implode('|', $evil_attributes) . ')\s*=\s*([^\s>]*)/is', $str, $matches, PREG_SET_ORDER);
 
-            foreach ($matches as $attr)
-            {
-                $attribs[] = preg_quote($attr[0], '/');
-            }
+                foreach ($matches as $attr) {
+                    $attribs[] = $attr[0];
+                }
 
-            // replace illegal attribute strings that are inside an html tag
-            if (count($attribs) > 0)
-            {
-                $str = preg_replace('/(<?)(\/?[^><]+?)([^A-Za-z<>\-])(.*?)('.implode('|', $attribs).')(.*?)([\s><]?)([><]*)/i', '$1$2 $4$6$7$8', $str, -1, $count);
-            }
+                // replace illegal attribute strings that are inside an html tag
+                if (count($attribs) > 0) {
+                    foreach ($attribs as $a) {
+                        $str = str_replace($a, '', $str, $count);
+                    }
+                }
+            } while ($count);
 
-        }
-        while ($count);
+            return "<$str>";
+        }, $str, -1, $count);
+
+        // remaining evil attr OUTSIDE of tags we should just mangle
+        // eg onerror= becomes "on error="
+        $str = preg_replace_callback('/(' . implode('|', $evil_attributes) . ')(\s*=\s*(\042|\047|\w))/is', function($m) {
+            $harmless = $m[1];
+            $harmless = substr($harmless, 0, 2) . ' ' . substr($harmless, 2);
+            return $harmless . $m[2];
+        }, $str);
 
         return $str;
     }

@@ -262,7 +262,10 @@
 	width: 100%;
 	position: relative;
 	overflow: hidden;
-	overflow-y: scroll;
+}
+
+.list-pane-content .list-listing {
+  	overflow-y: auto;
 }
 
 .list-listing i.flag {
@@ -1903,10 +1906,6 @@ section.dp-overlay > article.no-footer {
 #people-list-alpha-list ul li.on, #people-list-alpha-list ul li:hover {
 	background-color: #CCE4F0;
 	.box-shadow(inset 0px 0px 2px rgba(0,0,0, 0.2));
-}
-
-#people-list-result section.people-list {
-	margin-left: 26px;
 }
 
 #people-list-result footer.results-nav {

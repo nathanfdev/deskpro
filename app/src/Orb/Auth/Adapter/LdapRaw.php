@@ -94,7 +94,7 @@ class LdapRaw implements FormLoginInterface, Loggable
         if (!$this->options['field_email']) $this->options['field_email'] = 'mail';
         if (!$this->options['field_username']) $this->options['field_username'] = 'uid';
 
-        if (!isset($this->options['accountFilterFormat'])) {
+        if (!isset($this->options['accountFilterFormat']) || !$this->options['accountFilterFormat']) {
             $this->options['accountFilterFormat']  = '(|(dn=%1$s)(mail=%1$s)(uid=%1$s))';
         }
     }
@@ -186,8 +186,19 @@ class LdapRaw implements FormLoginInterface, Loggable
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
+            $zend_auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $zend_auth->setUsername('__bogus__');
+                $zend_auth->setPassword('__bogus__');
+                $zend_auth->authenticate();
+            } catch (\Exception $e) {}
+
             /** @var $ldap \Zend\Ldap\Ldap */
-            $ldap = $auth->getLdap();
+            $ldap = $zend_auth->getLdap();
+
             $dn = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
 
             /** @var $rec \Zend\Ldap\Node */
@@ -234,6 +245,9 @@ class LdapRaw implements FormLoginInterface, Loggable
                 }
             }
         } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
+            }
             return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
         }
 

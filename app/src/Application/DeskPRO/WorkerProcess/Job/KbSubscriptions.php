@@ -246,9 +246,8 @@ class KbSubscriptions extends AbstractJob
                 'updated_articles' => $updated_articles,
                 'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret') . $person->getId() . $person->secret_string)
             ));
-            $message->enableQueueHint(1);
 
-            App::getMailer()->sendNow($message);
+            App::getMailer()->send($message);
 
             // Saves mem
             App::getOrm()->detach($person);

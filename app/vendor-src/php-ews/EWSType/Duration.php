@@ -1,31 +1,34 @@
 <?php
 /**
- * Definition of the Duration type
- *
- * @package php-ews
- * @subpackage Types
+ * Contains EWSType_Duration.
  */
 
 /**
- * Definition of the Duration type
+ * Represents a time span.
+ *
+ * @package php-ews\Types
  */
 class EWSType_Duration extends EWSType
 {
     /**
-     * StartTime property
+     * Represents the end of the time span.
      *
-     * @var EWSType_dateTime
+     * @since Exchange 2007
      *
-     * @todo Make a DateTime object.
-     */
-    public $StartTime;
-
-    /**
-     * EndTime property
-     *
-     * @var EWSType_dateTime
+     * @var string
      *
      * @todo Make a DateTime object.
      */
     public $EndTime;
+
+    /**
+     * Represents the start of the time span.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     *
+     * @todo Make a DateTime object.
+     */
+    public $StartTime;
 }

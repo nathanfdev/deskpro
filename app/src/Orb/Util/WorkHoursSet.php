@@ -85,7 +85,7 @@ class WorkHoursSet implements WorkHoursInterface
     /**
      * @param int   $work_start         Seconds into the day when work day starts
      * @param int   $work_end           Seconds into the day when work day ends
-     * @param array $work_days          Array of days of week. 0 = Sunday, 6 = Saturday. Eg: array(1,3,5) is Monday, Wed, Friday
+     * @param array $work_days          Array of days of week=>true/false. E.g., array(0 => true, ...). 0 is sunday, 6 is saturday.
      * @param int   $work_timezone      Timezone string for the hours
      * @param array $work_holidays      Array of holidays
      */
@@ -100,12 +100,17 @@ class WorkHoursSet implements WorkHoursInterface
             $work_timezone = 'UTC';
         }
 
-        // Converts array of day numbers into
-        // an array of dow=>true/false
-        $work_days_array = array_fill(0, 6, false);
-        foreach ($work_days as $k) {
-            if (isset($work_days_array[$k])) {
-                $work_days_array[$k] = true;
+        if (count($work_days) == 7) {
+            // Already in correct format
+            $work_days_array = $work_days;
+        } else {
+            // Legacy format, we need to convert of (1,3,5)
+            // an array of dow=>true/false
+            $work_days_array = array_fill(0, 6, false);
+            foreach ($work_days as $k) {
+                if (isset($work_days_array[$k + 1])) {
+                    $work_days_array[$k + 1] = true;
+                }
             }
         }
 

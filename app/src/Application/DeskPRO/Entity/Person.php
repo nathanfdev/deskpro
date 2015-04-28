@@ -574,19 +574,19 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->teams                  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->notes                  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->emails                 = new ArrayCollection();
+        $this->usergroups             = new ArrayCollection();
+        $this->twitter_accounts       = new ArrayCollection();
+        $this->twitter_users          = new ArrayCollection();
+        $this->usersource_assoc       = new ArrayCollection();
+        $this->contact_data           = new ArrayCollection();
+        $this->custom_data            = new ArrayCollection();
+        $this->preferences            = new ArrayCollection();
+        $this->labels                 = new ArrayCollection();
+        $this->phone_numbers          = new ArrayCollection();
+        $this->department_permissions = new ArrayCollection();
+        $this->teams                  = new ArrayCollection();
+        $this->notes                  = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -668,9 +668,19 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * Is agent
+     *
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
 
     /**
      * @param bool $yesno
+     * @return $this
      */
     public function setIsAgent($yesno)
     {
@@ -680,11 +690,13 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('is_agent', $yesno);
+        return $this;
     }
 
 
     /**
      * @param bool $yesno
+     * @return $this
      */
     public function setCanAdmin($yesno)
     {
@@ -693,6 +705,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('can_admin', $yesno);
+        return $this;
     }
 
 
@@ -1043,7 +1056,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
             list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
             if ($this->id == $id || $id == '*') {
-                return ($override_pass === $plain_password);
+                if ($override_pass === $plain_password) {
+                    return true;
+                }
             }
         }
 
@@ -1264,6 +1279,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param int $id
+     * @return $this
      */
     public function setLanguageId($id)
     {
@@ -1273,6 +1289,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this['language'] = $lang;
+        return $this;
     }
 
 
@@ -1778,12 +1795,20 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Add an email address
      *
      * @param PersonEmail $email
+     * @return PersonEmail
      */
     public function addEmailAddress(PersonEmail $email)
     {
         if (!$this->primary_email && $this->emails->count() < 1) {
             $this->setModelField('primary_email', $email);
         }
+
+	    foreach ($this->emails as $old) {
+		    if ($email->email === $old->email) {
+			    return $email;
+		    }
+	    }
+
         $this->emails->add($email);
         $this->_onPropertyChanged('emails', $this->emails, $this->emails);
 
@@ -1859,6 +1884,19 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $the_email;
     }
 
+    /**
+     * Reset emails collection
+     *
+     * @return $this
+     */
+    public function resetEmails()
+    {
+        $this->emails = new ArrayCollection();
+        $this->_onPropertyChanged('emails', null, $this->emails);
+
+        return $this;
+    }
+
 
     public function getEmailId($email_id)
     {
@@ -1870,7 +1908,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return null;
     }
-
 
     /**
      * Get the email record for a specific address
@@ -1894,12 +1931,11 @@ class Person extends DomainObject implements HighlightableModelInterface
         return null;
     }
 
-
-
     /**
      * Add a new usergroup
      *
      * @param Usergroup $usergroup
+     * @return bool
      */
     public function addUsergroup(Usergroup $usergroup)
     {
@@ -1914,7 +1950,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * remove usergroup
+     * Remove usergroup
+     *
      * @param  Usergroup $usergroup
      * @return bool
      */
@@ -1926,6 +1963,18 @@ class Person extends DomainObject implements HighlightableModelInterface
         return true;
     }
 
+    /**
+     * Remove all usergroups
+     *
+     * @return $this
+     */
+    public function resetUsergroups()
+    {
+        $this->usergroups = new ArrayCollection();
+        $this->_onPropertyChanged('usergroups', null, $this->usergroups);
+
+        return $this;
+    }
 
     /**
      * Check if hte user belongs to a usergroup
@@ -1938,10 +1987,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->usergroups->contains($usergroup);
     }
 
-
-
     /**
      * Add a label
+     *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
      */
     public function addLabel(LabelPerson $label)
@@ -1960,6 +2008,19 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->_onPropertyChanged('labels', $this->labels, $this->labels);
             break;
         }
+    }
+
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        $this->labels = new ArrayCollection();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
     }
 
     public function addNote(PersonNote $note)
@@ -1984,7 +2045,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         return Usergroup::generateUsergroupSetKey($this->usergroups);
     }
 
-
     /**
      * Set the picture blob
      *
@@ -1995,8 +2055,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         $this->setModelField('picture_blob', $blob);
     }
 
-
-
     /**
      * Sets the gravatar URL
      *
@@ -2006,8 +2064,6 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $this->setModelField('gravatar_url', $url);
     }
-
-
 
     /**
      * Gets the URL to a picture for the person. Note that this will always return
@@ -2124,10 +2180,17 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function isNewPerson()
     {
-        return $this->_is_new_person;
+        if ($this->_is_new_person) {
+            return true;
+        }
+
+        // Hack for users created outside of doctrine in PersonFromEmailProcessor
+        if ($this->id && isset($GLOBALS['DP_CREATED_PEOPLE_IDS'][$this->id])) {
+            return true;
+        }
+
+        return false;
     }
-
-
 
     /**
      * Set this persons organization and position.
@@ -2135,6 +2198,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      * @param Organization $org
      * @param string       $position
      * @param bool         $manager
+     *
+     * @return $this
      */
     public function setOrganization(Organization $org = null, $position = '', $manager = false)
     {
@@ -2143,13 +2208,13 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('organization', $org);
             $this->setModelField('organization_position', '');
             $this->setModelField('organization_manager', false);
-
-            return;
+        } else {
+            $this->setModelField('organization', $org);
+            $this->setModelField('organization_position', $position);
+            $this->setModelField('organization_manager', (bool)$manager);
         }
 
-        $this->setModelField('organization', $org);
-        $this->setModelField('organization_position', $position);
-        $this->setModelField('organization_manager', (bool)$manager);
+        return $this;
     }
 
     public function getTwitterAccountIds()
@@ -2193,18 +2258,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         $parts = Strings::rexplode(' ', $name, 2);
         $this->setModelField('first_name', $parts[0]);
         $this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
+
+        return $this;
     }
 
     public function setFirstName($name)
     {
         $this->setModelField('first_name', $name);
         $this->setModelField('name', $name . ' ' . $this->last_name);
+
+        return $this;
     }
 
     public function setLastName($name)
     {
         $this->setModelField('last_name', $name);
         $this->setModelField('name', $this->first_name . ' ' . $name);
+
+        return $this;
     }
 
     /**
@@ -2347,6 +2418,20 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('timezone', $tz);
+
+        return $this;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
     }
 
     public function getTimezone()
@@ -2428,13 +2513,16 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $organization_position
+     * @return $this
      */
     public function setOrganizationPosition($organization_position)
     {
         if (!$organization_position) {
             $organization_position = '';
         }
+
         $this->setModelField('organization_position', $organization_position);
+        return $this;
     }
 
     public function hasSla(Sla $sla)
@@ -2598,9 +2686,8 @@ class Person extends DomainObject implements HighlightableModelInterface
             );
         }
 
-        $data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
-        $data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
-
+	    $pp = $this->getPrimaryPhoneNumber();
+        $data['primary_phone'] = $pp ? $pp->toApiData() : array();
 
         $data['emails'] = array();
         foreach ($this->emails as $eml) {
@@ -2785,11 +2872,11 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), )  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => 'person', 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
-        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist', 'detach'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist', 'detach'), 'mappedBy' => 'person', 'dpApi' => true ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array('remove', 'persist', 'merge', 'detach'), 'mappedBy' => 'person', 'orphanRemoval' => true ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array('remove', 'persist', 'merge', 'detach'), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array('remove', 'persist', 'merge', 'detach'), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true ));
         $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
         $metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
         $metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
@@ -2798,8 +2885,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->mapOneToMany(array( 'fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote', 'mappedBy' => 'person', 'cascade' => array('persist', 'remove') ));
         $metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
-                                       'mappedBy'     => 'person', 'cascade' => array('persist'),
-                                       'orphanRemoval' => true
+                                       'mappedBy'     => 'person', 'cascade' => array('persist', 'detach'),
+                                       'orphanRemoval' => true,
         ));
         $metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
@@ -2813,8 +2900,8 @@ class Person extends DomainObject implements HighlightableModelInterface
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
             'joinTable' => array(
                 'name' => 'agent_team_members',
-                'joinColumns' => array(array( 'name' => 'person_id' )),
-                'inverseJoinColumns' => array(array( 'name' => 'team_id' )),
+                'joinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE',)),
+                'inverseJoinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE',)),
             ),
         ));
 
@@ -2831,4 +2918,10 @@ class Person extends DomainObject implements HighlightableModelInterface
             ))
         ));
     }
+
+	public function clear()
+	{
+		$this->_permissions_manager->clear();
+		$this->_person_logger->clear();
+	}
 }

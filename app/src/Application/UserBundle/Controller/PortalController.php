@@ -114,18 +114,20 @@ class PortalController extends AbstractController
     public function saveRatingAction($object_type, $object_id)
     {
         $entity_name = 'DeskPRO:' . ucfirst($object_type);
-        $content_object = $this->em->find($entity_name, $object_id);
-
-        if (!$content_object) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-
+        
         $perm_name = false;
         switch ($entity_name) {
             case 'DeskPRO:Article':  $perm_name = 'articles.rate'; break;
             case 'DeskPRO:Download': $perm_name = 'downloads.rate'; break;
             case 'DeskPRO:News':     $perm_name = 'news.rate'; break;
             case 'DeskPRO:Feedback': $perm_name = 'feedback.rate'; break;
+            default: throw $this->createNotFoundException();
+        }
+        
+        $content_object = $this->em->find($entity_name, $object_id);
+
+        if (!$content_object) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         if ($perm_name) {

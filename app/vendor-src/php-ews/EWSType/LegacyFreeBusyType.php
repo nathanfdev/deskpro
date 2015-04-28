@@ -8,6 +8,8 @@
  * meeting request.
  *
  * @package php-ews\Enumerations
+ *
+ * @todo Extend EWSType_BusyType.
  */
 class EWSType_LegacyFreeBusyType extends EWSType
 {

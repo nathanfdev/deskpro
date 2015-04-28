@@ -65,8 +65,7 @@ return array(
             'id' => 1,
             'email' => 'admin@example.com',
         ),
-        'primary_phone_number_text' => null,
-        'primary_phone_number_region' => null,
+        'primary_phone' => array(),
         'emails' => array(
             0 =>
             array(

@@ -61,33 +61,58 @@ class LoginLog extends AbstractEntityRepository
 
     /**
      * @param PersonEntity $person
-     * @param $area
      * @param $maxAttempts
      * @param $time
      * @param $maxLockTime
      * @return int|mixed
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function getLoginLockoutTime(PersonEntity $person, $area, $maxAttempts, $time, $maxLockTime)
+    public function getLoginLockoutTime(PersonEntity $person, $maxAttempts, $time, $maxLockTime)
     {
-        $time = time() - (int) $time;
+        $time = (int) $time;
         $q = sprintf('
-            select count(*) as `count`, max(date_created) as `last` from %1$s where
-            person_id = :pid and date_created > :date and area = :area and id >
-            (select ifnull(max(id), 0) from %1$s where person_id = :pid and date_created > :date and is_success = 1 and area = :area limit 1)
-        ', $this->getTableName());
+            select date_created from %1$s where
+            person_id = :pid and date_created > :date and id >
+            (select ifnull(max(id), 0) from %1$s where person_id = :pid and date_created > :date and is_success = 1)
+            order by date_created desc
+            limit %2$d
+        ', $this->getTableName(), $maxAttempts);
 
         $res = $this->getEntityManager()->getConnection()->executeQuery($q, array(
             'pid' => $person['id'],
             'date' => date('Y-m-d H:i:s', $time),
-            'area' => $area,
         ))->fetchAll();
 
-        $res = reset($res);
-        if (!$res || (int) $maxAttempts > (int) $res['count'] || !$res['last']) {
+        // no failed attempts
+        if (!$res) {
             return 0;
         }
 
-        return max(0, strtotime($res['last']) + (int) $maxLockTime - time());
+        // find last lockout
+        $lastAttemptTime = time();
+        $maxRowTime = null;
+        $attempts = 0;
+        foreach ($res as $row) {
+            $rowTime = strtotime($row['date_created']);
+
+            if (null === $maxRowTime) {
+                $maxRowTime = $rowTime;
+            }
+
+            // this entry is from previous lock period
+            if ($lastAttemptTime > $rowTime + $maxLockTime) {
+                break;
+            }
+
+            $lastAttemptTime = $rowTime;
+            $attempts++;
+        }
+
+        if ($attempts === (int)$maxAttempts) {
+            $lockTime = time() - $maxRowTime;
+            return max(0, $maxLockTime - $lockTime);
+        }
+
+        return 0;
     }
 }

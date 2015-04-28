@@ -7,6 +7,8 @@
  * Represents an Exchange store item to forward to recipients.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_SmartResponseType.
  */
 class EWSType_ForwardItemType extends EWSType
 {

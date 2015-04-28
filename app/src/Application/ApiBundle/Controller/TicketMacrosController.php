@@ -37,6 +37,15 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
 
+/**
+ * Simple ticket macros CRUD
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_macros",
+ * 	description="Operations about Ticket macros",
+ * 	basePath="/api"
+ * )
+ */
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -52,6 +61,19 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     # list
     ####################################################################################################################
 
+    /**
+     * @return Response;
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get list of ticket macroses",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function listAction()
     {
         $macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
@@ -80,6 +102,32 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     # get
     ####################################################################################################################
 
+	/**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get macros by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Layout ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getAction($id)
     {
         $macro = $this->em->find('DeskPRO:TicketMacro', $id);
@@ -98,6 +146,46 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     # save
     ####################################################################################################################
 
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     *
+     * @SWG\Api(
+     * 	path="/ticket_macros",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create new macros",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="title",
+     *				description="Macros name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="is_global",
+     *				description="Mark/unmark macros as global",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="person_id",
+     *				description="Set macros owner",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAction($id)
     {
         if ($id) {
@@ -139,6 +227,32 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     # remove
     ####################################################################################################################
 
+	/**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/ticket_macros/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete macros by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Macros ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function removeAction($id)
     {
         $macro = $this->em->find('DeskPRO:TicketMacro', $id);

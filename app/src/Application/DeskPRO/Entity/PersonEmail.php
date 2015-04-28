@@ -207,6 +207,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
      * Set email
      *
      * @param string $email
+     * @return $this
      */
     public function setEmail($email)
     {
@@ -223,9 +224,18 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('email_domain', $email_domain);
+        return $this;
     }
 
-
+    /**
+     * Returns email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
 
     public function setIsValidated($yesno)
     {
@@ -236,11 +246,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $this->setModelField('date_validated', null);
         }
+
+        return $this;
     }
 
 
     /**
      * @param Person $person
+     * @return $this
      */
     public function setPerson(Person $person)
     {
@@ -248,6 +261,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         if ($person->is_agent) {
             $this->setIsValidated(true);
         }
+
+        return $this;
     }
 
 

@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Base, Util, angular) ->
   class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings'
     @CTRL_AS   = 'TicketSettings'
@@ -14,6 +14,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         settings = res.data.settings.ticket_settings
         for own k, v of settings.agent_defaults
           if not v then settings.agent_defaults[k] = "0"
+
+        days = [false, false, false, false, false, false]
+        for day in settings.working_hours.work_days
+          days[day] = true
+
+        settings.working_hours.work_days = days
 
         @$scope.settings = settings
         @settings = angular.copy(@$scope.settings)
@@ -44,8 +50,15 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     save: ->
       postData = {
-        ticket_settings: @$scope.settings
+        ticket_settings: Util.clone(@$scope.settings, true)
       }
+
+      work_days = []
+      for enabled, day in @$scope.settings.working_hours.work_days
+        if enabled
+          work_days.push(day)
+
+      postData.ticket_settings.working_hours.work_days = work_days
 
       @startSpinner('saving')
       promise = @Api.sendPostJson('/ticket_settings', postData).success( =>

@@ -25,6 +25,7 @@ DeskPRO.ElementHandler_Exec = function(context) {
 			el.addClass('with-handler');
 		} catch (e) {
 			console.error("Failed created element-handler (%o) : %o", className, e);
+      el.addClass('with-handler-failed');
 		}
 	});
 };

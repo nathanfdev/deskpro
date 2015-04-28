@@ -240,10 +240,11 @@
 	{# PUBLISH PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.publish">
 		<tbody>
-		{{ _self.perm_row('publish', 'create') }}
-		{{ _self.perm_row('publish', 'delete') }}
-		{{ _self.perm_row('publish', 'edit') }}
-		{{ _self.perm_row('publish', 'validate') }}
+            {{ _self.perm_row('publish', 'create') }}
+            {{ _self.perm_row('publish', 'delete') }}
+            {{ _self.perm_row('publish', 'edit') }}
+            {{ _self.perm_row('publish', 'can_insert_html') }}
+            {{ _self.perm_row('publish', 'validate') }}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('publish', 'articles_create_labels') }}

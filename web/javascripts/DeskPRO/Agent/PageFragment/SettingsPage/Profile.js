@@ -22,9 +22,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		}
 
-		var default_country = this.el.find('#settings_profile_primary_phone_number_text').attr('default-country');
+		var default_country = this.el.find('#settings_profile_primary_phone_number').attr('default-country');
 		if (default_country) {
-			this.el.find('#settings_profile_primary_phone_number_text').intlTelInput({"defaultCountry": default_country.toLowerCase()});
+			this.el.find('#settings_profile_primary_phone_number').intlTelInput({"defaultCountry": default_country.toLowerCase()});
+			this.el.find('#settings_profile_primary_phone_number').parent().find('.arrow').css('left', '2px');
 		}
 
 		var startEmail = $('#settings_profile_email').val();
@@ -113,6 +114,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 							$('#agent_settings_win_errors').find('li.' + classname).show();
 						});
 						$('#agent_settings_win_errors').show();
+						$('#settingswin_pages').scrollTop(0);
 
 						return;
 					}

@@ -510,6 +510,8 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Disposition: inline; filename=' . $desc);
         header("Content-type: image/png");
         header('X-Content-Type-Options: nosniff');
+        header('X-Robots-Tag: noindex, nofollow');
+
         imagepng($im);
         exit;
     }
@@ -669,24 +671,6 @@ class FilestorageLoader extends LoaderAbstract
                 $mimetype = 'application/pdf';
                 break;
 
-            case 'Admin-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-manual/en_US.pdf';
-                $filename = 'Admin Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
-            case 'Reports-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
-                $filename = 'Reports Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
-            case 'Agent-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
-                $filename = 'Agent Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
             case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
                 $path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
@@ -708,6 +692,8 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
         header('Content-Length: ' . $filesize);
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
+        header('X-Robots-Tag: noindex, nofollow');
+
         if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
             header("X-Sendfile: $path");
         } else {
@@ -862,7 +848,7 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         $content_disposition = 'attachment';
-        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($mimetype)) {
+        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($mimetype, true, $filename)) {
             $content_disposition = 'inline';
         }
 
@@ -872,6 +858,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
+        header('X-Robots-Tag: noindex, nofollow');
 
         if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
             header("X-Sendfile: $filepath");
@@ -1077,7 +1064,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Type: ' . $blob['content_type'] . '; filename="' . addslashes($blob['filename']) . '"');
         header('Content-Length: ' . $blob['filesize']);
 
-        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
+        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'], true, $blob['filename'])) {
             header('Content-Disposition: inline; filename="' . addslashes($blob['filename']) . '"');
         } else {
             header('Content-Disposition: attachment; filename="' . addslashes($blob['filename_safe']) . '"');
@@ -1090,6 +1077,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Last-Modified: ' . $d->format('D, d M Y H:i:s').' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
+        header('X-Robots-Tag: noindex, nofollow');
     }
 
     /**
@@ -1396,8 +1384,9 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
         header('Content-Length: ' . $filesize);
         header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-            header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
-            header('Cache-Control: max-age=31556926,private');
+        header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
+        header('Cache-Control: ' . (@$GLOBALS['DP_CONFIG']['debug']['dev'] ? 'no-cache' : 'max-age=31556926,private'));
+        header('X-Robots-Tag: noindex, nofollow');
 
         if ($content !== null) {
             echo $content;

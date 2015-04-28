@@ -107,6 +107,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 				self.closeSelf();
 			}
+      if (undefined !== data.labels) {
+        self.labelsInput.setLabels(data.labels);
+      }
 		});
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
@@ -557,7 +560,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				};
 			})();
 		}
-        
+
 		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
 			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
 			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
@@ -833,6 +836,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
+
+    window.setTimeout(function() {
+      if (self.wrapper.find('.with-handler-failed')[0]) {
+        DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {
+          DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+          self.closeSelf();
+        });
+      }
+    }, 1500);
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1150,6 +1162,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           }
 
           if (trigger && action) {
+	          result.id = self.meta.ticket_id;
             DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.new_reply', result, action);
           }
         }
@@ -1165,8 +1178,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					});
 				}
 
-				ajaxHit = result;
-				hitDone();
+        self.changeManager.updateDataholders();
+        ajaxHit = result;
+        hitDone();
 			}
 		});
 	},
@@ -1390,7 +1404,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
 		DeskPRO_Window.initStickyTips(messageEl);
-		
+		var $triggers = messageEl.find('.with-stickytip');
+		self.addEvent('destroy', function(){
+			$triggers.each(function(){
+				var id = $(this).data('stickytip-target');
+				if (id) $(id).remove();
+			});
+		});
+
 		DeskPRO_Window.util.filedownload(messageEl);
 
 		$('.timeago', messageEl).timeago();
@@ -1894,10 +1915,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					case 'linked_ticket':
 						DeskPRO_Window.newTicketLoader.newLinkedTicket(self.meta.ticket_id);
 						break;
-						
-					case 'link_existing_ticket':
+
+          case 'link_existing_ticket':
 						self.linkExistingTicket.open();
-						break;	
+            break;
 
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
@@ -3140,7 +3161,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				data: postData,
                 success: function(){
                     if (DeskPRO_Window.$scope) {
-                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {subject: setName});
+                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
                     }
                 }
 			});

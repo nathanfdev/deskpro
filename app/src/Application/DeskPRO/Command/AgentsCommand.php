@@ -292,7 +292,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
             return 1;
         }
 
-        $repo = $this->getContainer()->getEm()->getRepository('DeskPRO:WhiteListedIP');
+        $repo = $this->getContainer()->getEm()->getRepository('DeskPRO:WhiteListedIp');
 
         if ($this->input->getOption('value')) {
             $ip_address = trim($this->input->getOption('value'));

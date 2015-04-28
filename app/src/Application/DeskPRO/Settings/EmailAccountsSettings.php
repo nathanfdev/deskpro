@@ -46,10 +46,16 @@ class EmailAccountsSettings
         'attach_user_must_exts'  => array(),
         'attach_user_not_exts'   => array(),
         'sendemail_attach_maxsize' => 7340032,
+
+        'rate_count'    => 15,
+        'rate_time'     => 600,
+        'rate_locktime' => 900,
     );
 
     protected $other_values = array(
         'core_tickets.enable_dupe_checking' => true,
+        'core_tickets.gateway_enable_subject_match' => true,
+        'core_tickets.enable_same_account_subject_matching' => false,
         'core_tickets.enable_exact_subject_matching' => false,
     );
 

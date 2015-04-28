@@ -7,6 +7,8 @@
  * Used to suppress read receipts.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_ReferenceItemResponseType.
  */
 class EWSType_SuppressReadReceiptType extends EWSType
 {

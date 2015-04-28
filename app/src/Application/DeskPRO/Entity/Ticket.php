@@ -626,6 +626,25 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->_original_id;
     }
 
+    /**
+     * Returns ticket unique ref
+     *
+     * @return string
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
+     * @param string $ref
+     * @return $this
+     */
+    public function setRef($ref)
+    {
+        $this->setModelField('ref', $ref);
+        return $this;
+    }
 
     /**
      * @return string
@@ -637,6 +656,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         return $this->subject;
+    }
+
+    /**
+     * Alias for getSubject.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getSubject();
     }
 
 
@@ -692,6 +721,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $subject
+     * @return $this
      */
     public function setSubject($subject)
     {
@@ -712,6 +742,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if (!$this->original_subject) {
             $this->setProcessedOriginalSubject($subject);
         }
+
+        return $this;
     }
 
     /**
@@ -895,6 +927,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         else return 'neutral';
     }
 
+    /**
+     * Reset the participants collection
+     *
+     * @return $this
+     */
+    public function resetParticipants()
+    {
+        $this->participants = new ArrayCollection();
+        $this->_onPropertyChanged('participants', null, $this->participants);
+
+        return $this;
+    }
 
     /**
      * Get a simple array of person ID's of participants.
@@ -1299,6 +1343,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $ids;
     }
 
+    /**
+     * Reset the message collection
+     *
+     * @return $this
+     */
+    public function resetMessages()
+    {
+        $this->messages = new ArrayCollection();
+        $this->_onPropertyChanged('messages', null, $this->messages);
+
+        return $this;
+    }
 
     /**
      * Add a message to this ticket.
@@ -1583,10 +1639,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $rendered;
     }
 
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        $this->labels = new ArrayCollection();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
 
     /**
      * Add a label
-     * @param \Application\DeskPRO\Entity\LabelTicket $label
+     *
+     * @param LabelTicket $label
+     * @return LabelTicket
      */
     public function addLabel(LabelTicket $label)
     {
@@ -1673,6 +1743,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this['person'] = $person;
     }
 
+    /**
+     * @param Person $person
+     * @return $this
+     */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
@@ -1688,8 +1762,21 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
             $this['person_email'] = null;
         }
+
+        return $this;
     }
 
+    /**
+     * Set ticket organization
+     *
+     * @param Organization $organization
+     * @return $this
+     */
+    public function setOrganization(Organization $organization = null)
+    {
+        $this->setModelField('organization', $organization);
+        return $this;
+    }
 
     /**
      * @deprecated
@@ -1744,6 +1831,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->email_account->getId();
     }
 
+    /**
+     * Set the ticket department
+     *
+     * @param Department $department
+     * @return $this
+     */
+    public function setDepartment(Department $department = null)
+    {
+        $this->setModelField('department', $department);
+        return $this;
+    }
+
     public function setDepartmentId($id)
     {
         if ($id) {
@@ -1752,6 +1851,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this['department'] = null;
         }
+
+        return $this;
     }
 
     public function isLangSet()
@@ -1790,6 +1891,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this['language'] = null;
         }
+
+        return $this;
     }
 
     public function getCategoryId()
@@ -1801,6 +1904,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->category['id'];
     }
 
+    /**
+     * Set ticket category
+     *
+     * @param TicketCategory $category
+     * @return $this
+     */
+    public function setCategory(TicketCategory $category = null)
+    {
+        $this->setModelField('category', $category);
+        return $this;
+    }
+
     public function setCategoryId($id)
     {
         if ($id) {
@@ -1809,6 +1924,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this['category'] = null;
         }
+
+        return $this;
     }
 
     public function getProductId()
@@ -1837,6 +1954,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         return $this->priority['id'];
+    }
+
+    /**
+     * Set ticket priority
+     *
+     * @param TicketPriority $priority
+     * @return $this
+     */
+    public function setPriority(TicketPriority $priority = null)
+    {
+        $this->setModelField('priority', $priority);
+        return $this;
     }
 
     public function setPriorityId($id)
@@ -2233,7 +2362,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $use_date;
     }
 
-
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus($status)
     {
         $this['date_status'] = new \DateTime();
@@ -2320,6 +2452,44 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
             $this->setModelField('is_hold', false);
         }
+
+        return $this;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_resolved
+     * @return $this
+     */
+    public function setDateResolved(\DateTime $date_resolved = null)
+    {
+        $this->setModelField('date_resolved', $date_resolved);
+        return $this;
+    }
+
+    /**
+     * Set date archived
+     *
+     * @param \DateTime $date_archived
+     * @return $this
+     */
+    public function setDateArchived(\DateTime $date_archived = null)
+    {
+        $this->setModelField('date_archived', $date_archived);
+        return $this;
     }
 
     public function setHiddenStatus($hstatus)

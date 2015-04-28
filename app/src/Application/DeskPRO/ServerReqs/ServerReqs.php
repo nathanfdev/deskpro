@@ -273,6 +273,13 @@ class ServerReqs
                 'readMore'       => '',
                 'recommendation' => true,
             ),
+
+            'zlib_ext' => array(
+                'description'    => 'Checking for the <a href="http://php.net/manual/en/book.zlib.php">zlib</a> extension',
+                'error'          => 'We recommend enabling the zlib extension.',
+                'readMore'       => '',
+                'recommendation' => true,
+            ),
         );
 
         $recommendOpcache = version_compare(phpversion(), '5.5.0', '<')

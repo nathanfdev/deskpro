@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
@@ -51,9 +52,14 @@ class TicketEmail
     private $settings;
 
     /**
-     * @var \Application\DeskPRO\Mail\Mailer
+     * @var \Swift_Mailer
      */
     private $mailer;
+
+    /**
+     * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+     */
+    private $email_accounts;
 
     /**
      * @var \Application\DeskPRO\Translate\Translate
@@ -99,6 +105,11 @@ class TicketEmail
      * @var string[]
      */
     private $sent_with_ccs;
+
+    /**
+     * @var int
+     */
+    private $sendmail_source_id;
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -162,6 +173,7 @@ class TicketEmail
         $opt->addRequiredNames(
             'settings',
             'mailer',
+            'email_accounts',
             'translate',
             'em',
             'ticket',
@@ -191,6 +203,7 @@ class TicketEmail
 
         $this->settings                = $opt->get('settings');
         $this->mailer                  = $opt->get('mailer');
+        $this->email_accounts          = $opt->get('email_accounts');
         $this->translate               = $opt->get('translate');
         $this->em                      = $opt->get('em');
         $this->ticket_field_manager    = $opt->get('ticket_field_manager');
@@ -295,8 +308,7 @@ class TicketEmail
      */
     public function send(array $vars = array())
     {
-        $mailer     = $this->mailer;
-        $mailer->resetLogMessages();
+        $mailer = $this->mailer;
 
         $translator = $this->translate;
         $em         = $this->em;
@@ -312,8 +324,27 @@ class TicketEmail
         $vars['ticket']        = $this->ticket;
         $vars['person']        = $this->to_person;
         $vars['ticketdisplay'] = $ticketdisplay;
-        $vars['messages']      = array_reverse($ticketdisplay->getMessages());
+        $vars['messages']      = $ticketdisplay->getMessages();
         $vars['is_auto']       = $this->is_auto;
+
+        // If we have a speciifc 'new message', then we need to trim
+        // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
+        if (isset($vars['new_message'])) {
+            $got = false;
+            $new_arr = array();
+
+            foreach (array_reverse($vars['messages']) as $m) {
+                $new_arr[] = $m;
+                if ($vars['new_message'] === $m) {
+                    $got = true;
+                    break;
+                }
+            }
+
+            if ($got) {
+                $vars['messages'] = array_reverse($new_arr);
+            }
+        }
 
         if ($this->ticket_layout_manager) {
             $layout_id = $this->ticket->department ? $this->ticket->department->id : null;
@@ -431,7 +462,7 @@ class TicketEmail
             $vars['attached_blobs'] = $ticket_attachments;
             foreach ($ticket_attachments as $a) {
                 $ticketdisplay->setIgnoreAttachment($a);
-                $message->attachBlob($a->blob, $a->blob->getDownloadUrl(true));
+                $message->attachBlob($a->blob, $a->blob->getDownloadUrl(true), $a->is_inline);
             }
         }
 
@@ -460,7 +491,7 @@ class TicketEmail
         }
 
         if (!$this->from_email_account || !$this->from_email_account->outgoing_account) {
-            $this->from_email_account = $mailer->getEmailAccountForTicket($this->ticket);
+            $this->from_email_account = $this->email_accounts->getAccountForTicket($this->ticket);
         }
 
         if (!$this->from_email_account) {
@@ -481,6 +512,7 @@ class TicketEmail
         }
 
         $message->getHeaders()->addIdHeader('References', $this->ticket->getEmailReferencesHeader());
+        $message->getHeaders()->addIdHeader('In-Reply-To', $this->ticket->getEmailReferencesHeader());
 
         if (isset($vars['is_auto']) && $vars['is_auto']) {
             $message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
@@ -507,12 +539,18 @@ class TicketEmail
         }
 
         $start = microtime(true);
-        $mailer->send($message);
-        $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
 
-        foreach ($mailer->getLogMessages() as $log_msg) {
-            $this->logger->debug("[TicketEmail][Mailer] $log_msg");
+        if ($mailer instanceof StorageTransportInterface) {
+            $id = $mailer->queueMessage($message);
+            if ($id) {
+                $this->logger->info(sprintf("[TicketEmail] SendmailSource ID #%d", $id));
+                $this->sendmail_source_id = $id;
+            }
+        } else {
+            $mailer->send($message);
         }
+
+        $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
     }
 
     /**
@@ -537,5 +575,13 @@ class TicketEmail
     public function getSentWithCcs()
     {
         return $this->sent_with_ccs;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSendmailSourceId()
+    {
+        return $this->sendmail_source_id;
     }
 }

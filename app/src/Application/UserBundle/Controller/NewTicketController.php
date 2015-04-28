@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
@@ -145,9 +146,22 @@ class NewTicketController extends AbstractController
 
         $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
         $captcha = null;
-        if (isset($unique_items['captcha']) && empty($this->person->id)) {
+        $force_captcha = false;
+        $isLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
+
+        if ($isLimited || (isset($unique_items['captcha']) && empty($this->person->id))) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+        }
+
+        if ($isLimited) {
+            $force_captcha = true;
+            unset($unique_items['captcha']);
+            if (false !== $k = array_search('captcha', $page_data_field_ids)) {
+                unset($page_data_field_ids[$k]);
+            }
         }
 
         $errors = array();
@@ -163,6 +177,7 @@ class NewTicketController extends AbstractController
         // So dont remove it even though it looks like it's not used! :-)
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
         $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
+        $custom_org_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_org_fields', 'form');
 
         /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
         $fm = $this->container->getSystemService('TicketFieldsManager');
@@ -177,17 +192,26 @@ class NewTicketController extends AbstractController
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
 
-        /** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
-        $ufm = $this->container->getSystemService('PersonFieldsManager');
+        $ufm = $this->container->getPersonFieldManager();
+        $ofm = $this->container->getOrgFieldManager();
         if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
             if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
                 $_REQUEST['newticket_custom_user_fields'] = array();
             }
+            if (empty($_REQUEST['newticket_custom_org_fields']) || !is_array($_REQUEST['newticket_custom_org_fields'])) {
+                $_REQUEST['newticket_custom_org_fields'] = array();
+            }
             $field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
             $field_form_data = $ufm->createFieldDataFromArray($field_data);
+            $org_field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_org_fields'], 'Application\\DeskPRO\\Entity\\CustomDataOrganization');
+            $org_field_form_data = $ufm->createFieldDataFromArray($org_field_data);
             $custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
+            $custom_org_fields = $ofm->getDisplayArray($org_field_form_data, $custom_org_fields_form, true);
         } else {
             $custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
+            $custom_org_fields = $this->person->organization
+                ? $ofm->getDisplayArrayForObject($this->person->organization, $custom_org_fields_form, true)
+                : array();
         }
 
         // specific user custom fields (but can be used for any sort of custom fields)
@@ -214,6 +238,7 @@ class NewTicketController extends AbstractController
             $newticket->ticket->attach_ids_authed = true;
             $newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
             $newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            $newticket->custom_org_fields   = isset($_POST['newticket_custom_org_fields']) ? $_POST['newticket_custom_org_fields'] : array();
 
             if ($newticket->ticket->department_id) {
                 $layout_page = $layouts->getLayout($newticket->ticket->department_id);
@@ -232,6 +257,7 @@ class NewTicketController extends AbstractController
             if ($validator->isValid($newticket) && !$trap_fail) {
                 try {
                     $ticket = $newticket->save();
+                    $rateLimit->saveAction(RateLimit::ACT_SUBMIT_TICKET);
 
                     if (!$request->request->has($new_custom_fields_form->getName())) {
                         $request->request->set($new_custom_fields_form->getName(), array());
@@ -350,6 +376,7 @@ class NewTicketController extends AbstractController
             'form'                  => $form->createView(),
             'custom_fields'         => $custom_fields,
             'custom_user_fields'    => $custom_user_fields,
+            'custom_org_fields'     => $custom_org_fields,
             'ticket_display_js'     => $ticket_display_js,
 
             'captcha_html'          => $captcha_html,
@@ -365,6 +392,7 @@ class NewTicketController extends AbstractController
             'hide_email_field'      => $hide_email_field,
 
             'new_custom_fields' => $new_custom_fields_form->createView(),
+            'force_captcha'     => $force_captcha,
         ));
     }
 
@@ -373,56 +401,8 @@ class NewTicketController extends AbstractController
      */
     public function saveStatusAction()
     {
-        $id = $this->in->getUint('preticket_status_id');
-
-        $preticket = null;
-        if ($id) {
-            $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
-
-            // Must be same user
-            if ($preticket) {
-                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-                    $preticket = null;
-                }
-            }
-        }
-
-        if (!$preticket) {
-            $preticket = Entity\PreticketContent::newForPerson($this->person, true);
-        }
-
-        $form_data = $_POST;
-        unset($form_data['preticket_status_id']);
-
-        if (!empty($form_data['newticket']['ticket']['subject'])) {
-            $preticket->subject = $form_data['newticket']['ticket']['subject'];
-        }
-        if (!empty($form_data['newticket']['ticket']['message'])) {
-            $preticket->message = $form_data['newticket']['ticket']['message'];
-        }
-        if (!empty($form_data['newticket']['ticket']['department_id'])) {
-            $preticket->department_id = $form_data['newticket']['ticket']['department_id'];
-        }
-        if (!empty($form_data['newticket']['person']['email'])) {
-            $preticket->email = $form_data['newticket']['person']['email'];
-        }
-        if (!empty($form_data['newticket']['person']['name'])) {
-            $preticket->name = $form_data['newticket']['person']['name'];
-        }
-
-        $preticket->data = $form_data;
-
-        $this->em->beginTransaction();
-        $this->em->persist($preticket);
-        $this->em->flush();
-        $this->em->commit();
-
-        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
-
-        $this->session->set('preticket_id', $preticket->getId());
-
         return $this->createJsonResponse(array(
-            'preticket_status_id' => $preticket->id
+            'preticket_status_id' => 0
         ));
     }
 

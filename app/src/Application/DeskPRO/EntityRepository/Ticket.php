@@ -51,7 +51,9 @@ class Ticket extends AbstractEntityRepository
     /**
      * The ticket is
      *
-     * @param  Person                                 $person
+     * @param PersonEntity $person
+     * @param \DateTime    $date_last_reply
+     *
      * @return TicketEntity
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -456,51 +458,9 @@ class Ticket extends AbstractEntityRepository
         }
 
         $counts = array(
-            'person' => 0,
+            'person' => $this->countTicketsForPerson($person),
             'org'    => 0,
         );
-
-        if ($person->is_agent) {
-            $count = App::getDb()->fetchColumn("
-                SELECT COUNT(*)
-                FROM tickets
-                WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-            ", array($person->id));
-        } else {
-            if ($person->organization && $person->organization_manager) {
-                $count = array_sum(App::getDb()->fetchAllCol("
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                    UNION
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                        WHERE tickets_participants.person_id = ? AND tickets.organization_id != ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                ", array($person->id, $person->id, $person->getOrganizationId())));
-            } else {
-                $count = App::getDb()->fetchColumn("
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                    UNION
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                        WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                ", array($person->id, $person->id));
-            }
-        }
-
-        $counts['person'] = $count;
 
         if ($person->organization && $person->organization_manager) {
             $allowed_ids = $person->getPermissionsManager()->Departments->getAllowedIds('tickets');
@@ -748,21 +708,19 @@ class Ticket extends AbstractEntityRepository
 
     public function getTicketCountsForPeople(array $people)
     {
-        $ids = array();
+	    $ids = array();
         foreach ($people as $p) {
-            $ids[] = $p->id;
+	        $ids[] = $p['id'];
         }
 
-        if (!$ids) {
-            return array();
-        }
-
-        return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
-            SELECT person_id, COUNT(*)
-            FROM tickets
-            WHERE person_id IN (?)
-            GROUP BY person_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+	    return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+            SELECT person_id, COUNT(person_id) FROM (
+				SELECT person_id FROM tickets WHERE person_id IN (?)
+				UNION ALL
+				SELECT person_id FROM tickets_participants WHERE person_id IN (?)
+			) a
+			GROUP BY person_id
+        ', array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
     }
 
     /**

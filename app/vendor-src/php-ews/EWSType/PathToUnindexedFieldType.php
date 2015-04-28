@@ -13,7 +13,7 @@ class EWSType_PathToUnindexedFieldType extends EWSType
     /**
      * Identifies the URI of the property.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var EWSType_UnindexedFieldURIType
      */

@@ -102,9 +102,9 @@ define [
 
 
     ###
-      # Saves the current form
-      #
-      # @return {promise}
+    # Saves the current form
+    #
+    # @return {promise}
     ###
     saveAccount: ->
       return if @$scope.form_props.$invalid
@@ -160,9 +160,9 @@ define [
 
 
     ###
-      # Test current account settings
-      #
-      # @return {promise}
+    # Test current account settings
+    #
+    # @return {promise}
     ###
     loadAccountTest: ->
       return @Api.sendPostJson('/email_accounts/test-account', @form_model.getFormData()).success( (result) =>
@@ -171,9 +171,9 @@ define [
 
 
     ###
-      # Test current outgoing settings with message details from @test_email object.
-      #
-      # @return {promise}
+    # Test current outgoing settings with message details from @test_email object.
+    #
+    # @return {promise}
     ###
     loadOutgoingAccountTest: ->
       form_data = @form_model.getFormData()
@@ -183,7 +183,7 @@ define [
 
 
     ###
-      # Show the test account modal
+    # Show the test account modal
     ###
     testAccountModal: ->
       me = @

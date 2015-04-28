@@ -71,15 +71,14 @@
 			</button>
 		</header>
 		<article class="view-body">
-			<div ng-non-bindable>
-				{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
-			</div>
 
 			<div style="padding: 20px; text-align: center;" ng-show="refreshCursorLoading">
 				<i class="spinner-circle-32"></i>
 			</div>
 
 			<section class="list-listing" ng-hide="refreshCursorLoading" ng-class="{'list-animation': isLoaded && !pauseListAnim}">
+
+				{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 
                 <div
                     ng-if="listType == 'list'"

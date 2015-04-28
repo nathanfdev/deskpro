@@ -13,6 +13,7 @@ pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete
 pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
 pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
 pageMeta.saveActionsUrl               = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
+pageMeta.getDataholdersUrl = '{{ path('agent_ticket_ajax_get_dataholders', {'ticket_id': ticket.id }) }}';
 pageMeta.deleteTicketUrl              = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
@@ -221,7 +222,7 @@ pageMeta.lang = {{ {
 							data-msg-invalid-email="{{ phrase('agent.general.error_email_address') }}"
 							data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
 							data-msg-is-dupe="{{ phrase('agent.tickets.email_is_dupe') }}"
-							data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers') }}"
+							data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers')|e }}"
 						>{{ phrase('agent.general.add') }}</button>
 					</span>
 					<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
@@ -709,7 +710,7 @@ pageMeta.lang = {{ {
 				</td>
 			</tr></tbody>
 			{% endif %}
-			{% if ticket.real_total_user_waiting and ticket.real_total_user_waiting > 0 %}
+			{% if ticket.real_total_user_waiting %}
 			<tbody><tr>
 				<th>{{ phrase('agent.tickets.total_user_waiting_time') }}:</th>
 				<td>

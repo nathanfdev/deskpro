@@ -232,4 +232,37 @@ class Usersource extends AbstractEntityRepository
         $db->commit();
     }
 
+    /**
+     * @param null|bool $enabled
+     * @return int
+     */
+    public function count($type = null, $enabled = null)
+    {
+        $qb = $this->createQueryBuilder('u')->select('COUNT(u.id)');
+
+        if (null !== $enabled) {
+            $qb->andWhere('u.is_enabled = :enabled')->setParameter('enabled', (bool) $enabled);
+        }
+
+        if (null !== $type) {
+            $qb->andWhere('u.type = :type')->setParameter('type', $type);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function checkAndEnableDeskpro()
+    {
+        $count = $this->count('agent', true);
+        if (!$count) {
+            $this->createQueryBuilder('u')
+                ->update()
+                ->set('u.is_enabled', true)
+                ->where('u.source_type = :stype AND u.type = :type')
+                ->setParameter('stype', 'Application\DeskPRO\Usersource\Adapter\DeskPRO')
+                ->setParameter('type', 'agent')
+                ->getQuery()
+                ->execute();
+        }
+    }
 }

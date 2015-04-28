@@ -141,6 +141,23 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
+    /**
+     * Set a category
+     *
+     * @param NewsCategory $category
+     * @return $this
+     */
+    public function setCategory(NewsCategory $category = null)
+    {
+        if ($category) {
+            $this->setModelField('category', $category);
+        } else {
+            $this->setModelField('category', -1);
+        }
+
+        return $this;
+    }
+
     public function getCategoryPath()
     {
         $path = array();

@@ -1,15 +1,12 @@
 <?php
 
 namespace Application\AgentBundle\Controller;
-use Application\DeskPRO\Entity\JiraIssue;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\ApiErrorsException;
 use Application\DeskPRO\Service\JIRA;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * The JiraController class
@@ -24,8 +21,9 @@ class JiraController extends AbstractController
 	public function preAction($action, $arguments = null)
 	{
 		if (!$this->service()->isEnabled()) {
-			throw new NotFoundHttpException;
+			return $this->createPermissionErrorResponse('Service is disabled');
 		}
+
 		return parent::preAction($action, $arguments);
 	}
 

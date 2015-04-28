@@ -8,6 +8,8 @@
  * defined end date.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_RecurrenceRangeBaseType.
  */
 class EWSType_NoEndRecurrenceRangeType extends EWSType
 {

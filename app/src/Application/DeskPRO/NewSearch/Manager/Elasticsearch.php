@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
 use Symfony\Component\DependencyInjection\ContainerAware;
@@ -121,9 +122,9 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
         }
 
-        foreach ($this->results as &$group) {
-            $group = array_unique($group);
-        }
+        $this->results = array_map(function($group) {
+            return Arrays::uniqueObjectArray($group);
+        }, $this->results);
 
         return array($this->results, $result_meta, $people_top);
     }

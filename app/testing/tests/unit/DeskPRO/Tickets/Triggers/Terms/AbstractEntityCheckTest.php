@@ -13,6 +13,11 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
     private $ticket;
 
     /**
+     * @var Ticket
+     */
+    private $ticket_null;
+
+    /**
      * @var ExecutorContext
      */
     private $exec_context;
@@ -35,6 +40,7 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
         $this->exec_context = new ExecutorContext();
 
         $this->ticket = $this->createTicket(1, $this->object1);
+        $this->ticket_null = $this->createTicket(1, null);
     }
 
     /**
@@ -65,9 +71,10 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
     }
 
     /**
+     * Should return a ticket if ticket can be created with $object.
      * @param  int    $id
-     * @param $object $test_string
-     * @return Ticket
+     * @param  mixed  $object An object, may also be null for null tests
+     * @return Ticket|null
      */
     abstract public function createTicket($id, $object);
 
@@ -112,6 +119,25 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
     public function testIsMatchSingleOption()
     {
         $check = $this->createChecker('is', array('%OPT%' => array(1)));
+        $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
+    }
+
+    public function testMatchingNullOption()
+    {
+        if (!$this->ticket_null) {
+            return;
+        }
+
+        $check = $this->createChecker('is', array('%OPT%' => array(0)));
+        $this->assertTrue($check->isTriggerMatch($this->ticket_null, $this->exec_context));
+
+        $check = $this->createChecker('not', array('%OPT%' => array(0)));
+        $this->assertFalse($check->isTriggerMatch($this->ticket_null, $this->exec_context));
+
+        $check = $this->createChecker('is', array('%OPT%' => array(0)));
+        $this->assertFalse($check->isTriggerMatch($this->ticket, $this->exec_context));
+
+        $check = $this->createChecker('not', array('%OPT%' => array(0)));
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 

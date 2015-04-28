@@ -25,75 +25,84 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
+use Application\ImportBundle\Generator;
+use Exception;
 
-class CheckExportCommand extends ContainerAwareCommand
+/**
+ * Check export command
+ * Read and parse an external data to check if it's valid
+ *
+ * Class CheckExportCommand
+ * @package Application\ImportBundle\Command
+ */
+class CheckExportCommand extends AbstractExportCommand
 {
-    /** @var ProgressBar */
-    protected $progress_bar;
-
     /**
      * {@inheritDoc}
      */
     protected function configure()
     {
         $this->setName('dp:export:check');
-        $this->setHelp('Performs a dry run of the export process');
-        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-        $this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-        $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
+        $this->setHelp('Check export validation process');
+
+        parent::configure();
     }
-
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
 
     /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $out_handler = new ConsoleHandler($output);
-        $logger = new Logger('exporter', array($out_handler));
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
-            $logger->err('You must supply an "input-path" argument while using CSV exporter');
+        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+        if ($config->needInputPath() &&  ! $config->getInputPath()) {
+            throw new Exception('Input path must be specified');
+        }
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
-        $this->progress_bar = $this->getHelperSet()->get('progress');
+        $logger    = $this->createLogger($config, $output);
+        $generator = $this->createGenerator($config, $logger);
 
-        $factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
+        if ($config->getRetryWaitTimeout()) {
+            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
 
-        $generator_config = $factory->createGeneratorConfig();
+            return;
+        }
 
-        $generator_config->progress_bar	= $this->progress_bar;
-        $generator_config->output	= $output;
+        $this->createAndSetProgressBar($generator, $output);
 
-        $generator = $factory->createGenerator($generator_config, $logger);
+        $exceptions = $generator->validate();
+        foreach ($exceptions as $exception) {
+            /** @var Generator\Validator\ValidatorConstraintException $exception */
+            $logger->critical($exception);
+        }
 
-        $generator->generateJson();
-
-        echo "\n";
-        echo "Done";
-        echo "\n";
+        $output->writeln('');
+        if ($config->isVerbose()) {
+            if ($exceptions->count() > 0) {
+                $output->writeln(sprintf('Done. Errors found `%d`.', $exceptions->count()));
+            } else {
+                $output->writeln('Done. Checking was successful.');
+            }
+        } else {
+            if ($exceptions->count() > 0) {
+                $output->writeln(sprintf(
+                    'Done. Errors found `%d`. Look at the log file `%s` to see details.',
+                    $exceptions->count(), $config->getLogPath()
+                ));
+            } else {
+                $output->writeln(sprintf(
+                    'Done. Checking was successful. Look at the log file `%s` to see details.',
+                    $config->getLogPath()
+                ));
+            }
+        }
     }
 }

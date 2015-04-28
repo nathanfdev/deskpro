@@ -304,10 +304,15 @@ class Person extends AbstractEntityRepository
      * Find a person by their email address.
      *
      * @param  string $email
-     * @return Person
+     * @return PersonEntity
      */
     public function findOneByEmail($email, $for_write = false)
     {
+        if (function_exists('mb_strtolower')) {
+            $email = mb_strtolower($email);
+        } else {
+            $email = strtolower($email);
+        }
         if (App::getDb()->isTransactionActive() && $for_write) {
             $person = $this->getEntityManager()->createQuery("
                 SELECT p
@@ -331,7 +336,10 @@ class Person extends AbstractEntityRepository
 
     public function findByEmails(array $emails)
     {
-        if (!$emails) return array();
+        if (!$emails) {
+            return array();
+        }
+
         return $this->getEntityManager()->createQuery('
             SELECT p FROM DeskPRO:Person p
             JOIN p.emails e WITH e.email IN (:emails)
@@ -532,7 +540,7 @@ class Person extends AbstractEntityRepository
         $rows = App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM people
-            WHERE is_agent IN (0, 1)
+            WHERE people.is_deleted = 0
         ");
 
         if ($only_users) {

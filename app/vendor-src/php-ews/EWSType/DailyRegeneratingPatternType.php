@@ -7,6 +7,8 @@
  * Describes the frequency, in days, in which a task is regenerated.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_RegeneratingPatternBaseType.
  */
 class EWSType_DailyRegeneratingPatternType extends EWSType
 {

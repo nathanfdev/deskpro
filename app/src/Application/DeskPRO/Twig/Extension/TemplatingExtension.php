@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
@@ -48,7 +49,9 @@ use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -163,6 +166,8 @@ class TemplatingExtension extends \Twig_Extension
 
             'js_error_tracking'                => new \Twig_Function_Method($this, 'js_error_tracking', array('is_safe' => array('html'))),
 
+            'is_action_limited'                => new \Twig_Function_Method($this, 'isActionLimited'),
+
             // override so we can suppress errors where templates are out of date
             'url'  => new \Twig_Function_Method($this, 'getUrl'),
         );
@@ -204,6 +209,7 @@ class TemplatingExtension extends \Twig_Extension
             'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
             'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
             'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'strip_html'             => new \Twig_Filter_Method($this, 'stripHtml'),
 
             'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
 
@@ -509,6 +515,11 @@ class TemplatingExtension extends \Twig_Extension
         return $ret;
     }
 
+    public function stripHtml($str)
+    {
+        return Strings::html2Text($str);
+    }
+
     public function stripLinebreaks($str)
     {
         $str = str_replace(array("\r\n", "\n"), " ", $str);
@@ -531,6 +542,11 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $qs_append = ($disable_client_cache ? time() : DP_BUILD_TIME);
+
+        if (App::getConfig('asset_version_id')) {
+            $qs_append = App::getConfig('asset_version_id');
+        }
+
         $html = array();
 
         foreach ($urls as $url) {
@@ -1060,7 +1076,7 @@ class TemplatingExtension extends \Twig_Extension
         $path = Strings::canonicalPath($path);
         $root_path = '/' . trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
 
-        if (strpos($path, $root_path) !== 0) {
+        if (!trim($path, '/') || strpos($path, $root_path) !== 0) {
             return false;
         }
 
@@ -1226,6 +1242,15 @@ class TemplatingExtension extends \Twig_Extension
             $url = App::getSetting('core.deskpro_url');
             $url = trim(str_replace('/index.php', '', $url), '/');
             $url .= (App::getConfig('static_path') ?: '/web') . '/';
+        }
+
+        /** @var Request $r */
+        $r = $this->container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+
+        // If the current request is https, then all urls sholud be https even if the
+        // helpdesk url isn't explicitly set to use https
+        if ($r && $r->isSecure() && strtolower(substr($url, 0, 7)) === 'http://') {
+            $url = 'https://' . substr($url, 7);
         }
 
         return $url . ltrim($location, '/');
@@ -1877,6 +1902,11 @@ HTML;
         }
 
         return $rendered;
+    }
+
+    public function isActionLimited($action)
+    {
+        return $this->container->get(RateLimit::KEY)->isActionLimited($action);
     }
 }
 

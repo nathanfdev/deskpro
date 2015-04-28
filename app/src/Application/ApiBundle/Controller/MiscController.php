@@ -36,15 +36,20 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Application\DeskPRO\Service\RateLimit;
+use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\File\File;
 
 class MiscController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
-        if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction') {
+        if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction' || $action == 'dpSpecialAction') {
             return null;
         }
 
@@ -162,6 +167,17 @@ class MiscController extends AbstractController
 
     public function tokenExchangeAction()
     {
+        if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
+            return $this->createApiErrorResponse('account_locked', sprintf('Account locked for %d seconds', $lockTime), 403);
+        }
+
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_TOKEN_EXCHANGE)) {
+            return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 403);
+        }
+
+        $rateLimit->saveAction(RateLimit::ACT_TOKEN_EXCHANGE);
         $result = $this->_authLocalInput($this->in->getString('email'), $this->in->getString('password'));
 
         if (!$result->isValid()) {
@@ -170,6 +186,16 @@ class MiscController extends AbstractController
             $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
                 $message = $this->container->getMailer()->createMessage();
+
+                // Make sure we dont show the current URL in email
+                // because that could leak password attempts because
+                // it's possible it's a GET request
+                if ($v = $this->session->getVisitor()) {
+                    if ($v->visit_track) {
+                        $v->visit_track->page_url = '[api]';
+                    }
+                }
+
                 $message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
                 $message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
                 $this->container->getMailer()->send($message);
@@ -219,6 +245,7 @@ class MiscController extends AbstractController
             'date_created' => date('Y-m-d H:i:s')
         ));
 
+        /** @var ApiToken $token */
         $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
         if (!$token) {
             $token = new \Application\DeskPRO\Entity\ApiToken();
@@ -386,5 +413,101 @@ class MiscController extends AbstractController
         $log = array_shift($records); // will be the last login
 
         return $this->createJsonResponse(array("last_login" => $log));
+    }
+
+    /**
+     * get current login lockout time
+     * @param null $email
+     * @return int|mixed
+     */
+    protected function getLoginLockoutTime($email = null)
+    {
+        if (!$email) {
+            return 0;
+        }
+
+        if (!$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
+            return 0;
+        }
+
+        $context = $person['is_agent'] ? 'agent' : 'user';
+
+        // 0 if disabled
+        if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
+            return 0;
+        }
+
+        /** @var LoginLog $rep */
+        $rep = $this->em->getRepository('DeskPRO:LoginLog');
+        $maxAttempts = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts');
+        $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
+        $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
+
+        return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
+    }
+
+    /**
+     * Special action codes (internal system use)
+     *
+     * @param string $action
+     * @return \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     */
+    public function dpSpecialAction($action)
+    {
+        if (!defined('DP_API_SPECIAL_CODE')) {
+            throw $this->createAccessDeniedException('DP_API_SPECIAL_CODE is not defined');
+        }
+
+        if ($this->in->getString('SC') != DP_API_SPECIAL_CODE) {
+            throw $this->createAccessDeniedException('DP_API_SPECIAL_CODE invalid');
+        }
+
+        switch ($action) {
+            case 'agent_login_token':
+
+                if (!($agent_id = $this->in->getUInt('agent_id'))) {
+                    foreach ($this->container->getAgentData()->getAgents() as $agent) {
+                        if ($agent->can_admin) {
+                            $agent_id = $agent->id;
+                            break;
+                        }
+                    }
+                }
+
+                $agent = $this->container->getAgentData()->get($agent_id);
+                if (!$agent) {
+                    throw $this->createNotFoundException();
+                }
+
+                $secret = sha1($agent->secret_string . $agent->salt);
+                $token = Util::generateStaticSecurityToken($secret, 300);
+
+                $data = array(
+                    'agent_id'    => $agent->id,
+                    'agent_name'  => $agent->getDisplayName(),
+                    'agent_email' => $agent->getPrimaryEmailAddress(),
+                    'valid_until' => date('Y-m-d H:i:s', time()+300),
+                    'login_token' => $token,
+                    'login_url'   => App::getRouter()->generateUrl('user') . 'agent/login?tok=' . $agent->getId() . '-' . $token,
+                );
+
+                return $this->createApiResponse($data);
+
+            case 'list_agents':
+
+                $data = array('agents' => array());
+
+                foreach ($this->container->getAgentData()->getAgents() as $agent) {
+                    $data['agents'][$agent->id] = array(
+                        'agent_id'    => $agent->id,
+                        'agent_name'  => $agent->getDisplayName(),
+                        'agent_email' => $agent->getPrimaryEmailAddress(),
+                    );
+                }
+
+                return $this->createApiResponse($data);
+        }
+
+        throw $this->createNotFoundException();
     }
 }

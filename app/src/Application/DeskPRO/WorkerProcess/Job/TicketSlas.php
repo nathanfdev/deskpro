@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
@@ -62,8 +63,8 @@ class TicketSlas extends AbstractJob
             return $context;
         };
 
-        $count_failed = $proc->processAllFailed($context_factory);
-        $count_warning = $proc->processAllWarning($context_factory);
+        $count_failed = $proc->processAllFailed($context_factory, App::$container->getTicketManager());
+        $count_warning = $proc->processAllWarning($context_factory, App::$container->getTicketManager());
 
         if ($count_warning || $count_failed) {
             $this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");

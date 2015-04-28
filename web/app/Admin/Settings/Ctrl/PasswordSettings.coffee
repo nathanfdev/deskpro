@@ -2,11 +2,15 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
   class Admin_Settings_Ctrl_PasswordSettings extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Settings_Ctrl_PasswordSettings'
     @CTRL_AS   = 'Settings'
+    @DEPS      = ['$upload', '$http']
 
     init: ->
       @$scope.password_settings = {}
 
     initialLoad: ->
+      @Api.sendGet('/general_settings/blob').then (res) =>
+        @$scope.logo_blob = res.data
+
       data_promise = @Api.sendGet('/password_settings', {rate_limit_context: 'agent'}).then( (res) =>
         @$scope.settings = {
           sessions_lifetime:              res.data.settings.sessions_lifetime,
@@ -83,6 +87,23 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         )
       ).error( (info, code) =>
         @stopSpinner('saving', true)
+      )
+
+
+    onFileSelect: (files) ->
+      @$scope.logo_uploading = true
+      file = files[0]
+
+      @$upload.upload({
+        url: @$http.formatApiUrl '/blobs'
+        file: file
+      }).success( (data) =>
+        @$scope.logo_uploading = false
+        @Api.sendPost('/general_settings/blob', {blob_id: data.blob.id}).then (res) =>
+          @$scope.logo_blob = res.data
+      ).error( (data) =>
+        @$scope.logo_uploading = false
+        @Growl.error data?.error_message || 'Error'
       )
 
   Admin_Settings_Ctrl_PasswordSettings.EXPORT_CTRL()
