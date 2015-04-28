@@ -122,7 +122,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			} else {
 				updateCaller();
 			}
-		}).on('change', function() { updateCaller(); });
+		});
 
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });

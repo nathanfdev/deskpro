@@ -34,6 +34,10 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\JobQueue\Processor\Reset\UsersProcessor;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CsvUploadController extends AbstractController implements ProtectedControllerInterface
 {
@@ -106,5 +110,74 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $result = $csv_upload->returnStatusOfImport();
 
         return $this->createApiResponse($result);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function logsAction()
+    {
+        $logs = array();
+        $deletions = $this->getDeletionStatus();
+        foreach ($this->em->getRepository('DeskPRO:DataStore')->getByPrefix('csv_import.') as $entity) {
+            $data = $entity->toApiData();
+            $data['deletion_status'] = @$deletions[str_replace('csv_import.', '', $data['name'])];
+            $logs[] = $data;
+        }
+        return $this->createApiResponse($logs);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function cleanAction(Request $request)
+    {
+        if (!$ref = $request->get('ref')) {
+            throw new NotFoundHttpException;
+        }
+
+        $statuses = $this->getDeletionStatus();
+        if ('waiting' === @$statuses[$ref]) {
+            return $this->createApiResponse(array());
+        }
+
+        $queue = $this->container->getJobQueue();
+        $queue->add(UsersProcessor::JOB_TYPE, array(
+            'context_person_id' => $this->person['id'],
+            'labeled_by' => 'import-' . $ref,
+        ));
+        $this->em->flush();
+
+        return $this->createApiResponse(array());
+    }
+
+    /**
+     * get statuses of users deletion jobs
+     * @return array
+     */
+    protected function getDeletionStatus()
+    {
+        $res = array();
+        $rep = $this->em->getRepository('DeskPRO:Job');
+
+        foreach ($rep->findBy(array('type' => UsersProcessor::JOB_TYPE), array('date_created' => 'desc'), 1) as $job) {
+            /** @var $job Job */
+            $data = $job['data'];
+            if (!$ref = @$data['labeled_by']) continue;
+            if (isset($res[$ref])) continue;
+
+            $ref = str_replace('import-', '', $ref);
+            $status = $job['status'];
+            if (in_array($status, array('rejected', 'aborted'))) {
+                $status = 'error';
+            }
+            if (in_array($status, array('inserting', 'reserved', 'processing'))) {
+                $status = 'waiting';
+            }
+
+            $res[$ref] = $status;
+        }
+
+        return $res;
     }
 }

@@ -228,7 +228,7 @@ class App
 
 
     /**
-     * @return Mail\Mailer
+     * @return \Application\EmailBundle\SwiftMailer\Mailer
      */
     public static function getMailer()
     {

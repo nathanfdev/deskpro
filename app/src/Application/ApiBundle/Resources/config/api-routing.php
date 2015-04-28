@@ -2327,6 +2327,12 @@ $collection->create('api_roundrobins_delete', array(
     'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_roundrobins_logs', array(
+    'path'        => '/round_robin/{id}/logs',
+    'controller'  => 'ApiBundle:RoundRobin:logs',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Start Settings
 ########################################################################################################################
@@ -4392,6 +4398,18 @@ $collection->create('api_import_csv_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_import_csv_logs', array(
+    'path'        => '/import_csv_logs',
+    'controller'  => 'ApiBundle:CsvUpload:logs',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_import_csv_clean', array(
+    'path'        => '/import_csv_clean',
+    'controller'  => 'ApiBundle:CsvUpload:clean',
+    'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # CRM Export CSV
 ########################################################################################################################
@@ -4922,6 +4940,23 @@ $collection->create('api_apps_jira', array(
 	'path'         => '/apps/jira',
 	'controller'   => 'ApiBundle:Apps:jiraSettings',
 	'methods'      => array('GET'),
+));
+
+
+########################################################################################################################
+# Reset Demo
+########################################################################################################################
+
+$collection->create('api_reset_demo_run', array(
+    'path'        => '/reset-demo',
+    'controller'  => 'ApiBundle:ResetDemo:run',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_reset_demo_status', array(
+    'path'        => '/reset-demo/status',
+    'controller'  => 'ApiBundle:ResetDemo:status',
+    'methods'     => array('GET'),
 ));
 
 return $collection;
