@@ -67,10 +67,16 @@
 									<option value="between">Between</option>
 								</select>
 								<span ng-if="ListCtrl.filter_date_mode == 'after' || ListCtrl.filter_date_mode == 'between'">
-									<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="ListCtrl.filter_date1" datepicker-options="{'show-weeks': false}" />
+									<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+									       ng-model="ListCtrl.filter_date1"
+									       dp-datetime-popup="DD MMMM YYYY"
+											/>
 								</span>
 								<span ng-if="ListCtrl.filter_date_mode == 'before' || ListCtrl.filter_date_mode == 'between'">
-									<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="ListCtrl.filter_date2" datepicker-options="{'show-weeks': false}" />
+									<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+									       ng-model="ListCtrl.filter_date2"
+									       dp-datetime-popup="DD MMMM YYYY"
+											/>
 								</span>
 							</td>
 						</tr>

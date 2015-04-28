@@ -2,11 +2,19 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
   class Admin_EmailStatus_Ctrl_ViewSend extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSend'
     @CTRL_AS = 'ViewSource'
-    @DEPS    = ['$state', '$modal', 'DpDateService']
+    @DEPS    = ['$state', '$modal', 'DpDateService', '$sce']
 
     init: ->
       @sendmailId = parseInt(@$stateParams.id)
       @$scope.ds = @DpDateService
+      @$scope.render_type = 'raw'
+      @rendered = {
+        summary_loaded: false,
+        rendered_loaded: false
+      }
+
+      @$scope.$watch('render_type', => @updateRenderType())
+
       return
 
     initialLoad: ->
@@ -21,6 +29,30 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         if @sendmail.date_next_attempt
           @sendmail.date_next_attempt = @DpDateService.local @sendmail.date_next_attempt
       )
+
+    updateRenderType: ->
+      type = @$scope.render_type
+      @$scope.loading_render_type = false
+
+      switch type
+        when 'raw' then return
+        when 'summary'
+          return if @rendered.summary_loaded
+          @$scope.loading_render_type = true
+          @Api.sendGet("/email_status/sendmail/#{@sendmailId}/summary").success( (data) =>
+            @$scope.loading_render_type = false
+            @rendered.summary_loaded = true
+            @rendered.summary = data.summary
+          )
+        when 'rendered'
+          return if @rendered.rendered_loaded
+          @$scope.loading_render_type = true
+          @Api.sendGet("/email_status/sendmail/#{@sendmailId}/rendered").success( (data) =>
+            @$scope.loading_render_type  = false
+            @rendered.rendered_loaded    = true
+            @rendered.text               = data.text || null
+            @rendered.html               = if data.html then @$sce.trustAsHtml(data.html) else null
+          )
 
     delete: ->
       @Api.sendDelete("/email_status/sendmail/#{@sendmailId}")

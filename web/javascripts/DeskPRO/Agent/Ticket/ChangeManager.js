@@ -22,6 +22,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		this.ticketPage = ticketPage;
 		this.ticketId   = ticketPage.getMetaData('ticket_id');
 		this.updateUrl  = ticketPage.getMetaData('saveActionsUrl');
+    this.dataholdersUrl = ticketPage.getMetaData('getDataholdersUrl');
 	},
 
 	propertyManagers: {},
@@ -445,6 +446,19 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			});
 		}
 	},
+
+
+  updateDataholders: function () {
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      type:     'GET',
+      url:      this.dataholdersUrl,
+      dataType: 'json',
+      context:  this,
+      success:  function (data) {
+        this.fireEvent('updateResult', [data]);
+      }
+    });
+  },
 
 
 

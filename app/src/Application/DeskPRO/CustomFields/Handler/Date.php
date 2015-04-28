@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Form\Type\CriteriaFilterField\DateType;
 
 
 /**
@@ -117,11 +118,42 @@ class Date extends HandlerAbstract
         }
 
         $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false
+            'required' => false,
         ));
 
         return $field;
     }
+
+	public function getSearchCriteriaForm($data = null)
+	{
+		$setData = null;
+		if ($data AND !empty($data['value'])) {
+			try {
+				if (ctype_digit($data['value'])) {
+					$date = new \DateTime('@' . $data['value']);
+					if ($date) {
+						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+						$setData = $date->format('Y-m-d');
+					}
+				} else {
+					$date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+					if ($date) {
+						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+						$setData = $date->format('Y-m-d');
+					}
+				}
+			} catch (\Exception $e) {
+				$setData = null;
+			}
+		}
+
+		return App::getFormFactory()->createNamedBuilder(
+			$this->getFormFieldName(),
+			new DateType(),
+			$setData,
+			array('required' => false)
+		)->getForm();
+	}
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
@@ -269,4 +301,14 @@ class Date extends HandlerAbstract
 
         return array();
     }
+
+	public function getSearchCapabilities()
+	{
+		return array('before', 'after', 'between');
+	}
+
+	public function getSearchType()
+	{
+		return 'value';
+	}
 }

@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Entity;
 
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Application\DeskPRO;
 use DateTime;
 
 /**
@@ -90,6 +91,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * End action
+     *
      * @return string
      */
     public function getEndAction()
@@ -98,6 +101,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Set end action
+     *
      * @param string $end_action
      * @return $this
      */
@@ -108,18 +113,39 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Checks if end action is valid
+     *
+     * @return bool
+     */
+    public function isEndActionValid()
+    {
+        if ($this->end_action) {
+            $actions = array(
+                DeskPRO\Entity\Article::END_ACTION_ARCHIVE,
+                DeskPRO\Entity\Article::END_ACTION_DELETE,
+            );
+
+            return in_array($this->end_action, $actions, true);
+        }
+
+        return true;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getStatus()
     {
         if ($this->date_end) {
-            return 'archived';
+            return DeskPRO\Entity\ContentAbstract::STATUS_ARCHIVED;
         }
 
         return parent::getStatus();
     }
 
     /**
+     * Returns date end of publishing
+     *
      * @return DateTime
      */
     public function getDateEnd()
@@ -128,6 +154,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Set date end of publishing
+     *
      * @param DateTime $date_end
      * @return $this
      */
@@ -138,6 +166,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Returns article categories
+     *
      * @return array
      */
     public function getCategories()
@@ -146,6 +176,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
+     * Add a new category
+     *
      * @param string $category
      * @return $this
      */
@@ -203,12 +235,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         AbstractContentEntity::loadValidatorMetadata($metadata);
+
+        $metadata->addGetterConstraint('endActionValid', new Constraints\True());
     }
 }

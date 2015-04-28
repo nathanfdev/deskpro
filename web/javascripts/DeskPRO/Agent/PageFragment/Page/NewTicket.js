@@ -9,7 +9,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
 	},
-        
+
         _initLabels: function() {
             if (this.getEl('labels_input')[0]) {
                 this.labelsInput = new DeskPRO.UI.LabelsInput({
@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initMessageSection();
 		this._initOtherSection();
 		this._initCcSelection();
-                
+
                 this._initLabels();
 
 		this.meta.person_api_data = {};
@@ -96,29 +96,31 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
         });
 
-		$('.Date.customfield input', this.wrapper).datepicker({
-			dateFormat: 'yy-mm-dd',
-			showButtonPanel: true,
-			beforeShow: function(input) {
-				setTimeout(function() {
-					var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-					buttonPane.find('button:first').remove();
-
-					var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-					btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-					btn.appendTo( buttonPane );
-
-					$(input).datepicker("widget").css('z-index', 30002);
-				},1);
-			}
+		$('.Date.customfield input', this.wrapper).each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			})
 		});
 
-		$('.DateTime.customfield input', this.wrapper).each(function(){
+		$('.DateTime.customfield', this.wrapper).each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:ii',
-				container: $(this).parent().css('position', 'relative'),
-				autoclose: true
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
 			});
 		});
 
@@ -196,6 +198,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				Array.each(fields, function(f) {
 					if (f.field_type == 'ticket_field') {
 						var classname = 'ticket-field-' + f.field_id;
+					} else if (f.field_type == 'user_field') {
+						var classname = 'person-field-' + f.field_id;
+					} else if (f.field_type == 'org_field') {
+						var classname = 'org-field-' + f.field_id;
 					} else if (f.field_type == 'custom_field') {
 						var classname = 'custom-field-' + f.field_id;
 					} else {
@@ -957,7 +963,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			context: this,
 			success: function(html) {
 				var $cont = self.getEl('fields_container');
-				$('.ticket-field.custom-field', self.wrapper).remove();
+				$('.ticket-field.custom-field, .ticket-field.custom-person-field, .ticket-field.custom-org-field', self.wrapper).remove();
 				$cont.append(html);
 				self._updateFields(); // trigger update fields
 			}

@@ -259,7 +259,7 @@ pageMeta.baseId = '{{ baseId }}';
 												{{ message.content|truncate(500, false) }}
 												<div class="truncated-wrap"><div class="truncated-btn">&bull; &bull; &bull;</div><textarea class="orig-message" style="display:none;">{{ message.content }}</textarea></div>
 											{% else %}
-												{{message.content|safe_link_urls}}
+                                                {{message.content|safe_link_urls}}
 											{% endif %}
 										{% endif %}
 										<span class="bubbleRight"></span>

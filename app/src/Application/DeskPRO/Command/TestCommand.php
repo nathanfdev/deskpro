@@ -35,6 +35,8 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\JobQueue\Processor\Purge\UsersProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -62,6 +64,9 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $c = $this->getContainer();
+        SettingsProcessor::saveBaseSettings($c->getEm()->getConnection());
+
         echo __FILE__;
         echo "\n";
         return 0;

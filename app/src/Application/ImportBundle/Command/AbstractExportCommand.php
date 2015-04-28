@@ -45,6 +45,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Orb\Util\OptionsArray;
 use Psr\Log\LoggerInterface;
 use Exception;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Base export command
@@ -59,19 +61,39 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-        $this->addOption(
-            'input-path',
-            null,
-            InputOption::VALUE_REQUIRED,
-            'The path to the directory where the exporting files are present'
-        );
-        $this->addOption(
-            'dry-run',
-            null,
-            InputOption::VALUE_NONE,
-            'A writer does not flush data'
-        );
+        $this
+            ->addArgument('script', InputArgument::REQUIRED, 'The target script to use')
+            ->addOption(
+                'input-path',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The path to the directory where the exporting files are present'
+            )
+            ->addOption(
+                'output-path',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The path to the directory where the files should be exported'
+            )
+            ->addOption(
+                'batch-config',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The path to the directory where the exporter batch config is located'
+            )
+            ->addOption(
+                'dry-run',
+                null,
+                InputOption::VALUE_NONE,
+                'A writer does not flush data'
+            )
+            ->addOption(
+                'silent',
+                null,
+                InputOption::VALUE_NONE,
+                'No progressbar'
+            );
+
     }
 
     /**
@@ -90,6 +112,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);
+        $this->setBatchConfigByInputInterface($config, $input);
 
         foreach ($supported_types as $type) {
             $config->addEntityType($type);
@@ -99,32 +122,15 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Returns a collection of supported entity types that should be exported in this order
+     * Returns a list of supported entity types
      *
-     * @return array
+     * @return string[]
      */
-    protected function exportEntityTypesQueue()
+    protected function getSupportedEntityTypes()
     {
         return array(
             Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_ARTICLE,
-            Entity\EntityInterface::TYPE_DOWNLOAD,
-            Entity\EntityInterface::TYPE_FEEDBACK,
-            Entity\EntityInterface::TYPE_NEWS,
-        );
-    }
-
-    /**
-     * Returns a collection of supported entity types that should be imported in this order
-     *
-     * @return array
-     */
-    protected function importEntityTypesQueue()
-    {
-        return array(
-            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,
@@ -142,12 +148,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
-            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'))
-            ->setMarkDone($import_config->get('mark_done', true));
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'));
     }
 
     /**
-     * Use cli to set up generator config params
+     * Use cli to set generator config params up
      *
      * @param GeneratorConfig $config
      * @param InputInterface  $input
@@ -168,7 +173,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         if ($input->hasOption('input-path')) {
             if ($input->getOption('input-path')) {
-                $config->setInputPath($input->getOption('input-path'));
+                $config->setInputPath(rtrim($input->getOption('input-path'), "\\/") . "/");
             } else {
                 switch ($config->getExporterType()) {
                     case ExporterInterface::TYPE_CSV:
@@ -182,14 +187,58 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
         }
-        if ($input->hasOption('mark-done')) {
-            $config->setMarkDone($input->getOption('mark-done'));
-        }
         if ($input->hasOption('verbose')) {
             $config->setVerbose($input->getOption('verbose'));
         }
         if ($input->hasOption('dry-run')) {
             $config->setDryRun($input->getOption('dry-run'));
+        }
+        if ($input->hasOption('silent')) {
+            $config->setSilent($input->getOption('silent'));
+        }
+    }
+
+    /**
+     * Use cli to set batch config up
+     *
+     * @param GeneratorConfig $config
+     * @param InputInterface  $input
+     *
+     * @throws Exception
+     */
+    protected function setBatchConfigByInputInterface(GeneratorConfig $config, InputInterface $input)
+    {
+        $batch_config_file = null;
+
+        // Tries to get batch.json from output or input path
+        if ($config->getBatchFilePath()) {
+            if (@file_exists($config->getBatchFilePath()) === true) {
+                $batch_config_file = $config->getBatchFilePath();
+            }
+        }
+
+        // Tries to get custom batch.json from "batch-config" option
+        if ($input->hasOption('batch-config')) {
+            if ($input->getOption('batch-config')) {
+                $batch_config_file = $input->getOption('batch-config');
+            }
+        }
+
+        if ($batch_config_file) {
+            /** @var Generator\Exporter\Batch $batch_exporter */
+            $batch_exporter = $this->getContainer()->get('deskpro.import.batch_exporter');
+            if (file_exists($batch_config_file) === false) {
+                throw new FileNotFoundException(sprintf('Batch config `%s` not found', $batch_config_file));
+            }
+
+            $batch_config = @file_get_contents($batch_config_file);
+            $batch_config = @json_decode($batch_config, true);
+
+            if (is_array($batch_config) === false) {
+                throw new IOException(sprintf('Invalid batch config `%s`', $batch_config_file));
+            }
+
+            $config->setExporterBatchConfig($batch_exporter->parse($batch_config));
         }
     }
 
@@ -214,7 +263,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             $logger->pushHandler($handler);
         }
-        if ($config->isVerbose()) {
+        if ($config->isConsoleOutputEnabled()) {
             $formatter = new ConsoleFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
 
@@ -231,12 +280,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Create a generator
      *
      * @param GeneratorConfig $config
-     * @param OutputInterface $output
      * @param LoggerInterface $logger
      *
      * @return Generator\Generator
      */
-    protected function createGenerator(GeneratorConfig $config, OutputInterface $output, LoggerInterface $logger)
+    protected function createGenerator(GeneratorConfig $config, LoggerInterface $logger)
     {
         /** @var Generator\Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
@@ -244,14 +292,31 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ->setConfig($config)
             ->setLogger($logger);
 
-        if ($config->isVerbose() === false) {
-            $progress_bar = new ProgressBar($output, $generator->getTotalRecordsCount());
+        return $generator;
+    }
+
+    /**
+     * Create a progress bar if verbose mode is disabled
+     *
+     * @param Generator\Generator $generator
+     * @param OutputInterface     $output
+     *
+     * @return ProgressBar|null
+     */
+    protected function createAndSetProgressBar(Generator\Generator $generator, OutputInterface $output)
+    {
+        if ($generator->getConfig()->isProgressbarEnabled()) {
+            $total_count = $generator->getTotalRecordsCount();
+            $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
+
+            $progress_bar = new ProgressBar($output, $total_count);
             $progress_bar->start();
 
             $generator->setProgressBarHelper($progress_bar);
+            return $progress_bar;
         }
 
-        return $generator;
+        return null;
     }
 
     /**

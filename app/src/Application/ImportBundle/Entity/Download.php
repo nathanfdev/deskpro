@@ -150,7 +150,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
      */
     public function setNumDownloads($num_downloads)
     {
-        $this->num_downloads = $num_downloads;
+        $this->num_downloads = (int)$num_downloads;
         return $this;
     }
 
@@ -202,9 +202,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

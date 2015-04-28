@@ -89,6 +89,7 @@
 {##################################}
 
 {% if category %}
+<div class="list-listing">
 <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
 	<section class="pane-section last" id="{{ tplvars.baseId }}_del_cat">
@@ -153,6 +154,7 @@
 			<i class="spinner-flat"></i>
 		</div>
 	</footer>
+</div>
 </div>
 {% endif %}
 {% endblock pane_content %}

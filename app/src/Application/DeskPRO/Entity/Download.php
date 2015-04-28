@@ -324,7 +324,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function getContentDesc()
     {
         $content = $this->content;
-        $content = strip_tags($content);
+        $content = Strings::html2Text($content);
         $content = str_replace("\n", ' ', $content);
         $content = preg_replace('# {2,}#', ' ', $content);
 

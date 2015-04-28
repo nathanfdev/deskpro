@@ -87,8 +87,8 @@ class JsonReader implements JsonReaderInterface
      */
     public function getIterator($path, $exclude_done)
     {
-        if (!is_dir($path)) {
-            throw new Exception(sprintf('Path `%s` not found', $path));
+        if (is_dir($path) === false) {
+            throw new NotFoundException(sprintf('Path `%s` not found', $path));
         }
 
         return new RecursiveIteratorIterator(

@@ -71,7 +71,7 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
         $current = $this->current();
 
         // Invalid type
-        if (!$current->isDir() && $current->getExtension() != 'json') {
+        if ($current->isDir() === false && $current->getExtension() !== 'json') {
             return false;
         }
 

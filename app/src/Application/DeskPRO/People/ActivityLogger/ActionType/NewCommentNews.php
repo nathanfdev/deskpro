@@ -42,5 +42,6 @@ class NewCommentNews extends NewCommentAbstract
         $details = parent::getDetails();
         $details['news_id'] = $this->comment->news['id'];
         $details['news_title'] = $this->comment->news['title'];
+	    return $details;
     }
 }

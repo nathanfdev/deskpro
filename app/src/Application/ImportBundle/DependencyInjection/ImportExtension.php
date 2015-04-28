@@ -27,9 +27,9 @@
 
 namespace Application\ImportBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -43,40 +43,7 @@ class ImportExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        // Csv reader
-        $definition = new Definition('Application\ImportBundle\Reader\Csv\CsvReader');
-        $container->setDefinition('deskpro.import.csv_reader', $definition);
-
-        // Json reader
-        $definition = new Definition('Application\ImportBundle\Reader\Json\JsonReader');
-        $container->setDefinition('deskpro.import.json_reader', $definition);
-
-        // OsTicket reader
-        $definition = new Definition('Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory');
-        $container->setDefinition('deskpro.import.os_ticket_reader_factory', $definition);
-
-        $definition = new Definition('Application\ImportBundle\Reader\OsTicket\OsTicketReader');
-        $definition->setFactoryService('deskpro.import.os_ticket_reader_factory');
-        $definition->setFactoryMethod('createReaderByDeskproConfig');
-        $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
-
-        // ZenDesk reader
-        $definition = new Definition('Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory');
-        $container->setDefinition('deskpro.import.zen_desk_reader_factory', $definition);
-
-        $definition = new Definition('Application\ImportBundle\Reader\ZenDesk\ZenDeskReader');
-        $definition->setFactoryService('deskpro.import.zen_desk_reader_factory');
-        $definition->setFactoryMethod('createReader');
-        $container->setDefinition('deskpro.import.zen_desk_reader', $definition);
-
-        // Import generator
-        $definition = new Definition('Application\ImportBundle\Generator\GeneratorFactory');
-        $definition->addArgument(new Reference('service_container'));
-        $container->setDefinition('deskpro.import.generator_factory', $definition);
-
-        $definition = new Definition('Application\ImportBundle\Generator\Generator');
-        $definition->setFactoryService('deskpro.import.generator_factory');
-        $definition->setFactoryMethod('createGenerator');
-        $container->setDefinition('deskpro.import.generator', $definition);
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.yml');
     }
 }

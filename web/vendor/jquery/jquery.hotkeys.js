@@ -62,6 +62,13 @@
 				modif += "ctrl+";
 			}
 
+      // DESKPRO EDIT:
+      // ALTGR (alt graph key found on some keyboards) is the same as alt+ctrl
+      // so we need to cancel our event if we have a alt+ctrl key being pressed now
+      if (event.altKey && event.ctrlKey) {
+        return;
+      }
+
 			// TODO: Need to make sure this works consistently across platforms
 			if ( event.metaKey && !event.ctrlKey && special !== "meta" ) {
 				modif += "meta+";

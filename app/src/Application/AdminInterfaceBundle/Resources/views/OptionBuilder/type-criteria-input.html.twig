@@ -2,10 +2,10 @@
 	<div class="dp-ob-standard-row">
 		<label>{{ ng_var('type_title') }}</label>
 		<select
-			ui-select2="{dropdownAutoWidth:true}"
-			ng-model="model.op"
-			style="min-width: 50px;"
-		>
+				ui-select2="{dropdownAutoWidth:true}"
+				ng-model="model.op"
+				style="min-width: 50px;"
+				>
 			<option ng-if="operators.indexOf('isset') !== -1" value="isset">exists</option>
 			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
 			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>

@@ -693,7 +693,7 @@ JS;
         $extras = $this->in->getCleanValueArray('extras');
         $draft = null;
         if ($message) {
-            $message_html = trim($this->in->getHtmlCore('message'));
+            $message_html = trim($this->in->getHtml('message'));
             $message_html = Strings::prepareWysiwygHtml($message_html);
 
             $message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message_html);
@@ -706,7 +706,7 @@ JS;
                 )
             ) {
                 $draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft(
-                    $content_type, $content_id, $message, $message_html, $extras
+                    $content_type, $content_id, $message_html, $message_html, $extras
                 );
                 if ($draft) {
                     $inserted = $draft->id;

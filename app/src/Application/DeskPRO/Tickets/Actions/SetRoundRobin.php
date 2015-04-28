@@ -35,11 +35,11 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\LogRoundRobin;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\RoundRobin;
+use Application\DeskPRO\Entity\RoundRobinLogEntry;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Log\Handler\RoundRobinHandler;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -47,10 +47,9 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option int id   Round Robin id
  */
-class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
-    /** @var RoundRobinHandler */
-    protected $logHandler;
+    protected $checked = array();
 
     /**
      * @param DeskproContainer $container
@@ -58,7 +57,6 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
     public function setContainer(DeskproContainer $container)
     {
         parent::setContainer($container);
-        $this->logHandler = new RoundRobinHandler($container->getEm());
     }
 
     /**
@@ -80,14 +78,13 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
         return $this->getContainer()->getEm()->getRepository('DeskPRO:RoundRobin');
     }
 
+    /**
+     * @param $id
+     * @return null|RoundRobin
+     */
     protected function getRoundRobin($id)
     {
         return $this->getRep()->find($id);
-    }
-
-    protected function resolve()
-    {
-
     }
 
     /**
@@ -95,33 +92,24 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->pushHandler($this->logHandler);
+        $id = $this->getActionOption('id');
+        $rr = $this->getRoundRobin($id);
+        $em = $this->getContainer()->getEm();
+        $adata = $this->getContainer()->getAgentData();
 
-        try {
-            $id = $this->getActionOption('id');
+        $entry = new RoundRobinLogEntry();
+        $entry->rr = $rr;
+        $entry['ticketId'] = $ticket['id'];
+        $entry['ticketSubject'] = $ticket['subject'];
+        $em->persist($entry);
 
-            if (!$rr = $this->getRoundRobin($id)) {
-                throw new \InvalidArgumentException(sprintf('No Round Robin found with id %d', $id));
-            }
-
-            if (!$agent = $this->getRep()->getNextAgent($rr)) {
-                throw new \RuntimeException('Unable to assign agent');
-            }
-
-            $this->getRep()->updateNextAgent($rr);
+        if ($agent = $rr->getNextAgent($adata, $entry)) {
             $ticket->agent = $agent;
-
-            $triggerId = (int) $context->getVars()->get('trigger_id', 0);
-            $entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
-            $context->getLogger()->info($entry);
-
-        } catch (\RuntimeException $e) {
-            // todo log error
-        } catch (\InvalidArgumentException $e) {
-            // todo log error
+            $rr->last = $agent;
         }
 
-        $context->getLogger()->popHandler();
+        $em->flush($entry);
+        $em->flush($rr);
     }
 
 
@@ -144,44 +132,5 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
         }
 
         return false;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-    {
-        $id = $this->getActionOption('id');
-
-        if (!$rr = $this->getRoundRobin($id)) {
-            return null;
-        }
-
-        if (!$agent = $this->getRep()->getNextAgent($rr)) {
-            return null;
-        }
-
-        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
-            if ($agent['id'] == $person->getId()) {
-                if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-                    return null;
-                }
-
-                return array('assign_self');
-            }
-
-            return array('assign_agent');
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-    {
-        $this->applyAction($ticket, $context);
     }
 }

@@ -71,7 +71,7 @@ class Blob
 
         // Automatically detect disposition if none provided
         if (!isset($this->meta['content_disposition'])) {
-            if (ContentTypes::isInlineContentType($content_type, true)) {
+            if (ContentTypes::isInlineContentType($content_type, true, $filename)) {
                 $this->meta['content_disposition'] = 'inline';
             } else {
                 $this->meta['content_disposition'] = 'attachment';

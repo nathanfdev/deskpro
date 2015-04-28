@@ -64,7 +64,7 @@ class AppOptionsMapper
         $options['baseDn']                 = $settings->get('base_dn');
         $options['username']               = $settings->get('service_username');
         $options['password']               = $settings->get('service_password');
-        $options['accountFilterFormat']    = $settings->get('filter');
+        $options['accountFilterFormat']    = $settings->get('account_filter');
 
         switch ($settings->get('secure')) {
             case 'ssl':

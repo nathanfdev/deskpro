@@ -74,11 +74,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
             if ($return) return $this->redirect($return);
 
-            // fastfix of redirect loop (with wrong scheme)
-            $url = $this->generateUrl($this->route_prefix, array(), UrlGeneratorInterface::ABSOLUTE_URL);
-            if (!$this->request->isCorrectScheme()) {
-                $url = str_replace('http://', 'https://', $url);
-            }
+            $url = App::getSetting('core.deskpro_url') . ($this->request->isIndexIncluded() ? 'index.php/' : '') . 'agent/';
             return $this->redirect($url);
         }
 

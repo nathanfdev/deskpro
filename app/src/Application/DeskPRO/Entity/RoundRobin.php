@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -50,11 +51,11 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * Next agent in queue
+     * Recently assigned agent
      *
      * @var \Application\DeskPRO\Entity\Person
      */
-    protected $next = null;
+    protected $last = null;
 
     /**
      * Agents
@@ -68,10 +69,16 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $title;
 
+    /**
+     * @var bool
+     */
+    protected $online_only;
+
 
     public function __construct()
     {
         $this->agents = new ArrayCollection();
+        $this->online_only = false;
     }
 
     /**
@@ -92,7 +99,49 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         }
         $data = parent::toApiData($primary, $deep, $visited);
 
+        // otherwise may potentially be encoded in json as an object
+        // because we might have removed agents above and caused keys to have gaps
+        $data['agents'] = array_values($data['agents']);
+
         return $data;
+    }
+
+    /**
+     * @param RoundRobinLogEntry $entry
+     * @return Person|mixed
+     */
+    public function getNextAgent(AgentDataService $adata, RoundRobinLogEntry $entry = null)
+    {
+        $agents = array();
+        foreach ($this->agents as $ref) {
+            $agents[] = $ref->agent;
+        }
+
+        $lastIdx = array_search($this->last, $agents, 1);
+        if (false !== $lastIdx) {
+            $end = array_splice($agents, 0, $lastIdx + 1);
+            $agents = array_merge($agents, $end);
+        }
+
+        while ($agent = array_shift($agents)) {
+            /** @var $agent Person */
+            if (!$agent['is_agent'] || $agent['is_disabled'] || $agent['is_deleted']) {
+                $entry && $entry->addActionSkippedDisabled($agent);
+                continue;
+            }
+
+            if ($this['online_only'] && !$adata->isAgentOnline($agent)) {
+                $entry && $entry->addActionSkippedOffline($agent);
+                continue;
+            }
+
+            $entry && $entry->addActionAssigned($agent);
+            return $agent;
+        }
+
+        if ($entry && $this['online_only']) {
+            $entry->addActionNoOnline();
+        }
     }
 
 
@@ -123,13 +172,19 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
             'length'     => 255,
             'nullable'  => false
         ));
+        $metadata->mapField(array(
+            'fieldName'  => 'online_only',
+            'columnName' => 'online_only',
+            'type'       => 'boolean',
+            'nullable'  => false
+        ));
 
         $metadata->mapManyToOne(array(
-            'fieldName'    => 'next',
+            'fieldName'    => 'last',
             'dpApi'        => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'joinColumns' => array(array(
-                'name'                 => 'next_agent_id',
+                'name'                 => 'last_agent_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',

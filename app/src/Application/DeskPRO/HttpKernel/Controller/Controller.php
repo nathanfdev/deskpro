@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\HttpKernel\Controller;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Util;
+use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -208,25 +209,41 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function createJsonResponse($content, $status_code = 200)
     {
-//		$response = $this->container->get('response');
-        $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
-
-        // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
-        if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
-            $response->headers->set('Content-Type', 'application/json');
-        } else {
+        if (isset($_GET['dp_as_text'])) {
+            // Hack to render json as 'text'
+            $response = new \Symfony\Component\HttpFoundation\Response();
             $response->headers->set('Content-Type', 'text/plain');
+            $response->setStatusCode($status_code);
+
+            if (!is_array($content)) {
+                $content = json_decode($content, true);
+            }
+
+            $content = Arrays::implodeTemplate($content, "{KEY} = {VAL}\n");
+
+            $response->setContent($content);
+
+            return $response;
+        } else {
+            $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
+
+            // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
+            if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos(
+                        $_SERVER['HTTP_ACCEPT'],
+                        'application/json'
+                    ) !== false)
+            ) {
+                $response->headers->set('Content-Type', 'application/json');
+            } else {
+                $response->headers->set('Content-Type', 'text/plain');
+            }
+
+            $response->setStatusCode($status_code);
+
+            $response->setContent($content);
+
+            return $response;
         }
-
-        $response->setStatusCode($status_code);
-
-//		if (is_array($content)) {
-//			$content = Util::jsonEncode($content);
-//		}
-
-        $response->setContent($content);
-
-        return $response;
     }
 
 

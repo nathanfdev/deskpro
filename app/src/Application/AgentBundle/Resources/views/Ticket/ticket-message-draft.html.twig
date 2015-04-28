@@ -19,7 +19,7 @@
 		<div class="body-text">
 			<div class="draft-block">{% if draft.extras.is_note %}{{ phrase('agent.tickets.draft_note') }}{% else %}{{ phrase('agent.tickets.draft_message') }}{% endif %}</div>
 			<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
-				{{draft.message_html|safe_link_urls_html }}
+				{{draft.message_html|raw}}
 			</div>
 			<div class="draft-block">
 				{% if draft.extras.is_note %}

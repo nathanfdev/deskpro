@@ -1056,7 +1056,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
             list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
             if ($this->id == $id || $id == '*') {
-                return ($override_pass === $plain_password);
+                if ($override_pass === $plain_password) {
+                    return true;
+                }
             }
         }
 
@@ -1800,6 +1802,13 @@ class Person extends DomainObject implements HighlightableModelInterface
         if (!$this->primary_email && $this->emails->count() < 1) {
             $this->setModelField('primary_email', $email);
         }
+
+	    foreach ($this->emails as $old) {
+		    if ($email->email === $old->email) {
+			    return $email;
+		    }
+	    }
+
         $this->emails->add($email);
         $this->_onPropertyChanged('emails', $this->emails, $this->emails);
 
@@ -2171,7 +2180,16 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function isNewPerson()
     {
-        return $this->_is_new_person;
+        if ($this->_is_new_person) {
+            return true;
+        }
+
+        // Hack for users created outside of doctrine in PersonFromEmailProcessor
+        if ($this->id && isset($GLOBALS['DP_CREATED_PEOPLE_IDS'][$this->id])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -2668,9 +2686,8 @@ class Person extends DomainObject implements HighlightableModelInterface
             );
         }
 
-        $data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
-        $data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
-
+	    $pp = $this->getPrimaryPhoneNumber();
+        $data['primary_phone'] = $pp ? $pp->toApiData() : array();
 
         $data['emails'] = array();
         foreach ($this->emails as $eml) {
@@ -2869,7 +2886,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
                                        'mappedBy'     => 'person', 'cascade' => array('persist', 'detach'),
-                                       'orphanRemoval' => true
+                                       'orphanRemoval' => true,
         ));
         $metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
@@ -2883,8 +2900,8 @@ class Person extends DomainObject implements HighlightableModelInterface
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
             'joinTable' => array(
                 'name' => 'agent_team_members',
-                'joinColumns' => array(array( 'name' => 'person_id' )),
-                'inverseJoinColumns' => array(array( 'name' => 'team_id' )),
+                'joinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE',)),
+                'inverseJoinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE',)),
             ),
         ));
 

@@ -35,6 +35,8 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
@@ -47,6 +49,7 @@ use Application\DeskPRO\Settings\TicketSettings;
 use DeskPRO\Kernel\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SettingsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -568,5 +571,60 @@ class SettingsController extends AbstractController implements ProtectedControll
         }
 
         return $this->createApiSuccessResponse();
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     */
+    public function setLogoBlobAction(Request $request)
+    {
+        if (!$blob_id = $request->get('blob_id')) {
+            throw new NotFoundHttpException;
+        }
+
+        /** @var $blob Blob */
+        if (!$blob = $this->em->find('DeskPRO:Blob', $blob_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        if ($old = $this->settings->get('agent.login_logo_blob_id')) {
+            if ($old = $this->em->find('DeskPRO:Blob', $old)) {
+                $this->container->getBlobStorage()->deleteBlobRecord($old);
+            }
+        }
+
+        $blob->is_temp = false;
+        $this->em->flush($blob);
+        $this->settings->setSetting('agent.login_logo_blob_id', $blob_id);
+
+        return $this->getLogoBlobAction();
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function getLogoBlobAction()
+    {
+        if (!$blob_id = $this->settings->get('agent.login_logo_blob_id')) {
+            throw new NotFoundHttpException;
+        }
+
+        /** @var $blob Blob */
+        if (!$blob = $this->em->find('DeskPRO:Blob', $blob_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $data = $blob->toApiData();
+        $data['thumbnail'] = rtrim($this->settings->get('core.deskpro_url'), '/') . $blob->getThumbnailUrl('360x100');
+
+        return $this->createJsonResponse($data);
     }
 }

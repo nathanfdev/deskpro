@@ -148,30 +148,34 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             // Need to look up the From sender manually because we dont know which ticket dector was used above,
             // and the way they find existing people is an implementation detail we dont know here
             $exist_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->email);
+
             if (($exist_person && $tac_person !== $exist_person) || !$exist_person) {
-                $this->logMessage('Agent email with TAC from unknown email address');
-                $this->error      = 'auth_invalid';
-                $this->error_type = 'rejected';
+                $this->logMessage('Agent email with TAC from unknown email address. Re-running ticket detectors without code detector.');
 
-                if (!$this->reader->isFromRobot()) {
-                    $message = App::getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
-                        'ticket' => $ticket,
-                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                        'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                    ));
-                    $message->setTo($this->reader->getFromAddress()->getEmail());
+                $ticket = null;
+                $person = null;
+                $tac_person = null;
+                $is_dp3_reply = false;
+                $can_add_new_person = false;
 
-                    $lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
-
-                    App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
-                        $message->prepare();
-                    });
-
-                    App::getMailer()->send($message);
+                // Invalid or mis-matching auth-code, we will re-run the detectors without TAC matching
+                $ticket_detect = $this->createTicketDetector(false);
+                if ($is_bounce) {
+                    $ticket_detect->enableBouncedMode();
                 }
 
-                return null;
+                $ticket = $ticket_detect->findExistingTicket($this->reader);
+                $this->logMessage("[TicketGatewayProcessor] [RERUN] Ticket Detector -- Ticket: " . ($ticket ? $ticket->id : 'none'));
+
+                $tac_person = $ticket_detect->findTacPerson($this->reader);
+                $this->logMessage("[TicketGatewayProcessor] [RERUN] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id . ' ' . $tac_person->getDisplayContact() : 'none'));
+
+                if ($ticket) {
+                    $person = $ticket_detect->findExistingPerson($ticket, $this->reader);
+                    $this->logMessage("[TicketGatewayProcessor] [RERUN] Ticket Detector -- Person: " . ($person ? $person->id . ' ' . $person->getDisplayContact() : 'none'));
+
+                    $can_add_new_person = $ticket_detect->canAddUnknownPerson($ticket, $this->reader);
+                }
             }
         }
 
@@ -324,7 +328,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     $email_to = $this->account->address;
                 }
 
-                $from_address = $this->container->getMailer()->getEmailAccountForTicket($ticket)->address;
+                $from_address = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();
 
                 // user is disabled so can't create/reply to tickets
                 if (!$this->reader->isFromRobot()) {
@@ -665,14 +669,17 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
+     * @param bool $with_code_check
      * @return CompositeDetector
      */
-    private function createTicketDetector()
+    private function createTicketDetector($with_code_check = true)
     {
         $ticket_detect = new CompositeDetector();
         $ticket_detect->setLogger($this->logger);
 
-        $ticket_detect->addDetector(new CodeTicketDetector());
+        if ($with_code_check) {
+            $ticket_detect->addDetector(new CodeTicketDetector());
+        }
 
         if ($this->container->getSetting('core.deskpro3importer')) {
             $ticket_detect->addDetector(new Dp3Detector());
@@ -683,6 +690,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($this->container->getSetting('core_tickets.gateway_enable_subject_match')) {
             $m = new SubjectMatchDetector();
 
+            if ($this->account && $this->container->getSetting('core_tickets.enable_same_account_subject_matching')) {
+                $m->enableSameAccountSubjectMatching($this->account);
+            }
             if ($this->container->getSetting('core_tickets.enable_exact_subject_matching')) {
                 $m->enableExactSubjectMatching();
             }

@@ -44,6 +44,12 @@ $container->setParameter('form.type_extension.csrf.enabled', false);
 # Services
 ############################################################################
 
+// dp.cache_clearer.cachedir
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\CacheClearer\\CacheDirClearer');
+$definition->addTag('kernel.cache_clearer');
+$container->setDefinition('dp.cache_clearer.cachedir', $definition);
+
 // templating.engine.jsonphp
 $definition = new Definition();
 $definition->setClass('Orb\\Templating\\Engine\\PhpVarJsonEngine');

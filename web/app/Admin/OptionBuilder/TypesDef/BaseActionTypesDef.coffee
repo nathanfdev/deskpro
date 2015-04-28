@@ -205,10 +205,10 @@ define [
       # @param {Object} f         The field
       # @retrn {String} The name of the field that was set
       ###
-    initFieldGetter: (base_name, f) ->
+    initFieldGetter: (base_name, f, force) ->
       fname = base_name + f.id
 
-      if not this['get'+fname]
+      if not this['get'+fname] || force?
         this['get'+fname] = (options = {}) =>
           options.type = base_name + f.id
           return @getStandardForFieldDef(f, options)

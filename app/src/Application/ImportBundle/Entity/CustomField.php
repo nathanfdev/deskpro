@@ -63,6 +63,8 @@ final class CustomField extends AbstractEntity
     }
 
     /**
+     * Key name
+     *
      * @return string
      */
     public function getKey()
@@ -71,6 +73,8 @@ final class CustomField extends AbstractEntity
     }
 
     /**
+     * Set a key name
+     *
      * @param string $key
      * @return $this
      */
@@ -81,6 +85,8 @@ final class CustomField extends AbstractEntity
     }
 
     /**
+     * Custom field value
+     *
      * @return mixed
      */
     public function getValue()
@@ -89,6 +95,8 @@ final class CustomField extends AbstractEntity
     }
 
     /**
+     * Set a value
+     *
      * @param mixed $value
      * @return $this
      */
@@ -111,9 +119,7 @@ final class CustomField extends AbstractEntity
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

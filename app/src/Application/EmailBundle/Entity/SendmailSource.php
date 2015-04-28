@@ -710,6 +710,13 @@ class SendmailSource implements NotifyPropertyChanged
             $data['email_account'] = null;
         }
 
+        if ($this->getBlob()) {
+            $data['raw_download_url'] = $this->getBlob()->getDownloadUrl(true);
+        }
+        if ($this->getLogBlob()) {
+            $data['log_download_url'] = $this->getLogBlob()->getDownloadUrl(true);
+        }
+
         return $data;
     }
 
