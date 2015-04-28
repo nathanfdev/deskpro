@@ -1,5 +1,5 @@
 {
-  "package_name": "deskpro_us_onelogin",
+  "package_name": "deskpro_us_bitium",
   "is_native": true,
   "title": "Bitium Authentication",
   "description": "Enables SSO user authentication with Bitium",

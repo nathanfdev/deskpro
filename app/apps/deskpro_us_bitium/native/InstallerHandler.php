@@ -32,7 +32,7 @@
  * @category Apps
  */
 
-namespace deskpro_us_onelogin;
+namespace deskpro_us_bitium;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
 use Application\DeskPRO\Entity\AppInstance;

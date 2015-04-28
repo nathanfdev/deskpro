@@ -1,3 +1,3 @@
-define(['deskpro_us_onelogin/AdminInterface/Install/SettingsCtrl'], function(SettingsCtrl) {
-	return SettingsCtrl;
+define(['deskpro_us_bitium/AdminInterface/Install/SettingsCtrl'], function (SettingsCtrl) {
+    return SettingsCtrl;
 });
