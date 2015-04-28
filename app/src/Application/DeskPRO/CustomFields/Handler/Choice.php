@@ -122,10 +122,12 @@ class Choice extends HandlerAbstract
         $choices = array();
         $selected = array();
         $map = array();
+        // client-side hierarchy
+        $root = array();
 
         foreach ($children as $id => $child) {
 
-            // used only in single/collapsed
+            // map for client-side
             $map[$id] = new \StdClass();
             $map[$id]->id = $id;
             $map[$id]->title = $child['title'];
@@ -147,15 +149,16 @@ class Choice extends HandlerAbstract
             $selected[] = $id;
         }
 
-        // build tree for single select
-        if (!$this->multiple) {
-            $selected = reset($selected) ?: null;
-        }
-
-        foreach ($children as $child) {
+        // map for client-side
+        foreach ($children as $id => $child) {
             if ($parent = @$map[$child->getOption('parent_id')]) {
-                $parent->children[] = $map[$child['id']];
-                unset($choices[$parent->id]);
+                $parent->children[] = $map[$id];
+                if (isset($choices[$parent->id])) {
+                    unset($choices[$parent->id]);
+                }
+            } else {
+                $root[] = @$map[$id];
+                unset($choices[$child->id]);
             }
         }
 
@@ -173,13 +176,24 @@ class Choice extends HandlerAbstract
             'expanded' => $this->expanded,
             'empty_value' => $this->expanded || $required ? false : '',
             'attr' => array(
-                'data-map' => json_encode($map),
+                'data-map' => json_encode($root),
+                'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
             ),
         );
 
+        if (!$this->multiple) {
+            // selected value for single select
+            $selected = reset($selected) ?: null;
+
+            if (!$this->expanded) {
+                // do not show default single select widget
+                $field_opts['attr']['style'] = 'display: none;';
+            }
+        }
+
         return App::getFormFactory()->createNamedBuilder(
             $this->getFormFieldName(),
-            new DpChoice(),
+            'choice',
             $selected,
             $field_opts
         );
