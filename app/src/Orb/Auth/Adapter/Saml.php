@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * Orb
@@ -95,27 +95,27 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     protected function getSamlSettings()
     {
         return array(
-            'sp'  => array(
-                'entityId'                 => $this->getMetadataXmlUrl(),
+            'sp' => array(
+                'entityId' => $this->getMetadataXmlUrl(),
                 'assertionConsumerService' => array(
                     'url' => $this->getCallbackUrl(),
                 ),
-                'singleLogoutService'      => array(
+                'singleLogoutService' => array(
                     'url' => $this->getSingleLogoutServiceUrl(),
                 ),
                 // enforce a persistent ID for person association
-                'NameIDFormat'             => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+                'NameIDFormat' => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
             ),
             'idp' => array(
-                'entityId'            => $this->options['issuer_id'],
+                'entityId' => $this->options['issuer_id'],
                 'singleSignOnService' => array(
                     'url' => $this->options['sso_url'],
                 ),
                 'singleLogoutService' => array(
                     'url' => $this->options['slo_url'],
                 ),
-                'x509cert'            => $this->options['cert'] ?: null,
-                'certFingerprint'     => $this->options['cert_fingerprint'] ?: null,
+                'x509cert' => $this->options['cert'] ?: null,
+                'certFingerprint' => $this->options['cert_fingerprint'] ?: null,
             )
         );
     }
@@ -200,7 +200,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     /**
      * This is executed when the SAML IdP POSTS back to us after we requested authentication
      *
-     * @param  array  $callback_data
+     * @param  array $callback_data
      * @return Result
      */
     protected function processAcs(array $callback_data)
@@ -253,6 +253,18 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         $user_info['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'last_name');
         $user_info['name'] = Arrays::reachForFirstValueInKey($attrs, 'name');
 
+        // add some stuff for xmlsoap (Azure AD)
+        if (!$user_info['email']) {
+            $user_info['email'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress');
+        }
+        if (!$user_info['first_name']) {
+            $user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname');
+        }
+        if (!$user_info['last_name']) {
+            $user_info['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname');
+        }
+        // end xmlsoap stuff
+
         $id = new Identity($saml->getNameId(), $user_info);
 
         if ($this->logger) {
@@ -291,7 +303,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         }
 
         $logoutRequest = new \OneLogin_Saml2_LogoutRequest($saml_settings);
-        $samlRequest   = $logoutRequest->getRequest();
+        $samlRequest = $logoutRequest->getRequest();
         $parameters = array('SAMLRequest' => $samlRequest);
         $url = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
 
@@ -316,7 +328,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     {
         return array(
             'iframe_url' => $this->getCallbackUrl(),
-            'render'     => true
+            'render' => true
         );
     }
 
@@ -399,7 +411,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     public function getMetadataXml()
     {
         $saml = $this->createSamlProcessor();
-        $sp   = $saml->getSettings()->getSPData();
+        $sp = $saml->getSettings()->getSPData();
 
         return \OneLogin_Saml2_Metadata::builder($sp);
     }
@@ -417,10 +429,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         }
 
         return array(
-            'consumer_url'  => $this->getCallbackUrl(),
-            'metadata_url'  => $this->getMetadataXmlUrl(),
+            'consumer_url' => $this->getCallbackUrl(),
+            'metadata_url' => $this->getMetadataXmlUrl(),
             'metadata_text' => $xml_text,
-            'slo_url'       => $this->getSingleLogoutServiceUrl(),
+            'slo_url' => $this->getSingleLogoutServiceUrl(),
         );
     }
 }
