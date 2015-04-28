@@ -468,8 +468,8 @@
 
     'core.allow_arbitrary_gateway_address' => 1,
 
-    'core_tickets.use_archive' => 0,
-    'core_tickets.auto_archive_time' => 2419000,
+    'core_tickets.use_archive' => 1,
+    'core_tickets.auto_archive_time' => 31536000,
 
     'core_tickets.enable_like_search_mode' => true,
 
