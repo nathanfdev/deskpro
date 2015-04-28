@@ -36,11 +36,6 @@ define ["jquery", "intl-tel-input"] , ($, intlTelInput) ->
             element.intlTelInput("selectCountry", reg.toLowerCase())
           if element.val()
             element.intlTelInput("setNumber", element.val())
-
-        # keep the element and angular's model in sync
-        element.on 'focus blur keyup change', ->
-          scope.$apply ->
-            ngModel.$setViewValue(element.val())
     }
   ]
 

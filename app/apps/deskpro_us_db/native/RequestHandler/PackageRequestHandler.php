@@ -47,6 +47,9 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     public function handleApiPackageRequest(ApiPackageRequestContext $context)
     {
         switch ($context->getAction()) {
+            case 'get-drivers':
+                return $this->getAvailableDriversAction($context);
+                break;
             case 'test-settings':
                 return $this->testSettingsAction($context);
                 break;
@@ -62,28 +65,69 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
-        $username = $context->getIn()->getString('username');
-        $password = $context->getIn()->getString('password');
-        $options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
+        $username = $context->getin()->getstring('username');
+        $password = $context->getin()->getstring('password');
+        $options  = appoptionsmapper::getoptions($context->getin()->getcleanvaluearray('settings'));
 
-        if (defined('DPC_IS_CLOUD')) {
-            if ($app_id = $context->getIn()->getString('app_id')) {
-                $app = $context->getContainer()->getAppManager()->getApp($app_id);
-                $options['password_php'] = $app->getSetting('php_code');
+        if (defined('dpc_is_cloud')) {
+            if ($app_id = $context->getin()->getstring('app_id')) {
+                $app = $context->getcontainer()->getappmanager()->getapp($app_id);
+                $options['password_php'] = $app->getsetting('php_code');
             } else {
                 $options['password_php'] = '';
             }
         }
 
-        $tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
+        $tester = usersourcetester::createfromoptions('application\\Deskpro\\Usersource\\Adapter\\Dbtablephppasswordcheck', $options);
         $tester->test($username, $password);
 
         $result_data = array(
-            'log'        => $tester->getLog(),
-            'raw_data'   => $tester->getRawData(),
-            'is_valid'   => $tester->isValid(),
+            'log'        => $tester->getlog(),
+            'raw_data'   => $tester->getrawdata(),
+            'is_valid'   => $tester->isvalid(),
         );
 
-        return $context->createJsonResponse($result_data);
+        return $context->createjsonresponse($result_data);
+    }
+
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getAvailableDriversAction(ApiPackageRequestContext $context) {
+
+        /**
+         * null means installed, "description" - not installed
+         */
+        $drivers = array(
+            'pdo_mysql' => 'You have to install PDO_MYSQL database driver. <a href="http://php.net/manual/en/ref.pdo-mysql.php">http://php.net/manual/en/ref.pdo-mysql.php</a>',
+            'pdo_pgsql' => 'You have to install PDO_PGSQL database driver. <a href="http://php.net/manual/en/ref.pdo-pgsql.php">http://php.net/manual/en/ref.pdo-pgsql.php</a>',
+            'pdo_sqlite' => 'You have to install PDO_SQLITE database driver. <a href="http://php.net/manual/en/ref.pdo-sqlite.php">http://php.net/manual/en/ref.pdo-sqlite.php</a>',
+            'pdo_odbc' => 'You have to install PDO_ODBC database driver. <a href="http://php.net/manual/en/ref.pdo-odbc.php">http://php.net/manual/en/ref.pdo-odbc.php</a>',
+            'sqlsrv' => 'You have to install SQLSRV database driver. <a href="http://php.net/manual/en/sqlsrv.installation.php">http://php.net/manual/en/sqlsrv.installation.php</a>',
+            'oci8' => 'You have to install OCI8 extension. <a href="http://php.net/manual/en/ref.pdo-odbc.php">http://php.net/manual/en/ref.pdo-odbc.php</a>',
+        );
+
+        $pdo = \PDO::getAvailableDrivers();
+        if (in_array('mysql', $pdo)) {
+            $drivers['pdo_mysql'] = null;
+        }
+        if (in_array('pgsql', $pdo)) {
+            $drivers['pdo_pgsql'] = null;
+        }
+        if (in_array('sqlite', $pdo)) {
+            $drivers['pdo_sqlite'] = null;
+        }
+        if (in_array('odbc', $pdo)) {
+            $drivers['pdo_odbc'] = null;
+        }
+        if (function_exists('sqlsrv_connect')) {
+            $drivers['sqlsrv'] = null;
+        }
+        if (function_exists('oci_connect')) {
+            $drivers['oci8'] = null;
+        }
+
+        return $context->createJsonResponse($drivers);
     }
 }

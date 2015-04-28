@@ -65,6 +65,7 @@ class HardDeleteTickets extends AbstractJob
             LEFT JOIN tickets ON (tickets.id = tickets_deleted.ticket_id)
             WHERE tickets_deleted.date_created < ?
             AND tickets.id IS NOT NULL
+            AND tickets.hidden_status = 'deleted'
             LIMIT 5000
         ", array($date_cut));
 

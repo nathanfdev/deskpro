@@ -33,7 +33,7 @@
 											track time.
 										</span>
 							</div>
-							<div class="inner-group" ng-show="settings.timelog_enabled">
+							<div class="inner-group" ng-show="settings.timelog_enabled" style="margin-left:25px;">
 								<label>
 									<input type="checkbox" ng-model="settings.timelog_autostart" />
 									<h4>Automatically start timer</h4>
@@ -42,6 +42,16 @@
 											When enabled, a timer is started automatically as soon as a ticket is opened in the Agent Interface.
 											When the agent replies, the elapsed time can optionally be added to the time log.
 										</span>
+							</div>
+              <div class="inner-group" ng-show="settings.timelog_enabled && settings.timelog_autostart" style="margin-left: 25px;">
+								<label>
+									<input type="checkbox" ng-model="settings.billing_on_reply" />
+									<h4>Add time with new reply</h4>
+								</label>
+                <span class="help-block">
+                    When enabled, a new option will be added to the reply box so the agent can automatically
+                    add the time charge based on the timer that started when the ticket was opened.
+                  </span>
 							</div>
 						</div>
 					</div>

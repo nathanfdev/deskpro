@@ -233,6 +233,13 @@ $collection->create('api_tickets_ticket_merge', array(
     'methods'       => array('POST'),
 ));
 
+$collection->create('api_tickets_ticket_link', array(
+    'path'          => '/tickets/{ticket_id}/link/{link_ticket_id}',
+    'controller'    => 'ApiBundle:Ticket:linkTicket',
+    'requirements'  => array('ticket_id' => '\\d+', 'link_ticket_id' => '\\d+'),
+    'methods'       => array('POST'),
+));
+
 $collection->create('api_tickets_ticket_spam', array(
     'path'          => '/tickets/{ticket_id}/spam',
     'controller'    => 'ApiBundle:Ticket:spamTicket',
@@ -2387,6 +2394,18 @@ $collection->create('api_server_settings_save', array(
 ########################################################################################################################
 # General Settings
 ########################################################################################################################
+
+$collection->create('api_general_settings_get_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:getLogoBlob',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_general_settings_set_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:setLogoBlob',
+    'methods'     => array('POST'),
+));
 
 $collection->create('api_general_settings', array(
     'path'        => '/general_settings',
