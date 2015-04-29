@@ -38,8 +38,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketCustomDataTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(
@@ -59,5 +57,10 @@ class TicketCustomDataTerm extends AbstractTerm
     public function getSupportedOps()
     {
         return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

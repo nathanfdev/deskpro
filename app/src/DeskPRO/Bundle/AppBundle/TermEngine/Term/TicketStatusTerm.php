@@ -40,8 +40,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketStatusTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('status');
@@ -82,5 +80,10 @@ class TicketStatusTerm extends AbstractTerm
     public function getSupportedOps()
     {
         return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

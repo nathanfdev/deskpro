@@ -44,13 +44,11 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
 abstract class AbstractTerm implements TermInterface
 {
     /**
-     * The op MUST be a TermInterface::OP_* constant.
-     *
-     * Implementations should override this property with thier own default.
+     * The op MUST be a supported TermInterface::OP_* constant.
      *
      * @var string the op for this term
      */
-    protected $op = self::OP_NOOP;
+    protected $op;
 
     /**
      * This is where all of the data of a term is stored.
@@ -73,6 +71,8 @@ abstract class AbstractTerm implements TermInterface
 
         if (null !== $op) {
             $this->setOp($op);
+        } else {
+            $this->setOp($this->getDefaultOp());
         }
     }
 

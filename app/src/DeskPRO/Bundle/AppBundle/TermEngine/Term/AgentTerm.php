@@ -43,8 +43,6 @@ class AgentTerm extends AbstractTerm
      */
     const ID_ME = 'me';
 
-    protected $op = TermInterface::OP_IS;
-
     public function configureOptions(OptionsResolver $options_resolver)
     {
         $options_resolver->setDefaults(
@@ -70,5 +68,10 @@ class AgentTerm extends AbstractTerm
     public function getSupportedOps()
     {
         return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

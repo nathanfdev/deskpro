@@ -43,8 +43,6 @@ class AgentTeamTerm extends AbstractTerm
      */
     const TEAM_ID_ME = 'me';
 
-    protected $op = TermInterface::OP_IS;
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
@@ -63,5 +61,10 @@ class AgentTeamTerm extends AbstractTerm
     public function getSupportedOps()
     {
         return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

@@ -40,8 +40,6 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
 
 class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 {
-    protected $op = TermInterface::OP_OR;
-
     /**
      * @var TermInterface[]
      * @Assert\Valid
@@ -97,5 +95,10 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
     public function getSupportedOps()
     {
         return array(TermInterface::OP_OR, TermInterface::OP_AND);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_OR;
     }
 }

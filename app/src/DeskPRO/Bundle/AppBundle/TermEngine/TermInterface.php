@@ -67,7 +67,24 @@ interface TermInterface
      */
     public function setOp($op);
 
+    /**
+     * Returns an array of all possible OP_ codes that this term supports
+     *
+     * @return array
+     */
     public function getSupportedOps();
+
+    /**
+     * Gets the default OP_ code for this term.
+     *
+     * Immediately after instantiating the term, getOp() should return this value
+     * unless a constructor argument exists that allows an override.
+     *
+     * This OP must be a supported OP in getSupportedOps()
+     *
+     * @return string
+     */
+    public function getDefaultOp();
 
     /**
      * Get an array of all resolved options for this term.

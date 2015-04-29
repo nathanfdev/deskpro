@@ -38,8 +38,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PersonEmailTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
     public function configureOptions(OptionsResolver $options_resolver)
     {
         $options_resolver->setDefaults(
@@ -58,5 +56,10 @@ class PersonEmailTerm extends AbstractTerm
     public function getSupportedOps()
     {
         return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

@@ -39,8 +39,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class DepartmentTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
@@ -59,5 +57,10 @@ class DepartmentTerm extends AbstractTerm
     public function getSupportedOps()
     {
         return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }
