@@ -73,7 +73,7 @@ class RedirectProtectionListener implements EventSubscriberInterface
         // you can bypass this check if you set the right header
         // onto the redirect response object (ie. in the controller)
         if (
-            $response->isRedirection()
+            $response->isRedirect() // isRedirect and not isRedirection -- https://github.com/symfony/symfony/issues/12347
             && !$response->headers->get(self::ALLOW_REDIRECT_OFFSITE_HEADER, false)
         ) {
             $location = $response->headers->get('Location');
