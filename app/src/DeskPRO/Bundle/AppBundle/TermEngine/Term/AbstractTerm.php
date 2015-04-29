@@ -89,7 +89,7 @@ abstract class AbstractTerm implements TermInterface
      * @param OptionsResolver $resolver
      * @return null
      */
-    abstract public function setDefaultOptions(OptionsResolver $resolver);
+    abstract public function configureOptions(OptionsResolver $resolver);
 
     /**
      * @inheritdoc
@@ -139,7 +139,7 @@ abstract class AbstractTerm implements TermInterface
     public function getOptions()
     {
         $resolver = new OptionsResolver();
-        $this->setDefaultOptions($resolver);
+        $this->configureOptions($resolver);
 
         return $resolver->resolve($this->options);
     }

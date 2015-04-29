@@ -59,7 +59,7 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
         return $this->terms;
     }
 
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         // no options at the moment
     }

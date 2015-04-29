@@ -74,7 +74,7 @@ class CompositeTermSpec extends ObjectBehavior
     {
         // does not actually take options at the moment. the "op" is the main property here.
 
-        $this->setDefaultOptions($options_resolver);
+        $this->configureOptions($options_resolver);
     }
 
     function it_lets_you_add_a_term(

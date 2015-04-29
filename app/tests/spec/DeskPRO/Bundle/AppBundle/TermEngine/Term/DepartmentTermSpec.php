@@ -75,6 +75,6 @@ class DepartmentTermSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $this->setDefaultOptions($resolver);
+        $this->configureOptions($resolver);
     }
 }

@@ -99,7 +99,7 @@ class AgentTermSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $this->setDefaultOptions($options_resolver);
+        $this->configureOptions($options_resolver);
     }
 
     function it_gets_defaults_if_no_options_set()

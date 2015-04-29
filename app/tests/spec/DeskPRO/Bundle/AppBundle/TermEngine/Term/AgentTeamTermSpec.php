@@ -77,6 +77,6 @@ class AgentTeamTermSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $this->setDefaultOptions($options_resolver);
+        $this->configureOptions($options_resolver);
     }
 }

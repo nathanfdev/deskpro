@@ -42,7 +42,7 @@ class TicketStatusTerm extends AbstractTerm
 {
     protected $op = TermInterface::OP_IS;
 
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('status');
 

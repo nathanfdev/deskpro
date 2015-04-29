@@ -90,7 +90,7 @@ class DbalTermCompilerFactorySpec extends ObjectBehavior
 
 class FakeTerm extends AbstractTerm
 {
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
     }
 }

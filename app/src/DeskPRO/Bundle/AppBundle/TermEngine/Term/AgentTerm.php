@@ -45,7 +45,7 @@ class AgentTerm extends AbstractTerm
 
     protected $op = TermInterface::OP_IS;
 
-    public function setDefaultOptions(OptionsResolver $options_resolver)
+    public function configureOptions(OptionsResolver $options_resolver)
     {
         $options_resolver->setDefaults(
             array(
