@@ -162,6 +162,12 @@ class Choice extends HandlerAbstract
                 ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
             );
 
+        // Blank value at the top
+        if (!$this->multiple && !$this->expanded) {
+            Arrays::unshiftAssoc($root, 0, array('id' => 0, 'title' => ''));
+            Arrays::unshiftAssoc($choices, 0, "");
+        }
+
         $field_opts = array(
             'choices' => $choices,
             'required' => $required,
@@ -178,11 +184,6 @@ class Choice extends HandlerAbstract
         if (!$this->multiple) {
             // selected value for single select
             $selected = reset($selected) ?: null;
-
-            if (!$this->expanded) {
-                // do not show default single select widget
-                $field_opts['attr']['style'] = 'display: none;';
-            }
         }
 
         return App::getFormFactory()->createNamedBuilder(

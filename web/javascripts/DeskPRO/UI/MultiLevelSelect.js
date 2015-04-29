@@ -6,6 +6,11 @@
           map = $el.data('map'),
           flat = {};
 
+      // Already has old style two level select (department field)
+      if ($el.hasClass('dp-two-select')) {
+        return $el;
+      }
+
       if ($el.data('dp-multi-level-select')) {
         return $el;
       }
@@ -14,23 +19,43 @@
         return $el;
       }
 
+      // Hide original
+      $el.hide();
+
       var $cont = $('<div></div>').insertBefore($el);
-      var add = function (node) {
+      $cont.addClass('multilevel-select');
+
+      var add = function (node, lvl) {
+
+        if (!lvl) {
+          lvl = 0;
+        }
 
         flat[node.id] = node;
         if (!node.children || !node.children.length) {
           return false;
         }
 
-        var $select = $('<select style="display: block;margin: 3px 0;" data-no-select2="1"></select>').appendTo($cont).hide();
+        var $select = $('<select data-no-select2="1"></select>');
+        var $selectWrap = $('<div class="multilevel-select-wrap"></div>').addClass('level-' + lvl);
+
+        if (lvl >= 1) {
+          $select.append('<option value="0"></option>');
+        }
+
+        $selectWrap.append($select);
+        $selectWrap.appendTo($cont).hide();
+
         node.$select = $select;
+        node.$selectWrap = $selectWrap;
+
         $select[0]._node = node;
 
         $.each(node.children, function (i, child) {
           $select.append('<option value="' + child.id + '">' + child.title + '</option>');
           child.parent = node;
           if (node.children) {
-            add(child);
+            add(child, lvl+1);
           }
         });
 
@@ -41,15 +66,14 @@
             if (!node.children) return;
             $.each(node.children, function (i, child) {
               if (val === child.id) {
-
-                if (child.$select) {
-                  child.$select.show().trigger('change');
+                if (child.$selectWrap) {
+                  child.$selectWrap.show();
+                  child.$select.trigger('change');
                 } else {
                   $el.val(val);
                 }
-
               } else {
-                child.$select && child.$select.hide();
+                child.$selectWrap && child.$selectWrap.hide();
                 process(child);
               }
             });
@@ -58,24 +82,22 @@
           process(this._node);
         });
 
-        return $select;
+        return node;
       };
 
-
-      add({id: 0, children: map}, []);
+      var top = add({id: 0, children: map}, 0);
 
       // init value
       var current = flat[$el.val()];
       if (current) {
         while (current) {
           var parent = current.parent;
-          parent && parent.$select && parent.$select.show().val(current.id);
+          parent && parent.$select && parent.$selectWrap.show() && parent.$select.val(current.id);
           current = parent;
         }
       } else {
-        flat[0].$select && flat[0].$select.show().trigger('change');
+        top.$select && top.$selectWrap.show() && top.$select.trigger('change');
       }
-
 
       $el.data('dp-multi-level-select', true);
 
