@@ -651,10 +651,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function getSubject()
     {
-        if (!$this->subject) {
-            return '(no subject)';
-        }
-
         return $this->subject;
     }
 
@@ -737,10 +733,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $subject = Strings::standardEol($subject);
         $subject = Strings::trimLines($subject);
         $subject = preg_replace("#\n+#", ' ', $subject);
-
-        if (!$subject) {
-            $subject = "(No Subject)";
-        }
 
         $this->setModelField('subject', $subject);
 
@@ -3457,12 +3449,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    public function _ensureSubject()
+    {
+        if (!$this->subject) {
+            $this->setModelField('subject', '(No Subject)');
+        }
+    }
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
+        $metadata->addLifecycleCallback('_ensureSubject', 'prePersist');
         $metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');

@@ -449,7 +449,7 @@ class TicketType extends AbstractType
             $options = $this->markNoValidation($form_context, $options);
         }
 
-        $form_context->getForm()->add('plain_subject', 'text', $options);
+        $form_context->getForm()->add('subject', 'text', $options);
     }
 
     private function addMessage(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)

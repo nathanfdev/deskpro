@@ -61,7 +61,7 @@ export default class NewTicketForm extends PageWidget {
     this.dynForm = new DynamicForm({
       formEl: $formEl,
       tplEl:  $tplEl,
-      alwaysFields: ['user_email', 'plain_subject', 'message', 'submit'],
+      alwaysFields: ['user_email', 'subject', 'message', 'submit'],
       fieldFilter: (fields, currentFields, dynForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
           console.error("DESKPRO_TICKET_DISPLAY is not defined");
@@ -72,7 +72,7 @@ export default class NewTicketForm extends PageWidget {
         let newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
           let id = v.id;
           switch (id) {
-            case 'subject': return 'plain_subject';
+            case 'subject': return 'subject';
             case 'attach': return ['attachments', 'more_attachments'];
             default: return id;
           }
