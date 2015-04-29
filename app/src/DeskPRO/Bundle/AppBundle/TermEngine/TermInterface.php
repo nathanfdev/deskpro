@@ -35,6 +35,18 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Defines a Term that can be used in the TermEngine.
+ *
+ * A Term represents an assertion of some kind, and is configurable using a combination
+ * of an "OP" and a set of "Options".
+ *
+ * - An "OP" is an op code used by Term Engine compilers; can be thought of as a verb.
+ * - The "Options" are term specific key/value pairs representing specific parameters for the Term.
+ *
+ * A term may mutate options as they are set, and may provide default values for options. Therefore, you should
+ * always use accessor methods [getOption(name), or getOptions()] to access the options of a term.
+ */
 interface TermInterface
 {
     const OP_NOOP = 'noop';
@@ -54,44 +66,37 @@ interface TermInterface
     const OP_AND = 'and';
 
     /**
-     * Get the op code. This will be a TermInterface::OP_* constant string.
-     *
-     * @return string
-     */
-    public function getOp();
-
-    /**
-     * Set the op code. Use TermInterface::OP_* constants.
+     * Set the OP code. Must be a TermInterface::OP_* constant.
      *
      * @param string $op the op code
      */
     public function setOp($op);
 
     /**
-     * Returns an array of all possible OP_ codes that this term supports
+     * Get the OP code. This will be a TermInterface::OP_* constant.
+     *
+     * @return string
+     */
+    public function getOp();
+
+    /**
+     * Returns an array of all possible TermInterface::OP_* codes that this term supports
      *
      * @return array
      */
     public function getSupportedOps();
 
     /**
-     * Gets the default OP_ code for this term.
+     * Gets the default TermInterface::OP_* code for this term.
      *
      * Immediately after instantiating the term, getOp() should return this value
      * unless a constructor argument exists that allows an override.
      *
-     * This OP must be a supported OP in getSupportedOps()
+     * This OP must be a supported TermInterface::OP_* code in getSupportedOps()
      *
      * @return string
      */
     public function getDefaultOp();
-
-    /**
-     * Get an array of all resolved options for this term.
-     *
-     * @return array the resolved settings
-     */
-    public function getOptions();
 
     /**
      * Set a single option.
@@ -100,23 +105,6 @@ interface TermInterface
      * @param mixed $value the scalar value of the option
      */
     public function setOption($option, $value);
-
-    /**
-     * Get a RESOLVED option value.
-     *
-     * Note that it will actually resolve the options before passing you your option.
-     *
-     * @param string $option option name
-     * @return mixed
-     */
-    public function getOption($option);
-
-    /**
-     * Remove a single option.
-     *
-     * @param string $option the option name.
-     */
-    public function removeOption($option);
 
     /**
      * Shortcut method to set many options at once.
@@ -135,6 +123,30 @@ interface TermInterface
      * @param array $options the new options (key = option name, value = option value)
      */
     public function replaceOptions(array $options);
+
+    /**
+     * Remove a single option.
+     *
+     * @param string $option the option name.
+     */
+    public function removeOption($option);
+
+    /**
+     * Get an array of all RESOLVED options for this term.
+     *
+     * @return array the resolved settings
+     */
+    public function getOptions();
+
+    /**
+     * Get a RESOLVED option value.
+     *
+     * Note that it will actually resolve the options before passing you your option.
+     *
+     * @param string $option option name
+     * @return mixed
+     */
+    public function getOption($option);
 
     /**
      * An array that represents the term for seializing.

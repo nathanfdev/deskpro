@@ -192,11 +192,12 @@ abstract class AbstractTerm implements TermInterface
 
     /**
      * AbstractTerm lets you get the raw options that were set. This is NOT recommended to be
-     * used for getting options and is here only for meta-info about the user-defined term options.
+     * used for getting options because these raw options are NOT resolved. This method is here only for meta-info about the user-defined term options. This is deviation from the TermInterface.
      *
-     * See getOptions() instead
+     * See getOptions() and getOption() to get the real options
      *
      * @return array
+     * @deprecated use getOptions() instead
      */
     public function getRawOptions()
     {
