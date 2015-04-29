@@ -1,4 +1,4 @@
-{% if is_granted('USE_NEWS') %}
+{% if can_use_news() %}
 <section>
     <div class="column-full">
         <article class="news front-page-news">
@@ -9,37 +9,37 @@
 </section>
 {% endif %}
 
-{% if is_granted('USE_ARTICLES') %}
+{% if can_use_articles() %}
     <section>
         {{ this_knowledgebase({ articles_options: { count: 3 }}) }}
     </section>
 {% endif %}
 
 <section>
-    {% if is_granted('USE_NEWS') %}
-    <div class="column-third">
-        <article class="panel-tiny front-page-downloads">
-            <div class="large-title clearfix"><h1>Recent News</h1></div>
-            {{ this_news_posts_list({ count: 5 }) }}
-        </article>
-    </div>
+    {% if can_use_news() %}
+      <div class="column-third">
+          <article class="panel-tiny front-page-downloads">
+              <div class="large-title clearfix"><h1>Recent News</h1></div>
+              {{ this_news_posts_list({ count: 5 }) }}
+          </article>
+      </div>
     {% endif %}
 
-    {% if is_granted('USE_FEEDBACK') %}
-    <div class="column-third">
-        <article class="panel-tiny front-page-downloads">
-            <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-            {{ this_feedback_items_list({ count: 5 }) }}
-        </article>
-    </div>
+    {% if can_use_feedback() %}
+      <div class="column-third">
+          <article class="panel-tiny front-page-downloads">
+              <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
+              {{ this_feedback_items_list({ count: 5 }) }}
+          </article>
+      </div>
     {% endif %}
 
-    {% if is_granted('USE_DOWNLOADS') %}
-    <div class="column-third omega">
-        <article class="panel-tiny front-page-downloads">
-            <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-            {{ this_downloads_files_list({ count: 5 }) }}
-        </article>
-    </div>
+    {% if can_use_downloads() %}
+      <div class="column-third omega">
+          <article class="panel-tiny front-page-downloads">
+              <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
+              {{ this_downloads_files_list({ count: 5 }) }}
+          </article>
+      </div>
     {% endif %}
 </section>

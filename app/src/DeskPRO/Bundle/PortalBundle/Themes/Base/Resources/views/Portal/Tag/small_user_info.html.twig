@@ -1,4 +1,4 @@
-{% if not is_granted('ROLE_USER') %}
+{% if is_guest() %}
 
     {% if display_registration_link %}
         <li>

@@ -146,6 +146,7 @@ class TicketsController extends AbstractController
             'Theme:Tickets:view.html.twig',
             array(
                 'ticket_view' => $ticket_view,
+                'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
             )
         );

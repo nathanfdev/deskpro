@@ -1,4 +1,4 @@
-{% if is_granted('ROLE_USER') %}
+{% if is_user() %}
     <strong>{{ app.user }}</strong>
     <br>
     <img src="{{ person_picture_url(app.user) }}" alt="{{ app.user }}"/>

@@ -9,7 +9,7 @@
 
 <div class="feedback-form-expanded" style="margin-top: 50px;">
 
-        {% if is_granted('ROLE_USER') %}
+        {% if is_user() %}
         <div>
             <a class="user-logged-in" href="#">
                 <i class="fa fa-user"></i> Logged in as: <span>{{ user.name }}</span>, from email <span>{{ user.primary_email_address }}</span>

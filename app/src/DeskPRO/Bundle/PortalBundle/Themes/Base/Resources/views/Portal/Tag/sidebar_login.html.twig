@@ -1,5 +1,5 @@
 {# NOTE: despite the template name, this is part of the sidebar_user tag #}
-{% if (not is_granted('ROLE_USER')) and show_auth %}
+{% if is_guest() and show_auth %}
     <div class="small-form">
         <h1>Log in</h1>
 
