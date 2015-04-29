@@ -1,1 +1,0 @@
-DpChatWidget.setNotAvailable();
