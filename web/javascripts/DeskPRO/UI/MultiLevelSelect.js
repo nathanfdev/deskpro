@@ -3,7 +3,8 @@
     $(this).each(function () {
 
       var $el = $(this),
-          map = $el.data('map');
+          map = $el.data('map'),
+          flat = {};
 
       if ($el.data('dp-multi-level-select')) {
         return $el;
@@ -16,6 +17,7 @@
       var $cont = $('<div></div>').insertBefore($el);
       var add = function (node) {
 
+        flat[node.id] = node;
         if (!node.children || !node.children.length) {
           return false;
         }
@@ -26,6 +28,7 @@
 
         $.each(node.children, function (i, child) {
           $select.append('<option value="' + child.id + '">' + child.title + '</option>');
+          child.parent = node;
           if (node.children) {
             add(child);
           }
@@ -59,8 +62,21 @@
       };
 
 
-      var $select = add({id: 0, children: map}, []);
-      $select && $select.show().trigger('change');
+      add({id: 0, children: map}, []);
+
+      // init value
+      var current = flat[$el.val()];
+      if (current) {
+        while (current) {
+          var parent = current.parent;
+          parent && parent.$select && parent.$select.show().val(current.id);
+          current = parent;
+        }
+      } else {
+        flat[0].$select && flat[0].$select.show().trigger('change');
+      }
+
+
       $el.data('dp-multi-level-select', true);
 
     });
