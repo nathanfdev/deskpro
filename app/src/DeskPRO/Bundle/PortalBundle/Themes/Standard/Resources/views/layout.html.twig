@@ -15,32 +15,15 @@
             </div>
         </section>
 
-        {# Uncomment these lines to show navigation tabs #}
-        {#
-        <section>
+        {{ flashes() }}
+
+        {% block page_content %}
+          <section>
             <div class="column-full">
-                {{ page_tabs() }}
+              {% block inner_content %}{% endblock inner_content %}
             </div>
-        </section>
-        #}
-
-        <section>
-            {{ flashes() }}
-            <div class="column-half-plus">
-                {% block page_content %}
-                    <section>
-                        <div class="column-full">
-                            {% block inner_content %}
-                            {% endblock inner_content %}
-                        </div>
-                    </section>
-                {% endblock page_content %}
-            </div>
-
-            <aside class="sidebar">
-                {{ sidebar() }}
-            </aside>
-        </section>
+          </section>
+        {% endblock %}
 
     </div>
 
