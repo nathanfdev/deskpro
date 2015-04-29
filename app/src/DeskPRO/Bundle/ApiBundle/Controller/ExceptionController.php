@@ -101,6 +101,16 @@ class ExceptionController extends BaseController
             }
         }
 
+        // if it is NOT an associated array, we want to make it one
+        if (!empty($children) && array_keys($children) === range(0, count($children) - 1)) {
+            $prefix = !is_numeric($form->getName()) ? $form->getName() . '_' : 'field_';
+            $new_children = array();
+            foreach ($children as $index => $value) {
+                $new_children[$prefix . $index] = $value;
+            }
+            $children = $new_children;
+        }
+
         if ($children) {
             $errors['fields'] = $children;
         }
