@@ -5,3 +5,6 @@ services:
       factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
       factory_method: create
       arguments: [@service_container]
+
+  translator.noop:
+      class: DeskPRO\Bundle\AppBundle\Translator\NoopTranslator

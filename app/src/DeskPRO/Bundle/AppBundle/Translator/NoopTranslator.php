@@ -26,29 +26,39 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
+namespace DeskPRO\Bundle\AppBundle\Translator;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\Translation\TranslatorInterface;
 
-class AppExtension extends Extension
+/**
+ * The "Validator" componenent of Symfony uses an "IdentityTranslator" by default and we don't want that.
+ *
+ * Instead, we use this noop translator, which does nothing whatsoever.
+ *
+ * Our own DeskPRO Translate object later does the real translating.
+ */
+class NoopTranslator implements TranslatorInterface
 {
-    public function load(array $config, ContainerBuilder $container)
+    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
     {
-        $loader = new YamlDirectoryLoader($container);
-        $loader->loadDir(__DIR__ . '/../Resources/config/services');
-
-        // use our translator
-        $container->setAlias('translator', 'translator.noop');
-
-        $this->applyBackwardsCompatibilityRequirements($container);
+        return $id;
     }
 
-    protected function applyBackwardsCompatibilityRequirements(ContainerBuilder $container)
+    public function transChoice($id, $number, array $parameters = array(), $domain = null, $locale = null)
     {
-        $container->setAlias('deskpro.blob_storage', 'blob.storage');
+        return $id;
+    }
+
+    public function setLocale($locale)
+    {
+    }
+
+    public function getLocale()
+    {
     }
 }
