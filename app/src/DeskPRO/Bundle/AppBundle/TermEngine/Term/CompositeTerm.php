@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
 
 class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 {
@@ -43,6 +44,7 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 
     /**
      * @var TermInterface[]
+     * @Assert\Valid
      */
     protected $terms;
 

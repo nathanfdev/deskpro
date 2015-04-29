@@ -74,6 +74,7 @@ class Filter extends NotifyPropertyChangeEntity
      * @ORM\Column(name="term", type="term_engine_term")
      * @Serializer\Expose()
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     protected $term;
 
