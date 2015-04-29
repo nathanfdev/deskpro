@@ -68,8 +68,6 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
             new \Twig_SimpleFunction('person_picture_url', array($this, 'getPersonPictureUrl')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('this_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
-            new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
         );
     }
 
@@ -115,34 +113,6 @@ class PortalExtension extends \Twig_Extension
             //TODO default image
             return null;
         }
-    }
-
-    /**
-     * @param array  $context
-     * @param string $tag_name
-     * @param array  $arguments
-     *
-     * @return string
-     */
-    public function processPortalPageTag($context, $tag_name, $arguments = array())
-    {
-        if ($context && isset($context['page']) && $context['page'] instanceof ThemeView) {
-            return $context['page']->$tag_name($arguments);
-        } else {
-            // fallback on page-less tag
-            return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
-        }
-    }
-
-    /**
-     * @param string $tag_name
-     * @param array  $arguments
-     *
-     * @return string
-     */
-    public function processPortalTag($tag_name, $arguments = array())
-    {
-        return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
     }
 
     /**

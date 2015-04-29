@@ -15,31 +15,33 @@
     </section>
 {% endif %}
 
-<section>
-    {% if can_use_news() %}
-      <div class="column-third">
-          <article class="panel-tiny front-page-downloads">
-              <div class="large-title clearfix"><h1>Recent News</h1></div>
-              {{ this_news_posts_list({ count: 5 }) }}
-          </article>
-      </div>
-    {% endif %}
+{% if has_any_news() or has_any_feedback() or has_any_downloads() %}
+  <section class="with-{{ col_count(has_any_news(), has_any_feedback(), has_any_downloads()) }}-columns">
+      {% if has_any_news() %}
+        <div class="column">
+            <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent News</h1></div>
+                {{ this_news_posts_list({ count: 5 }) }}
+            </article>
+        </div>
+      {% endif %}
 
-    {% if can_use_feedback() %}
-      <div class="column-third">
-          <article class="panel-tiny front-page-downloads">
-              <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-              {{ this_feedback_items_list({ count: 5 }) }}
-          </article>
-      </div>
-    {% endif %}
+      {% if has_any_feedback() %}
+        <div class="column">
+            <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
+                {{ this_feedback_items_list({ count: 5 }) }}
+            </article>
+        </div>
+      {% endif %}
 
-    {% if can_use_downloads() %}
-      <div class="column-third omega">
-          <article class="panel-tiny front-page-downloads">
-              <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-              {{ this_downloads_files_list({ count: 5 }) }}
-          </article>
-      </div>
-    {% endif %}
-</section>
+      {% if has_any_downloads() %}
+        <div class="column">
+            <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
+                {{ this_downloads_files_list({ count: 5 }) }}
+            </article>
+        </div>
+      {% endif %}
+  </section>
+{% endif %}

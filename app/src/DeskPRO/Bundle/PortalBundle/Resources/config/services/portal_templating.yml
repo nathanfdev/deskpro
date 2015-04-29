@@ -22,7 +22,7 @@ services:
       class: DeskPRO\Bundle\PortalBundle\Twig\PortalSupportExtension
       arguments: [@service_container]
       tags:
-        - { name: twig.extension }
+        - { name: twig.extension, priority: -1000 }
 
   portal_cache.template_map:
     class: Symfony\Component\Config\ConfigCache

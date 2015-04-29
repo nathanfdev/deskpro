@@ -53,6 +53,18 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
+     * @return bool
+     */
+    public function hasAny()
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(array('hasAny'), function() use ($em) {
+            return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM feedback LIMIT 1") ? true : false;
+        });
+    }
+
+    /**
      * @param $page
      * @param $max_per_page
      * @param FeedbackFilter $filter

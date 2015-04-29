@@ -51,6 +51,18 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
+     * @return bool
+     */
+    public function hasAny()
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(array('hasAny'), function() use ($em) {
+            return $em->getConnection()->fetchColumn("SELECT COUNT(*) FROM articles LIMIT 1") ? true : false;
+        });
+    }
+
+    /**
      * @param ArticleCategory $category
      * @param $page
      * @param $max_per_page

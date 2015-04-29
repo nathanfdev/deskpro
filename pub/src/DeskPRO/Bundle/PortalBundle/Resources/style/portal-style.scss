@@ -293,6 +293,26 @@ section {
   @include outer-container;
 }
 
+.with-1-column, .with-1-columns {
+  .column { @include span-columns(12); }
+}
+.with-2-columns {
+  .column {
+    @include span-columns(6);
+    @include media($tablet) {
+      @include span-columns(6);
+    }
+  }
+}
+.with-3-columns {
+  .column {
+    @include span-columns(4);
+    @include media($tablet) {
+      @include span-columns(6);
+    }
+  }
+}
+
 // 12 columns
 .column-full {
   @include span-columns(12);

@@ -45,11 +45,17 @@ class PortalSupportExtension extends \Twig_Extension
     private $continer;
 
     /**
+     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     */
+    private $brand_stack;
+
+    /**
      * @param ContainerInterface $continer
      */
     function __construct(ContainerInterface $continer)
     {
         $this->continer = $continer;
+        $this->brand_stack = $continer->get('brand_stack');
     }
 
 
@@ -60,8 +66,13 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $funcs = array(
             new \Twig_SimpleFunction('can_use_*', array($this, 'canUseCheck')),
+            new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
+            new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
+
+            new \Twig_SimpleFunction('this_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
+            new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
         );
 
         return $funcs;
@@ -82,6 +93,43 @@ class PortalSupportExtension extends \Twig_Extension
 
 
     /**
+     * Check if there is any content to show for: articles, news, downloads, feedback
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasAnyCheck($name)
+    {
+        $sec = $this->continer->get('security.authorization_checker');
+
+        switch ($name) {
+            case 'articles':
+                if ($sec->isGranted('USE_ARTICLES') && $this->continer->get('data.articles')->hasAny()) {
+                    return true;
+                }
+                break;
+            case 'news':
+                if ($sec->isGranted('USE_NEWS') && $this->continer->get('data.news')->hasAny()) {
+                    return true;
+                }
+                break;
+            case 'downloads':
+                if ($sec->isGranted('USE_DOWNLOADS') && $this->continer->get('data.downloads')->hasAny()) {
+                    return true;
+                }
+                break;
+            case 'feedback':
+                if ($sec->isGranted('USE_FEEDBACK') && $this->continer->get('data.feedback')->hasAny()) {
+                    return true;
+                }
+                break;
+        }
+
+        return false;
+    }
+
+
+    /**
      * @return bool
      */
     public function isUser()
@@ -95,6 +143,52 @@ class PortalSupportExtension extends \Twig_Extension
     public function isGuest()
     {
         return !$this->continer->get('security.authorization_checker')->isGranted("ROLE_USER");
+    }
+
+    /**
+     * Counts the number of truthy arguments. Typically used when counting columns.
+     *
+     * @param mixed...
+     * @return int
+     */
+    public function countTruthy()
+    {
+        $args = func_get_args();
+
+        $x = 0;
+        foreach ($args as $v) {
+            if ($v) $x++;
+        }
+
+        return $x;
+    }
+
+    /**
+     * @param array  $context
+     * @param string $tag_name
+     * @param array  $arguments
+     *
+     * @return string
+     */
+    public function processPortalPageTag($context, $tag_name, $arguments = array())
+    {
+        if ($context && isset($context['page']) && $context['page'] instanceof ThemeView) {
+            return $context['page']->$tag_name($arguments);
+        } else {
+            // fallback on page-less tag
+            return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+        }
+    }
+
+    /**
+     * @param string $tag_name
+     * @param array  $arguments
+     *
+     * @return string
+     */
+    public function processPortalTag($tag_name, $arguments = array())
+    {
+        return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
     }
 
     /**
