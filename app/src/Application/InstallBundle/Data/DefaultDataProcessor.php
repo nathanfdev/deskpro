@@ -37,9 +37,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
 use Orb\Util\DpStrings;
 use Psr\Log\LoggerInterface;
-use Orb\Util\Strings;
 use Orb\Util\Util;
-use Psr\Log\LoggerInterface;
 
 class DefaultDataProcessor
 {

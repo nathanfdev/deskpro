@@ -77,7 +77,6 @@ class TemplateFiles
         $paths = array(
             'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
             'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-            'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
         );
 
         $tpl_info = array();

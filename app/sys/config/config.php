@@ -69,17 +69,6 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 
-// twig.helpers.deskpro_user_templating
-// TODO: is this even necessary? might not be used with the new portal in place. commenting out. (oct 2014)
-//$definition = new Definition();
-//$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
-//$definition->setArguments(array(
-//	new Reference('service_container')
-//));
-//$definition->addTag('twig.extension', array());
-//$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
-
-
 // deskpro.exception_logger
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\HttpKernel\ExceptionListener');
