@@ -99,18 +99,12 @@ class Choice extends HandlerAbstract
             }
 
             $title = $child['title'];
-
-            if (!$this->multiple && !$this->expanded) {
-                // leaf title for single choice
-                $val[] = $title;
-            } else {
-                // full path for multiple and expanded
-                while ($parent = @$children[$child->getOption('parent_id')]) {
-                    $title = $parent['title'] . ' > ' . $title;
-                    $child = $parent;
-                }
-                $val[] = $title;
+            // full path
+            while ($parent = @$children[$child->getOption('parent_id')]) {
+                $title = $parent['title'].' > '.$title;
+                $child = $parent;
             }
+            $val[] = $title;
         }
 
         return implode(', ', $val);
