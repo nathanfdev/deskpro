@@ -67,6 +67,8 @@ interface TermInterface
      */
     public function setOp($op);
 
+    public function getSupportedOps();
+
     /**
      * Get an array of all resolved options for this term.
      *

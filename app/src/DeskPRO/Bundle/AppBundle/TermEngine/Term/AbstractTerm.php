@@ -36,7 +36,11 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
 
+/**
+ * @Assert\ValidTermEngineTerm()
+ */
 abstract class AbstractTerm implements TermInterface
 {
     /**
@@ -86,6 +90,22 @@ abstract class AbstractTerm implements TermInterface
      * @return null
      */
     abstract public function setDefaultOptions(OptionsResolver $resolver);
+
+    /**
+     * @inheritdoc
+     */
+    public function getOp()
+    {
+        return $this->op;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOp($op)
+    {
+        $this->op = (string)$op;
+    }
 
     /**
      * Serialize the user-given data.
@@ -168,22 +188,6 @@ abstract class AbstractTerm implements TermInterface
         if (array_key_exists($option, $this->options)) {
             unset($this->options[$option]);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getOp()
-    {
-        return $this->op;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setOp($op)
-    {
-        $this->op = (string)$op;
     }
 
     /**

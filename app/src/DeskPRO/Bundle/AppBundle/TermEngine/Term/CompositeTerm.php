@@ -93,4 +93,9 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 
         throw new \InvalidArgumentException('term not found');
     }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_OR, TermInterface::OP_AND);
+    }
 }

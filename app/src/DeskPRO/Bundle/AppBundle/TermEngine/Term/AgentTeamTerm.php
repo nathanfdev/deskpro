@@ -59,4 +59,9 @@ class AgentTeamTerm extends AbstractTerm
             )
         );
     }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
 }
