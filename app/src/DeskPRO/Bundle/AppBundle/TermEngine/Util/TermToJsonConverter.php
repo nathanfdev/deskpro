@@ -132,8 +132,11 @@ class TermToJsonConverter
         $term->setOp($serialized_array['op']);
 
         if ($term instanceof CompositeTermInterface) {
-            foreach ($serialized_array['terms'] as $term_array) {
-                $term->addTerm($this->arrayToTerm($term_array));
+            foreach ($serialized_array['terms'] as $child_term) {
+                if (is_array($child_term)) {
+                    $child_term = $this->arrayToTerm($child_term);
+                }
+                $term->addTerm($child_term);
             }
         }
 
