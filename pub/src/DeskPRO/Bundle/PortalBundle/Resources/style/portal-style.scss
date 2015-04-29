@@ -24,7 +24,7 @@ $world-padding: 20px;
 //-------------------------
 
 $page-background: #fff;
-$fonts: "Ubuntu", helvetica, verdana, sans-serif;
+$fonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $divider-color: rgba(0, 0, 0, 0.1);
 $universal-left-padding: 10px;
 $main-color: #3575bd;
@@ -2315,7 +2315,7 @@ div.large-title {
     padding-left: 10px;
     background: $page-background;
     color: $text-color-darker;
-    font-weight: 100;
+    font-weight: normal;
     font-size: 1.4em;
   }
 }
