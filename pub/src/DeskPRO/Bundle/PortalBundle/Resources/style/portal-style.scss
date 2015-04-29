@@ -2870,11 +2870,15 @@ table {
     }
   }
 
-  a {
+  a, span {
     display: block;
     padding: 7px 12px;
     color: $text-color-lighter;
     text-decoration: none;
+  }
+
+  span {
+    cursor: default;
   }
 
   .active-page, a:hover {
