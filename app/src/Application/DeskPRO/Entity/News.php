@@ -97,7 +97,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
 
     public function getExcerptHtml()
     {
-        $content = Strings::standardEol($this->getContent());
+        $content = Strings::html2Text($this->getContent());
         if ($pos = strpos($content, '![more]')) {
             $excerpt = substr($content, $pos);
         } elseif ($pos = strpos($content, "\n\n")) {

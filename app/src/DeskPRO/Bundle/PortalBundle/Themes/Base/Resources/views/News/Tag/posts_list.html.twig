@@ -2,17 +2,18 @@
     <ul>
         {% for post in pager %}
             <li>
-                <span class="date-tag"><span>{{ post.date_published | date('M') }}</span> {{ post.date_published | date('j') }}</span><a
-                        href="{{ path('portal_news_view', { slug: post.slug }) }}">{{ post.title }}</a>
+                <span class="date-tag"><span>{{ post.date_published | date('M') }}</span> {{ post.date_published | date('j') }}</span>
+              <a href="{{ path('portal_news_view', { slug: post.slug }) }}">{{ post.title }}</a>
             </li>
         {% endfor %}
     </ul>
 
     {% if show_category_link %}
         <div class="list-meta">
-            <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">View
-                <span>{{ pager|length }}</span> articles<img
-                        src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}"></a>
+            <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">
+              View <span>{{ pager|length }}</span> news posts
+              <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}">
+            </a>
         </div>
     {% endif %}
 {% endif %}
