@@ -36,8 +36,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Filters;
 
 use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -47,6 +49,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 
 /**
  * @RouteResource("filters")
@@ -216,7 +219,16 @@ class FiltersController extends BaseController implements ClassResourceInterface
 
         $submitted = $request->request->all();
 
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
+        try {
+            $form->submit($submitted, $request->getMethod() !== 'PUT');
+        } catch (TermTypeDoesNotExistException $e) {
+            throw new WrappedApiErrorException(
+                new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
+                array(
+                    'type' => $e->getMessage()
+                )
+            );
+        }
 
         if ($form->isValid()) {
 

@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Util;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Orb\Util\Strings;
 
@@ -124,6 +125,9 @@ class TermToJsonConverter
     public function arrayToTerm($serialized_array)
     {
         $class = $this->getTermClassForTypeCode($serialized_array['type']);
+        if (!class_exists($class)) {
+            throw new TermTypeDoesNotExistException($serialized_array['type']);
+        }
         $options = array_key_exists(
             'options',
             $serialized_array

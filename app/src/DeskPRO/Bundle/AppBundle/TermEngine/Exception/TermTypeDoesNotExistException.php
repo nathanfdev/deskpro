@@ -31,40 +31,10 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Exception;
 
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidatorInterface;
-
-class ApiErrors
+class TermTypeDoesNotExistException extends \InvalidArgumentException
 {
-    /** The absolute last fallback error code for thrown exceptions */
-    const EXCEPTION_FALLBACK = 'error';
 
-    /** The absolute last fallback error code for form/validator errors */
-    const CONSTRAINT_FALLBACK = 'invalid';
-
-    /** General purpose error codes */
-    const INTERNAL_ERROR = 'internal_error';
-    const BAD_REQUEST = 'bad_request';
-    const INVALID_INPUT = 'invalid_input';
-    const FORBIDDEN = 'unauthorized';
-    const UNAUTHORIZED = 'unauthorized';
-    const NOT_FOUND = 'not_found';
-    const INVALID_JSONP_CALLBACK = 'invalid_jsonp_callback';
-    const INVALID_JSON_BODY = 'invalid_json_body';
-    const INVALID_DATA_TYPE = 'invalid_data_type';
-    const EXTRA_FIELDS = 'extra_fields';
-
-    /** Some specific authentication codes */
-    const INVALID_SESSION_ID = 'invalid_session_id';
-    const INVALID_API_KEY = 'invalid_api_key';
-    const INVALID_API_TOKEN = 'invalid_api_token';
-    const INVALID_AUTHORIZATION_HEADER = 'invalid_authorization_header';
-    const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
-    const BAD_CREDENTIALS = 'bad_credentials';
-
-    /** Term Engine Specific */
-    const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
 }
