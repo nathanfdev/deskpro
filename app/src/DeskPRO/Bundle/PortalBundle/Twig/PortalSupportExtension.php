@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
