@@ -70,7 +70,7 @@ class CustomFeedbackType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class'      => 'Application\FormBundle\Collection\CustomDataCollection',
+                'data_class'      => 'DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection',
                 'agent_interface' => false,
                 'label'           => false,
             )
