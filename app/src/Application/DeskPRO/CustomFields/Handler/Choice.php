@@ -158,7 +158,6 @@ class Choice extends HandlerAbstract
                 }
             } else {
                 $root[] = @$map[$id];
-                unset($choices[$child->id]);
             }
         }
 
