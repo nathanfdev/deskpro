@@ -77,11 +77,7 @@ class TermEngineTermType extends AbstractType
         $builder->addViewTransformer($this->transformer);
 
         $builder->add('op', 'text', array('error_bubbling' => false));
-        $builder->add(
-            'type',
-            'text',
-            array('error_bubbling' => false, 'constraints' => array(new Length(array('min' => 50))))
-        );
+        $builder->add('type', 'text', array('error_bubbling' => false));
 
         $listener = function (FormEvent $event) {
             $data = $event->getData();
