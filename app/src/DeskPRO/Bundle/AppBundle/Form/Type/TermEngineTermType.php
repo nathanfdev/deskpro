@@ -35,8 +35,15 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer;
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Length;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotNull;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Valid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TermEngineTermType extends AbstractType
 {
@@ -50,14 +57,58 @@ class TermEngineTermType extends AbstractType
         $this->transformer = $transformer;
     }
 
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                'cascade_validation' => true,
+                'error_mapping' => array(
+                    'op' => 'op',
+                    'terms' => 'terms',
+                ),
+                'error_bubbling' => false
+            )
+        );
+    }
+
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addViewTransformer($this->transformer);
-    }
 
-    public function getParent()
-    {
-        return 'textarea';
+        $builder->add('op', 'text', array('error_bubbling' => false));
+        $builder->add(
+            'type',
+            'text',
+            array('error_bubbling' => false, 'constraints' => array(new Length(array('min' => 50))))
+        );
+
+        $listener = function (FormEvent $event) {
+            $data = $event->getData();
+
+            if ($data['type'] === 'composite') {
+                $form = $event->getForm();
+
+                if (!$form->has('terms')) {
+                    $form->add(
+                        'terms',
+                        'collection',
+                        array(
+                            'type' => 'term_engine_term',
+                            'error_bubbling' => false,
+                            'cascade_validation' => true,
+                            'allow_add' => true,
+                            'allow_delete' => true,
+                            'constraints' => array(
+                                new Valid()
+                            )
+                        )
+                    );
+                }
+            }
+        };
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, $listener);
     }
 
     public function getName()

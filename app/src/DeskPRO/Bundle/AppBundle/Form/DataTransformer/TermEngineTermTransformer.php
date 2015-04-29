@@ -81,7 +81,11 @@ class TermEngineTermTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (!$value instanceof TermInterface) {
-            return '';
+            return array(
+                'type' => '',
+                'op' => '',
+                'options' => array()
+            );
         }
 
         return $this->converter->termToArray($value);
@@ -115,6 +119,10 @@ class TermEngineTermTransformer implements DataTransformerInterface
     {
         if (!$value) {
             return null;
+        }
+
+        if ($value instanceof TermInterface) {
+            return $value;
         }
 
         return $this->converter->arrayToTerm($value);
