@@ -1,17 +1,18 @@
 {% if can_use_news() %}
 <section>
-    <div class="column-full">
-        <article class="news front-page-news">
-            <div class="large-title clearfix"><h1>News</h1></div>
-            {{ this_news_posts_pretty({ count: 2 }) }}
-        </article>
-    </div>
+  <article class="news front-page-news">
+    <div class="large-title clearfix"><h1>News</h1></div>
+    {{ this_news_posts_pretty({ count: 2 }) }}
+  </article>
 </section>
 {% endif %}
 
 {% if can_use_articles() %}
     <section>
+      <article class="news front-page-kb">
+        <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
         {{ this_knowledgebase({ articles_options: { count: 3 }}) }}
+      </article>
     </section>
 {% endif %}
 
