@@ -1445,211 +1445,211 @@ define(function() {
     controller: 'Admin_ExportCsv_Ctrl_ExportCsv'
   });
 
-	//##################################################################################################################
-	// Brand
-	//##################################################################################################################
+  //##################################################################################################################
+  // Brand
+  //##################################################################################################################
 
-	routes.push({
-		id: 'brand.setup',
-		url: '/setup',
-		templateName: 'Brand/brand-list.html',
-		controller: 'Admin_Brand_Ctrl_List'
-	});
+  routes.push({
+    id: 'brand.setup',
+    url: '/setup',
+    templateName: 'Brand/brand-list.html',
+    controller: 'Admin_Brand_Ctrl_List'
+  });
 
-	routes.push({
-		id: 'brand.setup.create',
-		url: '/create',
-		templateName: 'Brand/brand-setup.html',
-		controller: 'Admin_Brand_Ctrl_Setup'
-	});
+  routes.push({
+    id: 'brand.setup.create',
+    url: '/create',
+    templateName: 'Brand/brand-setup.html',
+    controller: 'Admin_Brand_Ctrl_Setup'
+  });
 
-	routes.push({
-		id: 'brand.setup.edit',
-		url: '/{id}',
-		templateName: 'Brand/brand-setup.html',
-		controller: 'Admin_Brand_Ctrl_Setup'
-	});
+  routes.push({
+    id: 'brand.setup.edit',
+    url: '/{id}',
+    templateName: 'Brand/brand-setup.html',
+    controller: 'Admin_Brand_Ctrl_Setup'
+  });
 
-	//##################################################################################################################
-	// Portal
-	//##################################################################################################################
+  //##################################################################################################################
+  // Portal
+  //##################################################################################################################
 
-	//###
-	//# Portal Setup
-	//###
-	routes.push({
-		id: 'portal.setup',
-		url: '/setup',
-		templateName: 'Portal/setup.html',
-		controller: 'Admin_Portal_Ctrl_Setup'
-	});
+  //###
+  //# Portal Setup
+  //###
+  routes.push({
+    id: 'portal.setup',
+    url: '/setup',
+    templateName: 'Portal/setup.html',
+    controller: 'Admin_Portal_Ctrl_Setup'
+  });
 
-	//###
-	//# Portal Editor
-	//###
-	routes.push({
-		id: 'portal.portal_editor',
-		url: '/portal_editor',
-		templateName: 'Portal/portal-editor.html',
-		controller: 'Admin_Portal_Ctrl_PortalEditor'
-	});
+  //###
+  //# Portal Editor
+  //###
+  routes.push({
+    id: 'portal.portal_editor',
+    url: '/portal_editor',
+    templateName: 'Portal/portal-editor.html',
+    controller: 'Admin_Portal_Ctrl_PortalEditor'
+  });
+  
+  //###
+  //# Portal Settings
+  //###
+  routes.push({
+    id: 'portal.settings',
+    url: '/settings',
+    templateName: 'Settings/portal-settings.html',
+    controller: 'Admin_Settings_Ctrl_PortalSettings'
+  });
 
-	//###
-	//# Portal Settings
-	//###
-	routes.push({
-		id: 'portal.settings',
-		url: '/settings',
-		templateName: 'Settings/portal-settings.html',
-		controller: 'Admin_Settings_Ctrl_PortalSettings'
-	});
+  routes.push({
+    id: 'portal.portal_editor_go',
+    url: '/go-portal-editor',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('portal.portal_editor', {type: $stateParams.type}); }]
+  });
 
-	routes.push({
-		id: 'portal.portal_editor_go',
-		url: '/go-portal-editor',
-		template: '',
-		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('portal.portal_editor', {type: $stateParams.type}); }]
-	});
+  //###
+  //# Embed
+  //###
+  routes.push({
+    id: 'portal.embeds',
+    url: '/embeds',
+    templateName: 'Portal/embeds-list.html',
+    controller: 'Admin_Main_Ctrl_Bare'
+  });
 
-	//###
-	//# Embed
-	//###
-	routes.push({
-		id: 'portal.embeds',
-		url: '/embeds',
-		templateName: 'Portal/embeds-list.html',
-		controller: 'Admin_Main_Ctrl_Bare'
-	});
+  routes.push({
+    id: 'portal.embeds.type',
+    url: '/{type:tab|chat|form|helpdesk}',
+    templateName: 'Portal/embeds.html',
+    controller: 'Admin_Portal_Ctrl_Embeds'
+  });
 
-	routes.push({
-		id: 'portal.embeds.type',
-		url: '/{type:tab|chat|form|helpdesk}',
-		templateName: 'Portal/embeds.html',
-		controller: 'Admin_Portal_Ctrl_Embeds'
-	});
+  //###
+  //# Templates
+  //###
+  routes.push({
+    id: 'portal.templates',
+    url: '/templates',
+    templateName: 'Templates/groups.html',
+    data: { type: 'user' },
+    controller: 'Admin_Templates_Ctrl_TemplateGroupList'
+  });
 
-	//###
-	//# Templates
-	//###
-	routes.push({
-		id: 'portal.templates',
-		url: '/templates',
-		templateName: 'Templates/groups.html',
-		data: { type: 'user' },
-		controller: 'Admin_Templates_Ctrl_TemplateGroupList'
-	});
+  routes.push({
+    id: 'portal.templates.list',
+    url: '/{groupName:.*?}',
+    templateName: 'Templates/listing.html',
+    controller: 'Admin_Templates_Ctrl_TemplateList'
+  });
 
-	routes.push({
-		id: 'portal.templates.list',
-		url: '/{groupName:.*?}',
-		templateName: 'Templates/listing.html',
-		controller: 'Admin_Templates_Ctrl_TemplateList'
-	});
+  //###
+  //# Kb::Settings
+  //###
+  routes.push({
+    id: 'portal.kb_settings',
+    url: '/kb/settings',
+    templateName: 'KbSettings/kb-settings.html',
+    controller: 'Admin_KbSettings_Ctrl_KbSettings'
+  });
 
-	//###
-	//# Kb::Settings
-	//###
-	routes.push({
-		id: 'portal.kb_settings',
-		url: '/kb/settings',
-		templateName: 'KbSettings/kb-settings.html',
-		controller: 'Admin_KbSettings_Ctrl_KbSettings'
-	});
+  //###
+  //# Kb::Labels
+  //###
+  routes.push({
+    id: 'portal.kb_labels',
+    url: '/kb/labels',
+    templateName: 'Labels/Kb/list.html',
+    controller: 'Admin_Labels_Ctrl_List',
+    data: {type: 'articles'}
+  });
 
-	//###
-	//# Kb::Labels
-	//###
-	routes.push({
-		id: 'portal.kb_labels',
-		url: '/kb/labels',
-		templateName: 'Labels/Kb/list.html',
-		controller: 'Admin_Labels_Ctrl_List',
-		data: {type: 'articles'}
-	});
+  routes.push({
+    id: 'portal.kb_labels.create',
+    url: '/create/',
+    templateName: 'Labels/Kb/edit.html',
+    controller: 'Admin_Labels_Ctrl_Edit',
+    data: {type: 'articles'}
+  });
 
-	routes.push({
-		id: 'portal.kb_labels.create',
-		url: '/create/',
-		templateName: 'Labels/Kb/edit.html',
-		controller: 'Admin_Labels_Ctrl_Edit',
-		data: {type: 'articles'}
-	});
+  routes.push({
+    id: 'portal.kb_labels.gocreate',
+    url: '/go-create/',
+    templateName: 'Labels/Kb/edit.html',
+    controller: ['$state', function ($state) {
+      $state.go('portal.kb_labels.create');
+    }]
+  });
 
-	routes.push({
-		id: 'portal.kb_labels.gocreate',
-		url: '/go-create/',
-		templateName: 'Labels/Kb/edit.html',
-		controller: ['$state', function ($state) {
-			$state.go('portal.kb_labels.create');
-		}]
-	});
+  routes.push({
+    id: 'portal.kb_labels.edit',
+    url: '/{label:.*}/',
+    templateName: 'Labels/Kb/edit.html',
+    controller: 'Admin_Labels_Ctrl_Edit',
+    data: {type: 'kb'}
+  });
 
-	routes.push({
-		id: 'portal.kb_labels.edit',
-		url: '/{label:.*}/',
-		templateName: 'Labels/Kb/edit.html',
-		controller: 'Admin_Labels_Ctrl_Edit',
-		data: {type: 'kb'}
-	});
+  //###
+  //# Downloads::Settings
+  //###
+  routes.push({
+    id: 'portal.downloads_settings',
+    url: '/downloads/settings',
+    templateName: 'DownloadsSettings/downloads-settings.html',
+    controller: 'Admin_DownloadsSettings_Ctrl_DownloadsSettings'
+  });
 
-	//###
-	//# Downloads::Settings
-	//###
-	routes.push({
-		id: 'portal.downloads_settings',
-		url: '/downloads/settings',
-		templateName: 'DownloadsSettings/downloads-settings.html',
-		controller: 'Admin_DownloadsSettings_Ctrl_DownloadsSettings'
-	});
+  //###
+  //# Downloads::Labels
+  //###
+  routes.push({
+    id: 'portal.downloads_labels',
+    url: '/downloads/labels',
+    templateName: 'Labels/Downloads/list.html',
+    controller: 'Admin_Labels_Ctrl_List',
+    data: {type: 'downloads'}
+  });
 
-	//###
-	//# Downloads::Labels
-	//###
-	routes.push({
-		id: 'portal.downloads_labels',
-		url: '/downloads/labels',
-		templateName: 'Labels/Downloads/list.html',
-		controller: 'Admin_Labels_Ctrl_List',
-		data: {type: 'downloads'}
-	});
+  routes.push({
+    id: 'portal.downloads_labels.create',
+    url: '/create/',
+    templateName: 'Labels/Downloads/edit.html',
+    controller: 'Admin_Labels_Ctrl_Edit',
+    data: {type: 'downloads'}
+  });
 
-	routes.push({
-		id: 'portal.downloads_labels.create',
-		url: '/create/',
-		templateName: 'Labels/Downloads/edit.html',
-		controller: 'Admin_Labels_Ctrl_Edit',
-		data: {type: 'downloads'}
-	});
+  routes.push({
+    id: 'portal.downloads_labels.gocreate',
+    url: '/go-create/',
+    templateName: 'Labels/Downloads/edit.html',
+    controller: ['$state', function ($state) {
+      $state.go('portal.downloads_labels.create');
+    }]
+  });
 
-	routes.push({
-		id: 'portal.downloads_labels.gocreate',
-		url: '/go-create/',
-		templateName: 'Labels/Downloads/edit.html',
-		controller: ['$state', function ($state) {
-			$state.go('portal.downloads_labels.create');
-		}]
-	});
-
-	routes.push({
-		id: 'portal.downloads_labels.edit',
-		url: '/{label:.*}/',
-		templateName: 'Labels/Downloads/edit.html',
-		controller: 'Admin_Labels_Ctrl_Edit',
-		data: {type: 'downloads'}
-	});
+  routes.push({
+    id: 'portal.downloads_labels.edit',
+    url: '/{label:.*}/',
+    templateName: 'Labels/Downloads/edit.html',
+    controller: 'Admin_Labels_Ctrl_Edit',
+    data: {type: 'downloads'}
+  });
 
 
-	//###
-	//# News::Settings
-	//###
-	routes.push({
-		id: 'portal.news_settings',
-		url: '/news/settings',
-		templateName: 'NewsSettings/news-settings.html',
-		controller: 'Admin_NewsSettings_Ctrl_NewsSettings'
-	});
+  //###
+  //# News::Settings
+  //###
+  routes.push({
+    id: 'portal.news_settings',
+    url: '/news/settings',
+    templateName: 'NewsSettings/news-settings.html',
+    controller: 'Admin_NewsSettings_Ctrl_NewsSettings'
+  });
 
-	//###
+  //###
 	//# News::Labels
 	//###
 	routes.push({

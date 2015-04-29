@@ -26,7 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
  */
 
 namespace Application\DeskPRO\Service;
@@ -138,8 +141,7 @@ class Twitter
     }
 
     /**
-     * @param integer $id
-     *
+     * @param  integer                                 $id
      * @return \Application\DeskPRO\Entity\TwitterUser
      */
     protected function findUser($id)
@@ -208,8 +210,8 @@ class Twitter
             if (!$reply) {
                 try {
                     $reply_result = $api->get_statusesShow(array(
-                        'id'               => $data->in_reply_to_status_id_str,
-                        'include_entities' => true,
+                        'id' => $data->in_reply_to_status_id_str,
+                        'include_entities' => true
                     ));
 
                     if (!empty($reply_result->id_str)) {
@@ -225,7 +227,7 @@ class Twitter
 
             if ($reply) {
                 $status['in_reply_to_status'] = $reply;
-                $status['in_reply_to_user']   = $reply->user;
+                $status['in_reply_to_user'] = $reply->user;
             }
         }
 
@@ -335,7 +337,7 @@ class Twitter
             return false;
         }
 
-        $entity           = TwitterStatusMention::createFromJson($mention);
+        $entity = TwitterStatusMention::createFromJson($mention);
         $entity['status'] = $status;
 
         $user = $this->findUser($mention->id_str);
@@ -358,7 +360,7 @@ class Twitter
 
     public function processStatusTag(TwitterStatus $status, $tag, $do_persist = true)
     {
-        $entity           = TwitterStatusTag::createFromJson($tag);
+        $entity = TwitterStatusTag::createFromJson($tag);
         $entity['status'] = $status;
 
         if ($do_persist) {
@@ -370,7 +372,7 @@ class Twitter
 
     public function processStatusUrl(TwitterStatus $status, $url, $do_persist = true)
     {
-        $entity           = TwitterStatusUrl::createFromJson($url);
+        $entity = TwitterStatusUrl::createFromJson($url);
         $entity['status'] = $status;
 
         if ($do_persist) {
@@ -386,7 +388,7 @@ class Twitter
         $text = str_replace("\t", ' ', $text);
         $text = trim($text);
 
-        $http_length  = 22;
+        $http_length = 22;
         $https_length = 23;
         $replacements = array();
 
@@ -405,8 +407,8 @@ class Twitter
         }, $text);
 
         return array(
-            'text'         => $text,
-            'replacements' => $replacements,
+            'text' => $text,
+            'replacements' => $replacements
         );
     }
 
@@ -419,20 +421,20 @@ class Twitter
 
     public function splitStatusText($text, $look_for_prefix = true)
     {
-        $replaced         = $this->getTextAtTwitterLength($text);
+        $replaced = $this->getTextAtTwitterLength($text);
         $replaced['text'] = preg_replace('/\s/', ' ', $replaced['text']);
 
         if ($look_for_prefix && preg_match('/^(@[a-z0-9_]+\s+)+/i', $replaced['text'], $match)) {
-            $prefix     = $match[0];
+            $prefix = $match[0];
             $split_text = substr($replaced['text'], strlen($prefix));
         } else {
-            $prefix     = '';
+            $prefix = '';
             $split_text = $replaced['text'];
         }
 
         $part_max_length = 140 - \Orb\Util\Strings::utf8_strlen($prefix);
-        $text_parts      = array();
-        $first_added     = false;
+        $text_parts = array();
+        $first_added = false;
 
         do {
             if (\Orb\Util\Strings::utf8_strlen($split_text) <= $part_max_length) {
@@ -440,24 +442,24 @@ class Twitter
                     $split_text = "...$split_text";
                 }
 
-                $text_parts[] = $prefix.$split_text;
+                $text_parts[] = $prefix . $split_text;
                 break;
             } else {
-                $test_text  = substr($split_text, 0, $part_max_length - 3); // -3 for the appended ...
+                $test_text = substr($split_text, 0, $part_max_length - 3); // -3 for the appended ...
                 $last_space = strrpos($test_text, ' ');
                 if ($last_space !== false && $last_space >= 0) {
                     // have a space
                     $text_parts[] = $prefix
-                        .($text_parts ? '...' : '')
-                        .substr($split_text, 0, $last_space)
-                        .'...';
+                        . ($text_parts ? '...' : '')
+                        . substr($split_text, 0, $last_space)
+                        . '...';
                     $split_text = ltrim(substr($split_text, $last_space + 1));
                 } else {
                     // no space - include whole thing
                     $text_parts[] = $prefix
-                        .($text_parts ? '...' : '')
-                        .$test_text
-                        .'...';
+                        . ($text_parts ? '...' : '')
+                        . $test_text
+                        . '...';
                     $split_text = ltrim(substr($split_text, strlen($test_text)));
                 }
             }
@@ -468,7 +470,7 @@ class Twitter
             }
         } while (strlen($split_text));
 
-        foreach ($text_parts as &$text_part) {
+        foreach ($text_parts AS &$text_part) {
             $text_part = preg_replace_callback('/\x1A(\d+)\x1A+/', function ($match) use ($replaced) {
                 return isset($replaced['replacements'][$match[1]])
                     ? $replaced['replacements'][$match[1]]
@@ -482,10 +484,10 @@ class Twitter
 
     public function sendAccountMessage($type, $text, $split, TwitterAccount $account, TwitterAccountStatus $reply = null, TwitterUser $user = null)
     {
-        $error                = null;
+        $error = null;
         $new_account_statuses = array();
 
-        $api  = $account->getTwitterApi();
+        $api = $account->getTwitterApi();
         $text = trim(str_replace("\r", '', $text));
         $text = str_replace("\t", ' ', $text);
 
@@ -517,7 +519,7 @@ class Twitter
                             $long_text = 'Read my long message: ';
                         }
                         $long_text .= App::getRouter()->generate('user_long_tweet_view', array(
-                            'long_id' => $long_status->id,
+                            'long_id' => $long_status->id
                         ), true);
 
                         $text_parts = array($long_text);
@@ -543,8 +545,8 @@ class Twitter
                         $long_status = $this->_addLongStatus($text, false, $to_user);
 
                         $long_text = "I have sent you a long, private message. Sign in to see it. "
-                            .App::getRouter()->generate('user_long_tweet_view', array(
-                                'long_id' => $long_status->id,
+                            . App::getRouter()->generate('user_long_tweet_view', array(
+                                'long_id' => $long_status->id
                             ), true);
                         $text_parts = array($long_text);
                     }
@@ -563,8 +565,8 @@ class Twitter
                         $long_status = $this->_addLongStatus($text, false, $to_user);
 
                         $long_text = "@$to_user->screen_name I have sent you a private message. Sign in to see it. "
-                            .App::getRouter()->generate('user_long_tweet_view', array(
-                                'long_id' => $long_status->id,
+                            . App::getRouter()->generate('user_long_tweet_view', array(
+                                'long_id' => $long_status->id
                             ), true);
                         $text_parts = array($long_text);
                     }
@@ -576,20 +578,20 @@ class Twitter
             }
         } catch (\EpiTwitterException $e) {
             $error = $this->getTwitterError($e);
-        } catch (\EpiOAuthException $e) {
+        }  catch (\EpiOAuthException $e) {
             $error = $this->getTwitterError($e);
         }
 
         return array(
-            'success'              => !$error && !empty($new_account_statuses),
-            'error'                => $error,
-            'new_account_statuses' => $new_account_statuses,
+            'success' => !$error && !empty($new_account_statuses),
+            'error' => $error,
+            'new_account_statuses' => $new_account_statuses
         );
     }
 
     public function sendRetweet(TwitterAccount $account, TwitterAccountStatus $account_status)
     {
-        $api   = $account->getTwitterApi();
+        $api = $account->getTwitterApi();
         $error = null;
 
         try {
@@ -599,10 +601,10 @@ class Twitter
             } else {
                 $new_status = $this->processStatus($api, $response);
 
-                $new_account_status               = new TwitterAccountStatus();
-                $new_account_status->status       = $new_status;
-                $new_account_status->account      = $account;
-                $new_account_status->status_type  = 'sent';
+                $new_account_status = new TwitterAccountStatus();
+                $new_account_status->status = $new_status;
+                $new_account_status->account = $account;
+                $new_account_status->status_type = 'sent';
                 $new_account_status->action_agent =  App::getCurrentPerson();
 
                 $account_status->retweeted = $new_account_status;
@@ -621,13 +623,13 @@ class Twitter
             }
         } catch (\EpiTwitterException $e) {
             $error = $this->getTwitterError($e);
-        } catch (\EpiOAuthException $e) {
+        }  catch (\EpiOAuthException $e) {
             $error = $this->getTwitterError($e);
         }
 
         return array(
             'success' => !$error,
-            'error'   => $error,
+            'error' => $error
         );
     }
 
@@ -665,14 +667,14 @@ class Twitter
                 }
             } catch (\EpiTwitterException $e) {
                 $error = $this->getTwitterError($e);
-            } catch (\EpiOAuthException $e) {
+            }  catch (\EpiOAuthException $e) {
                 $error = $this->getTwitterError($e);
             }
         }
 
         return array(
             'success' => !$error,
-            'error'   => $error,
+            'error' => $error
         );
     }
 
@@ -686,7 +688,7 @@ class Twitter
             if ($account_status->status->getRecipientId() != $account->getUserId()) {
                 return array(
                     'success' => false,
-                    'error'   => 'Direct messages may not be deleted after they have been sent.',
+                    'error' => 'Direct messages may not be deleted after they have been sent.'
                 );
             }
         } else {
@@ -696,7 +698,7 @@ class Twitter
         }
 
         $error = null;
-        $id    = $account_status->id;
+        $id = $account_status->id;
 
         try {
             if ($account_status->status->recipient) {
@@ -720,19 +722,19 @@ class Twitter
             }
         } catch (\EpiTwitterException $e) {
             $error = $this->getTwitterError($e);
-        } catch (\EpiOAuthException $e) {
+        }  catch (\EpiOAuthException $e) {
             $error = $this->getTwitterError($e);
         }
 
         return array(
             'success' => !$error,
-            'error'   => $error,
+            'error' => $error
         );
     }
 
     public function setFavorite(TwitterAccount $account, TwitterAccountStatus $account_status, $is_favorite)
     {
-        $api   = $account->getTwitterApi();
+        $api = $account->getTwitterApi();
         $error = null;
 
         if (!$account_status->status->isMessage()) {
@@ -747,7 +749,7 @@ class Twitter
                 }
             } catch (\EpiTwitterException $e) {
                 // likely already in the state that we want, so set it to that
-            } catch (\EpiOAuthException $e) {
+            }  catch (\EpiOAuthException $e) {
                 $error = $this->getTwitterError($e);
             }
         }
@@ -765,16 +767,16 @@ class Twitter
 
         return array(
             'success' => !$error,
-            'error'   => $error,
+            'error' => $error
         );
     }
 
     protected function _addLongStatus($text, $public, $to_user = null)
     {
-        $long_status            = new \Application\DeskPRO\Entity\TwitterStatusLong();
-        $long_status->text      = $text;
+        $long_status = new \Application\DeskPRO\Entity\TwitterStatusLong();
+        $long_status->text = $text;
         $long_status->is_public = $public;
-        $long_status->for_user  = $to_user;
+        $long_status->for_user = $to_user;
 
         $em = App::getOrm();
         $em->persist($long_status);
@@ -791,9 +793,9 @@ class Twitter
 
         $new_account_statuses = array();
 
-        foreach ($text_parts as $part) {
+        foreach ($text_parts AS $part) {
             $params = array(
-                'status' => $part,
+                'status' => $part
             );
             if ($reply && !$reply->status->recipient) {
                 // only if not a DM
@@ -806,11 +808,11 @@ class Twitter
             } else {
                 $new_status = $this->processStatus($api, $response);
 
-                $new_account_status               = new TwitterAccountStatus();
-                $new_account_status->status       = $new_status;
-                $new_account_status->account      = $account;
-                $new_account_status->status_type  = 'sent';
-                $new_account_status->in_reply_to  = $reply;
+                $new_account_status = new TwitterAccountStatus();
+                $new_account_status->status = $new_status;
+                $new_account_status->account = $account;
+                $new_account_status->status_type = 'sent';
+                $new_account_status->in_reply_to = $reply;
                 $new_account_status->action_agent = App::getCurrentPerson();
 
                 if ($long_status) {
@@ -839,23 +841,23 @@ class Twitter
 
         $new_account_statuses = array();
 
-        foreach ($text_parts as $part) {
+        foreach ($text_parts AS $part) {
             try {
                 $response = $api->post_direct_messagesNew(array(
                     'user_id' => $user_id,
-                    'text'    => $part,
+                    'text' => $part
                 ));
                 if (!empty($response->error)) {
                     $error = $response->error;
                 } else {
                     $twitter_service = new \Application\DeskPRO\Service\Twitter();
-                    $new_status      = $twitter_service->processDm($api, $response);
+                    $new_status = $twitter_service->processDm($api, $response);
 
-                    $new_account_status               = new TwitterAccountStatus();
-                    $new_account_status->status       = $new_status;
-                    $new_account_status->account      = $account;
-                    $new_account_status->status_type  = 'direct';
-                    $new_account_status->in_reply_to  = $reply;
+                    $new_account_status = new TwitterAccountStatus();
+                    $new_account_status->status = $new_status;
+                    $new_account_status->account = $account;
+                    $new_account_status->status_type = 'direct';
+                    $new_account_status->in_reply_to = $reply;
                     $new_account_status->action_agent = App::getCurrentPerson();
 
                     if ($long_status) {
@@ -885,10 +887,10 @@ class Twitter
     public function insertNewTweetClientMessage(TwitterAccountStatus $account_status)
     {
         App::getDb()->insert('client_messages', array(
-            'channel'      => 'agent.tweet-added',
-            'auth'         => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+            'channel' => 'agent.tweet-added',
+            'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
-            'data'         => serialize($this->_getCmBaseData($account_status)),
+            'data' => serialize($this->_getCmBaseData($account_status))
         ));
     }
 
@@ -897,40 +899,40 @@ class Twitter
         $data = array_merge($this->_getCmBaseData($account_status), $changes);
 
         App::getDb()->insert('client_messages', array(
-            'channel'      => 'agent.tweet-updated',
-            'auth'         => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+            'channel' => 'agent.tweet-updated',
+            'auth' => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
-            'data'         => serialize($data),
+            'data' => serialize($data)
         ));
     }
 
     protected function _getCmBaseData(TwitterAccountStatus $account_status)
     {
         $tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
-            'account_status' => $account_status,
+            'account_status' => $account_status
         ));
 
         if ($account_status->agent) {
-            $assignment = 'agent:'.$account_status->agent->id;
+            $assignment = 'agent:' . $account_status->agent->id;
         } elseif ($account_status->agent_team) {
-            $assignment = 'agent_team:'.$account_status->agent_team->id;
+            $assignment = 'agent_team:' . $account_status->agent_team->id;
         } else {
             $assignment = '';
         }
 
         return array(
             'account_status_id' => $account_status->id,
-            'account_id'        => $account_status->account->id,
-            'status_type'       => $account_status->status_type,
-            'status_id'         => $account_status->status->id,
-            'is_from_self'      => $account_status->account->user->id == $account_status->status->user->id,
-            'is_archived'       => $account_status->is_archived ? 1 : 0,
-            'is_favorited'      => $account_status->is_favorited ? 1 : 0,
-            'assignment'        => $assignment,
-            'agent_id'          => $account_status->agent ? $account_status->agent->id : 0,
-            'agent_team_id'     => $account_status->agent_team ? $account_status->agent_team->id : 0,
-            'tweet_html'        => $tweet_html,
-            'trigger_user_id'   => App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0,
+            'account_id' => $account_status->account->id,
+            'status_type' => $account_status->status_type,
+            'status_id' => $account_status->status->id,
+            'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
+            'is_archived' => $account_status->is_archived ? 1 : 0,
+            'is_favorited' => $account_status->is_favorited ? 1 : 0,
+            'assignment' => $assignment,
+            'agent_id' => $account_status->agent ? $account_status->agent->id : 0,
+            'agent_team_id' => $account_status->agent_team ? $account_status->agent_team->id : 0,
+            'tweet_html' => $tweet_html,
+            'trigger_user_id' => App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0
         );
     }
 
@@ -938,7 +940,7 @@ class Twitter
     {
         $json = @json_decode($e->getMessage());
         if ($json && !empty($json->errors[0]->message)) {
-            return "Twitter error message: ".$json->errors[0]->message;
+            return "Twitter error message: " . $json->errors[0]->message;
         } else {
             return $e->getMessage();
         }

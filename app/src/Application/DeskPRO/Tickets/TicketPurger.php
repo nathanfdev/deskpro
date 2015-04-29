@@ -64,4 +64,12 @@ class TicketPurger
 
         return $count;
     }
+
+    public function purgeAll()
+    {
+        $this->db->executeUpdate('delete from tickets');
+        $this->db->executeUpdate('delete from tickets_deleted');
+        $this->db->executeUpdate('delete from tickets_flagged');
+        $this->db->executeUpdate('delete from tickets_sms');
+    }
 }

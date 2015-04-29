@@ -1055,6 +1055,15 @@ $collection->create('agent_ticket_ajax_save_actions', array(
     'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+$collection->create(
+    'agent_ticket_ajax_get_dataholders',
+    array(
+        'path' => '/tickets/{ticket_id}/dataholders',
+        'controller' => 'AgentBundle:Ticket:getDataHolders',
+        'requirements' => array('ticket_id' => '\\d+'),
+    )
+);
+
 $collection->create('agent_ticket_message_raw', array(
     'path'          => '/tickets/{ticket_id}/message-details/{message_id}/view-raw',
     'controller'    => 'AgentBundle:Ticket:viewRawMessage',

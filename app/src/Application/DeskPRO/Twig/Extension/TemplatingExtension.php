@@ -48,7 +48,9 @@ use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -176,36 +178,37 @@ class TemplatingExtension extends \Twig_Extension
             'safe_link_urls'              => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
             'safe_link_urls_html'         => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
             'link_agent_short_code_html'  => new \Twig_Filter_Method($this, 'linkAgentShortCodeHtml', array('is_safe' => array('html'))),
-            'raw_url_encode'              => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
-            'repeat'                      => new \Twig_Filter_Method($this, 'strRepeat'),
-            'trim'                        => new \Twig_Filter_Method($this, 'strTrim'),
-            'ltrim'                       => new \Twig_Filter_Method($this, 'strLtrim'),
-            'rtrim'                       => new \Twig_Filter_Method($this, 'strRtrim'),
-            'encode_number'               => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
-            'decode_number'               => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
-            'md5_hash'                    => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
-            'date'                        => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
-            'to_jqueryui_dateformat'                                                                          => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
-            'time_length'                                                                                     => new \Twig_Filter_Method($this, 'timeLength'),
-            'momentjs_format'                                                                                 => new \Twig_Filter_Method($this, 'momentJsFormat'),
-            'slugify'                                                                                         => new \Twig_Filter_Method($this, 'slugify'),
-            'emphasize_words'                                                                                 => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
-            'strip_linebreaks'            => new \Twig_Filter_Method($this, 'stripLinebreaks'),
-            'explode'                     => new \Twig_Filter_Method($this, 'explodeString'),
-            'split'                       => new \Twig_Filter_Method($this, 'explodeString'),
-            'join'                        => new \Twig_Filter_Method($this, 'implodeArray'),
-            'implode'                     => new \Twig_Filter_Method($this, 'implodeArray'),
-            'crc32'                       => new \Twig_Filter_Method($this, 'crc32'),
-            'url_domain'                  => new \Twig_Filter_Method($this, 'getUrlDomain'),
-            'truncate'                    => new \Twig_Filter_Method($this, 'strTruncate'),
-            'first'                       => new \Twig_Filter_Method($this, 'getFirst'),
-            'last'                        => new \Twig_Filter_Method($this, 'getLast'),
-            'filesize_display'            => new \Twig_Filter_Method($this, 'filesizeDisplay'),
-            'url_trim_scheme'             => new \Twig_Filter_Method($this, 'urlTrimScheme'),
-            'country_name'                => new \Twig_Filter_Method($this, 'countryName'),
-            'count_lines'                 => new \Twig_Filter_Method($this, 'countLines'),
-            'smart_wrap'                  => new \Twig_Filter_Method($this, 'smartWrap'),
-            'json_encode_inhtml'          => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'raw_url_encode'         => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
+            'repeat'                 => new \Twig_Filter_Method($this, 'strRepeat'),
+            'trim'                   => new \Twig_Filter_Method($this, 'strTrim'),
+            'ltrim'                  => new \Twig_Filter_Method($this, 'strLtrim'),
+            'rtrim'                  => new \Twig_Filter_Method($this, 'strRtrim'),
+            'encode_number'          => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
+            'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
+            'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
+            'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
+            'to_jqueryui_dateformat' => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
+            'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
+            'momentjs_format'        => new \Twig_Filter_Method($this, 'momentJsFormat'),
+            'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
+            'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
+            'strip_linebreaks'       => new \Twig_Filter_Method($this, 'stripLinebreaks'),
+            'explode'                => new \Twig_Filter_Method($this, 'explodeString'),
+            'split'                  => new \Twig_Filter_Method($this, 'explodeString'),
+            'join'                   => new \Twig_Filter_Method($this, 'implodeArray'),
+            'implode'                => new \Twig_Filter_Method($this, 'implodeArray'),
+            'crc32'                  => new \Twig_Filter_Method($this, 'crc32'),
+            'url_domain'             => new \Twig_Filter_Method($this, 'getUrlDomain'),
+            'truncate'               => new \Twig_Filter_Method($this, 'strTruncate'),
+            'first'                  => new \Twig_Filter_Method($this, 'getFirst'),
+            'last'                   => new \Twig_Filter_Method($this, 'getLast'),
+            'filesize_display'       => new \Twig_Filter_Method($this, 'filesizeDisplay'),
+            'url_trim_scheme'        => new \Twig_Filter_Method($this, 'urlTrimScheme'),
+            'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
+            'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
+            'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
+            'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'strip_html'             => new \Twig_Filter_Method($this, 'stripHtml'),
 
             'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
 
@@ -515,6 +518,11 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return $ret;
+    }
+
+    public function stripHtml($str)
+    {
+        return Strings::html2Text($str);
     }
 
     public function stripLinebreaks($str)
@@ -1248,7 +1256,16 @@ class TemplatingExtension extends \Twig_Extension
             $url .= (App::getConfig('static_path') ?: '/web').'/';
         }
 
-        return $url.ltrim($location, '/');
+        /** @var Request $r */
+        $r = $this->container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+
+        // If the current request is https, then all urls sholud be https even if the
+        // helpdesk url isn't explicitly set to use https
+        if ($r && $r->isSecure() && strtolower(substr($url, 0, 7)) === 'http://') {
+            $url = 'https://' . substr($url, 7);
+        }
+
+        return $url . ltrim($location, '/');
     }
 
     public function rawUrlEncode($str)

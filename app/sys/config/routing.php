@@ -34,6 +34,10 @@ $col = $loader->import(DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resource
 $col->addPrefix('/reports');
 $collection->addCollection($col);
 
+$col = $loader->import(DP_ROOT.'/src/Application/EmailBundle/Resources/config/email-routing.php');
+$col->addPrefix('/email');
+$collection->addCollection($col);
+
 if (defined('DPC_IS_CLOUD')) {
     $col = $loader->import(DP_ROOT.'/src/Cloud/LegacyApiBundle/Resources/config/api-routing.php');
     $col->addPrefix('/api');

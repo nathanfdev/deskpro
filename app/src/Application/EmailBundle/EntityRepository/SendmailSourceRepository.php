@@ -33,8 +33,17 @@
 
 namespace Application\EmailBundle\EntityRepository;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
 class SendmailSourceRepository extends AbstractEntityRepository
 {
+	public function getIdsByRefs(array $refs)
+	{
+		return $this->getEntityManager()->getConnection()->executeQuery(
+			sprintf('select id, ref from %s where ref in (?)', $this->getTableName()),
+			array($refs),
+			array(Connection::PARAM_STR_ARRAY)
+		)->fetchAll();
+	}
 }

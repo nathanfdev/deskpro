@@ -67,9 +67,9 @@ class CsvExport extends AbstractJob
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $start_time = microtime(true);
-        $file       = $this->_data['file'];
-        $delimeter  = ';';
-        $enclosure  = '"';
+        $file = $this->_data['file'];
+        $delimeter = ',';
+        $enclosure = '"';
 
         if (!$file) {
             if (!is_dir(dp_get_tmp_dir().'/export')) {
@@ -136,6 +136,12 @@ class CsvExport extends AbstractJob
 
                 $this->fillWithContactData($person, $row);
                 $this->fillCustomFieldsValues($person, $row);
+
+                foreach ($row as &$col) {
+                    if ('' === $col || null === $col) {
+                        $col = " ";
+                    }
+                }
 
                 fputcsv($fp, $row, $delimeter, $enclosure);
 

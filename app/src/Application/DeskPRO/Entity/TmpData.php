@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -101,7 +102,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this->auth           = Strings::random(15, Strings::CHARS_KEY);
+        $this->auth           = DpStrings::random(15, Strings::CHARS_KEY);
         $this['date_created'] = new \DateTime();
         $this['date_expire']  = new \DateTime('+1 week');
     }

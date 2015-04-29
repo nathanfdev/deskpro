@@ -918,6 +918,11 @@ class Translate implements PersonContextInterface
             // getTimestamp will return the underlaying timestamp of the Date,
             // it doesnt apply any timezone offsets. So we'll need to convert it now
             $ts = \Orb\Util\Dates::makeUtcDateTime($date_or_ts);
+
+            if (!$ts) {
+                return 'invalid_date';
+            }
+
             $ts = $ts->getTimestamp();
         } else {
             $tz_offset = '+00:00';

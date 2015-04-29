@@ -316,7 +316,7 @@ class TicketEmail
         $vars['ticket']        = $this->ticket;
         $vars['person']        = $this->to_person;
         $vars['ticketdisplay'] = $ticketdisplay;
-        $vars['messages']      = array_reverse($ticketdisplay->getMessages());
+        $vars['messages']      = $ticketdisplay->getMessages();
         $vars['is_auto']       = $this->is_auto;
 
         // If we have a speciifc 'new message', then we need to trim

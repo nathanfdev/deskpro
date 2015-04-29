@@ -213,9 +213,9 @@ class NewTicketValidator extends AbstractValidator
                         // no validation, its only on resolve
                     } else {
                         if ($this->newticket->exist_ticket) {
-                            $errors = $field->getHandler()->validateFormData($this->newticket->ticket_fields, HandlerAbstract::CONTEXT_AGENT, array('exist_ticket' => $this->newticket->exist_ticket));
+                            $errors = $field->getHandler()->validateFormData($this->newticket->custom_person_fields ?: array(), HandlerAbstract::CONTEXT_AGENT, array('exist_ticket' => $this->newticket->exist_ticket));
                         } else {
-                            $errors = $field->getHandler()->validateFormData($this->newticket->ticket_fields, HandlerAbstract::CONTEXT_AGENT);
+                            $errors = $field->getHandler()->validateFormData($this->newticket->custom_person_fields ?: array(), HandlerAbstract::CONTEXT_AGENT);
                         }
                         foreach ($errors as $code) {
                             $title = $field->getTitle();
@@ -241,6 +241,43 @@ class NewTicketValidator extends AbstractValidator
                     }
                 }
                 break;
+
+            case 'org_field':
+                $field = App::getSystemService('OrgFieldsManager')->getFieldFromId($item->getFieldId());
+                if ($field && $field->is_enabled) {
+                    if ($field->getOption('agent_validation_resolve') && !$this->is_resolved) {
+                        // no validation, its only on resolve
+                    } else {
+                        if ($this->newticket->exist_ticket) {
+                            $errors = $field->getHandler()->validateFormData($this->newticket->custom_org_fields ?: array(), HandlerAbstract::CONTEXT_AGENT, array('exist_ticket' => $this->newticket->exist_ticket));
+                        } else {
+                            $errors = $field->getHandler()->validateFormData($this->newticket->custom_org_fields ?: array(), HandlerAbstract::CONTEXT_AGENT);
+                        }
+                        foreach ($errors as $code) {
+                            $title = $field->getTitle();
+                            $str = "Please correct $title";
+                            $code = str_replace('field_' . $field->getId() . '.', '', $code);
+                            switch ($code) {
+                                case 'required':
+                                    $str = "$title is required";
+                                    break;
+                                case 'min_length':
+                                    $str = "$title is too short";
+                                    break;
+                                case 'max_length':
+                                    $str = "$title is too long";
+                                    break;
+                                case 'regex':
+                                    $str = "$title is invalid";
+                                    break;
+                            }
+
+                            $this->addError('person.' . $code, array('message' => $str));
+                        }
+                    }
+                }
+                break;
+
         }
     }
 }

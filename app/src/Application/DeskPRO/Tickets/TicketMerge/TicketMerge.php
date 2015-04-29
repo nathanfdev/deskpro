@@ -191,7 +191,7 @@ class TicketMerge implements PersonContextInterface
          *  date_agent_waiting
          *  date_user_waiting
          *
-         * total_to_first_reply sholud be max(ticket1, ticket2)
+         * total_to_first_reply should be max(ticket1, ticket2)
          * total_user_waiting should be max(ticket1, ticket2)
          */
 
@@ -206,6 +206,8 @@ class TicketMerge implements PersonContextInterface
         $md('date_created', 'min');
         $md('date_first_agent_reply', 'min');
         $md('date_first_agent_assign', 'min');
+        $md('date_last_agent_reply', 'max');
+        $md('date_last_agent_assign', 'max');
         $md('date_resolved', 'min');
         $md('date_archived', 'min');
 
@@ -215,6 +217,17 @@ class TicketMerge implements PersonContextInterface
 
         $md('total_to_first_reply', 'max');
         $md('total_user_waiting', 'max');
+
+        // merge waiting times
+        $map = array();
+        foreach ($n->waiting_times as $time) {
+            $map[implode('|', array($time['type'], $time['start'], $time['end']))] = $time;
+        }
+        foreach ($o->waiting_times as $time) {
+            $map[implode('|', array($time['type'], $time['start'], $time['end']))] = $time;
+        }
+        $n->waiting_times = array_values($map);
+
 
         // non-merged fields that we want to log
         $lost_log = array(

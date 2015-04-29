@@ -58,10 +58,14 @@ class JobQueue
      * @param           $type
      * @param array     $data
      * @param \DateTime $nextTry
+     *
+     * @return Job
      */
     public function add($type, array $data, \DateTime $nextTry = null)
     {
-        $this->addJob(new Job($type, $data), $nextTry);
+        $job = new Job($type, $data);
+        $this->addJob($job, $nextTry);
+        return $job;
     }
 
     /**

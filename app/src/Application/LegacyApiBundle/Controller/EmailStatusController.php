@@ -37,6 +37,7 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use deskpro_sendgrid\InstallerHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
@@ -190,6 +191,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             'num_pages'      => $info['num_pages'],
             'count'          => $info['count'],
             'sendmail_queue' => $data,
+	        'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME . '.enabled'),
         ));
     }
 
@@ -411,6 +413,12 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         } else {
             $info['sendmail_raw'] = null;
         }
+
+	    if ($this->container->getSetting(InstallerHandler::NAME . '.enabled')) {
+		    foreach ($sendmail->getStatuses() as $status) {
+			    $info['statuses'][] = $status->toArray();
+		    }
+	    }
 
         return $this->createApiResponse($info);
     }

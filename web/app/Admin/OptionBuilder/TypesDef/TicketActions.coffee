@@ -596,6 +596,7 @@ define [
       options.extraOptions = [
         {title: 'No Team', value: 0},
         {title: 'Current Agent\'s Team', value: -1}
+        {title: 'Team of currently assigned agent', value: -2}
       ]
       def = @getStandardSelect(options)
       return def
@@ -1008,14 +1009,21 @@ define [
                 from_name = 'custom'
                 from_name_custom = options.from_name
 
-              return {
+              view_model = {
                 template: options.template || '',
                 do_cc_users: if options.do_cc_users then "all" else "owner",
                 from_name: from_name,
                 from_name_custom: from_name_custom,
                 from_account: (parseInt(options.from_account || 0) || 0)+''
                 headers: options.headers || []
+                simple_mode: false
               }
+
+              if view_model.do_cc_users == "owner" and view_model.from_name == 'helpdesk_name' and view_model.from_account == "0" and !view_model.headers.length
+                view_model.simple_mode = true
+
+              return view_model
+
             getValue: (model = {}, data) ->
 
               options = {

@@ -117,6 +117,13 @@ define [
 
 
 
+    changeUse: (type) ->
+      return if !@perm_form[type]? || true == @perm_form[type].use
+      for perm of @perm_form[type]
+        @perm_form[type][perm] = false
+
+
+
     changeAllPerms: (type, section) ->
       return if !@perm_form? || !@deps_perms?
 
@@ -145,6 +152,14 @@ define [
     updateAllPermsState: ->
       return if !@perm_form?
 
+      # check "use" state first
+      for section, perms of @perm_form
+        for perm of perms
+          if 'use' != perm && perms.use? && (perms[perm] || @ugEffectivePerms[section]?[perm])
+            perms.use = true
+            break
+
+      # and this one is for "toggle all"
       for section, perms of @perm_form
         enabled = true
         for perm of perms
@@ -494,6 +509,7 @@ define [
           # todo
           @service.agents.get(@agentId).then (agent) =>
             @service.agents._removeModel agent
+          @$scope.$parent?.ListCtrl.deletedCount++
           @$state.go('agents.agents')
         )
 
@@ -513,7 +529,7 @@ define [
 
           $scope.doDelete = (options) ->
             $scope.is_loading = true
-            deleteAgent(options).then(-> $modalInstance.dismiss())
+            deleteAgent(options).then -> $modalInstance.dismiss()
         ]
       })
 
@@ -632,6 +648,10 @@ define [
           @email_sysaccount_error = res.data.error_info.emails.join(', ')
         if res?.data?.error_code == 'invalid_phone_number'
           @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info?.primary_phone
+        if res?.data?.errors?.errors
+          res.data.errors.errors.map (error) =>
+            if 'agent.primary_phone.number' == error.prop
+              @invalid_phone_error = error.message
 
         @stopSpinner('saving', true)
         @applyErrorResponseToView(res)

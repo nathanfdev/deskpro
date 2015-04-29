@@ -237,8 +237,9 @@ class TextSnippetsController extends AbstractController
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $lang_id = $lang->getId();
 
-            $title       = $this->in->getString("title.$lang_id");
-            $snippet_val = $this->in->getString("snippet.$lang_id");
+            $title   = $this->in->getString("title.$lang_id");
+            $snippet_val = $this->in->getHtml("snippet.$lang_id");
+            $snippet_val = Strings::prepareWysiwygHtml($snippet_val);
 
             if ($title || $snippet_val) {
                 $rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);

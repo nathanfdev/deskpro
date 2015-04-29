@@ -211,10 +211,39 @@ class SendmailSource implements NotifyPropertyChanged
      */
     protected $exec_count = 0;
 
+	/**
+	 * @var int
+	 */
+	protected $num_targets;
+
+	/**
+	 * @var int
+	 */
+	protected $num_pending;
+
+	/**
+	 * @var int
+	 */
+	protected $num_complete;
+
+	/**
+	 * @var int
+	 */
+	protected $num_error;
+
+	/**
+	 * @var SendmailSourceStatus[]
+	 */
+	protected $statuses;
+
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
+	    $this->num_targets = 0;
+	    $this->num_pending = 0;
+	    $this->num_complete = 0;
+	    $this->num_error = 0;
     }
 
     /**
@@ -617,6 +646,14 @@ class SendmailSource implements NotifyPropertyChanged
         return ($this->options && isset($this->options[$k])) ? $this->options[$k] : $default;
     }
 
+	/**
+	 * @return SendmailSourceStatus[]
+	 */
+	public function getStatuses()
+	{
+		return $this->statuses;
+	}
+
     /**
      * @param string $k
      * @param mixed  $v
@@ -653,6 +690,10 @@ class SendmailSource implements NotifyPropertyChanged
         $data['error_code']     = $this->error_code;
         $data['exec_count']     = $this->exec_count;
         $data['options']        = $this->options;
+	    $data['num_targets']    = $this->num_targets;
+	    $data['num_pending']    = $this->num_pending;
+	    $data['num_error']      = $this->num_error;
+	    $data['num_complete']   = $this->num_complete;
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
@@ -763,6 +804,13 @@ class SendmailSource implements NotifyPropertyChanged
         return $data;
     }
 
+	public function initTargetsCount()
+	{
+		$count = count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails());
+		$this->setModelField('num_targets', $count);
+		$this->setModelField('num_pending', $count);
+	}
+
     ############################################################################
     # Doctrine
     ############################################################################
@@ -773,6 +821,9 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
+
+	    $metadata->addLifecycleCallback('initTargetsCount', 'prePersist');
+
         $metadata->setPrimaryTable(array(
             'name'    => 'sendmail_sources',
             'indexes' => array(
@@ -915,6 +966,26 @@ class SendmailSource implements NotifyPropertyChanged
             'type'       => 'integer',
             'nullable'   => false,
         ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_targets',
+		    'fieldName'  => 'num_targets',
+		    'type'       => 'integer',
+	    ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_pending',
+		    'fieldName'  => 'num_pending',
+		    'type'       => 'integer',
+	    ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_error',
+		    'fieldName'  => 'num_error',
+		    'type'       => 'integer',
+	    ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_complete',
+		    'fieldName'  => 'num_complete',
+		    'type'       => 'integer',
+	    ));
 
         $metadata->mapManyToOne(array(
             'fieldName'    => 'blob',
@@ -951,6 +1022,11 @@ class SendmailSource implements NotifyPropertyChanged
                 'onDelete'             => 'set null',
             )),
         ));
+	    $metadata->mapOneToMany(array(
+		    'fieldName'    => 'statuses',
+		    'targetEntity' => 'Application\EmailBundle\Entity\SendmailSourceStatus',
+		    'mappedBy'     => 'source',
+	    ));
     }
 
     public function __getPropValue__($k)

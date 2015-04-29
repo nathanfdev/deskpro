@@ -39,6 +39,7 @@ use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -202,7 +203,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         $account->is_tested  = false;
         $account->is_enabled = false;
-        $account->test_code  = Strings::random(8);
+        $account->test_code = DpStrings::random(8);
 
         $this->saveSmsAccount($account);
 

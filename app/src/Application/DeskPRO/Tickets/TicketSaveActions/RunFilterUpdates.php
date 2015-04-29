@@ -67,6 +67,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
         if ($context->getEventType() == 'noop') {
+            $context->getLogger()->info("[RunFilterUpdates] None (noop)");
             return;
         }
 
@@ -74,8 +75,12 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         $client_messages = $change_set->getListUpdateClientMessages();
 
         $rows = array();
+        $channels = array();
+        $agents = array();
 
         foreach ($client_messages as $cm) {
+            $channels[$cm->channel] = true;
+            $agents[$cm->for_person ? $cm->for_person->id : 0] = true;
             $rows[] = array(
                 'channel'           => $cm->channel,
                 'auth'              => $cm->auth,
@@ -88,7 +93,10 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         }
 
         if ($rows) {
+            $context->getLogger()->info(sprintf("[RunFilterUpdates] Inserting %d client_messages for %d agents in channels: %s", count($client_messages), count($agents), implode(', ', array_keys($channels))));
             $this->db->batchInsert('client_messages', $rows);
+        } else {
+            $context->getLogger()->info("[RunFilterUpdates] None (empty)");
         }
     }
 }

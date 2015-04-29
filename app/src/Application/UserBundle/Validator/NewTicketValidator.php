@@ -345,6 +345,16 @@ class NewTicketValidator extends AbstractValidator
                     }
                 }
                 break;
+
+            case 'org_field':
+                $field = App::getSystemService('OrgFieldsManager')->getFieldFromId($item->getFieldId());
+                if ($field && $field->is_enabled) {
+                    $errors = $field->getHandler()->validateFormData($this->newticket->custom_org_fields);
+                    foreach ($errors as $code) {
+                        $this->addError('org.' . $code);
+                    }
+                }
+                break;
         }
     }
 }

@@ -198,6 +198,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				Array.each(fields, function(f) {
 					if (f.field_type == 'ticket_field') {
 						var classname = 'ticket-field-' + f.field_id;
+					} else if (f.field_type == 'user_field') {
+						var classname = 'person-field-' + f.field_id;
+					} else if (f.field_type == 'org_field') {
+						var classname = 'org-field-' + f.field_id;
 					} else if (f.field_type == 'custom_field') {
 						var classname = 'custom-field-' + f.field_id;
 					} else {
@@ -959,7 +963,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			context: this,
 			success: function(html) {
 				var $cont = self.getEl('fields_container');
-				$('.ticket-field.custom-field', self.wrapper).remove();
+				$('.ticket-field.custom-field, .ticket-field.custom-person-field, .ticket-field.custom-org-field', self.wrapper).remove();
 				$cont.append(html);
 				self._updateFields(); // trigger update fields
 			}

@@ -37,6 +37,7 @@ use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Operations about Ticket triggers
@@ -100,19 +101,16 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $res['triggers'] = $data;
 
         if ($type == 'all' || $type == 'newticket' || $type == 'update') {
-            $dep_triggers_enabled = false;
-            $acc_triggers_enabled = false;
+            $res['department_triggers_enabled'] = false;
+            $res['emailaccount_triggers_enabled'] = false;
             foreach ($triggers as $t) {
                 if ($t->department && $t->is_enabled) {
-                    $dep_triggers_enabled = true;
+                    $res['department_triggers_enabled'] = true;
                 }
                 if ($t->email_account && $t->is_enabled) {
-                    $acc_triggers_enabled = true;
+                    $res['emailaccount_triggers_enabled'] = true;
                 }
             }
-
-            $res['department_triggers_enabled']   = $dep_triggers_enabled;
-            $res['emailaccount_triggers_enabled'] = $acc_triggers_enabled;
         }
 
         return $this->createApiResponse($res);
@@ -191,6 +189,30 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                 if (!$trigger) {
                     $trigger = new TicketTrigger();
                     $edit    = SpecialTriggerEdit::createWithEmailAccount($acc);
+                    $edit->applyToTrigger($trigger);
+                    $this->em->persist($trigger);
+                    $this->em->flush($trigger);
+                }
+                break;
+
+            case 'satisfaction':
+
+                $satisfactions = array(
+                    0 => 'negative',
+                    1 => 'neutral',
+                    2 => 'positive',
+                );
+
+                if (!isset($satisfactions[$id])) {
+                    throw new NotFoundHttpException;
+                }
+
+                $name = SpecialTriggerEdit::TYPE_SATISFACTION . '_' . $satisfactions[$id];
+                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
+                if (!$trigger) {
+                    $trigger = new TicketTrigger();
+                    $trigger->is_enabled = false;
+                    $edit = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                     $edit->applyToTrigger($trigger);
                     $this->em->persist($trigger);
                     $this->em->flush($trigger);
@@ -372,6 +394,30 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                         $trigger             = new TicketTrigger();
                         $trigger->is_enabled = false;
                         $edit                = SpecialTriggerEdit::createWithDepartment($dep, $event);
+                        $edit->applyToTrigger($trigger);
+                        $this->em->persist($trigger);
+                        $this->em->flush($trigger);
+                    }
+                    break;
+
+                case 'satisfaction':
+
+                    $satisfactions = array(
+                        0 => 'negative',
+                        1 => 'neutral',
+                        2 => 'positive',
+                    );
+
+                    if (!isset($satisfactions[$id])) {
+                        throw new NotFoundHttpException;
+                    }
+
+                    $name = SpecialTriggerEdit::TYPE_SATISFACTION . '_' . $satisfactions[$id];
+                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
+                    if (!$trigger) {
+                        $trigger = new TicketTrigger();
+                        $trigger->is_enabled = false;
+                        $edit = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
                         $this->em->flush($trigger);

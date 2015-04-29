@@ -41,6 +41,8 @@ use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -1437,7 +1439,7 @@ class PersonController extends AbstractController
 
         if ($this->in->getString('newperson.set_password')) {
             $password = 'generate' === $this->in->getString('newperson.set_password_radio') || !$this->in->getString('newperson.new_password')
-                ? Strings::random(8)
+                ? DpStrings::random(8)
                 : $this->in->getString('newperson.new_password');
             $newperson->password = $password;
         }

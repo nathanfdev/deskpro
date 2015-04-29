@@ -37,6 +37,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 /**
@@ -95,7 +96,7 @@ class ApiKey extends DomainObject
      */
     public function regenerateApiKey()
     {
-        $this['code'] = Strings::random(25, Strings::CHARS_KEY);
+        $this['code'] = DpStrings::random(25, Strings::CHARS_KEY);
     }
 
     /**

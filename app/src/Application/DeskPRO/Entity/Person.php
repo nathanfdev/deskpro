@@ -3035,10 +3035,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             'mappedBy'     => 'members',
             'dpApi'        => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
-            'joinTable'    => array(
-                'name'               => 'agent_team_members',
-                'joinColumns'        => array(array( 'name' => 'person_id' )),
-                'inverseJoinColumns'                        => array(array( 'name' => 'team_id' )),
+            'joinTable' => array(
+                'name' => 'agent_team_members',
+                'joinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE',)),
+                'inverseJoinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE',)),
             ),
         ));
 

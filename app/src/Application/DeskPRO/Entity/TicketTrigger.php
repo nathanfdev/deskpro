@@ -324,6 +324,7 @@ class TicketTrigger extends DomainObject
         $data['actions']                  = $this->actions->exportToArray();
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
         $data['has_delete_ticket_action'] = $this->hasDeleteTicketAction();
+        $data['sys_name']      = $this->sys_name;
 
         return $data;
     }

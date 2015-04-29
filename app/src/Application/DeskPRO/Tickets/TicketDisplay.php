@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\People\PersonContextInterface;
+use Orb\Util\Arrays;
 
 class TicketDisplay implements PersonContextInterface
 {
@@ -54,6 +55,13 @@ class TicketDisplay implements PersonContextInterface
 
     /** @var array */
     protected $notes;
+
+    /** @var int */
+    protected $message_count;
+
+    /** @var \Application\DeskPRO\Entity\TicketMessage */
+    protected $first_message;
+
     /** @var array */
     protected $messages;
     /** @var array */
@@ -141,7 +149,7 @@ class TicketDisplay implements PersonContextInterface
         return $this->notes;
     }
 
-    public function getMessages()
+    public function getMessages($limit = 15)
     {
         if ($this->messages !== null) {
             return $this->messages;
@@ -150,16 +158,47 @@ class TicketDisplay implements PersonContextInterface
         if ($this->person_type == 'agent') {
             $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
                 $this->ticket,
-                array('with_notes' => true)
+                array('with_notes' => true, 'limit' => $limit, 'order' => 'DESC')
             );
         } else {
             $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
                 $this->ticket,
-                array('with_notes' => false)
+                array('with_notes' => false, 'limit' => $limit, 'order' => 'DESC')
             );
         }
 
         return $this->messages;
+    }
+
+    public function getMessageCount()
+    {
+        if ($this->message_count !== null) return $this->message_count;
+
+        $this->message_count = (int)App::getDb()->fetchColumn("SELECT COUNT(*) FROM tickets_messages WHERE ticket_id = ?", array($this->ticket->id));
+
+        return $this->message_count;
+    }
+
+    public function getFirstMessage()
+    {
+        if ($this->first_message !== null) return $this->first_message ?: null;
+
+        if ($this->messages && count($this->messages) == $this->message_count) {
+            $this->first_message = Arrays::getLastItem($this->messages);
+        } else {
+            $this->first_message = App::getOrm()->createQuery("
+                SELECT m
+                FROM TicketMessage m
+                WHERE m.ticket = ?0
+                ORDER BY m.id DESC
+            ")->setMaxResults(1)->setParameters(array($this->ticket))->getOneOrNullResult();
+        }
+
+        if (!$this->first_message) {
+            $this->first_message = false;
+        }
+
+        return $this->first_message;
     }
 
     public function getAttachments()

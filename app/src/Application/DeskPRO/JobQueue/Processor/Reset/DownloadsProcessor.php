@@ -25,17 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\Log\Handler;
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-use Application\DeskPRO\Entity\LogRoundRobin;
 
-class RoundRobinHandler extends DBHandler
+class DownloadsProcessor extends Base
 {
-    /**
-     * @inheritdoc
-     */
-    public function isHandling(array $record)
+    const JOB_TYPE = 'reset.downloads';
+
+    protected function doProcess(array $data)
     {
-        return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogRoundRobin;
+        $this->connection->executeUpdate("DELETE FROM downloads");
     }
 }

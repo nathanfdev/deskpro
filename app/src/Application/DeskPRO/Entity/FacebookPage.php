@@ -34,7 +34,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Orb\Util\Strings;
+use Orb\Util\DpStrings;
 
 /**
  * @property int $id
@@ -146,9 +146,9 @@ class FacebookPage extends DomainObject
 
     public function __construct()
     {
-        $this->date_created           = new \DateTime();
-        $this->verify_token           = Strings::random(8);
-        $this->import_wall_posts      = false;
+        $this->date_created = new \DateTime();
+        $this->verify_token = DpStrings::random(8);
+        $this->import_wall_posts = false;
         $this->disable_own_wall_posts = false;
         $this->import_direct_messages = false;
         $this->is_enabled             = false;

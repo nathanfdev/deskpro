@@ -2329,6 +2329,12 @@ $collection->create('api_roundrobins_delete', array(
     'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_roundrobins_logs', array(
+    'path'        => '/round_robin/{id}/logs',
+    'controller'  => 'ApiBundle:RoundRobin:logs',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Start Settings
 ########################################################################################################################
@@ -2396,6 +2402,18 @@ $collection->create('api_server_settings_save', array(
 ########################################################################################################################
 # General Settings
 ########################################################################################################################
+
+$collection->create('api_general_settings_get_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:getLogoBlob',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_general_settings_set_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:setLogoBlob',
+    'methods'     => array('POST'),
+));
 
 $collection->create('api_general_settings', array(
     'path'        => '/general_settings',
@@ -3286,15 +3304,15 @@ $collection->create('api_ticket_triggers_getcustomactions', array(
 $collection->create('api_ticket_triggers_getspecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:get',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'                              => array('GET'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
+    'methods'      => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_updatespecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:save',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'                              => array('POST'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers', array(
@@ -3341,17 +3359,17 @@ $collection->create('api_ticket_triggers_delete', array(
 $collection->create('api_ticket_triggers_enabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/enable',
     'defaults'     => array('is_enabled' => true),
-    'controller'                         => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements'                       => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'                                                    => array('POST'),
+    'controller'   => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_disabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/disable',
     'defaults'     => array('is_enabled' => false),
-    'controller'                         => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements'                       => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'                                                    => array('POST'),
+    'controller'   => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_enabletrigger', array(
@@ -3403,6 +3421,20 @@ $collection->create('api_ticket_escalations_update', array(
     'path'        => '/ticket_escalations/{id}',
     'controller'  => 'LegacyApiBundle:TicketEscalations:save',
     'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_escalations_getspecial', array(
+    'path'         => '/ticket_escalations/{special_type}/{id}',
+    'controller'   => 'ApiBundle:TicketEscalations:get',
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_escalations_updatespecial', array(
+    'path'         => '/ticket_escalations/{special_type}/{id}',
+    'controller'   => 'ApiBundle:TicketEscalations:save',
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_escalations_delete', array(
@@ -4382,6 +4414,18 @@ $collection->create('api_import_csv_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_import_csv_logs', array(
+    'path'        => '/import_csv_logs',
+    'controller'  => 'ApiBundle:CsvUpload:logs',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_import_csv_clean', array(
+    'path'        => '/import_csv_clean',
+    'controller'  => 'ApiBundle:CsvUpload:clean',
+    'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # CRM Export CSV
 ########################################################################################################################
@@ -4912,6 +4956,23 @@ $collection->create('api_apps_jira', array(
     'path'         => '/apps/jira',
     'controller'   => 'LegacyApiBundle:Apps:jiraSettings',
     'methods'      => array('GET'),
+));
+
+
+########################################################################################################################
+# Reset Demo
+########################################################################################################################
+
+$collection->create('api_reset_demo_run', array(
+    'path'        => '/reset-demo',
+    'controller'  => 'ApiBundle:ResetDemo:run',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_reset_demo_status', array(
+    'path'        => '/reset-demo/status',
+    'controller'  => 'ApiBundle:ResetDemo:status',
+    'methods'     => array('GET'),
 ));
 
 return $collection;

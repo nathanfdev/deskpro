@@ -139,11 +139,10 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'members',
             'mapedBy'      => 'teams',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinTable'    => array(
-                'name'                                                      => 'agent_team_members',
-                'joinColumns'                                               => array(array( 'name' => 'team_id' )),
-                'inverseJoinColumns'                                                               => array(array( 'name' => 'person_id' )),
-                'onDelete'                                                                                                => 'cascade',
+            'joinTable' => array(
+                'name' => 'agent_team_members',
+                'joinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE',)),
+                'inverseJoinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE',)),
             ),
             'orderBy' => array( 'name' => 'ASC'),
         ));

@@ -302,7 +302,11 @@ class Person extends AbstractEntityRepository
      */
     public function findOneByEmail($email, $for_write = false)
     {
-        $email = mb_strtolower($email);
+        if (function_exists('mb_strtolower')) {
+            $email = mb_strtolower($email);
+        } else {
+            $email = strtolower($email);
+        }
         if (App::getDb()->isTransactionActive() && $for_write) {
             $person = $this->getEntityManager()->createQuery("
                 SELECT p
@@ -531,7 +535,7 @@ class Person extends AbstractEntityRepository
         $rows = App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM people
-            WHERE is_agent IN (0, 1)
+            WHERE people.is_deleted = 0
         ");
 
         if ($only_users) {

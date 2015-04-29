@@ -127,6 +127,9 @@ class NewTicket
     protected $_blob_inline_ids  = array();
     public $suppress_user_notify = false;
 
+    public $custom_person_fields;
+    public $custom_org_fields;
+
     public function __construct(EntityManager $em, Person $person_context)
     {
         $this->_em             = $em;
@@ -179,8 +182,14 @@ class NewTicket
 
         $field_manager = App::getSystemService('ticket_fields_manager');
         $custom_fields = $field_manager->createFormArrayForObject($ticket);
+        $custom_person_fields = App::$container->getPersonFieldManager()->createFormArrayForObject($ticket->person);
+        $custom_org_fields = $ticket->person->organization
+            ? App::$container->getOrgFieldManager()->createFormArrayForObject($ticket->person->organization)
+            : array();
 
         $this->ticket_fields = $custom_fields;
+        $this->custom_person_fields = $custom_person_fields;
+        $this->custom_org_fields = $custom_org_fields;
     }
 
     /**
@@ -405,6 +414,20 @@ class NewTicket
         $post_custom_fields = $this->ticket_fields;
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $ticket);
+        }
+
+        $manager = App::$container->getPersonFieldManager();
+        $post_custom_person_fields = $this->custom_person_fields;
+        if (!empty($post_custom_person_fields)) {
+            $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
+        }
+
+        if ($ticket->person->organization) {
+            $manager = App::$container->getOrgFieldManager();
+            $post_custom_org_fields = $this->custom_org_fields;
+            if (!empty($post_custom_org_fields)) {
+                $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
+            }
         }
 
         foreach ($add_cc_people as $add_cc_person) {

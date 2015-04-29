@@ -239,6 +239,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'date_status'      => $date,
             'date_created'     => $date,
             'exec_count'       => $exec_count,
+	        'num_targets'       => count($tos) + count($ccs) + count($bccs),
+	        'num_pending'      => count($tos) + count($ccs) + count($bccs),
         );
 
         if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
@@ -484,9 +486,13 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'date_status'       => true,
             'date_sent'         => true,
             'date_next_attempt' => true,
-            'error_code'        => true,
-            'date_created'      => true,
-            'exec_count'        => true,
+            'error_code' => true,
+            'date_created' => true,
+            'exec_count' => true,
+	        'num_targets' => true,
+	        'num_pending' => true,
+	        'num_error' => true,
+	        'num_complete' => true,
         );
 
         static $always_save = array(

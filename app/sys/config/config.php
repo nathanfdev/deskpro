@@ -42,6 +42,12 @@ $container->setParameter('twig.extension.trans.class', 'Application\\DeskPRO\\Tw
 # Services
 ############################################################################
 
+// dp.cache_clearer.cachedir
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\CacheClearer\\CacheDirClearer');
+$definition->addTag('kernel.cache_clearer');
+$container->setDefinition('dp.cache_clearer.cachedir', $definition);
+
 // session.storage
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
@@ -93,6 +99,13 @@ $definition->setArguments(array(
 ));
 $definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
 $container->setDefinition('default_result_cache', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
+$definition->setArguments(array(
+    new Reference('service_container')
+));
+$container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
 // browser_sniffer
 $definition = new Definition();

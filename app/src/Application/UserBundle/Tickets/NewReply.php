@@ -35,6 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Orb\Util\Strings;
 
 class NewReply extends \ArrayObject
 {
@@ -74,9 +75,9 @@ class NewReply extends \ArrayObject
     public function save()
     {
         $ticket_message = new TicketMessage();
-        $ticket_message->setMessageText($this->message);
-        $ticket_message->ticket          = $this->ticket;
-        $ticket_message->person          = $this->person;
+        $ticket_message->setMessageHtml(Strings::linkifyHtml(Strings::text2html($this->message)));
+        $ticket_message->ticket = $this->ticket;
+        $ticket_message->person = $this->person;
         $ticket_message->creation_system = TicketMessage::CREATED_WEB_PERSON_PORTAL;
         $ticket_message->ip_address      = dp_get_user_ip_address();
 

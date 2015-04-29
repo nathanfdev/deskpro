@@ -49,6 +49,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
       @robin.id = model.id
       @robin.title = model.title
+      @robin.online_only = model.online_only
 
       @serviceAgents.get(model.next.id).then((agent) => @robin.next = agent) if model.next?
       # remap agents to list models
@@ -101,7 +102,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
           @Api.sendGet("/agent_groups/#{params[1]}").success( (data) =>
             return if not data || not data.group.members
 
-            for a in data.team.members
+            for a in data.group.members
               agent = findAgent(a.id)
               if agent then @handleAgent(agent)
               @sortAgents()
@@ -130,6 +131,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
           @stopSpinner 'saving'
           @Growl.error res.info
       )
+
+
+
+    showLogs: ->
+      @Api.sendGet("/round_robin/#{@robin.id}/logs").then (res) =>
+        @$modal.open({
+          template: res.data,
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+          ]
+        })
 
 
 

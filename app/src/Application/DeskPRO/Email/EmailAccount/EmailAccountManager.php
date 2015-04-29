@@ -177,7 +177,7 @@ class EmailAccountManager
      */
     public function hasAcccount($id)
     {
-        return $acc = $this->repos->getAccount($id) !== null;
+        return $this->repos->getAccount($id) !== null;
     }
 
     /**

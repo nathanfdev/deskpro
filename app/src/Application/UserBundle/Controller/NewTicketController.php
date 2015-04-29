@@ -174,6 +174,7 @@ class NewTicketController extends AbstractController
         // So dont remove it even though it looks like it's not used! :-)
         $custom_fields_form      = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
         $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
+        $custom_org_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_org_fields', 'form');
 
         /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
         $fm = $this->container->getSystemService('TicketFieldsManager');
@@ -188,17 +189,26 @@ class NewTicketController extends AbstractController
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
 
-        /* @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
-        $ufm = $this->container->getSystemService('PersonFieldsManager');
+        $ufm = $this->container->getPersonFieldManager();
+        $ofm = $this->container->getOrgFieldManager();
         if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
             if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
                 $_REQUEST['newticket_custom_user_fields'] = array();
             }
-            $field_data         = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
-            $field_form_data    = $ufm->createFieldDataFromArray($field_data);
+            if (empty($_REQUEST['newticket_custom_org_fields']) || !is_array($_REQUEST['newticket_custom_org_fields'])) {
+                $_REQUEST['newticket_custom_org_fields'] = array();
+            }
+            $field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+            $field_form_data = $ufm->createFieldDataFromArray($field_data);
+            $org_field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_org_fields'], 'Application\\DeskPRO\\Entity\\CustomDataOrganization');
+            $org_field_form_data = $ufm->createFieldDataFromArray($org_field_data);
             $custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
+            $custom_org_fields = $ofm->getDisplayArray($org_field_form_data, $custom_org_fields_form, true);
         } else {
             $custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
+            $custom_org_fields = $this->person->organization
+                ? $ofm->getDisplayArrayForObject($this->person->organization, $custom_org_fields_form, true)
+                : array();
         }
 
         // specific user custom fields (but can be used for any sort of custom fields)
@@ -222,8 +232,9 @@ class NewTicketController extends AbstractController
 
             $newticket->ticket->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
             $newticket->ticket->attach_ids_authed = true;
-            $newticket->custom_ticket_fields      = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
-            $newticket->custom_user_fields        = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            $newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
+            $newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            $newticket->custom_org_fields   = isset($_POST['newticket_custom_org_fields']) ? $_POST['newticket_custom_org_fields'] : array();
 
             if ($newticket->ticket->department_id) {
                 $layout_page = $layouts->getLayout($newticket->ticket->department_id);
@@ -359,6 +370,7 @@ class NewTicketController extends AbstractController
             'form'                  => $form->createView(),
             'custom_fields'         => $custom_fields,
             'custom_user_fields'    => $custom_user_fields,
+            'custom_org_fields'     => $custom_org_fields,
             'ticket_display_js'     => $ticket_display_js,
 
             'captcha_html'          => $captcha_html,

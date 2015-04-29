@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 /**
@@ -90,7 +91,7 @@ class ApiToken extends DomainObject
 
     public function __construct()
     {
-        $this['token'] = Strings::random(25, Strings::CHARS_KEY);
+        $this['token'] = DpStrings::random(25, Strings::CHARS_KEY);
     }
 
     /**
@@ -98,7 +99,7 @@ class ApiToken extends DomainObject
      */
     public function regenerateToken()
     {
-        $this['token'] = Strings::random(25, Strings::CHARS_KEY);
+        $this['token'] = DpStrings::random(25, Strings::CHARS_KEY);
     }
 
     /**

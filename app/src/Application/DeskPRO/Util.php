@@ -177,7 +177,7 @@ class Util
     public static function getPrintableTimeLength($length, $max_unit = null)
     {
         if ($length < 1) {
-            return '';
+            return '0 seconds';
         }
 
         $max_unit_list = array(

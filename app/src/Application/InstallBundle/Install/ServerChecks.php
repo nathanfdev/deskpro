@@ -768,6 +768,24 @@ class ServerChecks
             }
         }
 
+        #------------------------------
+        # Zlib
+        #------------------------------
+
+        if ($type == 'zlib_ext' || $type == 'all') {
+            $this->getLogger()->log("[CHECK] Checking if the zlib extension is enabled", Logger::DEBUG);
+            if (extension_loaded('zlib')) {
+                $this->getLogger()->log("[OK] zlib installed", Logger::DEBUG);
+            } else {
+                $msg = "The zlib extension is required";
+                $this->getLogger()->log("$msg", Logger::INFO);
+                $this->server_errors['zlib_ext'] = array(
+                    'message' => $msg,
+                    'level' => 'fatal'
+                );
+            }
+        }
+
         if ($this->server_errors) {
             return false;
         }

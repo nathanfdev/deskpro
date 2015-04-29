@@ -87,10 +87,14 @@ class Recaptcha extends CaptchaAbstract
 
         try {
             $r_response = $client->send();
-            $r_body     = $r_response->getBody();
+            $r_body = $r_response->getBody();
+
+            if (!$r_response->isOk()) {
+                $r_body = 'true';//fallback on OK when it fails
+            }
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e, false);
-            $r_body = '';
+            $r_body = 'true';//fallback on OK when it fails
         }
 
         $line = trim(Strings::getFirstLine($r_body));

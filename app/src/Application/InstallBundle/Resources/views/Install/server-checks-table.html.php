@@ -162,6 +162,24 @@
 <tr>
     <td>
         <?php $failed = false ?>
+        <?php if (!isset($errors['zlib_ext']) && !isset($errors['zlib_ext'])): ?>
+            <span class="label success" style="float:right">OK</span>
+        <?php else: $failed = true; $failed_phpini = true; ?>
+            <span class="label important" style="float:right">FAIL</span>
+        <?php endif ?>
+        Check that the <a href="http://php.net/manual/en/book.zlib.php">zlib</a> extension is installed
+        <?php if ($failed): ?>
+            <div class="alert-message block-message error">
+                <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_zlib_ext') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+                DeskPRO requires the zlib extension to be installed and enabled.
+            </div>
+        <?php endif ?>
+    </td>
+</tr>
+
+<tr>
+    <td>
+        <?php $failed = false ?>
         <?php if (!isset($errors['json_ext'])): ?>
         <span class="label success" style="float:right">OK</span>
         <?php else: $failed = true; $failed_phpini = true; ?>

@@ -828,8 +828,12 @@ class LegacyTermsTransformer
             case 'ticket_field':
                 $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
-                $parts = explode('|', $new_opts['value']);
+                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+
+                $parts = is_string($new_opts['value'])
+                    ? explode('|', $new_opts['value'])
+                    : array();
+
                 if ($field = array_shift($parts)) {
                     foreach ($parts as $k => $part) {
                         if ('date_relative' === $field) {
