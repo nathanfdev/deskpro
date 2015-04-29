@@ -38,6 +38,10 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  exception_logger.listener:
+      class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionLoggerListener
+      tags:
+        - { name: kernel.event_subscriber }
 
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
