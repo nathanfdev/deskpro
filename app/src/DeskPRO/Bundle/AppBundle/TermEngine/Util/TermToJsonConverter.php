@@ -36,7 +36,6 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Util;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Orb\Util\Strings;
 
 class TermToJsonConverter
 {
@@ -68,27 +67,6 @@ class TermToJsonConverter
         return $this->arrayToTerm($serialized_array);
     }
 
-    public function getTermTypeCode(TermInterface $term)
-    {
-        // remove namespace and remove "Term" from the end of the class name, lowercase.
-        // DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm convert to: "ticket_status"
-        return strtolower(
-            Strings::camelCaseToUnderscore(
-                substr(join('', array_slice(explode('\\', get_class($term)), -1)), 0, -4)
-            )
-        );
-    }
-
-    public function getTermClassForTypeCode($term_type_code)
-    {
-        // "ticket_status" to classname: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm
-        return 'DeskPRO\\Bundle\\AppBundle\\TermEngine\\Term\\' . ucfirst(
-            Strings::underscoreToCamelCase(
-                $term_type_code
-            )
-        ) . 'Term';
-    }
-
     /**
      * @param TermInterface $term
      * @return array
@@ -98,7 +76,7 @@ class TermToJsonConverter
         if ($term instanceof CompositeTermInterface) {
             $serialized = array_merge(
                 array(
-                    'type' => $this->getTermTypeCode($term),
+                    'type' => TermTypeCodes::getTermTypeCode($term),
                     'terms' => array()
                 ),
                 $term->serialize()
@@ -113,7 +91,7 @@ class TermToJsonConverter
 
         return array_merge(
             array(
-                'type' => $this->getTermTypeCode($term)
+                'type' => TermTypeCodes::getTermTypeCode($term)
             ),
             $term->serialize()
         );
@@ -124,7 +102,7 @@ class TermToJsonConverter
      */
     public function arrayToTerm($serialized_array)
     {
-        $class = $this->getTermClassForTypeCode($serialized_array['type']);
+        $class = TermTypeCodes::getTermClassForTypeCode($serialized_array['type']);
         if (!class_exists($class)) {
             throw new TermTypeDoesNotExistException($serialized_array['type']);
         }
