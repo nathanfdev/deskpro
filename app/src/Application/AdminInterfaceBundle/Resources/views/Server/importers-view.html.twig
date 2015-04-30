@@ -1,0 +1,43 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <section class="dp-paneblock dp-editpane">
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div style="float: left;">
+                            <img ng-src="{{ ng_var('importer.icon') }}" alt="Icon"/>
+                            {{ ng_var('importer.title') }}
+                        </div>
+                        <div style="margin-left: 52px;">
+                            <input type="text" class="form-control camo-input" ng-model="setting_values.dp_app.title"
+                                   style="font-size: 22px; width: 75%; max-width: 350px; height: auto;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <footer ng-hide="has_own_footer">
+            <div class="dp-content">
+                <div class="dp-delete-control">
+                    <button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
+                </div>
+
+                <div class="dp-btn-controls">
+                    <div dp-hide-spinning="saving_settings">
+                        <button class="btn btn-primary"
+                                ng-click="Ctrl.saveSettings();">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div dp-show-spinning="saving_settings">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+    <div dp-register-message="saved_settings">Settings were saved successfully</div>
+
+    {{ ng_tpl('AdminInterfaceBundle:Apps:readme-modal.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:Apps:instance-delete-modal.html.twig') }}
+{% endblock %}

@@ -4924,4 +4924,36 @@ $collection->create('api_apps_jira', array(
 	'methods'      => array('GET'),
 ));
 
+##############################################################################################
+# Importers
+##############################################################################################
+
+$collection->create(
+    'api_server_importers_list',
+    array(
+        'path' => '/server/importers',
+        'controller' => 'ApiBundle:Importers:list',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_get',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:get',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_save',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:save',
+        'methods' => array('POST'),
+    )
+);
+
+
 return $collection;
