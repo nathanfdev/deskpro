@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgentTeamTerm extends AbstractTerm
 {

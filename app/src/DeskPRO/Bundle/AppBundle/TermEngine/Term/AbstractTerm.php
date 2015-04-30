@@ -33,14 +33,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
-
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidTermEngineTerm;
 
 /**
- * @Assert\ValidTermEngineTerm()
+ * @ValidTermEngineTerm()
  */
 abstract class AbstractTerm implements TermInterface
 {

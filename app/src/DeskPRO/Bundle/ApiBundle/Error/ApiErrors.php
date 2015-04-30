@@ -65,6 +65,12 @@ class ApiErrors
     const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
     const BAD_CREDENTIALS = 'bad_credentials';
 
+    /** Validator/Constraint specific error codes */
+    const NOT_NULL = 'required';
+    const NOT_BLANK = 'required';
+    const WRONG_LENGTH = 'wrong_length';
+    const WRONG_TYPE = 'wrong_type';
+
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
 }

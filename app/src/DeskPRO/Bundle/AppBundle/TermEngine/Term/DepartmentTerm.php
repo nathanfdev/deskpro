@@ -33,10 +33,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class DepartmentTerm extends AbstractTerm
 {
