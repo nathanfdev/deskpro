@@ -71,6 +71,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
+            new \Twig_SimpleFunction('date', array($this, 'date')),
 
             new \Twig_SimpleFunction('this_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
             new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
@@ -79,6 +80,17 @@ class PortalSupportExtension extends \Twig_Extension
         return $funcs;
     }
 
+    /**
+     * @return array
+     */
+    public function getFilters()
+    {
+        $filters = array(
+            new \Twig_SimpleFilter('date', array($this, 'date')),
+        );
+
+        return $filters;
+    }
 
     /**
      * Check if the current user can see/use a certain feature.
@@ -162,6 +174,81 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return $x;
+    }
+
+    /**
+     * @param string|\DateTime $date
+     * @param string $format
+     * @param null $timezone
+     * @return string
+     */
+    public function date($date, $format = 'fulltime', $timezone = null)
+    {
+        $brand = $this->continer->get('brand_stack')->getActive();
+        switch ($format) {
+            case 'full':
+                //D, jS M Y
+                $format = $brand->getSetting('core.date_full');
+                break;
+
+            case 'fulltime':
+                //D, jS M Y g:ia
+                $format = $brand->getSetting('core.date_fulltime');
+                break;
+
+            case 'day':
+                //M j Y
+                $format = $brand->getSetting('core.date_day');
+                break;
+
+            case 'day_short':
+                //M j
+                $format = $brand->getSetting('core.date_day_short');
+                break;
+
+            case 'time':
+                //g:i a
+                $format = $brand->getSetting('core.date_time');
+                break;
+        }
+
+        if ($date instanceof \DateTime) {
+            $date = clone $date;
+        } else {
+            if (ctype_digit((string) $date)) {
+                $date = new \DateTime('@'.$date);
+            } else {
+                try {
+                    $date_str = $date;
+                    $date     = new \DateTime($date_str);
+                } catch (\Exception $e) {}
+            }
+        }
+
+        if (!($date instanceof \DateTime)) {
+            $date_str = (string) $date;
+            return "invalid_date($date_str)";
+        }
+
+        if ($timezone === null) {
+            $person = $this->continer->get('security.token_storage')->getToken()->getUser();
+            if ($person) {
+                $timezone = $person->timezone;
+            }
+        }
+        if (is_string($timezone)) {
+            try {
+                $timezone = new \DateTimeZone($timezone);
+            } catch (\Exception $e) {};
+        }
+
+        if (!$timezone) {
+            $timezone = new \DateTimeZone('UTC');
+        }
+
+        $date->setTimezone($timezone);
+
+        return $date->format($format);
     }
 
     /**
