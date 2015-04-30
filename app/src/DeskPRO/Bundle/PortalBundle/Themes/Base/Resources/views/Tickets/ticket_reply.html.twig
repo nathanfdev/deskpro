@@ -1,0 +1,33 @@
+<style>
+    .form-error {
+        color: red;
+        border: 1px solid red;
+    }
+
+    .deskpro-form-widget {
+        margin-bottom: 15px;
+    }
+
+    .deskpro-date-form-widget select {
+        width: 30%;
+    }
+</style>
+
+
+<div class="item reply">
+  <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
+
+  <a href="#" class="button button-reply">Add a Reply</a>
+  <a href="#" class="button button-resolved">Mark as Resolved</a>
+
+  <div class="reply-form">
+    {{ form_errors(form) }}
+    {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+    {{ form_widget(form.ticket_message) }}
+    {{ form_widget(form.attachments) }}
+    {{ form_widget(form.more_attachments) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+  </div>
+
+</div>

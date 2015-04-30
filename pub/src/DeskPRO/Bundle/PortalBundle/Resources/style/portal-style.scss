@@ -5170,8 +5170,8 @@ h1.fancy-header {
 
   .ticket-timeline {
     margin-top: 60px;
-    //
     padding-left: 60px;
+    position: relative;
 
     p {
       a {
@@ -5183,16 +5183,14 @@ h1.fancy-header {
     }
 
     // Vertical line to the left of the timeline
-    &:before {
+    .line {
       position: absolute;
       display: block;
       margin-left: -32px;
-      // Needs js, is taking the height of the screen ( needs to take the height of .ticket-timeline container)
-      min-height: 4500px;
       width: 1px;
-      height: 100%;
       background: $divider-color;
-      content: " ";
+      top: 0;
+      bottom: 0;
     }
   }
 
@@ -5202,7 +5200,7 @@ h1.fancy-header {
 
   .item {
     position: relative;
-    margin-bottom: 40px;
+    margin-top: 40px;
 
     p {
       margin-bottom: 10px;
@@ -5261,6 +5259,9 @@ h1.fancy-header {
     margin-top: 10px;
     padding: 20px;
     font-weight: 300;
+    h3 {
+      margin: 7px 0;
+    }
     p:last-child {
       margin-bottom: 0;
     }
@@ -5342,7 +5343,7 @@ h1.fancy-header {
     margin-bottom: 10px;
     padding: 5px;
     border-radius: 2px;
-    color: #8ca6cd;
+    color: #666;
     text-decoration: none;
     font-weight: 400;
     font-size: 0.9em;
@@ -5392,7 +5393,16 @@ h1.fancy-header {
       opacity: 0.5;
     }
   }// End Atachements
+
+  .reply-form {
+    margin-top: 5px;
+  }
 }// End All types of content posts on the timeline
+
+// User clicks the button to enable the reply form
+.with-dpui .ticket-timeline .reply-form {
+  display: none;
+}
 
 
 // Customer Satisfaction

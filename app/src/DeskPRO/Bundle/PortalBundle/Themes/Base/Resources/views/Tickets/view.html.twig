@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-  <article class="ticket-page">
+  <article class="ticket-page" id="ticket_view_page">
 
     <header>
       <h1>
@@ -94,10 +94,12 @@
       </table>
     </div>
     <hr>
-    {% include 'Theme:Tickets:timeline/timeline.html.twig' %}
+
+    <div class="ticket-timeline">
+      <div class="line"></div>
+      {% include 'Theme:Tickets:timeline/timeline.html.twig' %}
+      {% include 'Theme:Tickets:ticket_reply.html.twig' %}
+    </div>
     <br>
-
-    {% embed 'Theme:Form:ticket_reply.html.twig' %}{% endembed %}
-
   </article>
 {% endblock inner_content %}

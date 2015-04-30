@@ -1,29 +1,28 @@
-<div class="ticket-timeline">
-  {% for line in timeline %}
-    {% if line.type == 'ticket_created' %}
-      <div class="item">
-        <span class="badge"><i class="fa fa-star"></i></span>
-        <h1><strong>Ticket opened</strong> by {{ line.person.display_name_user }}</h1>
-        <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
-      </div>
-    {% elseif line.type == 'ticket_reopened' %}
-      <div class="item">
-        <span class="badge"><i class="fa fa-star"></i></span>
-        <h1><strong>Ticket re-opened</strong> by {{ line.person.display_name }}</h1>
-        <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
-      </div>
-    {% elseif line.type == 'ticket_closed' %}
-      <div class="item">
-        <span class="badge"><i class="fa fa-star"></i></span>
-        <h1><strong>Ticket closed</strong> by {{ line.person.display_name }}</h1>
-        <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
-      </div>
-    {% elseif line.type == 'agent_message' %}
-      {% set msg = line.message %}
-      {% include 'Theme:Tickets:timeline/agent_message.html.twig' %}
-    {% elseif line.type == 'user_message' %}
-      {% set msg = line.message %}
-      {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
-    {% endif %}
-  {% endfor %}
-</div>
+
+{% for line in timeline %}
+  {% if line.type == 'ticket_created' %}
+    <div class="item">
+      <span class="badge"><i class="fa fa-star"></i></span>
+      <h1><strong>Ticket opened</strong> by {{ line.person.display_name_user }}</h1>
+      <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
+    </div>
+  {% elseif line.type == 'ticket_reopened' %}
+    <div class="item">
+      <span class="badge"><i class="fa fa-star"></i></span>
+      <h1><strong>Ticket re-opened</strong> by {{ line.person.display_name }}</h1>
+      <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
+    </div>
+  {% elseif line.type == 'ticket_closed' %}
+    <div class="item">
+      <span class="badge"><i class="fa fa-star"></i></span>
+      <h1><strong>Ticket closed</strong> by {{ line.person.display_name }}</h1>
+      <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
+    </div>
+  {% elseif line.type == 'agent_message' %}
+    {% set msg = line.message %}
+    {% include 'Theme:Tickets:timeline/agent_message.html.twig' %}
+  {% elseif line.type == 'user_message' %}
+    {% set msg = line.message %}
+    {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
+  {% endif %}
+{% endfor %}
