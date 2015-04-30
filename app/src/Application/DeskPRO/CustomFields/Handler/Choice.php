@@ -162,18 +162,12 @@ class Choice extends HandlerAbstract
                 ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
             );
 
-        // Blank value at the top
-        if (!$this->multiple && !$this->expanded) {
-            Arrays::unshiftAssoc($root, 0, array('id' => 0, 'title' => ''));
-            Arrays::unshiftAssoc($choices, 0, "");
-        }
-
         $field_opts = array(
             'choices' => $choices,
             'required' => $required,
             'multiple' => $this->multiple,
             'expanded' => $this->expanded,
-            'empty_value' => $this->expanded || $required ? false : '',
+            'empty_value' => $this->multiple || $this->expanded || $required ? false : '',
             'attr' => array(
                 'data-map' => json_encode($root),
                 'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
