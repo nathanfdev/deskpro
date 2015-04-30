@@ -3,7 +3,7 @@
         <div class="single-comment">
             <div class="comment-info">
                 <span class="avatar">
-                  <span style="background: url({{ person_picture_url(comment.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-tiny"><a class="remove-agent" href="#"></a></span>
+                  <span style="background: url({{ avatar_url(comment.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-tiny"><a class="remove-agent" href="#"></a></span>
                 </span>
                 <span class="author">{{ comment.userName(true) }}</span>
                 <span class="date">{{ comment.date_created|date }}</span>

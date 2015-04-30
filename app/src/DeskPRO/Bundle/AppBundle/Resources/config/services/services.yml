@@ -1,7 +1,11 @@
 services:
-
   blob.storage:
-      class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
-      factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
-      factory_method: create
-      arguments: [@service_container]
+    class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
+    factory_method: create
+    arguments: [@service_container]
+
+  avatar_resolver:
+    class: DeskPRO\Bundle\AppBundle\Content\AvatarResolver
+    #todo #portal second param here needs to be setting for gravatar
+    arguments: [@router.default, true]

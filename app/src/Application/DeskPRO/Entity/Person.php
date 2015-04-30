@@ -2209,6 +2209,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * a path to an image, even if it's the default. If you need to check for the
      * existance of an image, use hasPicture.
      *
+     * @deprecated Use the AvatarResolver instead
      * @return null|string
      */
     public function getPictureUrl($size = 80, $secure = null, $default = false)

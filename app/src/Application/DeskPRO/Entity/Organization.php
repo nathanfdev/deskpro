@@ -410,6 +410,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
      * Gets the URL to a picture for the org. If there is no picture for the org, a default one
      * will be rendered. Use hasPicture if you need to know if a picture exists.
      *
+     * @deprecated Use AvatarResolver
      * @return null|string
      */
     public function getPictureUrl($size = 80, $secure = null)

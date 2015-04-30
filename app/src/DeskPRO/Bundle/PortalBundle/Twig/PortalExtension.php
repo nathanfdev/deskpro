@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PortalExtension extends \Twig_Extension
 {
@@ -50,13 +51,18 @@ class PortalExtension extends \Twig_Extension
     private $settings_resolver;
 
     /**
-     * @param BrandStack       $brand_stack
-     * @param SettingsResolver $settings_resolver
+     * @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver
      */
-    public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver)
+    private $avatar_resolver;
+
+    /**
+     * @param ContainerInterface $continer
+     */
+    public function __construct(ContainerInterface $continer)
     {
-        $this->brand_stack       = $brand_stack;
-        $this->settings_resolver = $settings_resolver;
+        $this->brand_stack       = $continer->get('brand_stack');
+        $this->settings_resolver = $continer->get('settings_resolver');
+        $this->avatar_resolver   = $continer->get('avatar_resolver');
     }
 
     /**
@@ -66,16 +72,25 @@ class PortalExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
-            new \Twig_SimpleFunction('person_picture_url', array($this, 'getPersonPictureUrl')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
         );
     }
 
+    /**
+     * @param string $setting
+     * @param mixed $default
+     * @return mixed
+     */
     public function getBrandSetting($setting, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($setting, $default);
     }
 
+    /**
+     * @param Ticket $ticket
+     * @return string
+     */
     public function getTicketStatusString(Ticket $ticket)
     {
         switch ($ticket->getStatusCode()) {
@@ -95,24 +110,16 @@ class PortalExtension extends \Twig_Extension
     }
 
     /**
-     * Get URL to a persons profile picture.
+     * Get URL to a profile picture/avatar.
      *
-     * Use this twig func instead of calling an entity directly in twig for urls
-     *
-     * @param Person $person
+     * @param mixed  $obj
      * @param int    $size
-     * @param bool   $secure
      *
      * @return string the url
      */
-    public function getPersonPictureUrl(Person $person = null, $size = 80, $secure = false)
+    public function getAvatarUrl($obj = null, $size = 80)
     {
-        if ($person) {
-            return $person->getPictureUrl($size, $secure);
-        } else {
-            //TODO default image
-            return null;
-        }
+        return $this->avatar_resolver->getAvatar($obj);
     }
 
     /**

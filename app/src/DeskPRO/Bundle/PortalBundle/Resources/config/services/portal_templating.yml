@@ -14,7 +14,7 @@ services:
 
   portal_extension.twig:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalExtension
-    arguments: [@brand_stack, @settings_resolver]
+    arguments: [@service_container]
     tags:
       - { name: twig.extension }
 

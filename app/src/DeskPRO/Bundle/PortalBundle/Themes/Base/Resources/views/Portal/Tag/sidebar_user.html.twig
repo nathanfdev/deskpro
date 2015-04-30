@@ -1,7 +1,7 @@
 {% if is_user() %}
     <strong>{{ app.user }}</strong>
     <br>
-    <img src="{{ person_picture_url(app.user) }}" alt="{{ app.user }}"/>
+    <img src="{{ avatar_url(app.user) }}" alt="{{ app.user }}"/>
 
     {#{{ dump(ugs|join(',')) }}#}
     {#{{ dump(ug_key) }}#}
