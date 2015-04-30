@@ -33,91 +33,65 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer;
-use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Length;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotNull;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Valid;
+use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TermEngineTermType extends AbstractType
+class TermEngineTermOptionsType extends AbstractType
 {
     /**
-     * @var TermEngineTermTransformer
+     * @var TermToJsonConverter
      */
-    private $transformer;
+    protected $converter;
 
-    public function __construct(TermEngineTermTransformer $transformer)
+    public function __construct(TermToJsonConverter $converter)
     {
-        $this->transformer = $transformer;
+        $this->converter = $converter;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
+        $resolver->setRequired(
             array(
-                'cascade_validation' => true,
-                'error_mapping' => array(
-                    'op' => 'op',
-                    'options' => 'options',
-                    'terms' => 'terms',
-                ),
-                'error_bubbling' => false
+                'term_type'
             )
         );
     }
 
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function onPreSubmit(FormEvent $event)
     {
-        $builder->addViewTransformer($this->transformer);
+        $data = $event->getData();
+        $form = $event->getForm();
 
-        $listener = function (FormEvent $event) {
-            $form = $event->getForm();
-            $data = $event->getData();
+        $term_type = $form->getConfig()->getOption('term_type');
 
-            $form->add('type', 'text', array('error_bubbling' => false));
-            $form->add('op', 'text', array('error_bubbling' => false));
-            $form->add(
-                'options',
-                'term_engine_term_options',
-                array(
-                    'error_bubbling' => false,
-                    'term_type' => $data['type']
-                )
-            );
+        // refactor this into a service with api $service->getOptionsResolver($term_type)
+        $term_class = $this->converter->getTermClassForTypeCode($term_type);
+        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm $raw_term */
+        $raw_term = new $term_class;
+        $options_resolver = new OptionsResolver();
+        $raw_term->configureOptions($options_resolver);
+        // end refactor point
 
-            if ($data['type'] === 'composite') {
+        $defined = $options_resolver->getDefinedOptions();
+        xdebug_break();
+        foreach ($defined as $option_name) {
+            $form->add($option_name, 'text');
+        }
 
-                if (!$form->has('terms')) {
-                    $form->add(
-                        'terms',
-                        'collection',
-                        array(
-                            'type' => 'term_engine_term',
-                            'error_bubbling' => false,
-                            'cascade_validation' => true,
-                            'allow_add' => true,
-                            'allow_delete' => true,
-                            'constraints' => array(
-                                new Valid()
-                            )
-                        )
-                    );
-                }
-            }
-        };
-
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, $listener);
     }
 
     public function getName()
     {
-        return 'term_engine_term';
+        return 'term_engine_term_options';
     }
 }

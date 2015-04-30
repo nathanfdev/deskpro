@@ -28,6 +28,13 @@ services:
       tags:
           - { name: form.type, alias: term_engine_term }
 
+  form.term_engine.term_options:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermOptionsType
+      arguments:
+        - @term_to_json_converter
+      tags:
+          - { name: form.type, alias: term_engine_term_options }
+
   form.term_engine.term_transformer:
       class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
       arguments:
