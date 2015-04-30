@@ -34,6 +34,9 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 
+use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -41,7 +44,9 @@ class ValidTermEngineTermValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\TermInterface $value */
+        if (!$value instanceof TermInterface) {
+            $this->context->addViolationAt('options', ApiErrors::INVALID_INPUT);
+        }
 
         if (!in_array($op = $value->getOp(), $supported = $value->getSupportedOps())) {
             $this->context->addViolationAt(
@@ -49,6 +54,13 @@ class ValidTermEngineTermValidator extends ConstraintValidator
                 ValidTermEngineTerm::ERROR_OP_NOT_SUPPORTED,
                 array('op' => $op, 'ops' => implode(', ', $supported))
             );
+        }
+
+        $options = $value->getOptions();
+        $options_resolver = $value::getOptionsResolver();
+
+        foreach ($options_resolver->getConstraints() as $option => $constraints) {
+            $this->context->validateValue($options[$option], $constraints, sprintf('options[%s]', $option));
         }
     }
 }
