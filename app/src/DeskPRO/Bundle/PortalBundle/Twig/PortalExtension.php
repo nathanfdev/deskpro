@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
@@ -56,10 +57,16 @@ class PortalExtension extends \Twig_Extension
     private $avatar_resolver;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * @param ContainerInterface $continer
      */
     public function __construct(ContainerInterface $continer)
     {
+        $this->container = $continer;
         $this->brand_stack       = $continer->get('brand_stack');
         $this->settings_resolver = $continer->get('settings_resolver');
         $this->avatar_resolver   = $continer->get('avatar_resolver');
@@ -74,6 +81,7 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
+            new \Twig_SimpleFunction('render_message', array($this, 'getRenderedMessage'), array('is_safe' => array('html'))),
         );
     }
 
@@ -120,6 +128,19 @@ class PortalExtension extends \Twig_Extension
     public function getAvatarUrl($obj = null, $size = 80)
     {
         return $this->avatar_resolver->getAvatar($obj, $size);
+    }
+
+    /**
+     * @param mixed $obj
+     * @return string
+     */
+    public function getRenderedMessage($obj)
+    {
+        if ($obj instanceof TicketMessage) {
+            return $this->container->get('ticket_message.renderer')->render($obj);
+        } else {
+            return '';
+        }
     }
 
     /**

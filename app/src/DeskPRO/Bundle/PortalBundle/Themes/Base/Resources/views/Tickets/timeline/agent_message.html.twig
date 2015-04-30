@@ -4,7 +4,7 @@
   <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
 
   <div class="comment agent-reply">
-    {{ msg.message }}
+    {{ render_message(msg) }}
     {% if msg.attachments|length > 0 %}
       <h3>Attachements:</h3>
       {% for attachment in msg.attachments %}

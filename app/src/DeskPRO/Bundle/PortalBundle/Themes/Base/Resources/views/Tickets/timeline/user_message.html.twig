@@ -1,10 +1,16 @@
-<div class="item">
+<div class="item reply">
   <span class="badge" style="background: url({{ avatar_url(msg.person, 50) }}) no-repeat; background-size: cover"></span>
 
-  <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
+  <h1>
+    {% if msg.person is same as(app.user) %}
+      You <span>wrote:</span>
+    {% else %}
+      {{ msg.person.display_name_user }} <span>wrote:</span>
+    {% endif %}
+  </h1>
 
-  <div class="comment agent-reply">
-    {{ msg.message }}
+  <div class="comment user-reply">
+    {{ render_message(msg) }}
     {% if msg.attachments|length > 0 %}
       <h3>Attachements:</h3>
       {% for attachment in msg.attachments %}
