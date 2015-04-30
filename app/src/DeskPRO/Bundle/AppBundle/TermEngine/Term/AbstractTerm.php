@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
@@ -43,6 +44,11 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
  */
 abstract class AbstractTerm implements TermInterface
 {
+    /**
+     * @var TermOptionsResolver[]
+     */
+    private static $options_resolvers = array();
+
     /**
      * The op MUST be a supported TermInterface::OP_* constant.
      *
@@ -77,19 +83,35 @@ abstract class AbstractTerm implements TermInterface
     }
 
     /**
-     * Using AbstractTerm forces the concretes to use OptionsResolver as the
-     * method of defining and resolving options. Options are the core of all
-     * of the terms, and we use the OptionsResolver component to help define
-     * and resolve our options.
+     * Implements the TermInterface by providing a pseudo-abstract way of creating the options resolver by
+     * offering concretes the convenience of only making a configureOptions() method to initially create their
+     * options resolver.
      *
-     * You must use the OptionsResolver to set up option defaults, allowed
-     * values, whether an option is required/optional, and so on. Please
-     * refer to the symfony documentation on the OptionsResolver component.
+     * Only creates one instance per class, and hands off to configureOptions() to set it up.
      *
-     * @param OptionsResolver $resolver
-     * @return null
+     * @return TermOptionsResolver
      */
-    abstract public function configureOptions(OptionsResolver $resolver);
+    public static function getOptionsResolver()
+    {
+        $cname = get_called_class();
+        if (!array_key_exists($cname, self::$options_resolvers)) {
+            $resolver = new TermOptionsResolver();
+            static::configureOptions($resolver);
+            self::$options_resolvers[$cname] = $resolver;
+        }
+
+        return self::$options_resolvers[$cname];
+    }
+
+    /**
+     * Configure your options here. You MUST override this method, even if you are not configuring any options.
+     *
+     * @param TermOptionsResolver $resolver
+     */
+    public static function configureOptions(TermOptionsResolver $resolver)
+    {
+        throw new \RuntimeException('Term\'s extending AbstractTerm must override the "configureOptions" method');
+    }
 
     /**
      * @inheritdoc
@@ -138,10 +160,7 @@ abstract class AbstractTerm implements TermInterface
      */
     public function getOptions()
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        return $resolver->resolve($this->options);
+        return static::getOptionsResolver()->resolve($this->options);
     }
 
     /**
@@ -150,6 +169,11 @@ abstract class AbstractTerm implements TermInterface
     public function setOption($option, $value)
     {
         $this->options[$option] = $value;
+    }
+
+    public function getOptionConstraints()
+    {
+        return static::getOptionsResolver()->getConstraints();
     }
 
     /**
