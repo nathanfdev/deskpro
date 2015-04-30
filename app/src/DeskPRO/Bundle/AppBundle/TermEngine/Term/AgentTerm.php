@@ -35,6 +35,9 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
+use Symfony\Component\Validator\Constraints\False;
+use Symfony\Component\Validator\Constraints\True;
 
 class AgentTerm extends AbstractTerm
 {
@@ -43,7 +46,7 @@ class AgentTerm extends AbstractTerm
      */
     const ID_ME = 'me';
 
-    public function configureOptions(OptionsResolver $options_resolver)
+    public static function configureOptions(TermOptionsResolver $options_resolver)
     {
         $options_resolver->setDefaults(
             array(
@@ -60,9 +63,17 @@ class AgentTerm extends AbstractTerm
 
         $options_resolver->setAllowedValues(
             array(
-                'is_active' => array(true, false)
+                'is_active' => array(true, false, '1')
             )
         );
+
+//        $options_resolver->setConstraints(
+//            array(
+//                'agent_ids' => array(
+//                    new True()
+//                )
+//            )
+//        );
     }
 
     public function getSupportedOps()

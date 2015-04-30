@@ -36,10 +36,11 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 
 class DepartmentTerm extends AbstractTerm
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(
@@ -47,11 +48,13 @@ class DepartmentTerm extends AbstractTerm
             )
         );
 
-        $resolver->setAllowedTypes(
-            array(
-                'department_ids' => 'array'
-            )
-        );
+//        $resolver->setConstraints(
+//            array(
+//                'department_ids' => array(
+//                    new Assert\False()
+//                )
+//            )
+//        );
     }
 
     public function getSupportedOps()

@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 
 class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 {
@@ -57,9 +58,9 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
         return $this->terms;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        // no options at the moment
+
     }
 
     public function addTerm(TermInterface $term)

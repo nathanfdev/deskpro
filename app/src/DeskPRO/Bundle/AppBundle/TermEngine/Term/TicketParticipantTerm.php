@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 
 class TicketParticipantTerm extends AbstractTerm
 {
@@ -43,7 +44,7 @@ class TicketParticipantTerm extends AbstractTerm
      */
     const ID_ME = 'me';
 
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(

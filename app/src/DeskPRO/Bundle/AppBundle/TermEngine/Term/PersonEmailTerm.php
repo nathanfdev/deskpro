@@ -35,10 +35,11 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 
 class PersonEmailTerm extends AbstractTerm
 {
-    public function configureOptions(OptionsResolver $options_resolver)
+    public static function configureOptions(TermOptionsResolver $options_resolver)
     {
         $options_resolver->setDefaults(
             array(
