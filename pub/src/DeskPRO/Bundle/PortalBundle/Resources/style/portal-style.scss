@@ -2845,6 +2845,11 @@ table {
   &.agent-avatar-blank, &.agent-avatar-add {
     border: 1px solid $grey;
   }
+
+  &.empty {
+    opacity: 0.5;
+    border: 1px dashed #666;
+  }
 }
 
 .remove-agent {
@@ -5101,7 +5106,7 @@ h1.fancy-header {
 
   h1 {
     display: inline-block;
-    font-weight: 100;
+    font-weight: normal
   }
 
   // Ticket Header (Title, status and reference)
@@ -5137,7 +5142,7 @@ h1.fancy-header {
       padding-left: 20px;
       background: $page-background;
       color: $text-color-lighter;
-      font-weight: 100;
+      font-weight: normal;
       font-size: 1.2em;
     }
   }

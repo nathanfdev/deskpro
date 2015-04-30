@@ -55,7 +55,11 @@ class TicketViewService extends AbstractDataService
      */
     private $translate;
 
-    public function __construct(FormFieldManager $form_field_manager, TicketLayoutFactory $ticket_layout_factory, Translate $translate)
+    public function __construct(
+        FormFieldManager $form_field_manager,
+        TicketLayoutFactory $ticket_layout_factory,
+        Translate $translate
+    )
     {
         $this->form_field_manager    = $form_field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;

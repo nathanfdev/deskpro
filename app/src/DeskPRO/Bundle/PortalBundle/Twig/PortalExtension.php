@@ -91,9 +91,9 @@ class PortalExtension extends \Twig_Extension
      * @param Ticket $ticket
      * @return string
      */
-    public function getTicketStatusString(Ticket $ticket)
+    public function getTicketStatusString($ticket)
     {
-        switch ($ticket->getStatusCode()) {
+        switch ($ticket->status_code) {
             case Ticket::STATUS_RESOLVED:
                 return 'Resolved';
             case Ticket::STATUS_AWAITING_AGENT:
@@ -119,7 +119,7 @@ class PortalExtension extends \Twig_Extension
      */
     public function getAvatarUrl($obj = null, $size = 80)
     {
-        return $this->avatar_resolver->getAvatar($obj);
+        return $this->avatar_resolver->getAvatar($obj, $size);
     }
 
     /**

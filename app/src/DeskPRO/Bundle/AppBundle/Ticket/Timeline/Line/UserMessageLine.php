@@ -29,27 +29,46 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 
-class TicketView
+use Application\DeskPRO\Entity\TicketMessage;
+
+class UserMessageLine implements LineInterface
 {
-    public $ticket;
-    public $attribute_list = array();
+    /**
+     * @var TicketMessage
+     */
+    private $message;
 
-    public function __call($name, $args)
+    /**
+     * @param TicketMessage $message
+     */
+    function __construct(TicketMessage $message)
     {
-        return $this->__get($name);
+        $this->message = $message;
     }
 
-    public function __get($name)
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
     {
-        if (isset($this->attribute_list[$name])) {
-            return $this->attribute_list[$name];
-        }
-        if (isset($this->ticket->$name)) {
-            return $this->ticket->$name;
-        }
+        return $this->message;
+    }
 
-        return null;
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return 'user_message';
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTime()
+    {
+        return $this->message->getDateCreated();
     }
 }

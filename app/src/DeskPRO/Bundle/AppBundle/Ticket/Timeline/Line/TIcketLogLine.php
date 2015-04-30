@@ -29,27 +29,54 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 
-class TicketView
+use Application\DeskPRO\Entity\TicketLog;
+
+class TicketLogLine implements LineInterface
 {
-    public $ticket;
-    public $attribute_list = array();
+    /**
+     * @var TicketLog
+     */
+    private $log;
 
-    public function __call($name, $args)
+    /**
+     * @param TicketLog $log
+     */
+    function __construct(TicketLog $log)
     {
-        return $this->__get($name);
+        $this->log = $log;
     }
 
-    public function __get($name)
+    /**
+     * @return TicketLog
+     */
+    public function getLog()
     {
-        if (isset($this->attribute_list[$name])) {
-            return $this->attribute_list[$name];
-        }
-        if (isset($this->ticket->$name)) {
-            return $this->ticket->$name;
-        }
+        return $this->log;
+    }
 
-        return null;
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->log->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->log->action_type;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTime()
+    {
+        return $this->log->date_created;
     }
 }

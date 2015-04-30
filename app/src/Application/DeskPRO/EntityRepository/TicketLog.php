@@ -41,7 +41,7 @@ class TicketLog extends AbstractEntityRepository
      * @param Entity\Ticket $ticket
      * @param array         $options
      *
-     * @return array
+     * @return \Application\DeskPRO\Entity\TicketLog[]
      */
     public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
     {

@@ -115,16 +115,23 @@ class TicketMessage extends AbstractEntityRepository
      *
      * @param  $ticket
      *
-     * @return array
+     * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
     public function getTicketMessages($ticket, array $set_options = array())
     {
         $options = array_merge(array(
             'order'      => 'ASC',
+            'order_dir'  => null,
             'limit'      => null,
             'with_notes' => false,
             'since_id'   => 0,
+            'ids'        => null,
         ), $set_options);
+
+        // Compatibility with other repos format
+        if ($options['order_dir']) {
+            $options['order'] = $options['order_dir'];
+        }
 
         $order = strtoupper($options['order']);
         if (!in_array($order, array('ASC', 'DESC'))) {
@@ -144,6 +151,17 @@ class TicketMessage extends AbstractEntityRepository
         if (isset($options['since_id']) && $options['since_id']) {
             $q->andWhere('m.id > :since_id');
             $params['since_id'] = $options['since_id'];
+        }
+
+        if ($options['ids'] !== null) {
+            if (empty($options['ids'])) {
+                $ids = array(0);
+            } else {
+                $ids = $options['ids'];
+            }
+
+            $q->andWhere('m.id IN (:ids)');
+            $params['ids'] = $ids;
         }
 
         if (!$options['with_notes']) {

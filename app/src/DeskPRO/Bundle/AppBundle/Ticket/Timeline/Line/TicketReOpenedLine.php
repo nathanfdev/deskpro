@@ -29,27 +29,53 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 
-class TicketView
+use Application\DeskPRO\Entity\Person;
+
+class TicketReOpenedLine implements LineInterface
 {
-    public $ticket;
-    public $attribute_list = array();
+    /**
+     * @var Person
+     */
+    private $who;
 
-    public function __call($name, $args)
+    /**
+     * @var \DateTime
+     */
+    private $when;
+
+    /**
+     * @param Person $who
+     * @param \DateTime $when
+     */
+    function __construct(Person $who = null, \DateTime $when)
     {
-        return $this->__get($name);
+        $this->who = $who;
+        $this->when = $when;
     }
 
-    public function __get($name)
+    /**
+     * @return \DateTime
+     */
+    public function getPerson()
     {
-        if (isset($this->attribute_list[$name])) {
-            return $this->attribute_list[$name];
-        }
-        if (isset($this->ticket->$name)) {
-            return $this->ticket->$name;
-        }
+        return $this->who;
+    }
 
-        return null;
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return 'ticket_reopened';
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTime()
+    {
+        return $this->when;
     }
 }

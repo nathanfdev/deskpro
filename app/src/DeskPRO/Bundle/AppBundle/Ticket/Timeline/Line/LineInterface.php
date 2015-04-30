@@ -29,27 +29,17 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 
-class TicketView
+interface LineInterface
 {
-    public $ticket;
-    public $attribute_list = array();
+    /**
+     * @return string
+     */
+    public function getType();
 
-    public function __call($name, $args)
-    {
-        return $this->__get($name);
-    }
-
-    public function __get($name)
-    {
-        if (isset($this->attribute_list[$name])) {
-            return $this->attribute_list[$name];
-        }
-        if (isset($this->ticket->$name)) {
-            return $this->ticket->$name;
-        }
-
-        return null;
-    }
+    /**
+     * @return \DateTime
+     */
+    public function getDateTime();
 }

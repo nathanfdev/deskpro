@@ -1,0 +1,21 @@
+<div class="item">
+  <span class="badge" style="background: url({{ avatar_url(msg.person, 50) }}) no-repeat; background-size: cover"></span>
+
+  <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
+
+  <div class="comment agent-reply">
+    {{ msg.message }}
+    {% if msg.attachments|length > 0 %}
+      <h3>Attachements:</h3>
+      {% for attachment in msg.attachments %}
+        <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
+          {% if attachment.blob.is_image %}
+            <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+          {% endif %}
+          {{ attachment.blob.filename }}
+          <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>
+        </a><br>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>

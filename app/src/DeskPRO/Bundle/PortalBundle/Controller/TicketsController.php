@@ -142,10 +142,13 @@ class TicketsController extends AbstractController
 
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
 
+        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
+
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
-                'ticket_view' => $ticket_view,
+                'ticket'      => $ticket_view,
+                'timeline'    => $timeline,
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
             )
