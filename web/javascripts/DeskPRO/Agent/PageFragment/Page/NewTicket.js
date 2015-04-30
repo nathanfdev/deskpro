@@ -165,29 +165,29 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var depSel = this.getEl('dep');
 
 		var ticketReader = {
-			getDepartmentId: function() {
-				return parseInt(depSel.val()) || 0;
-			},
-			getCategoryId: function() {
-				var catId = self.getEl('cat').val();
-				return parseInt(catId) || 0;
-			},
-			getPriorityId: function() {
-				var catId = self.getEl('pri').val();
-				return parseInt(catId) || 0;
-			},
-			getProductId: function() {
-				var catId = self.getEl('prod').val();
-				return parseInt(catId) || 0;
-			},
-			getOrganizationId: function() {
-				return 0;
-			},
-		};
-    getWorkflowId: function() {
-      var catId = self.getEl('work').val();
-      return parseInt(catId) || 0;
-    }
+      getDepartmentId:   function () {
+        return parseInt(depSel.val()) || 0;
+      },
+      getCategoryId:     function () {
+        var catId = self.getEl('cat').val();
+        return parseInt(catId) || 0;
+      },
+      getPriorityId:     function () {
+        var catId = self.getEl('pri').val();
+        return parseInt(catId) || 0;
+      },
+      getProductId:      function () {
+        var catId = self.getEl('prod').val();
+        return parseInt(catId) || 0;
+      },
+      getOrganizationId: function () {
+        return 0;
+      },
+      getWorkflowId:     function () {
+        var catId = self.getEl('work').val();
+        return parseInt(catId) || 0;
+      }
+    };
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		self._updateFields = function() {
