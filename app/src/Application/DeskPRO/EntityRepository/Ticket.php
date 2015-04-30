@@ -47,6 +47,25 @@ use Orb\Util\Strings;
 
 class Ticket extends AbstractEntityRepository
 {
+    public function saveNewMessage(Entity\Ticket $ticket, Entity\TicketMessage $message)
+    {
+        $ticket->addMessage($message);
+
+        $this->_em->persist($message);
+        $this->_em->flush();
+    }
+
+    public function saveNewTicket(Entity\Ticket $ticket, Entity\TicketMessage $message, Entity\Person $person)
+    {
+        $ticket->addMessage($message);
+        $ticket->setPerson($person);
+
+        $this->_em->persist($ticket);
+        $this->_em->persist($message);
+        $this->_em->persist($person);
+        $this->_em->flush();
+    }
+
     /**
      * The ticket is.
      *
