@@ -33,26 +33,20 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\True;
 
 class TermEngineTermOptionsType extends AbstractType
 {
-    /**
-     * @var TermToJsonConverter
-     */
-    protected $converter;
-
-    public function __construct(TermToJsonConverter $converter)
-    {
-        $this->converter = $converter;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
@@ -69,23 +63,45 @@ class TermEngineTermOptionsType extends AbstractType
 
     public function onPreSubmit(FormEvent $event)
     {
-        $data = $event->getData();
+        $options = $event->getData();
         $form = $event->getForm();
 
+        // what term are we dealing with for this options?
         $term_type = $form->getConfig()->getOption('term_type');
+        $term_class = TermTypeCodes::getTermClassForTypeCode($term_type);
 
-        // refactor this into a service with api $service->getOptionsResolver($term_type)
-        $term_class = $this->converter->getTermClassForTypeCode($term_type);
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm $raw_term */
-        $raw_term = new $term_class;
-        $options_resolver = new OptionsResolver();
-        $raw_term->configureOptions($options_resolver);
-        // end refactor point
-
+        // what options are defined for this term?
+        $options_resolver = call_user_func(array($term_class, 'getOptionsResolver'));
         $defined = $options_resolver->getDefinedOptions();
-        xdebug_break();
+
+        // add a form child for each option here
         foreach ($defined as $option_name) {
-            $form->add($option_name, 'text');
+
+            // we have the option value, and we need to dynamically figure out
+            // what "type" of form to use (text, number, etc)
+            // we can guess based on the type
+            $type = 'text'; // default to a text form type
+            $form_options = array();
+            // NOTE: to enhance our "guessing" algorithm, we could use the $options_resolver above to inspect the
+            //       "allowed types" array on the various options and make a decision based on them.
+            if (array_key_exists($option_name, $options)) {
+                if (is_array($options[$option_name])) {
+                    $type = 'collection';
+                    $form_options = array(
+                        'type' => 'text',
+                        'allow_add' => true,
+                        'allow_delete' => true,
+                        'delete_empty' => true
+                    );
+                } elseif (is_string($options[$option_name])) {
+                    $type = 'text';
+                } elseif (is_numeric($options[$option_name])) {
+                    $type = 'number';
+                }
+            }
+
+            $form_options = array_merge($form_options, array('error_bubbling' => false)); // never bubble errors
+            $form->add($option_name, $type, $form_options);
         }
 
     }
