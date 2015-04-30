@@ -66,6 +66,11 @@ interface TermInterface
     const OP_AND = 'and';
 
     /**
+     * @return mixed
+     */
+    static public function getOptionsResolver();
+
+    /**
      * Set the OP code. Must be a TermInterface::OP_* constant.
      *
      * @param string $op the op code
