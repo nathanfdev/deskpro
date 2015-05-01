@@ -9,6 +9,11 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(TicketView, "#ticket_view_page");
     return new Promise((resolve) => {
       $(document).ready(resolve);
+      if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {
+        window.DP_LOAD_FN.forEach((fn) => {
+          fn();
+        });
+      }
     });
   }
 }

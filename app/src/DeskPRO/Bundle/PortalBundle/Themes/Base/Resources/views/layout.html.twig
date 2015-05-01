@@ -1,45 +1,47 @@
 <html>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
-    <meta charset="utf-8" />
-    <title>DeskPro - Portal</title>
-    <meta name="viewport" content="width=device-width">
-    <link href="{{ asset('pub/src-build/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.css') }}" media="all" rel="stylesheet" />
-    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+  <meta charset="utf-8" />
+  <title>DeskPro - Portal</title>
+  <meta name="viewport" content="width=device-width">
+  <link href="{{ asset('pub/src-build/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.css') }}" media="all" rel="stylesheet" />
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
 <body>
 <script type="text/javascript">
 (function(){
-    document.body.className = document.body.className + ' with-js';
+  document.body.className = document.body.className + ' with-js';
 
-    window.WITH_DPUI = true;
-    document.body.className = document.body.className + ' with-dpui';
+  window.WITH_DPUI = true;
+  document.body.className = document.body.className + ' with-dpui';
+
+  window.DP_LOAD_FN = [];
 })();
 </script>
 {% block doc_begin %}{% endblock %}
 
 <div class="dp-page-body">
-    {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
+  {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
 </div>
 
 {% block doc_end %}{% endblock %}
 {% if is_guest() %}
-    {{ background_sso() }}
+  {{ background_sso() }}
 {% endif %}
 <script type="text/javascript">
 (function(){
-    document.body.className = document.body.className + ' with-pageload-done';
+  document.body.className = document.body.className + ' with-pageload-done';
 
-    window.DP_ASSET_URL      = '{{ asset('') }}';
-    window.DP_BASE_URL       = '{{ path('portal_index')|trim('/') }}/';
+  window.DP_ASSET_URL      = '{{ asset('') }}';
+  window.DP_BASE_URL       = '{{ path('portal_index')|trim('/') }}/';
 
-    if (WITH_DPUI) {
-        var s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = '{{ asset('pub/src-build/DeskPRO/Bundle/PortalBundle/PortalBundle.js') }}';
-        document.getElementsByTagName('head')[0].appendChild(s);
-    }
+  if (WITH_DPUI) {
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src = '{{ asset('pub/src-build/DeskPRO/Bundle/PortalBundle/PortalBundle.js') }}';
+      document.getElementsByTagName('head')[0].appendChild(s);
+  }
 })();
 </script>
 </body>

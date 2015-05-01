@@ -7,7 +7,7 @@
         {% endfor %}
     </ul>
 
-    {% if show_category_link %}
+    {% if category and show_category_link %}
         <div class="list-meta">
             <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
                 {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}

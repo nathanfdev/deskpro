@@ -40,19 +40,29 @@ use Symfony\Component\HttpFoundation\Response;
 class TestController extends AbstractController
 {
     /**
-     * // these are an exmaple of two tags that only apply to this theme (we simply created this method and used them in a tempalate).
-     *
-     * @Tag(name="hello_henry", default_options={"name":"Henry!"})
-     * @Tag(name="hello_world")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "name": "World"
-     *      }
-     * )
+     * @Tag(name="dev_test_portal", always_guest_inline=true)
      */
-    public function testAction(TagRequest $request, array $options)
+    public function testAction(TagRequest $request)
     {
-        return new Response(sprintf('Hello, %s', $options['name']));
+        /** @var \Symfony\Component\HttpFoundation\Request $main_request */
+        $main_request = $request->attributes->get('mainRequest');
+
+        $vars = array(
+            'opts' => array(
+                'show_news'                => $main_request->query->get('show_news', false),
+                'show_kb'                  => $main_request->query->get('show_kb', false),
+                'show_dl'                  => $main_request->query->get('show_dl', false),
+                'show_sidebar'             => $main_request->query->get('show_sidebar', false),
+                'show_sb_user'             => $main_request->query->get('show_sb_user', false),
+                'show_sb_getintouch'       => $main_request->query->get('show_sb_getintouch', false),
+                'show_sb_news'             => $main_request->query->get('show_sb_news', false),
+                'show_sb_kb'               => $main_request->query->get('show_sb_kb', false),
+                'show_sb_kb_cats'          => $main_request->query->get('show_sb_kb_cats', false),
+                'show_sb_downloads'        => $main_request->query->get('show_sb_downloads', false),
+                'show_sb_downloads_cats'   => $main_request->query->get('show_sb_downloads_cats', false),
+                'show_sb_feedback'         => $main_request->query->get('show_sb_feedback', false),
+            )
+        );
+        return $this->renderThemeView('Theme:Portal:Tag/dev_test_portal.html.twig', $vars);
     }
 }

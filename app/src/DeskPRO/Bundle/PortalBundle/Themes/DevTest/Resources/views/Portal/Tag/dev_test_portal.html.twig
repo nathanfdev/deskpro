@@ -1,0 +1,203 @@
+{% extends 'ThemeParent::layout.html.twig' %}
+{% block doc_begin %}
+  <div id="portal_test_toolbar">
+    <form action="?" method="GET">
+      <div class="opt">
+        <label>
+          News
+          <select name="show_news">
+            <option value=""></option>
+            <option value="pretty">pretty</option>
+            <option value="list">list</option>
+            <option value="normal">normal</option>
+          </select>
+        </label>
+      </div>
+      <div class="opt">
+        <label>
+          KB
+          <select name="show_kb">
+            <option value=""></option>
+            <option value="normal">normal</option>
+            <option value="expander">expander</option>
+          </select>
+        </label>
+      </div>
+      <div class="opt">
+        <label>
+          Downloads
+          <select name="show_dl">
+            <option value=""></option>
+            <option value="normal">normal</option>
+          </select>
+        </label>
+      </div>
+      <div class="opt">
+        <label><input type="checkbox" name="show_sidebar" value="1"> Sidebar</label>
+        <div class="as-sidebar-opts">
+          <label><input type="checkbox" name="show_sb_user" value="1"> User</label>
+          <label><input type="checkbox" name="show_sb_getintouch" value="1"> GetInTouch</label>
+          <label><input type="checkbox" name="show_sb_news" value="1"> News</label>
+          <label><input type="checkbox" name="show_sb_kb" value="1"> KB Recent</label>
+          <label><input type="checkbox" name="show_sb_kb_cats" value="1"> KB Cats</label>
+          <label><input type="checkbox" name="show_sb_downloads" value="1"> Downloads</label>
+          <label><input type="checkbox" name="show_sb_downloads_cats" value="1"> Downloads Cats</label>
+          <label><input type="checkbox" name="show_sb_feedback" value="1"> Feedback</label>
+        </div>
+      </div>
+      <button class="submit" type="submit">Apply</button>
+      <div class="clearfix"></div>
+    </form>
+  </div>
+  <script>
+    window.DP_LOAD_FN.push(function() {
+      var opts = {{ opts|json_encode|raw }},
+          el, i,
+          $tb = $('#portal_test_toolbar'),
+          $sb = $tb.find('[name="show_sidebar"]');
+
+      for (i in opts) {
+        el = $tb.find('[name="' + i + '"]');
+        if (el[0]) {
+          if (el.is(':checkbox')) {
+            if (opts[i] == "1") {
+              el.prop('checked', true);
+            }
+          } else {
+            el.val(opts[i]);
+          }
+        }
+      }
+
+      $sb.on('change', function() {
+        if (this.checked) {
+          $('.as-sidebar-opts').show();
+        } else {
+          $('.as-sidebar-opts').hide();
+        }
+      });
+      $sb.trigger('change');
+    });
+  </script>
+{% endblock %}
+{% block body %}
+  <div class="world">
+
+    <section>
+      <div class="column-full">
+        {% show section page_top %}
+      </div>
+    </section>
+
+    <section>
+      <div class="column-full">
+        {% show section page_search_box %}
+      </div>
+    </section>
+
+    <section>
+      {% show section flashes %}
+      <div class="{% if opts.show_sidebar %}column-half-plus{% endif %}">
+        <section>
+          <div class="column-full">
+            {% if opts.show_news %}
+              <section>
+                <article class="news front-page-news">
+                  <div class="large-title clearfix"><h1>News</h1></div>
+                  {% if opts.show_news == 'pretty' %}
+                    {% show section news_posts_pretty with { count: 2 } %}
+                  {% elseif opts.show_news == 'list' %}
+                    {% show section news_posts with { count: 2 } %}
+                  {% elseif opts.show_news == 'normal' %}
+                    {% show section news_posts_list with { count: 2 } %}
+                  {% endif %}
+                </article>
+              </section>
+            {% endif %}
+
+            {% if opts.show_dl %}
+              <section>
+                <article class="news front-page-news">
+                  <div class="large-title clearfix"><h1>Downloads</h1></div>
+                  {% if opts.show_dl == 'normal' %}
+                    {% show section downloads %}
+                  {% endif %}
+                </article>
+              </section>
+            {% endif %}
+
+            {% if opts.show_kb %}
+              <section>
+                <article class="news front-page-news">
+                  <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
+                  {% if opts.show_kb == 'normal' %}
+                    {% show section knowledgebase with { articles_options: { count: 3 }} %}
+                  {% elseif opts.show_kb == 'expander' %}
+                    {% show section knowledgebase_expander %}
+                  {% endif %}
+                </article>
+              </section>
+            {% endif %}
+          </div>
+        </section>
+      </div>
+
+      {% if opts.show_sidebar %}
+        <aside class="sidebar">
+          {% if opts.show_sb_user %}{% show section user_sidebar %}{% endif %}
+          {% if opts.show_sb_getintouch %}{% show section get_in_touch %}{% endif %}
+          {% if opts.show_sb_news %}
+            <div class="column">
+              <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent News</h1></div>
+                {% show section news_posts_list with { count: 5 } %}
+              </article>
+            </div>
+          {% endif %}
+          {% if opts.show_sb_kb %}
+            <div class="column">
+              <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent KB Posts</h1></div>
+                {% show section knowledgebase_articles_list with { count: 5 } %}
+              </article>
+            </div>
+          {% endif %}
+          {% if opts.show_sb_kb_cats %}
+            <div class="column">
+              <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>KB</h1></div>
+                {% show section knowledgebase_list %}
+              </article>
+            </div>
+          {% endif %}
+          {% if opts.show_sb_downloads %}
+            <div class="column">
+              <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
+                {% show section downloads_files_list with { count: 5 } %}
+              </article>
+            </div>
+          {% endif %}
+          {% if opts.show_sb_downloads_cats %}
+            <div class="column">
+              <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Downloads</h1></div>
+                {% show section downloads_list %}
+              </article>
+            </div>
+          {% endif %}
+          {% if opts.show_sb_feedback %}
+            <div class="column">
+              <article class="panel-tiny front-page-downloads">
+                <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
+                {% show section feedback_items_list with { count: 5 } %}
+              </article>
+            </div>
+          {% endif %}
+        </aside>
+      {% endif %}
+    </section>
+
+  </div>
+
+{% endblock body %}

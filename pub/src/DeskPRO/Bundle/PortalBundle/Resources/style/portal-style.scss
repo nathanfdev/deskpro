@@ -92,6 +92,34 @@ $form-padding-horizontal: 1em;
 // Max page width
 $max-width: 1080px;
 
+#portal_test_toolbar {
+  position: relative;
+  background: #282828;
+  padding: 5px;
+  margin: -28px -28px 0 -28px;
+  color: #fff;
+  font-size: 11px;
+
+  .opt {
+    float: left;
+    margin-right: 15px;
+  }
+
+  .clearfix {
+    height: 1px;
+    overflow: hidden;
+    clear: both;
+  }
+
+  button.submit {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+  }
+
+  input { vertical-align: baseline; }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mixins
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

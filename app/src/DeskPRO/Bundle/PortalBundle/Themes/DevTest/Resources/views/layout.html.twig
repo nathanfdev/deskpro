@@ -1,0 +1,38 @@
+{% extends 'ThemeParent::layout.html.twig' %}
+{% block body %}
+
+    <div class="world">
+
+        <section>
+            <div class="column-full">
+              {% show section page_top %}
+            </div>
+        </section>
+
+        <section>
+            <div class="column-full">
+              {% show section page_search_box %}
+            </div>
+        </section>
+
+        <section>
+            {% show section flashes %}
+            <div class="column-half-plus">
+                {% block page_content %}
+                    <section>
+                        <div class="column-full">
+                            {% block inner_content %}
+                            {% endblock inner_content %}
+                        </div>
+                    </section>
+                {% endblock page_content %}
+            </div>
+
+            <aside class="sidebar">
+              {% show section sidebar %}
+            </aside>
+        </section>
+
+    </div>
+
+{% endblock body %}
