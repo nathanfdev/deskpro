@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
+use Application\ImportBundle\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -59,6 +60,14 @@ class PortalSupportExtension extends \Twig_Extension
         $this->brand_stack = $continer->get('brand_stack');
     }
 
+    public function getTokenParsers()
+    {
+        $token_parsers = array(
+            new TokenParser\Show($this)
+        );
+
+        return $token_parsers;
+    }
 
     /**
      * @return array
@@ -232,8 +241,12 @@ class PortalSupportExtension extends \Twig_Extension
 
         if ($timezone === null) {
             $person = $this->continer->get('security.token_storage')->getToken()->getUser();
-            if ($person) {
-                $timezone = $person->timezone;
+            if ($person && $person instanceof Person) {
+                $timezone = $person->getTimezone();
+            } else {
+                try {
+                    $timezone = new \DateTimeZone($brand->getSetting('core.default_timezone'));
+                } catch (\Exception $e) {}
             }
         }
         if (is_string($timezone)) {
