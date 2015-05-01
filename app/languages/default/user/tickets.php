@@ -42,7 +42,7 @@
     'user.tickets.i_still_want_to_email'               => 'I still want to submit my question',
     'user.tickets.join_explain'                        => 'You are about to become a participant on the ticket "{{subject}}" by {{name}}.<br /><br />You will be able to read and interact with the ticket, and you will be sent email notifications when the ticket is updated. Note that the action of adding yourself to the ticket will be logged, and your participation will be public to other ticket participants.',
     'user.tickets.join_ticket'                         => 'Join Ticket',
-    'user.tickets.label_cc_emails'                     => 'CC other people into this ticket',
+    'user.tickets.label_cc_emails'                     => 'CC other people into this ticket - separate multiple addresses with ;',
     'user.tickets.label_cced'                          => 'CCed',
     'user.tickets.label_remove_ccs'                    => 'Remove CCed people',
     'user.tickets.last_reply'                          => 'Last Reply',
