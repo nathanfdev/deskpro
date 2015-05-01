@@ -47,20 +47,6 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
  */
 class TermToJsonConverterSpec extends ObjectBehavior
 {
-    function it_maps_term_codes_for_you()
-    {
-        // just rely on this service to always give you the correct code for your term object
-        $this->getTermTypeCode(new AgentTerm())->shouldBe('agent');
-        $this->getTermTypeCode(new CompositeTerm())->shouldBe('composite');
-        $this->getTermTypeCode(new TicketStatusTerm())->shouldBe('ticket_status');
-
-        // and back again
-        $this->getTermClassForTypeCode('agent')->shouldBe('DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm');
-        $this->getTermClassForTypeCode('composite')->shouldBe('DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm');
-        $this->getTermClassForTypeCode('ticket_status')->shouldBe(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm'
-        );
-    }
 
     function it_converts_a_term_into_json()
     {
