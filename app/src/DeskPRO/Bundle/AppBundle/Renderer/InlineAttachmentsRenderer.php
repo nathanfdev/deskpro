@@ -34,6 +34,17 @@ namespace DeskPRO\Bundle\AppBundle\Renderer;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Inline attachments are like:
+ *
+ *     [attach:type:blob_auth_id:filename]
+ *
+ * That is:
+ *
+ * - type: signature_image, image, url, link
+ * - blob_auth_id: The blobs auth id
+ * - filename: The filename
+ */
 class InlineAttachmentsRenderer
 {
     /**
@@ -85,35 +96,57 @@ class InlineAttachmentsRenderer
      */
     private function replaceTxt($m, $before = '')
     {
-        $download_url = $this->router->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), RouterInterface::ABSOLUTE_URL);
+        $attach_type  = $m[1];
+        $blob_auth_id = $m[2];
+        $filename     = $m[3];
 
-        $extra = 'data-downloadurl="' . $download_url . '" data-blob-authid="' . $m[2] . '"';
+        $download_url = $this->router->generate(
+            'serve_blob',
+            array('blob_auth_id' => $blob_auth_id, 'filename' => $filename),
+            RouterInterface::ABSOLUTE_URL
+        );
 
-        $marker_class_a = 'dp-embed-blob-a-' . $m[2];
-        $marker_class_img = 'dp-embed-blob-img-' . $m[2];
+        $extra = 'data-downloadurl="' . $download_url . '" data-blob-authid="' . $blob_auth_id . '"';
+        $marker_class_a = 'dp-embed-blob-a-' . $blob_auth_id;
+        $marker_class_img = 'dp-embed-blob-img-' . $blob_auth_id;
 
-        if ($m[1] == 'signature_image') {
-            $url = $this->router->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), RouterInterface::ABSOLUTE_URL);
+        switch ($attach_type) {
+            case 'signature_image':
+                $replace = sprintf('<img src="%s" title="%s" />', $download_url, $filename);
+                break;
 
-            $replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
-        } elseif ($m[1] == 'image') {
-            $url = $this->router->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), RouterInterface::ABSOLUTE_URL);
+            case 'image':
+                $thumb_url = $this->router->generate('serve_blob', array('blob_auth_id' => $blob_auth_id, 'filename' => $filename, 's' => 350), RouterInterface::ABSOLUTE_URL);
 
-            $do_link = true;
+                $do_link = true;
 
-            // If we arent balanced, then it means the image is within an <a>, so
-            // we shouldnt link the image ourselves
-            if (substr_count($before, '<a') != substr_count($before, '</a>')) {
-                $do_link = false;
-            }
+                // If we arent balanced, then it means the image is within an <a>, so
+                // we shouldnt link the image ourselves
+                if (substr_count($before, '<a') != substr_count($before, '</a>')) {
+                    $do_link = false;
+                }
 
-            if (!$do_link) {
-                $replace = sprintf('<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s/>', $url, $m[3], $extra);
-            } else {
-                $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" /></a>', $download_url, $extra, $url, $m[3]);
-            }
-        } else {
-            $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>', $download_url, $extra, $m[3]);
+                if (!$do_link) {
+                    $replace = sprintf('<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s/>', $download_url, $filename, $extra);
+                } else {
+                    $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" /></a>', $download_url, $extra, $thumb_url, $filename);
+                }
+                break;
+
+            case 'url':
+                $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>', $download_url, $extra, $filename);
+                break;
+
+            case 'link':
+            default:
+                $url = $this->router->generate(
+                    'serve_blob',
+                    array('blob_auth_id' => $blob_auth_id, 'filename' => $filename),
+                    RouterInterface::ABSOLUTE_URL
+                );
+
+                $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>', $url, $extra, $filename);
+                break;
         }
 
         return $replace;

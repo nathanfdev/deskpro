@@ -46,16 +46,18 @@ class NewsController extends AbstractController
     /**
      * @Tag(name="news", esi=true)
      * @Tag(name="news_list", default_options={"style":"list"}, esi=true)
+     * @Tag(name="news_tabs", default_options={"style":"tabs_list", "from_root": true}, esi=true)
      * @Tag(name="news_dropdown", default_options={"style":"dropdown"}, esi=true)
      * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={
      *          "style": "pretty",
-     *          "category": null
+     *          "category": null,
+     *          "from_root": false
      *      },
      *      allowed_values={
-     *          "style": {"list", "dropdown"}
+     *          "style": {"list", "dropdown", "tabs_list"}
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
@@ -69,7 +71,11 @@ class NewsController extends AbstractController
      */
     public function categoriesAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
-        $category_children = $this->getNewsDataService()->getCategoryChildren($category);
+        if ($options['from_root']) {
+            $category_children = $this->getNewsDataService()->getCategoryChildren(null);
+        } else {
+            $category_children = $this->getNewsDataService()->getCategoryChildren($category);
+        }
 
         return $this->renderThemeView(
             sprintf('Theme:News:Tag/%s.html.twig', $options['style']),
@@ -91,7 +97,7 @@ class NewsController extends AbstractController
      *          "style": "pretty",
      *          "page": 1,
      *          "count": 10,
-     *          "show_category_link": true
+     *          "show_category_link": false
      *      },
      *      allowed_values={
      *          "style": {"pretty", "list"}

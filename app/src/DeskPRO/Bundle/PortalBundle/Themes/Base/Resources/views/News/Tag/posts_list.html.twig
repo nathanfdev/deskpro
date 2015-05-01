@@ -1,19 +1,27 @@
 {% if pager|length %}
-    <ul>
-        {% for post in pager %}
-            <li>
-                <span class="date-tag"><span>{{ post.date_published | date('M') }}</span> {{ post.date_published | date('j') }}</span>
-              <a href="{{ path('portal_news_view', { slug: post.slug }) }}">{{ post.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    {% if show_category_link %}
-        <div class="list-meta">
-            <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">
-              View <span>{{ pager|length }}</span> news posts
-              <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}">
-            </a>
+  {% for item in pager %}
+    <article class="news kb-article kb-article-news">
+      <header>
+        <div class="calendar-decoration">
+          <span class="month">{{ item.date_published | date('M') }}</span>
+          <hr>
+          <span class="day">{{ item.date_published | date('j') }}</span>
         </div>
-    {% endif %}
+        <h1><a href="{{ path('portal_news_view', { slug: item.slug }) }}">{{ item.title }}</a></h1>
+        <div class="article-meta">
+          {% if item.person %}
+            By <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.name }}
+          {% endif %}
+          <i class="fa fa-folder-o"> {{ item.category.getRealTitle() }}</i>
+          <span class="comments"><i class="fa fa-comments"></i> <a href="#">0 comments</a></span>
+        </div>
+      </header>
+
+      <hr>
+
+      <div class="article-content padded">
+        {{ render_news(item, 'exceprt') }}
+      </div><!-- end padded -->
+    </article>
+  {% endfor %}
 {% endif %}

@@ -1,10 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
-
 {% block inner_content %}
-    {% show news_breadcrumbs %}
-    {% show news_list %}
-    <h1>{{ category.realTitle }}</h1>
-    {% show news_category_subscription %}
-    {% show news_posts_pretty with { show_category_link: false } %}
+  {% show news_breadcrumbs %}
+  <div class="browse-page">
+    {% show news_tabs %}
+    {% show news_posts_list %}
     {% show news_pager %}
+  </div>
 {% endblock inner_content %}

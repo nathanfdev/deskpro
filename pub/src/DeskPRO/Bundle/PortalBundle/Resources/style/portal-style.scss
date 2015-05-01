@@ -2001,6 +2001,10 @@ $tab-border: $divider-color;
     float: left;
     border: 1px solid rgba(255, 255, 255, 0);
 
+    .title {
+      color: $text-color-lighter;
+    }
+
     div {
       display: inline-block;
     }
@@ -2044,19 +2048,13 @@ $tab-border: $divider-color;
       text-decoration: none;
     }
 
-    &.tab-active {
+    &.active {
       border: 1px solid $tab-border;
       border-bottom: 1px solid rgba(255, 255, 255, 0);
       background: $page-background;
 
       .title {
         color: $button-color;
-      }
-    }
-
-    &.tab-inactive {
-      .title {
-        color: $text-color-lighter;
       }
     }
 

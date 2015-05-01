@@ -1,0 +1,15 @@
+<nav class="tabs secondary-tabs news-categories-tabs">
+  <ul>
+    <li class="{% if not category %}active{% endif %}">
+      <a href="{{ path('portal_news') }}">News</a>
+    </li>
+
+    {% if category_children|length > 0 %}
+      {% for child in category_children %}
+        <li class="{% if child is same as(category) %}active{% endif %}">
+          <a href="{{ path('portal_news_browse', { slug: child.slug }) }}">{{ child.title }}</a>
+        </li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+</nav>

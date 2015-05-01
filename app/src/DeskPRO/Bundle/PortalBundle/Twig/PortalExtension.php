@@ -31,12 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
+use Application\DeskPRO\Entity;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PortalExtension extends \Twig_Extension
@@ -81,7 +76,8 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
-            new \Twig_SimpleFunction('render_message', array($this, 'getRenderedMessage'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
         );
     }
 
@@ -96,21 +92,21 @@ class PortalExtension extends \Twig_Extension
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Entity\Ticket $ticket
      * @return string
      */
     public function getTicketStatusString($ticket)
     {
         switch ($ticket->status_code) {
-            case Ticket::STATUS_RESOLVED:
+            case Entity\Ticket::STATUS_RESOLVED:
                 return 'Resolved';
-            case Ticket::STATUS_AWAITING_AGENT:
+            case Entity\Ticket::STATUS_AWAITING_AGENT:
                 return 'Awaiting Agent';
-            case Ticket::STATUS_AWAITING_USER:
+            case Entity\Ticket::STATUS_AWAITING_USER:
                 return 'Awaiting You';
-            case Ticket::STATUS_HIDDEN:
+            case Entity\Ticket::STATUS_HIDDEN:
                 return 'Hidden';
-            case Ticket::STATUS_ARCHIVED:
+            case Entity\Ticket::STATUS_ARCHIVED:
                 return 'Archived';
             default:
                 return 'Unknown';
@@ -132,12 +128,19 @@ class PortalExtension extends \Twig_Extension
 
     /**
      * @param mixed $obj
+     * @param mixed $opt
      * @return string
      */
-    public function getRenderedMessage($obj)
+    public function getRenderedObject($obj, $opt = null)
     {
-        if ($obj instanceof TicketMessage) {
+        if ($obj instanceof Entity\TicketMessage) {
             return $this->container->get('ticket_message.renderer')->render($obj);
+        } elseif ($obj instanceof Entity\News) {
+            if ($opt == 'exceprt') {
+                return $this->container->get('news.renderer')->renderExceprt($obj);
+            } else {
+                return $this->container->get('news.renderer')->render($obj);
+            }
         } else {
             return '';
         }
