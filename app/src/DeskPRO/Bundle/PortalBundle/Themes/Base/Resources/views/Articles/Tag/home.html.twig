@@ -10,7 +10,7 @@
                     <hr>
                 </header>
 
-                {{ this_knowledgebase_articles_forcat({ category: category }) }}
+                {% show knowledgebase_articles_forcat with { category: category } %}
             </article>
         </div>
     {% endfor %}

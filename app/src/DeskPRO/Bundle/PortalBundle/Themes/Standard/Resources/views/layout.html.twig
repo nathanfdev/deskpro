@@ -4,18 +4,18 @@
     <div class="world with-searchbox">
         <section>
             <div class="column-full">
-                {{ alerts() }}
-                {{ page_top() }}
+              {% show section alerts %}
+              {% show section page_top %}
             </div>
         </section>
 
         <section class="search-section">
             <div class="column-full">
-                {{ page_search_box() }}
+              {% show section page_search_box %}
             </div>
         </section>
 
-        {{ flashes() }}
+        {% show section flashes %}
 
         {% block page_content %}
           <section>

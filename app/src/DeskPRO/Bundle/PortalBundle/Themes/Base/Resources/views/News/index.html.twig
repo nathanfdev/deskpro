@@ -2,6 +2,6 @@
 
 {% block inner_content %}
     <h1>News</h1>
-    {{ this_news_posts_pretty({ show_category_link: false }) }}
-    {{ this_news_pager() }}
+    {% show news_posts_pretty with { show_category_link: false } %}
+    {% show news_pager %}
 {% endblock inner_content %}

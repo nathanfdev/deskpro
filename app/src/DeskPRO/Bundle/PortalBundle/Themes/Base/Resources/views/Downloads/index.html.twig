@@ -12,6 +12,6 @@
         <a href="{{ path('portal_downloads', { _format: 'rss' }) }}">Subscribe to RSS Feed <i class="fa fa-rss"></i></a>
     </header>
 
-    {{ downloads() }}
+    {% show section downloads %}
     </div>
 {% endblock inner_content %}

@@ -2,5 +2,5 @@
 
 {% block inner_content %}
         <h1 style="padding-bottom: 10px;">Knowledge Base</h1>
-        {{ knowledgebase( { articles_options: { count: 5 }} ) }}
+        {% show section knowledgebase with { articles_options: { count: 5 } } %}
 {% endblock inner_content %}

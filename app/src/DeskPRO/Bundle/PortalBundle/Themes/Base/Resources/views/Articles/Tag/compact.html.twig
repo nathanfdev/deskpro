@@ -9,7 +9,7 @@
                     </a>
                 </h1>
                 <span class="meta">
-                    {{ this_knowledgebase_comma_list({ category: category }) }}
+                    {% show knowledgebase_comma_list with { category: category } %}
                 </span>
             </li>
         {% endfor %}

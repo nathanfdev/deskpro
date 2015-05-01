@@ -1,12 +1,12 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
-    {{ this_knowledgebase_breadcrumbs() }}
+    {% show knowledgebase_breadcrumbs %}
 
-    {{ this_article() }}
+    {% show article %}
 
-    {{ this_article_ratings() }}
+    {% show article_ratings %}
 
-    {{ this_related_content() }}
+    {% show related_content %}
 
-    {{ this_article_comments({new_comment_form: new_comment_form}) }}
+    {% show article_comments with {new_comment_form: new_comment_form} %}
 {% endblock inner_content %}

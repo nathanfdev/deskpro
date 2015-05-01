@@ -1,7 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-<div class="column-full">
+  {% include 'Theme:Tickets:Tag/breadcrumbs.html.twig' %}
+  <div class="column-full">
 
         {% if type == 'own' and person.organization and person.organization_manager %}
             <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">

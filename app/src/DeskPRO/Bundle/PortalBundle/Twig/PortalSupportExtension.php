@@ -82,8 +82,8 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
             new \Twig_SimpleFunction('date', array($this, 'date')),
 
-            new \Twig_SimpleFunction('this_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
-            new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('dp_context_tag_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
+            new \Twig_SimpleFunction('dp_tag_*', array($this, 'processPortalTag'), array('is_safe' => array('html'), 'needs_context' => true)),
         );
 
         return $funcs;
@@ -282,12 +282,13 @@ class PortalSupportExtension extends \Twig_Extension
     }
 
     /**
+     * @param array  $context
      * @param string $tag_name
      * @param array  $arguments
      *
      * @return string
      */
-    public function processPortalTag($tag_name, $arguments = array())
+    public function processPortalTag($context, $tag_name, $arguments = array())
     {
         return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
     }

@@ -1,10 +1,10 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ this_news_breadcrumbs() }}
-    {{ this_news_list() }}
+    {% show news_breadcrumbs %}
+    {% show news_list %}
     <h1>{{ category.realTitle }}</h1>
-    {{ this_news_category_subscription() }}
-    {{ this_news_posts_pretty({ show_category_link: false }) }}
-    {{ this_news_pager() }}
+    {% show news_category_subscription %}
+    {% show news_posts_pretty with { show_category_link: false } %}
+    {% show news_pager %}
 {% endblock inner_content %}

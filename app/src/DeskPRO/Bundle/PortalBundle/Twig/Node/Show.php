@@ -51,46 +51,25 @@ class Show extends \Twig_Node
 
     public function compile(\Twig_Compiler $compiler)
     {
-        if ($this->getAttribute('is_page_tag')) {
-            $compiler
-                ->addDebugInfo($this)
-                ->write(sprintf(
-                    'echo $this->env->getExtension(\'%s\')->%s',
-                    $this->getAttribute('ext_name'),
-                    'processPortalPageTag'
-                ))
-                ->write('(')
-                ->write('$context')
-                ->write(', ')
-                ->repr($this->getAttribute('tag_name'))
-                ->write(', ');
+        $compiler
+            ->addDebugInfo($this)
+            ->write(sprintf(
+                'echo $this->env->getExtension(\'%s\')->%s',
+                $this->getAttribute('ext_name'),
+                $this->getAttribute('is_page_tag') ? 'processPortalPageTag' : 'processPortalTag'
+            ))
+            ->write('(')
+            ->write('$context')
+            ->write(', ')
+            ->repr($this->getAttribute('tag_name'))
+            ->write(', ');
 
-            if ($this->hasNode('variables')) {
-                $compiler->subcompile($this->getNode('variables'));
-            } else {
-                $compiler->write('array()');
-            }
-
-            $compiler->write(')')->raw(";\n");
+        if ($this->hasNode('variables')) {
+            $compiler->subcompile($this->getNode('variables'));
         } else {
-            $compiler
-                ->addDebugInfo($this)
-                ->write(sprintf(
-                    'echo $this->env->getExtension(\'%s\')->%s',
-                    $this->getAttribute('ext_name'),
-                    'processPortalTag'
-                ))
-                ->write('(')
-                    ->repr($this->getAttribute('tag_name'))
-                    ->write(', ');
-
-            if ($this->hasNode('variables')) {
-                $compiler->subcompile($this->getNode('variables'));
-            } else {
-                $compiler->write('array()');
-            }
-
-            $compiler->write(')')->raw(";\n");
+            $compiler->write('array()');
         }
+
+        $compiler->write(')')->raw(";\n");
     }
 }

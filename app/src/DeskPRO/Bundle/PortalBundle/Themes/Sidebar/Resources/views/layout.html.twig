@@ -5,18 +5,18 @@
 
         <section>
             <div class="column-full">
-                {{ page_top() }}
+              {% show section page_top %}
             </div>
         </section>
 
         <section>
             <div class="column-full">
-                {{ page_search_box() }}
+              {% show section page_search_box %}
             </div>
         </section>
 
         <section>
-            {{ flashes() }}
+            {% show section flashes %}
             <div class="column-half-plus">
                 {% block page_content %}
                     <section>
@@ -29,7 +29,7 @@
             </div>
 
             <aside class="sidebar">
-                {{ sidebar() }}
+              {% show section sidebar %}
             </aside>
         </section>
 

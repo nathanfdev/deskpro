@@ -5,24 +5,24 @@
 
         <section>
             <div class="column-full">
-                {{ page_top() }}
+              {% show section page_top %}
             </div>
         </section>
 
         <section>
             <div class="column-full">
-                {{ page_search_box() }}
+              {% show section page_search_box %}
             </div>
         </section>
 
         <section>
             <div class="column-full">
-                {{ page_tabs() }}
+              {% show section page_tabs %}
             </div>
         </section>
 
         <section>
-            {{ flashes() }}
+            {% show section flashes %}
             <div class="column-full">
                 {% block page_content %}
                     <section>
@@ -33,7 +33,7 @@
                     </section>
                 {% endblock page_content %}
             </div>
-        </div>
+        </section>
 
     </div>
 
