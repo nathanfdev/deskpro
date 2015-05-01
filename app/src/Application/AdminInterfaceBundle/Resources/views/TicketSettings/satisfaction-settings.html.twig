@@ -38,7 +38,7 @@
                ng-init="setCtrlParams()"
 								>
 							<label>
-								<input type="checkbox" ng-model="ctrl.esc.is_enabled" ng-change="ctrl.escData.saveEnabledState(ctrl.esc)" />
+                                <input type="checkbox" ng-model="ctrl.esc.is_enabled"/>
 								<h4>
 									Send user an email requesting feedback (<a href="#" ng-click="$event.preventDefault(); $event.stopPropagation(); editSatisfactionTemplate()">edit template</a>) after a ticket has been resolved for  <dp-time-with-unit ng-model="ctrl.form.event_trigger_time"/>
 								</h4>
