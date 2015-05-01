@@ -56,22 +56,9 @@ class PersonEmailTermSpec extends ObjectBehavior
         $this->getOp()->shouldBe(TermInterface::OP_NOT);
     }
 
-    function it_defines_its_options(
-        OptionsResolver $options_resolver
-    )
+    function it_defines_its_options()
     {
-        $options_resolver->setDefaults(
-            array(
-                'email' => ''
-            )
-        )->shouldBeCalled();
-
-        $options_resolver->setAllowedTypes(
-            array(
-                'email' => 'string'
-            )
-        )->shouldBeCalled();
-
-        $this->configureOptions($options_resolver);
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('email')->shouldBe(true);
     }
 }

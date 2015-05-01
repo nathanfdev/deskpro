@@ -61,20 +61,9 @@ class DepartmentTermSpec extends ObjectBehavior
         $this->getOp()->shouldBe(TermInterface::OP_NOT);
     }
 
-    function it_sets_its_defaults(OptionsResolver $resolver)
+    function it_defines_its_options()
     {
-        $resolver->setDefaults(
-            array(
-                'department_ids' => array(),
-            )
-        )->shouldBeCalled();
-
-        $resolver->setAllowedTypes(
-            array(
-                'department_ids' => 'array'
-            )
-        )->shouldBeCalled();
-
-        $this->configureOptions($resolver);
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('department_ids')->shouldBe(true);
     }
 }

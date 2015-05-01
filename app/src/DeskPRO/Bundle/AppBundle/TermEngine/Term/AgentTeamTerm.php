@@ -45,7 +45,17 @@ class AgentTeamTerm extends AbstractTerm
 
     public static function configureOptions(TermOptionsResolver $resolver)
     {
+        $resolver->setDefaults(
+            array(
+                'agent_team_ids' => array()
+            )
+        );
 
+        $resolver->setAllowedTypes(
+            array(
+                'agent_team_ids' => 'array'
+            )
+        );
     }
 
     public function getSupportedOps()

@@ -56,16 +56,9 @@ class TicketStatusTermSpec extends ObjectBehavior
         $this->getOp()->shouldBe(TermInterface::OP_NOT);
     }
 
-    function it_defines_its_options(
-        OptionsResolver $resolver
-    )
+    function it_defines_its_options()
     {
-        $resolver->setRequired('status')->shouldBeCalled();
-
-        $resolver->setAllowedTypes(array('status' => 'array'))->shouldBeCalled();
-
-        $resolver->setNormalizer('status', Argument::type('callable'))->shouldBeCalled();
-
-        $this->configureOptions($resolver);
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('status')->shouldBe(true);
     }
 }

@@ -61,22 +61,9 @@ class TicketParticipantTermSpec extends ObjectBehavior
         $this->getOp()->shouldBe(TermInterface::OP_NOT);
     }
 
-    function it_defines_its_options(
-        OptionsResolver $options_resolver
-    )
+    function it_defines_its_options()
     {
-        $options_resolver->setDefaults(
-            array(
-                'person_ids' => array()
-            )
-        )->shouldBeCalled();
-
-        $options_resolver->setAllowedTypes(
-            array(
-                'person_ids' => 'array'
-            )
-        )->shouldBeCalled();
-
-        $this->configureOptions($options_resolver);
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('person_ids')->shouldBe(true);
     }
 }

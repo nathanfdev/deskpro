@@ -47,8 +47,7 @@ class AgentTerm extends AbstractTerm
     {
         $options_resolver->setDefaults(
             array(
-                'agent_ids' => array(),
-                'is_active' => true
+                'agent_ids' => array()
             )
         );
 
@@ -57,20 +56,6 @@ class AgentTerm extends AbstractTerm
                 'agent_ids' => 'array'
             )
         );
-
-        $options_resolver->setAllowedValues(
-            array(
-                'is_active' => array(true, false, '1')
-            )
-        );
-
-//        $options_resolver->setConstraints(
-//            array(
-//                'agent_ids' => array(
-//                    new True()
-//                )
-//            )
-//        );
     }
 
     public function getSupportedOps()

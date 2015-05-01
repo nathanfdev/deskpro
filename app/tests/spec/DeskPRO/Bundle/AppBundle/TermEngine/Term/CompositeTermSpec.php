@@ -70,11 +70,10 @@ class CompositeTermSpec extends ObjectBehavior
         $this->getOp()->shouldReturn(TermInterface::OP_AND);
     }
 
-    function it_sets_up_its_own_settings_resolver(OptionsResolver $options_resolver)
+    function it_has_no_options()
     {
-        // does not actually take options at the moment. the "op" is the main property here.
-
-        $this->configureOptions($options_resolver);
+        $resolver = $this->getOptionsResolver();
+        $resolver->getDefinedOptions()->shouldBe(array());
     }
 
     function it_lets_you_add_a_term(
