@@ -115,17 +115,38 @@ class EmailSource extends AbstractEntityRepository
         }
 
         /**
-         * if we have at least one rejection within lock time, no matter before or after normal messages
-         * then obviously this email is rate limited
+         * ----AR---|---R-R-------------RAAR|NOW
+         *      |-----------------------|  |----
+         *               lock time
+         *
+         * - find last accepted (A) within lock time
+         * - find first rejected (R) after (A)
+         *
          */
-        $active_reject_id = $db->fetchColumn("
+        $last_accepted_id = $db->fetchColumn(
+            '
             SELECT id
             FROM email_sources
-            WHERE date_created >= ? AND from_email = ? AND status = 'rejected' AND error_code = 'rate_limit'
+            WHERE date_created >= ? AND from_email = ? AND !(status = "rejected" AND error_code = "rate_limit")
+            ORDER BY id DESC
             LIMIT 1
-        ", array(date('Y-m-d H:i:s', time()-$lock_time), $email));
+        ',
+            array(date('Y-m-d H:i:s', time() - $lock_time), $email)
+        );
 
-        return (bool)$active_reject_id;
+        if (!$last_accepted_id) {
+            return false;
+        }
+
+        return (bool)$db->fetchColumn(
+            '
+            SELECT id
+            FROM email_sources
+            WHERE id > ? AND from_email = ? AND status = "rejected" AND error_code = "rate_limit"
+            LIMIT 1
+        ',
+            array($last_accepted_id, $email)
+        );
     }
 
     /**
