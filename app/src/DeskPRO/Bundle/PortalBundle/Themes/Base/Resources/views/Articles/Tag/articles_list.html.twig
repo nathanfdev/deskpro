@@ -1,20 +1,27 @@
 {% if pager|length > 0 %}
-    <ul>
-        {% for article in pager %}
-            <li>
-                <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">{{ article.realTitle }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+  <ul class="categories-article-list">
+    {% for article in pager %}
+      <li>
+        <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
+          <h1>{{ article.realTitle }}</h1>
 
-    {% if show_category_link %}
-        <div class="list-meta">
-            <a href="{{ category ? path('portal_kb_browse', { slug: category.slug }) : path('portal_kb') }}">
-                {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}
-                <i class="fa fa-caret-right"></i>
-            </a>
-        </div>
-    {% endif %}
+          <div class="article-meta">
+            <span class="updated"><i class="fa fa-calendar-o"></i> {{ article.date_created|date('day') }}</span>
+            <span class="comments"><i class="fa fa-comments"></i> 0 comments</span>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if category and show_category_link %}
+    <div class="list-meta">
+        <a href="{{ category ? path('portal_kb_browse', { slug: category.slug }) : path('portal_kb') }}">
+            {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}
+            <i class="fa fa-caret-right"></i>
+        </a>
+    </div>
+  {% endif %}
 {% else %}
-    <strong>No articles yet</strong>
+  <strong>No articles yet</strong>
 {% endif %}

@@ -1,10 +1,15 @@
 {% extends 'Theme::layout.html.twig' %}
-
 {% block inner_content %}
-    {% show knowledgebase_category_subscription %}
-    <h1>{{ category.title }}</h1>
-    {% show knowledgebase_category_subscription %}
+  {% show knowledgebase_breadcrumbs %}
+
+  <div class="browse-page">
+    <header class="section-header padded">
+      <h1>{{ category.title }}</h1>
+    </header>
+
     {% show knowledgebase %}
-    {% show knowledgebase_articles_simple with { show_category_link: false } %}
+    {% show knowledgebase_articles_list %}
     {% show knowledgebase_pager %}
+    {% show knowledgebase_category_subscription %}
+  </div>
 {% endblock inner_content %}

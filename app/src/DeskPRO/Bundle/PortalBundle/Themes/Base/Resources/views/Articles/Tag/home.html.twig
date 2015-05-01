@@ -1,4 +1,5 @@
 {% if category_children|length > 0 %}
+  <div class="kb-home">
     {% for category in category_children %}
         <div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
             <article class="article-categories">
@@ -14,4 +15,5 @@
             </article>
         </div>
     {% endfor %}
+  </div>
 {% endif %}

@@ -1,16 +1,12 @@
 {% if brand_setting('user.kb_subscriptions') %}
-    <hr/>
-    <hr/>
-    {% if is_subscribed %}
-        {{ phrase('portal.general.category-subscribed') }}
-    {% endif %}
+  <div class="header-buttons">
     <a href="{{ path('portal_kb_article_category_toggle_subscription', { slug: category.slug }) }}">
-        {% if is_subscribed %}
-            {{ phrase('portal.general.unsubscribe-to-category') }}
-        {% else %}
-            {{ phrase('portal.general.subscribe-to-category') }}
-        {% endif %}
+      {% if is_subscribed %}
+        {{ phrase('portal.general.category-subscribed') }} |
+        {{ phrase('portal.general.unsubscribe-to-category') }}
+      {% else %}
+        {{ phrase('portal.general.subscribe-to-category') }}
+      {% endif %}
     </a>
-    <hr/>
-    <hr/>
+  </div>
 {% endif %}
