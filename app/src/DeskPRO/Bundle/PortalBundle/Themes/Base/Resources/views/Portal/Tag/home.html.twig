@@ -2,7 +2,7 @@
 <section>
   <article class="news front-page-news">
     <div class="large-title clearfix"><h1>News</h1></div>
-    {% show news_posts_pretty with { count: 2 } %}
+    {% show section news_posts_pretty with { count: 2 } %}
   </article>
 </section>
 {% endif %}
@@ -11,7 +11,7 @@
     <section>
       <article class="news front-page-kb">
         <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
-        {% show knowledgebase with { articles_options: { count: 3 }} %}
+        {% show section knowledgebase with { articles_options: { count: 3 }} %}
       </article>
     </section>
 {% endif %}
@@ -22,7 +22,7 @@
         <div class="column">
             <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent News</h1></div>
-                {% show news_posts_list with { count: 5 } %}
+                {% show section news_posts_list with { count: 5 } %}
             </article>
         </div>
       {% endif %}
@@ -31,7 +31,7 @@
         <div class="column">
             <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-                {% show feedback_items_list with { count: 5 } %}
+                {% show section feedback_items_list with { count: 5 } %}
             </article>
         </div>
       {% endif %}
@@ -40,7 +40,7 @@
         <div class="column">
             <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-                {% show downloads_files_list with { count: 5 } %}
+                {% show section downloads_files_list with { count: 5 } %}
             </article>
         </div>
       {% endif %}
