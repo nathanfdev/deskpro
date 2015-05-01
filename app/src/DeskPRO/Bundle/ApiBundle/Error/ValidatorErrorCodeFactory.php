@@ -33,11 +33,9 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolation;
 
 class ValidatorErrorCodeFactory
@@ -48,6 +46,10 @@ class ValidatorErrorCodeFactory
 
     public function getConstraintErrorCode(ConstraintViolation $violation)
     {
+        if ($violation->getMessage() === 'This form should not contain extra fields.') {
+            return ApiErrors::EXTRA_FIELDS;
+        }
+
         if ($violation->getCause() instanceof TransformationFailedException) {
             return ApiErrors::INVALID_DATA_TYPE;
         }

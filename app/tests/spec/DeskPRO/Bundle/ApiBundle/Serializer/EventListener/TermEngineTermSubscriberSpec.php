@@ -45,11 +45,6 @@ use Prophecy\Argument;
  */
 class TermEngineTermSubscriberSpec extends ObjectBehavior
 {
-    function let(TermToJsonConverter $converter)
-    {
-        $this->beConstructedWith($converter);
-    }
-
     function it_listens_to_post_serialize()
     {
         $this->shouldHaveType('JMS\Serializer\EventDispatcher\EventSubscriberInterface');
@@ -82,7 +77,6 @@ class TermEngineTermSubscriberSpec extends ObjectBehavior
     function it_adds_type_to_each_term_interface_using_the_converter_logic(
         ObjectEvent $event,
         JsonSerializationVisitor $visitor,
-        TermToJsonConverter $converter,
         TermInterface $term
     )
     {
@@ -90,10 +84,8 @@ class TermEngineTermSubscriberSpec extends ObjectBehavior
         $event->getObject()->willReturn($term);
         $event->getVisitor()->willReturn($visitor);
 
-        $converter->getTermTypeCode($term)->willReturn('agent');
-
         // now we SHOULD call this...
-        $visitor->addData('type', 'agent')->shouldBeCalled();
+        $visitor->addData('type', Argument::any())->shouldBeCalled();
 
         // run it
         $this->onPostSerialize($event);

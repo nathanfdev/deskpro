@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Serializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
+use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -44,16 +44,6 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class TermEngineTermSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var TermToJsonConverter
-     */
-    private $converter;
-
-    public function __construct(TermToJsonConverter $converter)
-    {
-        $this->converter = $converter;
-    }
-
     public function onPostSerialize(
         ObjectEvent $event
     )
@@ -62,7 +52,7 @@ class TermEngineTermSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
 
         if ($obj instanceof TermInterface && $visitor instanceof JsonSerializationVisitor) {
-            $type = $this->converter->getTermTypeCode($obj);
+            $type = TermTypeCodes::getTermTypeCode($obj);
             $visitor->addData('type', $type);
         }
     }
