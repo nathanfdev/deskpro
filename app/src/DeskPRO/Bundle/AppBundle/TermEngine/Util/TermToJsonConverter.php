@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Util;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class TermToJsonConverter
@@ -63,20 +64,22 @@ class TermToJsonConverter
     {
         $serialized_array = json_decode($json, true);
 
-        return $this->unserializeArrayToTerm($serialized_array);
+        return $this->arrayToTerm($serialized_array);
     }
 
     /**
      * @param TermInterface $term
      * @return array
      */
-    private function termToArray(TermInterface $term)
+    public function termToArray(TermInterface $term)
     {
         if ($term instanceof CompositeTermInterface) {
-            $serialized = array(
-                'class' => get_class($term),
-                'serialized' => $term->serialize(),
-                'terms' => array()
+            $serialized = array_merge(
+                array(
+                    'type' => TermTypeCodes::getTermTypeCode($term),
+                    'terms' => array()
+                ),
+                $term->serialize()
             );
 
             foreach ($term->getTerms() as $term) {
@@ -86,24 +89,36 @@ class TermToJsonConverter
             return $serialized;
         }
 
-        return array(
-            'class' => get_class($term),
-            'serialized' => $term->serialize()
+        return array_merge(
+            array(
+                'type' => TermTypeCodes::getTermTypeCode($term)
+            ),
+            $term->serialize()
         );
     }
 
     /**
      * @param $serialized_array
      */
-    private function unserializeArrayToTerm($serialized_array)
+    public function arrayToTerm($serialized_array)
     {
-        $class = $serialized_array['class'];
-        $term = new $class($serialized_array['serialized']['options']);
-        $term->setOp($serialized_array['serialized']['op']);
+        $class = TermTypeCodes::getTermClassForTypeCode($serialized_array['type']);
+        if (!class_exists($class)) {
+            throw new TermTypeDoesNotExistException($serialized_array['type']);
+        }
+        $options = array_key_exists(
+            'options',
+            $serialized_array
+        ) ? $serialized_array['options'] : array();
+        $term = new $class($options);
+        $term->setOp($serialized_array['op']);
 
         if ($term instanceof CompositeTermInterface) {
-            foreach ($serialized_array['terms'] as $term_array) {
-                $term->addTerm($this->unserializeArrayToTerm($term_array));
+            foreach ($serialized_array['terms'] as $child_term) {
+                if (is_array($child_term)) {
+                    $child_term = $this->arrayToTerm($child_term);
+                }
+                $term->addTerm($child_term);
             }
         }
 

@@ -33,20 +33,26 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
-
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidTermEngineTerm;
 
+/**
+ * @ValidTermEngineTerm()
+ */
 abstract class AbstractTerm implements TermInterface
 {
     /**
-     * The op MUST be a TermInterface::OP_* constant.
-     *
-     * Implementations should override this property with thier own default.
+     * @var TermOptionsResolver[]
+     */
+    private static $options_resolvers = array();
+
+    /**
+     * The op MUST be a supported TermInterface::OP_* constant.
      *
      * @var string the op for this term
      */
-    protected $op = self::OP_NOOP;
+    protected $op;
 
     /**
      * This is where all of the data of a term is stored.
@@ -69,23 +75,57 @@ abstract class AbstractTerm implements TermInterface
 
         if (null !== $op) {
             $this->setOp($op);
+        } else {
+            $this->setOp($this->getDefaultOp());
         }
     }
 
     /**
-     * Using AbstractTerm forces the concretes to use OptionsResolver as the
-     * method of defining and resolving options. Options are the core of all
-     * of the terms, and we use the OptionsResolver component to help define
-     * and resolve our options.
+     * Implements the TermInterface by providing a pseudo-abstract way of creating the options resolver by
+     * offering concretes the convenience of only making a configureOptions() method to initially create their
+     * options resolver.
      *
-     * You must use the OptionsResolver to set up option defaults, allowed
-     * values, whether an option is required/optional, and so on. Please
-     * refer to the symfony documentation on the OptionsResolver component.
+     * Only creates one instance per class, and hands off to configureOptions() to set it up.
      *
-     * @param OptionsResolver $resolver
-     * @return null
+     * @return TermOptionsResolver
      */
-    abstract public function setDefaultOptions(OptionsResolver $resolver);
+    public static function getOptionsResolver()
+    {
+        $cname = get_called_class();
+        if (!array_key_exists($cname, self::$options_resolvers)) {
+            $resolver = new TermOptionsResolver();
+            static::configureOptions($resolver);
+            self::$options_resolvers[$cname] = $resolver;
+        }
+
+        return self::$options_resolvers[$cname];
+    }
+
+    /**
+     * Configure your options here. You MUST override this method, even if you are not configuring any options.
+     *
+     * @param TermOptionsResolver $resolver
+     */
+    public static function configureOptions(TermOptionsResolver $resolver)
+    {
+        throw new \RuntimeException('Term\'s extending AbstractTerm must override the "configureOptions" method');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOp()
+    {
+        return $this->op;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOp($op)
+    {
+        $this->op = (string)$op;
+    }
 
     /**
      * Serialize the user-given data.
@@ -118,10 +158,7 @@ abstract class AbstractTerm implements TermInterface
      */
     public function getOptions()
     {
-        $resolver = new OptionsResolver();
-        $this->setDefaultOptions($resolver);
-
-        return $resolver->resolve($this->options);
+        return static::getOptionsResolver()->resolve($this->options);
     }
 
     /**
@@ -130,6 +167,11 @@ abstract class AbstractTerm implements TermInterface
     public function setOption($option, $value)
     {
         $this->options[$option] = $value;
+    }
+
+    public function getOptionConstraints()
+    {
+        return static::getOptionsResolver()->getConstraints();
     }
 
     /**
@@ -171,28 +213,13 @@ abstract class AbstractTerm implements TermInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getOp()
-    {
-        return $this->op;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setOp($op)
-    {
-        $this->op = (string)$op;
-    }
-
-    /**
      * AbstractTerm lets you get the raw options that were set. This is NOT recommended to be
-     * used for getting options and is here only for meta-info about the user-defined term options.
+     * used for getting options because these raw options are NOT resolved. This method is here only for meta-info about the user-defined term options. This is deviation from the TermInterface.
      *
-     * See getOptions() instead
+     * See getOptions() and getOption() to get the real options
      *
      * @return array
+     * @deprecated use getOptions() instead
      */
     public function getRawOptions()
     {

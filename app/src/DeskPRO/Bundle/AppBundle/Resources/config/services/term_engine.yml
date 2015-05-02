@@ -1,6 +1,7 @@
 services:
 
-    term_serializer:
+    # NOTE: AppBundle\Doctrine\TermEngineTermType instantiates this directly because it cant use it as a service
+    term_to_json_converter:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter
 
     term_engine.expression_language:

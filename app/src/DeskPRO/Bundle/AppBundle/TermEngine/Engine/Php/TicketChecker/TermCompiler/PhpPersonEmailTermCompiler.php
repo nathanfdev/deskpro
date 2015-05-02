@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
@@ -52,10 +52,15 @@ class PhpPersonEmailTermCompiler extends AbstractPhpTermCompiler
         $op = $term->getOp();
         $email = $term->getOption('email');
 
-        return $this->getMethodCheckHelper()->checkEquality(
-            '$ticket->getPersonEmailAddress()',
-            $op,
-            $email
+        $check = 'ticket.getPersonEmailAddress()';
+        $check .= $this->isOp($op, TermInterface::OP_IS) ? ' == ' : ' != ';
+        $check .= ':email';
+
+        return new PhpCheck(
+            $check,
+            array(
+                'email' => $email
+            )
         );
     }
 }

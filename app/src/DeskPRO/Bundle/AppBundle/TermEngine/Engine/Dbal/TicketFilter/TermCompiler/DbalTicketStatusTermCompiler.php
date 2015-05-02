@@ -52,6 +52,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
         $non_hidden = array();
         $hidden = array();
         foreach ($statuses as $status) {
+            $status = str_replace('hidden.', '', $status); // internally we use the shorter hidden status
             if ($this->isHiddenStatus($status)) {
                 $hidden[] = $status;
             } else {

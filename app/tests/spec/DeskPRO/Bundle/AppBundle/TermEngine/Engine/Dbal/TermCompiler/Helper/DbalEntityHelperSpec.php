@@ -47,7 +47,7 @@ class DbalEntityHelperSpec extends ObjectBehavior
 {
     function it_is_a_dbal_helper()
     {
-        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalHelperInterface');
+        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface');
         $this->getId()->shouldBe('entity');
     }
 

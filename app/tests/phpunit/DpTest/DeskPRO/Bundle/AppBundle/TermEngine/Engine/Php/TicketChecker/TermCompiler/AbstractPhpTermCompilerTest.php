@@ -35,45 +35,49 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Te
 
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TicketChecker;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionProvider;
 use DpTest\ApiTestCase;
 
 abstract class AbstractPhpTermCompilerTest extends ApiTestCase
 {
-    protected function evaluateExpression($expression)
+    protected function makChecker(PhpCheck $check, array $variables)
     {
-
         //
         // this method simulates the evaluateExpression method on the result PhpTicketCheckerInterface
         // in the tests assertions below, eval() will use this method
         //
 
-        $lang = new TermEngineExpressionLanguage(null, array(new TermEngineExpressionProvider()));
+        $lang = $this->get('term_engine.expression_language');
+        $helper_pool = $this->get('term_engine.php.helper_pool');
 
         $agent = $this->prophesize('Application\DeskPRO\Entity\Person');
         $agent->getId()->willReturn(2); // in these tests, ME is always agent id=2
         $agent->getTeamIds()->willReturn(array(2)); // in these tests, ME is always agent id=2
+        $context = new TermEngineContext($agent->reveal());
 
-        return $lang->evaluate(
-            $expression,
-            array(
-                'agent' => $agent->reveal() // in these tests, ME is always agent id=2
-            )
-        );
+        // do some var replacing to emulate what the engine does...
+        $check = clone $check;
+        $i = 1;
+        foreach ($check->getVariables() as $var_name => $val) {
+            $check->renameVariable($var_name, 'var' . $i);
+            $i++;
+        }
+
+        $checker = new TicketChecker($check, $context, $lang, $helper_pool);
+
+        return $checker;
     }
 
-    protected function assertTicketCheck(PhpCheck $php_check, $result, $ticket_prophecy)
+    protected function assertTicketCheck(PhpCheck $php_check, $expected, $ticket_prophecy)
     {
         $ticket = $ticket_prophecy->reveal();
 
-        $result = (bool)$result;
+        $checker = $this->makChecker($php_check, array('ticket' => $ticket));
 
-        $check = !$result;
-
-        eval($php_check->getCheckCode());
-
-        $this->assertSame($result, $check, 'ticket check result is correct');
+        $this->assertSame($expected, $checker->isTicketMatch($ticket), 'ticket check result is correct');
     }
 }

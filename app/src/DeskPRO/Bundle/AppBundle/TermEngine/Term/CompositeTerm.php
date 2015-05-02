@@ -34,15 +34,15 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 {
-    protected $op = TermInterface::OP_OR;
-
     /**
      * @var TermInterface[]
+     * @Assert\Valid
      */
     protected $terms;
 
@@ -57,9 +57,9 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
         return $this->terms;
     }
 
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        // no options at the moment
+
     }
 
     public function addTerm(TermInterface $term)
@@ -90,5 +90,15 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
         }
 
         throw new \InvalidArgumentException('term not found');
+    }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_OR, TermInterface::OP_AND);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_OR;
     }
 }

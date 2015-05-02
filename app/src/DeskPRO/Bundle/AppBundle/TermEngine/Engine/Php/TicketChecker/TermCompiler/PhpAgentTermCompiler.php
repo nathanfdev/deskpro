@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
@@ -45,28 +45,35 @@ class PhpAgentTermCompiler extends AbstractPhpTermCompiler
      * Take a term and return a PhpCheck representing the term's query conditions.
      *
      * @param TermInterface $term
-     * @return PhpCheck
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck
      */
     protected function doCompile(TermInterface $term)
     {
         $op = $term->getOp();
         $ids = $term->getOption('agent_ids');
 
-        $input = array_map(
-            function ($id) {
-                if ($id === AgentTerm::ID_ME) {
-                    $id = new TermEngineExpression('agent.getId()');
-                }
+        $check_me = false;
+        $check_ids = array();
+        foreach ($ids as $id) {
+            if ($id === AgentTerm::ID_ME) {
+                $check_me = 'agent.getId()';
+            } else {
+                $check_ids[] = (int)$id;
+            }
+        }
 
-                return $id;
-            },
-            $ids
-        );
+        $check = 'check_contains(ticket.getAgentId(), :op, :ids';
+        if ($check_me) {
+            $check .= sprintf(', %s', $check_me);
+        }
+        $check .= ')';
 
-        return $this->getMethodCheckHelper()->checkContains(
-            '$ticket->getAgentId()',
-            $op,
-            $input
+        return new PhpCheck(
+            $check,
+            array(
+                'op' => $op,
+                'ids' => $check_ids
+            )
         );
     }
 }

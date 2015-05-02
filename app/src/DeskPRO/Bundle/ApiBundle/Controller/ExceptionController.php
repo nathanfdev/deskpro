@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\Form\FormError;
@@ -51,6 +52,12 @@ class ExceptionController extends BaseController
 {
     public function showAction(\Exception $exception)
     {
+        $parameters = array();
+        if ($exception instanceof WrappedApiErrorException) {
+            $parameters = $exception->getParams();
+            $exception = $exception->getException();
+        }
+
         $errors_array = array();
         if ($exception instanceof InvalidFormException) {
             $errors_array = $this->generateFormErrors($exception->getForm());
@@ -58,7 +65,7 @@ class ExceptionController extends BaseController
 
         $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
         $code = $this->getErrorCodeFactory()->getErrorCodeForException($exception);
-        $message = $this->getErrorMessageFactory()->createMessage($code);
+        $message = $this->getErrorMessageFactory()->createMessage($code, $parameters);
 
         // $exception has "getHeaders()" that we are interested in using
 
@@ -101,11 +108,42 @@ class ExceptionController extends BaseController
             }
         }
 
+        // if it is NOT an associated array, we want to make it one
+        if (
+            !empty($children) // not empty
+            && $this->needsPrefix($children)
+        ) {
+            $prefix = !is_numeric($form->getName()) ? $form->getName() . '_' : 'field_';
+            $new_children = array();
+            foreach ($children as $index => $value) {
+                $new_children[$prefix . $index] = $value;
+            }
+            $children = $new_children;
+        }
+
         if ($children) {
             $errors['fields'] = $children;
         }
 
         return $errors;
+    }
+
+    protected function needsPrefix(array $children)
+    {
+        if (array_keys($children) === range(0, count($children) - 1)) {
+            // indexed array, needs prefix
+            return true;
+        }
+
+        foreach ($children as $key => $val) {
+            if (!is_numeric($key)) {
+                // any non-numeric key means no prefix
+                return false;
+            }
+        }
+
+        // if we get here all keys are numeric, so needs prefixing
+        return true;
     }
 
     protected function getFormErrorCode(FormError $error)

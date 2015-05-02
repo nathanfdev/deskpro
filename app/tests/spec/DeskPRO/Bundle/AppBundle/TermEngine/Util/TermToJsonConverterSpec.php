@@ -36,6 +36,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Util;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -46,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
  */
 class TermToJsonConverterSpec extends ObjectBehavior
 {
+
     function it_converts_a_term_into_json()
     {
         $composite = new CompositeTerm();
@@ -60,31 +62,23 @@ class TermToJsonConverterSpec extends ObjectBehavior
 
         $result_array = json_decode($result->getWrappedObject(), true);
 
-        expect($result_array['class'])->toBe('DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm');
-        expect($result_array['serialized'])->toBe(
-            array(
-                'op' => TermInterface::OP_OR,
-                'options' => array()
-            )
-        );
+        expect($result_array['type'])->toBe('composite');
+        expect($result_array['op'])->toBe(TermInterface::OP_OR);
+        expect($result_array['options'])->toBe(array());
         expect($result_array['terms'])->toBeLike(
             array(
                 array(
-                    'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm',
-                    'serialized' => array(
-                        'op' => TermInterface::OP_IS,
-                        'options' => array(
-                            'agent_ids' => array(5, 6)
-                        )
+                    'type' => 'agent',
+                    'op' => TermInterface::OP_IS,
+                    'options' => array(
+                        'agent_ids' => array(5, 6)
                     )
                 ),
                 array(
-                    'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm',
-                    'serialized' => array(
-                        'op' => TermInterface::OP_IS,
-                        'options' => array(
-                            'department_ids' => array(5, 9)
-                        )
+                    'type' => 'department',
+                    'op' => TermInterface::OP_IS,
+                    'options' => array(
+                        'department_ids' => array(5, 9)
                     )
                 )
             )
@@ -94,28 +88,22 @@ class TermToJsonConverterSpec extends ObjectBehavior
     function it_can_take_a_serialized_term_and_reconstruct_the_terms()
     {
         $serialized_array = array(
-            'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm',
-            'serialized' => array(
-                'op' => TermInterface::OP_AND,
-                'options' => array()
-            ),
+            'type' => 'composite',
+            'op' => TermInterface::OP_AND,
+            'options' => array(),
             'terms' => array(
                 array(
-                    'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm',
-                    'serialized' => array(
-                        'op' => TermInterface::OP_NOT,
-                        'options' => array(
-                            'agent_ids' => array(5, 6)
-                        )
+                    'type' => 'agent',
+                    'op' => TermInterface::OP_NOT,
+                    'options' => array(
+                        'agent_ids' => array(5, 6)
                     )
                 ),
                 array(
-                    'class' => 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm',
-                    'serialized' => array(
-                        'op' => TermInterface::OP_IS,
-                        'options' => array(
-                            'department_ids' => array(5, 9)
-                        )
+                    'type' => 'department',
+                    'op' => TermInterface::OP_IS,
+                    'options' => array(
+                        'department_ids' => array(5, 9)
                     )
                 )
             )
@@ -124,6 +112,96 @@ class TermToJsonConverterSpec extends ObjectBehavior
         $json = json_encode($serialized_array);
 
         $result_term = $this->toTerm($json);
+
+        $result_term->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm');
+        $result_term->getOp()->shouldBe(TermInterface::OP_AND);
+        $result_term->getRawOptions()->shouldBe(array());
+        $result_term->getTerms()->shouldHaveCount(2);
+
+        $terms = $result_term->getTerms();
+
+        $term1 = $terms[0];
+
+        $term1->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm');
+        $term1->getOp()->shouldBe(TermInterface::OP_NOT);
+        $term1->getRawOptions()->shouldBe(
+            array(
+                'agent_ids' => array(5, 6)
+            )
+        );
+
+        $term2 = $terms[1];
+
+        $term2->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm');
+        $term2->getOp()->shouldBe(TermInterface::OP_IS);
+        $term2->getRawOptions()->shouldBe(
+            array(
+                'department_ids' => array(5, 9)
+            )
+        );
+    }
+
+    function it_can_give_you_an_array_for_a_term_instead_of_json()
+    {
+        $composite = new CompositeTerm();
+
+        $agentTerm = new AgentTerm(array('agent_ids' => array(5, 6)));
+        $composite->addTerm($agentTerm);
+
+        $depTerm = new DepartmentTerm(array('department_ids' => array(5, 9)));
+        $composite->addTerm($depTerm);
+
+        $result_array = $this->termToArray($composite);
+        $result_array = $result_array->getWrappedObject();
+
+        expect($result_array['type'])->toBe('composite');
+        expect($result_array['op'])->toBe(TermInterface::OP_OR);
+        expect($result_array['options'])->toBe(array());
+        expect($result_array['terms'])->toBeLike(
+            array(
+                array(
+                    'type' => 'agent',
+                    'op' => TermInterface::OP_IS,
+                    'options' => array(
+                        'agent_ids' => array(5, 6)
+                    )
+                ),
+                array(
+                    'type' => 'department',
+                    'op' => TermInterface::OP_IS,
+                    'options' => array(
+                        'department_ids' => array(5, 9)
+                    )
+                )
+            )
+        );
+    }
+
+    function it_can_take_an_array_and_create_your_term()
+    {
+        $serialized_array = array(
+            'type' => 'composite',
+            'op' => TermInterface::OP_AND,
+            'options' => array(),
+            'terms' => array(
+                array(
+                    'type' => 'agent',
+                    'op' => TermInterface::OP_NOT,
+                    'options' => array(
+                        'agent_ids' => array(5, 6)
+                    )
+                ),
+                array(
+                    'type' => 'department',
+                    'op' => TermInterface::OP_IS,
+                    'options' => array(
+                        'department_ids' => array(5, 9)
+                    )
+                )
+            )
+        );
+
+        $result_term = $this->arrayToTerm($serialized_array);
 
         $result_term->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm');
         $result_term->getOp()->shouldBe(TermInterface::OP_AND);

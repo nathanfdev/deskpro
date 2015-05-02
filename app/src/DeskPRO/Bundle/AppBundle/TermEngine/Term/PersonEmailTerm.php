@@ -33,14 +33,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PersonEmailTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $options_resolver)
+    public static function configureOptions(TermOptionsResolver $options_resolver)
     {
         $options_resolver->setDefaults(
             array(
@@ -53,5 +51,15 @@ class PersonEmailTerm extends AbstractTerm
                 'email' => 'string'
             )
         );
+    }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

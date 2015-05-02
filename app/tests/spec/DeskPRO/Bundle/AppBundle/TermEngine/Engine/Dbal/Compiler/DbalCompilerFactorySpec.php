@@ -90,7 +90,32 @@ class DbalTermCompilerFactorySpec extends ObjectBehavior
 
 class FakeTerm extends AbstractTerm
 {
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
+    }
+
+    /**
+     * Returns an array of all possible OP_ codes that this term supports
+     *
+     * @return array
+     */
+    public function getSupportedOps()
+    {
+        // TODO: Implement getSupportedOps() method.
+    }
+
+    /**
+     * Gets the default OP_ code for this term.
+     *
+     * Immediately after instantiating the term, getOp() should return this value
+     * unless a constructor argument exists that allows an override.
+     *
+     * This OP must be a supported OP in getSupportedOps()
+     *
+     * @return string
+     */
+    public function getDefaultOp()
+    {
+        // TODO: Implement getDefaultOp() method.
     }
 }

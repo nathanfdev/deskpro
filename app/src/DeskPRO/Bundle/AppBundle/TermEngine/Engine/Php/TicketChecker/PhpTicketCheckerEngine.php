@@ -34,11 +34,16 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpFile;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpFile;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngine;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhpTicketCheckerEngine extends PhpEngine
 {
@@ -52,13 +57,27 @@ class PhpTicketCheckerEngine extends PhpEngine
      */
     private $expression_language;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $event_dispatcher;
+
+    /**
+     * @var TermCompilerHelperPool
+     */
+    private $helper_pool;
+
     public function __construct(
         PhpTicketCheckerCompiler $compiler,
-        TermEngineExpressionLanguage $expression_language
+        TermEngineExpressionLanguage $expression_language,
+        EventDispatcherInterface $event_dispatcher,
+        TermCompilerHelperPool $helper_pool
     )
     {
         $this->compiler = $compiler;
         $this->expression_language = $expression_language;
+        $this->event_dispatcher = $event_dispatcher;
+        $this->helper_pool = $helper_pool;
     }
 
     /**
@@ -71,16 +90,14 @@ class PhpTicketCheckerEngine extends PhpEngine
      */
     public function evaluate(Filter $filter, TermEngineContext $context)
     {
-        $php_class = $this->compiler->compile($filter->getTerm());
-        $php_file = new PhpFile();
-        $php_file->setClass($php_class);
+        $event = new PhpEnginePreCompileEvent($context, $filter);
+        $this->event_dispatcher->dispatch(PhpEngineEvents::PRE_COMPILE, $event);
 
-        // TODO: this is one method, we also will offer ability to "require"
-        // a file from disk. In any case, we must ensure this is safely done.
-        eval((string)$php_class);
+        $php_check = $this->compiler->compile($filter->getTerm());
 
-        $class = $php_class->getName();
+        $event = new PhpEnginePostCompileEvent($context, $filter, $php_check);
+        $this->event_dispatcher->dispatch(PhpEngineEvents::POST_COMPILE, $event);
 
-        return new $class($context, $this->expression_language);
+        return new TicketChecker($php_check, $context, $this->expression_language, $this->helper_pool);
     }
 }

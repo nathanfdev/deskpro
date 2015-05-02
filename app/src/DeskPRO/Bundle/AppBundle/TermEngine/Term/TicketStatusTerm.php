@@ -33,18 +33,56 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
-
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketStatusTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setRequired('status');
 
+        // if passing in a "hidden" status, you can use the short version or verbose version.
+        // ie. both of these are equivelent: "hidden.spam", or "spam"
         $resolver->setAllowedTypes(array('status' => 'array'));
+
+        $resolver->setNormalizer(
+            'status',
+            function ($options, $status_array) {
+
+                // if the passed status is a "hidden" sub-status, the compilers
+                // are expecting to have "hidden." prepended. We ensure that here.
+                $normalized = array();
+
+                foreach ($status_array as $status) {
+                    if (in_array(
+                        $status,
+                        array(
+                            Ticket::HIDDEN_STATUS_SPAM,
+                            Ticket::HIDDEN_STATUS_DELETED,
+                            Ticket::HIDDEN_STATUS_VALIDATING,
+                            Ticket::HIDDEN_STATUS_TEMP
+                        )
+                    )) {
+                        $status = Ticket::STATUS_HIDDEN . '.' . $status;
+                    }
+
+                    $normalized[] = $status;
+                }
+
+                return $normalized;
+            }
+        );
+    }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

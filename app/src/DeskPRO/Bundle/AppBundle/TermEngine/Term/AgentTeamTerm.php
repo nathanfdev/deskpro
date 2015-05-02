@@ -33,8 +33,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgentTeamTerm extends AbstractTerm
 {
@@ -43,9 +43,7 @@ class AgentTeamTerm extends AbstractTerm
      */
     const TEAM_ID_ME = 'me';
 
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(
@@ -58,5 +56,15 @@ class AgentTeamTerm extends AbstractTerm
                 'agent_team_ids' => 'array'
             )
         );
+    }
+
+    public function getSupportedOps()
+    {
+        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

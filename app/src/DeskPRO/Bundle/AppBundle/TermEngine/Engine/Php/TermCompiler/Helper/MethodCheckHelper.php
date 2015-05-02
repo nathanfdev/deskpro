@@ -33,7 +33,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -47,81 +48,58 @@ class MethodCheckHelper implements TermCompilerHelperInterface
     }
 
     /**
-     * @param $method_call
+     * Pass in as many arguments past $op as you want, all of them are flattened into a single array
+     *
+     * @param $real_val
      * @param $op
-     * @param array $input
-     * @return PhpCheck
+     * @return bool
      */
-    public function checkContains($method_call, $op, array $input)
+    public function checkContains($real_val, $op)
     {
-        $array = $this->filterInput($input);
-
-        $check = '';
-        $check .= '$check = ';
-        if (strtolower($op) == strtolower(TermInterface::OP_NOT)) {
-            $check .= '!';
-        }
-        $check .= 'in_array(' . $method_call . ', ';
-        $check .= '\Orb\Util\Arrays::flatten(array(';
-        $check .= implode(',', $array);
-        $check .= ')));';
-
-        return new PhpCheck(
-            $check
-        );
-    }
-
-    /**
-     * @param $method_call
-     * @param $op
-     * @param $input
-     * @param bool $check_identical
-     * @return PhpCheck
-     */
-    public function checkEquality($method_call, $op, $input, $check_identical = false)
-    {
-        // we turn it into an array to use the same filtering logic as the contains check
-        $array = $this->filterInput(array($input));
-        $input = current($array);
-
-        $check = '';
-        $check .= '$check = (';
-        $check .= $method_call;
-        $check .= ' ';
-        if (strtolower($op) == strtolower(TermInterface::OP_NOT)) {
-            $check .= '!=';
-        } else {
-            $check .= '==';
-        }
-        if ($check_identical) {
-            $check .= '=';
-        }
-        $check .= ' ';
-        $check .= $input;
-        $check .= ');';
-
-        return new PhpCheck(
-            $check
-        );
-    }
-
-    /**
-     * @param array $input
-     * @return array
-     */
-    protected function filterInput(array $input)
-    {
-        $array = array();
-        foreach ($input as $in) {
-            if (is_string($in)) {
-                $array[] = "'$in'";
-            } elseif ($in instanceof TermEngineExpression) {
-                $array[] = '$this->evaluateExpression(\'' . (string)$in . '\')';
-            } else {
-                $array[] = $in;
+        // get any args, since we allow arbitrary args
+        $args = func_get_args();
+        $arg_num = func_num_args();
+        $contains = array();
+        for ($i = 0; $i < $arg_num; $i++) {
+            if ($i > 1) {
+                $contains[] = $args[$i];
             }
         }
 
-        return Arrays::flatten($array); // always flatten
+        // now all args are in an array, flatten it
+        $contains = Arrays::flatten($contains);
+
+        if (strtolower($op) !== strtolower(TermInterface::OP_NOT)) {
+            return in_array($real_val, $contains);
+        }
+
+        return !in_array($real_val, $contains);
+    }
+
+    public function checkCustomField(Ticket $ticket, $field_id, $op, $values, $input)
+    {
+        $is = strtolower($op) === strtolower(TermInterface::OP_IS);
+
+        if (!$ticket->hasCustomField($field_id)) {
+            return !$is;
+        }
+
+        if (!$custom_data = $ticket->getCustomDataForField($field_id)) {
+            return !$is;
+        }
+
+        if ($input) {
+            if ($custom_data->getInput() == $input) {
+                return $is;
+            } else {
+                return !$is;
+            }
+        }
+
+        if (in_array($custom_data->getValue(), Arrays::flatten($values))) {
+            return $is;
+        } else {
+            return !$is;
+        }
     }
 }

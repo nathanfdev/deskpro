@@ -6,11 +6,12 @@ use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
+use DpTest\ApiTestCase;
 use DpTestingMocks\ContainerMock;
 use Mockery as m;
 use DpTest\DeskProTestCase;
 
-class FilterChangeDetectorTest extends DeskProTestCase
+class FilterChangeDetectorTest extends ApiTestCase
 {
     /**
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -26,6 +27,11 @@ class FilterChangeDetectorTest extends DeskProTestCase
      * @var \Application\DeskPRO\Entity\TicketFilter[]
      */
     private $filters;
+
+    public function setUp()
+    {
+        $this->installDataSet('fresh');
+    }
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer

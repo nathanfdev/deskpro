@@ -33,11 +33,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpMethod;
+use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpClass;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 
 abstract class PhpCompiler
 {
@@ -51,6 +52,11 @@ abstract class PhpCompiler
      */
     protected $term_compiler_factory;
 
+    /**
+     * @var int
+     */
+    protected $var_counter;
+
     public function __construct(PhpTermCompilerFactory $term_compiler_factory, array $visitors)
     {
         $this->term_compiler_factory = $term_compiler_factory;
@@ -58,21 +64,17 @@ abstract class PhpCompiler
     }
 
     /**
-     * An opportunity for this engine implemention to alter the query before compile starts
-     *
-     * @param PhpClass $php_class
-     * @return void
-     */
-    abstract protected function enginePreCompile(PhpClass $php_class);
-
-    /**
      * An opportunity for this engine implemention to alter the query after compile is completed
      *
-     * @param PhpClass $php_class
+     * @param PhpCheck $php_class
      * @return void
      */
-    abstract protected function enginePostCompile(PhpClass $php_class);
+    abstract protected function enginePostCompile(PhpCheck $php_class);
 
+    /**
+     * @param TermInterface $term
+     * @return PhpCheck
+     */
     public function compile(TermInterface $term)
     {
         // let visitors alter the term
@@ -80,43 +82,55 @@ abstract class PhpCompiler
             $visitor->visit($term);
         }
 
-        $php_class = new PhpClass();
+        $this->var_counter = 0;
 
-        $this->enginePreCompile($php_class);
+        $php_check = $this->compileTerm($term);
 
-        $main_method = $this->compileTerm($term, $php_class);
+        $this->enginePostCompile($php_check);
 
-        $main_method->setName('mainCheck');
-        // we alter the mainCheck method's arguments in the engine postCompile hook
-        $php_class->addMethod($main_method);
-
-        $this->enginePostCompile($php_class);
-
-        // use the term compiler to get a PhpTicketChecker
-        // use it to create a PhpMethod
-
-        // set that PhpMethod as the "main method" on the class by naming it
-        // "check". Let the others be random names.
-
-        // add our boiler plate "isTicketMatch" method to the class and call this main
-        // method to get the final response value
-
-        // return the PhpClass object
-
-        return $php_class;
+        return $php_check;
     }
 
-    protected function compileTerm(TermInterface $term, PhpClass $php_class)
+    /**
+     * @param TermInterface $term
+     * @return PhpCheck
+     */
+    protected function compileTerm(TermInterface $term)
     {
+        if ($term instanceof CompositeTermInterface) {
+            $parent_check = new PhpCheck();
+            $php_check_expressions = array();
+
+            /** @var TermInterface $child_term */
+            foreach ($term->getTerms() as $child_term) {
+                $php_check = $this->compileTerm($child_term);
+                $this->renameVars($php_check);
+                foreach ($php_check->getVariables() as $name => $val) {
+                    $parent_check->setVariable($name, $val);
+                }
+
+                $php_check_expressions[] = sprintf('(%s)', (string)$php_check);
+            }
+
+            $sep = (strtolower($term->getOp()) === strtolower(TermInterface::OP_AND)) ? ' && ' : ' || ';
+
+            $parent_check->setExpression(sprintf('(%s)', implode($sep, $php_check_expressions)));
+
+            return $parent_check;
+        }
+
         $php_check = $this->getTermCompiler($term)->compile($term);
+        $this->renameVars($php_check);
 
-        $method_code = '$check = false; ' . $php_check . ' return $check;';
+        return $php_check;
+    }
 
-        $method = new PhpMethod();
-        $method->addArgument('ticket', '\Application\DeskPRO\Entity\Ticket');
-        $method->setCode($method_code);
-
-        return $method;
+    protected function renameVars(PhpCheck $check)
+    {
+        // just make sure all vars are unique, using a simple counter (var1, var2, etc)
+        foreach ($check->getVariables() as $name => $val) {
+            $check->renameVariable($name, sprintf('var%s', $this->var_counter++));
+        }
     }
 
     protected function getTermCompiler(TermInterface $term)

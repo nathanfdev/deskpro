@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
 
@@ -68,6 +68,11 @@ abstract class AbstractPhpTermCompiler
     public function getMethodCheckHelper()
     {
         return $this->helper_pool->getHelper('method_check');
+    }
+
+    public function turnArrayIntoPhpArrayString(array $values = array())
+    {
+        return 'array(' . implode(',', $values) . ')';
     }
 
     /**

@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;

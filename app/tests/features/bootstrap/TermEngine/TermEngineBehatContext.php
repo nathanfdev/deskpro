@@ -140,7 +140,7 @@ class TermEngineBehatContext extends BaseContext
     }
 
     /**
-     * @Then the all of the checks should match
+     * @Then all of the checks should match
      */
     public function theAllOfTheChecksShouldMatch()
     {
@@ -150,7 +150,7 @@ class TermEngineBehatContext extends BaseContext
     }
 
     /**
-     * @Then the none of the checks should match
+     * @Then none of the checks should match
      */
     public function theNoneOfTheChecksShouldMatch()
     {

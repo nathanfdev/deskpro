@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Dumper\PhpCheck;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
@@ -43,17 +43,19 @@ class PhpDepartmentTermCompiler extends AbstractPhpTermCompiler
      * Take a term and return a PhpCheck representing the term's query conditions.
      *
      * @param TermInterface $term
-     * @return PhpCheck
+     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck
      */
     protected function doCompile(TermInterface $term)
     {
         $op = $term->getOp();
         $ids = $term->getOption('department_ids');
 
-        return $this->getMethodCheckHelper()->checkContains(
-            '$ticket->getDepartmentId()',
-            $op,
-            $ids
+        return new PhpCheck(
+            'check_contains(ticket.getDepartmentId(), :op, :ids)',
+            array(
+                'op' => $op,
+                'ids' => $ids
+            )
         );
     }
 }

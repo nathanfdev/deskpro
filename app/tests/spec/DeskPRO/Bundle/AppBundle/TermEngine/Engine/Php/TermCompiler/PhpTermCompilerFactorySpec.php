@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\Db
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
@@ -82,7 +83,32 @@ class PhpTermCompilerFactorySpec extends ObjectBehavior
 
 class FakeTerm extends AbstractTerm
 {
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
+    }
+
+    /**
+     * Returns an array of all possible OP_ codes that this term supports
+     *
+     * @return array
+     */
+    public function getSupportedOps()
+    {
+        // TODO: Implement getSupportedOps() method.
+    }
+
+    /**
+     * Gets the default OP_ code for this term.
+     *
+     * Immediately after instantiating the term, getOp() should return this value
+     * unless a constructor argument exists that allows an override.
+     *
+     * This OP must be a supported OP in getSupportedOps()
+     *
+     * @return string
+     */
+    public function getDefaultOp()
+    {
+        // TODO: Implement getDefaultOp() method.
     }
 }
