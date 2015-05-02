@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 
@@ -86,7 +87,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
     /**
      * {@inheritDoc}
      */
-    public function getFilterQuery()
+    public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         return $this->criteria->getFilterQuery();
     }
