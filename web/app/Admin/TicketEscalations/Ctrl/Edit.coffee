@@ -70,6 +70,7 @@ define [
         )
 
         @skipDirtyState()
+        @$scope.$parent?.ListCtrl?.loadList()
         if is_new
           @$state.go('tickets.ticket_escalations.gocreate')
       )

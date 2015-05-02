@@ -215,6 +215,13 @@ class LegacyTermsTransformer
                     'options' => array('subject' => $options['subject'])
                 );
 
+            case 'FilterFeedbackRating':
+                return array(
+                    'type' => 'feedback_rating',
+                    'op' => $term->getTermOperator(),
+                    'options' => $term->getTermOptions(),
+                );
+
             case 'FilterUrgency':
                 return array(
                     'type'    => 'urgency',
