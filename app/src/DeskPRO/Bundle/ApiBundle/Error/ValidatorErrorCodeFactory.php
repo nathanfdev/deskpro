@@ -33,7 +33,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
-use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -66,6 +65,10 @@ class ValidatorErrorCodeFactory
                     return ApiErrors::WRONG_LENGTH;
                 case 'Symfony\Component\Validator\Constraints\Valid':
                     return ApiErrors::INVALID_INPUT;
+                case 'Symfony\Component\Validator\Constraints\Choice':
+                    return ApiErrors::BAD_CHOICE;
+                case 'Symfony\Component\Validator\Constraints\Email':
+                    return ApiErrors::INVALID_EMAIL;
             }
         }
 

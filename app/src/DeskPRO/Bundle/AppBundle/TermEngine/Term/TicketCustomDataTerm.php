@@ -35,21 +35,25 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TicketCustomDataTerm extends AbstractTerm
 {
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setRequired(
+        $resolver->setDefaults(
             array(
-                'field_id'
+                'field_id' => null,
+                'input' => null,
+                'values' => array()
             )
         );
 
-        $resolver->setDefaults(
+        $resolver->setConstraints(
             array(
-                'input' => null,
-                'values' => array()
+                'field_id' => array(
+                    new Assert\NotBlank()
+                )
             )
         );
     }

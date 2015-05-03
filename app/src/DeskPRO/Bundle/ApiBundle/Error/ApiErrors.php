@@ -69,7 +69,8 @@ class ApiErrors
     const NOT_NULL = 'required';
     const NOT_BLANK = 'required';
     const WRONG_LENGTH = 'wrong_length';
-    const WRONG_TYPE = 'wrong_type';
+    const BAD_CHOICE = 'bad_choice';
+    const INVALID_EMAIL = 'invalid_email';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

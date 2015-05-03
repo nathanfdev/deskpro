@@ -35,20 +35,24 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PersonEmailTerm extends AbstractTerm
 {
-    public static function configureOptions(TermOptionsResolver $options_resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $options_resolver->setDefaults(
+        $resolver->setDefaults(
             array(
                 'email' => ''
             )
         );
 
-        $options_resolver->setAllowedTypes(
+        $resolver->setConstraints(
             array(
-                'email' => 'string'
+                'email' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Email()
+                )
             )
         );
     }

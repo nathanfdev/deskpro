@@ -47,13 +47,14 @@ class DepartmentTerm extends AbstractTerm
             )
         );
 
-//        $resolver->setConstraints(
-//            array(
-//                'department_ids' => array(
-//                    new Assert\False()
-//                )
-//            )
-//        );
+        $resolver->setConstraints(
+            array(
+                'department_ids' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Type('array')
+                )
+            )
+        );
     }
 
     public function getSupportedOps()

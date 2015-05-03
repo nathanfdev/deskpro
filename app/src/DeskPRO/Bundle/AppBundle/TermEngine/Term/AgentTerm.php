@@ -44,15 +44,15 @@ class AgentTerm extends AbstractTerm
      */
     const ID_ME = 'me';
 
-    public static function configureOptions(TermOptionsResolver $options_resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $options_resolver->setDefaults(
+        $resolver->setDefaults(
             array(
                 'agent_ids' => array()
             )
         );
 
-        $options_resolver->setConstraints(
+        $resolver->setConstraints(
             array(
                 'agent_ids' => array(
                     new Assert\NotBlank(),

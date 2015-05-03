@@ -142,3 +142,86 @@ Feature: /filters endpoint
     And the JSON node "data.term.type" should be equal to "agent"
     And the JSON node "data.term.op" should be equal to "is"
     And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
+
+  Scenario: Create a filter that successfully uses all of the terms
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+  "title": "Big Test",
+  "term": {
+    "type": "composite",
+    "op": "and",
+    "terms": [
+      {
+        "type": "agent",
+        "op": "is",
+        "options": {
+          "agent_ids": [
+            "me"
+          ]
+        }
+      },
+      {
+        "type": "agent_team",
+        "op": "is",
+        "options": {
+          "agent_team_ids": [
+            "me",
+            6
+          ]
+        }
+      },
+      {
+        "type": "department",
+        "op": "is",
+        "options": {
+          "department_ids": [
+            2
+          ]
+        }
+      },
+      {
+        "type": "person_email",
+        "op": "is",
+        "options": {
+          "email": "foo@bar.ca"
+        }
+      },
+      {
+        "type": "ticket_custom_data",
+        "op": "is",
+        "options": {
+          "field_id": 5,
+          "input": "test"
+        }
+      },
+      {
+        "type": "ticket_participant",
+        "op": "is",
+        "options": {
+          "person_ids": [
+            1,
+            4
+          ]
+        }
+      },
+      {
+        "type": "ticket_status",
+        "op": "is",
+        "options": {
+          "status": [
+            "awaiting_agent"
+          ]
+        }
+      }
+    ]
+  },
+  "display_order": 5
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/filters/2"
+    And the JSON node "data" should exist
+    And the JSON node "data.title" should be equal to "Big Test"
+    And the JSON node "data.term.type" should be equal to "composite"

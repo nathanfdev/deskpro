@@ -27,8 +27,9 @@
     'api.error_codes.invalid_charset' => 'This value does not match the expected {{ charset }} charset.',
     # NotNull/NotBlank
     'api.error_codes.required' => 'This value should not be blank.',
-    # Type
-    'api.error_codes.wrong_type' => 'This value should be of type {{ type }}.',
+    # Forms
+    'api.error_codes.bad_choice' => 'One or more of the given values is invalid.',
+    'api.error_codes.invalid_email' => 'This value is not a valid email address.',
     # Term Engine Specific
     'api.error_codes.op_not_supported' => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',

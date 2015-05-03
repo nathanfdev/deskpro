@@ -36,20 +36,53 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TicketStatusTerm extends AbstractTerm
 {
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setRequired('status');
+        $resolver->setDefaults(
+            array(
+                'status' => null
+            )
+        );
 
-        // if passing in a "hidden" status, you can use the short version or verbose version.
-        // ie. both of these are equivelent: "hidden.spam", or "spam"
-        $resolver->setAllowedTypes(array('status' => 'array'));
+        $resolver->setConstraints(
+            array(
+                'status' => array(
+                    New Assert\NotBlank(),
+                    new Assert\Type('array'),
+                    new Assert\Choice(
+                        array(
+                            'multiple' => true,
+                            'choices' => array(
+                                Ticket::STATUS_ARCHIVED,
+                                Ticket::STATUS_AWAITING_AGENT,
+                                Ticket::STATUS_AWAITING_USER,
+                                Ticket::STATUS_RESOLVED,
+                                Ticket::HIDDEN_STATUS_DELETED,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED,
+                                Ticket::HIDDEN_STATUS_SPAM,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_SPAM,
+                                Ticket::HIDDEN_STATUS_TEMP,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_TEMP,
+                                Ticket::HIDDEN_STATUS_VALIDATING,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_VALIDATING,
+                            )
+                        )
+                    )
+                )
+            )
+        );
 
         $resolver->setNormalizer(
             'status',
             function ($options, $status_array) {
+
+                if (!is_array($status_array)) {
+                    $status_array = array($status_array);
+                }
 
                 // if the passed status is a "hidden" sub-status, the compilers
                 // are expecting to have "hidden." prepended. We ensure that here.
