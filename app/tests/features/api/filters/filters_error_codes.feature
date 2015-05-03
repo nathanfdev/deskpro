@@ -40,3 +40,59 @@ Feature: /filters endpoint error codes
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "term_type_does_not_exist"
 
+  Scenario: I pass in options that is not an array
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+    "title": "My Sales Tickets",
+    "term": {
+        "type": "agent",
+        "options": 5
+    }
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
+    And the JSON node "errors.fields.term.fields.options.errors[0].code" should be equal to "invalid_data_type"
+
+  Scenario: agent term options is missing a REQUIRED option
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+    "title": "My Sales Tickets",
+    "term": {
+        "type": "agent",
+        "options": {
+        }
+    }
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
+    And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "required"
+
+  Scenario: agent term option has an option of an INVALID TYPE
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+    "title": "My Sales Tickets",
+    "term": {
+        "type": "agent",
+        "options": {
+            "agent_ids": 5
+        }
+    }
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
+    And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "invalid_data_type"
+
+
+

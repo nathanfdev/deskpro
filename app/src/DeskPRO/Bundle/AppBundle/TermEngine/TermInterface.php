@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -66,7 +67,7 @@ interface TermInterface
     const OP_AND = 'and';
 
     /**
-     * @return mixed
+     * @return TermOptionsResolver
      */
     static public function getOptionsResolver();
 

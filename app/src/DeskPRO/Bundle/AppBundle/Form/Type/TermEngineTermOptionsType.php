@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -66,6 +67,10 @@ class TermEngineTermOptionsType extends AbstractType
         $options = $event->getData();
         $form = $event->getForm();
 
+        if (!is_array($options)) {
+            $options = array();
+        }
+
         // what term are we dealing with for this options?
         $term_type = $form->getConfig()->getOption('term_type');
         $term_class = TermTypeCodes::getTermClassForTypeCode($term_type);
@@ -84,6 +89,7 @@ class TermEngineTermOptionsType extends AbstractType
             $form_options = array();
             // NOTE: to enhance our "guessing" algorithm, we could use the $options_resolver above to inspect the
             //       "allowed types" array on the various options and make a decision based on them.
+
             if (array_key_exists($option_name, $options)) {
                 if (is_array($options[$option_name])) {
                     $type = 'collection';

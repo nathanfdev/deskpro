@@ -38,6 +38,8 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm
@@ -47,6 +49,20 @@ class AgentTermSpec extends ObjectBehavior
     function it_is_a_term()
     {
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
+    }
+
+    function it_defines_its_options()
+    {
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('agent_ids')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
+            array(
+                'agent_ids' => array(
+                    new NotBlank(),
+                    new Type('array')
+                )
+            )
+        );
     }
 
     public function it_defaults_to_is_op()
@@ -59,11 +75,5 @@ class AgentTermSpec extends ObjectBehavior
         $this->setOp(TermInterface::OP_NOT);
 
         $this->getOp()->shouldReturn(TermInterface::OP_NOT);
-    }
-
-    function it_defines_its_options()
-    {
-        $resolver = $this->getOptionsResolver();
-        $resolver->isDefined('agent_ids')->shouldBe(true);
     }
 }

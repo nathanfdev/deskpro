@@ -120,3 +120,25 @@ Feature: /filters endpoint
   Scenario: I fail to GET the deleted filter
     When I send a GET request to "/api/v2/filters/1"
     Then the response status code should be 404
+
+  @reinstall
+  Scenario: If there is a missing term op, we use default op
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+    "title": "My Sales Tickets",
+    "term": {
+        "type": "agent",
+        "options": {
+            "agent_ids": [1,2]
+        }
+    }
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the JSON node "data.id" should exist
+    And the JSON node "data.title" should exist
+    And the JSON node "data.term.type" should be equal to "agent"
+    And the JSON node "data.term.op" should be equal to "is"
+    And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"

@@ -36,14 +36,18 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidTermEngineTerm;
+use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ValidTermEngineTerm()
+ * @Serializer\ExclusionPolicy("ALL")
  */
 abstract class AbstractTerm implements TermInterface
 {
     /**
      * @var TermOptionsResolver[]
+     * @Serializer\Exclude()
      */
     private static $options_resolvers = array();
 
@@ -51,6 +55,8 @@ abstract class AbstractTerm implements TermInterface
      * The op MUST be a supported TermInterface::OP_* constant.
      *
      * @var string the op for this term
+     * @Serializer\Expose()
+     * @Assert\NotNull
      */
     protected $op;
 
@@ -62,6 +68,7 @@ abstract class AbstractTerm implements TermInterface
      * getOptions() method (which uses OptionsResolver to resolve the options).
      *
      * @var array the defined settings
+     * @Serializer\Expose()
      */
     protected $options;
 

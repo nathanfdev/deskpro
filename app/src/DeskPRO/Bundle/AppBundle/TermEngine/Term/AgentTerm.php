@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class AgentTerm extends AbstractTerm
 {
@@ -51,9 +52,12 @@ class AgentTerm extends AbstractTerm
             )
         );
 
-        $options_resolver->setAllowedTypes(
+        $options_resolver->setConstraints(
             array(
-                'agent_ids' => 'array'
+                'agent_ids' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Type('array')
+                )
             )
         );
     }
