@@ -33,39 +33,48 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TicketSubjectTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setRequired(
-            array(
-                'subject',
-            )
-        );
-
         $resolver->setDefaults(
             array(
+                'subject' => null,
                 'wildcard_prefix' => false,
                 'wildcard_postfix' => false,
             )
         );
 
-        $resolver->setAllowedTypes(
+        $resolver->setConstraints(
             array(
-                'subject' => 'array',
-                /**
-                 * todo https://github.com/symfony/symfony/issues/12586
-                 * https://github.com/symfony/symfony/commit/a0e3757bf06a42cad076f5d64f4e0904bafee64a
-                 * This PR was submitted for the 2.3 branch but it was merged into the 2.7 branch instead
-                 */
-//                'wildcard_prefix' => 'boolean',
-//                'wildcard_postfix' => 'boolean',
+                'subject' => array(
+                    new Assert\NotNull(),
+                    new Assert\All(
+                        array(
+                            'constraints' => new Assert\NotBlank()
+                        )
+                    )
+                )
             )
         );
+    }
+
+    public function getSupportedOps()
+    {
+        return array(
+            TermInterface::OP_IS,
+            TermInterface::OP_NOT,
+            TermInterface::OP_HAS,
+            TermInterface::OP_NOT_HAS
+        );
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

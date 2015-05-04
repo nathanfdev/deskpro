@@ -33,32 +33,57 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TicketIdTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setRequired(
-            array(
-                'num',
-            )
-        );
-
         $resolver->setDefaults(
             array(
+                'num' => null,
                 'num2' => null,
             )
         );
 
-        $resolver->setAllowedTypes(
+        $resolver->setConstraints(
             array(
-                'num' => 'array',
-                'num2' => array('integer', 'null'),
+                'num' => array( // an array of numerics
+                    new Assert\NotNull(),
+                    new Assert\Type('array'),
+                    new Assert\All(
+                        array(
+                            'constraints' =>
+                                new Assert\Type('numeric')
+                        )
+                    )
+                ),
+                'num2' => array( // a numeric or null
+                    new Assert\Type('numeric')
+                )
             )
         );
+    }
+
+    public function getSupportedOps()
+    {
+        return array(
+            TermInterface::OP_IS,
+            TermInterface::OP_NOT,
+            TermInterface::OP_GT,
+            TermInterface::OP_GTE,
+            TermInterface::OP_LT,
+            TermInterface::OP_LTE,
+            TermInterface::OP_NOT_RANGE,
+            TermInterface::OP_RANGE
+        );
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

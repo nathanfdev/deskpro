@@ -33,39 +33,73 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TicketDateCreatedTerm extends AbstractTerm
 {
-    protected $op = TermInterface::OP_IS;
-
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setRequired(
-            array(
-                'date',
-            )
-        );
-
         $resolver->setDefaults(
             array(
+                'date' => null,
                 'date2' => null,
                 'ignore_time' => false,
             )
         );
 
-        $resolver->setAllowedTypes(
+        $date_normalizer = function ($options, $date) {
+            if (!$date) {
+                return null;
+            }
+
+            if ($date instanceof \DateTime || $date instanceof \DateTimeZone) {
+                return $date;
+            }
+
+            return new \DateTime((string)$date);
+        };
+
+        $resolver->setNormalizers(
             array(
-                'date' => 'datetime',
-                'date2' => array('datetime', 'null'),
-                /**
-                 * todo https://github.com/symfony/symfony/issues/12586
-                 * https://github.com/symfony/symfony/commit/a0e3757bf06a42cad076f5d64f4e0904bafee64a
-                 * This PR was submitted for the 2.3 branch but it was merged into the 2.7 branch instead
-                 */
-//                'ignore_time' => 'boolean',
+                'date' => $date_normalizer,
+                'date2' => $date_normalizer,
+                'ignore_time' => function ($options, $ignore_time) {
+                    return (bool)$ignore_time;
+                }
             )
         );
+
+        $resolver->setConstraints(
+            array(
+                'date' => array(
+                    new Assert\NotNull(),
+                    new Assert\DateTime()
+                ),
+                'date2' => array(
+                    new Assert\DateTime()
+                )
+            )
+        );
+    }
+
+    public function getSupportedOps()
+    {
+        return array(
+            TermInterface::OP_IS,
+            TermInterface::OP_NOT,
+            TermInterface::OP_GT,
+            TermInterface::OP_GTE,
+            TermInterface::OP_LT,
+            TermInterface::OP_LTE,
+            TermInterface::OP_NOT_RANGE,
+            TermInterface::OP_RANGE
+        );
+    }
+
+    public function getDefaultOp()
+    {
+        return TermInterface::OP_IS;
     }
 }

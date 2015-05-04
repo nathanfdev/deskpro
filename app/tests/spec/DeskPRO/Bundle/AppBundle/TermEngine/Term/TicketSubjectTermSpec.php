@@ -38,6 +38,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm
@@ -49,41 +50,47 @@ class TicketSubjectTermSpec extends ObjectBehavior
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
     }
 
-    function it_has_default_op_is()
+    public function it_defaults_to_is_op()
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
+        $this->getOp()->shouldReturn(TermInterface::OP_IS);
     }
 
-    function it_allows_op_change()
+    public function it_lets_you_change_the_op()
     {
         $this->setOp(TermInterface::OP_NOT);
 
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+        $this->getOp()->shouldReturn(TermInterface::OP_NOT);
     }
 
-    function it_sets_its_defaults(OptionsResolver $resolver)
+    public function it_defines_its_supported_options()
     {
-        $resolver->setRequired(
+        $this->getSupportedOps()->shouldBeLike(
             array(
-                'subject' => array(),
+                TermInterface::OP_IS,
+                TermInterface::OP_NOT,
+                TermInterface::OP_HAS,
+                TermInterface::OP_NOT_HAS
             )
-        )->shouldBeCalled();
+        );
+    }
 
-        $resolver->setAllowedTypes(
+    function it_defines_its_options()
+    {
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('subject')->shouldBe(true);
+        $resolver->isDefined('wildcard_prefix')->shouldBe(true);
+        $resolver->isDefined('wildcard_postfix')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
             array(
-                'subject' => 'array',
-                'wildcard_prefix' => 'boolean',
-                'wildcard_postfix' => 'boolean',
+                'subject' => array(
+                    new Assert\NotNull(),
+                    new Assert\All(
+                        array(
+                            'constraints' => new Assert\NotBlank()
+                        )
+                    )
+                )
             )
-        )->shouldBeCalled();
-
-        $resolver->setDefaults(
-            array(
-                'wildcard_prefix' => false,
-                'wildcard_postfix' => false,
-            )
-        )->shouldBeCalled();
-
-        $this->setDefaultOptions($resolver);
+        );
     }
 }

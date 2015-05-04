@@ -38,6 +38,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm
@@ -49,41 +50,50 @@ class TicketDateCreatedTermSpec extends ObjectBehavior
         $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermInterface');
     }
 
-    function it_has_default_op_is()
+    public function it_defaults_to_is_op()
     {
-        $this->getOp()->shouldBe(TermInterface::OP_IS);
+        $this->getOp()->shouldReturn(TermInterface::OP_IS);
     }
 
-    function it_allows_op_change()
+    public function it_lets_you_change_the_op()
     {
         $this->setOp(TermInterface::OP_NOT);
 
-        $this->getOp()->shouldBe(TermInterface::OP_NOT);
+        $this->getOp()->shouldReturn(TermInterface::OP_NOT);
     }
 
-    function it_sets_its_defaults(OptionsResolver $resolver)
+    public function it_defines_its_supported_options()
     {
-        $resolver->setRequired(
+        $this->getSupportedOps()->shouldBe(
             array(
-                'date',
+                TermInterface::OP_IS,
+                TermInterface::OP_NOT,
+                TermInterface::OP_GT,
+                TermInterface::OP_GTE,
+                TermInterface::OP_LT,
+                TermInterface::OP_LTE,
+                TermInterface::OP_NOT_RANGE,
+                TermInterface::OP_RANGE
             )
-        )->shouldBeCalled();
+        );
+    }
 
-        $resolver->setAllowedTypes(
+    function it_defines_its_options()
+    {
+        $resolver = $this->getOptionsResolver();
+        $resolver->isDefined('date')->shouldBe(true);
+        $resolver->isDefined('date2')->shouldBe(true);
+        $resolver->isDefined('ignore_time')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
             array(
-                'date' => 'datetime',
-                'date2' => 'datetime',
-                'ignore_time' => 'boolean',
+                'date' => array(
+                    new Assert\NotNull(),
+                    new Assert\DateTime()
+                ),
+                'date2' => array(
+                    new Assert\DateTime()
+                )
             )
-        )->shouldBeCalled();
-
-        $resolver->setDefaults(
-            array(
-                'date2' => null,
-                'ignore_time' => false,
-            )
-        )->shouldBeCalled();
-
-        $this->setDefaultOptions($resolver);
+        );
     }
 }
