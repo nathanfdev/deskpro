@@ -225,20 +225,39 @@ class KernelBooter
             exit;
         }
 
-        $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
-        if (preg_match('#^/agent(/|\?|$)#', $path)) {
-            define('DP_INTERFACE', 'agent');
-        } elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
-            define('DP_INTERFACE', 'admin');
-        } elseif (preg_match('#^/logout/.+#', $path)) {
-            define('DP_INTERFACE', 'agent');
-        } elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
-            define('DP_INTERFACE', 'billing');
-        } elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
-            define('DP_INTERFACE', 'reports');
+		$kernel_class = 'DeskPRO\\Kernel\\DpKernel';
+		if (preg_match('#^/agent(/|\?|$)#', $path)) {
+			define('DP_INTERFACE', 'agent');
+		} elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
+			define('DP_INTERFACE', 'admin');
+		} elseif (preg_match('#^/logout/.+#', $path)) {
+			define('DP_INTERFACE', 'agent');
+		} elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
+			define('DP_INTERFACE', 'billing');
+		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
+			define('DP_INTERFACE', 'reports');
+		} elseif (preg_match('#^/api/v2(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'apiv2');
+
+            self::bootstrapLib($debug);
+            self::bootstrapEnv();
+            require_once DP_ROOT . "/sys/Kernel/ApiKernel.php";
+            $kernel = new ApiKernel($env, $debug);
+
+            if ('dev' === $env) {
+                Debug::enable();
+            }
+
+            $request = Request::createFromGlobals();
+            $response = $kernel->handle($request);
+            $response->send();
+            $kernel->terminate($request, $response);
+            exit;
+
         } elseif (preg_match('#^/api(/|\?|$)#', $path)) {
-            define('DP_INTERFACE', 'api');
-        } elseif (preg_match('#^/install(/|\?|$)#', $path)) {
+			define('DP_INTERFACE', 'api');
+		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
+
             if (dp_get_config('is_installed_flag')) {
                 echo deskpro_install_basic_error("The database details in <var>config.php</var> are invalid or the database is not a valid DeskPRO database.<br/><br/>If this is a mistake and you intend to create a new installation into a new database, you must first delete the file <var>data/is_installed.dat</var> to make the installer function again.", 'Error');
                 exit;
@@ -704,7 +723,7 @@ class KernelBooter
             $app->setAutoExit(false);
 
             libxml_disable_entity_loader(false);
-            $return = $app->run();
+            $return = $app->run(new ArgvInput());
             unset($GLOBALS['DP_IS_IN_CLI']);
 
             return $return;
@@ -728,6 +747,33 @@ class KernelBooter
 
                 require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
                 $kernel = new PortalKernel($env, $debug);
+
+                $app = new Application($kernel);
+
+                libxml_disable_entity_loader(false); // needed on some machines
+
+                return $app->run($input);
+            }
+
+            if ($other_kernel == 'api') {
+                self::bootstrapConfig();
+
+                if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+                    $env = 'dev';
+                    $debug = true;
+                }
+
+                self::bootstrapLib($debug);
+                self::bootstrapEnv();
+
+                $input = new ArgvInput();
+                $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
+                        array('--no-debug', '')
+                    ) && $env !== 'prod';
+
+                require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
+                $kernel = new ApiKernel($env, $debug);
 
                 $app = new Application($kernel);
 
@@ -1011,7 +1057,9 @@ class KernelBooter
             $debug = false;
         }
 
-        define('DP_INTERFACE', 'cli');
+        if (!defined('DP_INTERFACE')) {
+            define('DP_INTERFACE', 'cli');
+        }
         $kernel = new \DeskPRO\Kernel\DpKernel($env, $debug, DP_INTERFACE);
         $kernel->boot($mode);
 
@@ -1816,3 +1864,4 @@ HTML;
     }
     /**#@-*/
 }
+

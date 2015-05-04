@@ -1,0 +1,120 @@
+imports:
+    - { resource: ../config.shared.php }
+
+# Keeping all parameter changes here rather than in various bundles
+parameters:
+  router.options.matcher.cache_class: null
+  portal.session.name: sess_data
+  doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
+  fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
+  hateoas.serializer.json_hal.class: DeskPRO\Bundle\ApiBundle\Serializer\HateoasJsonApiSerializer
+
+framework:
+    esi:             { enabled: true }
+    fragments:       { path: /_proxy }
+    #translator:      { fallback: "%locale%" }
+    secret:          "irrelevant - compiler pass will override this"
+    router:
+        resource: "%kernel.root_dir%/config/api_routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies:
+        - 127.0.0.1
+    session: ~
+#        handler_id:  session.handler.dbal
+    fragments:       ~
+    http_method_override: true
+
+jms_serializer:
+    visitors:
+        json:
+            options: JSON_PRETTY_PRINT
+
+fos_rest:
+    disable_csrf_role: ROLE_API
+    routing_loader:
+        default_format: json
+        include_format: false
+    allowed_methods_listener: true
+    body_converter:
+        enabled: false
+    param_fetcher_listener: true
+    body_listener:
+        default_format: json
+        throw_exception_on_unsupported_content_type:  true
+        decoders:
+            json: fos_rest.decoder.jsontoform
+    service:
+        inflector: api_url_inflector
+    format_listener:
+        rules:
+            - { path: '^/api/v2', priorities: ['json', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
+    exception:
+        enabled: true
+        exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
+    view:
+        view_response_listener: force
+        formats:
+            json: true
+            jsonp: true
+            html: false
+        jsonp_handler:
+            callback_param: callback
+        failed_validation: HTTP_BAD_REQUEST
+    routing_loader:
+        default_format: json
+
+nelmio_api_doc:
+    name: 'DeskPRO API Documentation'
+    sandbox:
+        enabled: true
+        body_format:
+            formats:
+                - json
+            default_format: json
+        request_format:
+            formats:
+                json: application/json
+            method: accept_header
+            default_format: json
+
+
+# Security Configuration
+security:
+    providers:
+        dp_person_user_provider:
+            id: dp_person_user_provider
+
+    firewalls:
+        api_doc:
+            pattern: ^/api/v2/doc
+            stateless: true
+            anonymous: ~
+        api_tokens_request:
+            pattern: ^/api/v2/api_tokens$
+            stateless: true
+            anonymous: ~
+        api:
+            pattern: ^/api/v2(?!/api_tokens|/doc)
+            stateless: true
+            simple_preauth:
+                authenticator: api_authenticator
+
+    access_control:
+        - { path: '^/api/v2(?!/api_tokens|/doc)', roles: ['ROLE_API'] }
+
+sensio_framework_extra:
+    cache:    { annotations: true }
+    security:    { annotations: true }
+
+white_october_pagerfanta:
+    default_view: deskpro
+    exceptions_strategy:
+        out_of_range_page:        to_http_not_found
+        not_valid_current_page:   to_http_not_found

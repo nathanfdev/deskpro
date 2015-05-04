@@ -1,0 +1,51 @@
+parameters:
+    test.client.parameters:
+        - HTTP_HOST: '/'
+
+services:
+
+    dataset_manager:
+        class: DpTests\TestBundle\DataSetManager
+        arguments:
+            sets:
+                - @dbset.empty
+                - @dbset.fresh
+                - @dbset.api
+                - @dbset.term_engine
+
+    dbset.empty:
+        class: DpTests\TestBundle\DataSet\EmptyDb
+        arguments:
+            - @service_container
+            - @doctrine.orm.default_entity_manager
+            - @doctrine.dbal.default_connection
+            - %kernel.cache_dir%/dbset
+
+    dbset.fresh:
+        class: DpTests\TestBundle\DataSet\FreshDb
+        arguments:
+            - @service_container
+            - @doctrine.orm.default_entity_manager
+            - @doctrine.dbal.default_connection
+            - %kernel.cache_dir%/dbset
+
+    dbset.api:
+        class: DpTests\TestBundle\DataSet\ApiDb
+        arguments:
+            - @service_container
+            - @doctrine.orm.default_entity_manager
+            - @doctrine.dbal.default_connection
+            - %kernel.cache_dir%/dbset
+
+    dbset.term_engine:
+        class: DpTests\TestBundle\DataSet\TermEngineDb
+        arguments:
+            - @service_container
+            - @doctrine.orm.default_entity_manager
+            - @doctrine.dbal.default_connection
+            - %kernel.cache_dir%/dbset
+
+    user_details:
+        class: DpTests\TestBundle\UserDetailsRepo
+        arguments:
+            - @doctrine.orm.default_entity_manager

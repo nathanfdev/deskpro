@@ -1,0 +1,62 @@
+Feature: Sandbox Widgets Example
+  In order to demonstrate the API working
+  As a developer
+  I want a fully functional endpoint
+
+  Background:
+    Given I install the api data set
+    And my request is authenticated
+
+  @reinstall
+  Scenario: I create a widget
+    When I send a POST request to "/api/v2/sandbox_widgets" with body:
+    """
+    {
+      "name": "My Awesome Widget",
+      "inventory": 10
+    }
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/sandbox_widgets/1"
+    And the JSON node "data" should exist
+    And the JSON node "data.name" should be equal to "My Awesome Widget"
+    And the JSON node "data.inventory" should be equal to 10
+    And the JSON node "data.links.self" should be equal to "/api/v2/sandbox_widgets/1"
+
+  Scenario: I GET a single widget
+    When I send a GET request to "/api/v2/sandbox_widgets/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.name" should be equal to "My Awesome Widget"
+    And the JSON node "data.inventory" should be equal to 10
+    And the JSON node "data.links.self" should be equal to "/api/v2/sandbox_widgets/1"
+
+  Scenario: I modify a widget
+    When I send a PUT request to "/api/v2/sandbox_widgets/1" with body:
+    """
+    {
+      "inventory": 4
+    }
+    """
+    Then the response status code should be 204
+    And the response should be empty
+
+  Scenario: I GET all the widgets and see the widget 1 was updated
+    When I send a GET request to "/api/v2/sandbox_widgets"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].name" should be equal to "My Awesome Widget"
+    And the JSON node "data[0].inventory" should be equal to 4
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/sandbox_widgets/1"
+
+  Scenario: I DELETE a widget
+    When I send a DELETE request to "/api/v2/sandbox_widgets/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+
+  Scenario: I fail to GET the deleted widget
+    When I send a GET request to "/api/v2/sandbox_widgets/1"
+    Then the response status code should be 404

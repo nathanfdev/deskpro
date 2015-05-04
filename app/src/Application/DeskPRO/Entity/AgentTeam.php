@@ -104,10 +104,14 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasAvatar()) {
-            return App::get('router')->generate('serve_default_picture', array(
-                's'        => $size,
-                'size-fit' => 1,
-            ), true);
+            return App::get('router')->generate(
+                'serve_default_picture',
+                array(
+                    's' => $size,
+                    'size-fit' => 1,
+                ),
+                true
+            );
         }
 
         return $this->avatar->getThumbnailUrl($size);
@@ -130,10 +134,30 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
-        $metadata->setPrimaryTable(array( 'name' => 'agent_teams'));
+        $metadata->setPrimaryTable(array('name' => 'agent_teams'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(
+            array(
+                'fieldName' => 'id',
+                'type' => 'integer',
+                'precision' => 0,
+                'scale' => 0,
+                'nullable' => false,
+                'columnName' => 'id',
+                'id' => true
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName' => 'name',
+                'type' => 'string',
+                'length' => 255,
+                'precision' => 0,
+                'scale' => 0,
+                'nullable' => false,
+                'columnName' => 'name'
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany(array(
             'fieldName'    => 'members',

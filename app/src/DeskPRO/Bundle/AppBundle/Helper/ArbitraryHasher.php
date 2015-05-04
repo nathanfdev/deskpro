@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\Common\Proxy\Proxy;
 
 /**
@@ -34,7 +35,7 @@ class ArbitraryHasher
             sort($inputs);
         }
 
-        $v =  md5(json_encode($inputs));
+        $v = md5(json_encode($inputs));
 
         return $v;
     }
@@ -45,7 +46,11 @@ class ArbitraryHasher
             return $input;
         }
 
-        if ($input instanceof DomainObject || $input instanceof Proxy || method_exists($input, 'getId')) {
+        if ($input instanceof DomainObject || $input instanceof NotifyPropertyChangeEntity || $input instanceof Proxy || method_exists(
+                $input,
+                'getId'
+            )
+        ) {
             return $input->getId();
         }
 

@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
-use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use Orb\Auth\Adapter\SsoLoginActionInterface;

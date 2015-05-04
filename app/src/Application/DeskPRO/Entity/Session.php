@@ -183,6 +183,21 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         return $id_enc.'-'.$this->auth;
     }
 
+    public function setAuth($auth_code)
+    {
+        $this->setModelField('auth', $auth_code);
+    }
+
+    public function setData($data)
+    {
+        $this->setModelField('data', $data);
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
     /**
      * Check a session code against some kind o finput to see
      * if they match.

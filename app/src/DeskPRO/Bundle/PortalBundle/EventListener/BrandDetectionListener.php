@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
@@ -50,7 +50,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class BrandDetectionListener implements EventSubscriberInterface
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 

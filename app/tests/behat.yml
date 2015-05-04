@@ -1,63 +1,96 @@
-default:
-  suites:
-    default:
-        contexts:
-            - Behat\MinkExtension\Context\MinkContext
-            - DpBehat\TestsContext:
-                session: @session
-                em: @doctrine.orm.default_entity_manager
-            - DpBehat\LanguageContext:
-                language_manager: @language_manager
-                em: @doctrine.orm.default_entity_manager
-                lang_repo: @language_repository
-                lang_stack: @language_stack
-            - DpBehat\PortalModeContext:
-                mode_storage: @portal_mode_storage
-                mode_factory: @portal_mode_factory
-            - DpBehat\AuthContext:
-                user_details: @user_details
-                token_storage: @security.token_storage
-            - DpBehat\RouterContext
-            - DpBehat\BehatHooksContext
-            - DpBehat\TicketsContext
-            - DpBehat\DataSetContext:
-                dataset_manager: @dataset_manager
+api:
+    suites:
+        api:
+            paths:
+                - %paths.base%/features/api
+                - %paths.base%/features/term-engine
+            contexts:
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - Behat\MinkExtension\Context\MinkContext
+                - behatch:json
+                - DpBehat\Api\RestContext
+                - DpBehat\Api\SandboxWidgetsContext:
+                    em: @doctrine.orm.default_entity_manager
+                - DpBehat\Api\AuthContext:
+                    em: @doctrine.orm.default_entity_manager
+                    user_details: @user_details
+                - DpBehat\TermEngine\TermEngineBehatContext
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            base_url: '/'
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DeskPRO\Kernel\ApiKernel
+                env: test
+                debug: true
 
-  extensions:
-    SensioLabs\Behat\PageObjectExtension:
-      namespaces:
-          page: DpBehat\Page\Portal
-          element: DpBehat\Page\Portal\Element
-    VIPSoft\CodeCoverageExtension\Extension:
-        drivers:
-            - local
-        report:
-            format: php
-            options:
-                target: coverage/cov/behat.cov
-        filter:
-            whitelist:
-                addUncoveredFilesFromWhitelist: true
-                include:
-                    directories:
-                        '../src/DeskPRO/Bundle/AppBundle':
-                            suffix: .php
-                        '../src/DeskPRO/Bundle/PortalBundle':
-                            suffix: .php
-                exclude:
-                    directories:
-                        '../vendor': ~
-                        '../vendor-src': ~
-    Behat\MinkExtension:
-       base_url: '/'
-       default_session: default
-       sessions:
-         default:
-           symfony2: ~
-    Behat\Symfony2Extension:
-        kernel:
-            bootstrap: features/bootstrap/boot.php
-            path: ../sys/Kernel/PortalKernel.php
-            class: DeskPRO\Kernel\PortalKernel
-            env: test
-            debug: true
+
+portal:
+    suites:
+        portal:
+            paths:
+                - %paths.base%/features/portal
+            contexts:
+                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\Portal\TestsContext:
+                    session: @session
+                    em: @doctrine.orm.default_entity_manager
+                - behatch:json
+                - behatch:rest
+                - DpBehat\LanguageContext:
+                    language_manager: @language_manager
+                    em: @doctrine.orm.default_entity_manager
+                    lang_repo: @language_repository
+                    lang_stack: @language_stack
+                - DpBehat\Portal\PortalModeContext:
+                    mode_storage: @portal_mode_storage
+                    mode_factory: @portal_mode_factory
+                - DpBehat\Portal\AuthContext:
+                    user_details: @user_details
+                    token_storage: @security.token_storage
+                - DpBehat\Portal\RouterContext
+                - DpBehat\Portal\TicketsContext
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            base_url: '/'
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/PortalKernel.php
+                class: DeskPRO\Kernel\PortalKernel
+                env: test
+                debug: true
+        SensioLabs\Behat\PageObjectExtension:
+            namespaces:
+                page: DpBehat\Portal\Page
+                element: DpBehat\Portal\Page\Element
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

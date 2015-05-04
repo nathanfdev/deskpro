@@ -28,7 +28,6 @@
 /**
  * DeskPRO
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -120,28 +119,28 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     const TAC_AUTHCODE_LEN = 15;
     const TAC_AUTHCODE_LEN_MAX = 30;
 
-    const CREATED_WEB_PERSON        = 'web.person';
+    const CREATED_WEB_PERSON = 'web.person';
     const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
     const CREATED_WEB_PERSON_WIDGET = 'web.person.widget';
-    const CREATED_WEB_PERSON_EMBED  = 'web.person.embed';
-    const CREATED_WEB_AGENT         = 'web.agent';
-    const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
-    const CREATED_WEB_API           = 'web.api';
-    const CREATED_WEB_API_PERSON    = 'web.api.person';
-    const CREATED_WEB_API_AGENT     = 'web.api.agent';
-    const CREATED_GATEWAY_PERSON    = 'gateway.person';
-    const CREATED_GATEWAY_AGENT     = 'gateway.agent';
+    const CREATED_WEB_PERSON_EMBED = 'web.person.embed';
+    const CREATED_WEB_AGENT = 'web.agent';
+    const CREATED_WEB_AGENT_PORTAL = 'web.agent.portal';
+    const CREATED_WEB_API = 'web.api';
+    const CREATED_WEB_API_PERSON = 'web.api.person';
+    const CREATED_WEB_API_AGENT = 'web.api.agent';
+    const CREATED_GATEWAY_PERSON = 'gateway.person';
+    const CREATED_GATEWAY_AGENT = 'gateway.agent';
 
     const STATUS_AWAITING_AGENT = 'awaiting_agent';
-    const STATUS_AWAITING_USER  = 'awaiting_user';
-    const STATUS_RESOLVED       = 'resolved';
-    const STATUS_ARCHIVED       = 'archived';
-    const STATUS_HIDDEN         = 'hidden';
+    const STATUS_AWAITING_USER = 'awaiting_user';
+    const STATUS_RESOLVED = 'resolved';
+    const STATUS_ARCHIVED = 'archived';
+    const STATUS_HIDDEN = 'hidden';
 
-    const HIDDEN_STATUS_VALIDATING  = 'validating';
-    const HIDDEN_STATUS_SPAM        = 'spam';
-    const HIDDEN_STATUS_DELETED     = 'deleted';
-    const HIDDEN_STATUS_TEMP        = 'temp';
+    const HIDDEN_STATUS_VALIDATING = 'validating';
+    const HIDDEN_STATUS_SPAM = 'spam';
+    const HIDDEN_STATUS_DELETED = 'deleted';
+    const HIDDEN_STATUS_TEMP = 'temp';
 
     /**#@+
      * These strings in $notify_email_name have special meanings.
@@ -149,7 +148,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * NOTIFY_NAME_PERSON: The person who sent the reply, or if no person (eg auto-response), then the helpdesk
      */
     const NOTIFY_NAME_HELPDESK = '__DP_HELPDESK__';
-    const NOTIFY_NAME_PERSON   = '__DP_PERSON__';
+    const NOTIFY_NAME_PERSON = '__DP_PERSON__';
     /**#@-*/
 
     /**
@@ -517,7 +516,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	protected $jira_issues;
 
 	/**
-     * If the tikcet was created from an email just now, then this is the reader
+     * If the ticket was created from an email just now, then this is the reader
      * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
      */
     public $email_reader;
@@ -644,6 +643,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     {
         $this->setModelField('ref', $ref);
         return $this;
+    }
+
+    public function setAgent(Person $agent = null)
+    {
+        $this->setModelField('agent', $agent);
     }
 
     /**
@@ -834,7 +838,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($this->person->findEmailAddress($email_address)) {
             return $this->person;
 
-        // Any of the participants
+            // Any of the participants
         } else {
             foreach ($this->getUserParticipants() as $person) {
                 if ($person->findEmailAddress($email_address)) {
@@ -919,9 +923,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function getFeedbackRatingType()
     {
-        if ($this->feedback_rating == 1) return 'positive';
-        elseif ($this->feedback_rating == -1) return 'negative';
-        else return 'neutral';
+        if ($this->feedback_rating == 1) {
+            return 'positive';
+        } elseif ($this->feedback_rating == -1) {
+            return 'negative';
+        } else {
+            return 'neutral';
+        }
     }
 
     /**
@@ -987,7 +995,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     {
         $person_id = $person_or_id;
         if ($person_or_id instanceof Person) {
-            $person_id = $person_or_id['id'];
+            $person_id = $person_or_id->getId();
         }
 
         // User not commited yet, so obviously they dont exist
@@ -996,7 +1004,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         foreach ($this->participants as $p) {
-            if ($p->person->id == $person_id) {
+            if ($p->person->getId() == $person_id) {
                 return $p;
             }
         }
@@ -1021,8 +1029,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             return null;
         }
 
-        if ($this->person && $person->id == $this->person->id && DP_INTERFACE != 'agent') {
-            return null;
+        if ($this->person && $person->getId() == $this->person->getId() && ((defined(
+                        'DP_INTERFACE'
+                    ) && DP_INTERFACE != 'agent') || !defined('DP_INTERFACE'))
+        ) {
+            return;
         }
 
         if ($ticket_part = $this->hasParticipantPerson($person)) {
@@ -1034,7 +1045,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $ticket_part['ticket'] = $this;
         $this->participants->add($ticket_part);
 
-        if ($this->_user_participants !== null AND !$person['is_agent']) {
+        if ($this->_user_participants !== null && !$person['is_agent']) {
             $this->_user_participants[] = $ticket_part;
         }
 
@@ -1099,11 +1110,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
          * so we're fetching them manually
          */
 
-        $participants = App::getOrm()->createQuery("
+        $participants = App::getOrm()->createQuery(
+            "
             SELECT p
             FROM DeskPRO:TicketParticipant p
             WHERE p.ticket = ?1
-        ")->setParameter(1, $this)->execute();
+        "
+        )->setParameter(1, $this)->execute();
 
         foreach ($participants as $k => $part) {
             if (!$part->person['is_agent']) {
@@ -1159,11 +1172,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $set_user_ids = array_keys($set_user_ids_info);
 
-        $participants = App::getOrm()->createQuery("
+        if ($this->id > 0) {
+            $participants = App::getOrm()->createQuery(
+                "
             SELECT p
             FROM DeskPRO:TicketParticipant p
             WHERE p.ticket = ?1
-        ")->setParameter(1, $this)->execute();
+          "
+            )->setParameter(1, $this)->execute();
+        } else {
+            $participants = array();
+        }
 
         foreach ($participants as $k => $part) {
             if ($part->person['is_agent']) continue;
@@ -1175,7 +1194,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 $got_user_ids[] = $part->person['id'];
 
                 $info = $set_user_ids_info[$part->person['id']];
-                if ($info[1] AND $info[1] != $part->person_email['id']) {
+                if ($info[1] && $info[1] != $part->person_email['id']) {
                     $part->setPersonEmailId($info[1]);
                 }
             }
@@ -1400,7 +1419,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
                 if (!$this->date_first_agent_reply) {
                     $this['date_first_agent_reply'] = $now;
-                    $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp(
+                    $this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp(
                         ) - $this->date_created->getTimestamp();
                 }
             }
@@ -1609,6 +1628,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
+        // TODO: this is only 1 level deep for the hierarchy. fine for now, but may need to change.
         foreach ($this->custom_data as $data) {
             if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
                 return true;
@@ -1752,8 +1772,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this['language'] = $person->getRealLanguage();
         }
 
-        if ($person->organization) {
-            $this['organization'] = $person->organization;
+        if ($organization = $person->getOrganization()) {
+            $this->setOrganization($organization);
         }
 
         if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
@@ -2155,16 +2175,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($color == 'none') $color = null;
 
         if ($color) {
-            App::getDb()->replace('tickets_flagged', array(
-                'person_id' => $person['id'],
-                'ticket_id' => $this->id,
-                'color'     => $color
-            ));
+            App::getDb()->replace(
+                'tickets_flagged',
+                array(
+                    'person_id' => $person['id'],
+                    'ticket_id' => $this->id,
+                    'color' => $color,
+                )
+            );
         } else {
-            App::getDb()->delete('tickets_flagged', array(
-                'person_id' => $person['id'],
-                'ticket_id' => $this->id,
-            ));
+            App::getDb()->delete(
+                'tickets_flagged',
+                array(
+                    'person_id' => $person['id'],
+                    'ticket_id' => $this->id,
+                )
+            );
         }
     }
 
@@ -2176,11 +2202,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function getDeletionRecord()
     {
-        $del = App::getOrm()->createQuery("
+        $del = App::getOrm()->createQuery(
+            "
             SELECT d
             FROM DeskPRO:TicketDeleted d
             WHERE d.ticket_id = ?1
-        ")->setParameter(1, $this->id)->getOneOrNullResult();
+        "
+        )->setParameter(1, $this->id)->getOneOrNullResult();
 
         return $del;
     }
@@ -2371,7 +2399,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $old_status_code = $this->getStatusCode();
 
         if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
-            $this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
+            $this->setModelField(
+                'total_user_waiting',
+                $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp()
+            );
             $this->addWaitingTimeRecord('user', $this->date_user_waiting);
         }
         if ($status == 'awaiting_agent' && !$this->date_user_waiting) {
@@ -2414,27 +2445,37 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             list($status, $hstatus) = explode('.', $status, 2);
         }
 
-        if (!$status || !in_array($status, array(
-            self::STATUS_AWAITING_AGENT,
-            self::STATUS_AWAITING_USER,
-            self::STATUS_ARCHIVED,
-            self::STATUS_RESOLVED,
-            self::STATUS_HIDDEN
-        ))) {
+        if (!$status || !in_array(
+                $status,
+                array(
+                    self::STATUS_AWAITING_AGENT,
+                    self::STATUS_AWAITING_USER,
+                    self::STATUS_ARCHIVED,
+                    self::STATUS_RESOLVED,
+                    self::STATUS_HIDDEN,
+                )
+            )
+        ) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
 
-        if ($hstatus && !in_array($hstatus, array(
-            self::HIDDEN_STATUS_DELETED,
-            self::HIDDEN_STATUS_SPAM,
-            self::HIDDEN_STATUS_VALIDATING,
-            self::HIDDEN_STATUS_TEMP
-        ))) {
+        if ($hstatus && !in_array(
+                $hstatus,
+                array(
+                    self::HIDDEN_STATUS_DELETED,
+                    self::HIDDEN_STATUS_SPAM,
+                    self::HIDDEN_STATUS_VALIDATING,
+                    self::HIDDEN_STATUS_TEMP,
+                )
+            )
+        ) {
             throw new \InvalidArgumentException("Invalid hidden status `$hstatus`");
         }
 
         if ($hstatus && $status != 'hidden') {
-            throw new \InvalidArgumentException("Invalid status must be hidden to set a hidden status, got `$status` instead.");
+            throw new \InvalidArgumentException(
+                "Invalid status must be hidden to set a hidden status, got `$status` instead."
+            );
         }
 
         $this->setModelField('status', $status);
@@ -2558,11 +2599,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $del = new TicketDeleted();
         }
 
-        $del['ticket_id']     = $this->id;
-        $del['old_ptac']      = $this->auth;
-        $del['by_person']     = $person;
+        $del['ticket_id'] = $this->id;
+        $del['old_ptac'] = $this->auth;
+        $del['by_person'] = $person;
         $del['new_ticket_id'] = 0;
-        $del['reason']        = $reason;
+        $del['reason'] = $reason;
 
         $this->setStatus('hidden.deleted');
 
@@ -2800,10 +2841,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public static function decodeAccessCode($access_code)
     {
         $len = Ticket::TAC_AUTHCODE_LEN;
-        if (strlen($access_code) < ($len+1)) return false;
+        if (strlen($access_code) < ($len + 1)) {
+            return false;
+        }
 
-        $matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
-        if (!$matches) return false;
+        $matches = Strings::extractRegexMatch('#^(.+)(.{' . $len . '})$#', $access_code, -1);
+        if (!$matches) {
+            return false;
+        }
 
         list (, $ticket_id, $auth) = $matches;
 
@@ -3009,13 +3054,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $display_name = $to_user ? $this->person->getDisplayNameUser() : $this->person->getDisplayName();
 
-        $repl = array_merge(array(
-            'user.name'                   => $display_name,
-            'user.email'                  => $this->person->getPrimaryEmailAddress(),
-            'user.organization_position'  => $this->person->organization_position,
-
-            'org.name' => $this->person->organization ? $this->person->organization->name : '',
-        ), $repl);
+        $repl = array_merge(
+            array(
+                'user.name' => $display_name,
+                'user.email' => $this->person->getPrimaryEmailAddress(),
+                'user.organization_position' => $this->person->organization_position,
+                'org.name' => $this->person->organization ? $this->person->organization->name : '',
+            ),
+            $repl
+        );
 
         // Custom user fields: {{ user.field23 }}
         $field_manager = App::getSystemService('person_fields_manager');
@@ -3040,13 +3087,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($performer) {
             $display_name = $to_user ? $performer->getDisplayNameUser() : $performer->getDisplayName();
 
-            $repl = array_merge(array(
-                'performer.name'                   => $display_name,
-                'performer.email'                  => $performer->getPrimaryEmailAddress(),
-                'performer.organization_position'  => $performer->organization_position,
-
-                'performer.org.name' => $performer->organization ? $performer->organization->name : '',
-            ), $repl);
+            $repl = array_merge(
+                array(
+                    'performer.name' => $display_name,
+                    'performer.email' => $performer->getPrimaryEmailAddress(),
+                    'performer.organization_position' => $performer->organization_position,
+                    'performer.org.name' => $performer->organization ? $performer->organization->name : '',
+                ),
+                $repl
+            );
 
             $field_manager = App::getSystemService('person_fields_manager');
             $custom_fields = $field_manager->getRenderedToTextForObject($performer);
@@ -3062,12 +3111,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 }
             }
         } else {
-            $repl = array_merge(array(
-                'performer.name'                   => '',
-                'performer.email'                  => '',
-                'performer.organization_position'  => '',
-                'performer.org.name' => '',
-            ), $repl);
+            $repl = array_merge(
+                array(
+                    'performer.name' => '',
+                    'performer.email' => '',
+                    'performer.organization_position' => '',
+                    'performer.org.name' => '',
+                ),
+                $repl
+            );
         }
 
         if ($this->agent) {
@@ -3076,21 +3128,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $agent_display_name = '';
         }
 
-        $repl = array_merge(array(
-            'ticket.id'               => $this->id,
-            'ticket.ref'              => $this->ref,
-            'ticket.subject'          => $this->subject,
-            'ticket.department'       => $this->department ? $this->department->full_title : '',
-            'ticket.product'          => $this->product ? $this->product->full_title : '',
-            'ticket.category'         => $this->category ? $this->category->full_title : '',
-            'ticket.workflow'         => $this->workflow ? $this->workflow->title : '',
-            'ticket.priority'         => $this->priority ? $this->priority->title : '',
-
-            'agent.name'     => $agent_display_name,
-            'agent.email'    => $this->agent ? $this->agent->getPrimaryEmailAddress() : '',
-
-            'agent_team.name' => $this->agent_team ? $this->agent_team->name : '',
-        ), $repl);
+        $repl = array_merge(
+            array(
+                'ticket.id' => $this->id,
+                'ticket.ref' => $this->ref,
+                'ticket.subject' => $this->subject,
+                'ticket.department' => $this->department ? $this->department->full_title : '',
+                'ticket.product' => $this->product ? $this->product->full_title : '',
+                'ticket.category' => $this->category ? $this->category->full_title : '',
+                'ticket.workflow' => $this->workflow ? $this->workflow->title : '',
+                'ticket.priority' => $this->priority ? $this->priority->title : '',
+                'agent.name' => $agent_display_name,
+                'agent.email' => $this->agent ? $this->agent->getPrimaryEmailAddress() : '',
+                'agent_team.name' => $this->agent_team ? $this->agent_team->name : '',
+            ),
+            $repl
+        );
 
         // Custom ticket fields: {{ ticket.field23 }}
         $field_manager = App::getSystemService('ticket_fields_manager');
@@ -3103,7 +3156,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             if ($escape) {
                 $v = htmlspecialchars($v);
             }
-            $string = str_replace("{{". $k ."}}", $v, $string);
+            $string = str_replace("{{" . $k . "}}", $v, $string);
             $string = str_replace("{{" . $k . "}}", $v, $string);
         }
 
@@ -3458,9 +3511,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->inheritanceType = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
         $metadata->addLifecycleCallback('_ensureSubject', 'prePersist');
         $metadata->addLifecycleCallback('_setOriginalId', 'postLoad');

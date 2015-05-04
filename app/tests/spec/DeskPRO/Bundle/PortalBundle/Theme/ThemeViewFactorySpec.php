@@ -31,7 +31,7 @@
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory;
 use PhpSpec\ObjectBehavior;
 

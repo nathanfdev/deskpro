@@ -1,0 +1,8 @@
+services:
+
+  validator.primary_key_exists:
+      class: DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExistsValidator
+      arguments:
+        - @doctrine.dbal.default_connection
+      tags:
+        - { name: validator.constraint_validator, alias: 'primary_key_exists_validator' }

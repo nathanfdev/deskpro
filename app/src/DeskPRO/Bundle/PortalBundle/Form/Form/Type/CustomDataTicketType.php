@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
-use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -42,7 +42,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CustomDataTicketType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
      */
     private $field_manager;
 

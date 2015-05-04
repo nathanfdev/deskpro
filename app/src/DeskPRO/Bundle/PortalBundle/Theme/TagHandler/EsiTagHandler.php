@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO.
@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -65,11 +66,15 @@ class EsiTagHandler implements TagHandlerInterface
      */
     private $mode_storage;
 
-    public function __construct(ContainerInterface $container, PortalCacheHelper $portal_cache_helper, PortalModeStorage $mode_storage)
+    public function __construct(
+        ContainerInterface $container,
+        PortalCacheHelper $portal_cache_helper,
+        PortalModeStorage $mode_storage
+    )
     {
         $this->portal_cache_helper = $portal_cache_helper;
-        $this->container           = $container;
-        $this->mode_storage        = $mode_storage;
+        $this->container = $container;
+        $this->mode_storage = $mode_storage;
     }
 
     public function supports(Tag $tag, TagRequest $tag_request)
@@ -82,7 +87,11 @@ class EsiTagHandler implements TagHandlerInterface
         $this->filterRequest($tag_request);
 
         return $this->container->get('fragment.renderer.esi')->render(
-            new ControllerReference($tag->getControllerName(), $tag_request->attributes->all(), $tag_request->query->all()),
+            new ControllerReference(
+                $tag->getControllerName(),
+                $tag_request->attributes->all(),
+                $tag_request->query->all()
+            ),
             $tag_request,
             array('ignore_errors' => true)
         );
@@ -97,7 +106,7 @@ class EsiTagHandler implements TagHandlerInterface
         $tag_request->attributes->replace(
             $new_attrs
         );
-        $new_query                        = $this->filterOutObjects($tag_request->query);
+        $new_query = $this->filterOutObjects($tag_request->query);
         $new_query[PortalMode::ATTR_NAME] = $this->mode_storage->getSerializedMode();
         $tag_request->query->replace(
             $new_query
@@ -113,7 +122,7 @@ class EsiTagHandler implements TagHandlerInterface
             }
 
             if (is_object($val)) {
-                if (!$val instanceof DomainObject) {
+                if (!($val instanceof DomainObject || $val instanceof NotifyPropertyChangeEntity)) {
                     continue;
                 }
                 $val = $val->getId();

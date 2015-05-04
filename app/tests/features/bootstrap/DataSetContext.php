@@ -31,10 +31,11 @@
 
 namespace DpBehat;
 
+use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use DpBehat\TestBundle\DataSetManager;
+use DpTests\TestBundle\DataSetManager;
 
-class DataSetContext extends BasePortalContext
+class DataSetContext extends BaseContext
 {
     /**
      * @var DataSetManager

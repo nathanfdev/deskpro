@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -62,7 +63,7 @@ class TagRequestFactory
     }
 
     /**
-     * @param Tag   $tag
+     * @param Tag $tag
      * @param array $arguments
      *
      * @return array
@@ -71,7 +72,7 @@ class TagRequestFactory
     {
         $new_args = array();
         foreach ($arguments as $key => $value) {
-            if ($value instanceof DomainObject) {
+            if ($value instanceof DomainObject || $value instanceof NotifyPropertyChangeEntity) {
                 $value = $value->getId();
             }
 
@@ -88,7 +89,7 @@ class TagRequestFactory
     }
 
     /**
-     * @param Tag   $tag
+     * @param Tag $tag
      * @param array $arguments
      *
      * @return array

@@ -154,23 +154,23 @@ class DataInitializer
             return;
         }
 
-        for ($i = 1; $i <= 5; $i++) {
-            $this->container->getDb()->insert('ticket_filter_subscriptions', array(
-                'filter_id'             => $i,
-                'person_id'             => $agent->id,
-                'email_created'         => 1,
-                'email_new'             => 1,
-                'email_user_activity'   => 1,
-                'email_agent_activity'  => 1,
-                'email_agent_note'      => 1,
-                'email_property_change' => 1,
-                'alert_created'         => 1,
-                'alert_new'             => 1,
-                'alert_user_activity'   => 1,
-                'alert_agent_activity'  => 1,
-                'alert_property_change' => 1,
-            ));
-        }
+//        for ($i = 1; $i <= 5; $i++) {
+//            $this->container->getDb()->insert('ticket_filter_subscriptions', array(
+//                'filter_id'             => $i,
+//                'person_id'             => $agent->id,
+//                'email_created'         => 1,
+//                'email_new'             => 1,
+//                'email_user_activity'   => 1,
+//                'email_agent_activity'  => 1,
+//                'email_agent_note'      => 1,
+//                'email_property_change' => 1,
+//                'alert_created'         => 1,
+//                'alert_new'             => 1,
+//                'alert_user_activity'   => 1,
+//                'alert_agent_activity'  => 1,
+//                'alert_property_change' => 1,
+//            ));
+//        }
 
         $prefs                                = array();
         $prefs['chat_message.email']          = 1;

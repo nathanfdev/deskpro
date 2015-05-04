@@ -33,12 +33,13 @@ namespace DpBehat;
 
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
+use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use Doctrine\ORM\EntityManager;
 
-class LanguageContext extends BasePortalContext
+class LanguageContext extends BaseContext
 {
     /**
      * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager

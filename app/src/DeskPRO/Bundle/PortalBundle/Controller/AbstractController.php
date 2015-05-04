@@ -131,7 +131,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
      */
     public function getBrandContainer()
     {
@@ -293,7 +293,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Person\PersonFactory
+     * @return \DeskPRO\Bundle\PortalBundle\Person\PersonFactory
      */
     protected function getPersonFactory()
     {

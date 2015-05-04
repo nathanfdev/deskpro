@@ -32,13 +32,13 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Twig_Error_Loader;
 
 class PortalLoader implements \Twig_LoaderInterface
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 
@@ -116,7 +116,7 @@ class PortalLoader implements \Twig_LoaderInterface
 
     /**
      * @throws \RuntimeException
-     * @return \DeskPRO\Bundle\AppBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
      *
      */
     protected function getBrandContainer()

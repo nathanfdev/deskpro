@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
-use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,7 +46,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class PersonRegistrationType extends AbstractType
 {
     /**
-     * @var FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
      */
     private $field_manager;
 

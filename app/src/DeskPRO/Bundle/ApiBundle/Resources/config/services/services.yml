@@ -1,0 +1,52 @@
+services:
+
+  api_view_representation_factory:
+      class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
+
+  jsonp_format_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
+      tags:
+          - { name: kernel.event_subscriber }
+
+
+  json_body_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\JsonBodyListener
+      tags:
+          - { name: kernel.event_subscriber }
+
+  json_headers_response_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener
+      arguments:
+          - @serializer
+      tags:
+        - { name: 'kernel.event_subscriber' }
+
+  api_url_inflector:
+      class: DeskPRO\Bundle\ApiBundle\Util\UrlInflector
+
+  error_message_factory:
+      class: DeskPRO\Bundle\ApiBundle\Error\ErrorMessageFactory
+      arguments:
+        - @deskpro.core.translate
+
+  error_code_factory:
+      class: DeskPRO\Bundle\ApiBundle\Error\ErrorCodeFactory
+      arguments:
+          - @error_code_factory_exception
+          - @error_code_factory_validator
+
+  error_code_factory_validator:
+      class: DeskPRO\Bundle\ApiBundle\Error\ValidatorErrorCodeFactory
+
+  error_code_factory_exception:
+      class: DeskPRO\Bundle\ApiBundle\Error\ExceptionErrorCodeFactory
+
+  api_error_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\ApiExceptionListener
+      tags:
+        - { name: kernel.event_subscriber }
+
+  term_engine.serializer.jms_subscriber:
+      class: DeskPRO\Bundle\ApiBundle\Serializer\EventListener\TermEngineTermSubscriber
+      tags:
+        - { name: jms_serializer.event_subscriber }

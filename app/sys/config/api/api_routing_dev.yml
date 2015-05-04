@@ -1,0 +1,2 @@
+_main:
+    resource: api_routing.yml

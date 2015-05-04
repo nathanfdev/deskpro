@@ -31,7 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
