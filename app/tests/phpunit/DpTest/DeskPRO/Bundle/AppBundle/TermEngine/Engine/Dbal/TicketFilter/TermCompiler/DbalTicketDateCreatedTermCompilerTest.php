@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,25 +31,26 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketDateCreatedTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper
- */
-class DbalDateHelperSpec extends ObjectBehavior
+class DbalTicketDateCreatedTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
-    function it_is_a_dbal_helper()
+    /**
+     * @var DbalTicketDateCreatedTermCompiler
+     */
+    protected $term_compiler;
+
+    public function setUp()
     {
-        $this->shouldImplement('DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface');
-        $this->getId()->shouldBe('date');
+        $this->term_compiler = $this->get('term_engine.dbal_ticket_filters.compiler.ticket_date_created');
     }
 
-    function it_handles_the_simple_cases()
+    function testSimpleCases()
     {
         $date = new \DateTime('now', new \DateTimeZone('Europe/London'));
         $date2 = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
@@ -74,28 +75,21 @@ class DbalDateHelperSpec extends ObjectBehavior
 
         foreach ($ops as $op => $where) {
             if (TermInterface::OP_RANGE === $op || TermInterface::OP_NOT_RANGE === $op) {
-                $query_part = $this->buildQueryPart('ticket.date_created', $op, $date, $date2);
-                $query_part->getParameters()->shouldBe(
-                    array(
-                        'date' => $check1,
-                        'date2' => $check2,
-                    )
-                );
+                $term = new TicketDateCreatedTerm(array('date' => $date, 'date2' => $date2), $op);
+                $query_part = $this->term_compiler->compile($term);
+                $this->assertParameters($query_part, array('date' => $check1, 'date2' => $check2));
             } else {
-                $query_part = $this->buildQueryPart('ticket.date_created', $op, $date);
-                $query_part->getParameters()->shouldBe(
-                    array(
-                        'date' => $check1,
-                    )
-                );
+                $term = new TicketDateCreatedTerm(array('date' => $date), $op);
+                $query_part = $this->term_compiler->compile($term);
+                $this->assertParameters($query_part, array('date' => $check1));
             }
-            $query_part->getWhereString()->shouldBe($where);
-            $query_part->getJoins()->shouldBe(array());
-            $query_part->getUniqueJoins()->shouldBe(array());
+            $this->assertWhere($query_part, $where);
+            $this->assertNoJoins($query_part);
+            $this->assertNoUniqueJoins($query_part);
         }
     }
 
-    function it_converts_single_date_into_range()
+    function testSingleDateIntoRange()
     {
         $date = new \DateTime('now', new \DateTimeZone('Europe/London'));
 
@@ -119,26 +113,18 @@ class DbalDateHelperSpec extends ObjectBehavior
 
         foreach ($ops as $op => $where) {
 
-            $query_part = $this->buildQueryPart('ticket.date_created', $op, $date, null, true);
+            $term = new TicketDateCreatedTerm(array('date' => $date, 'ignore_time' => true), $op);
+            $query_part = $this->term_compiler->compile($term);
 
             if (in_array($op, array(TermInterface::OP_RANGE, TermInterface::OP_NOT_RANGE, TermInterface::OP_IS, TermInterface::OP_NOT))) {
-                $query_part->getParameters()->shouldBe(
-                    array(
-                        'date' => $check1,
-                        'date2' => $check2,
-                    )
-                );
+                $this->assertParameters($query_part, array('date' => $check1, 'date2' => $check2));
             } else {
-                $query_part->getParameters()->shouldBe(
-                    array(
-                        'date' => $check1,
-                    )
-                );
+                $this->assertParameters($query_part, array('date' => $check1));
             }
 
-            $query_part->getWhereString()->shouldBe($where);
-            $query_part->getJoins()->shouldBe(array());
-            $query_part->getUniqueJoins()->shouldBe(array());
+            $this->assertWhere($query_part, $where);
+            $this->assertNoJoins($query_part);
+            $this->assertNoUniqueJoins($query_part);
         }
     }
 }

@@ -102,6 +102,30 @@ services:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm'
 
+    term_engine.dbal_ticket_filters.compiler.ticket_id:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketIdTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketIdTerm'
+
+    term_engine.dbal_ticket_filters.compiler.ticket_subject:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketSubjectTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubjectTerm'
+
+    term_engine.dbal_ticket_filters.compiler.ticket_date_created:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketDateCreatedTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm'
+
 
     #
     # VISITORS

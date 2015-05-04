@@ -34,6 +34,8 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class DbalNumericHelper implements TermCompilerHelperInterface
 {
@@ -46,5 +48,67 @@ class DbalNumericHelper implements TermCompilerHelperInterface
     public function getId()
     {
         return 'numeric';
+    }
+
+    /**
+     * @param $field_name
+     * @param $op
+     * @param array $num
+     * @param null $num2
+     * @return DbalQueryPart
+     */
+    public function buildQueryPart($field_name, $op, array $num, $num2 = null)
+    {
+        $part = new DbalQueryPart();
+
+        $num = array_unique(array_map('intval', $num));
+        $num = $num ?: array(0);
+
+        $where = $field_name . ' ';
+
+        switch ($op) {
+            case TermInterface::OP_NOT:
+                $where .= 'NOT IN (:num)';
+                break;
+            case TermInterface::OP_GT:
+                $where .= '> :num';
+                $num = max($num);
+                break;
+            case TermInterface::OP_GTE:
+                $where .= '>= :num';
+                $num = max($num);
+                break;
+            case TermInterface::OP_LT:
+                $where .= '< :num';
+                $num = min($num);
+                break;
+            case TermInterface::OP_LTE:
+                $where .= '<= :num';
+                $num = min($num);
+                break;
+            case TermInterface::OP_RANGE:
+                $where .= 'BETWEEN :num AND :num2';
+                $num = reset($num);
+                $num2 = max($num, $num2);
+                break;
+            case TermInterface::OP_NOT_RANGE:
+                $where .= 'NOT BETWEEN :num AND :num2';
+                $num = reset($num);
+                $num2 = max($num, $num2);
+                break;
+            case TermInterface::OP_IS:
+            default:
+                $where .= 'IN (:num)';
+                break;
+        }
+
+        $part->setParameter('num', $num);
+        if (null !== $num2 && (TermInterface::OP_RANGE === $op || TermInterface::OP_NOT_RANGE === $op)) {
+            $part->setParameter('num2', $num2);
+        }
+
+        $part->setWhereString($where);
+
+        return $part;
     }
 }
