@@ -4,7 +4,7 @@ Feature: /filters endpoint
   I want an endpoint for filters
 
   Background:
-    Given I install the api data set
+    Given I install the "api" data set
     And my request is authenticated
 
   @reinstall
@@ -191,7 +191,7 @@ Feature: /filters endpoint
         "type": "ticket_custom_data",
         "op": "is",
         "options": {
-          "field_id": 5,
+          "field_id": 1,
           "input": "test"
         }
       },

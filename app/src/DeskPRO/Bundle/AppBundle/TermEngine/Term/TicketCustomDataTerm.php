@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TicketCustomDataTerm extends AbstractTerm
@@ -52,7 +53,12 @@ class TicketCustomDataTerm extends AbstractTerm
         $resolver->setConstraints(
             array(
                 'field_id' => array(
-                    new Assert\NotBlank()
+                    new Assert\NotBlank(),
+                    new PrimaryKeyExists(
+                        array(
+                            'table' => 'custom_def_ticket'
+                        )
+                    )
                 )
             )
         );

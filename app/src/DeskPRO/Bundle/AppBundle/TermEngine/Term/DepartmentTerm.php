@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class DepartmentTerm extends AbstractTerm
@@ -51,7 +52,12 @@ class DepartmentTerm extends AbstractTerm
             array(
                 'department_ids' => array(
                     new Assert\NotBlank(),
-                    new Assert\Type('array')
+                    new Assert\Type('array'),
+                    new PrimaryKeyExists(
+                        array(
+                            'table' => 'departments'
+                        )
+                    )
                 )
             )
         );

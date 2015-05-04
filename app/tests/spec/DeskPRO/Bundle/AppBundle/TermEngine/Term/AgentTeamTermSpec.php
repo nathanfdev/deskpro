@@ -34,10 +34,12 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm
@@ -65,5 +67,19 @@ class AgentTeamTermSpec extends ObjectBehavior
     {
         $resolver = $this->getOptionsResolver();
         $resolver->isDefined('agent_team_ids')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
+            array(
+                'agent_team_ids' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Type('array'),
+                    new PrimaryKeyExists(
+                        array(
+                            'table' => 'agent_teams',
+                            'excluded_values' => array(AgentTeamTerm::TEAM_ID_ME)
+                        )
+                    )
+                )
+            )
+        );
     }
 }

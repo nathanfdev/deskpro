@@ -33,11 +33,13 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatusTerm
@@ -60,5 +62,32 @@ class TicketStatusTermSpec extends ObjectBehavior
     {
         $resolver = $this->getOptionsResolver();
         $resolver->isDefined('status')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
+            array(
+                'status' => array(
+                    New Assert\NotBlank(),
+                    new Assert\Type('array'),
+                    new Assert\Choice(
+                        array(
+                            'multiple' => true,
+                            'choices' => array(
+                                Ticket::STATUS_ARCHIVED,
+                                Ticket::STATUS_AWAITING_AGENT,
+                                Ticket::STATUS_AWAITING_USER,
+                                Ticket::STATUS_RESOLVED,
+                                Ticket::HIDDEN_STATUS_DELETED,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_DELETED,
+                                Ticket::HIDDEN_STATUS_SPAM,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_SPAM,
+                                Ticket::HIDDEN_STATUS_TEMP,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_TEMP,
+                                Ticket::HIDDEN_STATUS_VALIDATING,
+                                Ticket::STATUS_HIDDEN . '.' . Ticket::HIDDEN_STATUS_VALIDATING,
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 }

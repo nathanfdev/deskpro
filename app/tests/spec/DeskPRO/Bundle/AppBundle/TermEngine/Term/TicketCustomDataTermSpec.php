@@ -34,10 +34,12 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm
@@ -72,153 +74,16 @@ class TicketCustomDataTermSpec extends ObjectBehavior
         $resolver->isDefined('input')->shouldBe(true);
         $resolver->isDefined('values')->shouldBe(true);
         $resolver->isDefined('field_id')->shouldBe(true);
-        $resolver->isRequired('field_id')->shouldBe(true);
-    }
-
-    function it_gets_defaults_if_no_options_set()
-    {
-        $this->getOptions()->shouldReturn(
+        $resolver->getConstraints()->shouldBeLike(
             array(
-                'input' => null,
-                'values' => array(),
-                'field_id' => 1
-            )
-        );
-    }
-
-    function it_allows_changing_a_single_option()
-    {
-        $this->setOption('values', array(5));
-
-        $this->getOptions()->shouldReturn(
-            array(
-                'input' => null,
-                'values' => array(5),
-                'field_id' => 1
-            )
-        );
-    }
-
-    function it_allows_you_to_get_a_single_resolved_option()
-    {
-        $this->getOption('values')->shouldReturn(array());
-
-        $this->setOption('values', array(6));
-
-        $this->getOption('values')->shouldReturn(array(6));
-    }
-
-    function it_allows_replacing_all_options_with_a_new_set()
-    {
-        $new_options = array(
-            'input' => 'Fizz Buzz',
-            'values' => array(6, 7),
-            'field_id' => 5
-        );
-
-        $this->replaceOptions($new_options);
-
-        $this->getOptions()->shouldReturn($new_options);
-    }
-
-    function it_allows_changing_many_options_at_once()
-    {
-        $this->setOptions(
-            array(
-                'values' => array(10),
-                'field_id' => 3
-            )
-        );
-
-        $this->getOptions()->shouldReturn(
-            array(
-                'input' => null,
-                'values' => array(10),
-                'field_id' => 3
-            )
-        );
-    }
-
-    function it_allows_removing_an_option_that_was_set_previously_and_reverts_to_default()
-    {
-        $this->setOption('values', array(1101, 2202));
-
-        $this->getOptions()->shouldReturn(
-            array(
-                'input' => null,
-                'values' => array(1101, 2202),
-                'field_id' => 1
-            )
-        );
-
-        // now remove it and see defaults again
-
-        $this->removeOption('values');
-
-
-        $this->getOptions()->shouldReturn(
-            array(
-                'input' => null,
-                'values' => array(),
-                'field_id' => 1
-            )
-        );
-    }
-
-    function it_can_serialize_itself()
-    {
-        $serialized = $this->serialize();
-
-        $serialized->shouldBeLike(
-            array(
-                'op' => TermInterface::OP_IS,
-                'options' => array(
-                    'field_id' => 1
+                'field_id' => array(
+                    new Assert\NotBlank(),
+                    new PrimaryKeyExists(
+                        array(
+                            'table' => 'custom_def_ticket'
+                        )
+                    )
                 )
-            )
-        );
-
-        $this->setOp(TermInterface::OP_NOT);
-        $this->setOption('values', array(4, 5, 6));
-
-        $serialized = $this->serialize();
-
-        $serialized->shouldBeLike(
-            array(
-                'op' => TermInterface::OP_NOT,
-                'options' => array(
-                    'field_id' => 1,
-                    'values' => array(4, 5, 6)
-                )
-            )
-        );
-    }
-
-    function it_lets_you_get_the_raw_options()
-    {
-        // you shouldn't really use this, use getOptions() instead
-
-        $this->getRawOptions()->shouldBe(
-            array(
-                'field_id' => 1
-            )
-        );
-
-        $this->setOption('values', array(5));
-        $this->getRawOptions()->shouldBe(
-            array(
-                'field_id' => 1,
-                'values' => array(5)
-            )
-        );
-
-        // options you set are NOT validated until getOptions() is called
-        $this->setOption('even_invalid_values_can_be_in_raw', 4);
-        $this->getRawOptions()->shouldBe(
-            array(
-                'field_id' => 1,
-                'values' => array(5),
-                'even_invalid_values_can_be_in_raw' => 4
             )
         );
     }

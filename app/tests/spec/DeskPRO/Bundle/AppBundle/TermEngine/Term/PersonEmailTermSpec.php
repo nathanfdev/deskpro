@@ -38,6 +38,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmailTerm
@@ -60,5 +61,13 @@ class PersonEmailTermSpec extends ObjectBehavior
     {
         $resolver = $this->getOptionsResolver();
         $resolver->isDefined('email')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
+            array(
+                'email' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Email()
+                )
+            )
+        );
     }
 }

@@ -199,6 +199,10 @@ class FiltersController extends BaseController implements ClassResourceInterface
     {
         $filter = $this->get('data.filters')->getFilter($id);
 
+        if (!$filter) {
+            throw $this->createNotFoundException();
+        }
+
         $this->getDoctrine()->getManager()->remove($filter);
         $this->getDoctrine()->getManager()->flush();
 

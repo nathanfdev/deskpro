@@ -76,7 +76,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    public function    __construct()
+    public function __construct()
     {
         $this->members = new ArrayCollection();
     }

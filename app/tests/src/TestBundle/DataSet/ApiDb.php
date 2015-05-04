@@ -1,29 +1,29 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO.
@@ -31,7 +31,10 @@
 
 namespace DpTests\TestBundle\DataSet;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Usersource;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTests\TestBundle\UserDetailsRepo;
@@ -85,8 +88,22 @@ class ApiDb extends AbstractDbSet
             false
         );
 
-        // we need a brand
+
+        // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
+        // we need a brand and some deps, and some other entities
+        $dep1 = new Department;
+        $dep1->title = "sales";
+        $dep2 = new Department;
+        $dep2->title = "support";
         $brand = new Brand();
+        $team = new AgentTeam;
+        $team->name = "test team";
+        $ticket_def = new CustomDefTicket();
+        $ticket_def->title = "def";
+        $em->persist($ticket_def);
+        $em->persist($team);
+        $em->persist($dep1);
+        $em->persist($dep2);
         $em->persist($brand);
         $em->flush();
 
@@ -106,7 +123,8 @@ class ApiDb extends AbstractDbSet
 
         $this->getEm()->flush();
 
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             REPLACE INTO `settings` (`name`, `value`)
             VALUES
                 ('portal.default_brand', '1'),
@@ -114,30 +132,32 @@ class ApiDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '".time()."'),
+                ('core.deskpro_build', '" . time() . "'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '".time()."'),
-                ('core.install_build', '".time()."'),
+                ('core.done_rewrite_urls_check', '" . time() . "'),
+                ('core.install_build', '" . time() . "'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '".time()."'),
+                ('core.install_timestamp', '" . time() . "'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '".time()."'),
-                ('core.last_cron_start', '".time()."'),
+                ('core.last_cron_run', '" . time() . "'),
+                ('core.last_cron_start', '" . time() . "'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '".time()."'),
-                ('core.twitter_last_cleanup', '".time()."'),
+                ('core.task_completed_add_ticketfield', '" . time() . "'),
+                ('core.twitter_last_cleanup', '" . time() . "'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '".time()."');
-        ");
+                ('user.kb_subscriptions_last', '" . time() . "');
+        "
+        );
 
         // disable http cache
-        $this->getDb()->exec("
+        $this->getDb()->exec(
+            "
             REPLACE INTO `settings` (`name`, `value`)
             VALUES
                 ('portal.http_cache_last_modified', '0'),
@@ -146,7 +166,8 @@ class ApiDb extends AbstractDbSet
                 ('portal.smaxage_guest_page', '0'),
                 ('portal.smaxage_user_page', '0'),
                 ('portal.smaxage_user_tag', '0');
-        ");
+        "
+        );
 
         $count++;
 

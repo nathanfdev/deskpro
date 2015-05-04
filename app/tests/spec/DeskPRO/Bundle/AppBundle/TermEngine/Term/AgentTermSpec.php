@@ -34,6 +34,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
@@ -59,7 +60,13 @@ class AgentTermSpec extends ObjectBehavior
             array(
                 'agent_ids' => array(
                     new NotBlank(),
-                    new Type('array')
+                    new Type('array'),
+                    new PrimaryKeyExists(
+                        array(
+                            'table' => 'people',
+                            'excluded_values' => AgentTerm::ID_ME
+                        )
+                    )
                 )
             )
         );

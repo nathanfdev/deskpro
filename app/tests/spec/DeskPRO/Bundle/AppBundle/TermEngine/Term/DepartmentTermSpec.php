@@ -34,10 +34,12 @@
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm
@@ -65,5 +67,18 @@ class DepartmentTermSpec extends ObjectBehavior
     {
         $resolver = $this->getOptionsResolver();
         $resolver->isDefined('department_ids')->shouldBe(true);
+        $resolver->getConstraints()->shouldBeLike(
+            array(
+                'department_ids' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Type('array'),
+                    new PrimaryKeyExists(
+                        array(
+                            'table' => 'departments'
+                        )
+                    )
+                )
+            )
+        );
     }
 }
