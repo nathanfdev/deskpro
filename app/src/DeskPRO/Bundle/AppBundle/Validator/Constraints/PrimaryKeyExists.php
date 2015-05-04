@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,51 +31,34 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
-use Symfony\Component\Validator\Constraints as Assert;
 
-class AgentTerm extends AbstractTerm
+use Symfony\Component\Validator\Constraint;
+
+class PrimaryKeyExists extends Constraint
 {
     /**
-     * A special string ID that represents the currently logged in agent
+     * The table name
+     *
+     * @var string
      */
-    const ID_ME = 'me';
+    public $table;
 
-    public static function configureOptions(TermOptionsResolver $resolver)
+    /**
+     * These values are excluded from validation
+     *
+     * @var array
+     */
+    public $excluded_values;
+
+    public function getDefaultOption()
     {
-        $resolver->setDefaults(
-            array(
-                'agent_ids' => array()
-            )
-        );
-
-        $resolver->setConstraints(
-            array(
-                'agent_ids' => array(
-                    new Assert\NotBlank(),
-                    new Assert\Type('array'),
-                    new PrimaryKeyExists(
-                        array(
-                            'table' => 'people',
-                            'excluded_values' => self::ID_ME
-                        )
-                    )
-                )
-            )
-        );
+        return 'table';
     }
 
-    public function getSupportedOps()
+    public function validatedBy()
     {
-        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
-    }
-
-    public function getDefaultOp()
-    {
-        return TermInterface::OP_IS;
+        return 'primary_key_exists_validator';
     }
 }

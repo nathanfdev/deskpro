@@ -94,7 +94,7 @@ Feature: /filters endpoint error codes
     And the JSON node "code" should be equal to "invalid_input"
     And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "invalid_data_type"
 
-  Scenario: agent term option has an option with an unacceptable value (CHOICE)
+  Scenario: ticket status term option has an option with an unacceptable value (CHOICE)
     When I send a POST request to "/api/v2/filters" with body:
     """
 {
@@ -113,7 +113,7 @@ Feature: /filters endpoint error codes
     And the JSON node "code" should be equal to "invalid_input"
     And the JSON node "errors.fields.term.fields.options.fields.status.errors[0].code" should be equal to "bad_choice"
 
-  Scenario: agent term option has an option with an unacceptable value (CHOICE)
+  Scenario: person email term option has an invalid email
     When I send a POST request to "/api/v2/filters" with body:
     """
 {
@@ -131,6 +131,25 @@ Feature: /filters endpoint error codes
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "invalid_input"
     And the JSON node "errors.fields.term.fields.options.fields.email.errors[0].code" should be equal to "invalid_email"
+
+  Scenario: agent term option has an agent_id that is not in the database
+    When I send a POST request to "/api/v2/filters" with body:
+    """
+{
+    "title": "My Sales Tickets",
+    "term": {
+        "type": "agent",
+        "options": {
+            "agent_ids": [7880]
+        }
+    }
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "code" should be equal to "invalid_input"
+    And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "resource_not_found"
 
 
 

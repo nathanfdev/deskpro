@@ -167,7 +167,7 @@ Feature: /filters endpoint
         "options": {
           "agent_team_ids": [
             "me",
-            6
+            1
           ]
         }
       },
@@ -201,7 +201,7 @@ Feature: /filters endpoint
         "options": {
           "person_ids": [
             1,
-            4
+            2
           ]
         }
       },
