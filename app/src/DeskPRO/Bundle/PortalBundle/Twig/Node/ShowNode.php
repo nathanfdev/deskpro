@@ -31,24 +31,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Twig\Node;
 
-class Show extends \Twig_Node
+class ShowNode extends \Twig_Node
 {
-    /**
-     * @param string $tag_name
-     * @param bool $is_page_tag
-     * @param int $line
-     * @param null $tag
-     */
-    public function __constructx($tag_name, \Twig_Node_Expression $variables = null, $is_page_tag, $line, $tag = null)
-    {
-        parent::__construct(array(
-            'variables' => $variables
-        ), array(
-            'tag_name' => $tag_name,
-            'is_page_tag' => $is_page_tag
-        ), $line, $tag);
-    }
-
     public function compile(\Twig_Compiler $compiler)
     {
         $compiler
