@@ -34,15 +34,15 @@ class OAuthWrapper
 		$this->service = $service;
 
 		if (!$this->base_url = $this->service->getUrl()) {
-			throw new \Exception('JIRA base url is required', 1000);
+			throw new ApiGeneralException('JIRA base url is required', 1000);
 		}
 
 		if (!$this->private_key = $this->service->getPrivateKey()) {
-			throw new \Exception('JIRA private key is required', 1001);
+			throw new ApiGeneralException('JIRA private key is required', 1001);
 		}
 
 		if (!$this->consumer_key = $this->service->getConsumerKey()) {
-			throw new \Exception('JIRA consumer key is required', 1002);
+			throw new ApiGeneralException('JIRA consumer key is required', 1002);
 		}
 
 
@@ -120,13 +120,13 @@ class OAuthWrapper
 		parse_str($body, $tokens);
 
 		if (empty($tokens)) {
-			throw new \Exception(sprintf(
+			throw new ApiGeneralException(sprintf(
 				'Bad response from host. Expected urlencoded string but "%s" received.', substr($body, 0, 200)
 			), 1003);
 		}
 
 		if (!isset($tokens['oauth_token'])) {
-			throw new \Exception(
+			throw new ApiGeneralException(
 				'Bad response from host. No OAuth token provided.'
 			, 1004);
 		}
@@ -166,7 +166,7 @@ class OAuthWrapper
 				$privateKeyId = openssl_get_privatekey($certificate);
 				$signature = null;
 				if (!@openssl_sign($stringToSign, $signature, $privateKeyId)) {
-					throw new \Exception('Invalid Private Key', 1004);
+					throw new ApiGeneralException('Invalid Private Key', 1004);
 				}
 				@openssl_free_key($privateKeyId);
 				return $signature;

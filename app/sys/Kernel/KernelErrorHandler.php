@@ -762,6 +762,14 @@ class KernelErrorHandler
             if (strpos($exception->getMessage(), 'Can\'t connect to MySQL server on') !== false) {
                 return true;
             }
+
+            if (strpos($exception->getMessage(), 'Can\'t connect to local MySQL server') !== false) {
+                return true;
+            }
+
+            if (strpos($exception->getMessage(), 'No such file or directory') !== false) {
+                return true;
+            }
         }
 
         if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
@@ -782,6 +790,22 @@ class KernelErrorHandler
         }
 
         if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Cannot create Imagine instance') !== false) {
+            return true;
+        }
+
+        if ($exception instanceof \Elastica\Exception\Connection\HttpException) {
+            return true;
+        }
+
+        if ($exception instanceof \Application\DeskPRO\JIRA\ApiGeneralException) {
+            return true;
+        }
+
+        // Calling cmd.php with bad args
+        if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Too many arguments') !== false) {
+            return true;
+        }
+        if ($exception instanceof \InvalidArgumentException && strpos($exception->getMessage(), 'is ambiguous') !== false) {
             return true;
         }
 
@@ -914,7 +938,17 @@ class KernelErrorHandler
         }
 
         if (strpos($errstr, 'Kerberos error') !== false) {
-            return;
+            return; // completely ignore
+        }
+
+        // imap
+        if (
+            strpos($errstr, 'Can not authenticate to IMAP server') !== false
+            || strpos($errstr, 'imap_gc()') !== false
+            || strpos($errstr, 'imap_open()') !== false
+            || strpos($errstr, 'Unknown: LOGIN failed') !== false
+        ) {
+            $no_send_error = true;
         }
 
         // Socket/network errors
@@ -925,6 +959,9 @@ class KernelErrorHandler
             || strpos($errstr, 'SSL operation failed') !== false
             || strpos($errstr, 'errno=32 Broken pipe')
             || strpos($errstr, 'SSL: An established connection was aborted') !== false
+            || strpos($errstr, 'SSL: An existing connection was forcibly closed by the remote host') !== false
+            || strpos($errstr, 'Couldn\'t open stream') !== false
+            || strpos($errstr, 'Can\'t connect to') !== false
             || strpos($errstr, 'fsockopen()') !== false
         ) {
             $no_send_error = true;
