@@ -40,26 +40,26 @@ use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\Options;
 
 class ArticlesController extends AbstractController
 {
     /**
-     * @Tag(name="knowledgebase", esi=true)
-     * @Tag(name="knowledgebase_compact", default_options={"style":"compact"}, esi=true)
-     * @Tag(name="knowledgebase_expander", default_options={"style":"expander"}, esi=true)
-     * @Tag(name="knowledgebase_list", default_options={"style":"list"}, esi=true)
-     * @Tag(name="knowledgebase_comma_list", default_options={"style":"comma_list"}, esi=true)
+     * @Tag(name="kb", esi=true)
+     * @Tag(name="kb_cats", esi=true)
+     * @Tag(name="kb_cats_expander", default_options={"style":"expander"}, esi=true)
+     * @Tag(name="kb_cats_simple", default_options={"style":"simple"}, esi=true)
      * @TagHttpCache
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "home",
+     *          "style": "browse",
      *          "category": null,
      *          "articles_options": {}
      *      },
      *      allowed_values={
-     *          "style": {"expander", "compact", "home", "list", "comma_list"}
+     *          "style": {"expander", "browse", "list"}
      *      },
      *      attribute_expressions={
      *          "category": "service('data.articles').getCategory(options['category'])"
@@ -73,7 +73,7 @@ class ArticlesController extends AbstractController
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
 
         return $this->renderThemeView(
-            sprintf('Theme:Articles:Tag/%s.html.twig', $options['style']),
+            sprintf('Theme:Articles:CategoryList/%s.html.twig', $options['style']),
             array(
                 'category'          => $category,
                 'category_children' => $category_children,
@@ -83,23 +83,20 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_articles")
-     * @Tag(name="knowledgebase_articles_forcat", default_options={"style":"forcat"})
-     * @Tag(name="knowledgebase_articles_list", default_options={"style":"list"})
-     * @Tag(name="knowledgebase_articles_small", default_options={"style":"small"})
-     * @Tag(name="knowledgebase_articles_simple", default_options={"style":"simple"})
+     * @Tag(name="kb_list", default_options={"style":"detail"})
+     * @Tag(name="kb_list_simple", default_options={"style":"simple"})
      *
      * @TagOptions(
      *      defaults={
      *          "category":null,
-     *          "style": "small",
+     *          "style": "simple",
      *          "page": 1,
      *          "count": 10,
      *          "show_category_link": false
      *      },
      *      inherit_from={"articles_options"},
      *      allowed_values={
-     *          "style": {"forcat", "list", "small", "simple"}
+     *          "style": {"detail", "simple"}
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
@@ -116,17 +113,17 @@ class ArticlesController extends AbstractController
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
-            sprintf('Theme:Articles:Tag/articles_%s.html.twig', $options['style']),
+            sprintf('Theme:Articles:ArticleList/%s.html.twig', $options['style']),
             array(
                 'pager'              => $pager,
                 'category'           => $category,
-                'show_category_link' => $options['show_category_link'],
+                'show_category_link' => $options['show_category_link']
             )
         );
     }
 
     /**
-     * @Tag(name="article", esi=true)
+     * @Tag(name="kb_article", esi=true)
      * @TagHttpCache(content="article")
      *
      * @TagOptions(
@@ -142,7 +139,7 @@ class ArticlesController extends AbstractController
     public function articleAction(TagRequest $tag_request, array $options, Article $article)
     {
         return $this->renderThemeView(
-            'Theme:Articles:Tag/article.html.twig',
+            'Theme:Articles:ArticleView/article.html.twig',
             array(
                 'article' => $article,
             )
@@ -150,12 +147,10 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_subscription", esi=true, always_guest_inline=true)
-     * @Tag(name="article_subscription_info", default_options={"style":"info"}, esi=true, always_guest_inline=true)
+     * @Tag(name="kb_article_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      required={"article"},
-     *      defaults={"style":"link"},
      *      allowed_types={
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
      *      },
@@ -175,7 +170,7 @@ class ArticlesController extends AbstractController
         }
 
         return $this->renderThemeView(
-            sprintf('Theme:Articles:Tag/article_subscription_%s.html.twig', $options['style']),
+            sprintf('Theme:Articles:ArticleView/subscription_info.html.twig', $options['style']),
             array(
                 'article'       => $article,
                 'is_subscribed' => $is_subscribed,
@@ -184,7 +179,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_category_subscription", esi=true, always_guest_inline=true)
+     * @Tag(name="kb_category_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"category": null},
@@ -209,7 +204,7 @@ class ArticlesController extends AbstractController
         }
 
         return $this->renderThemeView(
-            'Theme:Articles:Tag/subscription_category.html.twig', array(
+            'Theme:Articles:CategoryList/subscription_info.html.twig', array(
                 'category'      => $category,
                 'is_subscribed' => $is_subscribed,
             )
@@ -217,7 +212,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_comments")
+     * @Tag(name="kb_article_comments")
      *
      * @TagOptions(
      *      defaults={
@@ -237,14 +232,14 @@ class ArticlesController extends AbstractController
     {
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
-        return $this->renderThemeView('Theme:Articles:Tag/comments.html.twig', array(
+        return $this->renderThemeView('Theme:Articles:ArticleView/comments.html.twig', array(
             'article'  => $article,
             'comments' => $comments,
         ));
     }
 
     /**
-     * @Tag(name="knowledgebase_pager")
+     * @Tag(name="kb_pager")
      *
      * @TagOptions(
      *      defaults={
@@ -277,7 +272,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_breadcrumbs")
+     * @Tag(name="kb_breadcrumbs")
      *
      * @TagOptions(
      *      defaults={"category": null, "article": null},
@@ -298,7 +293,7 @@ class ArticlesController extends AbstractController
         $category = $this->getArticlesDataService()->getCategory($options['category']);
 
         return $this->renderThemeView(
-            'Theme:Articles:Tag/breadcrumbs.html.twig', array(
+            'Theme:Articles:Misc/breadcrumbs.html.twig', array(
                 'category' => $category,
                 'article'  => $article,
             )
@@ -306,7 +301,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_ratings", esi=true, always_guest_inline=true)
+     * @Tag(name="kb_article_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"article": null},
@@ -325,7 +320,7 @@ class ArticlesController extends AbstractController
         $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 
         return $this->renderThemeView(
-            'Theme:Articles:Tag/ratings.html.twig',
+            'Theme:Articles:ArticleView/ratings.html.twig',
             array(
                 'rating'  => $rating,
                 'article' => $article,

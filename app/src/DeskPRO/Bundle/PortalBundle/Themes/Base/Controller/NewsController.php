@@ -120,7 +120,6 @@ class NewsController extends AbstractController
             sprintf('Theme:News:Tag/posts_%s.html.twig', $options['style']),
             array(
                 'pager'              => $pager,
-                'show_category_link' => $options['show_category_link'],
                 'category'           => $category,
             )
         );

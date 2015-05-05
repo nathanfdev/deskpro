@@ -1167,6 +1167,47 @@ form {
   .level > .level > .level > .level-indent { margin-left: 23px; }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Content Lists
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.content-list-wrap.simple {
+  ul.content-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+
+      &:before {
+        content: "○";
+        color: #C5C6CA;
+        position: relative;
+        left: -3px;
+        top: -1px;
+      }
+
+      @include whitespace;
+
+      margin: 12px;
+      margin-bottom: 0.3em;
+      padding: 0 1.2em;
+      font-weight: 400;
+      line-height: 1.3em;
+
+      a {
+        margin-bottom: 5px;
+        color: $text-color;
+        text-decoration: none;
+
+        &:hover {
+          color: $text-color-darker;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sidebar
@@ -4403,46 +4444,22 @@ h1.fancy-header {
     position: relative;
     z-index: 100;
     display: inline-block;
-    padding-right: 2em;
-    padding-left: 2em;
+    padding-right: 19px;
+    padding-left: 19px;
     background: $page-background;
     color: $text-color-lighter;
     font-weight: 400;
     font-size: 1.1em;
-    img {
-      position: relative;
-      top: -2px;
-      padding-right: 5px;
-      height: 18px;
-      vertical-align: middle;
-      opacity: 0.15;
+
+    &.with-icon {
+      padding-left: 20px;
     }
-  }
 
-
-  > ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    li {
-      @include whitespace;
-
-      margin: 12px;
-      margin-bottom: 0.3em;
-      padding: 0 1.2em;
-      font-weight: 400;
-      line-height: 1.3em;
-
-      a {
-        margin-bottom: 5px;
-        color: $text-color;
-        text-decoration: none;
-
-        &:hover {
-          color: $text-color-darker;
-          text-decoration: underline;
-        }
+    a {
+      color: $text-color-lighter;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
       }
     }
   }
