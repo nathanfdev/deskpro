@@ -29,47 +29,65 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Twig\Node;
+namespace DeskPRO\Bundle\PortalBundle\Twig\TokenParser;
 
-class Show extends \Twig_Node
+use Twig_Token;
+use DeskPRO\Bundle\PortalBundle\Twig\Node\ShowNode;
+
+/**
+ * Show a tag using context of current page: {% show some_tag %}
+ * Show a tag without using context:         {% show section some_tag %}
+ * Show a tag with context and with vars:    {% show some_tag with {vars} %}
+ * Show a tag without context and with vars: {% show section some_tag with {vars} %}
+ */
+class ShowParser extends \Twig_TokenParser
 {
     /**
-     * @param string $tag_name
-     * @param bool $is_page_tag
-     * @param int $line
-     * @param null $tag
+     * @var \Twig_Extension
      */
-    public function __constructx($tag_name, \Twig_Node_Expression $variables = null, $is_page_tag, $line, $tag = null)
+    private $ext;
+
+    /**
+     * @param \Twig_Extension $ext
+     */
+    function __construct(\Twig_Extension $ext)
     {
-        parent::__construct(array(
-            'variables' => $variables
-        ), array(
-            'tag_name' => $tag_name,
-            'is_page_tag' => $is_page_tag
-        ), $line, $tag);
+        $this->ext = $ext;
     }
 
-    public function compile(\Twig_Compiler $compiler)
+    public function parse(Twig_Token $token)
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->write(sprintf(
-                'echo $this->env->getExtension(\'%s\')->%s',
-                $this->getAttribute('ext_name'),
-                $this->getAttribute('is_page_tag') ? 'processPortalPageTag' : 'processPortalTag'
-            ))
-            ->write('(')
-            ->write('$context')
-            ->write(', ')
-            ->repr($this->getAttribute('tag_name'))
-            ->write(', ');
+        $parser = $this->parser;
+        $stream = $parser->getStream();
 
-        if ($this->hasNode('variables')) {
-            $compiler->subcompile($this->getNode('variables'));
-        } else {
-            $compiler->write('array()');
+        $this_page = true;
+        if ($stream->nextIf(Twig_Token::NAME_TYPE, 'section')) {
+            $this_page = false;
         }
 
-        $compiler->write(')')->raw(";\n");
+        $name = $stream->expect(Twig_Token::NAME_TYPE)->getValue();
+
+        $variables = null;
+        if ($stream->nextIf(Twig_Token::NAME_TYPE, 'with')) {
+            $variables = $this->parser->getExpressionParser()->parseExpression();
+        }
+
+        $stream->expect(Twig_Token::BLOCK_END_TYPE);
+
+        return new ShowNode(
+            $variables ? array('variables' => $variables) : array(),
+            array(
+                'tag_name'    => $name,
+                'is_page_tag' => $this_page,
+                'ext_name'    => $this->ext->getName()
+            ),
+            $token->getLine(),
+            $this->getTag()
+        );
+    }
+
+    public function getTag()
+    {
+        return 'show';
     }
 }
