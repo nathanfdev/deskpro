@@ -1,0 +1,21 @@
+{% if pager|length %}
+  <ul>
+    {% for item in pager %}
+      <li>
+        <div class="calendar-decoration">
+          <span class="month">{{ item.date_published | date('M') }}</span>
+          <hr>
+          <span class="day">{{ item.date_published | date('j') }}</span>
+        </div>
+        <h1><a href="{{ path('portal_news_view', { slug: item.slug }) }}">{{ item.title }}</a></h1>
+
+        <h2>
+          {% if item.person %}by <a href="#">{{ item.person.name }}</a> {% endif %}
+          in <a href="{{ path('portal_news_browse', { slug: item.category.slug }) }}">{{ item.category.title }}</a>
+        </h2>
+
+        <p>{{ item.getExcerptHtml|raw }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

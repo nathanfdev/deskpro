@@ -2,7 +2,7 @@
 <section>
   <article class="news front-page-news">
     <div class="large-title clearfix"><h1>News</h1></div>
-    {% show section news_posts_pretty with { count: 2 } %}
+    {% show section news_list_excerpts with { count: 2 } %}
   </article>
 </section>
 {% endif %}
@@ -22,7 +22,7 @@
       <div class="column">
         <article class="panel-tiny front-page-downloads">
           <div class="large-title clearfix"><h1>Recent News</h1></div>
-          {% show section news_posts_list with { count: 5 } %}
+          {% show section news_list_simple with { count: 5 } %}
         </article>
       </div>
     {% enditem %}

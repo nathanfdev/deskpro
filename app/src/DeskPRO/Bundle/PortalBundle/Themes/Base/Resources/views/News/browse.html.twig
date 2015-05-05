@@ -2,8 +2,8 @@
 {% block inner_content %}
   {% show news_breadcrumbs %}
   <div class="browse-page">
-    {% show news_tabs %}
-    {% show news_posts_list %}
+    {% show news_cats_tabs %}
+    {% show news_list_full with { count: 5 } %}
     {% show news_pager %}
   </div>
 {% endblock inner_content %}
