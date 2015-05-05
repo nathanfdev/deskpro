@@ -16,33 +16,33 @@
     </section>
 {% endif %}
 
-{% if has_any_news() or has_any_feedback() or has_any_downloads() %}
-  <section class="with-{{ col_count(has_any_news(), has_any_feedback(), has_any_downloads()) }}-columns">
-      {% if has_any_news() %}
-        <div class="column">
-            <article class="panel-tiny front-page-downloads">
-                <div class="large-title clearfix"><h1>Recent News</h1></div>
-                {% show section news_posts_list with { count: 5 } %}
-            </article>
-        </div>
-      {% endif %}
+{% group min 2 %}
+  <section class="with-{{ group.count }}-columns">
+    {% item if has_any_news() %}
+      <div class="column">
+        <article class="panel-tiny front-page-downloads">
+          <div class="large-title clearfix"><h1>Recent News</h1></div>
+          {% show section news_posts_list with { count: 5 } %}
+        </article>
+      </div>
+    {% enditem %}
 
-      {% if has_any_feedback() %}
-        <div class="column">
-            <article class="panel-tiny front-page-downloads">
-                <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-                {% show section feedback_items_list with { count: 5 } %}
-            </article>
-        </div>
-      {% endif %}
+    {% item if has_any_feedback() %}
+      <div class="column">
+        <article class="panel-tiny front-page-downloads">
+          <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
+          {% show section feedback_items_list with { count: 5 } %}
+        </article>
+      </div>
+    {% enditem %}
 
-      {% if has_any_downloads() %}
-        <div class="column">
-            <article class="panel-tiny front-page-downloads">
-                <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-                {% show section downloads_files_list with { count: 5 } %}
-            </article>
-        </div>
-      {% endif %}
+    {% item if has_any_downloads() %}
+      <div class="column">
+        <article class="panel-tiny front-page-downloads">
+          <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
+          {% show section downloads_files_list with { count: 5 } %}
+        </article>
+      </div>
+    {% enditem %}
   </section>
-{% endif %}
+{% endgroup %}

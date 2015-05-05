@@ -63,10 +63,21 @@ class PortalSupportExtension extends \Twig_Extension
     public function getTokenParsers()
     {
         $token_parsers = array(
-            new TokenParser\ShowParser($this)
+            new TokenParser\ShowParser($this),
+            new TokenParser\GroupParser($this),
+            new TokenParser\GroupItemParser($this)
         );
 
         return $token_parsers;
+    }
+
+    public function getNodeVisitors()
+    {
+        $visitors = array(
+            new NodeVisitor\GroupVisitor()
+        );
+
+        return $visitors;
     }
 
     /**
