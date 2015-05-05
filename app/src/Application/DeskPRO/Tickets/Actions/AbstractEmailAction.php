@@ -285,6 +285,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     {
         $headers = array();
         foreach ($raw_headers as $h) {
+            if (empty($h['name'])) {
+                continue;
+            }
+            if (empty($h['value'])) {
+                $h['value'] = '';
+            }
             $headers[] = array(
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
                 'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
