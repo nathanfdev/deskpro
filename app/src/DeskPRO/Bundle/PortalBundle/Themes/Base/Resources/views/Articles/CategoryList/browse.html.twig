@@ -11,7 +11,10 @@
                     <hr>
                 </header>
 
-                {% show knowledgebase_articles_forcat with { category: category } %}
+                {% show kb_list_simple with {
+                  category: category,
+                  show_category_link: true
+                } %}
             </article>
         </div>
     {% endfor %}

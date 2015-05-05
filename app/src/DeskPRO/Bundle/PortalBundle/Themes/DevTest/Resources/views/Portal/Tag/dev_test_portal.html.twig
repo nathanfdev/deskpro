@@ -131,9 +131,9 @@
                 <article class="news front-page-news">
                   <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
                   {% if opts.show_kb == 'normal' %}
-                    {% show section knowledgebase with { articles_options: { count: 3 }} %}
+                    {% show section kb with { articles_options: { count: 3 }} %}
                   {% elseif opts.show_kb == 'expander' %}
-                    {% show section knowledgebase_expander %}
+                    {% show section kb_expander %}
                   {% endif %}
                 </article>
               </section>
@@ -158,7 +158,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent KB Posts</h1></div>
-                {% show section knowledgebase_articles_list with { count: 5 } %}
+                {% show section kb_list with { count: 5 } %}
               </article>
             </div>
           {% endif %}
@@ -166,7 +166,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>KB</h1></div>
-                {% show section knowledgebase_list %}
+                {% show section kb_list %}
               </article>
             </div>
           {% endif %}
