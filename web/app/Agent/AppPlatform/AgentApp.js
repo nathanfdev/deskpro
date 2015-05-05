@@ -645,7 +645,6 @@ define([
 							});
 							$el.addClass('with-set');
 							isRunning = false;
-							update();
 						},10);
 					});
 				};
@@ -674,19 +673,18 @@ define([
 					}
 
 					if (doUpdate) {
-						update();
-						$timeout(function() { update(); });
+            updateDebounce();
 					}
 				};
 
 				$timeout(function() {
 					$timeout(function() {
-						update();
+            updateDebounce();
 						interval = $interval(function() {
 							updateIfChanged();
 						}, 750);
 						$timeout(function() {
-							update();
+              updateDebounce();
 						}, 200);
 					});
 				});
