@@ -40,24 +40,22 @@ use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
 
 class NewsController extends AbstractController
 {
     /**
-     * @Tag(name="news", esi=true)
-     * @Tag(name="news_list", default_options={"style":"list"}, esi=true)
-     * @Tag(name="news_tabs", default_options={"style":"tabs_list", "from_root": true}, esi=true)
-     * @Tag(name="news_dropdown", default_options={"style":"dropdown"}, esi=true)
+     * @Tag(name="news_cats_tabs", default_options={"style":"tabs", "from_root": true}, esi=true)
      * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "pretty",
+     *          "style": "tabs",
      *          "category": null,
      *          "from_root": false
      *      },
      *      allowed_values={
-     *          "style": {"list", "dropdown", "tabs_list"}
+     *          "style": {"tabs"}
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
@@ -78,7 +76,7 @@ class NewsController extends AbstractController
         }
 
         return $this->renderThemeView(
-            sprintf('Theme:News:Tag/%s.html.twig', $options['style']),
+            sprintf('Theme:News:CategoryList/%s.html.twig', $options['style']),
             array(
                 'category'          => $category,
                 'category_children' => $category_children,
@@ -87,20 +85,20 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_posts")
-     * @Tag(name="news_posts_list", default_options={"style":"list"})
-     * @Tag(name="news_posts_pretty", default_options={"style":"pretty"})
+     * @Tag(name="news_list_excerpts", default_options={"style":"excerpts"})
+     * @Tag(name="news_list_full", default_options={"style":"full"})
+     * @Tag(name="news_list_simple", default_options={"style":"simple"})
      *
      * @TagOptions(
      *      defaults={
      *          "category": null,
-     *          "style": "pretty",
+     *          "style": "excerpts",
      *          "page": 1,
      *          "count": 10,
      *          "show_category_link": false
      *      },
      *      allowed_values={
-     *          "style": {"pretty", "list"}
+     *          "style": {"excerpts", "full", "simple"}
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
@@ -117,7 +115,7 @@ class NewsController extends AbstractController
         $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
-            sprintf('Theme:News:Tag/posts_%s.html.twig', $options['style']),
+            sprintf('Theme:News:PostList/%s.html.twig', $options['style']),
             array(
                 'pager'              => $pager,
                 'category'           => $category,
@@ -126,7 +124,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="post", esi=true)
+     * @Tag(name="news_post", esi=true)
      * @TagHttpCache(content="post")
      *
      * @TagOptions(
@@ -144,7 +142,7 @@ class NewsController extends AbstractController
     public function postAction(TagRequest $tag_request, array $options, News $post)
     {
         return $this->renderThemeView(
-            'Theme:News:Tag/post.html.twig',
+            'Theme:News:PostView/post.html.twig',
             array(
                 'post' => $post,
             )
@@ -152,12 +150,10 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="post_subscription", esi=true, always_guest_inline=true)
-     * @Tag(name="post_subscription_info", default_options={"style":"info"}, esi=true, always_guest_inline=true)
+     * @Tag(name="news_post_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      required={"post"},
-     *      defaults={"style":"link"},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
      *      },
@@ -179,7 +175,7 @@ class NewsController extends AbstractController
         }
 
         return $this->renderThemeView(
-            sprintf('Theme:News:Tag/post_subscription_%s.html.twig', $options['style']),
+            sprintf('Theme:News:PostView/subscription_info.html.twig', $options['style']),
             array(
                 'post'          => $post,
                 'is_subscribed' => $is_subscribed,
@@ -213,7 +209,7 @@ class NewsController extends AbstractController
         }
 
         return $this->renderThemeView(
-            'Theme:News:Tag/subscription_category.html.twig', array(
+            'Theme:News:CategoryList/subscription_info.html.twig', array(
                 'category'      => $category,
                 'is_subscribed' => $is_subscribed,
             )
@@ -221,7 +217,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_comments")
+     * @Tag(name="news_post_comments")
      *
      * @TagOptions(
      *      defaults={
@@ -241,7 +237,7 @@ class NewsController extends AbstractController
     {
         $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
-        return $this->renderThemeView('Theme:News:Tag/comments.html.twig', array(
+        return $this->renderThemeView('Theme:News:PostView/comments.html.twig', array(
             'post'     => $post,
             'comments' => $comments,
         ));
@@ -303,7 +299,7 @@ class NewsController extends AbstractController
     public function breadcrumbsAction(TagRequest $tag_request, array $options, News $post = null, NewsCategory $category = null)
     {
         return $this->renderThemeView(
-            'Theme:News:Tag/breadcrumbs.html.twig',
+            'Theme:News:Misc/breadcrumbs.html.twig',
             array(
                 'category' => $category,
                 'post'     => $post,
@@ -312,7 +308,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_ratings", esi=true, always_guest_inline=true)
+     * @Tag(name="news_post_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"post": null},
@@ -331,7 +327,7 @@ class NewsController extends AbstractController
         $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 
         return $this->renderThemeView(
-            'Theme:News:Tag/ratings.html.twig',
+            'Theme:News:PostView/ratings.html.twig',
             array(
                 'post'   => $post,
                 'rating' => $rating,

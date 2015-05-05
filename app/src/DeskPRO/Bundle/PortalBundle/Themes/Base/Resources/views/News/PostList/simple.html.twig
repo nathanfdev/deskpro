@@ -1,0 +1,17 @@
+<div class="content-list-wrap simple as-news {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
+  {% if pager|length %}
+    <ul class="content-list">
+      {% for news in pager %}
+        <li>
+          <div class="date-tag">
+            <span class="month">{{ news.date_published | date('M') }}</span>
+            <span class="day">{{ news.date_published | date('j') }}</span>
+          </div>
+          <a href="{{ path('portal_news_view', { slug: news.slug }) }}">{{ news.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <strong>No news yet</strong>
+  {% endif %}
+</div>
