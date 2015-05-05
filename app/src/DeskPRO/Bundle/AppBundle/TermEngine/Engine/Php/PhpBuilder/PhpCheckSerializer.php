@@ -31,48 +31,28 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
- */
-class PhpTicketCheckerEngineSpec extends ObjectBehavior
+class PhpCheckSerializer
 {
-    function it_evals_the_compiler_result_and_returns_the_compiled_checker(
-        PhpTicketCheckerEngineCompiler $compiler,
-        TermEngineExpressionLanguage $expression_language,
-        Filter $filter,
-        TermEngineContext $context,
-        PhpCheck $php_check,
-        EventDispatcherInterface $event_dispatcher,
-        TermCompilerHelperPool $helper_pool
-    )
+    /**
+     * @param string $serialized_check the result of self::serialize()
+     * @return PhpCheck
+     */
+    public function unserialize($serialized_check)
     {
-        $this->beConstructedWith($compiler, $expression_language, $event_dispatcher, $helper_pool);
+        // CN requested we silence this, because people tend to mess with cached vals in the DB
+        return @unserialize($serialized_check);
+    }
 
-        $event_dispatcher->dispatch(
-            PhpEngineEvents::PRE_COMPILE,
-            Argument::type('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent')
-        )->shouldBeCalled();
-        $compiler->compile($filter)->willReturn($php_check);
-        $event_dispatcher->dispatch(
-            PhpEngineEvents::POST_COMPILE,
-            Argument::type('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent')
-        )->shouldBeCalled();
-
-        $this->evaluate($filter, $context)->shouldBeAnInstanceOf(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TicketChecker'
-        );
+    /**
+     * @param PhpCheck $check
+     * @return string the storable serialized version
+     */
+    public function serialize(PhpCheck $check)
+    {
+        return serialize($check);
     }
 }

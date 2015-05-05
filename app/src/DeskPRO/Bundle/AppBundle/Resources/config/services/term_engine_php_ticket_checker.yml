@@ -7,16 +7,32 @@ services:
     term_engine.php_ticket_checker.engine:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
         arguments:
-            - @term_engine.php_ticket_checker.compiler
+            - @term_engine.php_ticket_checker.engine.compiler
             - @term_engine.expression_language
             - @event_dispatcher
             - @term_engine.php.helper_pool
+
+    term_engine.php_ticket_checker.engine.compiler:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler
+        arguments:
+            - @term_engine.php_ticket_checker.compiler
+            - @term_engine.php.php_check_cacher
 
     term_engine.php_ticket_checker.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler
         arguments:
             - @term_engine.php_ticket_checker.compiler.factory
             - []  # the visitors added in compiler pass with tag "php_ticket_checker_visitor"
+            - @cache.one_day
+
+    term_engine.php.php_check_cacher:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher
+        arguments:
+            - @cache.one_day
+            - @term_engine.php.php_check_serializer
+
+    term_engine.php.php_check_serializer:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckSerializer
 
     term_engine.php_ticket_checker.compiler.factory:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerFactory

@@ -34,12 +34,10 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpFile;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
@@ -48,7 +46,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class PhpTicketCheckerEngine extends PhpEngine
 {
     /**
-     * @var PhpTicketCheckerCompiler
+     * @var PhpTicketCheckerEngineCompiler
      */
     private $compiler;
 
@@ -68,7 +66,7 @@ class PhpTicketCheckerEngine extends PhpEngine
     private $helper_pool;
 
     public function __construct(
-        PhpTicketCheckerCompiler $compiler,
+        PhpTicketCheckerEngineCompiler $compiler,
         TermEngineExpressionLanguage $expression_language,
         EventDispatcherInterface $event_dispatcher,
         TermCompilerHelperPool $helper_pool
@@ -93,7 +91,7 @@ class PhpTicketCheckerEngine extends PhpEngine
         $event = new PhpEnginePreCompileEvent($context, $filter);
         $this->event_dispatcher->dispatch(PhpEngineEvents::PRE_COMPILE, $event);
 
-        $php_check = $this->compiler->compile($filter->getTerm());
+        $php_check = $this->compiler->compile($filter);
 
         $event = new PhpEnginePostCompileEvent($context, $filter, $php_check);
         $this->event_dispatcher->dispatch(PhpEngineEvents::POST_COMPILE, $event);

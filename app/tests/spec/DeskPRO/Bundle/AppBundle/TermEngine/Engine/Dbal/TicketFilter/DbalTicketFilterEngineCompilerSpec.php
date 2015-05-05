@@ -98,8 +98,8 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
         // found it! cached version
         $query_cache->fetchQuery('2.123456789011')->willReturn($compiled);
 
-        // so it compiles
-        $compiler->compile($filter_term)->willReturn($compiled);
+        // so it will not compile
+        $compiler->compile($filter_term)->shouldNotBeCalled();
 
         $this->compile($filter)->shouldReturn($compiled);
     }

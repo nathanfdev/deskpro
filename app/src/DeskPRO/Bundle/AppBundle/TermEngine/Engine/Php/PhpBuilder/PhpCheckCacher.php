@@ -31,48 +31,59 @@
  * @package DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Application\DeskPRO\Cache\CacheAdapterInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 
-/**
- * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
- */
-class PhpTicketCheckerEngineSpec extends ObjectBehavior
+class PhpCheckCacher
 {
-    function it_evals_the_compiler_result_and_returns_the_compiled_checker(
-        PhpTicketCheckerEngineCompiler $compiler,
-        TermEngineExpressionLanguage $expression_language,
-        Filter $filter,
-        TermEngineContext $context,
-        PhpCheck $php_check,
-        EventDispatcherInterface $event_dispatcher,
-        TermCompilerHelperPool $helper_pool
-    )
+    /**
+     * @var CacheAdapterInterface
+     */
+    private $cache_adapter;
+
+    /**
+     * @var PhpCheckSerializer
+     */
+    private $serializer;
+
+    public function __construct(CacheAdapterInterface $cache_adapter, PhpCheckSerializer $serializer)
     {
-        $this->beConstructedWith($compiler, $expression_language, $event_dispatcher, $helper_pool);
+        $this->cache_adapter = $cache_adapter;
+        $this->serializer = $serializer;
+    }
 
-        $event_dispatcher->dispatch(
-            PhpEngineEvents::PRE_COMPILE,
-            Argument::type('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent')
-        )->shouldBeCalled();
-        $compiler->compile($filter)->willReturn($php_check);
-        $event_dispatcher->dispatch(
-            PhpEngineEvents::POST_COMPILE,
-            Argument::type('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent')
-        )->shouldBeCalled();
+    public function fetchCheck($key)
+    {
+        $key = $this->generateKey($key);
 
-        $this->evaluate($filter, $context)->shouldBeAnInstanceOf(
-            'DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TicketChecker'
-        );
+        $serialized = $this->cache_adapter->get($key);
+
+        $compiled_query = $this->serializer->unserialize($serialized);
+
+        return $compiled_query;
+    }
+
+    public function saveCheck($key, PhpCheck $php_check)
+    {
+        $serialized = $this->serializer->serialize($php_check);
+
+        $key = $this->generateKey($key);
+
+        $this->cache_adapter->set($key, $serialized);
+    }
+
+    /**
+     * Prefixes the key from the engine to ensure its unique in the global cache namespace
+     *
+     * @param $key
+     * @return string
+     */
+    private function generateKey($key)
+    {
+        $add_unique = sprintf('php.term_engine.php_check.%s', $key);
+        return $add_unique;
     }
 }
