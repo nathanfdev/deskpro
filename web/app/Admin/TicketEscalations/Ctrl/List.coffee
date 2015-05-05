@@ -15,10 +15,25 @@ define [
       @escData = @DataService.get('TicketEscalations')
 
 
+
     initialLoad: ->
-      promise = @escData.loadList()
-      promise.then( (list) =>
-        return if !list
+      @loadList().then((list) =>
+        if @$state.current.name == 'tickets.ticket_escalations'
+          if @list[0]
+            @$state.go('tickets.ticket_escalations.edit', {id: @list[0].id})
+          else
+            @$state.go('tickets.ticket_escalations.create')
+      )
+
+
+
+    loadList:    ->
+      d = @$q.defer()
+      @escData.loadList().then (list) =>
+        @list.length = 0
+        @list_satisfaction.length = 0
+        @list_statuses.length = 0
+        return d.resolve([]) if !list
 
         list.map (item) =>
           if 'satisfaction' == item.sys_type
@@ -27,29 +42,16 @@ define [
             @list_statuses.push item
           else
             @list.push item
+        d.resolve list
+      d.promise
 
-        if @$state.current.name == 'tickets.ticket_escalations'
-          if @list[0]
-            @$state.go('tickets.ticket_escalations.edit', { id: @list[0].id })
-          else
-            @$state.go('tickets.ticket_escalations.create')
-      )
-
-      return promise
 
 
     ###
     # Show the delete dlg
     ###
-    startDelete: (esc_id) ->
-
-      esc = null
-      for v in @list
-        if v.id == esc
-          esc = v
-          break
-
-      return if esc.sys_name?
+    startDelete: (esc) ->
+      return if esc?.sys_name?
 
       inst = @$modal.open({
         templateUrl: @getTemplatePath('TicketEscalations/delete-modal.html'),
@@ -63,8 +65,11 @@ define [
       });
 
       inst.result.then( =>
-        @escData.deleteEscalationById(esc_id).then(=>
-          if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc_id
+        @escData.deleteEscalationById(esc.id).then(=>
+          @list = @list.filter (item) -> esc.id != item.id
+          @list_satisfaction = @list_satisfaction.filter (item) -> esc.id != item.id
+          @list_statuses = @list_statuses.filter (item) -> esc.id != item.id
+          if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc.id
             @$state.go('tickets.ticket_escalations')
         )
       )

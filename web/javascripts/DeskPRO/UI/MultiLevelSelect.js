@@ -22,7 +22,8 @@
       // Hide original
       $el.hide();
 
-      var $cont = $('<div></div>').insertBefore($el);
+      var $cont = $('<div></div>').insertBefore($el),
+          $emptyAllowed = $el.children('option[value=""]').length;
       $cont.addClass('multilevel-select');
 
       var add = function (node, lvl) {
@@ -39,10 +40,6 @@
         var $select = $('<select data-no-select2="1"></select>');
         var $selectWrap = $('<div class="multilevel-select-wrap"></div>').addClass('level-' + lvl);
 
-        if (lvl >= 1) {
-          $select.append('<option value="0"></option>');
-        }
-
         $selectWrap.append($select);
         $selectWrap.appendTo($cont).hide();
 
@@ -51,6 +48,7 @@
 
         $select[0]._node = node;
 
+        $emptyAllowed && $select.append('<option value=""></option>');
         $.each(node.children, function (i, child) {
           $select.append('<option value="' + child.id + '">' + child.title + '</option>');
           child.parent = node;
@@ -62,6 +60,8 @@
 
         $select.on('change', function () {
           var val = parseInt($(this).val());
+          NaN === val && $el.val('');
+
           var process = function (node) {
             if (!node.children) return;
             $.each(node.children, function (i, child) {

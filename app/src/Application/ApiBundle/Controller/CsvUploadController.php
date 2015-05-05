@@ -36,7 +36,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\HttpFoundation\Request;
-use Application\DeskPRO\JobQueue\Processor\Reset\UsersProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CsvUploadController extends AbstractController implements ProtectedControllerInterface
@@ -142,7 +142,9 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         }
 
         $queue = $this->container->getJobQueue();
-        $queue->add(UsersProcessor::JOB_TYPE, array(
+        $queue->add(
+            UsersImportProcessor::JOB_TYPE,
+            array(
             'context_person_id' => $this->person['id'],
             'labeled_by' => 'import-' . $ref,
         ));
@@ -160,7 +162,11 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $res = array();
         $rep = $this->em->getRepository('DeskPRO:Job');
 
-        foreach ($rep->findBy(array('type' => UsersProcessor::JOB_TYPE), array('date_created' => 'desc'), 1) as $job) {
+        foreach ($rep->findBy(
+            array('type' => UsersImportProcessor::JOB_TYPE),
+            array('date_created' => 'desc'),
+            1
+        ) as $job) {
             /** @var $job Job */
             $data = $job['data'];
             if (!$ref = @$data['labeled_by']) continue;
