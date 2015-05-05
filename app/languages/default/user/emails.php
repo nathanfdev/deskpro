@@ -49,6 +49,7 @@
     'user.emails.ticket_rate-negative'        => 'No',
     'user.emails.ticket_rate-neutral'         => 'It was OK',
     'user.emails.ticket_rate-positive'        => 'Yes',
+    'user.emails.ticket_rate-request'         => 'How would you rate the support you received on your ticket "{{ticket.subject}}"?',
     'user.emails.ticket_rate-question'        => 'Was this message helpful?',
     'user.emails.ticket_received'             => 'Your ticket has been received. One of our agents will reply to you shortly.',
     'user.emails.ticket_reply-confirm'        => 'Thank you for your reply. One of our agents will reply to you shortly.',
