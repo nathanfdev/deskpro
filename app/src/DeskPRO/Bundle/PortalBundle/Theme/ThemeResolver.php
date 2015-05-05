@@ -61,13 +61,18 @@ class ThemeResolver
      */
     private $themeTemplateMap;
 
-    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, TagProcessor $tag_processor, LoggerInterface $logger)
+    public function __construct(
+        ContainerInterface $container,
+        ThemeRepository $theme_repo,
+        TagProcessor $tag_processor,
+        LoggerInterface $logger
+    )
     {
-        $this->container        = $container;
-        $this->theme_repo       = $theme_repo;
+        $this->container = $container;
+        $this->theme_repo = $theme_repo;
         $this->themeTemplateMap = null;
-        $this->logger           = $logger;
-        $this->tag_processor    = $tag_processor;
+        $this->logger = $logger;
+        $this->tag_processor = $tag_processor;
     }
 
     /**
@@ -86,13 +91,15 @@ class ThemeResolver
             && 3 === count($parts = explode(':', $input_controller))
         ) {
             $controller = $parts[1];
-            $action     = $parts[2];
+            $action = $parts[2];
 
-            $try = $theme->getNamespace().'\\Controller\\'.$controller.'Controller';
+            $try = $theme->getNamespace() . '\\Controller\\' . $controller . 'Controller';
             if (class_exists($try)) {
-                $callable = $try.'::'.$action.'Action';
+                $callable = $try . '::' . $action . 'Action';
                 if (is_callable($callable)) {
-                    $this->logger->debug(sprintf('theme resolver: resolved "%s" controller into %s', $input_controller, $callable));
+                    $this->logger->debug(
+                        sprintf('theme resolver: resolved "%s" controller into %s', $input_controller, $callable)
+                    );
 
                     return $callable;
                 }
@@ -131,7 +138,7 @@ class ThemeResolver
         // you can refer to the parent theme by prefixing "ThemeParent:" instead of "Theme:"
         if ('ThemeParent:' === substr($name, 0, 12)) {
             if ($parent = $theme->getParent()) {
-                return $this->templatePath($parent, 'Theme:'.substr($name, 12));
+                return $this->templatePath($parent, 'Theme:' . substr($name, 12));
             }
         }
 
@@ -161,7 +168,7 @@ class ThemeResolver
             $this->themeTemplateMap[$theme->getId()] = $theme->getTemplateMap();
         }
 
-        $mapCache->write('<?php return '.var_export($this->themeTemplateMap, true).';');
+        $mapCache->write('<?php return ' . var_export($this->themeTemplateMap, true) . ';');
 
         return $this->themeTemplateMap;
     }
@@ -172,7 +179,7 @@ class ThemeResolver
         if (isset($map[$theme->getId()])
             && isset($map[$theme->getId()][$name])
         ) {
-            return DP_ROOT.$map[$theme->getId()][$name];
+            return DP_ROOT . $map[$theme->getId()][$name];
         }
 
         return;

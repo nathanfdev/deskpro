@@ -25,7 +25,8 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Request $request,
         HeaderBag $response_headers,
         UrlHostChecker $url_host_checker
-    ) {
+    )
+    {
         $brand_stack->getActive()->willReturn($brand_container);
         $event->getResponse()->willReturn($response);
         $event->getRequest()->willReturn($request);
@@ -38,8 +39,9 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
     public function it_does_not_change_response_if_not_redirect(
         Response $response,
         FilterResponseEvent $event
-    ) {
-        $response->isRedirection()->willReturn(false);
+    )
+    {
+        $response->isRedirect()->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
 
@@ -50,18 +52,17 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event
-    ) {
-        $response->isRedirection()->willReturn(true);
+    )
+    {
+        $response->isRedirect()->willReturn(true);
 
         $response_headers
             ->get(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, Argument::type('bool'))
-            ->willReturn('something truthy')
-        ;
+            ->willReturn('something truthy');
 
         $response_headers
             ->remove(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER)
-            ->shouldBeCalled()
-        ;
+            ->shouldBeCalled();
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
 
@@ -74,13 +75,16 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request
-    ) {
-        $response->isRedirection()->willReturn(true);
+    )
+    {
+        $response->isRedirect()->willReturn(true);
 
         $response_headers
-            ->get(\DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, Argument::type('bool'))
-            ->willReturn(null)
-        ;
+            ->get(
+                \DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER,
+                Argument::type('bool')
+            )
+            ->willReturn(null);
 
         $response_headers->get('Location')->willReturn('http://invalid.com');
 
@@ -100,13 +104,13 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request
-    ) {
-        $response->isRedirection()->willReturn(true);
+    )
+    {
+        $response->isRedirect()->willReturn(true);
 
         $response_headers
             ->get(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, Argument::type('bool'))
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
         $location = 'http://valid-site.com';
         $response_headers->get('Location')->willReturn($location);
@@ -129,13 +133,16 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         FilterResponseEvent $event,
         Request $request,
         BrandContainer $brand_container
-    ) {
-        $response->isRedirection()->willReturn(true);
+    )
+    {
+        $response->isRedirect()->willReturn(true);
 
         $response_headers
-            ->get(\DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, Argument::type('bool'))
-            ->willReturn(null)
-        ;
+            ->get(
+                \DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER,
+                Argument::type('bool')
+            )
+            ->willReturn(null);
 
         $location = 'http://check.com:8888/some/path';
         $response_headers->get('Location')->willReturn($location);
