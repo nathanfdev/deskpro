@@ -53,6 +53,10 @@ portal:
                 - DpBehat\Portal\PortalModeContext:
                     mode_storage: @portal_mode_storage
                     mode_factory: @portal_mode_factory
+                - DpBehat\Portal\PortalBrandThemeContext:
+                    brand_stack: @brand_stack
+                    theme_repo: @theme_repository
+                    em: @doctrine.orm.default_entity_manager
                 - DpBehat\Portal\AuthContext:
                     user_details: @user_details
                     token_storage: @security.token_storage

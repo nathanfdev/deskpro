@@ -7,6 +7,7 @@ Feature: Login
     Given I install the fresh data set
     And the following languages are enabled:
       | default |
+    And the default brand is using the sidebar theme
 
   Scenario: I login as user
     When I login with user credentials
