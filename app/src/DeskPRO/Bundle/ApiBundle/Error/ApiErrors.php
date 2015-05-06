@@ -51,6 +51,7 @@ class ApiErrors
     const INVALID_INPUT = 'invalid_input';
     const FORBIDDEN = 'unauthorized';
     const UNAUTHORIZED = 'unauthorized';
+    const UNAUTHORIZED_CHECK_APACHE = 'unauthorized_check_server';
     const NOT_FOUND = 'not_found';
     const INVALID_JSONP_CALLBACK = 'invalid_jsonp_callback';
     const INVALID_JSON_BODY = 'invalid_json_body';

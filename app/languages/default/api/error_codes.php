@@ -8,6 +8,7 @@
     'api.error_codes.invalid_input' => 'Request input is invalid.',
     'api.error_codes.forbidden' => 'You are not authorized to make this request.',
     'api.error_codes.unauthorized' => 'You must be authenticated to make this request.',
+    'api.error_codes.unauthorized_check_server' => 'Unauthorized. If you are using apache and feel that this is incorrect, please see this article for help: https://support.deskpro.com/kb/articles/415',
     'api.error_codes.not_found' => 'The requested resource was not found.',
     'api.error_codes.invalid_jsonp_callback' => 'The JSONP callback parameter is invalid. Please use a JSONP callback is is not a Javascript reserved word.',
     'api.error_codes.invalid_json_body' => 'The request JSON body is not valid JSON.',
