@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -29,57 +29,46 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\Util;
+namespace DpTest\DeskPRO\Component\Util\ListUtils;
 
-/**
- * Utility methods used with plain arrays/collections (i.e., numerically indexed).
- *
- * If you need to maintain indexes, use MapUtils.
- */
-class ListUtils
+use DpTest\DeskProTestCase;
+use DeskPRO\Component\Util\ListUtils;
+
+class ListUtilsTest extends DeskProTestCase
 {
-    private function __construct() {}
-
-    /**
-     * Remove all falsey values from an array.
-     *
-     * @param array $array The array to work on
-     *
-     * @return array
-     */
-    public static function filterOutFalsey($array)
+    public function testFilterOutFalsey()
     {
-        $new = array();
+        $this->assertEquals(
+            array(1,2,3),
+            ListUtils::filterOutFalsey(array(false, 1, 2, null, 3))
+        );
 
-        foreach ($array as $v) {
-            if ($v) {
-                $new[] = $v;
-            }
-        }
+        $this->assertEquals(
+            array(1,2,3),
+            ListUtils::filterOutFalsey(array('a' => false, 55 => 1, 'b' => 2, 0 => null, 0, 'c' => 3))
+        );
 
-        return $new;
+        $this->assertEquals(
+            array(),
+            ListUtils::filterOutFalsey(array(false, null, 0, ""))
+        );
     }
 
-    /**
-     * @param array        $array
-     * @param array|mixed  $values Values to remove
-     * @param bool         $strict  Strict checking on $values
-     * @return array
-     */
-    public static function filterOutValues($array, $values, $strict = true)
+    public function testFilterOutValues()
     {
-        $new = array();
+        $this->assertEquals(
+            array(false, 2, null, 3),
+            ListUtils::filterOutValues(array(false, 1, 2, null, 3), 1)
+        );
 
-        if (!is_array($values)) {
-            $values = array($values);
-        }
+        $this->assertEquals(
+            array(1, 2, null, 3),
+            ListUtils::filterOutValues(array(false, 1, 2, null, 3), false)
+        );
 
-        foreach ($array as $v) {
-            if (!in_array($v, $values, $strict)) {
-                $new[] = $v;
-            }
-        }
-
-        return $new;
+        $this->assertEquals(
+            array(1, 2, 3),
+            ListUtils::filterOutValues(array(false, 1, 2, null, 3), false, false)
+        );
     }
 }
