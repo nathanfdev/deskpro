@@ -35,6 +35,76 @@ use Twig_Token;
 
 use DeskPRO\Bundle\PortalBundle\Twig\Node\GroupNode;
 
+/**
+ * A group surrounds multiple items, which then lets you show/hide the entire group
+ * based on criteria. The simlest case is to only show the group when X number
+ * of inner items are visible, but you can get specific like testing for specific
+ * items or any other arbitrary criteria.
+ *
+ * Summary:
+ *
+ * Group: {% group %}...{% endgroup %}
+ * Group with min (defaults to 1 if unspecified): {% group min 3 %}...{% endgroup %}
+ * Group with if: {% group if my_condition %}...{% endgroup %}
+ * Group with min and if: {% group min 2 if my_condition %}...{% endgroup %}
+ *
+ * Examples:
+ * <code>
+ * {# By default, the group only shows when at least one item is visible #}
+ * {% group %}
+ *     <div class="my-wrapper">
+ *         {% item if something %}
+ *         ...
+ *         {% enditem %}
+ *     </div>
+ * {% endgroup %}
+ *
+ * {# Useful for something like colums #}
+ * {# Note: min syntax defines how many items must be visible #}
+ * {% group min 3 %}
+ *     {% item if something %}
+ *         <div class="column">...</div>
+ *     {% enditem %}
+ *     {% item if something %}
+ *         <div class="column">...</div>
+ *     {% enditem %}
+ *     {% item if something %}
+ *         <div class="column">...</div>
+ *     {% enditem %}
+ * {% endgroup %}
+ *
+ * {# Use the group variable for things like counts #}
+ * {% group min 3 %}
+ *     <div class="columns cols-{{group.count}}">
+ *         {% item if something %}
+ *             <div class="column">...</div>
+ *         {% enditem %}
+ *         {% item if something %}
+ *             <div class="column">...</div>
+ *         {% enditem %}
+ *         {% item if something %}
+ *             <div class="column">...</div>
+ *         {% enditem %}
+ *     </div>
+ * {% endgroup %}
+ *
+ * {# Groups can have arbitrary criteria (saves a wrapper if tag) #}
+ * {% group min 3 if some_cond %}{% endgroup %}
+ *
+ * {# You can use named items to reference specifics in the criteria #}
+ * {% group if group.items.my_item  %}
+ *     {% item my_item if something %}
+ *         <div class="column">...</div>
+ *     {% enditem %}
+ *     {% item %}
+ *         <div class="column">...</div>
+ *     {% enditem %}
+ *     {% item if something %}
+ *         <div class="column">...</div>
+ *     {% enditem %}
+ * {% endgroup %}
+ * </code>
+ */
 class GroupParser extends \Twig_TokenParser
 {
     public function parse(Twig_Token $token)
