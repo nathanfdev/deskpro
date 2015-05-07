@@ -65,6 +65,8 @@ class ArticlesController extends AbstractController
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
         }
 
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
+
         //
         // RENDER THEME
         //
@@ -73,6 +75,7 @@ class ArticlesController extends AbstractController
             array(
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs' => $breadcrumbs,
             )
         );
     }
@@ -100,6 +103,12 @@ class ArticlesController extends AbstractController
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
         }
 
+        if ($category) {
+            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKbCategory($category);
+        } else {
+            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
+        }
+
         //
         // RENDER THEME
         //
@@ -107,6 +116,7 @@ class ArticlesController extends AbstractController
             'Theme:Articles:browse.html.twig',
             array(
                 'category'        => $category,
+                'breadcrumbs'     => $breadcrumbs,
                 'page'            => $page,
                 'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
@@ -142,6 +152,8 @@ class ArticlesController extends AbstractController
             }
         }
 
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKbArticle($article);
+
         //
         // RENDER THEME
         //
@@ -150,6 +162,7 @@ class ArticlesController extends AbstractController
             array(
                 'article'          => $article,
                 'category'         => $article->getPrimaryCategory(),
+                'breadcrumbs'      => $breadcrumbs,
                 'content_id'       => $article->getId(),
                 'content_type'     => Article::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,

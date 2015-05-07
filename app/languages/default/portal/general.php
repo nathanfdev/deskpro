@@ -24,4 +24,11 @@
     'portal.general.related-downloads'      => 'Related Files',
     'portal.general.related-feedback'       => 'Related Feedback',
     'portal.general.attach-instructions'    => 'Click here to attach a file (or just drag & drop a file here)',
+    'portal.general.nav-portal'             => 'Portal',
+    'portal.general.nav-kb'                 => 'Knowledgebase',
+    'portal.general.nav-news'               => 'News',
+    'portal.general.nav-downloads'          => 'Downloads',
+    'portal.general.nav-feedback'           => 'Feedback',
+    'portal.general.nav-profile'            => 'Profile',
+    'portal.general.nav-tickets'            => 'Tickets',
 );

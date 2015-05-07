@@ -65,7 +65,7 @@ class NotifyPropertyChangeEntity implements NotifyPropertyChanged
 
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
-        $this->setModelField('_listeners[]', $listener);
+        $this->_listeners[] = $listener;
     }
 
     protected function setModelField($field, $value)

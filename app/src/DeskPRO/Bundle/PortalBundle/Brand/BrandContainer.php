@@ -125,6 +125,11 @@ class BrandContainer
         return $this->theme_resolver->templatePath($this->getTheme(), $name);
     }
 
+    /**
+     * @param string $tag_name
+     * @param array $arguments
+     * @return string
+     */
     public function renderTag($tag_name, array $arguments)
     {
         return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);

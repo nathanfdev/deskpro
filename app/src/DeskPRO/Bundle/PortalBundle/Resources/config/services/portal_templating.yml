@@ -11,6 +11,8 @@ services:
     tags:
       - { name: twig.loader }
 
+  portal_view.breadcrumb_generator:
+    class: DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
 
   portal_extension.twig:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalExtension

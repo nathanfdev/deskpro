@@ -47,7 +47,7 @@ class PortalSupportExtension extends \Twig_Extension
     private $continer;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 
@@ -91,10 +91,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
-            new \Twig_SimpleFunction('date', array($this, 'date')),
-
-            new \Twig_SimpleFunction('dp_context_tag_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
-            new \Twig_SimpleFunction('dp_tag_*', array($this, 'processPortalTag'), array('is_safe' => array('html'), 'needs_context' => true)),
+            new \Twig_SimpleFunction('date', array($this, 'date'))
         );
 
         return $funcs;
@@ -302,6 +299,28 @@ class PortalSupportExtension extends \Twig_Extension
     public function processPortalTag($context, $tag_name, $arguments = array())
     {
         return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+    }
+
+    /**
+     * @param string $tag_name
+     * @return bool
+     */
+    public function hasTag($tag_name)
+    {
+        $theme = $this->brand_stack->getActive()->getTheme();
+        $resolver = $this->continer->get('theme_resolver');
+        return $resolver->hasTag($theme, $tag_name);
+    }
+
+    /**
+     * @param string $tag_name
+     * @return string|null
+     */
+    public function getTagIncludeTemplate($tag_name)
+    {
+        $theme = $this->brand_stack->getActive()->getTheme();
+        $resolver = $this->continer->get('theme_resolver');
+        return $resolver->templatePath($theme, 'ThemeTagTemplate::' . $tag_name . '.html.twig');
     }
 
     /**

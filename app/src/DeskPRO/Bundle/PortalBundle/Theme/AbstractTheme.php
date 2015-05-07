@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
  * Representation of a DeskPRO Theme.
@@ -115,6 +116,8 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
     public function getTemplateMap()
     {
         $temps = array();
+        $parser = new YamlParser();
+
         if (is_dir($this->getBaseTemplateDir())) {
             $finder = new Finder();
             $finder->files()->name('*.twig')->in($this->getBaseTemplateDir());
@@ -122,7 +125,6 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
             foreach ($finder as $temp) {
                 // turn twig filename/path into Theme:x:y.html.twig syntax
                 $path        = $temp->getRelativePathname();
-                $name        = $temp->getFilename();
                 $path_broken = explode('/', $path);
                 $controller  = array_shift($path_broken);
                 if (count($path_broken) == 0) {
@@ -135,6 +137,15 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
                 $resolved_path         = $temp->getRealPath();
                 $resolved_path         = substr($resolved_path, strlen(realpath(DP_ROOT)));
                 $temps[$template_name] = $resolved_path;
+
+                if (file_exists($temp->getRealPath().'.yml')) {
+                    $val = $parser->parse(file_get_contents($temp->getRealPath().'.yml'));
+                    if (isset($val['show_tag_names'])) {
+                        foreach ($val['show_tag_names'] as $tag_name) {
+                            $temps['ThemeTagTemplate::' . $tag_name . '.html.twig'] = $resolved_path;
+                        }
+                    }
+                }
             }
         }
 

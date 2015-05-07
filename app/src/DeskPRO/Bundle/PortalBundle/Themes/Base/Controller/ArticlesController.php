@@ -41,7 +41,6 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\OptionsResolver\Options;
 
 class ArticlesController extends AbstractController
 {
@@ -72,12 +71,15 @@ class ArticlesController extends AbstractController
     {
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
 
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
+
         return $this->renderThemeView(
             sprintf('Theme:Articles:CategoryList/%s.html.twig', $options['style']),
             array(
                 'category'          => $category,
                 'category_children' => $category_children,
                 'articles_options'  => $options['articles_options'],
+                'breadcrumbs'       => $breadcrumbs
             )
         );
     }
@@ -123,30 +125,6 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="kb_article", esi=true)
-     * @TagHttpCache(content="article")
-     *
-     * @TagOptions(
-     *      required={"article"},
-     *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "article": "service('data.articles').getArticle(options['article'])"
-     *      }
-     * )
-     */
-    public function articleAction(TagRequest $tag_request, array $options, Article $article)
-    {
-        return $this->renderThemeView(
-            'Theme:Articles:ArticleView/article.html.twig',
-            array(
-                'article' => $article,
-            )
-        );
-    }
-
-    /**
      * @Tag(name="kb_article_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
@@ -170,7 +148,7 @@ class ArticlesController extends AbstractController
         }
 
         return $this->renderThemeView(
-            sprintf('Theme:Articles:ArticleView/subscription_info.html.twig', $options['style']),
+            'Theme:Articles:ArticleView/subscription_info.html.twig',
             array(
                 'article'       => $article,
                 'is_subscribed' => $is_subscribed,
@@ -232,7 +210,7 @@ class ArticlesController extends AbstractController
     {
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
-        return $this->renderThemeView('Theme:Articles:ArticleView/comments.html.twig', array(
+        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
             'article'  => $article,
             'comments' => $comments,
         ));
@@ -267,35 +245,6 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig', array(
                 'pager' => $pager,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="kb_breadcrumbs")
-     *
-     * @TagOptions(
-     *      defaults={"category": null, "article": null},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"},
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"},
-     *      },
-     *      attribute_expressions={
-     *          "article": "service('data.articles').getArticle(options['article'])",
-     *          "category": "service('data.articles').getCategory(options['category'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options, Article $article = null, ArticleCategory $category = null)
-    {
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
-
-        return $this->renderThemeView(
-            'Theme:Articles:Misc/breadcrumbs.html.twig', array(
-                'category' => $category,
-                'article'  => $article,
             )
         );
     }

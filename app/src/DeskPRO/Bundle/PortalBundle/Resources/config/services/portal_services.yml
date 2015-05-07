@@ -1,14 +1,11 @@
 services:
-
   session.handler.dbal:
     class: DeskPRO\Bundle\PortalBundle\Session\DbalSessionHandler
     arguments: [@doctrine.dbal.default_connection, %portal.session.name%]
 
-
   visitor_identification_provider:
     class: DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
     arguments: [@request_stack, @logger]
-
 
   pagerfanta.view.deskpro:
       class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
@@ -16,10 +13,8 @@ services:
       tags:
         - { name: pagerfanta.view, alias: deskpro }
 
-
   portal_mode_factory:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
-
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage

@@ -112,7 +112,7 @@ class ThemeResolver
             throw new \RuntimeException(sprintf('could not resolve theme controller "%s"', $input_controller));
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -128,10 +128,10 @@ class ThemeResolver
     public function templatePath(ThemeInterface $theme, $name)
     {
         if (!is_string($name) || 3 !== count($parts = explode(':', $name))) {
-            return;
+            return null;
         }
 
-        if ('Theme:' === substr($name, 0, 6)) {
+        if ('Theme:' === substr($name, 0, 6) || 'ThemeTagTemplate::' === substr($name, 0, 18)) {
             return $this->getThemeTemplatePath($theme, $name);
         }
 
@@ -142,7 +142,7 @@ class ThemeResolver
             }
         }
 
-        return;
+        return null;
     }
 
     public function getThemeTemplateMap()
@@ -173,6 +173,11 @@ class ThemeResolver
         return $this->themeTemplateMap;
     }
 
+    /**
+     * @param ThemeInterface $theme
+     * @param string $name
+     * @return null|string
+     */
     protected function getThemeTemplatePath(ThemeInterface $theme, $name)
     {
         $map = $this->getThemeTemplateMap();
@@ -182,7 +187,7 @@ class ThemeResolver
             return DP_ROOT . $map[$theme->getId()][$name];
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -195,12 +200,31 @@ class ThemeResolver
         return $this->theme_repo->find($theme_id);
     }
 
+    /**
+     * @param ThemeInterface $theme
+     * @param $tag_name
+     * @param array $arguments
+     * @return string
+     */
     public function processTag(ThemeInterface $theme, $tag_name, array $arguments)
     {
         if (!$tag = $theme->resolveTag($tag_name)) {
-            return '[unknown tag: ' . htmlspecialchars($tag_name) . ']';
+            throw new \InvalidArgumentException("Unknown tag: $tag_name");
         }
 
         return $this->tag_processor->process($tag, $arguments);
+    }
+
+    /**
+     * @param ThemeInterface $theme
+     * @param $tag_name
+     * @return bool
+     */
+    public function hasTag(ThemeInterface $theme, $tag_name)
+    {
+        if (!$theme->resolveTag($tag_name)) {
+            return false;
+        }
+        return true;
     }
 }
