@@ -34,7 +34,7 @@ framework:
 jms_serializer:
     visitors:
         json:
-            options: JSON_PRETTY_PRINT
+            options: 128 # JSON_PRETTY_PRINT constant unavailable in php 5.3, use int instead
 
 fos_rest:
     disable_csrf_role: ROLE_API
