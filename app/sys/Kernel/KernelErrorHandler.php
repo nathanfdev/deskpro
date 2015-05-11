@@ -1277,9 +1277,12 @@ class KernelErrorHandler
             }
 
             foreach ($var as $k => $v) {
+                if ($k == 'pass' || $k == 'password' || $k == 'passphrase') {
+                    $v = '***';
+                }
                 if ($_depth > 8) {
                     if ($is_array) {
-                        $a[] = '(string)';
+                        $a[] = '(array)';
                     } else {
                         $a[] = sprintf('%s => %s', $k, '(string)');
                     }
