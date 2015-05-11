@@ -214,9 +214,10 @@ do {
                 $ok = true;
 
                 $blobrow_sth->execute(array($blob['id']));
-                if ($blobrow_sth->errorCode()) {
+                $errcode = $blobrow_sth->errorCode();
+                if ($errcode && $errcode != "00000") {
                     echo "\n";
-                    echo "> Failed to fetch blobs_storage";
+                    echo "> Failed to fetch blobs_storage\n";
                     print_r($blobrow_sth->errorInfo());
                     $ok = false;
                 }
