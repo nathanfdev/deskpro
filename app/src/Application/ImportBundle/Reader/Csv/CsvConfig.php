@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
+use Application\ImportBundle\Reader\BaseConfig;
+
 /**
  * Csv data parser configuration
  *
  * Class CsvConfig
  * @package Application\ImportBundle\Reader\Csv
  */
-class CsvConfig
+class CsvConfig extends BaseConfig
 {
     /**
      * @var string
@@ -43,26 +45,29 @@ class CsvConfig
     /**
      * @var string
      */
-    private $delimiter = ';';
+    private $delimiter;
 
     /**
      * @var string
      */
-    private $enclosure = '"';
+    private $enclosure;
 
     /**
      * @var string
      */
-    private $escape = '\\';
+    private $escape;
 
     /**
      * Constructor
      *
      * @param string $resource
      */
-    public function __construct($resource)
+    public function __construct($resource, $delimeter = ';', $enclosure = '"', $escape = '\\')
     {
         $this->resource = $resource;
+        $this->delimiter = $delimeter;
+        $this->enclosure = $enclosure;
+        $this->escape = $escape;
     }
 
     /**

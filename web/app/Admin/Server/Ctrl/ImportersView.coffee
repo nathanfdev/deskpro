@@ -8,7 +8,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     initialLoad: ->
-      @Api.sendGet('/server/importers/' + @$stateParams.id).then (res) =>
+      @Api.sendPost('/server/importers/' + @$stateParams.id + '/test').then (res) =>
         @$scope.importer = res.data
 
 

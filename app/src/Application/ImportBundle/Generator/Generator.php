@@ -178,7 +178,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
         $exporter = $this->exporters->getByType($this->config->getExporterType());
 
         if ($exporter instanceof Exporter\LazyExporter) {
-            $exporter = $exporter->initialize();
+            $exporter = $exporter->initialize($this->config->getReaderConfig());
         }
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             if ( ! $this->config->getExporterBatchConfig()) {

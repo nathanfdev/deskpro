@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Reader\BaseConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

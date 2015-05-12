@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
+use Application\ImportBundle\Reader\BaseReader;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Orb\Util\Arrays;
@@ -39,8 +40,13 @@ use LimitIterator;
  * Class CsvReader
  * @package Application\ImportBundle\Reader\Csv
  */
-class CsvReader implements CsvReaderInterface
+class CsvReader extends BaseReader implements CsvReaderInterface
 {
+    public function __construct(CsvConfig $config)
+    {
+        parent::__construct($config);
+    }
+
     /**
      * {@inheritdoc}
      */

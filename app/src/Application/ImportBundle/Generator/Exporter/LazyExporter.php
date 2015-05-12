@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Reader\BaseConfig;
 use Exception;
 
 /**
@@ -49,11 +50,9 @@ final class LazyExporter implements ExporterInterface
     private $instance;
 
     /**
-     * Constructor
-     *
-     * @param FactoryInterface $factory
+     * @param AbstractFactory $factory
      */
-    public function __construct(FactoryInterface $factory)
+    public function __construct(AbstractFactory $factory)
     {
         $this->factory = $factory;
     }
@@ -101,12 +100,13 @@ final class LazyExporter implements ExporterInterface
     /**
      * Lazy loading when any interface method was called
      *
+     * @param BaseConfig $config
      * @return ExporterInterface
      */
-    public function initialize()
+    public function initialize(BaseConfig $config)
     {
         if ($this->instance === null) {
-            $this->instance = $this->factory->createExporter();
+            $this->instance = $this->factory->createExporter($config);
         }
 
         return $this->instance;

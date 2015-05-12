@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\BaseConfig;
 use Exception;
 use DateTime;
 
@@ -36,7 +37,7 @@ use DateTime;
  * Class ZenDeskConfig
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskConfig
+class ZenDeskConfig extends BaseConfig
 {
     const AUTH_TYPE_PASSWORD = 'password';
     const AUTH_TYPE_TOKEN    = 'token';

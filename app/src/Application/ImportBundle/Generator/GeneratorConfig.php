@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
+use Application\ImportBundle\Reader\BaseConfig;
 use Exception;
 use DateTime;
 
@@ -90,6 +91,11 @@ class GeneratorConfig
      * @var bool
      */
     private $silent = false;
+
+    /**
+     * @var BaseConfig
+     */
+    protected $reader_config;
 
     /**
      * Returns an exporter type
@@ -483,5 +489,21 @@ class GeneratorConfig
     public function isConsoleOutputEnabled()
     {
         return $this->verbose && $this->silent === false;
+    }
+
+    /**
+     * @return BaseConfig
+     */
+    public function getReaderConfig()
+    {
+        return $this->reader_config;
+    }
+
+    /**
+     * @param BaseConfig $reader_config
+     */
+    public function setReaderConfig(BaseConfig $reader_config)
+    {
+        $this->reader_config = $reader_config;
     }
 }

@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
+use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\ZenDesk\OsTicketConfig;
 use Pdo;
 
 /**
@@ -58,7 +60,7 @@ use Pdo;
  * Class OsTicketReader
  * @package Application\ImportBundle\Reader\OsTicket
  */
-class OsTicketReader implements OsTicketReaderInterface
+class OsTicketReader extends BaseReader implements OsTicketReaderInterface
 {
     /**
      * @var ConnectionWrapperInterface
@@ -85,14 +87,15 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     private $ticket_priorities_loaded = false;
 
-    /**
-     * Constructor
-     *
-     * @param ConnectionWrapperInterface $connection_wrapper
-     */
-    public function __construct(ConnectionWrapperInterface $connection_wrapper)
+
+    public function __construct(OsTicketConfig $config)
     {
-        $this->connection_wrapper = $connection_wrapper;
+        parent::__construct($config);
+        $this->connection_wrapper = new LazyConnectionWrapper(
+            sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost()),
+            $config->getUser(),
+            $config->getPassword()
+        );
     }
 
     /**
