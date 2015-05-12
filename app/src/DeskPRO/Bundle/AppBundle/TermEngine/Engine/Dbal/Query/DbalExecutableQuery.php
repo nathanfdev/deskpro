@@ -87,7 +87,6 @@ class DbalExecutableQuery
     public function __construct(DbalQuery $query, Connection $connection, LoggerInterface $logger = null)
     {
         $this->query = $query;
-        $q = (string) $this->query;
         $this->connection = $connection;
 
         $this->order_by = array();

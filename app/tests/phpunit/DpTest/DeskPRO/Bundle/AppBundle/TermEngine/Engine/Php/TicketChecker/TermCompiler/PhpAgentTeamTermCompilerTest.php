@@ -124,6 +124,7 @@ class PhpAgentTeamTermCompilerTest extends AbstractPhpTermCompilerTest
         if (!$id) {
             $id = 0;
         }
+        $ticket->getId()->willReturn(5);
         $ticket->getAgentTeamId()->willReturn($id);
 
         return $ticket;

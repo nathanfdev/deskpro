@@ -95,6 +95,7 @@ class PhpTicketStatusTermCompilerTest extends AbstractPhpTermCompilerTest
             $status = null;
         }
         $ticket->getStatusCode()->willReturn($status);
+        $ticket->getId()->willReturn(5);
 
         return $ticket;
     }

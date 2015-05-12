@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher;
+use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher
@@ -47,10 +48,11 @@ class DbalQueryCacherSpec extends ObjectBehavior
 {
     function let(
         CacheAdapterInterface $adapter,
-        DbalQuerySerializer $serializer
+        DbalQuerySerializer $serializer,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($adapter, $serializer);
+        $this->beConstructedWith($adapter, $serializer, $logger);
     }
 
     function it_will_retrieve_a_cached_query(

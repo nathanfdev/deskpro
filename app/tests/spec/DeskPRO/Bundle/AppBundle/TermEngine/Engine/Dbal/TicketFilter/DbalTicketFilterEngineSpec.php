@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use Doctrine\DBAL\Connection;
+use Monolog\Logger;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
@@ -55,10 +56,11 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
     function let(
         DbalTicketFilterEngineCompiler $compiler,
         EventDispatcher $event_dispatcher,
-        Connection $connection
+        Connection $connection,
+        Logger $logger
     )
     {
-        $this->beConstructedWith($compiler, $event_dispatcher, $connection);
+        $this->beConstructedWith($compiler, $event_dispatcher, $connection, $logger);
     }
 
     function it_is_a_dbal_engine()
@@ -74,6 +76,8 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
         DbalQuery $compiled_query
     )
     {
+        $filter->getId()->willReturn(1);
+        $filter->getTitle()->willReturn('title');
         $compiler->compile($filter)->willReturn($compiled_query);
 
         $event_dispatcher->dispatch(

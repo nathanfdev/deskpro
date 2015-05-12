@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler\PhpCompiler;
+use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler
@@ -52,10 +53,11 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
         TermInterface $term,
         PhpTermCompilerFactory $factory,
         PhpAgentTermCompiler $term_compiler,
-        PhpCheck $php_check
+        PhpCheck $php_check,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($factory, array());
+        $this->beConstructedWith($factory, array(), $logger);
         $factory->getCompiler($term)->willReturn($term_compiler);
         $php_check->getVariables()->willReturn(array());
         $term_compiler->compile($term)->willReturn($php_check);
@@ -74,10 +76,11 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
         TermInterface $term,
         PhpTermCompilerFactory $factory,
         VisitorInterface $visitor1,
-        VisitorInterface $visitor2
+        VisitorInterface $visitor2,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($factory, array($visitor1, $visitor2));
+        $this->beConstructedWith($factory, array($visitor1, $visitor2), $logger);
 
         $visitor1->visit($term)->shouldBeCalled();
         $visitor2->visit($term)->shouldBeCalled();

@@ -110,7 +110,7 @@ security:
         - { path: '^/api/v2(?!/api_tokens|/doc)', roles: ['ROLE_API'] }
 
 monolog:
-    channels:
+    channels: # you MUST also update portal_config.yml if you change these
         - "dp.tickets.filters.tengine.dbal.engine"
         - "dp.tickets.filters.tengine.dbal.compiler"
         - "dp.tickets.filters.tengine.php.engine"

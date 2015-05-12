@@ -62,6 +62,7 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
         $php_check = $this->term_compiler->compile($term);
 
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(5);
         $ticket->hasCustomField(3)->willReturn(false);
 
         $this->assertTicketCheck($php_check, false, $ticket);
@@ -80,6 +81,7 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
         $php_check = $this->term_compiler->compile($term);
 
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(5);
         $ticket->hasCustomField(3)->willReturn(false);
 
         $this->assertTicketCheck($php_check, true, $ticket);
@@ -100,6 +102,7 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
         $custom_data->getValue()->willReturn(3); // should fail IS op
 
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(5);
         $ticket->hasCustomField(3)->willReturn(true);
         $ticket->getCustomDataForField(3)->willReturn($custom_data);
 
@@ -122,6 +125,7 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
         $custom_data->getValue()->willReturn(5); // should pass NOT op
 
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(5);
         $ticket->hasCustomField(3)->willReturn(true);
         $ticket->getCustomDataForField(3)->willReturn($custom_data);
 
@@ -143,6 +147,7 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
         $custom_data->getValue()->willReturn(6); // should pass IS op
 
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(5);
         $ticket->hasCustomField(3)->willReturn(true);
         $ticket->getCustomDataForField(3)->willReturn($custom_data);
 
@@ -165,6 +170,7 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
         $custom_data->getValue()->willReturn(10); // should pass NOT op
 
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(5);
         $ticket->hasCustomField(3)->willReturn(true);
         $ticket->getCustomDataForField(3)->willReturn($custom_data);
 

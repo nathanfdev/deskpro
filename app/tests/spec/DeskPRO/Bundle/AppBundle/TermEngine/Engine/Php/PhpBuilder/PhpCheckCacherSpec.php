@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckSerializer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher
@@ -46,10 +47,11 @@ class PhpCheckCacherSpec extends ObjectBehavior
 {
     function let(
         CacheAdapterInterface $adapter,
-        PhpCheckSerializer $serializer
+        PhpCheckSerializer $serializer,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($adapter, $serializer);
+        $this->beConstructedWith($adapter, $serializer, $logger);
     }
 
     function it_will_retrieve_a_cached_query(
