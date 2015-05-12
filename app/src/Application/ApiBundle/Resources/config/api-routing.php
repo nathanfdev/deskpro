@@ -4947,10 +4947,10 @@ $collection->create(
 );
 
 $collection->create(
-    'api_server_importers_save',
+    'api_server_importers_test',
     array(
-        'path' => '/server/importers/{id}',
-        'controller' => 'ApiBundle:Importers:save',
+        'path' => '/server/importers/{id}/test',
+        'controller' => 'ApiBundle:Importers:test',
         'methods' => array('POST'),
     )
 );

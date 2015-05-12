@@ -35,8 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Generator\GeneratorConfig;
+use Orb\Util\OptionsArray;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ImportersController extends AbstractController implements ProtectedControllerInterface
@@ -55,6 +58,10 @@ class ImportersController extends AbstractController implements ProtectedControl
         $generator = $this->get('deskpro.import.generator');
         $ret = array();
         foreach ($generator->getExporters() as $exporter) {
+            if ('json' === $exporter->getType()) {
+                continue;
+            }
+
             /** @var AbstractExporter $exporter */
             $ret[] = array(
                 'id' => $exporter->getType(),
@@ -89,8 +96,36 @@ class ImportersController extends AbstractController implements ProtectedControl
         return $this->createJsonResponse($ret);
     }
 
-    public function saveAction($id)
+    public function testAction($id)
     {
+        /** @var Generator $generator */
+        $generator = $this->get('deskpro.import.generator');
 
+        if (!isset($exporters[$id])) {
+            throw new NotFoundHttpException;
+        }
+
+        $config = new GeneratorConfig();
+
+        /**************/
+        $import_config = new OptionsArray(dp_get_config('import', array()));
+        $supported_types = array(
+            EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_PERSON,
+            EntityInterface::TYPE_ARTICLE,
+            EntityInterface::TYPE_DOWNLOAD,
+            EntityInterface::TYPE_FEEDBACK,
+            EntityInterface::TYPE_NEWS,
+        );
+        $config
+            ->setOutputPath($import_config->get('output_path'))
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'));
+
+        foreach ($supported_types as $type) {
+            $config->addEntityType($type);
+        }
+
+
+        return $this->createJsonResponse(array());
     }
 }
