@@ -60,16 +60,25 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
+        $this->logDebug('Processed options', array(
+            'non-hidden' => $non_hidden,
+            'hidden' => $hidden
+        ));
+
         // only non hidden
         if (count($non_hidden) && !count($hidden)) {
             $query_part->setParameter('status', $non_hidden);
 
-            $query_part->setWhereString(
-                sprintf(
-                    'ticket.status %s (:status)',
-                    $isser
-                )
+            $where = sprintf(
+                'ticket.status %s (:status)',
+                $isser
             );
+
+            $query_part->setWhereString(
+                $where
+            );
+
+            $this->logQueryPart($query_part);
 
             return $query_part;
         }
@@ -88,6 +97,8 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
                 )
             );
 
+            $this->logQueryPart($query_part);
+
             return $query_part;
         }
 
@@ -102,6 +113,8 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
                     'ticket.status != :status_hidden OR (ticket.status = :status_hidden AND ticket.hidden_status NOT IN (:hidden_status))'
                 );
 
+                $this->logQueryPart($query_part);
+
                 return $query_part;
 
             } else {
@@ -109,6 +122,8 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
                 $query_part->setWhereString(
                     'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)'
                 );
+
+                $this->logQueryPart($query_part);
 
                 return $query_part;
             }

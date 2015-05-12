@@ -43,11 +43,15 @@ class DbalTicketIdTermCompiler extends AbstractDbalTermCompiler
         $num = $term->getOption('num');
         $num2 = $term->getOption('num2');
 
-        return $this->getNumericHelper()->buildQueryPart(
+        $query_part = $this->getNumericHelper()->buildQueryPart(
             'ticket.id',
             $term->getOp(),
             $num,
             $num2
         );
+
+        $this->logQueryPart($query_part);
+
+        return $query_part;
     }
 }

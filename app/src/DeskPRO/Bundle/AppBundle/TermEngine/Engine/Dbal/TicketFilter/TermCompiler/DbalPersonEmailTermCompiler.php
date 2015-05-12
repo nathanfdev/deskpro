@@ -51,6 +51,8 @@ class DbalPersonEmailTermCompiler extends AbstractDbalTermCompiler
                 $query_part->addJoin('people_emails', 'ticket.person_id = people_emails.person_id');
                 $query_part->setWhereString('people_emails.email = :email');
 
+                $this->logQueryPart($query_part);
+
                 return $query_part;
             case TermInterface::OP_NOT:
                 $query_part->setParameter('email', $term->getOption('email'));
@@ -60,6 +62,8 @@ class DbalPersonEmailTermCompiler extends AbstractDbalTermCompiler
                     'ticket.person_id = {email_join}.person_id AND {email_join}.email = :email'
                 );
                 $query_part->setWhereString('{email_join}.id IS NULL');
+
+                $this->logQueryPart($query_part);
 
                 return $query_part;
         }

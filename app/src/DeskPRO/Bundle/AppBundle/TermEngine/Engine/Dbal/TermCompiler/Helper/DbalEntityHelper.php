@@ -38,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalEntityHelper implements TermCompilerHelperInterface
+class DbalEntityHelper extends AbstractDbalHelper
 {
     public function getId()
     {
@@ -75,6 +75,8 @@ class DbalEntityHelper implements TermCompilerHelperInterface
             }
         }
 
+        $this->getLogger()->debug('DbalEntityHelper: using ids', array('ids' => $assert_ids, 'null?' => $assert_null));
+
         $where = '';
 
         // are there real IDs we need to worry about?
@@ -100,6 +102,8 @@ class DbalEntityHelper implements TermCompilerHelperInterface
                 $null_isser
             );
         }
+
+        $this->getLogger()->debug('DbalEntityHelper: asserting WHERE', array('where' => $where));
 
         $part->setWhereString($where);
 

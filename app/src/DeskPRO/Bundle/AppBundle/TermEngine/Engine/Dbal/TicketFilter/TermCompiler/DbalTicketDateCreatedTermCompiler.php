@@ -46,12 +46,16 @@ class DbalTicketDateCreatedTermCompiler extends AbstractDbalTermCompiler
         $date2 = $term->getOption('date2');
         $ignore = $term->getOption('ignore_time');
 
-        return $this->getDateHelper()->buildQueryPart(
+        $query_part = $this->getDateHelper()->buildQueryPart(
             'ticket.date_created',
             $term->getOp(),
             $date,
             $date2,
             $ignore
         );
+
+        $this->logQueryPart($query_part);
+
+        return $query_part;
     }
 }

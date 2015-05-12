@@ -67,6 +67,8 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
 
         $query_part->setWhereString(sprintf('{participants}.person_id %s (:person_ids)', $isser));
 
+        $this->logQueryPart($query_part);
+
         return $query_part;
     }
 }

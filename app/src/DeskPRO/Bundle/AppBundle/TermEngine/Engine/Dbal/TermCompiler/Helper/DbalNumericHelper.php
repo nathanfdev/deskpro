@@ -37,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalNumericHelper implements TermCompilerHelperInterface
+class DbalNumericHelper extends AbstractDbalHelper
 {
 
     /**
@@ -106,6 +106,8 @@ class DbalNumericHelper implements TermCompilerHelperInterface
         if (null !== $num2 && (TermInterface::OP_RANGE === $op || TermInterface::OP_NOT_RANGE === $op)) {
             $part->setParameter('num2', $num2);
         }
+
+        $this->getLogger()->debug('DbalNumericHelper: asserting WHERE', array('where' => $where));
 
         $part->setWhereString($where);
 

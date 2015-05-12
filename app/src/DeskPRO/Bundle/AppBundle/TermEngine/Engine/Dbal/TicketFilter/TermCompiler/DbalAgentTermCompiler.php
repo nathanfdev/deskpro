@@ -52,10 +52,14 @@ class DbalAgentTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        return $this->getEntityHelper()->buildQueryPart(
+        $query_part = $this->getEntityHelper()->buildQueryPart(
             'ticket.agent_id',
             $term->getOp(),
             $ids
         );
+
+        $this->logQueryPart($query_part);
+
+        return $query_part;
     }
 }

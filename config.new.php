@@ -368,6 +368,14 @@ $DP_CONFIG['debug']['page_log'] = array(
 );
 
 ######################################################
+# Term Engine Log                                    #
+######################################################
+# Configure when term engine logs are persisted      #
+######################################################
+
+$DP_CONFIG['enable_termengine_log'] = false;
+
+######################################################
 # OPTIONAL : Ticket Log                              #
 ######################################################
 # Enable full logging for tickets and triggers to    #
