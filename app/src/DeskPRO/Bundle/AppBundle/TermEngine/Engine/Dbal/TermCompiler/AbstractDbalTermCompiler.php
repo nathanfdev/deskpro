@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
@@ -46,59 +47,8 @@ use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractDbalTermCompiler
+abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
 {
-    /**
-     * @var TermCompilerHelperPool
-     */
-    private $helper_pool;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var SimpleTimer
-     */
-    protected $stateful_timer;
-
-    /**
-     * @var string
-     */
-    protected $short_name;
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    public function logStartingCompile(TermInterface $term)
-    {
-        // logEndingCompile method relies on $this->stateful_timer here
-        $this->stateful_timer = new SimpleTimer();
-
-        $this->logDebug('START', array(
-            'term_name' => TermTypeCodes::getTermTypeCode($term),
-            'op' => $term->getOp(),
-            'options' => $term->getOptions()
-        ));
-    }
-
-    public function logEndingCompile(TermInterface $term)
-    {
-        $this->logDebug('END', array(
-            'term_name' => TermTypeCodes::getTermTypeCode($term),
-            'op' => $term->getOp(),
-            'time_in_ms' => $this->stateful_timer->getElapsedTime()
-        ));
-    }
-
     public function logQueryPart(DbalQueryPart $part)
     {
         $this->logDebug('Constructed QueryPart', array(
@@ -107,111 +57,6 @@ abstract class AbstractDbalTermCompiler
             'joins' => $part->getJoins(),
             'unique_joins' => $part->getUniqueJoins()
         ));
-    }
-
-    public function log($level, $message, array $context = array())
-    {
-        $message = sprintf('%s: %s', $this->getShortName(), $message);
-
-        $this->getLogger()->log($level, $message, $context);
-    }
-
-    public function logDebug($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::DEBUG, $message, $context);
-    }
-
-    public function logInfo($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::INFO, $message, $context);
-    }
-
-    public function logNotice($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::NOTICE, $message, $context);
-    }
-
-    public function logWarning($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->getLogger()->log(Logger::WARNING, $message, $context);
-    }
-
-    public function logError($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::ERROR, $message, $context);
-    }
-
-    public function logCritical($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::CRITICAL, $context);
-    }
-
-    public function logAlert($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::ALERT, $message, $context);
-    }
-
-    public function logEmergency($message, array $context = array())
-    {
-        if (!$this->getLogger()) {
-            return;
-        }
-
-        $this->log(Logger::EMERGENCY, $message, $context);
-    }
-
-    public function getShortName()
-    {
-        if (!$this->short_name) {
-            $ref = new \ReflectionClass($this);
-            $this->short_name = $ref->getShortName();
-        }
-
-        return $this->short_name;
-    }
-
-    public function setHelperPool(TermCompilerHelperPool $helper_pool)
-    {
-        $this->helper_pool = $helper_pool;
-    }
-
-    /**
-     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
-     *
-     * @param $id
-     * @return TermCompilerHelperInterface
-     */
-    public function getHelper($id)
-    {
-        return $this->helper_pool->getHelper($id);
     }
 
     /**
@@ -245,43 +90,4 @@ abstract class AbstractDbalTermCompiler
     {
         return $this->helper_pool->getHelper('numeric');
     }
-
-    /**
-     * Use this shortcut to see if two op codes are the same.
-     *
-     * This normalizes the codes and then does the comparrison in a safe way.
-     *
-     * @param string $op
-     * @param string $code
-     * @return bool
-     */
-    protected function isOp($op, $code)
-    {
-        return strtolower($op) === strtolower($code);
-    }
-
-    /**
-     * Take a term and return a DbalQueryPart representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     * @return DbalQueryPart
-     */
-    public function compile(TermInterface $term)
-    {
-        $this->logStartingCompile($term);
-
-        $return = $this->doCompile($term);
-
-        $this->logEndingCompile($term);
-
-        return $return;
-    }
-
-    /**
-     * Take a term and return a DbalQueryPart representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     * @return DbalQueryPart
-     */
-    abstract protected function doCompile(TermInterface $term);
 }

@@ -33,33 +33,39 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
 
-abstract class AbstractPhpTermCompiler
+abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
 {
     /**
-     * @var TermCompilerHelperPool
+     * Must return a PhpCheck
+     *
+     * @param TermInterface $term
+     * @return PhpCheck
      */
-    private $helper_pool;
-
-    public function setHelperPool(TermCompilerHelperPool $helper_pool)
+    public function compile(TermInterface $term)
     {
-        $this->helper_pool = $helper_pool;
+        $check = parent::compile($term);
+
+        $this->logCheck($check);
+
+        return $check;
     }
 
-    /**
-     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
-     *
-     * @param $id
-     * @return TermCompilerHelperInterface
-     */
-    public function getHelper($id)
+    public function logCheck(PhpCheck $check)
     {
-        return $this->helper_pool->getHelper($id);
+        $this->logDebug(
+            'Constructed PhpCheck',
+            array(
+                'expression' => $check->getExpression(),
+                'vars' => $check->getVariables()
+            )
+        );
     }
 
     /**
@@ -74,39 +80,4 @@ abstract class AbstractPhpTermCompiler
     {
         return 'array(' . implode(',', $values) . ')';
     }
-
-    /**
-     * Use this shortcut to see if two op codes are the same.
-     *
-     * This normalizes the codes and then does the comparrison in a safe way.
-     *
-     * @param string $op
-     * @param string $code
-     * @return bool
-     */
-    protected function isOp($op, $code)
-    {
-        return strtolower($op) === strtolower($code);
-    }
-
-    /**
-     * Take a term and return a PhpCheck representing the term's php check.
-     *
-     * You must set the variable $check to true or false in your returned PHP code.
-     *
-     * @param TermInterface $term
-     * @return PhpCheck
-     */
-    public function compile(TermInterface $term)
-    {
-        return $this->doCompile($term);
-    }
-
-    /**
-     * Take a term and return a PhpCheck representing the term's php check.
-     *
-     * @param TermInterface $term
-     * @return PhpCheck
-     */
-    abstract protected function doCompile(TermInterface $term);
 }

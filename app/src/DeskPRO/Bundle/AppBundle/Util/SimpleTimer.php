@@ -33,8 +33,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Util;
 
-use Swagger\Annotations\AbstractAnnotation;
-
 /**
  * Simple timer using microtime(true).
  *
@@ -50,7 +48,7 @@ class SimpleTimer
     }
 
     /**
-     * The the microtime difference since object instantiation.
+     * The microtime difference since object instantiation.
      *
      * @return float
      */
