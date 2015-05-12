@@ -100,10 +100,13 @@ class DbalQueryCacher
     {
         $add_unique = sprintf('dbal.term_engine.query.%s', $key);
 
-        $this->logger->debug('DbalQueryCacher: Prefixing key', array(
-            'requested_key' => $key,
-            'using_prefixed_key' => $add_unique
-        ));
+        $this->logger->debug(
+            'DbalQueryCacher: Prefixing key',
+            array(
+                'requested_key' => $key,
+                'using_prefixed_key' => $add_unique
+            )
+        );
 
         return $add_unique;
     }

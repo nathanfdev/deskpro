@@ -38,6 +38,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
+use Elastica\Log;
+use Psr\Log\LoggerInterface;
 
 class TicketChecker implements PhpTicketCheckerInterface
 {
@@ -61,17 +64,24 @@ class TicketChecker implements PhpTicketCheckerInterface
      */
     private $helper_pool;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         PhpCheck $php_check,
         TermEngineContext $context,
         TermEngineExpressionLanguage $expression_language,
-        TermCompilerHelperPool $helper_pool
+        TermCompilerHelperPool $helper_pool,
+        LoggerInterface $logger
     )
     {
         $this->php_check = clone $php_check; // use a clone
         $this->context = $context;
         $this->expression_language = $expression_language;
         $this->helper_pool = $helper_pool;
+        $this->logger = $logger;
     }
 
     /**
@@ -81,7 +91,14 @@ class TicketChecker implements PhpTicketCheckerInterface
     public function isTicketMatch(Ticket $ticket)
     {
         $this->php_check->freezeVariableNames();
-        return $this->expression_language->evaluate(
+
+        $this->logger->debug('TicketChecker: evaluating php check', array('expression' =>
+            $this->php_check->getExpression(), 'vars' => $this->php_check->getVariables()));
+        $this->logger->debug('TicketChecker: using ticket', array('ticket_id' => $ticket->getId()));
+
+        $timer = new SimpleTimer();
+
+        $eval = $this->expression_language->evaluate(
             $this->php_check->getExpression(),
             array_merge(
                 $this->php_check->getVariables(),
@@ -92,5 +109,9 @@ class TicketChecker implements PhpTicketCheckerInterface
                 )
             )
         );
+
+        $this->logger->debug('TicketChecker: ' . ($eval ? 'PASS' : 'FAIL'), array('time' => $timer->getElapsedTime()));
+
+        return $eval;
     }
 }

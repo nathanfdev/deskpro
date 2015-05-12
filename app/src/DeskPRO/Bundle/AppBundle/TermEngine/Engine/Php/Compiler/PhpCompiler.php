@@ -39,6 +39,8 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\PhpTermCompilerF
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
+use Psr\Log\LoggerInterface;
 
 abstract class PhpCompiler
 {
@@ -57,10 +59,16 @@ abstract class PhpCompiler
      */
     protected $var_counter;
 
-    public function __construct(PhpTermCompilerFactory $term_compiler_factory, array $visitors)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(PhpTermCompilerFactory $term_compiler_factory, array $visitors, LoggerInterface $logger)
     {
         $this->term_compiler_factory = $term_compiler_factory;
         $this->visitors = $visitors;
+        $this->logger = $logger;
     }
 
     /**
@@ -77,16 +85,38 @@ abstract class PhpCompiler
      */
     public function compile(TermInterface $term)
     {
+        $timer = new SimpleTimer();
+
+        // the fastest way to do this performance-wise is with reflection
+        $ref = new \ReflectionClass($term);
+        $term_class_name = $ref->getShortName();
+
+        $this->logger->info('PHP TERM COMPILER START', array('term' => $term_class_name));
+
         // let visitors alter the term
         foreach ($this->visitors as $visitor) {
+            $this->logger->debug('Passing term to visitor', array('visitor' => get_class($visitor)));
             $visitor->visit($term);
         }
 
-        $this->var_counter = 0;
+        if (!count($this->visitors)) {
+            $this->logger->debug('No visitors were registered, moving on');
+        }
+
+        $this->var_counter = 0; // resets for every compile
 
         $php_check = $this->compileTerm($term);
 
         $this->enginePostCompile($php_check);
+
+        $this->logger->info(
+            'PHP TERM COMPILER END',
+            array(
+                'time' => $timer->getElapsedTime()
+            )
+        );
+
+        $this->logger->debug('PhpCompiler result', array('php_check' => $php_check));
 
         return $php_check;
     }
@@ -98,6 +128,16 @@ abstract class PhpCompiler
     protected function compileTerm(TermInterface $term)
     {
         if ($term instanceof CompositeTermInterface) {
+
+            $timer = new SimpleTimer();
+
+            $this->logger->debug(
+                'START CompositeTerm',
+                array(
+                    'op' => $term->getOp(),
+                )
+            );
+
             $parent_check = new PhpCheck();
             $php_check_expressions = array();
 
@@ -115,6 +155,13 @@ abstract class PhpCompiler
             $sep = (strtolower($term->getOp()) === strtolower(TermInterface::OP_AND)) ? ' && ' : ' || ';
 
             $parent_check->setExpression(sprintf('(%s)', implode($sep, $php_check_expressions)));
+
+            $this->logger->debug(
+                'END CompositeTerm',
+                array(
+                    'time' => $timer->getElapsedTime()
+                )
+            );
 
             return $parent_check;
         }

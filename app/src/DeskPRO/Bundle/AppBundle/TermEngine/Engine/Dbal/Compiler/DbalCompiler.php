@@ -99,11 +99,11 @@ abstract class DbalCompiler implements DbalCompilerInterface
         $ref = new \ReflectionClass($term);
         $term_class_name = $ref->getShortName();
 
-        $this->logger->info('DBAL TERM COMPILER START');
+        $this->logger->info('DBAL TERM COMPILER START', array('term' => $term_class_name));
 
         // let visitors alter the term
         foreach ($this->visitors as $visitor) {
-            $this->logger->debug('Passing term to visitor: {class}', array('class' => get_class($visitor)));
+            $this->logger->debug('Passing term to visitor', array('visitor' => get_class($visitor)));
             $visitor->visit($term);
         }
 
@@ -122,11 +122,15 @@ abstract class DbalCompiler implements DbalCompilerInterface
         $this->enginePostCompile($query_builder);
 
         $this->logger->info('DBAL TERM COMPILER END', array(
-            'time_in_ms' => $timer->getElapsedTime()
+            'time' => $timer->getElapsedTime()
         ));
 
         // result is a DbalQuery
-        return $query_builder->getQuery();
+        $query = $query_builder->getQuery();
+
+        $this->logger->debug('DbalCompiler result', array('query' => $query));
+
+        return $query;
     }
 
     public function getTermCompiler(TermInterface $term)
@@ -144,9 +148,12 @@ abstract class DbalCompiler implements DbalCompilerInterface
 
             $timer = new SimpleTimer();
 
-            $this->logger->debug('START CompositeTerm', array(
-                'op' => $term->getOp(),
-            ));
+            $this->logger->debug(
+                'START CompositeTerm',
+                array(
+                    'op' => $term->getOp(),
+                )
+            );
 
             // compile each term in the composite with a special DbalCompositeQueryBuilder instead
             // of the normal DbalQueryBuilder so we can catch the WHERE strings and process them before writing.
@@ -171,9 +178,12 @@ abstract class DbalCompiler implements DbalCompilerInterface
             // write it in its own parenthesis
             $query_builder->setWhereString($where_string);
 
-            $this->logger->debug('END CompositeTerm', array(
-                'time_in_ms' => $timer->getElapsedTime()
-            ));
+            $this->logger->debug(
+                'END CompositeTerm',
+                array(
+                    'time' => $timer->getElapsedTime()
+                )
+            );
 
         } else {
 
