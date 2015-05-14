@@ -78,7 +78,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
         }
 
-        $tester = usersourcetester::createfromoptions('application\\Deskpro\\Usersource\\Adapter\\Dbtablephppasswordcheck', $options);
+        $tester = usersourcetester::createfromoptions('Application\\Deskpro\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
         $tester->test($username, $password);
 
         $result_data = array(
