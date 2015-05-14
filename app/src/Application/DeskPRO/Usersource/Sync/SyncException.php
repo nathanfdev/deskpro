@@ -31,29 +31,54 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Usersource\Sync\Syncer;
+namespace Application\DeskPRO\Usersource\Sync;
 
+
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\Usersource\Sync\SyncerHelper;
-use Application\DeskPRO\Usersource\Sync\SyncerInterface;
+use Exception;
 
-abstract class AbstractSyncer implements SyncerInterface
+/**
+ * Problem syncing this person with this usersource
+ */
+class SyncException extends \RuntimeException
 {
     /**
-     * @var SyncerHelper
+     * @var Person
      */
-    protected $helper;
+    private $person;
 
     /**
-     * @param SyncerHelper $helper
+     * @var Usersource
      */
-    public function __construct(SyncerHelper $helper)
+    private $usersource;
+
+    public function __construct(
+        $message = "",
+        Person $person,
+        Usersource $usersource,
+        $code = 0,
+        Exception $previous = null
+    )
     {
-        $this->helper = $helper;
+        parent::__construct($message, $code, $previous);
+        $this->person = $person;
+        $this->usersource = $usersource;
     }
 
-    public function supportsUsersource(Usersource $usersource)
+    /**
+     * @return Person
+     */
+    public function getPerson()
     {
-        return $this->supportsUsersourceAdapter($usersource->getSourceType());
+        return $this->person;
+    }
+
+    /**
+     * @return Usersource
+     */
+    public function getUsersource()
+    {
+        return $this->usersource;
     }
 }

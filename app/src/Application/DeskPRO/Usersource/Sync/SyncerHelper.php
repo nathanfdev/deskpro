@@ -35,6 +35,9 @@ namespace Application\DeskPRO\Usersource\Sync;
 
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usersource;
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 
 /**
  * This will be offered as a service to all Syncers. It aids them by taking care of common Syncer needs.
@@ -43,20 +46,60 @@ use Application\DeskPRO\Entity\Person;
 class SyncerHelper
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function handleEmail(Person $person, $email_string)
+    {
+        if ($person->hasEmailAddress($email_string)) {
+            return; // already exists
+        }
+
+        if ($email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email_string)) {
+            if ($email->person->id != $person->id) {
+                // uh-oh, the person we are dealing with is not the person who
+                // owns this email address...
+                // TODO: what to do here?
+            }
+            return;
+        }
+
+        $person->addEmailAddressString($email_string);
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param Person $person
+     * @return PersonUsersourceAssoc
+     */
+    public function getAssociation(Usersource $usersource, Person $person)
+    {
+        return $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')
+            ->getAssociationForPersonUsersourcePair($person, $usersource);
+    }
+
+    /**
      * Saves a person.
      *
      * @param Person $person
      */
     public function savePerson(Person $person)
     {
-
+        $this->em->persist($person);
+        $this->em->flush($person);
     }
 
     /**
      * returns a new person object, ready to be populated by the usersource syncer
      */
-    public function createPerson()
+    public function createPerson(array $user_info)
     {
-
+        $person = Person::newContactPerson($user_info);
     }
 }
