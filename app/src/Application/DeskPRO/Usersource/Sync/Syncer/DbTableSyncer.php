@@ -38,42 +38,12 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Orb\Auth\Identity;
+use Orb\Validator\StringEmail;
+use Symfony\Component\Validator\Constraints\EmailValidator;
 
 class DbTableSyncer extends AbstractSyncer
 {
-    public function refreshPerson(Usersource $usersource, Person $person)
-    {
-        $association = $this->helper->getAssociation($usersource, $person);
-        $db_adapter = $this->getAdapter($usersource);
-        $identity = $db_adapter->findIdentityByInput($association->identity);
-
-        // if the assoc identity didnt work, its possible to find them by their email
-        if (!$identity) {
-            foreach ($person->getEmailAddresses() as $email) {
-                if ($identity = $db_adapter->findIdentityByInput($email)) {
-                    break;
-                }
-            }
-        }
-
-        if (!$identity instanceof Identity) {
-            throw new SyncException('identity could not be found', $person, $usersource);
-        }
-
-        $user_info = $db_adapter->getFieldsFromIdentity($identity);
-
-        // the name part below can also be a helper
-        if (!$name = $user_info['name']) {
-            $name = $user_info['first_name'] . ' ' . $user_info['last_name'];
-        }
-
-        $person->setName($name);
-        $this->helper->handleEmail($person, $user_info['email']);
-
-        $this->helper->savePerson($person);
-    }
-
-    public function downloadAndRefreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
         $rows = array(); // add some methods on the adapter to allow for this sort of request
 
@@ -86,6 +56,52 @@ class DbTableSyncer extends AbstractSyncer
                 return;
             }
         }
+    }
+
+    public function refreshIdentity(Usersource $usersource, $identity_or_email)
+    {
+        $db_adapter = $this->getAdapter($usersource);
+        $identity = $db_adapter->findIdentityByInput($identity_or_email);
+
+        // if the id doesn't exist in the remote db, we make a last-ditch effort to
+        // find the usersource assocation via email
+        if (!$identity instanceof Identity && StringEmail::isValueValid($identity_or_email)) {
+            $person = $this->helper->getPersonFromEmail($identity_or_email);
+            if ($assoc = $this->helper->getAssociation($usersource, $person)) {
+                $identity = $db_adapter->findIdentityByInput($assoc->identity);
+            }
+        }
+
+        if (!$identity instanceof Identity) {
+            throw new SyncException(
+                sprintf(
+                    'could not find remote identity for identity=%s at usersource id=%s',
+                    $identity_or_email,
+                    $usersource->getId()
+                ),
+                $identity_or_email,
+                $usersource
+            );
+        }
+
+        // get an array of info passed to us from remote usersource
+        $user_info = $db_adapter->getFieldsFromIdentity($identity);
+
+        // get person by identity association
+        if ($assoc = $this->helper->getAssociation($usersource, $identity->getIdentity())) {
+            $person = $assoc->person;
+            // failing that, find them by email
+        } elseif (!$person = $this->helper->getPersonFromEmail($identity_or_email)) {
+            // failing that, we'll make a new one
+            $person = null;
+        }
+
+        // sync person and assoc
+        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
+        $assoc = $this->helper->updateOrCreateAssociation($usersource, $person, $identity);
+
+        $this->helper->savePerson($person);
+        $this->helper->saveAssociation($assoc);
     }
 
     public function supportsUsersourceAdapter($adapter_class)

@@ -44,9 +44,9 @@ use Exception;
 class SyncException extends \RuntimeException
 {
     /**
-     * @var Person
+     * @var Person|mixed
      */
-    private $person;
+    private $person_or_identifier;
 
     /**
      * @var Usersource
@@ -55,23 +55,23 @@ class SyncException extends \RuntimeException
 
     public function __construct(
         $message = "",
-        Person $person,
+        $person_or_identifier,
         Usersource $usersource,
         $code = 0,
         Exception $previous = null
     )
     {
         parent::__construct($message, $code, $previous);
-        $this->person = $person;
+        $this->person_or_identifier = $person_or_identifier;
         $this->usersource = $usersource;
     }
 
     /**
      * @return Person
      */
-    public function getPerson()
+    public function getPersonOrIdentifier()
     {
-        return $this->person;
+        return $this->person_or_identifier;
     }
 
     /**

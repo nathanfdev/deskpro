@@ -39,7 +39,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * This tracks associations between a user and a usersource.
- *
+ * @property Person $person
+ * @property Usersource $usersource
+ * @property string $identity
+ * @property string $identity_friendly
+ * @property mixed  $data
+ * @property \DateTime $date_updated
+ * @property \DateTime $date_created
  */
 class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -106,6 +112,79 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->id;
     }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * @return Usersource
+     */
+    public function getUsersource()
+    {
+        return $this->usersource;
+    }
+
+    /**
+     * @param Usersource $usersource
+     */
+    public function setUsersource(Usersource $usersource)
+    {
+        $this->usersource = $usersource;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentity()
+    {
+        return $this->identity;
+    }
+
+    /**
+     * @param string $identity
+     */
+    public function setIdentity($identity)
+    {
+        $this->identity = $identity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentityFriendly()
+    {
+        return $this->identity_friendly;
+    }
+
+    /**
+     * @param string $identity_friendly
+     */
+    public function setIdentityFriendly($identity_friendly)
+    {
+        $this->identity_friendly = $identity_friendly;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
 
     ############################################################################
     # Doctrine Metadata

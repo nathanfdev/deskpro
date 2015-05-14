@@ -42,10 +42,11 @@ interface SyncerInterface
     /**
      * Take a person and retrieve remote data for that person, and update the person's data accordingly.
      *
-     * @param Person $person
+     * @param Usersource $usersource
+     * @param string $identity_or_email
      * @return bool
      */
-    public function refreshPerson(Usersource $usersource, Person $person);
+    public function refreshIdentity(Usersource $usersource, $identity_or_email);
 
     /**
      * This method will go out into the remote usersource and download all user information (whether a deskpro user or
@@ -63,7 +64,7 @@ interface SyncerInterface
      * @param callable $pause_check a callable that takes the SyncCursor originally passed as an argument
      * @return mixed
      */
-    public function downloadAndRefreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check);
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check);
 
     /**
      * True if we should use this syncer for the usersource adapter class.

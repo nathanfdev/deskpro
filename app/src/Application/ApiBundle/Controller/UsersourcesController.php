@@ -48,7 +48,7 @@ use Orb\Validator\StringEmail;
 
 class UsersourcesController extends AbstractController
 {
-    public function personRefreshAction($usersource_id, $email, $identity)
+    public function personRefreshAction($usersource_id, $identity_or_email)
     {
         // find Usersource
         $sources = $this->getUsersourceManager()->getAll()->mustBeEnabled()->mustHaveId($usersource_id);
@@ -56,49 +56,11 @@ class UsersourcesController extends AbstractController
             throw $this->createNotFoundException('usersource id=' . $usersource_id . ' not found or not enabled');
         }
 
-        // find/create the Person
-        $em = $this->em;
-        $assoc = null;
-        $assoc_repo = $em->getRepository('DeskPRO:PersonUsersourceAssoc');
-        if (!$person = $em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
-            // no person for this email
-            // but there might be an association with the given identity, check for that
-            if ($identity && $assoc = $assoc_repo->getIdentityAssociation($source, $identity)) {
-                $person = $assoc->person;
-            } else {
-                // final attempt at locating the person before making one. if the
-                // identifier is an email, use that to do a last-ditch lookup
-                if (StringEmail::isValueValid($identity)) {
-                    if (!$person = $em->getRepository('DeskPRO:Person')->findOneByEmail($identity)) {
-                        $person = $this->createPerson($email);
-                    }
-                } else {
-                    $person = $this->createPerson($email);
-                }
-            }
-        }
-
-        // always make sure the email they sent is added to the person, if not already
-        $person->addEmailAddressString($email);
-
-        // find/create association
-        if (!$assoc && !$assoc = $assoc_repo->getAssociationForPersonUsersourcePair($person, $source)) {
-            $assoc = new PersonUsersourceAssoc();
-            $assoc->person = $person;
-            $assoc->usersource = $source;
-            $assoc->identity = strlen($identity) > 0 ? $identity : $email; // use passed identity, else use email
-            $assoc->identity_friendly = $assoc->identity; // temporarily, this _may_ change in the syncer
-            $em->persist($assoc);
-        }
-
-        // flush before entering the sync system
-        $em->flush(array($person, $assoc));
-
-        // at this point, we have the person and their association with the requesting usersource
-        // now we just update the user through the syncer like normal
         /** @var \Application\DeskPRO\Usersource\Sync\SyncManager $sync_manager */
         $sync_manager = $this->container->getSystemService('usersource_sync_manager');
-        $sync_manager->refreshPerson($source, $person);
+
+        // run sync algorithm for this usersource with the passed identifier/email
+        $sync_manager->refreshIdentity($source, $identity_or_email);
 
         return $this->createApiResponse(array('success' => true));
     }

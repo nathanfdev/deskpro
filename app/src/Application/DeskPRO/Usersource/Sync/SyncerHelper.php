@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Orb\Auth\Identity;
 
 /**
  * This will be offered as a service to all Syncers. It aids them by taking care of common Syncer needs.
@@ -55,33 +56,111 @@ class SyncerHelper
         $this->em = $em;
     }
 
-    public function handleEmail(Person $person, $email_string)
+    public function updateOrCreatePersonWithInfo(array $user_info, Person $person = null)
     {
-        if ($person->hasEmailAddress($email_string)) {
-            return; // already exists
+        // merge in the default values on $user_info array
+        $user_info = array_merge(
+            array(
+                'name' => null,
+                'first_name' => null,
+                'last_name' => null,
+                'email' => null,
+                'email_confirmed' => null
+            ),
+            $user_info
+        );
+
+        if (!$person) {
+            $person = Person::newContactPerson(array('email' => $user_info['email']));
+            $this->em->persist($person);
         }
 
-        if ($email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email_string)) {
-            if ($email->person->id != $person->id) {
-                // uh-oh, the person we are dealing with is not the person who
-                // owns this email address...
-                // TODO: what to do here?
+        if (!empty($user_info['first_name'])) {
+            $person->setFirstName($user_info['first_name']);
+        }
+
+        if (!empty($user_info['last_name'])) {
+            $person->setLastName($user_info['last_name']);
+        }
+
+        if (!empty($user_info['name'])) {
+            $person->setName($user_info['name']);
+        }
+
+        if (!empty($user_info['email'])) {
+            if (!$person->hasEmailAddress($user_info['email'])) {
+                $person->addEmailAddressString($user_info['email']);
             }
-            return;
         }
 
-        $person->addEmailAddressString($email_string);
+        return $person;
+    }
+
+    public function updateOrCreateAssociation(
+        Usersource $usersource,
+        Person $person,
+        Identity $identity
+    )
+    {
+        if (!$assoc = $this->getAssociation($usersource, $person)) {
+            $assoc = new PersonUsersourceAssoc();
+            $this->em->persist($assoc);
+        }
+
+        $assoc->setPerson($person);
+        $assoc->setUsersource($usersource);
+        $assoc->setIdentity($identity->getIdentity());
+        $assoc->setIdentityFriendly($identity->getFriendlyIdentity() ?: $identity->getIdentity());
+
+        return $assoc;
     }
 
     /**
      * @param Usersource $usersource
-     * @param Person $person
+     * @param Person|null $person_or_identifier
      * @return PersonUsersourceAssoc
      */
-    public function getAssociation(Usersource $usersource, Person $person)
+    public function getAssociation(Usersource $usersource, $person_or_identifier = null)
     {
-        return $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')
-            ->getAssociationForPersonUsersourcePair($person, $usersource);
+        if (!$person_or_identifier) {
+            return null;
+        }
+
+        if ($person_or_identifier instanceof Person) {
+            if (!$person_or_identifier->getId()) {
+                return null; // not yet persisted person, cannot have an assocation yet
+            }
+
+            return $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')
+                ->getAssociationForPersonUsersourcePair($person_or_identifier, $usersource);
+        }
+
+        return $this->getAssoc($usersource, $person_or_identifier);
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param $identity
+     * @return PersonUsersourceAssoc|null
+     */
+    public function getAssoc(Usersource $usersource, $identity)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repo */
+        $assoc_repo = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc');
+        if ($assoc = $assoc_repo->getIdentityAssociation($usersource, $identity)) {
+            return $assoc;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $email_string
+     * @return Person|null
+     */
+    public function getPersonFromEmail($email_string)
+    {
+        return $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email_string);
     }
 
     /**
@@ -96,10 +175,13 @@ class SyncerHelper
     }
 
     /**
-     * returns a new person object, ready to be populated by the usersource syncer
+     * Saves the association.
+     *
+     * @param PersonUsersourceAssoc $association
      */
-    public function createPerson(array $user_info)
+    public function saveAssociation(PersonUsersourceAssoc $association)
     {
-        $person = Person::newContactPerson($user_info);
+        $this->em->persist($association);
+        $this->em->flush($association);
     }
 }

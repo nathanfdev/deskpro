@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Usersource\Sync;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use Orb\Validator\StringEmail;
 
 /**
  * The SyncManager is an aggregate of all of the syncers, but it is itself a "master" syncer.
@@ -74,16 +75,16 @@ class SyncManager implements SyncerInterface
         }
     }
 
-    public function refreshPerson(Usersource $usersource, Person $person)
+    public function refreshIdentity(Usersource $usersource, $identity_or_email)
     {
         if ($syncer = $this->getSyncerForUsersource($usersource)) {
-            return $syncer->refreshPerson($usersource, $person);
+            return $syncer->refreshIdentity($usersource, $identity_or_email);
         }
 
         return null;
     }
 
-    public function downloadAndRefreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
         if ($syncer = $this->getSyncerForUsersource($usersource)) {
             return $syncer->downloadAndRefreshAll($usersource, $cursor, $pause_check);
