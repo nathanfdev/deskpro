@@ -36,8 +36,10 @@ namespace Application\ApiBundle\Controller;
 
 
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\ExtraDetailsInterface;
@@ -62,7 +64,32 @@ class UsersourcesController extends AbstractController
         // run sync algorithm for this usersource with the passed identifier/email
         $sync_manager->refreshIdentity($source, $identity_or_email);
 
-        return $this->createApiResponse(array('success' => true));
+        return $this->createApiSuccessResponse();
+    }
+
+    public function startUsersourceSyncAction()
+    {
+        // find any non complete job, may way to expand this to error'ed jobs in the future
+        // depending on how we use this endpoint
+        $job = $this->em
+            ->createQuery('SELECT j FROM DeskPRO:Job j WHERE j.type = :jtype AND j.status != :jstatus')
+            ->setParameter('jtype', UsersourceSyncProcessor::JOB_TYPE)
+            ->setParameter('jstatus', Job::STATUS_COMPLETE)
+            ->getOneOrNullResult()
+        ;
+
+        if (!$job) {
+            // only create a new sync job if there is not already a sync job
+            // the sync job renews itself continually, so we can't allow two going
+            // at once
+            $this->container->getJobQueue()->addJob(new Job(
+                'usersource_sync'
+            ));
+
+            return $this->createApiSuccessResponse();
+        }
+
+        return $this->createApiErrorResponse('sync_in_progress', 'Cannot start sync because it is already running in the job queue');
     }
 
     public function listByTypeAction($type)

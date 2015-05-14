@@ -2429,6 +2429,12 @@ $collection->create('api_general_settings_save', array(
 # Usersources
 ########################################################################################################################
 
+$collection->create('api_usersources_start_sync', array(
+    'path' => '/usersources/start-sync',
+    'controller' => 'ApiBundle:Usersources:startUsersourceSync',
+    'methods' => array('POST')
+));
+
 $collection->create('api_usersources_list', array(
     'path'        => '/usersources/{type}',
     'controller'  => 'ApiBundle:Usersources:listByType',
