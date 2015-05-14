@@ -2471,6 +2471,13 @@ $collection->create('api_usersources_available_apps', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_usersource_refresh_person', array(
+    'path'        => '/usersources/{usersource_id}/person-refresh/{email}/{identity}',
+    'controller'  => 'ApiBundle:Usersources:personRefresh',
+    'methods'     => array('GET'),
+    'defaults'    => array('identity' => null)
+));
+
 ########################################################################################################################
 # Registration Settings
 
