@@ -470,7 +470,7 @@ class TicketController extends AbstractController
         $ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
         $ticket_perms['modify_set_archived'] = $this->person->PermissionsManager->TicketChecker->canSetArchived($ticket);
 
-        foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved') as $p) {
+        foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved', 'billing') as $p) {
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
 
@@ -2464,11 +2464,7 @@ class TicketController extends AbstractController
 
     public function editChargeAction($ticket_id, $charge_id)
     {
-        if (!$this->person->hasPerm('agent_tickets.modify_billing')) {
-            //throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-
-        $ticket = $this->getTicketOr404($ticket_id);
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_billing');
 
         $charge = $this->em->createQuery('
             SELECT c

@@ -58,6 +58,7 @@ class TicketChecker extends AbstractChecker
         'set_resolved',
         'set_unresolved',
         'followed',
+        'billing',
     );
 
     /**
