@@ -39,19 +39,19 @@ namespace Application\DeskPRO\Usersource\Sync;
 class SyncCursor
 {
     /**
-     * @var int this means different things depending on the syncer using it, usually an int count
+     * @var int this is a straight int counter, starting at 1, keeping track of where in the "list" we are
      */
     private $location;
 
     /**
-     * @var array this means different things depending on the syncer using it
+     * @var bool set this to true if the usersource is completely done, it defaults to false meaning
+     *           we still have more user info to process starting at $location
      */
-    private $extra;
+    private $completed;
 
-    public function __construct($location, array $extra = array())
+    public function __construct($location = 1)
     {
         $this->setLocation($location);
-        $this->setExtra($extra);
     }
 
     /**
@@ -76,18 +76,15 @@ class SyncCursor
     }
 
     /**
-     * @return array
+     * @return boolean
      */
-    public function getExtra()
+    public function isCompleted()
     {
-        return $this->extra;
+        return $this->completed;
     }
 
-    /**
-     * @param array $extra
-     */
-    public function setExtra($extra)
+    public function markCompleted()
     {
-        $this->extra = $extra;
+        $this->completed = true;
     }
 }

@@ -87,9 +87,11 @@ class SyncManager implements SyncerInterface
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
         if ($syncer = $this->getSyncerForUsersource($usersource)) {
-            return $syncer->downloadAndRefreshAll($usersource, $cursor, $pause_check);
+            return $syncer->refreshAll($usersource, $cursor, $pause_check);
         }
 
+        // not supported
+        $cursor->markCompleted(); // mark it complete so that clients know to move on and not pause
         return null;
     }
 
