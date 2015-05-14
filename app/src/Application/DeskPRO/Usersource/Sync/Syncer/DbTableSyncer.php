@@ -45,17 +45,22 @@ class DbTableSyncer extends AbstractSyncer
 {
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
-        $rows = array(); // add some methods on the adapter to allow for this sort of request
+        /** @var \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck $adapter */
+        $adapter = $this->getAdapter($usersource);
+        /** @var \Orb\Auth\Identity[] $identities */
+        $identities = $adapter->findAllIdentities();
 
-        foreach ($rows as $row) {
+        foreach ($identities as $identity) {
 
-            // process row
+            $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
             $cursor->incrementLocation();
             if ($pause_check($cursor)) {
                 return;
             }
         }
+
+        $cursor->markCompleted();
     }
 
     public function refreshIdentity(Usersource $usersource, $identity_or_email)
@@ -84,24 +89,7 @@ class DbTableSyncer extends AbstractSyncer
             );
         }
 
-        // get an array of info passed to us from remote usersource
-        $user_info = $db_adapter->getFieldsFromIdentity($identity);
-
-        // get person by identity association
-        if ($assoc = $this->helper->getAssociation($usersource, $identity->getIdentity())) {
-            $person = $assoc->person;
-            // failing that, find them by email
-        } elseif (!$person = $this->helper->getPersonFromEmail($identity_or_email)) {
-            // failing that, we'll make a new one
-            $person = null;
-        }
-
-        // sync person and assoc
-        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
-        $assoc = $this->helper->updateOrCreateAssociation($usersource, $person, $identity);
-
-        $this->helper->savePerson($person);
-        $this->helper->saveAssociation($assoc);
+        $this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email);
     }
 
     public function supportsUsersourceAdapter($adapter_class)
@@ -116,5 +104,30 @@ class DbTableSyncer extends AbstractSyncer
     protected function getAdapter(Usersource $usersource)
     {
         return $usersource->getAdapter();
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param Identity $identity
+     * @param string $email pass $identity->getIdentity() if no email available to try
+     */
+    protected function syncIdentityWithUsersource(Usersource $usersource, Identity $identity, $email)
+    {
+        // get an array of info passed to us from remote usersource
+        $user_info = $this->getAdapter($usersource)->getFieldsFromIdentity($identity);
+
+        if ($assoc = $this->helper->getAssociation($usersource, $identity->getIdentity())) {
+            $person = $assoc->person;
+        } else {
+            $person = $this->helper->getPersonFromEmail($email);
+            // its ok that this might be null, because our helper deals with null person
+        }
+
+        // sync person and assoc
+        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
+        $assoc = $this->helper->updateOrCreateAssociation($usersource, $person, $identity);
+
+        $this->helper->savePerson($person);
+        $this->helper->saveAssociation($assoc);
     }
 }
