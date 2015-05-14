@@ -118,6 +118,7 @@ class Choice extends HandlerAbstract
         $map = array();
         // client-side hierarchy
         $root = array();
+        $max_depth = 1;
 
         foreach ($children as $id => $child) {
 
@@ -129,7 +130,11 @@ class Choice extends HandlerAbstract
 
             // add choices
             $title = $child['title'];
+            $d = 1;
             while ($parent = @$children[$child->getOption('parent_id')]) {
+                $d++;
+                if ($d > $max_depth) $max_depth = $d;
+
                 $title = $parent['title'].' > '.$title;
                 $child = $parent;
             }
@@ -171,7 +176,8 @@ class Choice extends HandlerAbstract
             'attr' => array(
                 'data-map' => json_encode($root),
                 'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
-                'data-no-select2' => 1,
+                'data-no-select2' => 1, // turns off legacy select2 handler
+                'data-max-depth' => $max_depth
             ),
         );
 

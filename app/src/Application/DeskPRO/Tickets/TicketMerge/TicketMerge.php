@@ -273,6 +273,8 @@ class TicketMerge implements PersonContextInterface
             }
         }
 
+        $this->ticket->organization = $this->ticket->person->organization;
+
         ksort($this->data_lost);
 
         $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
