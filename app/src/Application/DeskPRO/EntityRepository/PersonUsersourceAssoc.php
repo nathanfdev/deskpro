@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Usersource as UsersourceEntity;
+
 class PersonUsersourceAssoc extends AbstractEntityRepository
 {
     /**
@@ -69,5 +71,21 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
         ")->execute(array($person));
 
         return $associations;
+    }
+
+    public function getAssociationForPersonUsersourcePair(\Application\DeskPRO\Entity\Person $person, UsersourceEntity $usersource)
+    {
+        $association = $this->_em->createQuery("
+            SELECT assoc
+            FROM DeskPRO:PersonUsersourceAssoc assoc
+            WHERE assoc.person = ?0
+            AND assoc.usersource = ?1
+        ")->execute(array($person, $usersource));
+
+        if (count($association)) {
+            return current($association);
+        }
+
+        return null;
     }
 }

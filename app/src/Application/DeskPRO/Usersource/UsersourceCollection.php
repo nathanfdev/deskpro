@@ -62,6 +62,22 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
+     * Filter out any usersources that are not enabled
+     *
+     * @return UsersourceCollection
+     */
+    public function mustBeEnabled()
+    {
+        $filtered = array_filter(
+            (array)$this, function (Usersource $us) {
+                return (bool) $us->is_enabled;
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    /**
      * Limits to this ID only, still allowing other filters to fit your criteria
      *
      * @param  int                  $id id

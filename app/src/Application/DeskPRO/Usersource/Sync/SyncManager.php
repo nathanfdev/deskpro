@@ -34,9 +34,13 @@
 namespace Application\DeskPRO\Usersource\Sync;
 
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 
-class UsersourceSyncManager
+/**
+ * The SyncManager is an aggregate of all of the syncers, but it is itself a "master" syncer.
+ */
+class SyncManager implements SyncerInterface
 {
     /**
      * @var SyncerInterface[]
@@ -68,5 +72,37 @@ class UsersourceSyncManager
                 return $syncer;
             }
         }
+    }
+
+    public function refreshPerson(Usersource $usersource, Person $person)
+    {
+        return $this->getSyncerForUsersource($usersource)->refreshPerson($usersource, $person);
+    }
+
+    public function downloadAndRefreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    {
+        return $this->getSyncerForUsersource($usersource)->downloadAndRefreshAll($usersource, $cursor, $pause_check);
+    }
+
+    public function supportsUsersourceAdapter($adapter_class)
+    {
+        foreach ($this->syncers as $syncer) {
+            if ($syncer->supportsUsersourceAdapter($adapter_class)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function supportsUsersource(Usersource $usersource)
+    {
+        foreach ($this->syncers as $syncer) {
+            if ($syncer->supportsUsersource($usersource)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
