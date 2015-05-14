@@ -286,6 +286,23 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
     }
 
 
+    public function getAllUserInfo()
+    {
+        if (!$this->getDb()) {
+            return null;
+        }
+
+        $table = $this->options[self::OPT_TABLE];
+        $result = $this->db->executeQuery("SELECT * FROM $table")->fetchAll();
+
+        if (!$result) {
+            return null;
+        }
+
+        return $result;
+    }
+
+
     /**
      * Get user info from a username
      *
