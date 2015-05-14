@@ -15,6 +15,11 @@ $opts = getopt('', array(
     'dbpass:',
     'dbname:',
     'files-path:',
+
+    // instead of downloading remote files, will write url to a file list
+    // You can then download files in parallel, like this:
+    // $ parallel --gnu --linebuffer --colsep '\t' curl -s --retry 4 -w "'%{filename_effective}: %{size_download} bytes downloaded from %{url_effective} in %{time_total}s\n'" -o "'{2}'" "'{1}'" < filelist
+    'filelist:',
 ));
 
 if (empty($opts['dbhost'])) {
@@ -95,11 +100,35 @@ if (!is_dir($path)) {
 
 $path = realpath($path);
 if (!$path) {
-    echo "Invalid paht: $path\n";
+    echo "Invalid path: $path\n";
     exit(1);
 }
 
 echo "Saving to the files-path: $path\n";
+
+########################################################################################################################
+
+$filelist = @$opts['filelist'] ?: null;
+if ($filelist) {
+
+    if ($filelist[0] != '/') {
+        $filelist = getcwd() . DIRECTORY_SEPARATOR . $filelist;
+    }
+
+    if (!touch($filelist)) {
+        echo "Could not create file: $filelist\n";
+        exit(1);
+    }
+
+    $filelist = realpath($filelist);
+
+    echo "Saving file list: $filelist\n";
+}
+
+$filelist_fp = null;
+if ($filelist) {
+    $filelist_fp = fopen($filelist, 'a');
+}
 
 ########################################################################################################################
 
@@ -242,28 +271,34 @@ do {
 
             case 's3':
 
-                @trigger_error("bogus");
+                if ($filelist_fp) {
+                    fwrite($filelist_fp, "{$blob['file_url']}\t$real_store_path\n");
+                    fwrite($fp, "File stored at: {$blob['file_url']}\n");
+                    $ok = true;
+                } else {
+                    @trigger_error("bogus");
 
-                $try = 3;
-                $ok = false;
-                while (--$try >= 0) {
-                    $fp_read = fopen($blob['file_url'], 'r');
-                    stream_copy_to_stream($fp_read, $fp);
+                    $try = 3;
+                    $ok = false;
+                    while (--$try >= 0) {
+                        $fp_read = fopen($blob['file_url'], 'r');
+                        stream_copy_to_stream($fp_read, $fp);
 
-                    $e = error_get_last();
-                    @fclose($fp_read);
+                        $e = error_get_last();
+                        @fclose($fp_read);
 
-                    if (!$e || $e['message'] === 'bogus') {
-                        $ok = true;
-                        break;
-                    } else {
-                        sleep(2);
+                        if (!$e || $e['message'] === 'bogus') {
+                            $ok = true;
+                            break;
+                        } else {
+                            sleep(2);
+                        }
                     }
-                }
 
-                if (!$ok) {
-                    echo "\n";
-                    echo "> failed to copy {$blob['file_url']} -- {$e['message']}\n";
+                    if (!$ok) {
+                        echo "\n";
+                        echo "> failed to copy {$blob['file_url']} -- {$e['message']}\n";
+                    }
                 }
 
                 break;
@@ -297,6 +332,10 @@ do {
         printf("Done (%.2fs)\n", microtime(true)-$t);
     }
 } while ($batch);
+
+if ($filelist_fp) {
+    fclose($filelist_fp);
+}
 
 echo "\n\n";
 echo "Done all\n";
