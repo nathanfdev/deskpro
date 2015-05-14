@@ -76,12 +76,20 @@ class SyncManager implements SyncerInterface
 
     public function refreshPerson(Usersource $usersource, Person $person)
     {
-        return $this->getSyncerForUsersource($usersource)->refreshPerson($usersource, $person);
+        if ($syncer = $this->getSyncerForUsersource($usersource)) {
+            return $syncer->refreshPerson($usersource, $person);
+        }
+
+        return null;
     }
 
     public function downloadAndRefreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
-        return $this->getSyncerForUsersource($usersource)->downloadAndRefreshAll($usersource, $cursor, $pause_check);
+        if ($syncer = $this->getSyncerForUsersource($usersource)) {
+            return $syncer->downloadAndRefreshAll($usersource, $cursor, $pause_check);
+        }
+
+        return null;
     }
 
     public function supportsUsersourceAdapter($adapter_class)
