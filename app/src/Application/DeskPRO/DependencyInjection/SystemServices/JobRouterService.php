@@ -41,6 +41,7 @@ use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
+use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
@@ -49,11 +50,24 @@ class JobRouterService
 {
     public static function create(DeskproContainer $container)
     {
+        /** @var \Doctrine\DBAL\Connection $conn */
         $conn = $container->get('doctrine.dbal.default_connection');
         $em = $container->getEm();
         $queue = $container->getJobQueue();
 
         $router = new JobRouter($conn);
+
+        /*************************************
+         * usersource_sync
+         */
+        $router->addProcessor(
+            new UsersourceSyncProcessor(
+                $conn,
+                $queue,
+                $container->getSystemService('usersource_manager'),
+                $container->getSystemService('usersource_sync_manager')
+            )
+        );
 
         /*************************************
          * outgoing_sms
