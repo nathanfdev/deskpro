@@ -111,6 +111,7 @@ class SyncerHelper
         $assoc->setUsersource($usersource);
         $assoc->setIdentity($identity->getIdentity());
         $assoc->setIdentityFriendly($identity->getFriendlyIdentity() ?: $identity->getIdentity());
+        $assoc->setDateUpdated(new \DateTime());
 
         return $assoc;
     }

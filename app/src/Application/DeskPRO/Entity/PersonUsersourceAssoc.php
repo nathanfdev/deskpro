@@ -94,6 +94,13 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
     protected $data = array();
 
     /**
+     * When the associated person was last "synced" from the remote usersource
+     *
+     * @var \DateTime
+     */
+    protected $date_updated;
+
+    /**
      * When the record was first created in the system
      *
      * @var \DateTime
@@ -126,7 +133,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setPerson(Person $person)
     {
-        $this->person = $person;
+        $this->setModelField('person', $person);
     }
 
     /**
@@ -142,7 +149,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setUsersource(Usersource $usersource)
     {
-        $this->usersource = $usersource;
+        $this->setModelField('usersource', $usersource);
     }
 
     /**
@@ -158,7 +165,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setIdentity($identity)
     {
-        $this->identity = $identity;
+        $this->setModelField('identity', $identity);
     }
 
     /**
@@ -174,7 +181,23 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setIdentityFriendly($identity_friendly)
     {
-        $this->identity_friendly = $identity_friendly;
+        $this->setModelField('identity_friendly', $identity_friendly);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param \DateTime $date_updated
+     */
+    public function setDateUpdated($date_updated)
+    {
+        $this->setModelField('date_updated', $date_updated);
     }
 
     /**
@@ -205,6 +228,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'identity', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity', ));
         $metadata->mapField(array( 'fieldName' => 'identity_friendly', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity_friendly', ));
         $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'updated_at', ));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
