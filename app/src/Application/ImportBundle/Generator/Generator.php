@@ -178,24 +178,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExporter()
     {
-//        if ( ! $this->config) {
-//            throw new Exception('Generator configuration is not defined');
-//        }
-//
-//        $exporter = $this->exporters->getByType($this->config->getExporterType());
-//
-//        if ($exporter instanceof Exporter\LazyExporter) {
-//            $exporter = $exporter->initialize($this->config->getReaderConfig());
-//        }
-//        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-//            if ( ! $this->config->getExporterBatchConfig()) {
-//                $this->config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-//            }
-//        }
-//
-//        $this->setHelpers($exporter);
-//        $this->logNotice(sprintf('Get `%s` exporter', $exporter::getType()));
-
         return $this->exporter;
     }
 
@@ -207,15 +189,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getWriter()
     {
-//        if ( ! $this->config) {
-//            throw new Exception('Generator configuration is not defined');
-//        }
-//
-//        $writer = $this->writers->getByType($this->config->getWriterType());
-//
-//        $this->setHelpers($writer);
-//        $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
-
         return $this->writer;
     }
 
