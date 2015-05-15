@@ -4816,6 +4816,15 @@ $collection->create('api_blobs_get', array(
     'methods'      => array('GET'),
 ));
 
+$collection->create(
+    'api_blobs_delete',
+    array(
+        'path' => '/blobs/{id}/{auth}',
+        'controller' => 'ApiBundle:Blobs:delete',
+        'methods' => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # My
 ########################################################################################################################
@@ -4947,11 +4956,20 @@ $collection->create(
 );
 
 $collection->create(
+    'api_server_importers_save',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:save',
+        'methods' => array('PUT'),
+    )
+);
+
+$collection->create(
     'api_server_importers_test',
     array(
         'path' => '/server/importers/{id}/test',
         'controller' => 'ApiBundle:Importers:test',
-        'methods' => array('POST'),
+        'methods' => array('POST', 'GET'),
     )
 );
 

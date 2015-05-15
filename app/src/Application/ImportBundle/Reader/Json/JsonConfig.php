@@ -92,4 +92,9 @@ class JsonConfig extends BaseConfig
         $this->exclude_done = $exclude_done;
         return $this;
     }
+
+    static public function fromArray(array $data)
+    {
+
+    }
 }

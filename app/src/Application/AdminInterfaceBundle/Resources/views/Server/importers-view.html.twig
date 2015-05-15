@@ -15,157 +15,171 @@
 
 
                     {# CSV #}
+                    <div ng-if="'csv' === id && !step">
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Files
+                            </label>
 
-                    <div class="form-group" ng-if="'csv' === importer.id">
-                        <label class="col-lg-3">
-                            File
-                        </label>
+                            <div class="col-lg-9">
 
-                        <div class="col-lg-9">
-                            <a href="javascript:;" class="btn btn-default file-upload-wrapper">
-                                <input type="file" ng-file-select="EditCtrl.onFileSelect($files)" accept=".csv"/>
-                                Upload CSV
-                            </a>
+                                <ul class="list list-unstyled">
+                                    <li ng-repeat="blob in importer.config.blobs">
+                                        <i class="fa fa-times" style="cursor: pointer;"
+                                           ng-click="ImportersViewCtrl.deleteBlob(blob)"></i>
+                                        {{ ng_var('blob.filename') }}
+                                    </li>
+                                </ul>
+
+                                <a href="javascript:;" class="btn btn-default file-upload-wrapper">
+                                    <input type="file" ng-file-select="ImportersViewCtrl.onFileSelect($files)"
+                                           accept=".csv"/>
+                                    Add CSV file
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'csv' === importer.id">
-                        <label class="col-lg-3">
-                            Delimeter
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Delimeter
+                            </label>
 
-                        <div class="col-lg-9">
-                            <select>
-                                <option value="">;</option>
-                                <option value="">,</option>
-                            </select>
+                            <div class="col-lg-9">
+                                <select ng-model="importer.config.delimiter">
+                                    <option value="">;</option>
+                                    <option value=",">,</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'csv' === importer.id">
-                        <label class="col-lg-3">
-                            Enclosure
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Enclosure
+                            </label>
 
-                        <div class="col-lg-9">
-                            <select>
-                                <option value="">"</option>
-                                <option value="">'</option>
-                            </select>
+                            <div class="col-lg-9">
+                                <select ng-model="importer.config.enclosure">
+                                    <option value="">"</option>
+                                    <option value="'">'</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
 
                     {# Zendesk #}
 
-                    <div class="form-group" ng-if="'zendesk' === importer.id">
-                        <label class="col-lg-3">
-                            Subdomain
-                        </label>
+                    <div ng-if="'zendesk' === id && !step">
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Subdomain
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Subdomain</p>
+                                <p class="help-block">Subdomain</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'zendesk' === importer.id">
-                        <label class="col-lg-3">
-                            Username
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Username
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Username</p>
+                                <p class="help-block">Username</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'zendesk' === importer.id">
-                        <label class="col-lg-3">
-                            Password
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Password
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Password</p>
+                                <p class="help-block">Password</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'zendesk' === importer.id">
-                        <label class="col-lg-3">
-                            API Token
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                API Token
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Token</p>
+                                <p class="help-block">Token</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'zendesk' === importer.id">
-                        <label class="col-lg-3">
-                            Initial time
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Initial time
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Initial time</p>
+                                <p class="help-block">Initial time</p>
+                            </div>
                         </div>
                     </div>
 
 
                     {# OsTicket #}
+                    <div ng-if="'osticket' === id && !step">
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Host
+                            </label>
 
-                    <div class="form-group" ng-if="'osticket' === importer.id">
-                        <label class="col-lg-3">
-                            Host
-                        </label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
-
-                            <p class="help-block">Host</p>
+                                <p class="help-block">Host</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'osticket' === importer.id">
-                        <label class="col-lg-3">
-                            Database
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Database
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Database</p>
+                                <p class="help-block">Database</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'osticket' === importer.id">
-                        <label class="col-lg-3">
-                            Username
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Username
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Username</p>
+                                <p class="help-block">Username</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group" ng-if="'osticket' === importer.id">
-                        <label class="col-lg-3">
-                            Password
-                        </label>
+                        <div class="form-group">
+                            <label class="col-lg-3">
+                                Password
+                            </label>
 
-                        <div class="col-lg-9">
-                            <input type="text" class="form-control"/>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control"/>
 
-                            <p class="help-block">Password</p>
+                                <p class="help-block">Password</p>
+                            </div>
                         </div>
                     </div>
 
@@ -177,7 +191,7 @@
         <footer ng-hide="has_own_footer">
             <div class="dp-content">
                 <div class="dp-btn-controls">
-                    <button class="btn btn-primary" ng-click="test()" ng-disabled="!ready">
+                    <button class="btn btn-primary" ng-click="ImportersViewCtrl.startTest()" ng-disabled="!ready">
                         Next
                     </button>
                 </div>

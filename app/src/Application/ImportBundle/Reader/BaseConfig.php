@@ -31,4 +31,8 @@ namespace Application\ImportBundle\Reader;
 
 abstract class BaseConfig
 {
+    static public function fromArray(array $data)
+    {
+        throw new \Exception('Not implemented');
+    }
 }

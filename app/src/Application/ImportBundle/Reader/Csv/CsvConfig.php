@@ -45,29 +45,26 @@ class CsvConfig extends BaseConfig
     /**
      * @var string
      */
-    private $delimiter;
+    private $delimiter = ';';
 
     /**
      * @var string
      */
-    private $enclosure;
+    private $enclosure = '"';
 
     /**
      * @var string
      */
-    private $escape;
+    private $escape = '\\';
 
     /**
      * Constructor
      *
      * @param string $resource
      */
-    public function __construct($resource, $delimeter = ';', $enclosure = '"', $escape = '\\')
+    public function __construct($resource)
     {
         $this->resource = $resource;
-        $this->delimiter = $delimeter;
-        $this->enclosure = $enclosure;
-        $this->escape = $escape;
     }
 
     /**
@@ -140,5 +137,20 @@ class CsvConfig extends BaseConfig
     {
         $this->escape = $escape;
         return $this;
+    }
+
+    static public function fromArray(array $data)
+    {
+        $config = new self(@$data['resource'] ?: @$data['temp']);
+
+        if ($delimeter = @$data['delimeter']) {
+            $config->setDelimiter($delimeter);
+        }
+
+        if ($enclosure = @$data['enclosure']) {
+            $config->setDelimiter($enclosure);
+        }
+
+        return $config;
     }
 }

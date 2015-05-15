@@ -33,6 +33,10 @@ abstract class BaseReader
 {
     protected $config;
 
+    /**
+     * @param BaseConfig $config
+     * @throws \Exception
+     */
     public function __construct(BaseConfig $config)
     {
         if (!$config) {
@@ -41,8 +45,19 @@ abstract class BaseReader
         $this->config = $config;
     }
 
+    /**
+     * @return BaseConfig
+     */
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReady()
+    {
+        return false;
     }
 }

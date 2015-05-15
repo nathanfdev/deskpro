@@ -133,4 +133,13 @@ class CsvReader extends BaseReader implements CsvReaderInterface
 
         return new LimitIterator($file);
     }
+
+    /**
+     * todo?
+     * @return bool
+     */
+    public function isReady()
+    {
+        return true;
+    }
 }

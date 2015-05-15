@@ -101,7 +101,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getStaffCount($min_id)
+    public function getStaffCount($min_id = 0)
     {
         $query = 'SELECT count(staff_id) FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC';
         $stmt  = $this->getConnection()->prepare($query);
@@ -117,7 +117,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsersCount($min_id)
+    public function getUsersCount($min_id = 0)
     {
         $query = 'SELECT count(id) FROM ost_user WHERE id > :min_id ORDER BY id ASC';
         $stmt  = $this->getConnection()->prepare($query);
@@ -133,7 +133,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getTicketsCount($min_id)
+    public function getTicketsCount($min_id = 0)
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket WHERE ticket_id > :min_id ORDER BY ticket_id ASC';
         $stmt  = $this->getConnection()->prepare($query);
@@ -149,7 +149,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findStaff($limit, $min_id)
+    public function findStaff($limit, $min_id = 0)
     {
         $query = 'SELECT * FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
@@ -166,7 +166,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findUsers($limit, $min_id)
+    public function findUsers($limit, $min_id = 0)
     {
         $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id > :min_id ORDER BY u.id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
@@ -183,7 +183,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findTickets($limit, $min_id)
+    public function findTickets($limit, $min_id = 0)
     {
         $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id WHERE t.ticket_id > :min_id ORDER BY t.ticket_id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
@@ -434,5 +434,14 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
     private function getConnection()
     {
         return $this->connection_wrapper->getConnection();
+    }
+
+    /**
+     * @return bool
+     * @throws OsTicketReaderException
+     */
+    public function isReady()
+    {
+        return null !== $this->getUsersCount();
     }
 }

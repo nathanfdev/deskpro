@@ -190,4 +190,9 @@ class ZenDeskConfig extends BaseConfig
 
         throw new Exception('Auth credentials is not set up');
     }
+
+    static public function fromArray(array $data)
+    {
+
+    }
 }

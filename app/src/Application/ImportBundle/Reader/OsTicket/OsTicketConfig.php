@@ -78,4 +78,9 @@ class OsTicketConfig extends BaseConfig
     {
         return $this->password;
     }
+
+    static public function fromArray(array $data)
+    {
+
+    }
 }

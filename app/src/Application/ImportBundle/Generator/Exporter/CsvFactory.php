@@ -55,6 +55,6 @@ class CsvFactory extends AbstractFactory
             ->attach(new Parser\Csv\People($reader))
             ->attach(new Parser\Csv\Tickets($reader));
 
-        return new Csv($parsers);
+        return new Csv($parsers, $reader);
     }
 }

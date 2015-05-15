@@ -340,4 +340,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     {
         return $this->exporters;
     }
+
+    public function isReady()
+    {
+        return $this->getExporter()->isReady();
+    }
 }

@@ -70,6 +70,6 @@ class ZenDeskFactory extends AbstractFactory
             ->attach($tickets);
 
 
-        return new ZenDesk($parsers);
+        return new ZenDesk($parsers, $reader);
     }
 }
