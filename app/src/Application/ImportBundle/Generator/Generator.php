@@ -29,7 +29,7 @@ namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
-use Application\ImportBundle\Generator\Validator;
+use Symfony\Component\Validator\Validator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -65,14 +65,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     ) {
         $this->exporter = $exporter;
         $this->writer = $writer;
-        $this->validators = new Validator\Collection();
+        $this->validators = new \Application\ImportBundle\Generator\Validator\Collection();
         $this->validators
-            ->attach(new Validator\Download($validator))
-            ->attach(new Validator\Feedback($validator))
-            ->attach(new Validator\Articles($validator))
-            ->attach(new Validator\News($validator))
-            ->attach(new Validator\Person($validator))
-            ->attach(new Validator\Ticket($validator));
+            ->attach(new \Application\ImportBundle\Generator\Validator\Download($validator))
+            ->attach(new \Application\ImportBundle\Generator\Validator\Feedback($validator))
+            ->attach(new \Application\ImportBundle\Generator\Validator\Articles($validator))
+            ->attach(new \Application\ImportBundle\Generator\Validator\News($validator))
+            ->attach(new \Application\ImportBundle\Generator\Validator\Person($validator))
+            ->attach(new \Application\ImportBundle\Generator\Validator\Ticket($validator));
 
         $this->setHelpers($exporter);
         $this->setHelpers($writer);
