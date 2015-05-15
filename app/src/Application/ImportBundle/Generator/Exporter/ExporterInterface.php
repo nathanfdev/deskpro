@@ -48,7 +48,7 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
      *
      * @return string
      */
-    public function getType();
+    static public function getType();
 
     /**
      * Returns a count of records of the current type to be exported

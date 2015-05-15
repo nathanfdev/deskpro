@@ -28,7 +28,9 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator;
+use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
 /**
@@ -41,9 +43,9 @@ use Exception;
 final class Generator extends AbstractGenerator implements GeneratorInterface
 {
     /**
-     * @var Exporter\Collection
+     * @var AbstractExporter
      */
-    private $exporters;
+    private $exporter;
 
     /**
      * @var Validator\Collection
@@ -51,25 +53,30 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     private $validators;
 
     /**
-     * @var Writer\Collection
+     * @var AbstractWriter
      */
-    private $writers;
+    private $writer;
 
-    /**
-     * Constructor
-     *
-     * @param Exporter\Collection  $exporters
-     * @param Validator\Collection $validators
-     * @param Writer\Collection    $writers
-     */
     public function __construct(
-        Exporter\Collection  $exporters,
-        Validator\Collection $validators,
-        Writer\Collection    $writers
+        AbstractExporter $exporter,
+        AbstractWriter $writer,
+        Validator $validator,
+        GeneratorConfig $config
     ) {
-        $this->exporters  = $exporters;
-        $this->validators = $validators;
-        $this->writers    = $writers;
+        $this->exporter = $exporter;
+        $this->writer = $writer;
+        $this->validators = new Validator\Collection();
+        $this->validators
+            ->attach(new Validator\Download($validator))
+            ->attach(new Validator\Feedback($validator))
+            ->attach(new Validator\Articles($validator))
+            ->attach(new Validator\News($validator))
+            ->attach(new Validator\Person($validator))
+            ->attach(new Validator\Ticket($validator));
+
+        $this->setHelpers($exporter);
+        $this->setHelpers($writer);
+        $this->setConfig($config);
     }
 
     /**
@@ -171,25 +178,25 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExporter()
     {
-        if ( ! $this->config) {
-            throw new Exception('Generator configuration is not defined');
-        }
+//        if ( ! $this->config) {
+//            throw new Exception('Generator configuration is not defined');
+//        }
+//
+//        $exporter = $this->exporters->getByType($this->config->getExporterType());
+//
+//        if ($exporter instanceof Exporter\LazyExporter) {
+//            $exporter = $exporter->initialize($this->config->getReaderConfig());
+//        }
+//        if ($exporter instanceof Exporter\ExporterBatchInterface) {
+//            if ( ! $this->config->getExporterBatchConfig()) {
+//                $this->config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
+//            }
+//        }
+//
+//        $this->setHelpers($exporter);
+//        $this->logNotice(sprintf('Get `%s` exporter', $exporter::getType()));
 
-        $exporter = $this->exporters->getByType($this->config->getExporterType());
-
-        if ($exporter instanceof Exporter\LazyExporter) {
-            $exporter = $exporter->initialize($this->config->getReaderConfig());
-        }
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if ( ! $this->config->getExporterBatchConfig()) {
-                $this->config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
-        }
-
-        $this->setHelpers($exporter);
-        $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
-
-        return $exporter;
+        return $this->exporter;
     }
 
     /**
@@ -200,16 +207,16 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getWriter()
     {
-        if ( ! $this->config) {
-            throw new Exception('Generator configuration is not defined');
-        }
+//        if ( ! $this->config) {
+//            throw new Exception('Generator configuration is not defined');
+//        }
+//
+//        $writer = $this->writers->getByType($this->config->getWriterType());
+//
+//        $this->setHelpers($writer);
+//        $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
 
-        $writer = $this->writers->getByType($this->config->getWriterType());
-
-        $this->setHelpers($writer);
-        $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
-
-        return $writer;
+        return $this->writer;
     }
 
     /**

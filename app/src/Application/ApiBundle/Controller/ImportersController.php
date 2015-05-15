@@ -43,6 +43,7 @@ use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Generator;
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\ZenDesk\OsTicketConfig;
@@ -53,6 +54,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
+    static public $allowed = array(
+        ExporterInterface::TYPE_CSV,
+        ExporterInterface::TYPE_OS_TICKET,
+        ExporterInterface::TYPE_ZENDESK,
+    );
+
     /**
      * {@inheritDoc}
      */
@@ -66,21 +73,22 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function listAction()
     {
-        /** @var Generator $generator */
-        $generator = $this->get('deskpro.import.generator');
-        $ret = array();
-        foreach ($generator->getExporters() as $exporter) {
-            if ('json' === $exporter->getType()) {
-                continue;
-            }
+        $importers = $this->em->getRepository('DeskPRO:DataStore')->getByNameWildcard('importers.');
 
-            /** @var AbstractExporter $exporter */
+        if (count($importers) !== count(self::$allowed)) {
+            $importers = array();
+            foreach (self::$allowed as $type) {
+                $importers[] = $this->getImporter($type);
+            }
+        }
+
+        foreach ($importers as $importer) {
             $ret[] = array(
-                'id' => $exporter->getType(),
-                'title' => ucfirst($exporter->getType()),
-                'icon' => null,
-                'status' => null,
-                'description' => 'blablabla',
+                'id' => str_replace('importers.', '', $importer['name']),
+                'title' => $importer->getData('title'),
+                'icon' => $importer->getData('icon'),
+                'status' => $importer->getData('status'),
+                'description' => $importer->getData('description'),
             );
         }
 
@@ -123,45 +131,15 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function testAction($id, Request $request)
     {
-        /** @var Generator $generator */
-        $generator = $this->get('deskpro.import.generator');
-        $generator->setConfig(new GeneratorConfig());
-        $generator->getConfig()->setExporterType($id);
-
         $importer = $this->getImporter($id);
+        $config = $this->createGeneratorConfig($importer);
+        /** @var Generator $generator */
+        $this->container->set('deskpro.import.config', $config);
+        $generator = $this->container->get('deskpro.import.generator');
 
-        $supported_types = array(
-            EntityInterface::TYPE_TICKET,
-            EntityInterface::TYPE_PERSON,
-            EntityInterface::TYPE_ARTICLE,
-            EntityInterface::TYPE_DOWNLOAD,
-            EntityInterface::TYPE_FEEDBACK,
-            EntityInterface::TYPE_NEWS,
-        );
-        foreach ($supported_types as $type) {
-            $generator->getConfig()->addEntityType($type);
-        }
+        $result = $generator->isReady();
 
-        $this->onBeforeImport($generator, $importer);
-
-        switch ($generator->getConfig()->getExporterType()) {
-            case ExporterInterface::TYPE_CSV:
-                $readerConfig = CsvConfig::fromArray($importer->getData('config'));
-                break;
-            case ExporterInterface::TYPE_JSON:
-                $readerConfig = JsonConfig::fromArray($importer->getData('config'));
-                break;
-            case ExporterInterface::TYPE_ZENDESK:
-                $readerConfig = ZenDeskConfig::fromArray($importer->getData('config'));
-                break;
-            case ExporterInterface::TYPE_OS_TICKET:
-                $readerConfig = OsTicketConfig::fromArray($importer->getData('config'));
-                break;
-        }
-        $generator->getConfig()->setReaderConfig($readerConfig);
-        $exceptions = $generator->validate();
-
-        return $this->createJsonResponse(array());
+        return $this->createJsonResponse(array('result' => $result));
     }
 
     protected function getImporter($id)
@@ -169,10 +147,8 @@ class ImportersController extends AbstractController implements ProtectedControl
         /** @var DataStore $rep */
         /** @var Generator $generator */
         $rep = $this->em->getRepository('DeskPRO:DataStore');
-        $generator = $this->get('deskpro.import.generator');
-        $exporters = $generator->getExporters()->toArray();
 
-        if (!isset($exporters[$id])) {
+        if (!in_array($id, self::$allowed)) {
             throw new NotFoundHttpException;
         }
 
@@ -183,8 +159,13 @@ class ImportersController extends AbstractController implements ProtectedControl
             $importer->setData('icon', null);
             $importer->setData('status', null);
             $importer->setData('description', 'blablabla');
-            // todo
-            $importer->setData('config', array('blobs' => array()));
+
+            $config = array();
+            if (ExporterInterface::TYPE_CSV === $id) {
+                $config['blobs'] = array();
+            }
+            $importer->setData('config', $config);
+
             $this->em->persist($importer);
             $this->em->flush($importer);
         }
@@ -192,30 +173,74 @@ class ImportersController extends AbstractController implements ProtectedControl
         return $importer;
     }
 
-    protected function onBeforeImport(Generator $generator, DataStoreEntity $importer)
+    /**
+     * @param DataStoreEntity $importer
+     * @return GeneratorConfig
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    protected function createGeneratorConfig(DataStoreEntity $importer)
     {
+        $config = new GeneratorConfig();
+        $config->setExporterType(str_replace('importers.', '', $importer['name']));
+        $config->setWriterType(WriterInterface::TYPE_DESK_PRO);
         $readerConfigData = $importer->getData('config');
+
+        $supported_types = array(
+            EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_PERSON,
+            EntityInterface::TYPE_ARTICLE,
+            EntityInterface::TYPE_DOWNLOAD,
+            EntityInterface::TYPE_FEEDBACK,
+            EntityInterface::TYPE_NEWS,
+        );
+
+        foreach ($supported_types as $type) {
+            $config->addEntityType($type);
+        }
 
         /**
          * copy blobs to temp dir
          */
         if (@$readerConfigData['blobs']) {
-            $tmp = dp_get_tmp_dir().'/importer-'.time();
-            mkdir($tmp);
 
-            $readerConfigData['temp'] = $tmp;
+            if (@$readerConfigData['temp'] && false !== strpos($readerConfigData['temp'], 'importer-')) {
+                PHP_OS === 'Windows'
+                    ? exec("rd /s /q {$readerConfigData['temp']}")
+                    : exec("rm -rf {$readerConfigData['temp']}");
+            }
+
+            $readerConfigData['temp'] = dp_get_tmp_dir().'/importer-'.time();
+            mkdir($readerConfigData['temp']);
+
             $importer->setData('config', $readerConfigData);
             $this->em->flush($importer);
 
-            $generator->getConfig()->setInputPath($tmp);
+            $config->setInputPath($readerConfigData['temp']);
             $storage = $this->container->getBlobStorage();
 
             foreach ($readerConfigData['blobs'] as $blobData) {
                 if (!$blob = $this->em->find('DeskPRO:Blob', $blobData['id'])) {
                     continue;
                 }
-                $storage->copyBlobRecordToFile($tmp.'/'.$blob['filename'], $blob);
+                $storage->copyBlobRecordToFile($readerConfigData['temp'].'/'.$blob['filename'], $blob);
             }
         }
+
+        switch ($config->getExporterType()) {
+            case ExporterInterface::TYPE_CSV:
+                $readerConfig = CsvConfig::fromArray($importer->getData('config'));
+                break;
+            case ExporterInterface::TYPE_ZENDESK:
+                $readerConfig = ZenDeskConfig::fromArray($importer->getData('config'));
+                break;
+            case ExporterInterface::TYPE_OS_TICKET:
+                $readerConfig = OsTicketConfig::fromArray($importer->getData('config'));
+                break;
+        }
+        $config->setReaderConfig($readerConfig);
+
+        return $config;
     }
 }

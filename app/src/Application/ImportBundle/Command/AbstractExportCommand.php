@@ -297,9 +297,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function createGenerator(GeneratorConfig $config, LoggerInterface $logger)
     {
         /** @var Generator\Generator $generator */
+        $this->getContainer()->set('deskpro.import.config', $config);
         $generator = $this->getContainer()->get('deskpro.import.generator');
         $generator
-            ->setConfig($config)
             ->setLogger($logger);
 
         return $generator;

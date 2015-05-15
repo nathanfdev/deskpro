@@ -19,7 +19,7 @@ class OsTicketReaderFactory
      * @return OsTicketReader
      * @throws Exception
      */
-    public static function createReader(OsTicketConfig $config = null)
+    public static function createReader(OsTicketConfig $config)
     {
         $config = $config ?: self::getDefaultConfig();
 
