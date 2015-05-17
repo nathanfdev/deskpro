@@ -193,6 +193,15 @@ class ZenDeskConfig extends BaseConfig
 
     static public function fromArray(array $data)
     {
+        $inst = new self(
+            $data['subdomain'],
+            $data['username'],
+            new \DateTime('@'.$data['initial_time'])
+        );
 
+        $inst->setPassword(@$data['password']);
+        $inst->setApiToken(@$data['token']);
+
+        return $inst;
     }
 }

@@ -81,6 +81,11 @@ class OsTicketConfig extends BaseConfig
 
     static public function fromArray(array $data)
     {
-
+        return new self(
+            $data['host'],
+            $data['db'],
+            $data['user'],
+            $data['password']
+        );
     }
 }
