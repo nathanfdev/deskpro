@@ -215,6 +215,13 @@ class LegacyTermsTransformer
                     'options' => array('subject' => $options['subject'])
                 );
 
+            case 'FilterFeedbackRating':
+                return array(
+                    'type' => 'feedback_rating',
+                    'op' => $term->getTermOperator(),
+                    'options' => $term->getTermOptions(),
+                );
+
             case 'FilterUrgency':
                 return array(
                     'type'    => 'urgency',
@@ -856,6 +863,9 @@ class LegacyTermsTransformer
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterOrgField($op, $new_opts);
+
+            case 'feedback_rating':
+                return new Terms\FilterFeedbackRating($op, $options);
         }
 
         return null;

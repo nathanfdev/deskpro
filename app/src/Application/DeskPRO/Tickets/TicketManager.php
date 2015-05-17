@@ -46,6 +46,7 @@ use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
@@ -196,7 +197,7 @@ class TicketManager
             $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e);
-            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+            $ref = DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . DpStrings::random(4, Strings::CHARS_NUM) . '-' . DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
             $ticket->ref = $ref;
         }
 
@@ -367,7 +368,7 @@ class TicketManager
         if (!$is_trivial_change) {
             $this->db->insert('client_messages', array(
                 'channel'      => 'agent.ticket-updated',
-                'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array(
                     'ticket_id'      => $ticket->getId(),
@@ -380,7 +381,7 @@ class TicketManager
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
             $this->db->insert('client_messages', array(
                 'channel'      => 'agent-notification.tickets.locked-status',
-                'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data' => serialize(array(
                     'ticket_id'       => $ticket->getId(),

@@ -413,6 +413,7 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
+        'javascripts/DeskPRO/UI/MultiLevelSelect.js',
     )
 );
 
@@ -463,6 +464,7 @@ $CONFIG['user_common'] = array(
         'javascripts/DeskPRO/BasicWindow.js',
         'javascripts/DeskPRO/UI/SimpleTabs.js',
         'javascripts/DeskPRO/UI/TwoLevelSelect.js',
+        'javascripts/DeskPRO/UI/MultiLevelSelect.js',
         'javascripts/DeskPRO/UI/Overlay.js',
         'javascripts/DeskPRO/User/Window.js',
         'javascripts/DeskPRO/TouchCaller.js',

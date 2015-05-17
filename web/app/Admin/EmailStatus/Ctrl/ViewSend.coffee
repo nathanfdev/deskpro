@@ -21,6 +21,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
       @Api.sendGet("/email_status/sendmail/#{@sendmailId}?with_raw=1").then( (res) =>
         @sendmail     = res.data.sendmail
         @sendmail_raw = res.data.sendmail_raw
+        @statuses     = res.data.statuses
         @log          = res.data.sendmail_log
         @sendmail.date_created = @DpDateService.local @sendmail.date_created
         if @sendmail.date_sent

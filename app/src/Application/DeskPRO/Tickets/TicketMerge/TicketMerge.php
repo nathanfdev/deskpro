@@ -211,7 +211,7 @@ class TicketMerge implements PersonContextInterface
         $md('date_first_agent_reply', 'min');
         $md('date_first_agent_assign', 'min');
         $md('date_last_agent_reply', 'max');
-        $md('date_last_agent_assign', 'max');
+        $md('date_last_user_reply', 'max');
         $md('date_resolved', 'min');
         $md('date_archived', 'min');
 
@@ -272,6 +272,8 @@ class TicketMerge implements PersonContextInterface
                 $this->ticket->parent_ticket = null;
             }
         }
+
+        $this->ticket->organization = $this->ticket->person->organization;
 
         ksort($this->data_lost);
 

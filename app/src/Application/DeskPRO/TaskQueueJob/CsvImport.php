@@ -35,9 +35,12 @@
 namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Form\Type\PersonPhoneNumbersType;
+use Application\DeskPRO\EntityRepository\DataStore;
 
 class CsvImport extends AbstractJob
 {
@@ -109,6 +112,7 @@ class CsvImport extends AbstractJob
             'user_filename' => '',
             'log_blob_id' => 0,
             'log' => array(),
+            'ref' => null,
         );
     }
 
@@ -125,6 +129,8 @@ class CsvImport extends AbstractJob
         if (!file_exists($csv_file) || !is_readable($csv_file)) {
             throw new \Exception("CSV file $csv_file does not exist or is not readable");
         }
+
+        $logStore = $this->getLogStore($blob);
 
         if ($this->_data['new_custom_map'] === false) {
             $this->_createNewCustomFields();
@@ -145,6 +151,7 @@ class CsvImport extends AbstractJob
 
         $complete = false;
         $imported = 0;
+        $skipped = 0;
 
         while ($imported < 500 && (microtime(true) - $start_time < $max_time)) {
             if (feof($fp)) {
@@ -163,6 +170,8 @@ class CsvImport extends AbstractJob
             if ($this->_importRow($row)) {
                 $this->_data['imported']++;
                 $imported++;
+            } else {
+                $skipped++;
             }
         }
 
@@ -179,9 +188,12 @@ class CsvImport extends AbstractJob
             . " entries, imported " . $this->_data['imported'] . " people";
         $task['task_data'] = array_merge($task['task_data'], $this->_data);
 
+        $logStore->setData('skipped', $logStore->getData('skipped') + $skipped);
+        $logStore->setData('imported', $logStore->getData('imported') + $imported);
 
         if ($complete) {
 
+            $logStore->setData('finished', time());
             $tmpFile = dp_get_tmp_dir() . '/blob-import-log-'.$task['id'].'.csv';
             if ($task['task_data']['log'] && ($fp = fopen($tmpFile, 'w'))) {
                 foreach ($task['task_data']['log'] as $logEntry) {
@@ -242,6 +254,7 @@ class CsvImport extends AbstractJob
         $field_maps = $this->_data['field_maps'];
 
         if (isset($row[0]) && $row[0] === null) {
+            $this->log(array('Empty row'));
             return false;
         }
 
@@ -339,6 +352,8 @@ class CsvImport extends AbstractJob
             }
             !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
         }
+
+        $isNew = !$person['id'];
 
         foreach ($field_maps AS $column_id => $info) {
             if (empty($info['map'])) {
@@ -537,7 +552,7 @@ class CsvImport extends AbstractJob
         }
 
         if ($password === false) {
-            $password = \Orb\Util\Strings::random(10);
+            $password = \Orb\Util\DpStrings::random(10);
         }
         $person->setPassword($password);
 
@@ -550,6 +565,13 @@ class CsvImport extends AbstractJob
 
         $em->persist($person);
         $em->flush();
+        if ($isNew) {
+            $label = new LabelPerson();
+            $label->setLabel('import-' . $this->_data['ref']);
+            $label->person = $person;
+            $em->persist($label);
+            $em->flush($label);
+        }
 
         if ($this->_data['welcome_email'] && $send_welcome && !defined('DPC_IS_CLOUD')) {
             $mailer = App::getContainer()->getMailer();
@@ -604,5 +626,45 @@ class CsvImport extends AbstractJob
         App::getOrm()->persist($contact);
 
         return $contact;
+    }
+
+    /**
+     * @param Blob $blob
+     * @return \Application\DeskPRO\Entity\DataStore|null|object
+     */
+    protected function getLogStore(Blob $blob)
+    {
+        $em = $em = App::getOrm();
+        /** @var DataStore $rep */
+        $rep = $em->getRepository('DeskPRO:DataStore');
+        $task = $this->getTask();
+        $store = null;
+
+        if ($ref = @$task['task_data']['ref']) {
+            $store = $rep->findOneBy(array('name' => 'csv_import.' . $ref));
+        }
+
+        if (!$store) {
+            if (!$ref) {
+                if ($stores = $rep->getByPrefix('csv_import.' . date('Ymd'))) {
+                    $last = end($stores);
+                    $ref = substr($last['name'], 11, -3) . sprintf("%03d", (int)substr($last['name'], -3) + 1);
+                } else {
+                    $ref = date('Ymd') . '-001';
+                }
+                $this->_data['ref'] = $ref;
+            }
+
+            $store = new \Application\DeskPRO\Entity\DataStore();
+            $store['name'] = 'csv_import.' . $ref;
+            $store->setData('file', $blob['filename']);
+            $store->setData('started', time());
+            $store->setData('finished', 0);
+            $store->setData('skipped', 0);
+            $store->setData('imported', 0);
+            $em->persist($store);
+        }
+
+        return $store;
     }
 }

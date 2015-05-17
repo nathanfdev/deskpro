@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\CustomFields;
 
+use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
@@ -549,7 +550,9 @@ class FieldManager
                 continue;
             }
 
-            if (!$data = $field_def->getHandler()->getDataFromForm($form)) {
+            $handler = $field_def->getHandler();
+
+            if (!$data = $handler->getDataFromForm($form, $handler instanceof Choice ? 1 : 0)) {
                 $this->removeCustomDataOnObject($object, $field_def);
                 continue;
             }

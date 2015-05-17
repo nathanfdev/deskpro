@@ -44,7 +44,7 @@ var DP = {
 			skin_variant : "silver",
 
 			theme: 'advanced',
-			plugins : "fullscreen,table,wordcount",
+			plugins : "fullscreen,table,wordcount,media",
 			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,forecolor,backcolor,|,styleselect,fontselect,fontsizeselect',
 			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,dp_media,image,|,hr,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
 			theme_advanced_buttons3: '',
@@ -54,6 +54,8 @@ var DP = {
 			theme_advanced_statusbar_location: 'bottom',
 			theme_advanced_path: false,
 			relative_urls: false,
+      media_strict: false,
+      extended_valid_elements: "iframe[src|width|height|name|align], embed[width|height|name|flashvars|src|bgcolor|align|play|loop|quality|allowscriptaccess|type|pluginspage]",
 			width: '100%',
 			content_css: ASSETS_BASE_URL + '/stylesheets/user/content-editor.css',
 
@@ -130,7 +132,7 @@ var DP = {
 	},
 
 	select: function(el, options) {
-		if (el.data('select2')) {
+    if (el.data('select2') || el.data('no-select2')) {
 			return;
 		}
 

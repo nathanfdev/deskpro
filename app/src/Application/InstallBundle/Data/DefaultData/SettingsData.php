@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class SettingsData extends AbstractDefaultData
@@ -42,7 +43,7 @@ class SettingsData extends AbstractDefaultData
     {
         $this->getDb()->replace('settings', array(
             'name'   => 'core.app_secret',
-            'value'  => Strings::random(75, Strings::CHARS_KEY)
+            'value'  => DpStrings::random(75, Strings::CHARS_KEY)
         ));
     }
 

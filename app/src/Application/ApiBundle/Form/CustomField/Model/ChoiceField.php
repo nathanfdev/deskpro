@@ -215,9 +215,9 @@ class ChoiceField extends CustomFieldAbstract
         do {
             $changed = false;
             foreach ($choices as $ch) {
-                if ($ch->getOption('parent_id') && isset($removed_ids[$ch->getOption('parent_id')])) {
+                if (@$removed_ids[$ch->getOption('parent_id')] && !@$removed_ids[$ch->id]) {
                     $this->_em->remove($ch);
-                    $removed_id[$ch->id] = true;
+                    $removed_ids[$ch->id] = true;
                     $changed = true;
                 }
             }
@@ -233,6 +233,7 @@ class ChoiceField extends CustomFieldAbstract
 
             $ch = $this->_field->createChild();
             $ch->setTitle($cinfo['title']);
+            $ch->setOption('cb', str_replace('cb_', '', $cinfo['id']));
 
             $choices[$cinfo['id']] = $ch;
             $this->_em->persist($ch);

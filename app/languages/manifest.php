@@ -46,6 +46,19 @@
         'flag_image' => 'nl.png',
         'is_rtl'     => false,
         'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => false,
+        'is_managed' => true
+    ),
+
+    'finnish' => array(
+        'id'         => 'finnish',
+        'lang_code'  => 'fin',
+        'title'      => 'Finnish',
+        'locale'     => 'fi',
+        'flag_image' => 'fi.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true
@@ -72,7 +85,7 @@
         'flag_image' => 'de.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true
     ),
@@ -228,7 +241,7 @@
         'flag_image' => 'es.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true
     ),
@@ -270,19 +283,6 @@
         'title'      => 'Czech',
         'locale'     => 'cs',
         'flag_image' => 'cz.png',
-        'is_rtl'     => false,
-        'has_user'   => true,
-        'has_agent'  => false,
-        'has_admin'  => false,
-        'is_managed' => true
-    ),
-
-    'finnish' => array(
-        'id'         => 'finnish',
-        'lang_code'  => 'fin',
-        'title'      => 'Finnish',
-        'locale'     => 'fi',
-        'flag_image' => 'fi.png',
         'is_rtl'     => false,
         'has_user'   => true,
         'has_agent'  => false,

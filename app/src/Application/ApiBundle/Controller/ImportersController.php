@@ -73,7 +73,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function listAction()
     {
-        $importers = $this->em->getRepository('DeskPRO:DataStore')->getByNameWildcard('importers.');
+        $importers = $this->em->getRepository('DeskPRO:DataStore')->getByPrefix('importers.');
 
         if (count($importers) !== count(self::$allowed)) {
             $importers = array();

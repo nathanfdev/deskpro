@@ -70,13 +70,13 @@ class DataStore extends AbstractEntityRepository
     }
 
     /**
-     * @param $name
-     * @return \Doctrine\ORM\AbstractQuery
+     * Get data by prefix
+     * @param $prefix
+     * @return array
      */
-    public function getByNameWildcard($name)
+    public function getByPrefix($prefix)
     {
-        $q = 'select ds from DeskPRO:DataStore ds where ds.name like :name';
-
-        return $this->getEntityManager()->createQuery($q)->setParameter('name', $name.'%')->getResult();
+        return $this->getEntityManager()->createQuery('SELECT d FROM DeskPRO:DataStore d WHERE d.name LIKE :prefix')
+            ->setParameter('prefix', $prefix . '%')->getResult();
     }
 }

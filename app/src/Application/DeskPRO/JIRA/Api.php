@@ -86,7 +86,7 @@ class Api
                 $json = $e->getResponse()->json();
             } catch (\Exception $jsonParseException) {
                 // throw previous exception
-                throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
+                throw new ApiGeneralException($e->getResponse()->getReasonPhrase(), $code);
             }
 
 
