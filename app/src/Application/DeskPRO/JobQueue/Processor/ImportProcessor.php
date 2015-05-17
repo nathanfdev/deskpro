@@ -81,13 +81,19 @@ class ImportProcessor extends AbstractJobProcessor
 
     public function process(array $data, array $job)
     {
+        $em = $this->container->getEm();
         $importer = ImportProcessor::getImporter($data['id'], $this->container);
         $config = ImportProcessor::createGeneratorConfig($importer, $this->container);
+
         /** @var Generator $generator */
         $this->container->set('deskpro.import.config', $config);
         $generator = $this->container->get('deskpro.import.generator');
 
 
+        $importer->setData('status', 'done');
+        $em->flush($importer);
+
+        return true;
     }
 
     /**

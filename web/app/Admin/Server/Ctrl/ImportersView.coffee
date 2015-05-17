@@ -11,9 +11,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$scope.$watch 'importer.config.blobs.length', (val) =>
         @$scope.ready = if val then true else false
 
-      @$scope.$watch 'step', (val) =>
-        if 2 == val && !@updateImportStatus
-          @updateImportStatus = @$interval (=> @importGet()), 1000
+      @$scope.$watch 'importer.status', (val) =>
+        if val && 'testing' != val && 'done' != val
+          @updateImportStatus = @$interval (=> @importGet()), 1000 if !@updateImportStatus
         else if @updateImportStatus
           @$interval.cancel @updateImportStatus
           @updateImportStatus = null
@@ -65,10 +65,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     importGet: ->
       @Api.sendGet('/server/importers/' + @$scope.id).then (res) =>
         @$scope.importer = res.data
-        if @$scope.importer.status?
-          @$scope.step = 2
-        else
-          @$scope.step = 0
 
 
 
@@ -78,12 +74,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     importReset: =>
-      @$scope.step = 0
+      @$scope.importer.status = null
+      @importSave()
 
 
 
     importTest: ->
-      @$scope.step = 1
+      @$scope.importer.status = 'testing'
+      @importSave()
       @$scope.busy = true
       @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
         (res) =>
@@ -98,9 +96,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     importStart: ->
-      @$scope.step = 2
+      @$scope.importer.status = 'pre-pending'
+      @importSave()
       @Api.sendGet("/server/importers/#{@$scope.id}/start").then(
-        (res) => @$scope.importer = res.data.importer
+        (res) =>
         (res) =>
       )
 

@@ -10,11 +10,15 @@
                         <img ng-src="{{ ng_var('importer.icon') }}" alt="Icon"/>
                         &nbsp;
                         {{ ng_var('importer.title') }}
+                        &nbsp;
+                        <span ng-if="busy || importer.status && 'testing' !== importer.status && 'done' !== importer.status">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </span>
                     </h3>
                     <br/>
 
 
-                    <div ng-if="0 === step && !busy">
+                    <div ng-if="!importer.status">
                         {# CSV #}
                         <div ng-if="'csv' === id">
                             <div class="form-group">
@@ -186,7 +190,7 @@
                     </div>
 
 
-                    <div ng-if="1 === step && !busy">
+                    <div ng-if="'testing' === importer.status && !busy">
                         <div ng-if="test_error">
                             {{ ng_var('test_error_message') }}
                         </div>
@@ -195,7 +199,7 @@
                         </div>
                     </div>
 
-                    <div ng-if="2 === step">
+                    <div ng-if="importer.status && 'testing' !== importer.status">
 
                         <div>
                             Import process is currently running. Time running: XX
@@ -226,23 +230,30 @@
                     <button class="btn btn-primary"
                             ng-click="Ctrl.importTest()"
                             ng-disabled="!ready"
-                            ng-if="0 === step"
+                            ng-if="!importer.status"
                             >
                         Next
                     </button>
 
                     <button class="btn btn-default"
                             ng-click="Ctrl.importReset()"
-                            ng-if="1 === step"
+                            ng-if="'testing' === importer.status"
                             >
                         Back
                     </button>
 
                     <button class="btn btn-primary"
                             ng-click="Ctrl.importStart()"
-                            ng-if="1 === step"
+                            ng-if="'testing' === importer.status"
                             >
                         Start Import
+                    </button>
+
+                    <button class="btn btn-primary"
+                            ng-click="Ctrl.importReset()"
+                            ng-if="'done' === importer.status"
+                            >
+                        New Import
                     </button>
 
                 </div>

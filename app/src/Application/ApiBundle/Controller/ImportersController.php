@@ -103,6 +103,7 @@ class ImportersController extends AbstractController implements ProtectedControl
         $importer = ImportProcessor::getImporter($id, $this->container);
 
         $importer->setData('config', $data['config']);
+        $importer->setData('status', $data['status']);
         $this->em->flush($importer);
 
         return $this->getAction($id);
