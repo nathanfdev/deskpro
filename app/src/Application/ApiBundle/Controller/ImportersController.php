@@ -125,6 +125,8 @@ class ImportersController extends AbstractController implements ProtectedControl
     }
 
     /**
+     * test if import ready to start
+     *
      * @param $id
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -137,9 +139,26 @@ class ImportersController extends AbstractController implements ProtectedControl
         $this->container->set('deskpro.import.config', $config);
         $generator = $this->container->get('deskpro.import.generator');
 
-        $result = $generator->isReady();
+        try {
+            return $this->createJsonResponse(array('result' => $generator->isReady()));
+        } catch (\Exception $e) {
+            return $this->createJsonResponse(array('error_message' => $e->getMessage()));
+        }
 
-        return $this->createJsonResponse(array('result' => $result));
+    }
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function startAction($id, Request $request)
+    {
+        $importer = $this->getImporter($id);
+        $importer->setData('status', 'pending');
+        $this->em->flush($importer);
+
+        return $this->getAction($id);
     }
 
     protected function getImporter($id)
@@ -158,7 +177,7 @@ class ImportersController extends AbstractController implements ProtectedControl
             $importer->setData('title', ucfirst($id));
             $importer->setData('icon', null);
             $importer->setData('status', null);
-            $importer->setData('description', 'blablabla');
+            $importer->setData('description', null);
 
             $config = array();
             if (ExporterInterface::TYPE_CSV === $id) {

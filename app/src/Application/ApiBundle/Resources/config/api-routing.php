@@ -4969,9 +4969,17 @@ $collection->create(
     array(
         'path' => '/server/importers/{id}/test',
         'controller' => 'ApiBundle:Importers:test',
-        'methods' => array('POST', 'GET'),
+        'methods' => array('GET'),
     )
 );
 
+$collection->create(
+    'api_server_importers_start',
+    array(
+        'path' => '/server/importers/{id}/start',
+        'controller' => 'ApiBundle:Importers:start',
+        'methods' => array('GET'),
+    )
+);
 
 return $collection;
