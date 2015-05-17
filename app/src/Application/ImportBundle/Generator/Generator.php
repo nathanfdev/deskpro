@@ -50,7 +50,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     private $exporter;
 
     /**
-     * @var Validator\Collection
+     * @var \Application\ImportBundle\Generator\Validator\Collection
      */
     private $validators;
 
@@ -160,7 +160,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     public function validate()
     {
         $exporter   = $this->getExporter();
-        $exceptions = new Validator\ExceptionCollection();
+        $exceptions = new ExceptionCollection();
 
         foreach ($this->config->getEntityTypes() as $type) {
             $this->exporterLogHeader($type);

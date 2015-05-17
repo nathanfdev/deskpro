@@ -75,6 +75,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     importReset: =>
       @$scope.importer.status = null
+      @$scope.importer.log = null
       @importSave()
 
 

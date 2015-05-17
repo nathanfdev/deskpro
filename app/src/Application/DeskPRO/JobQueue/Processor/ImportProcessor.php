@@ -34,10 +34,13 @@ use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Generator;
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\Logger\ImporterHandler;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\ZenDesk\OsTicketConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Logger;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -89,6 +92,15 @@ class ImportProcessor extends AbstractJobProcessor
         $this->container->set('deskpro.import.config', $config);
         $generator = $this->container->get('deskpro.import.generator');
 
+        $logger = new Logger('importer');
+        $formatter = new LineFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+        $handler = new ImporterHandler($importer, $em);
+        $handler->setFormatter($formatter);
+        $logger->pushHandler($handler);
+        $generator->setLogger($logger);
+
+        $generator->generate();
 
         $importer->setData('status', 'done');
         $em->flush($importer);
