@@ -41,14 +41,15 @@ use Orb\Auth\Identity;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Validator\Constraints\EmailValidator;
 
-class DbTableSyncer extends AbstractSyncer
+class LdapSyncer extends AbstractSyncer
 {
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
-        /** @var \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck $adapter */
+        /** @var \Application\DeskPRO\Usersource\Adapter\Ldap $adapter */
         $adapter = $this->getAdapter($usersource);
         /** @var \Orb\Auth\Identity[] $identities */
-        $identities = $adapter->findAllIdentities();
+        // TODO: pagining with cursor
+        $identities = $adapter->findAllIdentities(1);
 
         foreach ($identities as $identity) {
 
@@ -65,15 +66,15 @@ class DbTableSyncer extends AbstractSyncer
 
     public function refreshIdentity(Usersource $usersource, $identity_or_email)
     {
-        $db_adapter = $this->getAdapter($usersource);
-        $identity = $db_adapter->findIdentityByInput($identity_or_email);
+        $ldap_adapter = $this->getAdapter($usersource);
+        $identity = $ldap_adapter->findIdentityByInput($identity_or_email);
 
-        // if the id doesn't exist in the remote db, we make a last-ditch effort to
+        // if the id doesn't exist in the ldap, we make a last-ditch effort to
         // find the usersource assocation via email
         if (!$identity instanceof Identity && StringEmail::isValueValid($identity_or_email)) {
             $person = $this->helper->getPersonFromEmail($identity_or_email);
             if ($assoc = $this->helper->getAssociation($usersource, $person)) {
-                $identity = $db_adapter->findIdentityByInput($assoc->identity);
+                $identity = $ldap_adapter->findIdentityByInput($assoc->identity);
             }
         }
 
@@ -90,18 +91,17 @@ class DbTableSyncer extends AbstractSyncer
         }
 
         $this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email);
-
         return true;
     }
 
     public function supportsUsersourceAdapter($adapter_class)
     {
-        return 'Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck' === $adapter_class;
+        return 'Application\DeskPRO\Usersource\Adapter\Ldap' === $adapter_class;
     }
 
     /**
      * @param Usersource $usersource
-     * @return \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck
+     * @return \Application\DeskPRO\Usersource\Adapter\Ldap
      */
     protected function getAdapter(Usersource $usersource)
     {

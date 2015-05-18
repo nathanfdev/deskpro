@@ -68,9 +68,23 @@ class Ldap extends AbstractAdapter
         return new \Orb\Auth\Adapter\LdapRaw($this->usersource->options);
     }
 
+    public function findAllIdentities($page, $per_page = 100)
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+
+        /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
+
+        $all = $adapter->findAllRecords($page, $per_page);
+
+        return $all;
+    }
 
     /**
-     * Find a user identity just by an email address.
+     * Find a user identity with an email address, a username, or the DN.
      *
      * @param  string                  $id_input Username or email address
      * @return \Orb\Auth\Identity|null
@@ -97,6 +111,10 @@ class Ldap extends AbstractAdapter
             if (!$rec_arr || !isset($rec_arr['dn'])) {
                 $rec_arr = $adapter->findRecordViaUsername($id_input);
             }
+
+            if (!$rec_arr || !isset($rec_arr['dn'])) {
+                $rec_arr = $adapter->findRecordViaDn($id_input);
+            }
         } catch (\Exception $e) {
             if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
             throw $e;
@@ -117,7 +135,11 @@ class Ldap extends AbstractAdapter
             if (!empty($raw_info['distinguishedname'])) {
                 $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
             } else {
-                $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                if (is_array($raw_info['dn'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                } else {
+                    $raw_info['identity'] = (string) $raw_info['dn'];
+                }
             }
 
             $auth = $this->getAuthAdapter()->getZendAuthAdapter();

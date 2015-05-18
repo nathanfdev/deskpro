@@ -36,6 +36,7 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Usersource\Sync\Syncer\DbTableSyncer;
+use Application\DeskPRO\Usersource\Sync\Syncer\LdapSyncer;
 use Application\DeskPRO\Usersource\Sync\SyncerHelper;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
 
@@ -48,6 +49,7 @@ class UsersourceSyncManagerService
         $syncers = array();
 
         $syncers[] = new DbTableSyncer($helper);
+        $syncers[] = new LdapSyncer($helper);
 
         $sm = new SyncManager($syncers);
 

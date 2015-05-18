@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
+use Application\DeskPRO\Usersource\Sync\SyncException;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\ExtraDetailsInterface;
@@ -62,9 +63,15 @@ class UsersourcesController extends AbstractController
         $sync_manager = $this->container->getSystemService('usersource_sync_manager');
 
         // run sync algorithm for this usersource with the passed identifier/email
-        $sync_manager->refreshIdentity($source, $identity_or_email);
-
-        return $this->createApiSuccessResponse();
+        try {
+            if ($sync_manager->refreshIdentity($source, $identity_or_email)) {
+                return $this->createApiSuccessResponse();
+            } else {
+                return $this->createApiErrorResponse('sync_error', 'unable to sync');
+            }
+        } catch (SyncException $e) {
+            return $this->createApiErrorResponse('sync_error', 'a problem occurred when trying to sync');
+        }
     }
 
     public function startUsersourceSyncAction()
