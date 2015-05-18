@@ -119,6 +119,7 @@ class Choice extends HandlerAbstract
         // client-side hierarchy
         $root = array();
         $max_depth = 1;
+        $sort_map = array();
 
         foreach ($children as $id => $child) {
 
@@ -127,17 +128,22 @@ class Choice extends HandlerAbstract
             $map[$id]->id = $id;
             $map[$id]->title = $child['title'];
 
-
             // add choices
             $title = $child['title'];
+            $sort_map[$id] = array($child['display_order']);
             $d = 1;
-            while ($parent = @$children[$child->getOption('parent_id')]) {
+
+            $sub_child = $child;
+            while ($parent = @$children[$sub_child->getOption('parent_id')]) {
                 $d++;
                 if ($d > $max_depth) $max_depth = $d;
 
                 $title = $parent['title'].' > '.$title;
-                $child = $parent;
+                $sort_map[$id][] = $parent['display_order'];
+
+                $sub_child = $parent;
             }
+            $sort_map[$id] = array_reverse($sort_map[$id]);
             $choices[$id] = $title;
 
 
@@ -147,6 +153,28 @@ class Choice extends HandlerAbstract
             }
             $selected[] = $id;
         }
+
+        uksort($choices, function($a_opt, $b_opt) use ($sort_map) {
+            $a_depth = count($sort_map[$a_opt]);
+            $b_depth = count($sort_map[$b_opt]);
+
+            $max_depth = max($a_depth, $b_depth);
+
+            $an = $bn = 0;
+            for ($i = 0; $i < $max_depth; $i++) {
+                $an = @$sort_map[$a_opt][$i] ?: 0;
+                $bn = @$sort_map[$b_opt][$i] ?: 0;
+
+                if ($an != $bn) {
+                    break;
+                }
+            }
+
+            if ($an == $bn) {
+                return 0;
+            }
+            return $an < $bn ? -1 : 1;
+        });
 
         // map for client-side
         foreach ($children as $id => $child) {
@@ -160,12 +188,40 @@ class Choice extends HandlerAbstract
             }
         }
 
+        // For max 2-level multi-select, use optgroups
+        if ($max_depth <= 2 && $this->multiple && !$this->expanded) {
+            $choices = array();
+
+            foreach ($root as $opt) {
+                if (!empty($opt->children)) {
+                    $optgroup = array();
+                    foreach ($opt->children as $sub_opt) {
+                        $optgroup[$sub_opt->id] = $sub_opt->title;
+                    }
+                    $choices[$opt->title] = $optgroup;
+                } else {
+                    $choices[$opt->id] = $opt->title;
+                }
+            }
+        }
+
         // required
         $required = defined('DP_INTERFACE') && (
-                ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
-                ||
-                ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
-            );
+            ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+            ||
+            ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+        );
+
+        $attr = array(
+            'data-map' => json_encode($root),
+            'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
+            'data-max-depth' => $max_depth
+        );
+
+        if (!$this->multiple) {
+            // turns off legacy select2 handler
+            $attr['data-no-select2'] = 1;
+        }
 
         $field_opts = array(
             'choices' => $choices,
@@ -173,12 +229,7 @@ class Choice extends HandlerAbstract
             'multiple' => $this->multiple,
             'expanded' => $this->expanded,
             'empty_value' => $this->multiple || $this->expanded || $required ? false : '',
-            'attr' => array(
-                'data-map' => json_encode($root),
-                'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
-                'data-no-select2' => 1, // turns off legacy select2 handler
-                'data-max-depth' => $max_depth
-            ),
+            'attr' => $attr
         );
 
         if (!$this->multiple) {
