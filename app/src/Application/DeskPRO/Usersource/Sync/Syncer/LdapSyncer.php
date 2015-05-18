@@ -91,6 +91,7 @@ class LdapSyncer extends AbstractSyncer
         }
 
         $this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email);
+
         return true;
     }
 

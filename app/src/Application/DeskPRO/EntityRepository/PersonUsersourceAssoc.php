@@ -88,4 +88,18 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
 
         return null;
     }
+
+    /**
+     * @param \DateTime $last_updated
+     * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
+     */
+    public function getAssociationsUpdatedBefore(\DateTime $last_updated)
+    {
+        return $this->_em->createQuery("
+            SELECT assoc
+            FROM DeskPRO:PersonUsersourceAssoc assoc
+            WHERE assoc.date_updated < :last_updated
+        ")->setParameter('last_updated', $last_updated)
+        ->execute();
+    }
 }

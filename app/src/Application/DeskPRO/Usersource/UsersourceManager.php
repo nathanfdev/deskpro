@@ -226,4 +226,16 @@ class UsersourceManager
     {
         return $this->usersources = $this->em->getRepository('DeskPRO:Usersource')->find($sso_usersource_id);
     }
+
+    /**
+     * @param \DateTime $last_updated
+     * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
+     */
+    public function findAssociationsUpdatedBefore(\DateTime $last_updated)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repo */
+        $assoc_repo = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc');
+
+        return $assoc_repo->getAssociationsUpdatedBefore($last_updated);
+    }
 }
