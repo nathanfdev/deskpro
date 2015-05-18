@@ -68,7 +68,10 @@ class Ldap extends AbstractAdapter
         return new \Orb\Auth\Adapter\LdapRaw($this->usersource->options);
     }
 
-    public function findAllIdentities($page, $per_page = 100)
+    /**
+     * @return \Zend\Ldap\Collection
+     */
+    public function findAllRecords()
     {
         $usersource = clone $this->usersource;
         $usersource->setOption('bindRequiresDn', true);
@@ -78,9 +81,7 @@ class Ldap extends AbstractAdapter
 
         if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
 
-        $all = $adapter->findAllRecords($page, $per_page);
-
-        return $all;
+        return $adapter->findAllRecords();
     }
 
     /**

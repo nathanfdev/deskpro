@@ -41,6 +41,7 @@ use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use Doctrine\DBAL\Connection;
+use Orb\Util\Env;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UsersourceSyncProcessor extends AbstractJobProcessor
@@ -51,6 +52,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     const MAX_COUNT = 1000;
     public static $max_time;
     public static $count;
+    public static $max_memory_usage;
 
     /**
      * @var UsersourceManager
@@ -86,6 +88,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             array(
                 'original_start_timestamp' => null,
                 'sync_cursor_location' => null,
+                'phase_2_location' => 1,
                 'current_usersource_id' => null,
                 'phase' => 1
             )
@@ -103,7 +106,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     {
         static::$max_time = time() + static::MAX_TIME;
         static::$count = 0;
-
+        static::$max_memory_usage = min(max(Env::getMemoryLimit(), 500*1024*1024), 500*1024*1024) * 0.8;
         if (1 == $data['phase']) {
             return $this->runPhaseOne($data);
         } else {
@@ -130,6 +133,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             if ($skip_to_usersource_id && $usersource->getId() != $skip_to_usersource_id) {
                 continue;
             }
+            $skip_to_usersource_id = false;
 
             $last_processed_usersource_id = $usersource->id;
 
@@ -139,10 +143,13 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
             $this->sync_manager->refreshAll($usersource, $cursor, function (SyncCursor $cursor) {
                 // we return true if we want to signal to the syncer to pause
-                UsersourceSyncProcessor::$count++;
-                if (UsersourceSyncProcessor::$count > UsersourceSyncProcessor::MAX_COUNT) {
+
+                // condition 1: if we allocate 80% or greater of our max memory usage
+                if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
                     return true;
                 }
+
+                // considtion 2: if we go over x seconds
                 if (time() > UsersourceSyncProcessor::$max_time) {
                     return true;
                 }
@@ -183,18 +190,51 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         $original_start_timestamp = $data['original_start_timestamp'];
 
         $associations = $this->usersource_manager->findAssociationsUpdatedBefore(
-            new \DateTime(sprintf('@%s', $original_start_timestamp))
+            $ts = new \DateTime(sprintf('@%s', $original_start_timestamp))
         );
 
+        $start_at = $data['phase_2_location'];
+
+        $i = 0;
+        $had_to_break = false;
         try {
             // we aren't paginating here because this should be a small #
             // phase 1 should have updated most associations already
             foreach ($associations as $association) {
-                $identity = $association->getIdentity();
-                $this->sync_manager->refreshIdentity($association->getUsersource(), $identity);
+                $i++;
+                if ($i >= $start_at) {
+                    $identity = $association->getIdentity();
+                    $this->sync_manager->refreshIdentity($association->getUsersource(), $identity);
+
+                    // condition 1: if we allocate 80% or greater of our max memory usage
+                    if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
+                        $had_to_break = true;
+                        break;
+                    }
+
+                    // considtion 2: if we go over x seconds
+                    if (time() > UsersourceSyncProcessor::$max_time) {
+                        $had_to_break = true;
+                        break;
+                    }
+                }
             }
         } catch (SyncException $e) {
-            // TODO: hmm, how to best report a sync error? I don't want to throw an exception.
+            // TODO: hmm, how to best report a sync error? I don't want to throw the job.
+        }
+
+        if ($had_to_break) {
+            // phase 2 needs another go
+            $this->scheduleNextSync(
+                array(
+                    'phase' => 2,
+                    'phase_2_location' => $i,
+                    'original_start_timestamp' => $data['original_start_timestamp'],
+                ),
+                new \DateTime('now + 1 minutes')
+            );
+
+            return true;
         }
 
         // phase 2 is complete

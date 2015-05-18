@@ -49,7 +49,7 @@ class SyncCursor
      */
     private $completed;
 
-    public function __construct($location = 1)
+    public function __construct($location = 0)
     {
         $this->setLocation($location);
     }

@@ -38,8 +38,10 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Orb\Auth\Identity;
+use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Validator\Constraints\EmailValidator;
+use Zend\Ldap\Exception\LdapException;
 
 class LdapSyncer extends AbstractSyncer
 {
@@ -47,15 +49,32 @@ class LdapSyncer extends AbstractSyncer
     {
         /** @var \Application\DeskPRO\Usersource\Adapter\Ldap $adapter */
         $adapter = $this->getAdapter($usersource);
-        /** @var \Orb\Auth\Identity[] $identities */
-        // TODO: pagining with cursor
-        $identities = $adapter->findAllIdentities(1);
+        $records = $adapter->findAllRecords();
 
-        foreach ($identities as $identity) {
+        // records is an iterator, that handles our memory for us. using foreach is worse because we
+        // do NOT want to call $records->current() unless we need to, but foreach always calls it
+        $start_location = $cursor->getLocation();
+        try{
+            $records->rewind();
+        } catch (LdapException $e) {
+            // originally this was in the "for" declaration below, but when the cursor is empty it throws an exception on rewind
+        }
+        for ($i = 0; $records->valid(); $i++) {
+            try {
+                $records->next();
+            } catch (LdapException $e) {
+                // expected behaviour on the last iteration. strang, because $records->valid() passes.
+                break;
+            }
+            if ($i < $start_location) {
+                continue; // save us from hitting the LDAP server if we've already visited this record before
+            }
 
+            $raw_info = $records->current();
+            $identity = $this->getIdentityFromRawRecord($raw_info);
             $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
-
             $cursor->incrementLocation();
+
             if ($pause_check($cursor)) {
                 return;
             }
@@ -132,5 +151,58 @@ class LdapSyncer extends AbstractSyncer
 
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
+    }
+
+    /**
+     * @param $raw_info
+     * @return Identity
+     */
+    protected function getIdentityFromRawRecord($raw_info)
+    {
+// normalize the returned data
+        if (!empty($raw_info['samaccountname'])) {
+            $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
+        } elseif (!empty($raw_info['uid'])) {
+            $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+        }
+        if (!empty($raw_info['distinguishedname'])) {
+            $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
+        } else {
+            if (is_array($raw_info['dn'])) {
+                $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+            } else {
+                $raw_info['identity'] = (string)$raw_info['dn'];
+            }
+        }
+        if ($raw_info['givenname']) {
+            $raw_info['first_name'] = Arrays::getFirstItem($raw_info['givenname']);
+        }
+        if ($raw_info['sn']) {
+            $raw_info['last_name'] = Arrays::getFirstItem($raw_info['sn']);
+        }
+        if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
+            $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+        } elseif ($raw_info['name']) {
+            $raw_info['name'] = Arrays::getFirstItem($raw_info['name']);
+        } elseif ($raw_info['cn']) {
+            $raw_info['name'] = Arrays::getFirstItem($raw_info['cn']);
+        }
+        if (isset($raw_info['mail'])) {
+            $raw_info['email_address'] = Arrays::getFirstItem($raw_info['mail']);
+        }
+        if (isset($raw_info['jpegphoto'])) {
+            $raw_info['picture_data'] = Arrays::getFirstItem($raw_info['jpegphoto']);
+        } elseif (isset($raw_info['thumbnailphoto'])) {
+            $raw_info['thumbnailphoto'] = Arrays::getFirstItem($raw_info['thumbnailphoto']);
+        }
+        if (isset($raw_info['telephonenumber'])) {
+            $raw_info['phone'] = Arrays::getFirstItem($raw_info['telephonenumber']);
+        } elseif (isset($raw_info['homephone'])) {
+            $raw_info['phone'] = Arrays::getFirstItem($raw_info['homephone']);
+        } elseif (isset($raw_info['mobile'])) {
+            $raw_info['phone'] = Arrays::getFirstItem($raw_info['mobile']);
+        }
+        $identity = new Identity($raw_info['identity'], $raw_info);
+        return $identity;
     }
 }

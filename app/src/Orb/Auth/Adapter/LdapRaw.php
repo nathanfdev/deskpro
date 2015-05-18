@@ -40,6 +40,7 @@ use Orb\Util\Arrays;
 
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Zend\Ldap\Ldap;
 
 class LdapRaw implements FormLoginInterface, Loggable
 {
@@ -262,7 +263,7 @@ class LdapRaw implements FormLoginInterface, Loggable
      * @return \Zend\Ldap\Collection
      * @throws \Zend\Ldap\Exception\LdapException
      */
-    public function findAllRecords($page, $per_page = 100)
+    public function findAllRecords()
     {
         if ($this->logger) {
             $this->logger->log("START find all", Logger::DEBUG);
@@ -282,7 +283,7 @@ class LdapRaw implements FormLoginInterface, Loggable
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
 
-        $entries = $ldap->search('objectClass=inetOrgPerson', $this->options['baseDn']);
+        $entries = $ldap->search('objectClass=inetOrgPerson', $this->options['baseDn'], Ldap::SEARCH_SCOPE_SUB, array(), 'whenCreated');
 
         if ($this->logger) {
             $this->logger->log("FOUND " . $entries->count() . " entries", Logger::DEBUG);

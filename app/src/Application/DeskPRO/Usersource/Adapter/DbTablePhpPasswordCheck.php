@@ -97,12 +97,16 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         };
     }
 
-    public function findAllIdentities()
+    /**
+     * @param int $offset skip x users and return the rest
+     * @return array
+     */
+    public function findAllIdentities($offset = 0)
     {
         /** @var $adapter \Orb\Auth\Adapter\DbTable.php */
         $adapter = $this->getAuthAdapter();
 
-        $user_infos = $adapter->getAllUserInfo();
+        $user_infos = $adapter->getAllUserInfo($offset);
 
         $identities = array();
         foreach ($user_infos as $info) {

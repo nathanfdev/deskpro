@@ -59,6 +59,9 @@ class SyncerHelper
     public function updateOrCreatePersonWithInfo(array $user_info, Person $person = null)
     {
         // merge in the default values on $user_info array
+        if (isset($user_info['email_address'])) {
+            $user_info['email'] = $user_info['email_address'];
+        }
         $user_info = array_merge(
             array(
                 'name' => null,
