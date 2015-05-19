@@ -42,7 +42,7 @@ use Orb\Log\Logger;
 use Orb\Log\Loggable;
 use Zend\Ldap\Ldap;
 
-class LdapRaw implements FormLoginInterface, Loggable
+class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -255,41 +255,6 @@ class LdapRaw implements FormLoginInterface, Loggable
         $identity = new Identity($raw_info['identity'], $raw_info);
 
         return new Result(Result::SUCCESS, $identity);
-    }
-
-    /**
-     * Return all user/person records
-     *
-     * @return \Zend\Ldap\Collection
-     * @throws \Zend\Ldap\Exception\LdapException
-     */
-    public function findAllRecords()
-    {
-        if ($this->logger) {
-            $this->logger->log("START find all", Logger::DEBUG);
-        }
-
-        $zend_auth = $this->getZendAuthAdapter();
-        // Bogus because zend only creates ldap obj when its needed,
-        // so this is a hack to get it to set all the correct options
-        // for us
-        try {
-            $zend_auth->setUsername('__bogus__');
-            $zend_auth->setPassword('__bogus__');
-            $zend_auth->authenticate();
-        } catch (\Exception $e) {
-        }
-
-        /** @var $ldap \Zend\Ldap\Ldap */
-        $ldap = $zend_auth->getLdap();
-
-        $entries = $ldap->search('objectClass=inetOrgPerson', $this->options['baseDn'], Ldap::SEARCH_SCOPE_SUB, array(), 'whenCreated');
-
-        if ($this->logger) {
-            $this->logger->log("FOUND " . $entries->count() . " entries", Logger::DEBUG);
-        }
-
-        return $entries;
     }
 
 

@@ -93,7 +93,13 @@ class LdapSyncer extends AbstractSyncer
             }
         }
 
-        $conn->delete('tmp_data', $tmp_ids_to_remove);
+        $conn->executeQuery(
+            'DELETE FROM tmp_data WHERE id IN (:ids)',
+            array('ids' => $tmp_ids_to_remove),
+            array('ids' => Connection::PARAM_INT_ARRAY)
+        );
+
+        // move us on from here, finished the ldap sync
         $cursor->setPhase(3);
     }
 
@@ -175,7 +181,10 @@ class LdapSyncer extends AbstractSyncer
 
     public function supportsUsersourceAdapter($adapter_class)
     {
-        return 'Application\DeskPRO\Usersource\Adapter\Ldap' === $adapter_class;
+        return in_array($adapter_class, array(
+            'Application\DeskPRO\Usersource\Adapter\Ldap',
+            'Application\DeskPRO\Usersource\Adapter\ActiveDirectory'
+        ));
     }
 
     /**

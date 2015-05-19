@@ -96,7 +96,11 @@ class DbTableSyncer extends AbstractSyncer
 
     public function supportsUsersourceAdapter($adapter_class)
     {
-        return 'Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck' === $adapter_class;
+        return in_array($adapter_class, array(
+            'Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck',
+            'Application\DeskPRO\Usersource\Adapter\Dp3CustomMysql',
+            'Application\DeskPRO\Usersource\Adapter\EzPublish'
+        ));
     }
 
     /**

@@ -73,7 +73,21 @@ class ActiveDirectory extends AbstractAdapter
         return $adapter;
     }
 
+    /**
+     * @return \Zend\Ldap\Collection
+     */
+    public function findAllRecords()
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
 
+        /** @var \Orb\Auth\Adapter\ActiveDirectory $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
+
+        return $adapter->findAllRecords();
+    }
 
     /**
      * Find a user identity just by an email address.
