@@ -248,7 +248,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // reschedule job one for 24 hours from now
         $this->scheduleNextSync(
             array('phase' => 1),
-            new \DateTime('now + 1 minutes')
+            new \DateTime('tomorrow 1am')
         );
 
         return true;
