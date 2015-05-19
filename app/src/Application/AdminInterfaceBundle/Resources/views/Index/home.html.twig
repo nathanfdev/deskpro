@@ -123,6 +123,31 @@
 		</div>
 	{% endif %}
 
+  <div style="margin: 15px 15px 0 15px" ng-if="readable_config">
+    <div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+      <div style="float:left">
+        <i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+      </div>
+      <div style="margin-left: 50px;">
+        <h3 style="margin-top: 8px;">
+          <span style="display: inline-block; border-bottom: 2px dotted #f00;">
+            CRITICAL: Your config.php file is publicly readable
+          </span>
+        </h3>
+        <p>
+          Your DeskPRO config.php file is publicly readable at the following URL:<br/>
+          <a ng-href="{{ ng_var('config_php_url') }}" target="_blank">{{ ng_var('config_php_url') }}</a>
+        </p>
+        <p>
+          This is a CRITICAL vulnerability in the way your web server is configured. Your config.php file contains sensitive information such as your MySQL database details (including your password).
+        </p>
+        <p>
+          Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+        </p>
+      </div>
+    </div>
+  </div>
+
 	<div style="margin: 15px 15px 0 15px" ng-if="http_method_errors">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
 			<div style="float:left">
