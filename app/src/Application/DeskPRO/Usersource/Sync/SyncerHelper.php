@@ -102,6 +102,10 @@ class SyncerHelper
             }
         }
 
+        if (!empty($user_info['phone'])) {
+            $person->setPrimaryPhoneNumber($user_info['phone']);
+        }
+
         return $person;
     }
 
