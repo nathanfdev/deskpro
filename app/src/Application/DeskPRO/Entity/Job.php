@@ -286,4 +286,11 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('worker_id', null);
         $this->setModelField('date_touch', new \DateTime());
     }
+
+    public function abort()
+    {
+        $this->setModelField('status', Job::STATUS_ABORTED);
+        $this->setModelField('status_code', Job::STATUS_CODE_EXHAUSTED);
+        $this->setModelField('date_touch', new \DateTime());
+    }
 }

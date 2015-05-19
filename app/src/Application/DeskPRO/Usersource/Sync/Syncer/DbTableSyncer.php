@@ -49,7 +49,7 @@ class DbTableSyncer extends AbstractSyncer
         $adapter = $this->getAdapter($usersource);
         /** @var \Orb\Auth\Identity[] $identities */
         $identities = $adapter->findAllIdentities($cursor->getLocation());
-xdebug_break();
+
         foreach ($identities as $identity) {
 
             $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
