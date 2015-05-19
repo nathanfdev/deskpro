@@ -114,6 +114,23 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         }
     }
 
+    public static function pauseJobCondition(SyncCursor $cursor)
+    {
+        // we return true if we want to signal to the syncer to pause
+
+        // condition 1: if we allocate 80% or greater of our max memory usage
+        if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
+            return true;
+        }
+
+        // considtion 2: if we go over x seconds
+        if (time() > UsersourceSyncProcessor::$max_time) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @param array $data
      * @return bool
@@ -141,21 +158,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 $cursor = new SyncCursor();
             }
 
-            $this->sync_manager->refreshAll($usersource, $cursor, function (SyncCursor $cursor) {
-                // we return true if we want to signal to the syncer to pause
-
-                // condition 1: if we allocate 80% or greater of our max memory usage
-                if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
-                    return true;
-                }
-
-                // considtion 2: if we go over x seconds
-                if (time() > UsersourceSyncProcessor::$max_time) {
-                    return true;
-                }
-
-                return false;
-            });
+            $this->sync_manager->refreshAll($usersource, $cursor, array($this, 'pauseJobCondition'));
 
             if (!$cursor->isCompleted()) {
                 // time to pause and re-run this phase at this usersource at the cursor location
@@ -206,14 +209,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                     $identity = $association->getIdentity();
                     $this->sync_manager->refreshIdentity($association->getUsersource(), $identity);
 
-                    // condition 1: if we allocate 80% or greater of our max memory usage
-                    if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
-                        $had_to_break = true;
-                        break;
-                    }
-
-                    // considtion 2: if we go over x seconds
-                    if (time() > UsersourceSyncProcessor::$max_time) {
+                    if (static::pauseJobCondition(new SyncCursor())) {
                         $had_to_break = true;
                         break;
                     }
