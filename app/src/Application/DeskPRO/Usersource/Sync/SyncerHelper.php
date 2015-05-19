@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Orb\Auth\Identity;
+use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
 
 /**
  * This will be offered as a service to all Syncers. It aids them by taking care of common Syncer needs.
@@ -54,6 +55,11 @@ class SyncerHelper
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    public function getEm()
+    {
+        return $this->em;
     }
 
     public function updateOrCreatePersonWithInfo(array $user_info, Person $person = null)
@@ -172,10 +178,12 @@ class SyncerHelper
      *
      * @param Person $person
      */
-    public function savePerson(Person $person)
+    public function savePerson(Person $person, $flush = true)
     {
         $this->em->persist($person);
-        $this->em->flush($person);
+        if ($flush) {
+            $this->em->flush($person);
+        }
     }
 
     /**
@@ -183,9 +191,19 @@ class SyncerHelper
      *
      * @param PersonUsersourceAssoc $association
      */
-    public function saveAssociation(PersonUsersourceAssoc $association)
+    public function saveAssociation(PersonUsersourceAssoc $association, $flush = true)
     {
         $this->em->persist($association);
-        $this->em->flush($association);
+        if ($flush) {
+            $this->em->flush($association);
+        }
+    }
+
+    /**
+     * @return TmpDataRepo
+     */
+    public function getTmpDataRepo()
+    {
+        return $this->em->getRepository('DeskPRO:TmpData');
     }
 }

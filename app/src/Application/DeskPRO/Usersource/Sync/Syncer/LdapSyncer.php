@@ -34,9 +34,11 @@
 namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
+use Doctrine\DBAL\Connection;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
@@ -45,7 +47,57 @@ use Zend\Ldap\Exception\LdapException;
 
 class LdapSyncer extends AbstractSyncer
 {
+    const TMP_DATA_NAME = 'LdapSyncer_synced_raw_info';
+
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    {
+        if ($cursor->getPhase() == 1) {
+            $this->runFirstPass($usersource, $cursor, $pause_check);
+        }
+
+        if ($cursor->getPhase() == 2){
+            $this->runSecondPass($usersource, $cursor, $pause_check);
+        }
+
+        $this->helper->getEm()->flush();
+
+        if ($cursor->getPhase() == 3) {
+            $cursor->markCompleted();
+        }
+    }
+
+    public function runSecondPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    {
+        /** @var \Doctrine\DBAL\Connection $conn */
+        $conn = $this->helper->getEm()->getConnection();
+        $tmp_ids_to_remove = array();
+        $rows = $conn->fetchAll('SELECT * FROM tmp_data WHERE name = :name', array('name' => self::TMP_DATA_NAME));
+        foreach ($rows as $row) {
+            $data = unserialize($row['data']);
+            if (isset($data['raw_info'])) {
+                $raw_info = $data['raw_info'];
+                $identity = new Identity($raw_info['identity'], $raw_info);
+                $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
+            }
+            $tmp_ids_to_remove[] = $row['id'];
+
+            $cursor->incrementLocation();
+            if ($pause_check($cursor)) {
+                // get rid of the tmp dat we dealt with in this round
+                $conn->executeQuery(
+                    'DELETE FROM tmp_data WHERE id IN (:ids)',
+                    array('ids' => $tmp_ids_to_remove),
+                    array('ids' => Connection::PARAM_INT_ARRAY)
+                );
+                return;
+            }
+        }
+
+        $conn->delete('tmp_data', $tmp_ids_to_remove);
+        $cursor->setPhase(3);
+    }
+
+    public function runFirstPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
         /** @var \Application\DeskPRO\Usersource\Adapter\Ldap $adapter */
         $adapter = $this->getAdapter($usersource);
@@ -54,12 +106,12 @@ class LdapSyncer extends AbstractSyncer
         // records is an iterator, that handles our memory for us. using foreach is worse because we
         // do NOT want to call $records->current() unless we need to, but foreach always calls it
         $start_location = $cursor->getLocation();
-        try{
+        try {
             $records->rewind();
         } catch (LdapException $e) {
             // originally this was in the "for" declaration below, but when the cursor is empty it throws an exception on rewind
         }
-        for ($i = 0; $records->valid(); $i++) {
+        for ($i = 1; $records->valid(); $i++) {
             try {
                 $records->next();
             } catch (LdapException $e) {
@@ -70,17 +122,24 @@ class LdapSyncer extends AbstractSyncer
                 continue; // save us from hitting the LDAP server if we've already visited this record before
             }
 
+            // save record for processing in phase 2
             $raw_info = $records->current();
-            $identity = $this->getIdentityFromRawRecord($raw_info);
-            $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
+            $processed_raw_info = $this->processRawInfo($raw_info);
+            $tmp = new TmpData();
+            $tmp->setData('raw_info', $processed_raw_info);
+            $tmp->name = self::TMP_DATA_NAME;
+            $this->helper->getEm()->persist($tmp);
+
             $cursor->incrementLocation();
 
             if ($pause_check($cursor)) {
+                $this->helper->getEm()->flush();
                 return;
             }
         }
 
-        $cursor->markCompleted();
+        $cursor->setPhase(2);
+        $cursor->setLocation(1);
     }
 
     public function refreshIdentity(Usersource $usersource, $identity_or_email)
@@ -151,15 +210,19 @@ class LdapSyncer extends AbstractSyncer
 
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
+
+        // detach
+        $this->helper->getEm()->detach($person);
+        $this->helper->getEm()->detach($assoc);
     }
 
     /**
      * @param $raw_info
      * @return Identity
      */
-    protected function getIdentityFromRawRecord($raw_info)
+    protected function processRawInfo($raw_info)
     {
-// normalize the returned data
+        // normalize the returned data
         if (!empty($raw_info['samaccountname'])) {
             $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
         } elseif (!empty($raw_info['uid'])) {
@@ -202,7 +265,7 @@ class LdapSyncer extends AbstractSyncer
         } elseif (isset($raw_info['mobile'])) {
             $raw_info['phone'] = Arrays::getFirstItem($raw_info['mobile']);
         }
-        $identity = new Identity($raw_info['identity'], $raw_info);
-        return $identity;
+
+        return $raw_info;
     }
 }

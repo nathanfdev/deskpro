@@ -86,8 +86,9 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     {
         $resolver->setDefaults(
             array(
-                'original_start_timestamp' => null,
-                'sync_cursor_location' => null,
+                'original_start_timestamp' => time(),
+                'sync_cursor_location' => 1,
+                'sync_cursor_phase' => 1,
                 'phase_2_location' => 1,
                 'current_usersource_id' => null,
                 'phase' => 1
@@ -137,13 +138,10 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
      */
     protected function runPhaseOne(array $data)
     {
-        $start_timestamp = $data['original_start_timestamp'] ?: time();
+        $start_timestamp = $data['original_start_timestamp'];
 
         $skip_to_usersource_id = $data['current_usersource_id'];
-        $cursor = null;
-        if ($data['sync_cursor_location']) {
-            $cursor = new SyncCursor($data['sync_cursor_location']);
-        }
+        $cursor = new SyncCursor($data['sync_cursor_location'], $data['sync_cursor_phase']);
 
         $last_processed_usersource_id = null;
         foreach ($this->usersource_manager->getAll() as $usersource) {
@@ -167,6 +165,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                         'phase' => 1,
                         'original_start_timestamp' => $start_timestamp,
                         'sync_cursor_location' => $cursor->getLocation(),
+                        'sync_cursor_phase' => $cursor->getPhase(),
                         'current_usersource_id' => $last_processed_usersource_id
                     ),
                     new \DateTime('now')

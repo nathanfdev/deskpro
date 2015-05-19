@@ -44,14 +44,20 @@ class SyncCursor
     private $location;
 
     /**
+     * @var int some syncers do more than 1 pass on the data, do this is a way to keep track of that
+     */
+    private $phase;
+
+    /**
      * @var bool set this to true if the usersource is completely done, it defaults to false meaning
      *           we still have more user info to process starting at $location
      */
     private $completed;
 
-    public function __construct($location = 0)
+    public function __construct($location = 1, $phase = 1)
     {
         $this->setLocation($location);
+        $this->setPhase($phase);
     }
 
     /**
@@ -68,6 +74,22 @@ class SyncCursor
     public function setLocation($location)
     {
         $this->location = (int) $location;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPhase()
+    {
+        return $this->phase;
+    }
+
+    /**
+     * @param int $phase
+     */
+    public function setPhase($phase)
+    {
+        $this->phase = (int)$phase;
     }
 
     public function incrementLocation()

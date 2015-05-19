@@ -48,10 +48,10 @@ class DbTableSyncer extends AbstractSyncer
         /** @var \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck $adapter */
         $adapter = $this->getAdapter($usersource);
         /** @var \Orb\Auth\Identity[] $identities */
-        $identities = $adapter->findAllIdentities($cursor->getLocation());
+        $offset = $cursor->getLocation() - 1; // location starts at 1, but offset starts at 0
+        $identities = $adapter->findAllIdentities($offset);
 
         foreach ($identities as $identity) {
-
             $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
             $cursor->incrementLocation();
