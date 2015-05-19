@@ -284,6 +284,7 @@ class Choice extends HandlerAbstract
             $data = array($data);
         }
 
+        $data = Arrays::func($data, array('Orb\Util\Strings', 'trimWhitespace'));
         $data = Arrays::removeFalsey($data);
 
 		// - Choice values are always ints
