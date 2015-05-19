@@ -94,9 +94,8 @@ class LdapSyncer extends AbstractSyncer
         }
 
         $conn->executeQuery(
-            'DELETE FROM tmp_data WHERE id IN (:ids)',
-            array('ids' => $tmp_ids_to_remove),
-            array('ids' => Connection::PARAM_INT_ARRAY)
+            'DELETE FROM tmp_data WHERE name = :name',
+            array('name' => self::TMP_DATA_NAME)
         );
 
         // move us on from here, finished the ldap sync
