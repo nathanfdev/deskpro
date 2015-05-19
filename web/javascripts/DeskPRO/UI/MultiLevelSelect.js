@@ -26,7 +26,7 @@
       }
     });
 
-    $select.val($el.val());
+    $select.val(val);
 
     if (withSelect2) {
       $select.data('no-select2', null);
@@ -157,6 +157,8 @@
       if ('choice-collapsed' !== $el.data('custom-field') || !map) {
         return $el;
       }
+
+      $el.addClass('dp-two-select');
 
       if (parseInt($el.data('max-depth')) <= 2) {
         setupSimple($el, map);
