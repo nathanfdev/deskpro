@@ -35,11 +35,12 @@ namespace Application\DeskPRO\Usersource\Sync;
 
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Usersource;
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use Orb\Auth\Identity;
+use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
+use Doctrine\ORM\EntityManager;
+use Orb\Auth\Identity;
 
 /**
  * This will be offered as a service to all Syncers. It aids them by taking care of common Syncer needs.
@@ -74,7 +75,8 @@ class SyncerHelper
                 'first_name' => null,
                 'last_name' => null,
                 'email' => null,
-                'email_confirmed' => null
+                'email_confirmed' => null,
+                'phone' => null
             ),
             $user_info
         );
@@ -103,7 +105,9 @@ class SyncerHelper
         }
 
         if (!empty($user_info['phone'])) {
-            $person->setPrimaryPhoneNumber($user_info['phone']);
+            if ($number = PhoneNumber::createEntity($user_info['phone'])) {
+                $person->setPrimaryPhoneNumber($number);
+            }
         }
 
         return $person;
