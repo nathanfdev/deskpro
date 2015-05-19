@@ -40,6 +40,7 @@ use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Env;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -156,22 +157,27 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 $cursor = new SyncCursor();
             }
 
-            $this->sync_manager->refreshAll($usersource, $cursor, array($this, 'pauseJobCondition'));
+            try {
+                $this->sync_manager->refreshAll($usersource, $cursor, array($this, 'pauseJobCondition'));
 
-            if (!$cursor->isCompleted()) {
-                // time to pause and re-run this phase at this usersource at the cursor location
-                $this->scheduleNextSync(
-                    array(
-                        'phase' => 1,
-                        'original_start_timestamp' => $start_timestamp,
-                        'sync_cursor_location' => $cursor->getLocation(),
-                        'sync_cursor_phase' => $cursor->getPhase(),
-                        'current_usersource_id' => $last_processed_usersource_id
-                    ),
-                    new \DateTime('now')
-                );
+                if (!$cursor->isCompleted()) {
+                    // time to pause and re-run this phase at this usersource at the cursor location
+                    $this->scheduleNextSync(
+                        array(
+                            'phase' => 1,
+                            'original_start_timestamp' => $start_timestamp,
+                            'sync_cursor_location' => $cursor->getLocation(),
+                            'sync_cursor_phase' => $cursor->getPhase(),
+                            'current_usersource_id' => $last_processed_usersource_id
+                        ),
+                        new \DateTime('now')
+                    );
 
-                return true;
+                    return true;
+                }
+            } catch (\Exception $e) {
+                // log the errors but continue on to the next usersource
+                KernelErrorHandler::handleException($e, false);
             }
 
             $cursor = null;
@@ -206,7 +212,13 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 $i++;
                 if ($i >= $start_at) {
                     $identity = $association->getIdentity();
-                    $this->sync_manager->refreshIdentity($association->getUsersource(), $identity);
+
+                    try {
+                        $this->sync_manager->refreshIdentity($association->getUsersource(), $identity);
+                    } catch (\Exception $e) {
+                        // log the error, but continue processing
+                        KernelErrorHandler::handleException($e, false);
+                    }
 
                     if (static::pauseJobCondition(new SyncCursor())) {
                         $had_to_break = true;
