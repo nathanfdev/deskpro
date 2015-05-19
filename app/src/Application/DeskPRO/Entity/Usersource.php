@@ -321,10 +321,19 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @return boolean
+     * @deprecated use isEnabled
      */
     public function getIsEnabled()
     {
-        return $this->is_enabled;
+        return $this->isEnabled();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return (bool) $this->is_enabled;
     }
 
     /**

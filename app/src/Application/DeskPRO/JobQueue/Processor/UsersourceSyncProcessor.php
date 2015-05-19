@@ -146,6 +146,9 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
         $last_processed_usersource_id = null;
         foreach ($this->usersource_manager->getAll() as $usersource) {
+            if (!$usersource->isEnabled()) {
+                continue;
+            }
             if ($skip_to_usersource_id && $usersource->getId() != $skip_to_usersource_id) {
                 continue;
             }
