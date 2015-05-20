@@ -68,6 +68,8 @@ class LdapSyncer extends AbstractSyncer
 
     public function runSecondPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
+        // here we fetch data from tmp_data and actually update/create the person record
+
         /** @var \Doctrine\DBAL\Connection $conn */
         $conn = $this->helper->getEm()->getConnection();
         $tmp_ids_to_remove = array();
@@ -82,6 +84,7 @@ class LdapSyncer extends AbstractSyncer
             $tmp_ids_to_remove[] = $row['id'];
 
             $cursor->incrementLocation();
+            $cursor->incrementCounter();
             if ($pause_check($cursor)) {
                 // get rid of the tmp dat we dealt with in this round
                 $conn->executeQuery(
@@ -104,6 +107,8 @@ class LdapSyncer extends AbstractSyncer
 
     public function runFirstPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
+        // here we are doing a first pass on the data by fetching it from ldap and putting it into tmp_data
+
         /** @var \Application\DeskPRO\Usersource\Adapter\Ldap $adapter */
         $adapter = $this->getAdapter($usersource);
         $records = $adapter->findAllRecords();

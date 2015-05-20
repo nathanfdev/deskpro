@@ -55,6 +55,7 @@ class DbTableSyncer extends AbstractSyncer
             $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
             $cursor->incrementLocation();
+            $cursor->incrementCounter();
             if ($pause_check($cursor)) {
                 return;
             }

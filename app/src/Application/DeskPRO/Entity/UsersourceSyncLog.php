@@ -83,6 +83,16 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         $this->setDateStart(new \DateTime());
     }
 
+    public function isInProgress()
+    {
+        return null === $this->getDateEnd();
+    }
+
+    public function endNow()
+    {
+        $this->setDateEnd(new \DateTime());
+    }
+
     /**
      * @return int
      */

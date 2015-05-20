@@ -51,7 +51,7 @@ class UsersourceSyncManagerService
         $syncers[] = new DbTableSyncer($helper);
         $syncers[] = new LdapSyncer($helper);
 
-        $sm = new SyncManager($syncers);
+        $sm = new SyncManager($syncers, $container->getEm()->getRepository('DeskPRO:UsersourceSyncLog'));
 
         return $sm;
     }

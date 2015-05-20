@@ -44,6 +44,12 @@ class SyncCursor
     private $location;
 
     /**
+     * @var int unlike location, this is not just used internally, this is used to report on the log
+     *          make sure it always reflects how many records have actually been updated
+     */
+    private $counter;
+
+    /**
      * @var int some syncers do more than 1 pass on the data, do this is a way to keep track of that
      */
     private $phase;
@@ -54,10 +60,21 @@ class SyncCursor
      */
     private $completed;
 
-    public function __construct($location = 1, $phase = 1)
+    public function __construct($location = 1, $counter = 0, $phase = 1)
     {
         $this->setLocation($location);
         $this->setPhase($phase);
+        $this->setCounter($counter);
+    }
+
+    public function incrementLocation()
+    {
+        $this->location++;
+    }
+
+    public function incrementCounter()
+    {
+        $this->counter++;
     }
 
     /**
@@ -79,6 +96,22 @@ class SyncCursor
     /**
      * @return int
      */
+    public function getCounter()
+    {
+        return $this->counter;
+    }
+
+    /**
+     * @param int $counter
+     */
+    public function setCounter($counter)
+    {
+        $this->counter = (int) $counter;
+    }
+
+    /**
+     * @return int
+     */
     public function getPhase()
     {
         return $this->phase;
@@ -90,11 +123,6 @@ class SyncCursor
     public function setPhase($phase)
     {
         $this->phase = (int)$phase;
-    }
-
-    public function incrementLocation()
-    {
-        $this->location++;
     }
 
     /**

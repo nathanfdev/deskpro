@@ -89,6 +89,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             array(
                 'original_start_timestamp' => time(),
                 'sync_cursor_location' => 1,
+                'sync_cursor_counter' => 0,
                 'sync_cursor_phase' => 1,
                 'phase_2_location' => 1,
                 'current_usersource_id' => null,
@@ -142,7 +143,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         $start_timestamp = $data['original_start_timestamp'];
 
         $skip_to_usersource_id = $data['current_usersource_id'];
-        $cursor = new SyncCursor($data['sync_cursor_location'], $data['sync_cursor_phase']);
+        $cursor = new SyncCursor($data['sync_cursor_location'], $data['sync_cursor_counter'], $data['sync_cursor_phase']);
 
         $last_processed_usersource_id = null;
         foreach ($this->usersource_manager->getAll() as $usersource) {
@@ -150,11 +151,16 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 continue;
             }
             if ($skip_to_usersource_id && $usersource->getId() != $skip_to_usersource_id) {
+                // already dealt with this usersource, moving on to one that was paused
                 continue;
             }
-            $skip_to_usersource_id = false;
 
+            // stop skipping now
+            $skip_to_usersource_id = false;
             $last_processed_usersource_id = $usersource->id;
+
+            // start or resume log
+            $log = $this->sync_manager->getLogToUseDuringSync($usersource);
 
             if (!$cursor) {
                 $cursor = new SyncCursor();
@@ -170,18 +176,29 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                             'phase' => 1,
                             'original_start_timestamp' => $start_timestamp,
                             'sync_cursor_location' => $cursor->getLocation(),
+                            'sync_cursor_counter' => $cursor->getCounter(),
                             'sync_cursor_phase' => $cursor->getPhase(),
                             'current_usersource_id' => $last_processed_usersource_id
                         ),
                         new \DateTime('now')
                     );
 
+                    // update the log before pausing job
+                    $log->setRecordCount($cursor->getCounter());
+                    $this->sync_manager->saveLog($log);
+
                     return true;
                 }
             } catch (\Exception $e) {
+
                 // log the errors but continue on to the next usersource
                 KernelErrorHandler::handleException($e, false);
+
             }
+
+            // end log
+            $log->setRecordCount($cursor->getCounter());
+            $this->sync_manager->markLogEnd($log);
 
             $cursor = null;
         }

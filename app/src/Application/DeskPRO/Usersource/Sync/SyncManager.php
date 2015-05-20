@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Usersource\Sync;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\UsersourceSyncLog;
+use Application\DeskPRO\EntityRepository\UsersourceSyncLog as UsersourceSyncLogRepo;
 use Orb\Validator\StringEmail;
 
 /**
@@ -48,9 +50,15 @@ class SyncManager implements SyncerInterface
      */
     protected $syncers;
 
-    public function __construct(array $syncers)
+    /**
+     * @var UsersourceSyncLogRepo
+     */
+    private $repo;
+
+    public function __construct(array $syncers, UsersourceSyncLogRepo $repo)
     {
         $this->syncers = $syncers;
+        $this->repo = $repo;
     }
 
     /**
@@ -115,5 +123,26 @@ class SyncManager implements SyncerInterface
         }
 
         return false;
+    }
+
+    public function getMostRecentLog(Usersource $usersource)
+    {
+        return $this->repo->getLastStartedLogForUsersource($usersource);
+    }
+
+    public function getLogToUseDuringSync(Usersource $usersource)
+    {
+        return $this->repo->getOrCreateLogInProgressForUsersource($usersource);
+    }
+
+    public function markLogEnd(UsersourceSyncLog $log)
+    {
+        $log->endNow();
+        $this->repo->save($log);
+    }
+
+    public function saveLog(UsersourceSyncLog $log)
+    {
+        $this->repo->save($log);
     }
 }
