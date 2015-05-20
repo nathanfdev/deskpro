@@ -328,6 +328,13 @@ define(function() {
   });
 
   routes.push({
+    id: 'agents.usersources.sync',
+    url: '/sync/{id:[\\d\\w]+}',
+    templateName: 'Usersources/sync-information.html',
+    controller: 'Admin_Usersources_Ctrl_SyncInformation'
+  });
+
+  routes.push({
     id: 'agents.usersources.id',
     url: '/{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
@@ -1129,6 +1136,13 @@ define(function() {
     url: '/new',
     templateName: 'Usersources/new.html',
     controller: 'Admin_Usersources_Ctrl_New'
+  });
+
+  routes.push({
+    id: 'crm.usersources.sync',
+    url: '/sync/{id:[\\d\\w]+}',
+    templateName: 'Usersources/sync-information.html',
+    controller: 'Admin_Usersources_Ctrl_SyncInformation'
   });
 
   routes.push({

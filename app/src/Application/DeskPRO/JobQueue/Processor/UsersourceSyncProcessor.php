@@ -266,8 +266,8 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                         }
                     
                 }
-            } catch (SyncException $e) {
-                // TODO: hmm, how to best report a sync error? I don't want to throw the job.
+            } catch (\Exception $e) {
+                KernelErrorHandler::handleException($e, false);
             }
 
             if ($had_to_break) {

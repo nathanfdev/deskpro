@@ -13,7 +13,9 @@ define [
     init: ->
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
       @usersourcesDataService = @DataService.get('Usersources')
+      @show_sync_section = false
       @show_url = if @usersourceType == 'user' then 'crm.usersources.id' else 'agents.usersources.id'
+      @sync_url = if @usersourceType == 'user' then 'crm.usersources.sync' else 'agents.usersources.sync'
       @new_url = if @usersourceType == 'user' then 'crm.usersources.new' else 'agents.usersources.new'
       @sortedListOptions = {
         axis: 'y',
@@ -40,6 +42,15 @@ define [
     refresh: ->
       @Api.sendGet('/usersources/' + @usersourceType).then((result) =>
         @usersources = result.data.usersources
+        @show_sync_section = true
+        count_syncing = 0
+        for us in @usersources
+          if us.usersource.sync_enabled
+            count_syncing++
+        if count_syncing
+          @show_sync_section = true
+        else
+          @show_sync_section = false
       )
 
   Admin_Usersources_Ctrl_UsersourcesList.EXPORT_CTRL()
