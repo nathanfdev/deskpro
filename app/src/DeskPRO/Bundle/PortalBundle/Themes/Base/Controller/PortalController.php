@@ -67,15 +67,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_search_box", esi=true)
-     * @TagHttpCache()
-     */
-    public function topSearchAction(TagRequest $tag_request)
-    {
-        return $this->renderThemeView('Theme:Portal:Tag/top_search.html.twig');
-    }
-
-    /**
      * @Tag(name="page_tabs", esi=true)
      * @TagHttpCache()
      */
