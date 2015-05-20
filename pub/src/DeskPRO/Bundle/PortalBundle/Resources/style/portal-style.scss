@@ -6545,17 +6545,17 @@ ul.big-button-collection {
     li {
       margin-right: 0px;
       margin-left: 4px;
+
+      &.active a {
+        color: #dcdcdc;
+        border-bottom: 1px solid #e3e3e3;
+      }
     }
 
     a {
       padding: 10px 15px;
       width: auto;
       height: auto;
-
-      &.active {
-        color: #dcdcdc;
-        border-bottom: 1px solid #e3e3e3;
-      }
 
       .fa {
         font-size: inherit;
@@ -6580,7 +6580,13 @@ ul.big-button-collection {
 
 }
 
+.breadcrumbs ul.big-button-collection {
+  margin: 10px 0;
 
+  li:first-child {
+    margin-left: 0;
+  }
+}
 
 
 .welcome-news {

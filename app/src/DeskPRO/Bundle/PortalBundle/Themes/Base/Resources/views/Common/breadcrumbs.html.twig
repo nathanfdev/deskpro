@@ -1,3 +1,8 @@
+{#
+Uncomment this section to show buttons to other sections of the helpdesk
+{% show section nav_buttons %}
+#}
+
 <ul>
   {% if breadcrumbs is defined %}
     {% for item in breadcrumbs %}
@@ -18,3 +23,4 @@
     {% endfor %}
   {% endif %}
 </ul>
+<hr/>

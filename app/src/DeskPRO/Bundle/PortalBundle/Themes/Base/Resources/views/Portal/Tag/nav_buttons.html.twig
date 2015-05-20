@@ -1,6 +1,6 @@
-<ul class="big-button-collection left thin">
+<ul class="big-button-collection small left">
   {% if can_use_articles() %}
-    <li>
+    <li class="{{ is_page_kb() ? 'active' }}">
       <a href="{{ path('portal_kb') }}">
         <i class="fa fa-columns"></i>
         <span class="title">Knowledgebase</span>
@@ -10,7 +10,7 @@
   {% endif %}
 
   {% if can_use_news() %}
-    <li>
+    <li class="{{ is_page_news() ? 'active' }}">
       <a href="{{ path('portal_news') }}">
         <i class="fa fa-file-text-o"></i>
         <span class="title">News</span>
@@ -20,7 +20,7 @@
   {% endif %}
 
   {% if can_use_feedback() %}
-    <li>
+    <li class="{{ is_page_feedback() ? 'active' }}">
       <a href="{{ path('portal_feedback') }}">
         <i class="fa fa-list-alt"></i>
         <span class="title">Feedback</span>
@@ -30,7 +30,7 @@
   {% endif %}
 
   {% if can_use_tickets() %}
-    <li>
+    <li class="{{ is_page_tickets() ? 'active' }}">
       <a href="{{ path('portal_new_ticket') }}">
         <i class="fa fa-comments"></i>
         <span class="title">Contact Us</span>

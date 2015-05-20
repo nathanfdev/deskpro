@@ -90,6 +90,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
+            new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
             new \Twig_SimpleFunction('date', array($this, 'date'))
         );
@@ -173,6 +174,40 @@ class PortalSupportExtension extends \Twig_Extension
     public function isGuest()
     {
         return !$this->continer->get('security.authorization_checker')->isGranted("ROLE_USER");
+    }
+
+    /**
+     * @param string $page
+     * @return bool
+     */
+    public function pageIsCheck($page)
+    {
+        try {
+            $r = $this->continer->get('request_stack')->getMasterRequest();
+        } catch (\Exception $e) {
+            $r = null;
+        }
+
+        if (!$r || !($route = $r->attributes->get('_route'))) {
+            return false;
+        }
+
+        switch ($page) {
+            case 'home':
+                return $route === 'portal_index';
+            case 'kb':
+                return preg_match('#^portal_kb#', $route);
+            case 'news':
+                return preg_match('#^portal_news#', $route);
+            case 'downloads':
+                return preg_match('#^portal_downloads#', $route);
+            case 'feedback':
+                return preg_match('#^portal_feedback#', $route);
+            case 'tickets':
+                return preg_match('#^portal_tickets#', $route) || $route === 'portal_new_ticket';
+        }
+
+        return false;
     }
 
     /**
