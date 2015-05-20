@@ -3,12 +3,11 @@ services:
     class: Application\ImportBundle\Generator\GeneratorConfig
 
   deskpro.import.generator:
+    scope: prototype
     class: Application\ImportBundle\Generator\Generator
-    arguments:
-      - @=service('deskpro.import.config').getExporterFactory(service('service_container')).createExporter(service('deskpro.import.config').getReaderConfig())
-      - @=service('deskpro.import.config').getWriterFactory(service('service_container')).createWriter()
-      - @validator
-      - @deskpro.import.config
+    factory_class: Application\ImportBundle\Generator\GeneratorFactory
+    factory_method: createGenerator
+    arguments: [@service_container]
 
   deskpro.import.batch_exporter:
     class: Application\ImportBundle\Generator\Exporter\Batch

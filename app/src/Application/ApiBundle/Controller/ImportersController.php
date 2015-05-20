@@ -104,7 +104,15 @@ class ImportersController extends AbstractController implements ProtectedControl
 
         $importer->setData('config', $data['config']);
         $importer->setData('status', $data['status']);
-        $importer->setData('log', $data['log']);
+
+        if ($request->get('reset')) {
+            $importer->setData('status', null);
+            $importer->setData('log', null);
+            $importer->setData('progress_start', null);
+            $importer->setData('progress_step', null);
+            $importer->setData('progress_max', null);
+        }
+
         $this->em->flush($importer);
 
         return $this->getAction($id);
@@ -126,11 +134,14 @@ class ImportersController extends AbstractController implements ProtectedControl
         $generator = $this->container->get('deskpro.import.generator');
 
         try {
-            return $this->createJsonResponse(array('result' => $generator->isReady()));
+            $res = $this->createJsonResponse(array('result' => $generator->isReady()));
         } catch (\Exception $e) {
-            return $this->createJsonResponse(array('error_message' => $e->getMessage()));
+            $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
         }
 
+        ImportProcessor::cleanup($importer, $this->container);
+
+        return $res;
     }
 
     /**

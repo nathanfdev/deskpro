@@ -175,7 +175,7 @@ class GeneratorConfig
     {
         $factories = array(
             WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPro\DeskProWriterFactory',
-            WriterInterface::TYPE_JSON => 'Application\ImportBundle\Generator\Writer\Json\JsonWriter\Factory',
+            WriterInterface::TYPE_JSON => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
         );
 
         if (!isset($factories[$this->writer_type])) {

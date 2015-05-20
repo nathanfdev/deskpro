@@ -68,15 +68,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 
-    importSave: ->
-      @Api.sendPutJson '/server/importers/' + @$scope.id, @$scope.importer
+    importSave: (reset) ->
+      url = '/server/importers/' + @$scope.id
+      url += '?reset=1' if reset
+      @Api.sendPutJson(url, @$scope.importer).then (res) =>
+        @$scope.importer = res.data
 
 
 
     importReset: =>
-      @$scope.importer.status = null
-      @$scope.importer.log = null
-      @importSave()
+      @importSave true
 
 
 
@@ -97,7 +98,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     importStart: ->
-      @$scope.importer.status = 'pre-pending'
+      @$scope.importer.status = 'pending'
       @importSave()
       @Api.sendGet("/server/importers/#{@$scope.id}/start").then(
         (res) =>

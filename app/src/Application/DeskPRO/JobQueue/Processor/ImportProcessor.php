@@ -32,11 +32,14 @@ use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\Json\BatchConfig;
 use Application\ImportBundle\Generator\Generator;
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\ImporterProgressBar;
 use Application\ImportBundle\Generator\Logger\ImporterHandler;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
+use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\ZenDesk\OsTicketConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Monolog\Formatter\LineFormatter;
@@ -85,22 +88,65 @@ class ImportProcessor extends AbstractJobProcessor
     public function process(array $data, array $job)
     {
         $em = $this->container->getEm();
-        $importer = ImportProcessor::getImporter($data['id'], $this->container);
-        $config = ImportProcessor::createGeneratorConfig($importer, $this->container);
+        try {
+            $importer = ImportProcessor::getImporter($data['id'], $this->container);
+        } catch (\Exception $e) {
+            return false;
+        }
 
-        /** @var Generator $generator */
-        $this->container->set('deskpro.import.config', $config);
-        $generator = $this->container->get('deskpro.import.generator');
+        try {
 
-        $logger = new Logger('importer');
-        $formatter = new LineFormatter();
-        $formatter->ignoreEmptyContextAndExtra(true);
-        $handler = new ImporterHandler($importer, $em);
-        $handler->setFormatter($formatter);
-        $logger->pushHandler($handler);
-        $generator->setLogger($logger);
+            $config = ImportProcessor::createGeneratorConfig($importer, $this->container);
+            /** @var Generator $generator */
+            $this->container->set('deskpro.import.config', $config);
+            $generator = $this->container->get('deskpro.import.generator');
 
-        $generator->generate();
+            $logger = new Logger('importer');
+            $formatter = new LineFormatter();
+            $formatter->ignoreEmptyContextAndExtra(true);
+            $handler = new ImporterHandler($importer, $em);
+            $handler->setFormatter($formatter);
+            $logger->pushHandler($handler);
+            $generator->setLogger($logger);
+
+            $total_count = $generator->getTotalRecordsCount();
+            //        todo?
+            //        $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
+            $total_count *= 2;
+            $progress = new ImporterProgressBar($importer, $em, $total_count);
+            $generator->setProgressBarHelper($progress);
+
+            $importer->setData('status', 'exporting');
+            $em->flush($importer);
+            $progress->start();
+            $generator->generate();
+
+            $config
+                ->setInputPath($config->getOutputPath())
+                ->setOutputPath(null)
+                ->setExporterBatchConfig(null)
+                ->setExporterType(ExporterInterface::TYPE_JSON)
+                ->setWriterType(WriterInterface::TYPE_DESK_PRO);
+            $config->setReaderConfig(new JsonConfig($config->getInputPath()));
+            $config->setExporterBatchConfig(new BatchConfig());
+            $this->container->set('deskpro.import.config', $config);
+
+            $generator = $this->container->get('deskpro.import.generator');
+            $generator->setLogger($logger);
+            $generator->setProgressBarHelper($progress);
+
+            $importer->setData('status', 'importing');
+            $em->flush($importer);
+            $progress->start();
+            $generator->generate();
+            $logger->info("\nDone");
+
+        } catch (\Exception $e) {
+            // todo?
+            $logger->err("\n".$e->getMessage());
+            $logger->info("\nFailed");
+            ImportProcessor::cleanup($importer, $this->container);
+        }
 
         $importer->setData('status', 'done');
         $em->flush($importer);
@@ -120,8 +166,9 @@ class ImportProcessor extends AbstractJobProcessor
     {
         $em = $container->getEm();
         $config = new GeneratorConfig();
+        $config->setVerbose(true);
         $config->setExporterType(str_replace('importers.', '', $importer['name']));
-        $config->setWriterType(WriterInterface::TYPE_DESK_PRO);
+        $config->setWriterType(WriterInterface::TYPE_JSON);
         $readerConfigData = $importer->getData('config');
 
         $supported_types = array(
@@ -138,46 +185,52 @@ class ImportProcessor extends AbstractJobProcessor
         }
 
         /**
+         * create temp dir
+         */
+        $tmp = @$readerConfigData['temp'];
+        if (!$tmp) {
+            $tmp = dp_get_tmp_dir().'/importer-'.time();
+            $readerConfigData['temp'] = $tmp;
+            $em->flush($importer);
+        }
+        if (!file_exists($tmp)) {
+            mkdir($tmp.'/in', 0777, true);
+            mkdir($tmp.'/out', 0777, true);
+        }
+
+        $config->setInputPath($tmp.'/in');
+        $config->setOutputPath($tmp.'/out/');
+
+        /**
          * copy blobs to temp dir
          */
         if (@$readerConfigData['blobs']) {
 
-            if (@$readerConfigData['temp'] && false !== strpos($readerConfigData['temp'], 'importer-')) {
-                PHP_OS === 'Windows'
-                    ? exec("rd /s /q {$readerConfigData['temp']}")
-                    : exec("rm -rf {$readerConfigData['temp']}");
-            }
-
-            $readerConfigData['temp'] = dp_get_tmp_dir().'/importer-'.time();
-            mkdir($readerConfigData['temp']);
-
-            $importer->setData('config', $readerConfigData);
-            $em->flush($importer);
-
-            $config->setInputPath($readerConfigData['temp']);
             $storage = $container->getBlobStorage();
 
             foreach ($readerConfigData['blobs'] as $blobData) {
                 if (!$blob = $em->find('DeskPRO:Blob', $blobData['id'])) {
                     continue;
                 }
-                $storage->copyBlobRecordToFile($readerConfigData['temp'].'/'.$blob['filename'], $blob);
+                $storage->copyBlobRecordToFile($config->getInputPath().'/'.$blob['filename'], $blob);
             }
         }
 
         $readerConfig = null;
         switch ($config->getExporterType()) {
             case ExporterInterface::TYPE_CSV:
-                $readerConfig = CsvConfig::fromArray($importer->getData('config'));
+                $readerConfig = CsvConfig::fromArray($readerConfigData);
                 break;
             case ExporterInterface::TYPE_ZENDESK:
-                $readerConfig = ZenDeskConfig::fromArray($importer->getData('config'));
+                $readerConfig = ZenDeskConfig::fromArray($readerConfigData);
                 break;
             case ExporterInterface::TYPE_OS_TICKET:
-                $readerConfig = OsTicketConfig::fromArray($importer->getData('config'));
+                $readerConfig = OsTicketConfig::fromArray($readerConfigData);
                 break;
         }
         $config->setReaderConfig($readerConfig);
+        $importer->setData('config', $readerConfigData);
+        $em->flush($importer);
 
         return $config;
     }
@@ -217,5 +270,20 @@ class ImportProcessor extends AbstractJobProcessor
         }
 
         return $importer;
+    }
+
+    static public function cleanup(DataStore $importer, DeskproContainer $container)
+    {
+        $readerConfigData = $importer->getData('config');
+
+        $tmp = @$readerConfigData['temp'];
+        if ($tmp && false !== strpos($tmp, 'importer-')) {
+            PHP_OS === 'Windows'
+                ? exec("rd /s /q {$tmp}")
+                : exec("rm -rf {$tmp}");
+
+            unset($readerConfigData['temp']);
+            $container->getEm()->flush($importer);
+        }
     }
 }

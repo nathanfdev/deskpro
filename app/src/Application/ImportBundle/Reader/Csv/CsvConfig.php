@@ -141,7 +141,7 @@ class CsvConfig extends BaseConfig
 
     static public function fromArray(array $data)
     {
-        $config = new self(@$data['resource'] ?: @$data['temp']);
+        $config = new self(@$data['resource'] ?: @$data['temp'].'/in');
 
         if ($delimeter = @$data['delimeter']) {
             $config->setDelimiter($delimeter);

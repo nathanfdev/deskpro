@@ -201,12 +201,18 @@
 
                     <div ng-if="importer.status && 'testing' !== importer.status">
 
-                        <div>
-                            Import process is currently running. Time running: XX
+                        <div ng-if="'done' !== importer.status && importer.progress_start">
+                            Import process was started <span am-time-ago="importer.progress_start"></span>.
                         </div>
-                        <div>
-                            progressbar
+
+                        <div ng-if="importer.progress_max">
+                            <div style="width: 200px; height: 20px; border: 1px solid #ccc; position: relative;">
+                                <div style="height: 18px; background: #ccc; position: absolute; top: 0; left: 0;
+                                        width: {{ ng_var('100 * importer.progress_step / importer.progress_max') }}%">
+                                </div>
+                            </div>
                         </div>
+
                         <div>
                             Current step: {{ ng_var('importer.status') }}
                         </div>
