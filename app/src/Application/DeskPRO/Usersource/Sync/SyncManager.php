@@ -85,7 +85,7 @@ class SyncManager implements SyncerInterface
 
     public function refreshIdentity(Usersource $usersource, $identity_or_email)
     {
-        if ($syncer = $this->getSyncerForUsersource($usersource)) {
+        if ($this->isSyncable($usersource) && $syncer = $this->getSyncerForUsersource($usersource)) {
             return $syncer->refreshIdentity($usersource, $identity_or_email);
         }
 
@@ -94,7 +94,7 @@ class SyncManager implements SyncerInterface
 
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
     {
-        if ($syncer = $this->getSyncerForUsersource($usersource)) {
+        if ($this->isSyncable($usersource) && $syncer = $this->getSyncerForUsersource($usersource)) {
             return $syncer->refreshAll($usersource, $cursor, $pause_check);
         }
 
@@ -116,6 +116,10 @@ class SyncManager implements SyncerInterface
 
     public function supportsUsersource(Usersource $usersource)
     {
+        if (!$this->isSyncable($usersource)) {
+            return false;
+        }
+
         foreach ($this->syncers as $syncer) {
             if ($syncer->supportsUsersource($usersource)) {
                 return true;
@@ -125,24 +129,39 @@ class SyncManager implements SyncerInterface
         return false;
     }
 
+    /**
+     * @param Usersource $usersource
+     * @return UsersourceSyncLog|null
+     */
     public function getMostRecentLog(Usersource $usersource)
     {
         return $this->repo->getLastStartedLogForUsersource($usersource);
     }
 
-    public function getLogToUseDuringSync(Usersource $usersource)
+    /**
+     * @param Usersource $usersource
+     * @return UsersourceSyncLog|null
+     */
+    public function getLogToUseDuringSync(Usersource $usersource, $force_create = false)
     {
-        return $this->repo->getOrCreateLogInProgressForUsersource($usersource);
-    }
+        if ($force_create) {
+            return $this->repo->createNewLog($usersource);
+        }
 
-    public function markLogEnd(UsersourceSyncLog $log)
-    {
-        $log->endNow();
-        $this->repo->save($log);
+        return $this->repo->getOrCreateLogInProgressForUsersource($usersource);
     }
 
     public function saveLog(UsersourceSyncLog $log)
     {
         $this->repo->save($log);
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @return bool
+     */
+    public function isSyncable(Usersource $usersource)
+    {
+        return $usersource->isEnabled() && $usersource->isSyncEnabled();
     }
 }

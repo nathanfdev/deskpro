@@ -72,7 +72,7 @@ class UsersourceSyncLog extends AbstractEntityRepository
         // get the most recently started UsersourceSyncLog for this usersource
         $in_progress = $this->createQueryBuilder('log')
             ->where('log.usersource = :usersource')
-            ->andWhere('log.date_end IS NULL') // no end date signals not finished yet
+            ->andWhere('log.date_phase_2_end IS NULL') // no phase 2 end date signals not finished yet
             ->setParameter('usersource', $usersource)
             ->orderBy('log.date_start', 'DESC')
             ->setMaxResults(1)

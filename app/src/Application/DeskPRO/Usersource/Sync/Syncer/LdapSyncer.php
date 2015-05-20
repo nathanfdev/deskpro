@@ -116,6 +116,15 @@ class LdapSyncer extends AbstractSyncer
         // records is an iterator, that handles our memory for us. using foreach is worse because we
         // do NOT want to call $records->current() unless we need to, but foreach always calls it
         $start_location = $cursor->getLocation();
+
+        // ensure we start with a fresh set of tmp_data
+        if ($start_location <= 1) {
+            $this->helper->getEm()->getConnection()->executeQuery(
+                'DELETE FROM tmp_data WHERE name = :name',
+                array('name' => self::TMP_DATA_NAME)
+            );
+        }
+
         try {
             $records->rewind();
         } catch (LdapException $e) {

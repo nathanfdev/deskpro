@@ -91,7 +91,8 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 'sync_cursor_location' => 1,
                 'sync_cursor_counter' => 0,
                 'sync_cursor_phase' => 1,
-                'phase_2_location' => 1,
+                'phase_2_count' => 0,
+                'phase_2_usersource' => null,
                 'current_usersource_id' => null,
                 'phase' => 1
             )
@@ -146,11 +147,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         $cursor = new SyncCursor($data['sync_cursor_location'], $data['sync_cursor_counter'], $data['sync_cursor_phase']);
 
         $last_processed_usersource_id = null;
-        foreach ($this->usersource_manager->getAll() as $usersource) {
-            if (!$usersource->isEnabled() || !$usersource->isSyncEnabled()) {
-                // either the usersource is not enabled, or it is not enabled for sync
-                continue;
-            }
+        foreach ($this->getSyncEnabledUsersources() as $usersource) {
             if ($skip_to_usersource_id && $usersource->getId() != $skip_to_usersource_id) {
                 // already dealt with this usersource, moving on to one that was paused
                 continue;
@@ -160,11 +157,19 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             $skip_to_usersource_id = false;
             $last_processed_usersource_id = $usersource->id;
 
-            // start or resume log
-            $log = $this->sync_manager->getLogToUseDuringSync($usersource);
 
             if (!$cursor) {
                 $cursor = new SyncCursor();
+            }
+            
+            $isStart = $cursor->getLocation() <= 1;
+
+            // start or resume log
+            // force a new log entry if this is not a resume
+            $log = $this->sync_manager->getLogToUseDuringSync($usersource, $isStart);
+            
+            if ($isStart) {
+                $log->startPhaseOne();
             }
 
             try {
@@ -199,7 +204,8 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
             // end log
             $log->setRecordCount($cursor->getCounter());
-            $this->sync_manager->markLogEnd($log);
+            $log->endPhaseOne();
+            $this->sync_manager->saveLog($log);
 
             $cursor = null;
         }
@@ -217,54 +223,76 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     private function runPhaseTwo(array $data)
     {
         $original_start_timestamp = $data['original_start_timestamp'];
+        $start_at_usersource_id = $data['phase_2_usersource'];
+        $count = $data['phase_2_count'];
 
-        $associations = $this->usersource_manager->findAssociationsUpdatedBefore(
-            $ts = new \DateTime(sprintf('@%s', $original_start_timestamp))
-        );
-
-        $start_at = $data['phase_2_location'];
-
-        $i = 0;
-        $had_to_break = false;
-        try {
-            // we aren't paginating here because this should be a small #
-            // phase 1 should have updated most associations already
-            foreach ($associations as $association) {
-                $i++;
-                if ($i >= $start_at) {
-                    $identity = $association->getIdentity();
-
-                    try {
-                        $this->sync_manager->refreshIdentity($association->getUsersource(), $identity);
-                    } catch (\Exception $e) {
-                        // log the error, but continue processing
-                        KernelErrorHandler::handleException($e, false);
-                    }
-
-                    if (static::pauseJobCondition(new SyncCursor())) {
-                        $had_to_break = true;
-                        break;
-                    }
-                }
+        foreach ($this->getSyncEnabledUsersources() as $usersource) {
+            if ($start_at_usersource_id && $usersource->getId() != $start_at_usersource_id) {
+                continue;
             }
-        } catch (SyncException $e) {
-            // TODO: hmm, how to best report a sync error? I don't want to throw the job.
-        }
-
-        if ($had_to_break) {
-            // phase 2 needs another go
-            $this->scheduleNextSync(
-                array(
-                    'phase' => 2,
-                    'phase_2_location' => $i,
-                    'original_start_timestamp' => $data['original_start_timestamp'],
-                ),
-                new \DateTime('now + 1 minutes')
+            // stop skip
+            $start_at_usersource_id = null;
+            $last_processed_usersource_id = $usersource->getId();
+            
+            $associations = $this->usersource_manager->findAssociationsUpdatedBefore(
+                $usersource,
+                $ts = new \DateTime(sprintf('@%s', $original_start_timestamp))
             );
 
-            return true;
-        }
+            $log = $this->sync_manager->getLogToUseDuringSync($usersource);
+            $is_start_of_phase_2 = $count == 0;
+            if ($is_start_of_phase_2) {
+                $log->startPhaseTwo();
+            }
 
+            $had_to_break = false;
+            try {
+                foreach ($associations as $association) {
+                        $identity = $association->getIdentity();
+
+                        try {
+                            if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
+                                $count++;
+                                $log->incrementRecordCount();
+                            }
+                        } catch (\Exception $e) {
+                            // log the error, but continue processing
+                            KernelErrorHandler::handleException($e, false);
+                        }
+
+                        if (static::pauseJobCondition(new SyncCursor())) {
+                            $had_to_break = true;
+                            break;
+                        }
+                    
+                }
+            } catch (SyncException $e) {
+                // TODO: hmm, how to best report a sync error? I don't want to throw the job.
+            }
+
+            if ($had_to_break) {
+                // phase 2 needs another go
+
+                $this->sync_manager->saveLog($log);
+
+                $this->scheduleNextSync(
+                    array(
+                        'phase' => 2,
+                        'phase_2_count' => $count,
+                        'phase_2_usersource' => $last_processed_usersource_id,
+                        'original_start_timestamp' => $data['original_start_timestamp'],
+                    ),
+                    new \DateTime('now + 1 minutes')
+                );
+
+                return true;
+            }
+
+            $log->endPhaseTwo();
+            $this->sync_manager->saveLog($log);
+            $count = 0;
+        }
+        
         // phase 2 is complete
         // reschedule job one for 24 hours from now
         $this->scheduleNextSync(
@@ -281,5 +309,14 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             new Job(self::JOB_TYPE, $data),
             $next_attempt
         );
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
+     */
+    protected function getSyncEnabledUsersources()
+    {
+        // must be an enabled usersource AND sync must be enabled as well
+        return $this->usersource_manager->getAll()->mustBeEnabled()->mustHaveSyncEnabled();
     }
 }

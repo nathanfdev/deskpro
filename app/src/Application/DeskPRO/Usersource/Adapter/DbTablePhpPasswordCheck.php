@@ -136,6 +136,9 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
             if (!$userinfo) {
                 $userinfo = $adapter->getUserInfoForUsername($id_input);
             }
+            if (!$userinfo) {
+                $userinfo = $adapter->getUserInfoForId($id_input);
+            }
         } catch (\Exception $e) {
             if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
             throw $e;

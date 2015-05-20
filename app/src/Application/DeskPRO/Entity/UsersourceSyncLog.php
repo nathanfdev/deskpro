@@ -65,22 +65,36 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
     protected $record_count = 0;
 
     /**
-     * The start datetime of this sync.
+     * The start datetime of phase one of this sync.
      *
      * @var \DateTime
      */
     protected $date_start;
 
     /**
-     * The start datetime of this sync.
+     * The end datetime of phase one of this sync.
      *
      * @var \DateTime
      */
     protected $date_end;
 
-    public function __construct()
+    /**
+     * End of the second phase of syncing
+     *
+     * @var \DateTime
+     */
+    protected $date_phase_2_start;
+
+    /**
+     * End of the second phase of syncing
+     *
+     * @var \DateTime
+     */
+    protected $date_phase_2_end;
+
+    public function incrementRecordCount()
     {
-        $this->setDateStart(new \DateTime());
+        $this->setModelField('record_count', $this->getRecordCount() + 1);
     }
 
     public function isInProgress()
@@ -88,9 +102,24 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         return null === $this->getDateEnd();
     }
 
-    public function endNow()
+    public function startPhaseOne()
+    {
+        $this->setDateStart(new \DateTime());
+    }
+
+    public function endPhaseOne()
     {
         $this->setDateEnd(new \DateTime());
+    }
+
+    public function startPhaseTwo()
+    {
+        $this->setDateStartPhaseTwo(new \DateTime());
+    }
+
+    public function endPhaseTwo()
+    {
+        $this->setDateEndPhaseTwo(new \DateTime());
     }
 
     /**
@@ -165,6 +194,38 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_end', $date_end);
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateStartPhaseTwo()
+    {
+        return $this->date_start;
+    }
+
+    /**
+     * @param \DateTime $date_start
+     */
+    public function setDateStartPhaseTwo($date_start)
+    {
+        $this->setModelField('date_phase_2_start', $date_start);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEndPhaseTwo()
+    {
+        return $this->date_end;
+    }
+
+    /**
+     * @param \DateTime $date_end
+     */
+    public function setDateEndPhaseTwo($date_end)
+    {
+        $this->setModelField('date_phase_2_end', $date_end);
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -188,5 +249,7 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         $builder->mapInteger('record_count', false);
         $builder->mapDateTime('date_start');
         $builder->mapDateTime('date_end');
+        $builder->mapDateTime('date_phase_2_start');
+        $builder->mapDateTime('date_phase_2_end');
     }
 }
