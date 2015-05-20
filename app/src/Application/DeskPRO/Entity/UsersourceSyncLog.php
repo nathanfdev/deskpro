@@ -1,0 +1,182 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at https://www.deskpro.com/eula/                            |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ */
+
+namespace Application\DeskPRO\Entity;
+
+use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+
+/**
+ * Records a log of a sync job for a particular usersource
+ */
+class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
+{
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id = null;
+
+    /**
+     * The usersource
+     *
+     * @var Usersource
+     */
+    protected $usersource;
+
+    /**
+     * The number of synced records
+     *
+     * @var int
+     */
+    protected $record_count = 0;
+
+    /**
+     * The start datetime of this sync.
+     *
+     * @var \DateTime
+     */
+    protected $date_start;
+
+    /**
+     * The start datetime of this sync.
+     *
+     * @var \DateTime
+     */
+    protected $date_end;
+
+    public function __construct()
+    {
+        $this->setDateStart(new \DateTime());
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return Usersource
+     */
+    public function getUsersource()
+    {
+        return $this->usersource;
+    }
+
+    /**
+     * @param Usersource $usersource
+     */
+    public function setUsersource(Usersource $usersource)
+    {
+        $this->setModelField('usersource', $usersource);
+    }
+
+    /**
+     * @return int
+     */
+    public function getRecordCount()
+    {
+        return $this->record_count;
+    }
+
+    /**
+     * @param int $record_count
+     */
+    public function setRecordCount($record_count)
+    {
+        $this->setModelField('record_count', $record_count);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateStart()
+    {
+        return $this->date_start;
+    }
+
+    /**
+     * @param \DateTime $date_start
+     */
+    public function setDateStart($date_start)
+    {
+        $this->setModelField('date_start', $date_start);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->date_end;
+    }
+
+    /**
+     * @param \DateTime $date_end
+     */
+    public function setDateEnd($date_end)
+    {
+        $this->setModelField('date_end', $date_end);
+    }
+
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+
+        return $data;
+    }
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $builder = new ClassMetadataBuilder($metadata);
+        $builder
+            ->setTable('usersource_sync_log')
+            ->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\UsersourceSyncLog')
+            ->setChangeTrackingPolicyNotify();
+        $builder->mapId();
+        $builder->addManyToOne('usersource', 'Application\DeskPRO\Entity\Usersource', null);
+        $builder->mapInteger('record_count', false);
+        $builder->mapDateTime('date_start');
+        $builder->mapDateTime('date_end');
+    }
+}
