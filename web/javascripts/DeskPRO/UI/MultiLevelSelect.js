@@ -17,7 +17,10 @@
         $g.attr('label', parent.title);
 
         $.each(parent.children, function(i, child) {
-          $g.append('<option value="' + child.id + '">' + child.title + '</option>');
+          var $opt = $('<option value="' + child.id + '">' + child.title + '</option>');
+          var ft = parent.title + ' > ' + child.title;
+          $opt.data('full-title', ft).attr('data-full-title', ft);
+          $g.append($opt);
         });
 
         $select.append($g);
