@@ -167,14 +167,20 @@ class CsvExport extends AbstractJob
 
         if (!$batch) {
 
+            $this->getLogger()->logDebug(sprintf('File: %s', $file));
+
             if (defined('DPC_IS_CLOUD')) {
 
                 $fname = basename($file);
+
+                $this->getLogger()->logDebug("Zipping: zip -j $fname.zip $fname");
+
                 $proc = new Process("zip -j $fname.zip $fname", dirname($file));
                 $proc->setTimeout(300);
                 $proc->run();
 
                 if ($proc->isSuccessful()) {
+                    $this->getLogger()->logDebug("Zip success");
                     $blob = App::$container->getBlobStorage()->createBlobRecordFromFile(
                         $file . '.zip',
                         'export.csv.zip',
@@ -186,7 +192,18 @@ class CsvExport extends AbstractJob
                         '+28 hours'
                     );
                 } else {
-
+                    $out = $proc->getOutput() . "\n\n" . $proc->getErrorOutput();
+                    $this->getLogger()->logDebug("Zip failed: " . $out);
+                    $blob = App::$container->getBlobStorage()->createBlobRecordFromString(
+                        "There was a problem generating the export. Output:\n\n" . $out,
+                        'error.txt',
+                        'text/plain'
+                    );
+                    $data = TmpData::create(
+                        'csv_export.file',
+                        array('file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']),
+                        '+28 hours'
+                    );
                 }
             } else {
                 $data = TmpData::create(
