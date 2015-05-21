@@ -401,4 +401,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->title;
     }
+
+    /**
+     * @return AppInstance|null
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
 }

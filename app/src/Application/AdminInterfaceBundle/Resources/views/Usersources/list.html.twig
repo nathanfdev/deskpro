@@ -50,9 +50,9 @@
 			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
 				<li ng-repeat="source in ListCtrl.usersources"
 					ng-if="source.usersource.sync_enabled"
-					dp-state-mark="{{ ng_var('ListCtrl.sync_url') }}.{{ ng_var('source.app ? source.app.id : "deskpro"') }}"
+					dp-state-mark="{{ ng_var('ListCtrl.sync_url') }}.{{ ng_var('source.app.id') }}"
 					data-id="{{ ng_var('source.usersource.id') }}">
-					<a ng-href="{{ ng_href_var('ListCtrl.sync_url', '{id: source.app ? source.app.id : "deskpro" }') }}">
+					<a ng-href="{{ ng_href_var('ListCtrl.sync_url', '{id: source.app.id }') }}">
 						<aside style="display: inline-block">
 							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />

@@ -2454,7 +2454,7 @@ $collection->create('api_usersources_post', array(
 ));
 
 $collection->create('api_usersources_extra_details', array(
-    'path'        => '/usersources/{type}/app-{id}/extra-details',
+    'path'        => '/usersources/{type}/app-{app_id}/extra-details',
     'controller'  => 'ApiBundle:Usersources:getUsersourceExtra',
     'methods'     => array('GET'),
 ));
@@ -2469,6 +2469,12 @@ $collection->create('api_usersources_display_order', array(
     'path'        => '/usersources/display-order',
     'controller'  => 'ApiBundle:Usersources:updateDisplayOrder',
     'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_sync_info', array(
+    'path'        => '/usersources/sync/info/{app_id}',
+    'controller'  => 'ApiBundle:Usersources:getSyncInformation',
+    'methods'     => array('GET'),
 ));
 
 $collection->create('api_usersources_available_apps', array(

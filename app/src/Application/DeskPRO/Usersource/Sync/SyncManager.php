@@ -131,7 +131,7 @@ class SyncManager implements SyncerInterface
 
     /**
      * @param Usersource $usersource
-     * @return UsersourceSyncLog|null
+     * @return UsersourceSyncLog
      */
     public function getMostRecentLog(Usersource $usersource)
     {

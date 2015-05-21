@@ -122,6 +122,28 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         $this->setDateEndPhaseTwo(new \DateTime());
     }
 
+    public function getPhaseOneTimeInSeconds()
+    {
+        if ($this->date_start && $this->date_end) {
+            $diff = $this->date_end->getTimestamp() - $this->date_start->getTimestamp();
+
+            return $diff < 0 ? 0 : $diff;
+        }
+
+        return null;
+    }
+
+    public function getPhaseTwoTimeInSeconds()
+    {
+        if ($this->date_phase_2_start && $this->date_phase_2_end) {
+            $diff = $this->date_phase_2_end->getTimestamp() - $this->date_phase_2_start->getTimestamp();
+
+            return $diff < 0 ? 0 : $diff;
+        }
+
+        return null;
+    }
+
     /**
      * @return int
      */

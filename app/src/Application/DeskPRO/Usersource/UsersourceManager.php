@@ -151,8 +151,7 @@ class UsersourceManager
     /**
      * Get all usersources for the agent/admin area
      *
-     * @param  bool                                                                                          $active if true only returns enabled usersources
-     * @return \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
+     * @return \Application\DeskPRO\Usersource\UsersourceCollection|\Application\DeskPRO\Entity\Usersource[]
      */
     public function getAll()
     {

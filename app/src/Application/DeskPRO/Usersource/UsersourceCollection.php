@@ -110,6 +110,22 @@ class UsersourceCollection extends \ArrayObject
         return new static($filtered);
     }
 
+    public function withAppId($app_id)
+    {
+        $filtered = array_filter(
+            (array)$this,
+            function (Usersource $us) use ($app_id) {
+                if ($app = $us->getApp()) {
+                    return $app->getId() == $app_id;
+                }
+
+                return false;
+            }
+        );
+
+        return new static($filtered);
+    }
+
     /**
      * @return UsersourceCollection
      */

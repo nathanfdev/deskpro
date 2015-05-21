@@ -181,10 +181,58 @@ class UsersourcesController extends AbstractController
         );
     }
 
-
-    public function getUsersourceExtraAction($type, $id)
+    public function getSyncInformationAction($app_id)
     {
-            $sources = $this->getUsersourceManager()->getAll();
+        $source = $this->getUsersourceManager()->getAll()->withAppId($app_id)->getFirstOrNull();
+
+        if (!$source) {
+            throw $this->createNotFoundException('usersource app id=' . $app_id);
+        }
+
+        $sync_log = null;
+        if ($most_recent_log = $this->getSyncManager()->getMostRecentLog($source)) {
+            $sync_log = $most_recent_log->toApiData();
+
+            // phase 1 time
+            // no end date means phase 1 is running
+            if (null === $most_recent_log->getDateEnd()) {
+                $sync_log['phase_1_running'] = true;
+            } else {
+                $sync_log['phase_1_running'] = false;
+            }
+
+            // phase 2 time
+            $time_two = $most_recent_log->getPhaseTwoTimeInSeconds();
+            // no end date means phase 2 _might_ be running
+            $sync_log['phase_2_running'] = false;
+            if (null === $most_recent_log->getDateEnd()) {
+                $sync_log['phase_2_running'] = true;
+                $sync_log['phase_2_show'] = false;
+            } elseif ($time_two > 2) { // don't show phase 2 unless it took at least a few seconds
+                $sync_log['phase_2_show'] = true;
+            } else {
+                $sync_log['phase_2_show'] = false; // else signal that we shouldn't show it
+            }
+        }
+
+        return $this->createApiResponse(
+            array(
+                'sync_log' => $sync_log
+            )
+        );
+    }
+
+    /**
+     * @return \Application\DeskPRO\Usersource\Sync\SyncManager
+     */
+    protected function getSyncManager()
+    {
+        return $this->container->getSystemService('usersource_sync_manager');
+    }
+
+    public function getUsersourceExtraAction($type, $app_id)
+    {
+        $sources = $this->getUsersourceManager()->getAll();
 
         if ($type === Usersource::TYPE_USER) {
             $sources = $sources->configuredForUsers(true);
@@ -192,16 +240,10 @@ class UsersourcesController extends AbstractController
             $sources = $sources->configuredForAgents(true);
         }
 
-        $source = null;
-        foreach ($sources as $usersource) {
-            if ($usersource->app && $usersource->app->id == $id) {
-                $source = $usersource;
-                break;
-            }
-        }
+        $source = $sources->withAppId($app_id)->getFirstOrNull();
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource id=' . $id . ' not found');
+            throw $this->createNotFoundException('usersource app id=' . $app_id . ' not found for interface='.$type);
         }
 
         $adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($source, null, $type);
