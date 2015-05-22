@@ -75,6 +75,7 @@ class PortalExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('brand', array($this, 'getBrand')),
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
             new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
@@ -89,6 +90,15 @@ class PortalExtension extends \Twig_Extension
     public function getBrandSetting($setting, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($setting, $default);
+    }
+
+    /**
+     * @param string $prop
+     * @return string
+     */
+    public function getBrand($prop)
+    {
+        return $this->brand_stack->getActive()->getBrand()->get($prop);
     }
 
     /**

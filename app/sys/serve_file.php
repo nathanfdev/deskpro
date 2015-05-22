@@ -146,6 +146,10 @@ class FilestorageLoader extends LoaderAbstract
             } elseif (preg_match('#^/res-user/main.css#', $pathinfo, $m)) {
                 $this->userCssAction();
 
+            // Public assets
+            } elseif (preg_match('#^/brand-([0-9]+)/(.*?)$#', $pathinfo, $m)) {
+                $this->userPublicAsset($m[1], trim($m[2], '/'));
+
             // sitemap.xml
             } elseif (preg_match('#^/sitemap.xml#', $pathinfo, $m)) {
                 $this->sitemapXmlAction();
@@ -220,6 +224,25 @@ class FilestorageLoader extends LoaderAbstract
             'time'    => time(),
             'message' => $message,
         );
+    }
+
+    public function userPublicAsset($brand_id, $path)
+    {
+        if ($path == 'DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.css') {
+            $path = DP_WEB_ROOT.'/pub/src-build/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.css';
+            $src = file_get_contents($path);
+            $size = strlen($src);
+
+            header('Content-Type: text/css; filename="portal-style.css"');
+            header('Content-Length: ' . $size);
+            echo $src;
+            exit;
+        }
+
+        header("HTTP/1.0 404 Not Found");
+        echo "File not found -- " . htmlspecialchars($path);
+
+        return;
     }
 
     /**
