@@ -57,7 +57,7 @@ abstract class AbstractLdapBasedAdapter
      * @return \Zend\Ldap\Collection
      * @throws \Zend\Ldap\Exception\LdapException
      */
-    public function findAllRecords()
+    public function findAllRecords($objectClass = 'inetOrgPerson')
     {
         if ($this->getLogger()) {
             $this->getLogger()->log("START find all", Logger::DEBUG);
@@ -77,7 +77,7 @@ abstract class AbstractLdapBasedAdapter
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
 
-        $entries = $ldap->search('objectClass=inetOrgPerson', $this->options['baseDn'], Ldap::SEARCH_SCOPE_SUB, array(), 'whenCreated');
+        $entries = $ldap->search('objectClass='.$objectClass, $this->options['baseDn'], Ldap::SEARCH_SCOPE_SUB, array(), 'whenCreated');
 
         if ($this->getLogger()) {
             $this->getLogger()->log("FOUND " . $entries->count() . " entries", Logger::DEBUG);

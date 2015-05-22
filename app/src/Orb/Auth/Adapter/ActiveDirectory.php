@@ -126,6 +126,11 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         return $auth;
     }
 
+    public function findAllRecords($objectClass = 'User')
+    {
+        return parent::findAllRecords($objectClass);
+    }
+
 
     /**
      * Authenticate a user.
