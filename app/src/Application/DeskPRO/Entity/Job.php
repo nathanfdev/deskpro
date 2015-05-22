@@ -47,7 +47,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * @property $date_touch
  * @property $date_created
  * @property $date_last_try
- * @property $date_next_try
+ * @property \DateTime $date_next_try
  * @property $priority
  * @property $num_tries
  * @property $log_summary

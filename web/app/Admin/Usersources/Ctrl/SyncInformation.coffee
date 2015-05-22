@@ -3,7 +3,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
   class Admin_Usersources_Ctrl_SyncInformation extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Usersources_Ctrl_SyncInformation'
     @CTRL_AS = 'Ctrl'
-    @DEPS = ['$http', 'dpTemplateManager']
+    @DEPS = ['$http', 'dpTemplateManager', '$interval']
 
 
     init: ->
@@ -15,10 +15,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
       @presaveCallback = null
       @app = null
-
+      @$scope.$on '$destroy', => @interval && @$interval.cancel(@interval)
 
 
     initialLoad: ->
+      promise = @refresh()
+
+      @interval = @$interval(() =>
+        @refresh()
+      , 10000)
+
+      return promise
+
+    refresh: ->
       d = @$q.defer()
       d2 = @$q.defer()
 
@@ -57,16 +66,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
               sync_log.phase_2_time_readable = '-'
 
           @$scope.sync_log = sync_log
-
-          console.log result.data.sync_info
+          @$scope.ListCtrl = @listCtrl()
 
           d.resolve()
         )
       )
-      console.log @$scope
       return d.promise
 
     listCtrl: ->
-      @$scope.$parent?.ListCtrl || {refresh: =>}
+      return @$scope.$parent?.ListCtrl || {running_now: false, refresh: =>}
 
   Admin_Usersources_Ctrl_SyncInformation.EXPORT_CTRL()

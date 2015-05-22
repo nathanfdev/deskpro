@@ -100,7 +100,7 @@ class UsersourceSyncRule extends AbstractSupervisorRule
      */
     public function attemptToFix()
     {
-        $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array());
+        $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array(), new \DateTime('tomorrow 1am'));
 
         return true;
     }

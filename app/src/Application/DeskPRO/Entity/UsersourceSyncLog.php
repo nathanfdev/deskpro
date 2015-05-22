@@ -43,6 +43,11 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  */
 class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
 {
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_ERROR = 'error';
+    const STATUS_CANCELLED = 'cancelled';
+    const STATUS_PENDING = 'pending';
+
     /**
      * The unique ID.
      *
@@ -91,6 +96,16 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
      * @var \DateTime
      */
     protected $date_phase_2_end;
+
+    /**
+     * @var string
+     */
+    protected $status;
+
+    public function __construct()
+    {
+        $this->setStatus(self::STATUS_PENDING);
+    }
 
     public function incrementRecordCount()
     {
@@ -248,6 +263,37 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_phase_2_end', $date_end);
     }
 
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->setModelField('status', $status);
+    }
+
+    public function markErrorStatus()
+    {
+        $this->setStatus(self::STATUS_ERROR);
+    }
+
+    public function markCompletedStatus()
+    {
+        $this->setStatus(self::STATUS_COMPLETED);
+    }
+
+    public function markCancelledStatus()
+    {
+        $this->setStatus(self::STATUS_CANCELLED);
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -273,5 +319,6 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
         $builder->mapDateTime('date_end');
         $builder->mapDateTime('date_phase_2_start');
         $builder->mapDateTime('date_phase_2_end');
+        $builder->mapString('status');
     }
 }

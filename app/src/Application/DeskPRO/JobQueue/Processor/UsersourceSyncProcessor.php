@@ -35,6 +35,7 @@ namespace Application\DeskPRO\JobQueue\Processor;
 
 
 use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\Entity\UsersourceSyncLog;
 use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
@@ -48,12 +49,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class UsersourceSyncProcessor extends AbstractJobProcessor
 {
     const JOB_TYPE = 'usersource_sync';
+    const ABORT_JOB_TMP_DATA_NAME = 'abort_usersource_sync';
 
     const MAX_TIME = 20;
     const MAX_COUNT = 1000;
     public static $max_time;
     public static $count;
     public static $max_memory_usage;
+    public static $aborted;
 
     /**
      * @var UsersourceManager
@@ -99,16 +102,10 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         );
     }
 
-    /**
-     * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with
-     *
-     * @param  array $data validated data (the payload)
-     * @param  array $job the full job db row array
-     * @return bool  TRUE if successfully processed
-     */
     public function process(array $data, array $job)
     {
         static::$max_time = time() + static::MAX_TIME;
+        static::$aborted = false;
         static::$count = 0;
         static::$max_memory_usage = min(max(Env::getMemoryLimit(), 500*1024*1024), 500*1024*1024) * 0.8;
         if (1 == $data['phase']) {
@@ -118,7 +115,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         }
     }
 
-    public static function pauseJobCondition(SyncCursor $cursor)
+    public function pauseJobCondition(SyncCursor $cursor)
     {
         // we return true if we want to signal to the syncer to pause
 
@@ -130,6 +127,15 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // considtion 2: if we go over x seconds
         if (time() > UsersourceSyncProcessor::$max_time) {
             return true;
+        }
+
+        // every 100 iterations check to see if the admin cancelled the job or not
+        if ($cursor->getLocation() % 100 === 0) {
+            if ($this->sync_manager->isStopSignalPresent()) {
+                static::$aborted = true;
+                $this->sync_manager->clearStopSignal();
+                return true;
+            }
         }
 
         return false;
@@ -175,7 +181,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             try {
                 $this->sync_manager->refreshAll($usersource, $cursor, array($this, 'pauseJobCondition'));
 
-                if (!$cursor->isCompleted()) {
+                if (!$cursor->isCompleted() && !static::$aborted) {
                     // time to pause and re-run this phase at this usersource at the cursor location
                     $this->scheduleNextSync(
                         array(
@@ -199,8 +205,15 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
                 // log the errors but continue on to the next usersource
                 KernelErrorHandler::handleException($e, false);
+                $log->markErrorStatus();
 
             }
+
+            if (static::$aborted) {
+                $this->abort();
+                return false;
+            }
+
 
             // end log
             $log->setRecordCount($cursor->getCounter());
@@ -233,6 +246,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             // stop skip
             $start_at_usersource_id = null;
             $last_processed_usersource_id = $usersource->getId();
+            $this_usersource_errors = 0;
             
             $associations = $this->usersource_manager->findAssociationsUpdatedBefore(
                 $usersource,
@@ -246,32 +260,39 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             }
 
             $had_to_break = false;
-            try {
-                foreach ($associations as $association) {
-                        $identity = $association->getIdentity();
+            foreach ($associations as $association) {
+                    $identity = $association->getIdentity();
 
-                        try {
-                            if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
-                                $count++;
-                                $log->incrementRecordCount();
-                            }
-                        } catch (\Exception $e) {
-                            // log the error, but continue processing
-                            KernelErrorHandler::handleException($e, false);
+                    try {
+                        if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
+                            $count++;
+                            $log->incrementRecordCount();
                         }
-
-                        if (static::pauseJobCondition(new SyncCursor())) {
-                            $had_to_break = true;
+                    } catch (\Exception $e) {
+                        // log the error, but continue processing
+                        $this_usersource_errors++;
+                        KernelErrorHandler::handleException($e, false);
+                        if ($this_usersource_errors > 10) {
+                            $log->markErrorStatus();
+                            $this->sync_manager->saveLog($log);
                             break;
                         }
-                    
-                }
-            } catch (\Exception $e) {
-                KernelErrorHandler::handleException($e, false);
+                    }
+
+                    if (static::pauseJobCondition(new SyncCursor())) {
+                        $had_to_break = true;
+                        break;
+                    }
+
             }
 
             if ($had_to_break) {
-                // phase 2 needs another go
+                // phase 2 needs another
+
+                if (static::$aborted) {
+                    $this->abort();
+                    return false;
+                }
 
                 $this->sync_manager->saveLog($log);
 
@@ -289,6 +310,9 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             }
 
             $log->endPhaseTwo();
+            if (UsersourceSyncLog::STATUS_ERROR != $log->getStatus()) {
+                $log->markCompletedStatus();
+            }
             $this->sync_manager->saveLog($log);
             $count = 0;
         }
@@ -318,5 +342,22 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
     {
         // must be an enabled usersource AND sync must be enabled as well
         return $this->usersource_manager->getAll()->mustBeEnabled()->mustHaveSyncEnabled();
+    }
+
+    protected function abort()
+    {
+        foreach ($this->getSyncEnabledUsersources() as $us) {
+            $log = $this->sync_manager->getLogToUseDuringSync($us);
+            if ($log->getId()) {
+                if (!$log->getPhaseOneTimeInSeconds()) {
+                    $log->endPhaseOne();
+                }
+                if (!$log->getPhaseTwoTimeInSeconds()) {
+                    $log->endPhaseTwo();
+                }
+                $log->markCancelledStatus();
+                $this->sync_manager->saveLog($log);
+            }
+        }
     }
 }

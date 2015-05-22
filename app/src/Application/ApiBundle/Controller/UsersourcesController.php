@@ -181,6 +181,33 @@ class UsersourcesController extends AbstractController
         );
     }
 
+    public function syncStartAction()
+    {
+        $this->getSyncManager()->clearStopSignal();
+        $this->getSyncManager()->rescheduleSync(new \DateTime());
+
+        return $this->createApiSuccessResponse();
+    }
+
+    public function syncStopAction()
+    {
+        $this->getSyncManager()->abortSyncJobs();
+        $this->getSyncManager()->signalJobToStop();
+
+        return $this->createApiSuccessResponse();
+    }
+
+    public function syncStatusAction()
+    {
+        $next = $this->getSyncManager()->getNextScheduledSyncDate();
+        return $this->createApiResponse(
+            array(
+                'running_now' => $this->getSyncManager()->isSyncRunning(),
+                'next_sync' => $next ? $next->format('Y-m-d H:i:s') : null
+            )
+        );
+    }
+
     public function getSyncInformationAction($app_id)
     {
         $source = $this->getUsersourceManager()->getAll()->withAppId($app_id)->getFirstOrNull();

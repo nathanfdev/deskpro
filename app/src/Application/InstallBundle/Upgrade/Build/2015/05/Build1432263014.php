@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,30 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage DependencyInection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Usersource\Sync\Syncer\DbTableSyncer;
-use Application\DeskPRO\Usersource\Sync\Syncer\LdapSyncer;
-use Application\DeskPRO\Usersource\Sync\SyncerHelper;
-use Application\DeskPRO\Usersource\Sync\SyncManager;
-
-class UsersourceSyncManagerService
+class Build1432263014 extends AbstractBuild
 {
-    public static function create(DeskproContainer $container)
+    public function run()
     {
-        $helper = new SyncerHelper($container->getEm());
-
-        $syncers = array();
-
-        $syncers[] = new DbTableSyncer($helper);
-        $syncers[] = new LdapSyncer($helper);
-
-        $sm = new SyncManager($syncers, $container->getEm(), $container->getJobQueue(), $container->getSystemService('usersource_manager'));
-
-        return $sm;
+        $this->out("add status to sync log");
+		$this->execMutateSql("ALTER TABLE usersource_sync_log ADD status VARCHAR(256) DEFAULT NULL");
     }
 }

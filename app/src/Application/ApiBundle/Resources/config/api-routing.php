@@ -2441,24 +2441,6 @@ $collection->create('api_usersources_list', array(
     'methods'     => array('GET'),
 ));
 
-$collection->create('api_usersources_get', array(
-    'path'        => '/usersources/{type}/{id}',
-    'controller'  => 'ApiBundle:Usersources:getUsersource',
-    'methods'     => array('GET'),
-));
-
-$collection->create('api_usersources_post', array(
-    'path'        => '/usersources/{type}/{id}',
-    'controller'  => 'ApiBundle:Usersources:postUsersource',
-    'methods'     => array('POST'),
-));
-
-$collection->create('api_usersources_extra_details', array(
-    'path'        => '/usersources/{type}/app-{app_id}/extra-details',
-    'controller'  => 'ApiBundle:Usersources:getUsersourceExtra',
-    'methods'     => array('GET'),
-));
-
 $collection->create('api_usersources_iframe', array(
     'path'        => '/usersources/iframe/code/{interface}/{app_id}',
     'controller'  => 'ApiBundle:Usersources:getIframe',
@@ -2471,10 +2453,28 @@ $collection->create('api_usersources_display_order', array(
     'methods'     => array('POST'),
 ));
 
-$collection->create('api_usersources_sync_info', array(
-    'path'        => '/usersources/sync/info/{app_id}',
-    'controller'  => 'ApiBundle:Usersources:getSyncInformation',
+$collection->create('api_usersources_sync_status', array(
+    'path'        => '/usersources/sync/status',
+    'controller'  => 'ApiBundle:Usersources:syncStatus',
     'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_sync_start', array(
+    'path'        => '/usersources/sync/start',
+    'controller'  => 'ApiBundle:Usersources:syncStart',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_sync_stop', array(
+    'path'        => '/usersources/sync/stop',
+    'controller'  => 'ApiBundle:Usersources:syncStop',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_sync_info', array(
+    'path' => '/usersources/sync/info/{app_id}',
+    'controller' => 'ApiBundle:Usersources:getSyncInformation',
+    'methods' => array('GET'),
 ));
 
 $collection->create('api_usersources_available_apps', array(
@@ -2483,11 +2483,28 @@ $collection->create('api_usersources_available_apps', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_usersources_get', array(
+    'path' => '/usersources/{type}/{id}',
+    'controller' => 'ApiBundle:Usersources:getUsersource',
+    'methods' => array('GET'),
+));
+
+$collection->create('api_usersources_post', array(
+    'path' => '/usersources/{type}/{id}',
+    'controller' => 'ApiBundle:Usersources:postUsersource',
+    'methods' => array('POST'),
+));
+
+$collection->create('api_usersources_extra_details', array(
+    'path' => '/usersources/{type}/app-{app_id}/extra-details',
+    'controller' => 'ApiBundle:Usersources:getUsersourceExtra',
+    'methods' => array('GET'),
+));
+
 $collection->create('api_usersource_refresh_person', array(
     'path'        => '/usersources/{usersource_id}/person-refresh/{identity_or_email}',
     'controller'  => 'ApiBundle:Usersources:personRefresh',
-    'methods'     => array('GET'),
-    'defaults'    => array('identity' => null)
+    'methods'     => array('GET')
 ));
 
 ########################################################################################################################

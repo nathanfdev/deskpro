@@ -47,6 +47,24 @@
 			<h3>Sync</h3>
 		</header>
 		<article>
+			<div class="dp-add-control" ng-show="!ListCtrl.sync_status.running_now">
+				<p>
+					<strong>Next Sync:</strong> {{ ng_var('ListCtrl.sync_next_text') }}
+					<button ng-click="ListCtrl.startSync()" class="btn btn-default btn-xs navbar-right" style="margin-right: 10px;">
+						Start Sync
+					</button>
+				</p>
+			</div>
+			<div class="dp-add-control" ng-show="ListCtrl.sync_status.running_now">
+				<div class="alert alert-warning" style="margin-right: 10px;">
+
+						<i class="spinner-flat"></i>
+					The sync is currently running.
+					<button ng-click="ListCtrl.stopSync()" class="btn btn-default btn-xs navbar-right" style="margin-right: 10px;">
+						Stop Syncing
+					</button>
+				</div>
+			</div>
 			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
 				<li ng-repeat="source in ListCtrl.usersources"
 					ng-if="source.usersource.sync_enabled"
@@ -126,4 +144,6 @@
 				</ul>
         	</section>
 	</article>
+	<div dp-register-message="usersource_sync_starting">{{ phrase('admin.usersources.sync_starting') }}</div>
+	<div dp-register-message="usersource_sync_stopping">{{ phrase('admin.usersources.sync_stopping') }}</div>
 {% endblock %}
