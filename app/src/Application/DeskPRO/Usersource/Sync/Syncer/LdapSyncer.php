@@ -125,32 +125,23 @@ class LdapSyncer extends AbstractSyncer
             );
         }
 
-        $c = 0;
-        try {
-            $records->rewind();
-            $c = $records->count();
-        } catch (LdapException $e) {
-            // originally this was in the "for" declaration below, but when the cursor is empty it throws an exception on rewind
-        }
+        $records->executePagedSearch();
+        $records->rewind();
         for ($i = 1; $records->valid(); $i++) {
             try {
                 $records->next();
             } catch (LdapException $e) {
-                // expected behaviour on the last iteration. strang, because $records->valid() passes.
-                break;
-            }
-            if ($i > $c) {
-                $this->helper->getEm()->flush();
                 break;
             }
             if ($i < $start_location) {
                 continue; // save us from hitting the LDAP server if we've already visited this record before
             }
+            if (!$raw_info = $records->current()) {
+                break;
+            }
 
             // save record for processing in phase 2
-            $raw_info = $records->current();
             $processed_raw_info = $this->processRawInfo($raw_info);
-
 
             // NOTE: if we are having problems with not all info being updated, uncomment this line
             // it is MUST slower, but potentially more accurate

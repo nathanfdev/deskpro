@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Ldap\LdapPagedSearcher;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
@@ -74,7 +75,7 @@ class ActiveDirectory extends AbstractAdapter
     }
 
     /**
-     * @return \Zend\Ldap\Collection
+     * @return LdapPagedSearcher
      */
     public function findAllRecords()
     {
