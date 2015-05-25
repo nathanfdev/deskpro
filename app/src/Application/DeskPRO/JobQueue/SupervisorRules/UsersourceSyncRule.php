@@ -100,6 +100,10 @@ class UsersourceSyncRule extends AbstractSupervisorRule
      */
     public function attemptToFix()
     {
+        // ensure the new job wont abort itself. if this data is present it will.
+        $this->connection->exec('DELETE FROM tmp_data WHERE name = "'.UsersourceSyncProcessor::ABORT_JOB_TMP_DATA_NAME.'"');
+
+        // add a new job
         $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array(), new \DateTime('tomorrow 1am'));
 
         return true;

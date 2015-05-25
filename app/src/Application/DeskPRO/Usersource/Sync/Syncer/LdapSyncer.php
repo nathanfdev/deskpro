@@ -55,7 +55,7 @@ class LdapSyncer extends AbstractSyncer
             $this->runFirstPass($usersource, $cursor, $pause_check);
         }
 
-        if ($cursor->getPhase() == 2){
+        if ($cursor->getPhase() == 2) {
             $this->runSecondPass($usersource, $cursor, $pause_check);
         }
 
@@ -79,12 +79,12 @@ class LdapSyncer extends AbstractSyncer
             if (isset($data['raw_info'])) {
                 $raw_info = $data['raw_info'];
                 $identity = new Identity($raw_info['identity'], $raw_info);
-                $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
+                if ($this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity())) {
+                    $cursor->incrementCounter();
+                }
             }
             $tmp_ids_to_remove[] = $row['id'];
-
             $cursor->incrementLocation();
-            $cursor->incrementCounter();
             if ($pause_check($cursor)) {
                 // get rid of the tmp dat we dealt with in this round
                 $conn->executeQuery(
@@ -125,8 +125,10 @@ class LdapSyncer extends AbstractSyncer
             );
         }
 
+        $c = 0;
         try {
             $records->rewind();
+            $c = $records->count();
         } catch (LdapException $e) {
             // originally this was in the "for" declaration below, but when the cursor is empty it throws an exception on rewind
         }
@@ -137,6 +139,10 @@ class LdapSyncer extends AbstractSyncer
                 // expected behaviour on the last iteration. strang, because $records->valid() passes.
                 break;
             }
+            if ($i > $c) {
+                $this->helper->getEm()->flush();
+                break;
+            }
             if ($i < $start_location) {
                 continue; // save us from hitting the LDAP server if we've already visited this record before
             }
@@ -144,12 +150,28 @@ class LdapSyncer extends AbstractSyncer
             // save record for processing in phase 2
             $raw_info = $records->current();
             $processed_raw_info = $this->processRawInfo($raw_info);
-            $tmp = new TmpData();
-            $tmp->setData('raw_info', $processed_raw_info);
-            $tmp->name = self::TMP_DATA_NAME;
-            $this->helper->getEm()->persist($tmp);
 
-            $cursor->incrementLocation();
+
+            // NOTE: if we are having problems with not all info being updated, uncomment this line
+            // it is MUST slower, but potentially more accurate
+            // $processed_raw_info = $adapter->getIdentityForDn($raw_info['identity']);
+
+
+            $tmp = new TmpData();
+            if (isset($processed_raw_info['email_address'])) {
+                $tmp->setData('raw_info', $processed_raw_info);
+                $tmp->name = self::TMP_DATA_NAME;
+                $this->helper->getEm()->persist($tmp);
+                $cursor->incrementLocation();
+            } else {
+                // no email found - abort this record
+                $cursor->incrementLocation();
+                if ($pause_check($cursor)) {
+                    $this->helper->getEm()->flush();
+                    return;
+                }
+                continue;
+            }
 
             if ($pause_check($cursor)) {
                 $this->helper->getEm()->flush();
@@ -187,7 +209,9 @@ class LdapSyncer extends AbstractSyncer
             );
         }
 
-        $this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email);
+        if (!$this->syncIdentityWithUsersource($usersource, $identity, $identity_or_email)) {
+            return false;
+        }
 
         return true;
     }
@@ -222,12 +246,21 @@ class LdapSyncer extends AbstractSyncer
         if ($assoc = $this->helper->getAssociation($usersource, $identity->getIdentity())) {
             $person = $assoc->person;
         } else {
+            // prefer raw data over less trustworthy "email" param for a real email
+            $rd = $identity->getRawData();
+            if (isset($rd['email']) && !empty($rd['email'])) {
+                $email = $rd['email'];
+            } elseif (isset($rd['email_address']) && !empty($rd['email_address'])) {
+                $email = $rd['email_address'];
+            }
             $person = $this->helper->getPersonFromEmail($email);
             // its ok that this might be null, because our helper deals with null person
         }
 
-        // sync person and assoc
         $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
+        if (!$person || !$person->getPrimaryEmailAddress() || !$person->getPrimaryEmail()->email) {
+            return false;
+        }
         $assoc = $this->helper->updateOrCreateAssociation($usersource, $person, $identity);
 
         $this->helper->savePerson($person);
@@ -236,6 +269,8 @@ class LdapSyncer extends AbstractSyncer
         // detach
         $this->helper->getEm()->detach($person);
         $this->helper->getEm()->detach($assoc);
+
+        return true;
     }
 
     /**
@@ -245,12 +280,12 @@ class LdapSyncer extends AbstractSyncer
     protected function processRawInfo($raw_info)
     {
         // normalize the returned data
-        if (!empty($raw_info['samaccountname'])) {
+        if (isset($raw_info['samaccountname']) && !empty($raw_info['samaccountname'])) {
             $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
-        } elseif (!empty($raw_info['uid'])) {
+        } elseif (isset($raw_info['uid']) && !empty($raw_info['uid'])) {
             $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
         }
-        if (!empty($raw_info['distinguishedname'])) {
+        if (isset($raw_info['distinguishedname']) && !empty($raw_info['distinguishedname'])) {
             $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
         } else {
             if (is_array($raw_info['dn'])) {
@@ -259,17 +294,17 @@ class LdapSyncer extends AbstractSyncer
                 $raw_info['identity'] = (string)$raw_info['dn'];
             }
         }
-        if ($raw_info['givenname']) {
+        if (isset($raw_info['givenname']) && $raw_info['givenname']) {
             $raw_info['first_name'] = Arrays::getFirstItem($raw_info['givenname']);
         }
-        if ($raw_info['sn']) {
+        if (isset($raw_info['sn']) && $raw_info['sn']) {
             $raw_info['last_name'] = Arrays::getFirstItem($raw_info['sn']);
         }
         if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
             $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
-        } elseif ($raw_info['name']) {
+        } elseif (isset($raw_info['name']) && $raw_info['name']) {
             $raw_info['name'] = Arrays::getFirstItem($raw_info['name']);
-        } elseif ($raw_info['cn']) {
+        } elseif (isset($raw_info['cn']) && $raw_info['cn']) {
             $raw_info['name'] = Arrays::getFirstItem($raw_info['cn']);
         }
         if (isset($raw_info['mail'])) {

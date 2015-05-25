@@ -104,14 +104,19 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
     public function process(array $data, array $job)
     {
-        static::$max_time = time() + static::MAX_TIME;
-        static::$aborted = false;
-        static::$count = 0;
-        static::$max_memory_usage = min(max(Env::getMemoryLimit(), 500*1024*1024), 500*1024*1024) * 0.8;
-        if (1 == $data['phase']) {
-            return $this->runPhaseOne($data);
-        } else {
-            return $this->runPhaseTwo($data);
+        try {
+            static::$max_time = time() + static::MAX_TIME;
+            static::$aborted = false;
+            static::$count = 0;
+            static::$max_memory_usage = min(max(Env::getMemoryLimit(), 500 * 1024 * 1024), 500 * 1024 * 1024) * 0.8;
+            if (1 == $data['phase']) {
+                return $this->runPhaseOne($data);
+            } else {
+                return $this->runPhaseTwo($data);
+            }
+        } catch (\Exception $e) {
+            $this->abort(true);
+            throw $e;
         }
     }
 
@@ -344,7 +349,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         return $this->usersource_manager->getAll()->mustBeEnabled()->mustHaveSyncEnabled();
     }
 
-    protected function abort()
+    protected function abort($error = false)
     {
         foreach ($this->getSyncEnabledUsersources() as $us) {
             $log = $this->sync_manager->getLogToUseDuringSync($us);
@@ -355,7 +360,11 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 if (!$log->getPhaseTwoTimeInSeconds()) {
                     $log->endPhaseTwo();
                 }
-                $log->markCancelledStatus();
+                if ($error) {
+                    $log->markErrorStatus();
+                } else {
+                    $log->markCancelledStatus();
+                }
                 $this->sync_manager->saveLog($log);
             }
         }

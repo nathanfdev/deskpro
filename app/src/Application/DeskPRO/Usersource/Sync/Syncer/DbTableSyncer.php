@@ -132,9 +132,14 @@ class DbTableSyncer extends AbstractSyncer
 
         // sync person and assoc
         $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
+        if (!$person || !$person->getPrimaryEmailAddress() || !$person->getPrimaryEmail()->email) {
+            return false;
+        }
         $assoc = $this->helper->updateOrCreateAssociation($usersource, $person, $identity);
 
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
+
+        return true;
     }
 }

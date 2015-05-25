@@ -55,9 +55,18 @@ class Ldap extends AbstractAdapter
         );
     }
 
+    public function getIdentityForDn($identity)
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+        /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        return $adapter->getIdentityForDn($identity);
+    }
 
     /**
-     * @return \Orb\Auth\Adapter\ActiveDirectory
+     * @return \Orb\Auth\Adapter\LdapRaw
      */
     protected function _createAuthAdapterObject()
     {

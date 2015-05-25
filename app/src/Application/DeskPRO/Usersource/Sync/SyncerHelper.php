@@ -81,6 +81,10 @@ class SyncerHelper
             $user_info
         );
 
+        if (empty($user_info['email'])) {
+            return false;
+        }
+
         if (!$person) {
             $person = Person::newContactPerson(array('email' => $user_info['email']));
             $this->em->persist($person);

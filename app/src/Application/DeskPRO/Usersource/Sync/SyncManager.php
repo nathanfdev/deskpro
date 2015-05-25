@@ -113,7 +113,7 @@ class SyncManager implements SyncerInterface
             return $syncer->refreshIdentity($usersource, $identity_or_email);
         }
 
-        return null;
+        return false;
     }
 
     public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)

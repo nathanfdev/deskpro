@@ -89,6 +89,19 @@ class ActiveDirectory extends AbstractAdapter
         return $adapter->findAllRecords();
     }
 
+    public function getIdentityForDn($dn)
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+
+        /** @var \Orb\Auth\Adapter\ActiveDirectory $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("getIdentityForDn");
+
+        return $adapter->getIdentityForDn($dn);
+    }
+
     /**
      * Find a user identity just by an email address.
      *
