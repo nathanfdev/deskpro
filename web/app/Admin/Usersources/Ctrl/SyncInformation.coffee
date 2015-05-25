@@ -54,16 +54,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           @$scope.setting_values.dp_app = {title: @app.title}
 
           sync_log = result.data.sync_info.sync_log
-          if not sync_log.phase_1_running
-            sync_log.phase_1_time_readable = moment(sync_log.date_start).from(sync_log.date_end, true)
-          else
-            sync_log.phase_1_time_readable = '-'
 
-          if sync_log.phase_2_show
-            if not sync_log.phase_2_running
-              sync_log.phase_2_time_readable = moment(sync_log.date_phase_2_start).from(sync_log.date_phase_2_end, true)
+          if sync_log
+            if not sync_log.phase_1_running
+              sync_log.phase_1_time_readable = moment(sync_log.date_start).from(sync_log.date_end, true)
             else
-              sync_log.phase_2_time_readable = '-'
+              sync_log.phase_1_time_readable = '-'
+
+            if sync_log.phase_2_show
+              if not sync_log.phase_2_running
+                sync_log.phase_2_time_readable = moment(sync_log.date_phase_2_start).from(sync_log.date_phase_2_end, true)
+              else
+                sync_log.phase_2_time_readable = '-'
 
           @$scope.sync_log = sync_log
           @$scope.ListCtrl = @listCtrl()
