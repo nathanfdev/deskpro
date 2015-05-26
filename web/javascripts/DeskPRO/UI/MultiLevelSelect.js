@@ -17,7 +17,10 @@
         $g.attr('label', parent.title);
 
         $.each(parent.children, function(i, child) {
-          $g.append('<option value="' + child.id + '">' + child.title + '</option>');
+          var $opt = $('<option value="' + child.id + '">' + child.title + '</option>');
+          var ft = parent.title + ' > ' + child.title;
+          $opt.data('full-title', ft).attr('data-full-title', ft);
+          $g.append($opt);
         });
 
         $select.append($g);
@@ -26,7 +29,7 @@
       }
     });
 
-    $select.val($el.val());
+    $select.val(val);
 
     if (withSelect2) {
       $select.data('no-select2', null);
@@ -157,6 +160,8 @@
       if ('choice-collapsed' !== $el.data('custom-field') || !map) {
         return $el;
       }
+
+      $el.addClass('dp-two-select');
 
       if (parseInt($el.data('max-depth')) <= 2) {
         setupSimple($el, map);

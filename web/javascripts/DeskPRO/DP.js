@@ -212,6 +212,7 @@ var DP = {
 					break;
 			}
 		} else {
+
 			var withFullTitle = el.find('option[data-full-title]');
 			if (withFullTitle[0]) {
 				withFullTitle.each(function() {

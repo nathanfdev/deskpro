@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
+use Orb\Util\OptionsArray;
 use Orb\Util\Util;
 use Application\DeskPRO\Util as DeskPROUtil;
 
@@ -516,6 +517,10 @@ class LegacyTermsTransformer
 
         $op = $legacy_term['op'];
         $options = $legacy_term['options'];
+
+        if ($options instanceof OptionsArray) {
+            $options = $options->all();
+        }
 
         $type_name = $legacy_term['type'];
         $type_id = null;
