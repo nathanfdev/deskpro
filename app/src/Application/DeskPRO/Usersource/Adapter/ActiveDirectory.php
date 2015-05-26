@@ -87,7 +87,11 @@ class ActiveDirectory extends AbstractAdapter
 
         if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
 
-        return $adapter->findAllRecords();
+        $disable_paging = $usersource->getOption('disableLdapPaging', false);
+        $paging = !$disable_paging;
+        $size = $usersource->getOption('ldapPerPage', 1000);
+
+        return $adapter->findAllRecords($size, $paging);
     }
 
     public function getIdentityForDn($dn)
@@ -129,6 +133,9 @@ class ActiveDirectory extends AbstractAdapter
             $rec_arr = $adapter->findRecordViaEmail($id_input);
             if (!$rec_arr || !isset($rec_arr['dn'])) {
                 $rec_arr = $adapter->findRecordViaUsername($id_input);
+            }
+            if (!$rec_arr || !isset($rec_arr['dn'])) {
+                $rec_arr = $adapter->findRecordViaDn($id_input);
             }
         } catch (\Exception $e) {
             if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");

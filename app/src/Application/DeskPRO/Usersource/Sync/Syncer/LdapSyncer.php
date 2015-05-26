@@ -126,12 +126,10 @@ class LdapSyncer extends AbstractSyncer
         }
 
         $records->executePagedSearch();
-        $records->rewind();
         for ($i = 1; $records->valid(); $i++) {
             try {
                 $records->next();
             } catch (LdapException $e) {
-                break;
             }
             if ($i < $start_location) {
                 continue; // save us from hitting the LDAP server if we've already visited this record before

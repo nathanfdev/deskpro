@@ -54,38 +54,54 @@ class LdapPagedSearcher implements \Iterator
      * most recently fetched ldap entry
      */
     private $current;
+    /**
+     * @var bool
+     */
+    private $paged;
 
-    public function __construct(ZendLdap $wrapped_ldap, $filter, $per_page, $basedn = null)
+    public function __construct(ZendLdap $wrapped_ldap, $filter, $per_page, $basedn = null, $paged = true)
     {
         $this->wrapped_ldap = $wrapped_ldap;
         $this->resource = $wrapped_ldap->getResource();
-        $this->page_size = $per_page;
+        $this->page_size = (int)$per_page;
         $this->basedn = $basedn;
         $this->filter = $filter;
         $this->result = null;
         $this->cookie = '';
-        ldap_set_option($this->resource, LDAP_OPT_PROTOCOL_VERSION, 3);
+        if ($paged) {
+            ldap_set_option($this->resource, LDAP_OPT_PROTOCOL_VERSION, 3);
+        }
+        $this->paged = (bool)$paged;
     }
 
     public function executePagedSearch()
     {
-        ldap_control_paged_result($this->resource, $this->page_size, true, $this->cookie);
+        if ($this->paged) {
+            ldap_control_paged_result($this->resource, $this->page_size, false, $this->cookie);
+        }
 
-        $this->result = ldap_search($this->resource, $this->basedn, $this->filter, array(), null, $this->page_size, 0);
+        $this->result = ldap_search($this->resource, $this->basedn, $this->filter, array(), 0, $this->paged ? $this->page_size : 0, 0);
 
-        $this->current = ldap_first_entry($this->resource, $this->result);
+        $this->rewind();
+    }
+
+    protected function nextPage()
+    {
+        if (!$this->paged) {
+            return;
+        }
+
+        ldap_control_paged_result_response($this->resource, $this->result, $this->cookie);
+        if ($this->cookie !== null && $this->cookie != '') {
+            $this->executePagedSearch();
+        }
     }
 
     public function current()
     {
         if (!is_resource($this->current)) {
-            ldap_control_paged_result_response($this->resource, $this->result, $this->cookie);
-            if ($this->cookie !== null && $this->cookie != '') {
-                $this->executePagedSearch();
-                if (!is_resource($this->current)) {
-                    return null;
-                }
-            } else {
+            $this->nextPage();
+            if (!is_resource($this->current)) {
                 return null;
             }
         }
@@ -124,32 +140,18 @@ class LdapPagedSearcher implements \Iterator
             );
             ErrorHandler::stop();
         }
-        //ksort($entry, SORT_LOCALE_STRING);
 
         return $entry;
     }
 
     public function next()
     {
-        $code = 0;
-
         if (is_resource($this->current)) {
             ErrorHandler::start();
             $this->current = ldap_next_entry($this->resource, $this->current);
             ErrorHandler::stop();
             if ($this->current === false) {
-                ldap_control_paged_result_response($this->resource, $this->result, $this->cookie);
-                if ($this->cookie !== null && $this->cookie != '') {
-                    $this->executePagedSearch();
-                } else {
-                    $msg = $this->wrapped_ldap->getLastError($code);
-                    if ($code === LdapException::LDAP_SIZELIMIT_EXCEEDED) {
-                        // we have reached the size limit enforced by the server
-                        return;
-                    } elseif ($code > LdapException::LDAP_SUCCESS) {
-                        throw new LdapException($this->wrapped_ldap, 'getting next entry (' . $msg . ')');
-                    }
-                }
+                $this->nextPage();
             }
         } else {
             $this->current = false;
@@ -182,5 +184,29 @@ class LdapPagedSearcher implements \Iterator
     public function rewind()
     {
         $this->current = ldap_first_entry($this->resource, $this->result);
+    }
+
+    public function __destruct()
+    {
+        $this->close();
+    }
+
+    /**
+     * Closes the current result set
+     *
+     * @return bool
+     */
+    public function close()
+    {
+        $isClosed = false;
+        if (is_resource($this->result)) {
+            ErrorHandler::start();
+            $isClosed = ldap_free_result($this->result);
+            ErrorHandler::stop();
+
+            $this->result = null;
+            $this->current = null;
+        }
+        return $isClosed;
     }
 }

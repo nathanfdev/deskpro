@@ -58,7 +58,7 @@ abstract class AbstractLdapBasedAdapter
      * @return \Zend\Ldap\Collection
      * @throws \Zend\Ldap\Exception\LdapException
      */
-    public function findAllRecords($objectClass = 'inetOrgPerson')
+    public function findAllRecords($size_limit = 1000, $paging = true, $objectClass = 'inetOrgPerson')
     {
 //        if ($this->getLogger()) {
 //            $this->getLogger()->log("START find all", Logger::DEBUG);
@@ -107,7 +107,7 @@ abstract class AbstractLdapBasedAdapter
 
         $filter = 'objectClass=' . $objectClass;
 
-        return new LdapPagedSearcher($ldap, $filter, 1000, $this->options['baseDn']);
+        return new LdapPagedSearcher($ldap, $filter, $size_limit, $this->options['baseDn'], $paging);
     }
 
 }

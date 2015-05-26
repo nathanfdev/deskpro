@@ -87,12 +87,16 @@ class Ldap extends AbstractAdapter
         $usersource = clone $this->usersource;
         $usersource->setOption('bindRequiresDn', true);
 
+        $us_adapter = $usersource->getAdapter();
         /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
-        $adapter = $usersource->getAdapter()->getAuthAdapter();
+        $adapter = $us_adapter->getAuthAdapter();
 
         if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
 
-        return $adapter->findAllRecords();
+        $paging = $usersource->getOption('ldapPaging', false);
+        $size = $usersource->getOption('ldapPerPage', 0);
+
+        return $adapter->findAllRecords($size, $paging);
     }
 
     /**

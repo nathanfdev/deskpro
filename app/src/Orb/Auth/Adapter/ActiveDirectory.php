@@ -126,9 +126,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         return $auth;
     }
 
-    public function findAllRecords($objectClass = 'User')
+    public function findAllRecords($size_limit = 1000, $paging = true, $objectClass = 'User')
     {
-        return parent::findAllRecords($objectClass);
+        return parent::findAllRecords($size_limit, $paging, $objectClass);
     }
 
 
@@ -162,6 +162,28 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         }
 
         return $res;
+    }
+
+    public function findRecordViaDn($provided_dn)
+    {
+        try {
+            $auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $auth->setUsername('__bogus__');
+                $auth->setPassword('__bogus__');
+                $auth->authenticate();
+            } catch (\Exception $e) {
+            }
+            /** @var $ldap \Zend\Ldap\Ldap */
+            $ldap = $auth->getLdap();
+
+            return $ldap->getEntry($provided_dn);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function getIdentityForDn($provided_dn)
