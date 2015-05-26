@@ -601,10 +601,31 @@ define [
       return def
 
     getFilterOrgId: (options = {}) ->
-      options.propName = 'org_ids'
+      prop_name = options.propName = 'org_ids'
       options.dataName = 'organizations'
       options.optionsFormatter = (options) -> ({value: entry.id, title: entry.name} for k, entry of options)
-      @getStandardSelect options
+      def = @getStandardSelect options
+      def.getDataFormatter = ->
+        return {
+        getViewValue: (value = {}, data) ->
+          val = value.options?[prop_name] || null
+          if val == null and data.options and prop_name
+            val = data.options[0]?.value || null
+          if val && val[0]
+            val = val[0].split ','
+          else
+            val = []
+
+          return {value: val, op: value.op || data.operators[0]}
+        getValue:     (model = {}, data) ->
+          value = {}
+          value.type = options.type
+          value.op = model.op
+          value.options = {}
+          value.options[prop_name] = (model.value || []).join ','
+          return value
+        }
+      def
 
     getFilterOrgName: (options = {}) ->
       options.propName = 'name'
