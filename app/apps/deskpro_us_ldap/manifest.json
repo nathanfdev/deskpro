@@ -112,6 +112,21 @@
 		  "label": "Enable Auto Sync",
 		  "checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
 		  "default_value": false
+		},
+		{
+		  "name": "ldap_paging",
+		  "type": "checkbox",
+		  "label": "Enable LDAP Paging",
+		  "checkbox_label": "Enable LDAP Paging",
+		  "description": "By default, our sync system does not use LDAP Paging. If your LDAP server supports LDAP paging, you can enable it here.",
+		  "default_value": false
+		},
+		{
+		  "name": "ldap_per_page",
+		  "type": "text",
+		  "label": "LDAP Size Limit",
+		  "description": "LDAP servers typically set a limit on the number of entries that we can query for during a sync. For no limit, enter 0. If you are not sure, please check with your LDAP server administrator.",
+		  "default_value": 0
 		}
 	]
 }

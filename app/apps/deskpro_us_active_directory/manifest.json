@@ -105,6 +105,21 @@
 		  "label": "Enable Auto Sync",
 		  "checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
 		  "default_value": false
+		},
+		{
+		  "name": "disable_ldap_paging",
+		  "type": "checkbox",
+		  "label": "Disable LDAP Paging",
+		  "checkbox_label": "Disable LDAP Paging",
+		  "description": "By default, our sync system uses LDAP Paging to retrieve results. Paging is recommended for Active Directory sync. Check this box if you want to disable paging.",
+		  "default_value": false
+		},
+		{
+		  "name": "ldap_per_page",
+		  "type": "text",
+		  "label": "LDAP Size Limit",
+		  "description": "By default, Active Directory has a size limit of 1000. If your server has a smaller limit, please enter it here.",
+		  "default_value": 1000
 		}
 	]
 }
