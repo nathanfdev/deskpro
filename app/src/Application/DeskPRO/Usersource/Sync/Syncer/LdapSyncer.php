@@ -246,7 +246,7 @@ class LdapSyncer extends AbstractSyncer
             // its ok that this might be null, because our helper deals with null person
         }
 
-        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
+        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person, $usersource);
         if (!$person || !$person->getPrimaryEmailAddress() || !$person->getPrimaryEmail()->email) {
             return false;
         }

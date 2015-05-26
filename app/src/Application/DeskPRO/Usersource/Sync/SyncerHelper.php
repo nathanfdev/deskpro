@@ -34,6 +34,8 @@
 namespace Application\DeskPRO\Usersource\Sync;
 
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
@@ -63,7 +65,7 @@ class SyncerHelper
         return $this->em;
     }
 
-    public function updateOrCreatePersonWithInfo(array $user_info, Person $person = null)
+    public function updateOrCreatePersonWithInfo(array $user_info, Person $person = null, Usersource $usersource)
     {
         // merge in the default values on $user_info array
         if (isset($user_info['email_address'])) {
@@ -113,6 +115,9 @@ class SyncerHelper
                 $person->setPrimaryPhoneNumber($number);
             }
         }
+
+        // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
+        LoginProcessor::tryAutoAgent($usersource, $person);
 
         return $person;
     }

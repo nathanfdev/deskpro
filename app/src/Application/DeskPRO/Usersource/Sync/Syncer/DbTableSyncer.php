@@ -131,7 +131,7 @@ class DbTableSyncer extends AbstractSyncer
         }
 
         // sync person and assoc
-        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person);
+        $person = $this->helper->updateOrCreatePersonWithInfo($user_info, $person, $usersource);
         if (!$person || !$person->getPrimaryEmailAddress() || !$person->getPrimaryEmail()->email) {
             return false;
         }

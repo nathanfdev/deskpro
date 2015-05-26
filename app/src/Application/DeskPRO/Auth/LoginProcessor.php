@@ -219,16 +219,7 @@ class LoginProcessor
         $this->person['is_user'] = true;
         $this->person->setLastLoginAt();
 
-        if (Usersource::TYPE_AGENT == $this->usersource->type && $this->usersource->auto_agent) {
-            $agentChecker = App::getSystemService('agent_checker');
-            if ($agentChecker->addAgentSeat($this->person)) {
-                $this->person['is_agent']  = true;
-                $this->person['can_agent'] = true;
-                if ($this->usersource->agent_permission_group) {
-                    $this->person->addUsergroup($this->usersource->agent_permission_group);
-                }
-            }
-            // wont send mail in test mode
+        if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
 
@@ -400,5 +391,34 @@ class LoginProcessor
             $this->persist($em, $contact_data);
             $this->flush($em);
         }
+    }
+
+    /**
+     * Returns true if this method made the person an agent, false otherwise.
+     *
+     * NOTE: true does not mean they were not an agent before, it just means it passed all the checks to
+     *       qualify to be a person that can go through the "auto-agent" process, and that we made sure
+     *       they are now an agent.
+     *
+     * @param Usersource $usersource
+     * @param Person $person
+     * @return bool
+     */
+    public static function tryAutoAgent(Usersource $usersource, Person $person)
+    {
+        if (Usersource::TYPE_AGENT == $usersource->type && $usersource->auto_agent) {
+            $agentChecker = App::getSystemService('agent_checker');
+            if ($agentChecker->addAgentSeat($person)) {
+                $person['is_agent'] = true;
+                $person['can_agent'] = true;
+                if ($usersource->agent_permission_group) {
+                    $person->addUsergroup($usersource->agent_permission_group);
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
