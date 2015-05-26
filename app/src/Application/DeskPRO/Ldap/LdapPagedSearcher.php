@@ -80,6 +80,8 @@ class LdapPagedSearcher implements \Iterator
             ldap_control_paged_result($this->resource, $this->page_size, false, $this->cookie);
         }
 
+        sleep(1); // not sure why this hack works, but it avoids a hanging process, leaving it for now
+
         $this->result = ldap_search($this->resource, $this->basedn, $this->filter, array(), 0, $this->paged ? $this->page_size : 0, 0);
 
         $this->rewind();
