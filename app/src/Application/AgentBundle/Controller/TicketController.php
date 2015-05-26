@@ -2303,16 +2303,16 @@ class TicketController extends AbstractController
                 $permission_errors = true;
             } else {
 
+                $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
                 $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
                 $newticket->setValuesFromTicket($ticket);
+                $newticket->status = $ticket->status;
 
                 $validator = new NewTicketValidator();
                 $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
                 $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
                 $validator->setLayout($layout);
-
-                $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-                $newticket->status = $ticket->status;
 
                 if (!$validator->isValid($newticket)) {
                     $free = array();
