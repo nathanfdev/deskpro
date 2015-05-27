@@ -64,6 +64,14 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
         }
 
+        // if we should be auto submitting, send to auto submit controller (this was a login intercept)
+        if ($this->container->get('form_saver')->getAutoSubmitSavedForm()) {
+            return $this->httpUtils->createRedirectResponse(
+                $request,
+                $this->container->get('router')->generate('saved_form_auto_submit')
+            );
+        }
+
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
     }
 

@@ -67,6 +67,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
         $content = $response->getContent();
         $pos     = strripos($content, '</body>');
 
+        // if you change this plase see PortalBundle:SavedForm:auto_submit.html.twig
         if (false !== $pos) {
             $script = "\n<script>"
                 .str_replace(
