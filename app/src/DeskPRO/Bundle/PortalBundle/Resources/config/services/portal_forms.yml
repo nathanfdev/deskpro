@@ -1,5 +1,12 @@
 services:
 
+  form_saver:
+    class: DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver
+    arguments:
+      - @router
+      - @doctrine.orm.default_entity_manager
+      - @session
+
   listener.response.double_submit:
         class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
         tags:

@@ -131,6 +131,7 @@ class PersonFactory
 
         $settings = $this->brand_stack->getActive()->getSettings();
 
+        /** @var \Application\DeskPRO\Entity\PersonEmail $email */
         if ($guest->getPrimaryEmail()) {
             $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest->getPrimaryEmail()->email);
         } else {
@@ -142,8 +143,7 @@ class PersonFactory
         // might require the user to log in (in which case the ticket is a temp ticket for a bit)
         if ($email) {
             if ($settings->get('core.existing_account_login')) {
-                $person        = $email->person;
-                $require_login = true; // TODO: redirect to login page.. but do we ignore the ticket? We dont have "temp" ones atm in new portal.
+                throw new LoginRequiredException($email->getPerson());
             } else {
                 $person = $email->person;
                 if ($guest->name) {

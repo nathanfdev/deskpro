@@ -139,6 +139,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver
+     */
+    protected function getFormSaver()
+    {
+        return $this->get('form_saver');
+    }
+
+    /**
      * Adds a flash message to the current session for type.
      *
      * @param string $type    The type

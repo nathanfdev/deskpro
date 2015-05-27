@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
+use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,7 +90,14 @@ class NewTicketController extends AbstractController
                 if (!$form->has('rerender_form')) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
-                        $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                        try {
+                            $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                        } catch (LoginRequiredException $e) {
+                            // the email used belongs to a user, and brand settings say they need to log in
+                            $person = $e->getPerson();
+
+                            return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                        }
 
                         // since the guest is set on the form, we need to update all of the associations
                         // TODO: we should be able to deal with this better by using a contact to beign with
