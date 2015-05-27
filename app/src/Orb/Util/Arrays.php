@@ -146,7 +146,7 @@ class Arrays
         $new_array = array();
 
         if ($key_parts) {
-            $key_prefix = implode('.', $key_parts).'.';
+            $key_prefix = implode($sep, $key_parts). $sep;
         } else {
             $key_prefix = '';
         }
