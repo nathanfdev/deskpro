@@ -270,6 +270,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     public function _postPersist()
     {
         if (!$this->person) {

@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>Re-submitting Form</title>
+</head>
+<body>
+<form id="auto-submit-form" action="{{ path(saved_form.routeName, saved_form.routeParams) }}" method="{{ saved_form.method }}">
+    {% for key,val in saved_form.fields %}
+    <input type="hidden" name="{{ key }}" value="{{ val }}">
+    {% endfor %}
+    <p>Your form will be automatically re-submitted. If it does not, click the button below to continue.</p>
+    <button id="send-auto-submit" type="submit">Submit and Continue</button>
+</form>
+<script>
+    (function () {
+        var submitted = false;
+        var auto_submit = function() {
+            if (!submitted) {
+                var r = /.*\[_dp_csrf_token\]*./;
+                var inputs = document.getElementsByTagName('input');
+                for (var i = 1; i < inputs.length; i++) {
+                    if (inputs[i].getAttribute('type') == 'hidden') {
+                        if (inputs[i].getAttribute('name').match(r)) {
+                            {# once we find the _dp_csrf_token and see that it has a value, submit the form #}
+                            if (inputs[i].value.length > 0) {
+                                document.getElementById('auto-submit-form').submit();
+                                submitted = true;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        setInterval(auto_submit, 1);
+    })();
+</script>
+</body>
+</html>

@@ -169,7 +169,6 @@ return '';
 
     public static function getOfflineMessage()
     {
-        xdebug_break();
         $offline_message = null;
         if (file_exists(dp_get_data_dir().'/helpdesk-offline-message.txt')) {
             $offline_message = file_get_contents(dp_get_data_dir().'/helpdesk-offline-message.txt');
