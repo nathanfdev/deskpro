@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 
 class TicketLayoutData extends AbstractDefaultData
 {
@@ -49,7 +50,7 @@ class TicketLayoutData extends AbstractDefaultData
             $ticket_layout->user_layout  = new Layout();
             $ticket_layout->agent_layout = new Layout();
 
-            foreach (array('department', 'subject', 'message') as $field) {
+            foreach (array(FormFields::DEPARTMENT, FormFields::SUBJECT, FormFields::MESSAGE, FormFields::USER_EMAIL) as $field) {
                 $ticket_layout->user_layout->add(new LayoutField($field));
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }
