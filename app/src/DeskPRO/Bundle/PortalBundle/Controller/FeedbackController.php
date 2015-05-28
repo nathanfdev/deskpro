@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -84,20 +85,28 @@ class FeedbackController extends AbstractController
         //
         // NEW FEEDBACK FORM
         //
+        $rerendering_saved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
+        $is_saved_form = $request->attributes->get('saved-form', false); // true if auto-submit SavedFormController
         $person       = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
             'person' => $person,
+            'action' => $this->generateUrl('portal_feedback'),
+            'allow_extra_fields' => $is_saved_form
         ));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if (
-                !$form->getClickedButton()
-                ||
+                !$rerendering_saved // if we are rerendering dont pass this condition
+                &&
                 (
-                    $form->getClickedButton()
-                    && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
+                    !$form->getClickedButton() // if user clicked more_attachments dont pass condition
+                    ||
+                    (
+                        $form->getClickedButton()
+                        && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
+                    )
                 )
             ) {
                 $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
@@ -105,7 +114,13 @@ class FeedbackController extends AbstractController
 
                 // deal with guests via negotiating with PersonFactory
                 if ($person instanceof PersonGuest) {
-                    $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                    try {
+                        $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                    } catch (LoginRequiredException $e) {
+                        $person = $e->getPerson();
+
+                        return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                    }
 
                     // since the guest is set on the form, we need to update all of the associations
                     // TODO: we should be able to deal with this better by using a contact to beign with
@@ -132,6 +147,7 @@ class FeedbackController extends AbstractController
                 'show_pagination' => true,
                 'form'            => $form->createView(),
                 'user'            => $this->getUser(),
+                'rerendering_saved'  => $rerendering_saved
             )
         );
     }
@@ -168,6 +184,7 @@ class FeedbackController extends AbstractController
             'types'             => $filter->getTypes(),
             'sort'              => $filter->getSort(),
             'sort_direction'    => $filter->getSortDirection(),
+            'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 
         if ($request->isXmlHttpRequest()) {

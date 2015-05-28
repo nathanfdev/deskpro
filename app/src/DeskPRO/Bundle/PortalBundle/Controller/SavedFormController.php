@@ -79,6 +79,7 @@ class SavedFormController extends AbstractController
         ) {
             $sub_request->attributes->set('rerender-form', true); // force a re-render
         }
+        $sub_request->attributes->set('saved-form', true);
         $sub_request->setSession($request->getSession());
         $sub_request->cookies->set('_dp_csrf_token', $csrf);
         // end prep sub request

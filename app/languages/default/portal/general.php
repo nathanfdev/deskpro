@@ -31,5 +31,5 @@
     'portal.general.nav-feedback'           => 'Feedback',
     'portal.general.nav-profile'            => 'Profile',
     'portal.general.nav-tickets'            => 'Tickets',
-    'portal.general.rerender-form'          => 'Please review this form before re-submitting the data.',
+    'portal.general.rerender-form'          => 'Please review this form before you submit it.',
 );

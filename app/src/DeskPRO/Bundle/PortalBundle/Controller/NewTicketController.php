@@ -84,10 +84,7 @@ class NewTicketController extends AbstractController
         if ($form->has('rerender_form')) {
             $rerendering = true;
         }
-        $rerendering_saved = false;
-        if ($request->attributes->get('rerender-form', false)) {
-            $rerendering_saved = true;
-        }
+        $rerendering_saved = $request->attributes->get('rerender-form', false);
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"

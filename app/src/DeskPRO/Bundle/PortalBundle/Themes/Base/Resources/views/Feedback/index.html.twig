@@ -5,6 +5,9 @@
       <header class="section-header">
           <h1>Feedback</h1>
       </header>
+      {% if rerendering_saved %}
+          <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+      {% endif %}
       {% include 'Theme:Feedback:form.html.twig' %}
       {% include 'Theme:Feedback:controls.html.twig' %}
       {% show feedback_items %}

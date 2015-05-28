@@ -159,7 +159,17 @@ class FormSaver
 
     public function getMessage(SavedForm $saved_form)
     {
-        return 'new ticket';
+        $meta = $saved_form->getMetaData();
+
+        if ($meta['route'] === 'portal_new_ticket') {
+            return 'new ticket';
+        }
+
+        if ($meta['route'] === 'portal_feedback') {
+            return 'new feedback';
+        }
+
+        return 'form';
     }
 
     /**
