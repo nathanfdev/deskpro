@@ -61,6 +61,8 @@ class CommonController extends AbstractController
      */
     public function alertsAction(TagRequest $tag_request)
     {
+        $user = $this->getUser();
+
         $agent = null;
         if ($token = $this->get('security.token_storage')->getToken()) {
             if ($token instanceof AgentImpersonateToken) {
@@ -69,9 +71,21 @@ class CommonController extends AbstractController
             }
         }
 
+        $saved_forms = array();
+        if ($user && $all_saved = $this->getFormSaver()->getSavedForms($user)) {
+            foreach ($all_saved as $saved) {
+                $saved_forms[] = array(
+                    'message' => $this->getFormSaver()->getMessage($saved),
+                    'link' => $this->generateUrl('saved_form_auto_submit', array('auth_code' => $saved->getExternalCode()))
+                );
+            }
+        }
+
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'impersonator' => $agent,
-            'user'         => $this->getUser(),
+            'user'         => $user,
+            'saved_forms'  => $saved_forms,
+            'display_alerts' => count($saved_forms) || $agent
         ));
     }
 

@@ -1,8 +1,16 @@
-{% if impersonator %}
-<div class="alerts">
-    <div class="alert" style="border: 1px dotted black">
-        {{ impersonator.display_name }}, you are impersonating the user: <strong> {{ user.display_name }} (ID #{{ user.id }})</strong>.
-        <a style="float: right" href="/logout">exit impersonation mode</a>.
+{% if display_alerts %}
+    <div class="alerts">
+    {% if impersonator %}
+        <div class="alert" style="border: 1px dotted black">
+            {{ impersonator.display_name }}, you are impersonating the user: <strong> {{ user.display_name }} (ID #{{ user.id }})</strong>.
+            <a style="float: right" href="/logout">exit impersonation mode</a>.
+        </div>
+    {% endif %}
+
+    {% for saved in saved_forms %}
+        <div class="alert" style="border: 1px dotted black">
+            You have an unsaved form: {{ saved.message }} <a href="{{ saved.link }}">Continue Form</a>
+        </div>
+    {% endfor %}
     </div>
-</div>
 {% endif %}

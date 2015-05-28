@@ -81,15 +81,20 @@ class NewTicketController extends AbstractController
         $form->handleRequest($request);
 
         $rerendering = false;
-        if ($form->has('rerender_form') || $request->attributes->get('rerender-form', false)) {
+        if ($form->has('rerender_form')) {
             $rerendering = true;
+        }
+        $rerendering_saved = false;
+        if ($request->attributes->get('rerender-form', false)) {
+            $rerendering_saved = true;
         }
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
                 // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
-                if (!$form->has('rerender_form') && !$request->attributes->get('rerender-form', false)) {
+                // keep the $form->has('rerender_form') because it may have changed after $form->isValid
+                if (!$form->has('rerender_form') && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {
@@ -136,6 +141,7 @@ class NewTicketController extends AbstractController
                 'form_full'         => $form_full->createView(),
                 'ticket_display_js' => $ticket_display_js,
                 'rerendering'       => $rerendering,
+                'rerendering_saved' => $rerendering_saved,
             )
         );
     }

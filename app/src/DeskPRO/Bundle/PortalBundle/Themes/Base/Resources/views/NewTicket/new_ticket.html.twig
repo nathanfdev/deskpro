@@ -13,6 +13,10 @@
             <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
         {% endif %}
 
+        {% if rerendering_saved %}
+            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+        {% endif %}
+
         {% include 'Theme:NewTicket:form_parts.html.twig' %}
     </section>
 {% endblock inner_content %}
