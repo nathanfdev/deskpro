@@ -9,7 +9,7 @@
 
     {% for saved in saved_forms %}
         <div class="alert" style="border: 1px dotted black">
-            You have an unsaved form: {{ saved.message }} <a href="{{ saved.link }}">Continue Form</a>
+            Your <strong>{{ saved.message }}</strong> has not be submitted yet. <a href="{{ saved.link }}">Continue</a>
         </div>
     {% endfor %}
     </div>

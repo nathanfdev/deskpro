@@ -57,7 +57,8 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="alerts", esi=true, always_guest_inline=true)
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests
+     * @Tag(name="alerts", esi=true)
      */
     public function alertsAction(TagRequest $tag_request)
     {
@@ -90,7 +91,8 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="flashes", esi=true, always_guest_inline=true)
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests
+     * @Tag(name="flashes", esi=true)
      */
     public function flashesAction(TagRequest $tag_request)
     {

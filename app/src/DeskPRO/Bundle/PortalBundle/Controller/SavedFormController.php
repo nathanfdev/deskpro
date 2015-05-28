@@ -83,11 +83,11 @@ class SavedFormController extends AbstractController
         $sub_request->cookies->set('_dp_csrf_token', $csrf);
         // end prep sub request
 
-        // submit the form again for the user
-        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
-
         // get rid of the saved form now
         $this->getFormSaver()->markCompleted($saved_form);
+
+        // submit the form again for the user
+        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
 
         return $response;
     }

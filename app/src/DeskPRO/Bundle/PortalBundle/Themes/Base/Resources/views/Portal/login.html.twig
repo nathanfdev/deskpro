@@ -22,10 +22,8 @@
         {% if saved_form %}
             <div class="error"
                  style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-                <p>Your form has not yet been submitted yet, becasue you are required to login.
-                    Your data has been saved until you log in, but it will be deleted soon.</p>
-                <p>Login to submit this form:
-                    {{ saved_form_message }}</p>
+                <p>Your {{ saved_form_message }} not been submitted yet.
+                    Please login to continue.</p>
             </div>
         {% endif %}
 

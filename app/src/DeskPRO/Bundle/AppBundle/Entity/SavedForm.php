@@ -109,7 +109,15 @@ class SavedForm extends NotifyPropertyChangeEntity
 
     public static function parseExternalCode($code)
     {
+        if ($code === null) {
+            return null;
+        }
+
         $pieces = explode('-', $code);
+
+        if (count($pieces) !== 2) {
+            return null;
+        }
 
         return array(
             'id' => $pieces[0],
