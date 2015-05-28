@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -68,10 +69,21 @@ class PortalRequestInfo
      */
     private $router;
 
-    public function __construct(Request $request, PortalMode $mode = null)
+    /**
+     * @var PortalModeFactory
+     */
+    private $mode_factory;
+
+    /**
+     * @param Request $request
+     * @param PortalMode $mode
+     * @param PortalModeFactory $mode_factory
+     */
+    public function __construct(Request $request, PortalMode $mode = null, PortalModeFactory $mode_factory)
     {
         $this->request = $request;
         $this->mode    = $mode;
+        $this->mode_factory = $mode_factory;
         // recommended you also call ->setRouter with the router service
     }
 
@@ -107,11 +119,7 @@ class PortalRequestInfo
 
     protected function getReleventPathInfo()
     {
-        if ($this->mode) {
-            return $this->mode->getInternalPath();
-        }
-
-        return $this->request->getPathInfo();
+        return $this->mode_factory->getInternalPath($this->request->getPathInfo());
     }
 
     public function isSpecialPath()

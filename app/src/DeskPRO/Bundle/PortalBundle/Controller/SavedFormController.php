@@ -33,16 +33,21 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class SavedFormController extends AbstractController
 {
     /**
-     * @Route("/saved-form/submit/{auth_code}", name="saved_form_auto_submit", defaults={"auth_code":null})
+     * @Route("/saved-form/{auth_code}", name="saved_form_auto_submit", defaults={"auth_code":null})
      */
-    public function autoSubmitAction($auth_code = null)
+    public function autoSubmitAction($auth_code = null, Request $request)
     {
         if ($auth_code) {
             $saved_form = $this->getFormSaver()->getByExternalCode($auth_code);
@@ -53,18 +58,30 @@ class SavedFormController extends AbstractController
         if (!$saved_form) {
             throw new NotFoundHttpException('this saved form does not exist, it may have expired');
         }
+        $saved_form_view = new SavedFormView($saved_form);
 
-        $rendered_response = $this->render(
-            'PortalBundle:SavedForm:auto_submit.html.twig',
-            array(
-                'saved_form' => new SavedFormView($saved_form)
-            )
+        // prep the sub request to re-submit the form
+        $csrf = Strings::random(10);
+        $data = $saved_form->getFormData();
+        $data = Arrays::replaceKeyWithValueRecursive($data, '_dp_csrf_token', $csrf);
+        $url = $this->generateUrl($saved_form_view->getRouteName(), $saved_form_view->getRouteParams());
+        $sub_request = Request::create(
+            $url,
+            'POST',
+            $data,
+            $request->cookies->all()
         );
+        $sub_request->attributes->set('rerender-form', true); // force a re-render
+        $sub_request->setSession($request->getSession());
+        $sub_request->cookies->set('_dp_csrf_token', $csrf);
+        // end prep sub request
 
-        // need to remove this now (from session and DB) so we dont continue to display it, or accidentally
-        // perform the action again.
+        // submit the form again for the user
+        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+
+        // get rid of the saved form now
         $this->getFormSaver()->markCompleted($saved_form);
 
-        return $rendered_response;
+        return $response;
     }
 }

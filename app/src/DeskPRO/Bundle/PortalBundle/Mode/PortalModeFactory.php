@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Mode;
 
+use Symfony\Component\Validator\Constraints\Url;
+
 class PortalModeFactory
 {
     const REGEX_ADMIN = '#^/admin\-mode(/{1}.*|$)$#';
@@ -33,5 +35,19 @@ class PortalModeFactory
         }
 
         return $mode;
+    }
+
+    /**
+     * A quick way to get the URL of a $pathinfo without the mode section. It will strip the mode portion of the URL
+     * from the beginning if it can.
+     *
+     * @param string $pathinfo
+     * @return string same as $pathinfo but stripped away the mode portion of the URL
+     */
+    public function getInternalPath($pathinfo)
+    {
+        $temp_mode = $this->createMode($pathinfo);
+
+        return $temp_mode->getInternalPath();
     }
 }

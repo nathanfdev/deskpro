@@ -9,6 +9,7 @@ services:
       - @language_router.inner
       - @language_manager
       - @portal_mode_storage
+      - @portal_mode_factory
 
   router.cache_warmer:
     public: false

@@ -86,7 +86,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
             $form_config  = $form->getConfig();
             $cookie_name  = $form_config->getOption('csrf_double_submit_cookie_name');
-            $cookie_value = $this->request_stack->getMasterRequest()->cookies->get($cookie_name, null);
+            $cookie_value = $this->request_stack->getCurrentRequest()->cookies->get($cookie_name, null);
 
             // token must be present in submitted data, and exactly equal to the request cookie value
             // token MUST be at least 5 characters

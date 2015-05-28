@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
@@ -81,11 +82,17 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     private $mode_store;
 
-    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store)
+    /**
+     * @var PortalModeFactory
+     */
+    private $mode_factory;
+
+    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store, PortalModeFactory $mode_factory)
     {
         $this->router           = $router;
         $this->language_manager = $language_manager;
         $this->mode_store       = $mode_store;
+        $this->mode_factory = $mode_factory;
         $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
@@ -119,7 +126,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     public function matchRequest(Request $request)
     {
-        $request_info = new PortalRequestInfo($request, $this->getPortalMode());
+        $request_info = new PortalRequestInfo($request, $this->getPortalMode(), $this->mode_factory);
         $request_info->setRouter($this->router);
 
         // if its not safe, or its a special url, just match it immediately

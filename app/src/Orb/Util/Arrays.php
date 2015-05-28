@@ -1903,6 +1903,31 @@ class Arrays
     }
 
     /**
+     * Replace all $key key values in the array with $replace recursively.
+     *
+     * @param array  $array
+     * @param string $key
+     * @param string $replace
+     *
+     * @return array
+     */
+    public static function replaceKeyWithValueRecursive(array $array, $key, $replace)
+    {
+        $new = array();
+
+        foreach ($array as $k => $v) {
+            if ($k == $key) {
+                $v = $replace;
+            } elseif (is_array($v)) {
+                $v = self::replaceKeyWithValueRecursive($v, $key, $replace);
+            }
+            $new[$k] = $v;
+        }
+
+        return $new;
+    }
+
+    /**
      * Take an array of arrays, and merge each sub-array into one big one.
      *
      * <code>
