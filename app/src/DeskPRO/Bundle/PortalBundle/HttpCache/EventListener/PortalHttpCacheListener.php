@@ -133,6 +133,12 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     public function onKernelResponse(FilterResponseEvent $event)
     {
         $request = $event->getRequest();
+        $response = $event->getResponse();
+
+        if (!$request->isMethodSafe()) {
+            $response->setPrivate();
+            return;
+        }
 
         $page_cache_config = $request->attributes->get('_portal_page_cache');
         $tag_cache_config = $request->attributes->get('_portal_tag_cache');
@@ -143,8 +149,6 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
         /** @var \DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PortalHttpCache $config */
         $config = $page_cache_config ?: $tag_cache_config;
-
-        $response = $event->getResponse();
 
         // http://tools.ietf.org/html/draft-ietf-httpbis-p4-conditional-12#section-3.1
         if (!in_array($response->getStatusCode(), array(200, 203, 300, 301, 302, 304, 404, 410))) {
