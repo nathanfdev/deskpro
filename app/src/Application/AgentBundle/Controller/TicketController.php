@@ -3649,6 +3649,7 @@ class TicketController extends AbstractController
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
             $newticket->status = $set_status;
             $validator->setLayout($layout);
+            $newticket->setLayout($layout);
 
             if (!$validator->isValid($newticket)) {
                 $free = array();
