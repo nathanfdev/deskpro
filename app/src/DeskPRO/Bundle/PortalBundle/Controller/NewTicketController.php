@@ -67,6 +67,7 @@ class NewTicketController extends AbstractController
                 'method' => 'GET',
                 'validation_groups' => false,
                 'settings' => $this->getBrandContainer()->getSettings(),
+                'action' => $this->generateUrl('portal_new_ticket')
             ));
             $form->submit($request->get('ticket', array()), false);
         }
@@ -75,11 +76,12 @@ class NewTicketController extends AbstractController
             'person'         => $person,
             'ticket_message' => $ticket_message,
             'settings'       => $this->getBrandContainer()->getSettings(),
+            'action' => $this->generateUrl('portal_new_ticket')
         ));
         $form->handleRequest($request);
 
         $rerendering = false;
-        if ($form->has('rerender_form')) {
+        if ($form->has('rerender_form') || $request->attributes->get('rerender-form', false)) {
             $rerendering = true;
         }
 
@@ -87,7 +89,7 @@ class NewTicketController extends AbstractController
             // dont process if user hit "more attachments"
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
                 // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
-                if (!$form->has('rerender_form')) {
+                if (!$form->has('rerender_form') && !$request->attributes->get('rerender-form', false)) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {
@@ -122,6 +124,7 @@ class NewTicketController extends AbstractController
             'ticket_message' => null,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'full_version'   => true,
+            'action' => $this->generateUrl('portal_new_ticket')
         ));
 
         $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
