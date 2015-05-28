@@ -33,11 +33,11 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -46,6 +46,7 @@ class SavedFormController extends AbstractController
 {
     /**
      * @Route("/saved-form/{auth_code}", name="saved_form_auto_submit", defaults={"auth_code":null})
+     * @Security("is_granted('ROLE_USER")
      */
     public function autoSubmitAction($auth_code = null, Request $request)
     {
@@ -71,7 +72,13 @@ class SavedFormController extends AbstractController
             $data,
             $request->cookies->all()
         );
-        $sub_request->attributes->set('rerender-form', true); // force a re-render
+
+        if (
+            $saved_form->getPerson() !== $this->getUser() // email used in form not the same as this logged in user
+            || $auth_code // if it was from a clicked link, must re-render
+        ) {
+            $sub_request->attributes->set('rerender-form', true); // force a re-render
+        }
         $sub_request->setSession($request->getSession());
         $sub_request->cookies->set('_dp_csrf_token', $csrf);
         // end prep sub request
