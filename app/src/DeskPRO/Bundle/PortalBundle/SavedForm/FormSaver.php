@@ -150,9 +150,16 @@ class FormSaver
         $this->declareAutoSubmit($saved_form);
         $this->appendToSavedForms($saved_form);
 
-        $this->session->getFlashBag()->add('error', 'You must login to submit this form.'); // TODO: more info? translation?
+        return new RedirectResponse(
+            $this->generator->generate('portal_login', array(
+                'saved_form' => $saved_form->getExternalCode()
+            ))
+        );
+    }
 
-        return new RedirectResponse($this->generator->generate('portal_login'));
+    public function getMessage(SavedForm $saved_form)
+    {
+        return 'new ticket';
     }
 
     /**

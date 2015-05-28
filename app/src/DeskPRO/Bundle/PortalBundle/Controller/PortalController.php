@@ -54,11 +54,19 @@ class PortalController extends AbstractController
      */
     public function loginAction(Request $request)
     {
+        $saved_form_message = null;
+        if ($saved_form = $this->getFormSaver()->getByExternalCode($request->get('saved_form'))) {
+            // this person just filled out a form and is being asked to login to auto-submit it
+            $saved_form_message = $this->getFormSaver()->getMessage($saved_form);
+        }
+
         return $this->renderThemeView(
             'Theme:Portal:login.html.twig',
             array(
                 'auth_manager'  => $this->get('dp_authentication_manager.user'),
                 'login_error'   => $request->get('retry') == 'auth',
+                'saved_form' => $saved_form,
+                'saved_form_message' => $saved_form_message,
                 'last_username' => $this->getSession()->get('last_username'),
                 'reset_success' => $request->get('reset_success', 0),
             )
