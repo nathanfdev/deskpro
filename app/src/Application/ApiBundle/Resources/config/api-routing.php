@@ -4215,6 +4215,16 @@ $collection->create('api_custom_fields_update_order', array(
     'methods'     => array('POST'),
 ));
 
+$collection->create(
+    'api_custom_fields_delete_option',
+    array(
+        'path' => '/custom_fields/option/{id}',
+        'controller' => 'ApiBundle:CustomFields:deleteOption',
+        'requirements' => array('id' => '\\d+'),
+        'methods' => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # CRM Organization Fields
 ########################################################################################################################

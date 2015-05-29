@@ -14,4 +14,7 @@ define [
     getBaseRouteName: ->
       return "crm.org_fields"
 
+    type: ->
+      'organizations'
+
   Admin_CustomFields_Org_Ctrl_Edit.EXPORT_CTRL()

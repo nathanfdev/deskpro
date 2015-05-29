@@ -10,7 +10,7 @@ define [
   Numbers
 ) ->
   class DeskPRO_CategoryBuilder_Controller
-    constructor: (@$scope, @$element, @$attrs, @$compile, @$q) ->
+    constructor: (@$scope, @$element, @$attrs, @$compile, @$q, @$injector) ->
       @$scope.categoryBuilder = @
       @$scope.new_cat_title = ''
       @$scope.new_cat_parent = '0'
@@ -48,24 +48,60 @@ define [
           removeIds.push($(this).data('catId'))
         )
 
-        viewValue = me.ngModel.$viewValue || []
+        doRemove = ->
+          viewValue = me.ngModel.$viewValue || []
+          for id in removeIds
+            delete me.cat_rows[id]
+            idx = null
+            for cat,k in viewValue
+              if cat.id == id
+                idx = k
+                break
+            if idx != null
+              viewValue.splice(idx, 1)
 
-        for id in removeIds
-          delete me.cat_rows[id]
-          idx = null
-          for cat,k in viewValue
-            if cat.id == id
-              idx = k
-              break
-          if idx != null
-            viewValue.splice(idx,1)
-
-        row.slideUp(200, ->
-          me.$scope.$apply( ->
-            row.remove()
-            me.ngModel.$setViewValue(viewValue)
-            me.updateView(viewValue)
+          row.slideUp(200, ->
+            me.$scope.$apply(->
+              row.remove()
+              me.ngModel.$setViewValue(viewValue)
+              me.updateView(viewValue)
+            )
           )
+
+        # handle delete/update if only field type is defined
+        option = row.data 'catId'
+        $modal = me.$injector.get '$modal'
+        try
+          Api = me.$injector.get 'Api'
+        catch error
+          Api = null
+
+        if !me.$scope.fieldType || !Api
+          return doRemove()
+
+        Api.sendDelete('/custom_fields/option/' + option, {step: 1}).then(
+          (res) ->
+            # if nothing to do, just delete
+            return doRemove() if !res.data.success
+
+            $modal.open
+              templateUrl: DP_BASE_ADMIN_URL + '/load-view/' + 'CustomFields/Common/delete-option-modal.html'
+              controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+                $scope.dismiss = -> $modalInstance.dismiss()
+                $scope.mode = 0
+                $scope.type = me.$scope.fieldType
+                $scope.name = row.children('div').children('input').val()
+
+                $scope.confirm = ->
+                  $scope.busy = true
+                  data =
+                    step: 2
+                    type: $scope.type
+                    mode: $scope.mode
+                  Api.sendDelete('/custom_fields/option/' + option, data).then ->
+                    console.info 'done'
+              ]
+          () ->
         )
       )
 
@@ -246,6 +282,10 @@ define [
         @addCat(catData)
       )
 
-    @FACTORY = [ '$scope', '$element', '$attrs', '$compile', '$q', ($scope, $element, $attrs, $compile, $q) ->
-      return new DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q)
+    @FACTORY = ['$scope', '$element', '$attrs', '$compile', '$q', '$injector',
+      ($scope, $element, $attrs, $compile, $q, $injector) ->
+        return new DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q, $injector)
     ]
+
+
+    showDeleteOption: () ->

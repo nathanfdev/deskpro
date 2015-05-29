@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
@@ -270,5 +271,30 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         }
 
         return $definition;
+    }
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deleteOptionAction($id, Request $request)
+    {
+        $step = $request->get('step');
+        switch ($step) {
+
+            case 1:
+                $response = array('success' => false);
+
+
+                return $this->createJsonResponse($response);
+                break;
+
+            case 2:
+                return $this->createSuccessResponse();
+                break;
+        }
+
+        throw new BadRequestHttpException;
     }
 }
