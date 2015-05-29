@@ -27,8 +27,10 @@
                 <br/>
                 <span class="text-muted" ng-show="mode">
                     Remove the option and update any {{ ng_var('type') }} using it to:
-                    <select>
-                        <option>idontknow</option>
+                    <select ng-model="update_to">
+                        <option ng-repeat="(id, title) in options" value="{{ ng_var('id') }}">
+                            {{ ng_var('title') }}
+                        </option>
                     </select>
                 </span>
             </label>

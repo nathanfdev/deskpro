@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 
+use Application\DeskPRO\DBAL\Connection;
+
 class CustomDefAbstract extends AbstractEntityRepository
 {
     public static function getCacheId($id)
@@ -126,5 +128,49 @@ class CustomDefAbstract extends AbstractEntityRepository
         }
 
         $db->commit();
+    }
+
+    /**
+     * @param array $ids
+     * @return bool
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function hasData(array $ids)
+    {
+        $table = str_replace('_def_', '_data_', $this->getTableName());
+        $con = $this->_em->getConnection();
+        $q = sprintf('select count(*) from %s where field_id in (:ids)', $table);
+        $res = $con->executeQuery($q, array('ids' => $ids), array('ids' => Connection::PARAM_INT_ARRAY))->fetchColumn();
+
+        return (bool)$res;
+    }
+
+    /**
+     * @param array $ids
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getByOptions(array $ids)
+    {
+        return $this->getEntityManager()->createQuery(
+            "
+            SELECT f
+            FROM {$this->_entityName} f INDEX BY f.id
+            JOIN f.children c
+            WHERE c.id in (:ids)
+        "
+        )->setParameter('ids', $ids)->getOneOrNullResult();
+    }
+
+    public function updateTo(array $fromIds, $toId)
+    {
+        $table = str_replace('_def_', '_data_', $this->getTableName());
+        $con = $this->_em->getConnection();
+        $q = sprintf('update %s set field_id = :to where field_id in (:ids)', $table);
+        $con->executeQuery(
+            $q,
+            array('ids' => $fromIds, 'to' => $toId),
+            array('ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT)
+        );
     }
 }

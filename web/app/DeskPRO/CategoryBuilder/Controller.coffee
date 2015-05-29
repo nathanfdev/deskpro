@@ -79,27 +79,32 @@ define [
         if !me.$scope.fieldType || !Api
           return doRemove()
 
-        Api.sendDelete('/custom_fields/option/' + option, {step: 1}).then(
+        Api.sendDelete('/custom_fields/option', {step: 1, type: me.$scope.fieldType, ids: removeIds}).then(
           (res) ->
             # if nothing to do, just delete
-            return doRemove() if !res.data.success
+            return doRemove() if !res.data.success || !res.data.options?
 
             $modal.open
               templateUrl: DP_BASE_ADMIN_URL + '/load-view/' + 'CustomFields/Common/delete-option-modal.html'
               controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
                 $scope.dismiss = -> $modalInstance.dismiss()
                 $scope.mode = 0
+                $scope.options = res.data.options
+                $scope.update_to = res.data.default
                 $scope.type = me.$scope.fieldType
                 $scope.name = row.children('div').children('input').val()
 
                 $scope.confirm = ->
-                  $scope.busy = true
-                  data =
-                    step: 2
-                    type: $scope.type
-                    mode: $scope.mode
-                  Api.sendDelete('/custom_fields/option/' + option, data).then ->
-                    console.info 'done'
+                  if $scope.mode
+                    $scope.busy = true
+                    data =
+                      step:      2
+                      type:      me.$scope.fieldType
+                      ids:       removeIds
+                      update_to: $scope.update_to
+                    Api.sendDelete('/custom_fields/option', data)
+                  doRemove()
+                  $scope.dismiss()
               ]
           () ->
         )
@@ -172,7 +177,7 @@ define [
                 Arrays.append(select_options, sub_options)
               else
                 select_options.push({
-                  id: opt.id,
+                  id: opt.id
                   title: title_segs.join(' > ')
                 })
 
@@ -201,7 +206,7 @@ define [
 
         if depth+1 < @maxDepth
           @$scope.parent_cat_list.push({
-            id: cat.id,
+            id: cat.id
             title: full_title
           })
 

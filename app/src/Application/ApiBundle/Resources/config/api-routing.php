@@ -4218,9 +4218,8 @@ $collection->create('api_custom_fields_update_order', array(
 $collection->create(
     'api_custom_fields_delete_option',
     array(
-        'path' => '/custom_fields/option/{id}',
+        'path' => '/custom_fields/option',
         'controller' => 'ApiBundle:CustomFields:deleteOption',
-        'requirements' => array('id' => '\\d+'),
         'methods' => array('DELETE'),
     )
 );
