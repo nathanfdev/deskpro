@@ -580,7 +580,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $existPersons = $this->em->getRepository('DeskPRO:Person')->findByEmails($set_emails);
 
         // we have a dupe email error
-        if(count($existPersons) > 1) {
+        if (count($existPersons) >= 1) {
             $error_info = array('existing' => array());
 
             foreach ($existPersons as $person) {

@@ -445,8 +445,11 @@ pageMeta.lang = {{ {
 
 						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 						<optgroup label="{{ phrase('agent.general.your_teams') }}">
-							{% for team in app.user.getAgent().getTeams() %}
+                            {% set teams = app.user.getAgent().getTeams() %}
+                            {% for team in agent_teams %}
+                                {% if team in teams %}
 								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+                                {% endif %}
 							{% endfor %}
 						</optgroup>
 						{% endif %}
