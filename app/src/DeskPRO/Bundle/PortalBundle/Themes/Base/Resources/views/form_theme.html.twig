@@ -1,5 +1,20 @@
 {% extends 'form_div_layout.html.twig' %}
 
+{# letting logged in users choose their email #}
+{% block deskpro_person_email_choice_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% set count = form|length %}
+        {% if count > 1 %}
+            {%- for child in form %}
+                {{- form_widget(child) -}}
+                {{- form_label(child) -}}<br>
+            {% endfor -%}
+        {% else %}
+            <strong>{{ person.primary_email_address }}</strong>
+        {% endif %}
+    </div>
+{% endblock deskpro_person_email_choice_widget %}
+
 {# Generic Form Types #}
 {% block form_widget -%}
     {% if compound %}

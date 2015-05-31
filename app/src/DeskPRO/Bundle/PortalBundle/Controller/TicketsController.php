@@ -177,8 +177,8 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
             // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
             if (!$form->has('rerender_form')) {
-                // TODO: fire an event (Ticket::EDIT)
-                $this->getRepo('DeskPRO:Ticket')->saveTicket($ticket);
+                $this->getEm()->persist($ticket);
+                $this->getEm()->flush($ticket);
 
                 $this->addFlash('success', 'updated.ticket.translated');
 

@@ -203,6 +203,14 @@ services:
       - { name: form.type, alias: deskpro_person_email }
 
 
+  form.person_email_choice:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEmailChoiceType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: deskpro_person_email_choice }
+
+
   form.display_html:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DisplayHtmlType
     tags:

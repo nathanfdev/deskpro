@@ -1843,6 +1843,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @param PersonEmail $person_email
+     *
+     * Set the email address that should be used for this ticket. Setting to null
+     * means use the person's primary email (see self::getTicketPersonEmail).
+     *
+     * Note that this is a necessary method for the form component propery accessor.
+     */
+    public function setTicketPersonEmail(PersonEmail $person_email = null)
+    {
+        $this->setModelField('person_email', $person_email);
+    }
+
     public function getPersonEmailAddress()
     {
         $email = $this->getPersonEmail();

@@ -469,10 +469,27 @@ class TicketType extends AbstractType
 
     private function addUserEmail(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        $form_context->getForm()->add($field->getId(), 'deskpro_person_email', array(
-            'property_path' => 'person.primary_email',
-            'label'         => false,
-        ));
+        $person = $form_context->getPerson();
+        if ($person->isUser()) {
+            $form_context->getForm()->add(
+                $field->getId(),
+                'deskpro_person_email_choice',
+                array(
+                    'property_path' => 'ticket_person_email',
+                    'label' => 'Email',
+                    'person' => $person
+                )
+            );
+        } else {
+            $form_context->getForm()->add(
+                $field->getId(),
+                'deskpro_person_email',
+                array(
+                    'property_path' => 'person.primary_email',
+                    'label' => false,
+                )
+            );
+        }
     }
 
     private function addUserTimezone(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
@@ -687,8 +704,14 @@ class TicketType extends AbstractType
 
     private function addSubmit(TicketFormContext $form_context)
     {
+        if ($form_context->getVisibility() !== TicketFormContext::VISIBILITY_NEW) {
+            $label = 'Save Changes';
+        } else {
+            $label = 'Submit Ticket';
+        }
+        // TODO: add translation on $label
         $form_context->getForm()->add('submit', 'submit', array(
-            'label' => 'Submit Ticket',
+            'label' => $label,
         ));
     }
 

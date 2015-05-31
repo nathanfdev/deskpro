@@ -100,11 +100,13 @@ class NewTicketController extends AbstractController
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
 
-                            return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                            // intercept it only if its a user... dont do this for contacts
+                            if ($person->isUser()) {
+                                return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                            }
                         }
 
                         // since the guest is set on the form, we need to update all of the associations
-                        // TODO: we should be able to deal with this better by using a contact to beign with
                         $ticket->setPerson($person);
                         $ticket_message->setPerson($person);
                         foreach ($ticket_message->getAttachments() as $attachment) {
@@ -116,6 +118,11 @@ class NewTicketController extends AbstractController
 
                     $this->addFlash('success', 'created.ticket.phrase.here');
 
+                    if (!$person->isUser()) { // not a user, redirect home
+                        return $this->redirectToRoute('portal_index');
+                    }
+
+                    // is a user, redirect to ticket view (will ask to login if not already)
                     return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
                 }
             }

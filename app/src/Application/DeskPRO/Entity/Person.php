@@ -628,11 +628,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->id;
     }
 
-    public function isGuest()
-    {
-        return false;
-    }
-
     public function _initPersonLogger()
     {
         if ($this->_person_logger) {
@@ -700,6 +695,36 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         } else {
             $this->setModelField('organization', null);
         }
+    }
+
+    /**
+     * Is this a guest?
+     *
+     * @return bool
+     */
+    public function isGuest()
+    {
+        return false;
+    }
+
+    /**
+     * Is this user a contact? (Not a user that can login?)
+     *
+     * @return bool
+     */
+    public function isContact()
+    {
+        return !$this->isUser();
+    }
+
+    /**
+     * Is this a user? (Can log in)
+     *
+     * @return bool
+     */
+    public function isUser()
+    {
+        return (bool)$this->is_user;
     }
 
     /**
@@ -1806,7 +1831,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function addEmail(PersonEmail $email)
     {
-        die(dump($email));
         $this->emails->add($email);
         $this->_onPropertyChanged('emails', null, $this->emails);
     }
