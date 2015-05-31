@@ -2,8 +2,10 @@
   <div class="search-and-ticket">
     <div class="search-form">
       <form>
-        <i class="fa fa-search"></i>
-        <input type="text" value="Lorel ipsum">
+        <div class="input-wrap">
+          <i class="fa fa-search"></i>
+          <input type="text" placeholder="Search...">
+        </div>
         <input type="submit" value="Search">
       </form>
     </div>
@@ -13,13 +15,14 @@
     </div>
 
     <div class="search-and-ticket-dropdown">
-        <span class="button select-action">
+      <a href="{{ path('portal_new_ticket') }}">
+         <span class="button select-action">
           <i class="fa fa-comments"></i> Contact Us
           <span class="select-action-dropdown">
             <i class="fa fa-caret-down"></i>
           </span>
         </span>
+      </a>
     </div>
-
   </div>
 </div>

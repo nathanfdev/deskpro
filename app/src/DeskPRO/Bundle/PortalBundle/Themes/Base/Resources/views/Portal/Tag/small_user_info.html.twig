@@ -10,7 +10,7 @@
   </li>
 {% else %}
   <li class="welcome">
-    Welcome back {{ app.name }}
+    Welcome back {{ app.user.name }}
     &middot; <a href="{{ path('portal_user_profile') }}">Your Account</a>
     {% if ticket_count %}
       &middot; <a href="{{ path('portal_tickets') }}">Tickets ({{ ticket_count }})</a>
