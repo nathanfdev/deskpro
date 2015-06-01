@@ -155,6 +155,10 @@ function getSassPipe(glob, noCache, dest) {
     dest = 'src-build';
   }
 
+  var sassOpts = {
+    includePaths: ["node_modules/"]
+  };
+
   // All SCSS are in src/X/Y/Z/Resources/style/_.scss
   // so relative is:
   var mapSourceRoot = '../../../../../../src';
@@ -162,7 +166,7 @@ function getSassPipe(glob, noCache, dest) {
   if (noCache) {
     return gulp.src(glob)
       .pipe(sourcemaps.init())
-      .pipe(sass())
+      .pipe(sass(sassOpts))
       .on('end', function () {
         sassLogger.end(glob);
       })
@@ -172,7 +176,7 @@ function getSassPipe(glob, noCache, dest) {
     return gulp.src(glob)
       .pipe(cached('watch', {optimizeMemory: true}))
       .pipe(sourcemaps.init())
-      .pipe(sass())
+      .pipe(sass(sassOpts))
       .on('end', function () {
         sassLogger.end(glob);
       })

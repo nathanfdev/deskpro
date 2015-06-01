@@ -29,94 +29,62 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler;
+namespace DeskPRO\Bundle\PortalBundle\Brand;
 
-use DeskPRO\Component\Filesystem\TmpDir;
-use DeskPRO\Component\SassCompiler\CompilerAdapter\CompilerAdapterInterface;
-use DeskPRO\Component\SassCompiler\Filter\FilterInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Brand;
+use Doctrine\ORM\EntityManager;
 
-class SassCompiler
+/**
+ * @TODO clean this up + optimise
+ */
+class BrandAssetLoader
 {
     /**
-     * @var CompilerAdapterInterface
+     * @var Brand
      */
-    private $compiler;
+    private $brand;
 
     /**
-     * @var FilterInterface[] array
+     * @var EntityManager
      */
-    private $filters = array();
+    private $em;
 
     /**
-     * @var string|null
+     * @var DeskproBlobStorage
      */
-    private $tmp_dir = null;
+    private $bs;
 
     /**
-     * @param CompilerAdapterInterface $compiler
-     * @param string|null $tmp_dir
+     * @param Brand $brand
+     * @param EntityManager $em
+     * @param DeskproBlobStorage $bs
      */
-    function __construct(CompilerAdapterInterface $compiler, $tmp_dir = null)
+    function __construct(Brand $brand, EntityManager $em, DeskproBlobStorage $bs)
     {
-        $this->compiler = $compiler;
-        $this->tmp_dir = $tmp_dir;
-    }
-
-
-    /**
-     * @param FilterInterface $filter
-     */
-    public function addFilter(FilterInterface $filter)
-    {
-        $this->filters[] = $filter;
+        $this->brand = $brand;
+        $this->em = $em;
+        $this->bs = $bs;
     }
 
     /**
-     * Creates a temporary directory where files in memory
-     * can be written to.
+     * Gets all CSS or SCSS files (used when we compile styles)
      *
-     * @return string
+     * @return array Array of filename => content
      */
-    private function writeTmpProjectDir(SassProject $project)
+    public function getStylesheets()
     {
-        $tmp_dir = TmpDir::create($this->tmp_dir);
-        $fs = new Filesystem();
+        $all = array();
 
-        foreach ($project->getFileSources() as $name => $source) {
-            $fs->dumpFile($tmp_dir . DIRECTORY_SEPARATOR . $name, $source, null);
+        foreach ($this->em->createQuery("
+            SELECT a
+            FROM App:BrandAsset
+            WHERE a.brand = ?0 AND (a.name LIKE '%.css' OR a.name LIKE '%.scss')
+        ")->execute() as $b) {
+            $src = $this->bs->copyBlobRecordToString($b->blob);
+            $all[$b->name] = $src;
         }
 
-        return $tmp_dir;
-    }
-
-    /**
-     * @param SassProject $project
-     */
-    public function compileProject(SassProject $project)
-    {
-        $p = new SassProject();
-
-        foreach ($project->getFileSources() as $file => $source) {
-            foreach ($this->filters as $f) {
-                $source = $f->preProcessSource($file, $source);
-            }
-            $p->addFileSource($file, $source);
-        }
-
-        $tmp_dir = $this->writeTmpProjectDir($p);
-        $p->addIncludePath($tmp_dir);
-
-        foreach ($project->getIncludePaths() as $inc) {
-            $p->addIncludePath($inc);
-        }
-
-        $result = $this->compiler->compile($tmp_dir . DIRECTORY_SEPARATOR . '__main__.scss', $p->getIncludePaths());
-
-        foreach ($this->filters as $f) {
-            $result = $f->postProcessResult($result);
-        }
-
-        return $result;
+        return $all;
     }
 }

@@ -63,11 +63,17 @@ class BrandContainer
      */
     private $theme;
 
-    public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver)
+    /**
+     * @var BrandAssetLoader
+     */
+    private $asset_loader;
+
+    public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver, BrandAssetLoader $asset_loader)
     {
         $this->brand          = $brand;
         $this->settings       = $settings;
         $this->theme_resolver = $theme_resolver;
+        $this->asset_loader   = $asset_loader;
     }
 
     /**
@@ -95,6 +101,14 @@ class BrandContainer
     public function getTheme()
     {
         return $this->theme ? $this->theme : $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->theme_id);
+    }
+
+    /**
+     * @return BrandAssetLoader
+     */
+    public function getAssetLoader()
+    {
+        return $this->asset_loader;
     }
 
     /**

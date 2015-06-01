@@ -29,94 +29,63 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler;
+namespace DeskPRO\Component\SassCompiler\Filter;
 
-use DeskPRO\Component\Filesystem\TmpDir;
-use DeskPRO\Component\SassCompiler\CompilerAdapter\CompilerAdapterInterface;
-use DeskPRO\Component\SassCompiler\Filter\FilterInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use DeskPRO\Component\Util\RandUtils;
 
-class SassCompiler
+/**
+ * Removes absolute and relative paths in @import's.
+ * Means only files in the include paths can be imported.
+ *
+ * This "fixes" it by replacing bad @imports with a token,
+ * and then putting them back after SCSS has run (thus it's possible
+ * for someone to use an http url for example and still have it @import via usual css).
+ */
+class SafeImportIncPathFilter implements FilterInterface
 {
     /**
-     * @var CompilerAdapterInterface
+     * @var array
      */
-    private $compiler;
+    private $tokens = array();
 
     /**
-     * @var FilterInterface[] array
-     */
-    private $filters = array();
-
-    /**
-     * @var string|null
-     */
-    private $tmp_dir = null;
-
-    /**
-     * @param CompilerAdapterInterface $compiler
-     * @param string|null $tmp_dir
-     */
-    function __construct(CompilerAdapterInterface $compiler, $tmp_dir = null)
-    {
-        $this->compiler = $compiler;
-        $this->tmp_dir = $tmp_dir;
-    }
-
-
-    /**
-     * @param FilterInterface $filter
-     */
-    public function addFilter(FilterInterface $filter)
-    {
-        $this->filters[] = $filter;
-    }
-
-    /**
-     * Creates a temporary directory where files in memory
-     * can be written to.
+     * Called on a source file BEFORE scss has been compiled.
      *
+     * @param string $file_name
+     * @param string $source
      * @return string
      */
-    private function writeTmpProjectDir(SassProject $project)
+    public function preProcessSource($file_name, $source)
     {
-        $tmp_dir = TmpDir::create($this->tmp_dir);
-        $fs = new Filesystem();
+        $tokens = array();
+        $source = preg_replace_callback('#@import\s+(.*?);#i', function($m) use (&$tokens, $source) {
+            $url = trim(trim(trim($m[1]), "'\""));
+            if (!preg_match('#^[a-zA-Z0-9_\-_][a-zA-Z0-9_\-_\.\\/]#', $url)) {
+                $t = RandUtils::randomBodyToken($source);
+                $tokens[$t] = $m[0];
+                return $t;
+            } else {
+                return $m[0];
+            }
+        }, $source);
 
-        foreach ($project->getFileSources() as $name => $source) {
-            $fs->dumpFile($tmp_dir . DIRECTORY_SEPARATOR . $name, $source, null);
-        }
+        $this->tokens = $tokens;
 
-        return $tmp_dir;
+        return $source;
     }
 
     /**
-     * @param SassProject $project
+     * Called on the result AFTER scss has been compiled.
+     *
+     * @param string $source
+     * @return string
      */
-    public function compileProject(SassProject $project)
+    public function postProcessResult($source)
     {
-        $p = new SassProject();
-
-        foreach ($project->getFileSources() as $file => $source) {
-            foreach ($this->filters as $f) {
-                $source = $f->preProcessSource($file, $source);
-            }
-            $p->addFileSource($file, $source);
+        if (!$this->tokens) {
+            return $source;
         }
 
-        $tmp_dir = $this->writeTmpProjectDir($p);
-        $p->addIncludePath($tmp_dir);
-
-        foreach ($project->getIncludePaths() as $inc) {
-            $p->addIncludePath($inc);
-        }
-
-        $result = $this->compiler->compile($tmp_dir . DIRECTORY_SEPARATOR . '__main__.scss', $p->getIncludePaths());
-
-        foreach ($this->filters as $f) {
-            $result = $f->postProcessResult($result);
-        }
-
-        return $result;
+        return str_replace(array_keys($this->tokens), array_values($this->tokens), $source);
     }
 }

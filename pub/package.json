@@ -4,9 +4,8 @@
   "dependencies": {
     "node-bourbon": "1.2.3",
     "node-neat": "1.4.2",
-    "font-awesome": "4.3.0"
-  },
-  "devDependencies": {
+    "font-awesome": "4.3.0",
+
     "react": "0.13.1",
     "react-tools": "0.13.1",
     "immutable": "3.7.1",
@@ -21,7 +20,9 @@
     "browserify": "9.0.3",
     "watchify": "2.3.0",
     "babelify": "5.0.3",
-    "uglify": "0.1.1",
+    "grunt": "0.4.1",
+    "grunt-css-url-replace": "0.2.3",
+    "uglify": "0.1.0",
 
     "gulp": "3.8.11",
     "gulp-util": "3.0.3",

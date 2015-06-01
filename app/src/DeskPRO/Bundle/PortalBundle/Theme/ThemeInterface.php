@@ -76,6 +76,11 @@ interface ThemeInterface
     public function getBaseControllerDir();
 
     /**
+     * @return string absolute path to the root of this themes stylesheets
+     */
+    public function getStylesheetsPath();
+
+    /**
      * @return string|null base namespace of controllers, like: DeskPRO\Bundle\PortalBundle\Themes\Standard
      */
     public function getNamespace();

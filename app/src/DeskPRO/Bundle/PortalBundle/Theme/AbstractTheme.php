@@ -74,6 +74,16 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
     }
 
     /**
+     * Path to raw SCSS files on the filesystem.
+     *
+     * @return string
+     */
+    public function getStylesheetsPath()
+    {
+        return DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style';
+    }
+
+    /**
      * Get the tag for the given tag name.
      *
      * @param $tag_name

@@ -29,94 +29,51 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler;
+namespace DeskPRO\Bundle\PortalBundle\Brand\Style;
 
-use DeskPRO\Component\Filesystem\TmpDir;
-use DeskPRO\Component\SassCompiler\CompilerAdapter\CompilerAdapterInterface;
-use DeskPRO\Component\SassCompiler\Filter\FilterInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Component\SassCompiler\SassCompiler;
+use DeskPRO\Component\SassCompiler\SassProject;
 
-class SassCompiler
+class StyleCompiler
 {
     /**
-     * @var CompilerAdapterInterface
+     * @var SassCompiler
      */
-    private $compiler;
+    private $sass_compiler;
 
     /**
-     * @var FilterInterface[] array
+     * @param SassCompiler $sass_compiler
      */
-    private $filters = array();
-
-    /**
-     * @var string|null
-     */
-    private $tmp_dir = null;
-
-    /**
-     * @param CompilerAdapterInterface $compiler
-     * @param string|null $tmp_dir
-     */
-    function __construct(CompilerAdapterInterface $compiler, $tmp_dir = null)
+    function __construct(SassCompiler $sass_compiler)
     {
-        $this->compiler = $compiler;
-        $this->tmp_dir = $tmp_dir;
-    }
-
-
-    /**
-     * @param FilterInterface $filter
-     */
-    public function addFilter(FilterInterface $filter)
-    {
-        $this->filters[] = $filter;
+        $this->sass_compiler = $sass_compiler;
     }
 
     /**
-     * Creates a temporary directory where files in memory
-     * can be written to.
-     *
+     * @param BrandContainer $brand_container
      * @return string
      */
-    private function writeTmpProjectDir(SassProject $project)
+    public function compileBrandStyle(BrandContainer $brand_container)
     {
-        $tmp_dir = TmpDir::create($this->tmp_dir);
-        $fs = new Filesystem();
+        $proj = new SassProject();
+        $proj->addIncludePath($brand_container->getTheme()->getStylesheetsPath());
+        $proj->addIncludePath(DP_WEB_ROOT . '/pub/node_modules');
 
-        foreach ($project->getFileSources() as $name => $source) {
-            $fs->dumpFile($tmp_dir . DIRECTORY_SEPARATOR . $name, $source, null);
-        }
-
-        return $tmp_dir;
-    }
-
-    /**
-     * @param SassProject $project
-     */
-    public function compileProject(SassProject $project)
-    {
-        $p = new SassProject();
-
-        foreach ($project->getFileSources() as $file => $source) {
-            foreach ($this->filters as $f) {
-                $source = $f->preProcessSource($file, $source);
+        $styles = $brand_container->getAssetLoader()->getStylesheets();
+        foreach ($styles as $f => $src) {
+            if ($f === 'main.scss') {
+                $proj->setSource($src);
+            } else {
+                $proj->addFileSource($f, $src);
             }
-            $p->addFileSource($file, $source);
         }
 
-        $tmp_dir = $this->writeTmpProjectDir($p);
-        $p->addIncludePath($tmp_dir);
-
-        foreach ($project->getIncludePaths() as $inc) {
-            $p->addIncludePath($inc);
+        // if we arent overriding it, we load the original
+        if (!isset($styles['main.scss'])) {
+            $proj->setSource(file_get_contents($brand_container->getTheme()->getStylesheetsPath() . DIRECTORY_SEPARATOR . 'main.scss'));
         }
 
-        $result = $this->compiler->compile($tmp_dir . DIRECTORY_SEPARATOR . '__main__.scss', $p->getIncludePaths());
-
-        foreach ($this->filters as $f) {
-            $result = $f->postProcessResult($result);
-        }
-
-        return $result;
+        return $this->sass_compiler->compileProject($proj);
     }
 }
