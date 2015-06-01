@@ -31,92 +31,74 @@
 
 namespace DeskPRO\Component\SassCompiler;
 
-use DeskPRO\Component\Filesystem\TmpDir;
-use DeskPRO\Component\SassCompiler\CompilerAdapter\CompilerAdapterInterface;
-use DeskPRO\Component\SassCompiler\Filter\FilterInterface;
-use Symfony\Component\Filesystem\Filesystem;
-
-class SassCompiler
+class SassProject
 {
     /**
-     * @var CompilerAdapterInterface
+     * @var string[]
      */
-    private $compiler;
+    private $file_sources = array();
 
     /**
-     * @var FilterInterface[] array
+     * @var string[]
      */
-    private $filters = array();
+    private $include_paths = array();
 
     /**
-     * @var string|null
+     * @param string $p
      */
-    private $tmp_dir = null;
-
-    /**
-     * @param CompilerAdapterInterface $compiler
-     * @param string|null $tmp_dir
-     */
-    function __construct(CompilerAdapterInterface $compiler, $tmp_dir = null)
+    public function addIncludePath($p)
     {
-        $this->compiler = $compiler;
-        $this->tmp_dir = $tmp_dir;
-    }
-
-
-    /**
-     * @param FilterInterface $filter
-     */
-    public function addFilter(FilterInterface $filter)
-    {
-        $this->filters[] = $filter;
+        $this->include_paths[] = rtrim($p, '\\/');
     }
 
     /**
-     * Creates a temporary directory where files in memory
-     * can be written to.
+     * Sets the main SCSS entry point file
      *
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+        $this->addFileSource('__main__.scss', $source);
+    }
+
+    /**
+     * Adds a source file to the project (i.e, can be @import'd)
+     *
+     * @param string $name    File name
+     * @param string $source  The source for the file
+     */
+    public function addFileSource($name, $source)
+    {
+        $name = trim($name, '\\/');
+
+        if (!preg_match('#[a-zA-Z0-9_\-][a-zA-Z0-9\._\- \\/]#', $name)) {
+            throw new \InvalidArgumentException("The file name must only contain normal characters");
+        }
+
+        $this->file_sources[$name] = $source;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getIncludePaths()
+    {
+        return $this->include_paths;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getFileSources()
+    {
+        return $this->file_sources;
+    }
+
+    /**
      * @return string
      */
-    private function writeTmpProjectDir(SassProject $project)
+    public function getSource()
     {
-        $tmp_dir = TmpDir::create($this->tmp_dir);
-        $fs = new Filesystem();
-
-        foreach ($project->getFileSources() as $name => $source) {
-            $fs->dumpFile($tmp_dir . DIRECTORY_SEPARATOR . $name, $source, null);
-        }
-
-        return $tmp_dir;
-    }
-
-    /**
-     * @param SassProject $project
-     */
-    public function compileProject(SassProject $project)
-    {
-        $p = new SassProject();
-
-        foreach ($project->getFileSources() as $file => $source) {
-            foreach ($this->filters as $f) {
-                $source = $f->preProcessSource($file, $source);
-            }
-            $p->addFileSource($file, $source);
-        }
-
-        $tmp_dir = $this->writeTmpProjectDir($p);
-        $p->addIncludePath($tmp_dir);
-
-        foreach ($project->getIncludePaths() as $inc) {
-            $p->addIncludePath($inc);
-        }
-
-        $result = $this->compiler->compile($tmp_dir . DIRECTORY_SEPARATOR . '__main__.scss', $p->getIncludePaths());
-
-        foreach ($this->filters as $f) {
-            $result = $f->postProcessResult($result);
-        }
-
-        return $result;
+        return isset($this->file_sources['__main__.scss']) ? $this->file_sources['__main__.scss'] : '';
     }
 }

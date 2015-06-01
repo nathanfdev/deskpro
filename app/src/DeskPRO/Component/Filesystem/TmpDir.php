@@ -29,94 +29,90 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Component\SassCompiler;
+namespace DeskPRO\Component\Filesystem;
 
-use DeskPRO\Component\Filesystem\TmpDir;
-use DeskPRO\Component\SassCompiler\CompilerAdapter\CompilerAdapterInterface;
-use DeskPRO\Component\SassCompiler\Filter\FilterInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use DeskPRO\Component\Util\RandUtils;
 
-class SassCompiler
+class TmpDir
 {
     /**
-     * @var CompilerAdapterInterface
+     * @var string
      */
-    private $compiler;
+    private $path;
 
     /**
-     * @var FilterInterface[] array
-     */
-    private $filters = array();
-
-    /**
-     * @var string|null
-     */
-    private $tmp_dir = null;
-
-    /**
-     * @param CompilerAdapterInterface $compiler
-     * @param string|null $tmp_dir
-     */
-    function __construct(CompilerAdapterInterface $compiler, $tmp_dir = null)
-    {
-        $this->compiler = $compiler;
-        $this->tmp_dir = $tmp_dir;
-    }
-
-
-    /**
-     * @param FilterInterface $filter
-     */
-    public function addFilter(FilterInterface $filter)
-    {
-        $this->filters[] = $filter;
-    }
-
-    /**
-     * Creates a temporary directory where files in memory
-     * can be written to.
+     * Create a tmp dir and return the path.
      *
+     * @param $base_path
      * @return string
      */
-    private function writeTmpProjectDir(SassProject $project)
+    public static function create($base_path)
     {
-        $tmp_dir = TmpDir::create($this->tmp_dir);
-        $fs = new Filesystem();
-
-        foreach ($project->getFileSources() as $name => $source) {
-            $fs->dumpFile($tmp_dir . DIRECTORY_SEPARATOR . $name, $source, null);
-        }
-
-        return $tmp_dir;
+        $tmp = new self($base_path);
+        return $tmp->getPath();
     }
 
     /**
-     * @param SassProject $project
+     * @param string|null $base_path
      */
-    public function compileProject(SassProject $project)
+    public function __construct($base_path = null)
     {
-        $p = new SassProject();
+        if (!$base_path) {
+            $base_path = sys_get_temp_dir();
+        }
 
-        foreach ($project->getFileSources() as $file => $source) {
-            foreach ($this->filters as $f) {
-                $source = $f->preProcessSource($file, $source);
+        $base_path = @realpath($base_path);
+
+        if (!$base_path || !is_writable($base_path)) {
+            throw new \RuntimeException("Base tmp dir is not writable: $base_path");
+        }
+
+        do {
+            $path = $base_path . DIRECTORY_SEPARATOR . 'tmp_' . date('YmdHis') . '_' . RandUtils::randomString(10, 'alpha_iu');
+        } while (file_exists($path));
+
+        @mkdir($path);
+        if (!is_dir($path)) {
+            throw new \RuntimeException("Could not create tmp dir: " . $path . " (" . error_get_last() . ")");
+        }
+
+        $this->path = $path;
+
+        register_shutdown_function(array($this, 'cleanup'));
+    }
+
+    /**
+     * Cleans up the temporary directory
+     */
+    public function cleanup()
+    {
+        if (!$this->path) {
+            return;
+        }
+
+        $rm = function($files) use (&$rm) {
+            foreach ($files as $p) {
+                if (is_dir($p) && !is_link($p)) {
+                    $rm(new \FilesystemIterator($p));
+                    @rmdir($p);
+                } else {
+                    @unlink($p);
+                }
             }
-            $p->addFileSource($file, $source);
+        };
+        if (is_dir($this->path)) {
+            $rm(new \FilesystemIterator($this->path));
+            @rmdir($this->path);
         }
 
-        $tmp_dir = $this->writeTmpProjectDir($p);
-        $p->addIncludePath($tmp_dir);
+        $this->path = null;
+    }
 
-        foreach ($project->getIncludePaths() as $inc) {
-            $p->addIncludePath($inc);
-        }
-
-        $result = $this->compiler->compile($tmp_dir . DIRECTORY_SEPARATOR . '__main__.scss', $p->getIncludePaths());
-
-        foreach ($this->filters as $f) {
-            $result = $f->postProcessResult($result);
-        }
-
-        return $result;
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 }
