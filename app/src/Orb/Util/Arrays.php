@@ -1916,7 +1916,7 @@ class Arrays
         $new = array();
 
         foreach ($array as $k => $v) {
-            if ($k == $key) {
+            if ((string)$k === (string)$key) {
                 $v = $replace;
             } elseif (is_array($v)) {
                 $v = self::replaceKeyWithValueRecursive($v, $key, $replace);

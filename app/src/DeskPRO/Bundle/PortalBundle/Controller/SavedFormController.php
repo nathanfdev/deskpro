@@ -64,6 +64,7 @@ class SavedFormController extends AbstractController
         // prep the sub request to re-submit the form
         $csrf = Strings::random(10);
         $data = $saved_form->getFormData();
+
         $data = Arrays::replaceKeyWithValueRecursive($data, '_dp_csrf_token', $csrf);
         $url = $this->generateUrl($saved_form_view->getRouteName(), $saved_form_view->getRouteParams());
         $sub_request = Request::create(
