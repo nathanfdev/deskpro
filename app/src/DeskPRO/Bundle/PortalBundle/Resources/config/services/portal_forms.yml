@@ -115,7 +115,7 @@ services:
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: [@blob.storage]
+    arguments: [@blob.storage, @blob_repository]
     tags:
       - { name: form.type, alias: feedback_attachment }
 
@@ -173,7 +173,7 @@ services:
 
   form.ticket_message_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage, @doctrine.orm.default_entity_manager]
+    arguments: [@blob.storage, @blob_repository]
     tags:
       - { name: form.type, alias: ticket_message_attachment }
 

@@ -131,6 +131,22 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
