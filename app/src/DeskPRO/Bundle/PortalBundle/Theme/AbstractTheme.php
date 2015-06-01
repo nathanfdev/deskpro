@@ -78,7 +78,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
      *
      * @return string
      */
-    public function getScssPath()
+    public function getStylesheetsPath()
     {
         return DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style';
     }
