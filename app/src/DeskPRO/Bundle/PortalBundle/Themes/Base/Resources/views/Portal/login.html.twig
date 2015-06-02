@@ -31,6 +31,7 @@
         {% if auth_manager.isLoginFormVisible %}
             <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
                 <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+                <input type="hidden" name="_destination" value="{{ path('portal_index') }}"/>
 
                 <div class="column-half">
                     <div class="bucket">
