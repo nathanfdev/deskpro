@@ -41,6 +41,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DownloadsController extends AbstractController
 {
@@ -139,16 +140,13 @@ class DownloadsController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOADS)) {
+            $form_handler = $this->get('form_handler.comment');
             $comment = new DownloadComment();
-            $comment->setObject($file);
-            $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser(),
-            ));
-            $new_comment_form->handleRequest($request);
-            if ($new_comment_form->isValid()) {
-                $file->addComment($comment);
-                $this->getEm()->persist($comment);
-                $this->getEm()->flush($comment, $file);
+            $new_comment_form = $form_handler->createForm($comment);
+            if ($form_result = $form_handler->handle($new_comment_form, $request, $file, $comment)) {
+                if ($form_result instanceof Response) {
+                    return $form_result;
+                }
 
                 return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
             }

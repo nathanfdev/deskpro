@@ -263,7 +263,7 @@ services:
 
   form.blob:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\BlobType
-    arguments: [@doctrine.orm.default_entity_manager, @blob.storage]
+    arguments: [@doctrine.orm.default_entity_manager, @blob.storage, @blob_repository]
     tags:
       - { name: form.type, alias: deskpro_blob }
 

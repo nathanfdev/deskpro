@@ -142,10 +142,10 @@ class PersonFactory
         // Means use the same person, but depending on the setting we
         // might require the user to log in (in which case the ticket is a temp ticket for a bit)
         if ($email) {
-            if ($settings->get('core.existing_account_login')) {
-                throw new LoginRequiredException($email->getPerson());
+            $person = $email->getPerson();
+            if ($settings->get('core.existing_account_login') && $person->isUser()) {
+                throw new LoginRequiredException($person);
             } else {
-                $person = $email->person;
                 if ($guest->name) {
                     $person->name = $guest->name;
                     $this->em->persist($person);

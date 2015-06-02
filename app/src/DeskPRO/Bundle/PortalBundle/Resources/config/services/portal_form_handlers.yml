@@ -1,0 +1,10 @@
+services:
+
+  form_handler.comment:
+    class: DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler
+    arguments:
+      - @form_saver
+      - @doctrine.orm.default_entity_manager
+      - @person_factory
+      - @form.factory
+      - @security.token_storage

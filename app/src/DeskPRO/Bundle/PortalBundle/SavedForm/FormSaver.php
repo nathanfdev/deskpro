@@ -273,5 +273,7 @@ class FormSaver
                 $accessor->setValue($data, $property_path, $value);
             }
         }
+
+        return $data;
     }
 }

@@ -334,4 +334,12 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->getObject()->getTableName();
     }
+
+    /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
 }

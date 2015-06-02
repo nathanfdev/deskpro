@@ -230,16 +230,13 @@ class FeedbackController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK)) {
+            $form_handler = $this->get('form_handler.comment');
             $comment = new FeedbackComment();
-            $comment->setObject($item);
-            $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser(),
-            ));
-            $new_comment_form->handleRequest($request);
-            if ($new_comment_form->isValid()) {
-                $item->addComment($comment);
-                $this->getEm()->persist($comment);
-                $this->getEm()->flush($comment, $item);
+            $new_comment_form = $form_handler->createForm($comment);
+            if ($form_result = $form_handler->handle($new_comment_form, $request, $item, $comment)) {
+                if ($form_result instanceof Response) {
+                    return $form_result;
+                }
 
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
             }

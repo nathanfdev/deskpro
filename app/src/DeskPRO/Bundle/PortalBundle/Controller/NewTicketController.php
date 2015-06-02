@@ -99,11 +99,7 @@ class NewTicketController extends AbstractController
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
-
-                            // intercept it only if its a user... dont do this for contacts
-                            if ($person->isUser()) {
-                                return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
-                            }
+                            return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
                         }
 
                         // since the guest is set on the form, we need to update all of the associations

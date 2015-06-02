@@ -41,6 +41,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 
 class BlobType extends AbstractType
 {
@@ -54,10 +55,16 @@ class BlobType extends AbstractType
      */
     private $blob_storage;
 
-    public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage)
+    /**
+     * @var BlobRepo
+     */
+    private $blob_repo;
+
+    public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, BlobRepo $blob_repo)
     {
         $this->em           = $em;
         $this->blob_storage = $blob_storage;
+        $this->blob_repo = $blob_repo;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -65,7 +72,7 @@ class BlobType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
         $builder->addEventListener(FormEvents::SUBMIT, array($this, 'onPostSubmit'));
 
-        $builder->addModelTransformer(new BlobTypeModelTransformer($this->em->getRepository('DeskPRO:Blob')));
+        $builder->addModelTransformer(new BlobTypeModelTransformer($this->blob_repo));
     }
 
     public function onPostSubmit(FormEvent $event)
