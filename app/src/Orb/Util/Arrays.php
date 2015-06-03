@@ -33,6 +33,9 @@
 
 namespace Orb\Util;
 
+use Symfony\Component\PropertyAccess\Exception\AccessException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * Utility functions that work with arrays.
  *
@@ -1638,6 +1641,27 @@ class Arrays
         }
 
         return $default;
+    }
+
+    /**
+     * Use the Symfony PropertyAccess Component to find a value in an array.
+     *
+     * You will not get an exception with this method if the path does not exist.
+     *
+     * @param array $array
+     * @param string $property_path
+     * @param mixed $not_found the value returned if the property path does not exist
+     * @return mixed
+     */
+    public static function findPropertyPath(array $array, $property_path, $not_found = null)
+    {
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        try {
+            return $accessor->getValue($array, $property_path);
+        } catch (AccessException $e) {
+            return $not_found;
+        }
     }
 
     /**
