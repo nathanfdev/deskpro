@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Ticket;
 
 class BreadcrumbBuilder
 {
@@ -126,7 +127,7 @@ class BreadcrumbBuilder
     public function addNewsView(News $a)
     {
         $this->b->add(
-            'portal_kb_view',
+            'portal_news_view',
             array('slug' => $a->getSlug()),
             Breadcrumbs::NEWS_VIEW,
             $a
@@ -175,6 +176,57 @@ class BreadcrumbBuilder
     }
 
     #####################################################################################################################
+    # Profile / Registration
+    #####################################################################################################################
+
+    public function addProfile()
+    {
+        $this->b->add(
+            'portal_user_profile',
+            null,
+            Breadcrumbs::PROFILE,
+            array('phrase' => 'portal.general.nav-profile')
+        );
+        return $this;
+    }
+
+    public function addRegistration()
+    {
+        $this->b->add(
+            'portal_user_registration',
+            null,
+            Breadcrumbs::REGISTER,
+            array('phrase' => 'portal.general.nav-register')
+        );
+
+        return $this;
+    }
+
+    public function addLogin()
+    {
+        $this->b->add(
+            'portal_login',
+            null,
+            Breadcrumbs::LOGIN,
+            array('phrase' => 'portal.general.nav-login')
+        );
+
+        return $this;
+    }
+
+    public function addPasswordReset()
+    {
+        $this->b->add(
+            'portal_reset_password',
+            null,
+            Breadcrumbs::PASSWORD_RESET,
+            array('phrase' => 'portal.general.nav-reset-password')
+        );
+
+        return $this;
+    }
+
+    #####################################################################################################################
     # Feedback
     #####################################################################################################################
 
@@ -196,6 +248,47 @@ class BreadcrumbBuilder
             array('slug' => $a->getSlug()),
             Breadcrumbs::FEEDBACK_VIEW,
             $a
+        );
+
+        return $this;
+    }
+
+    #####################################################################################################################
+    # Tickets
+    #####################################################################################################################
+
+
+    public function addNewTicket()
+    {
+        $this->b->add(
+            'portal_new_ticket',
+            null,
+            Breadcrumbs::TICKETS_NEW,
+            array('phrase' => 'portal.general.nav-newticket')
+        );
+
+        return $this;
+    }
+
+    public function addTicketList()
+    {
+        $this->b->add(
+            'portal_tickets',
+            null,
+            Breadcrumbs::TICKETS,
+            array('phrase' => 'portal.general.nav-tickets')
+        );
+
+        return $this;
+    }
+
+    public function addTicketView(Ticket $t)
+    {
+        $this->b->add(
+            'portal_tickets_view',
+            array('id' => $t->getId()),
+            Breadcrumbs::TICKETS_VIEW,
+            $t
         );
 
         return $this;

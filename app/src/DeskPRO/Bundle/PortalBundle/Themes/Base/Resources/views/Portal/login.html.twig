@@ -1,9 +1,11 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block page_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
 
     {% if auth_manager.isAuthVisible %}
-
         <header class="section-header">
             <h1>Log in to the support portal</h1>
         </header>
@@ -26,7 +28,6 @@
                     Please login to continue.</p>
             </div>
         {% endif %}
-
 
         {% if auth_manager.isLoginFormVisible %}
             <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
@@ -66,7 +67,6 @@
             </form>
         {% endif %}
 
-
         {% if auth_manager.hasLoginIconUsersources or auth_manager.hasLoginTextButtonUsersources %}
         <div class="column-full">
             <div class="bucket">
@@ -102,10 +102,9 @@
                         <h2>Create a new account</h2>
                     </div>
 
-                    <button class="button button-secondary">Register</button>
+                   <a class="button button-secondary" href="{{ path('portal_user_registration') }}">Register</a>
                 </div>
             </div>
         {% endif %}
-
     {% endif %}
 {% endblock page_content %}

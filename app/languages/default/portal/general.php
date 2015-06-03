@@ -30,6 +30,10 @@
     'portal.general.nav-downloads'          => 'Downloads',
     'portal.general.nav-feedback'           => 'Feedback',
     'portal.general.nav-profile'            => 'Profile',
+    'portal.general.nav-newticket'          => 'Contact Us',
     'portal.general.nav-tickets'            => 'Tickets',
+    'portal.general.nav-register'           => 'Register',
+    'portal.general.nav-login'              => 'Login',
+    'portal.general.nav-reset-password'     => 'Reset Password',
     'portal.general.rerender-form'          => 'Please review this form before you submit it.',
 );

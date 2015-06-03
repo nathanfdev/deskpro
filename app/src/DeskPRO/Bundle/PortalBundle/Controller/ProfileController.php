@@ -48,12 +48,11 @@ class ProfileController extends AbstractController
     {
         $person = $this->getPersonFactory()->createNewPerson();
 
+        // FORM
         $form = $this->createForm('person_registration', $person, array(
             'settings' => $this->getBrandContainer()->getSettings(),
         ));
-
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
@@ -63,10 +62,14 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_login');
         }
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildRegistration();
+
         return $this->renderThemeView(
             'Theme:Profile:register.html.twig',
             array(
                 'form' => $form->createView(),
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -138,11 +141,15 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildProfile();
+
         return $this->renderThemeView(
             'Theme:Profile:edit.html.twig', array(
                 'profile_form' => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
                 'emails_form' => $emails_form->createView(),
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }

@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Ticket;
 
 class BreadcrumbGenerator
 {
@@ -165,5 +166,55 @@ class BreadcrumbGenerator
         return $this->createBuilder()->addFeedback()
             ->addFeedbackView($a)
             ->done();
+    }
+
+    #####################################################################################################################
+    # Tickets
+    #####################################################################################################################
+
+    public function buildNewTicket()
+    {
+        return $this->createBuilder()->addNewTicket()->done();
+    }
+
+    public function buildTicketList()
+    {
+        return $this->createBuilder()->addTicketList()->done();
+    }
+
+    public function buildTicketView(Ticket $t)
+    {
+        return $this->createBuilder()->addTicketList()
+            ->addTicketView($t)
+            ->done();
+    }
+
+    public function buildTicketEdit(Ticket $t)
+    {
+        return $this->buildTicketView($t);
+    }
+
+    #####################################################################################################################
+    # Profile
+    #####################################################################################################################
+
+    public function buildRegistration()
+    {
+        return $this->createBuilder()->addRegistration()->done();
+    }
+
+    public function buildProfile()
+    {
+        return $this->createBuilder()->addProfile()->done();
+    }
+
+    public function buildLogin()
+    {
+        return $this->createBuilder()->addLogin()->done();
+    }
+
+    public function buildPasswordReset()
+    {
+        return $this->createBuilder()->addPasswordReset()->done();
     }
 }

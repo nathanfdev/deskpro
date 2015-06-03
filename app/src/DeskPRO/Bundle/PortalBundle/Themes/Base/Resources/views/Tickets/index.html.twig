@@ -1,83 +1,80 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-  {% include 'Theme:Tickets:Tag/breadcrumbs.html.twig' %}
-  <div class="column-full">
-
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+    <div class="column-full">
         {% if type == 'own' and person.organization and person.organization_manager %}
             <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">
-                Switch to Organization
+                {{ phrase('portal.tickets.list_switch_to_organization') }}
             </a>
         {% endif %}
         {% if type == 'organization' %}
             <a class="button" href="{{ path('portal_tickets') }}">
-                Switch to My Tickets
+                {{ phrase('portal.tickets.list_switch_to_my_tickets') }}
             </a>
         {% endif %}
 
-     {% macro tickets_table(tickets_pager, title, pg_param) %}
-         <div class="column-full">
-             <div><!-- Table Header -->
-                 <header class="titled-header">
-                     <h1>{{ title }}</h1>
-                 </header>
+        {% macro tickets_table(tickets_pager, title, pg_param) %}
+        <div class="column-full">
+         <div><!-- Table Header -->
+             <header class="titled-header">
+                 <h1>{{ title }}</h1>
+             </header>
 
-                 <!-- Table Controls -->
-                 <div class="table-meta">
-                     <div class="table-controls">
-                         <a href="#" class="column-control"></a>
-                         <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
-                     </div>
+             <!-- Table Controls -->
+             <div class="table-meta">
+                 <div class="table-controls">
+                     <a href="#" class="column-control"></a>
+                     <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
                  </div>
+             </div>
 
-                 <!-- Table -->
-                 <table class="user-ticket-list">
-                     <thead>
-                     <tr>
-                         <td class="table-header">
-                             <a href="#">Department</a> / <a href="#">Subject</a>
+             <!-- Table -->
+             <table class="user-ticket-list">
+                 <thead>
+                 <tr>
+                     <td class="table-header">
+                         <a href="#">{{ phrase('portal.tickets.list_department') }}</a> / <a href="#">{{ phrase('portal.tickets.list_subject') }}</a>
+                     </td>
+                     <td class="table-header right">
+                         <a href="#">{{ phrase('portal.tickets.list_last_action') }}</a>
+                     </td>
+                 </tr>
+                 </thead>
+                 <tbody>
+                 {% for ticket in tickets_pager %}
+                     <tr class="item-row">
+                         <td>
+                             <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
+                                 <span class="status-tag">{{ ticket_status(ticket) }}</span>
+                                 <span class="focus">[{{ ticket.department }}]</span>
+                                 {{ ticket.subject }}
+                             </a>
                          </td>
-                         <td class="table-header right">
-                             <a href="#">Last Action</a>
+
+                         <td class="info-block">
+                             {% set last_message = ticket.messages|last %}
+                             <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
+                                 <img src="{{ avatar_url(last_message.person) }}" class="avatar">
+                                 <span class="person">{{ last_message.person.display_name_user }}</span>
+                                 <span class="date">{{ ticket.last_activity_date|date }}</span>
+                             </a>
                          </td>
                      </tr>
-                     </thead>
+                 {% endfor %}
+                 </tbody>
+             </table>
 
-                     <tbody>
-
-                     {% for ticket in tickets_pager %}
-                         <tr class="item-row">
-                             <td>
-                                 <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
-                                     <span class="status-tag">{{ ticket_status(ticket) }}</span>
-                                     <span class="focus">[{{ ticket.department }}]</span>
-                                     {{ ticket.subject }}
-                                 </a>
-                             </td>
-
-                             <td class="info-block">
-                                 {% set last_message = ticket.messages|last %}
-                                 <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
-                                     <img src="{{ avatar_url(last_message.person) }}" class="avatar">
-                                     <span class="person">{{ last_message.person.display_name_user }}</span>
-                                     <span class="date">{{ ticket.last_activity_date|date }}</span>
-                                 </a>
-                             </td>
-                         </tr>
-                     {% endfor %}
-
-
-                     </tbody>
-                 </table>
-
-                 {% if tickets_pager.haveToPaginate() %}
-                    {{ pagerfanta(tickets_pager, null, { pageParameter: '['~pg_param~']' }) }}
-                 {% endif %}
-             </div>
+             {% if tickets_pager.haveToPaginate() %}
+                {{ pagerfanta(tickets_pager, null, { pageParameter: '['~pg_param~']' }) }}
+             {% endif %}
          </div>
-     {% endmacro %}
+        </div>
+        {% endmacro %}
 
-    {{ _self.tickets_table(awaiting_user_tickets, 'You need to respond', awaiting_user_tickets_pg_param) }}
-    {{ _self.tickets_table(awaiting_agent_tickets, 'We need to respond', awaiting_agent_tickets_pg_param) }}
-    {{ _self.tickets_table(resolved_tickets, 'Resolved', resolved_tickets_pg_param) }}
+        {{ _self.tickets_table(awaiting_user_tickets, phrase('portal.tickets.list_status_user'), awaiting_user_tickets_pg_param) }}
+        {{ _self.tickets_table(awaiting_agent_tickets, phrase('portal.tickets.list_status_agent'), awaiting_agent_tickets_pg_param) }}
+        {{ _self.tickets_table(resolved_tickets, phrase('portal.tickets.list_status_resolved'), resolved_tickets_pg_param) }}
 {% endblock inner_content %}

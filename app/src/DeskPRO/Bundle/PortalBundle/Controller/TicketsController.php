@@ -89,6 +89,9 @@ class TicketsController extends AbstractController
         $awaiting_agent_pager = $tds->getPager($person, $awaiting_agent_filter, $awaiting_agent_pg, $per_page, $awaiting_agent_pg_param);
         $resolved_pager       = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page, $resolved_pg_param);
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildTicketList();
+
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
@@ -103,6 +106,7 @@ class TicketsController extends AbstractController
 
                 'type'   => $type,
                 'person' => $person,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -144,6 +148,9 @@ class TicketsController extends AbstractController
 
         $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildTicketView($ticket);
+
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
@@ -151,6 +158,7 @@ class TicketsController extends AbstractController
                 'timeline'    => $timeline,
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -186,12 +194,16 @@ class TicketsController extends AbstractController
             }
         }
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildTicketEdit($ticket);
+
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
             array(
                 'ticket'      => $ticket,
                 'form'        => $form->createView(),
                 'rerendering' => $rerendering,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }

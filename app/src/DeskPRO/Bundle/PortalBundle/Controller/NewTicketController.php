@@ -135,6 +135,11 @@ class NewTicketController extends AbstractController
         $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
         $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
 
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNewTicket();
+
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
                 'form'              => $form->createView(),
@@ -142,6 +147,7 @@ class NewTicketController extends AbstractController
                 'ticket_display_js' => $ticket_display_js,
                 'rerendering'       => $rerendering,
                 'rerendering_saved' => $rerendering_saved,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }

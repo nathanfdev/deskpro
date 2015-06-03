@@ -1,8 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-
-    {% include 'Theme:Tickets:Tag/breadcrumbs.html.twig' %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
 
     {% if rerendering %}
         <strong>You have switched departments and the form fields have changed. Please review the form and submit again.</strong>

@@ -35,6 +35,9 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
 {
     const PORTAL           = 'portal';
     const PROFILE          = 'profile';
+    const REGISTER         = 'register';
+    const PASSWORD_RESET   = 'password.reset';
+    const LOGIN            = 'login';
     const KB               = 'kb';
     const KB_CAT           = 'kb.cat';
     const KB_VIEW          = 'kb.view';
@@ -49,6 +52,7 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
     const FEEDBACK_VIEW    = 'feedback.view';
     const TICKETS          = 'tickets';
     const TICKETS_VIEW     = 'tickets.view';
+    const TICKETS_NEW      = 'tickets.new';
     const CHAT             = 'chat';
     const CHAT_VIEW        = 'chat.view';
 

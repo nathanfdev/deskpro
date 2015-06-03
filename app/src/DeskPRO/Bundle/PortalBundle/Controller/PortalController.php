@@ -69,6 +69,7 @@ class PortalController extends AbstractController
                 'saved_form_message' => $saved_form_message,
                 'last_username' => $this->getSession()->get('last_username'),
                 'reset_success' => $request->get('reset_success', 0),
+                'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildLogin()
             )
         );
     }
@@ -116,6 +117,7 @@ class PortalController extends AbstractController
 
             return $this->renderThemeView('Theme:Portal:password-reset-requested.html.twig', array(
                 'email' => $email,
+                'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
             ));
         } elseif ($form->isSubmitted()) {
             $render_error = true;
@@ -125,6 +127,7 @@ class PortalController extends AbstractController
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
             'render_error' => $render_error,
+            'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
         ));
     }
 
@@ -149,7 +152,9 @@ class PortalController extends AbstractController
         }
 
         if (!$valid) {
-            return $this->renderThemeView('Theme:Portal:password-reset-invalid-code.html.twig');
+            return $this->renderThemeView('Theme:Portal:password-reset-invalid-code.html.twig', array(
+                'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
+            ));
         }
 
         $form = $this->createForm('person_change_password', $person, array(
@@ -174,6 +179,7 @@ class PortalController extends AbstractController
         return $this->renderThemeView('Theme:Portal:password-reset.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
+            'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
         ));
     }
 }
