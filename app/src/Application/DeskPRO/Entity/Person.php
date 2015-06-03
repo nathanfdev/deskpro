@@ -727,6 +727,25 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return (bool)$this->is_user;
     }
 
+    public function isUserValid()
+    {
+        return ($this->isEmailValidated() && $this->isAgentValidated());
+    }
+
+    public function isEmailValidated()
+    {
+        if (!$primary = $this->getPrimaryEmail()) {
+            return false;
+        }
+
+        return (bool) $primary->isValidated();
+    }
+
+    public function isAgentValidated()
+    {
+        return (bool) $this->is_agent_confirmed;
+    }
+
     /**
      * Is agent.
      *
