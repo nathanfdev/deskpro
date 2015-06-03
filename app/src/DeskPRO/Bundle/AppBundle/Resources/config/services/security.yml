@@ -27,6 +27,8 @@ services:
 
     security.authentication.logout_handler:
             class:  DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler
+            arguments:
+                - @doctrine.orm.default_entity_manager
 
     security.authentication.failure_handler:
         class: DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationFailureHandler
@@ -48,8 +50,31 @@ services:
           - @dp_person_user_provider
           - @session
 
+    dp_security.agent_impersonate.provider:
+        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\AgentImpersonateProvider
+        arguments:
+          - @dp_authentication_manager.user
+          - @dp_person_user_provider
+          - @session
+          - @doctrine.orm.default_entity_manager
+
+    dp_security.transfer_session.provider:
+        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\TransferSessionAuthProvider
+        arguments:
+          - @dp_authentication_manager.user
+          - @dp_person_user_provider
+          - @session
+          - @doctrine.orm.default_entity_manager
+
     dp_security.form_login.listener:
         class: DeskPRO\Bundle\AppBundle\Security\Firewall\DpAuthListener
+        parent: security.authentication.listener.abstract
+        abstract: true
+        calls:
+            - [ setContainer, [@service_container] ]
+
+    dp_security.transfer_session.listener:
+        class: DeskPRO\Bundle\AppBundle\Security\Firewall\DpTransferSessionAuthListener
         parent: security.authentication.listener.abstract
         abstract: true
         calls:
@@ -67,14 +92,6 @@ services:
     dp_person_user_provider:
         class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
         arguments: [@person_repository]
-
-    dp_security.agent_impersonate.provider:
-        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\AgentImpersonateProvider
-        arguments:
-          - @dp_authentication_manager.user
-          - @dp_person_user_provider
-          - @session
-          - @doctrine.orm.default_entity_manager
 
     # use a custom user/password validator
     security.validator.user_password:

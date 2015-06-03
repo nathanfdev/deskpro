@@ -31,18 +31,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
-use Application\DeskPRO\Auth\AuthenticationManager;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
+use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-class AgentImpersonateProvider implements AuthenticationProviderInterface
+class TransferSessionAuthProvider implements AuthenticationProviderInterface
 {
     /**
      * @var \Application\DeskPRO\Auth\AuthenticationManager
@@ -75,28 +75,44 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
     /**
      * Attempts to authenticate a TokenInterface object.
      *
-     * @param AgentImpersonateToken $token The TokenInterface instance to authenticate
+     * @param DpTransferSessionAuthToken $token The TokenInterface instance to authenticate
      *
      * @throws AuthenticationException if the authentication fails
-     * @return AgentImpersonateToken   An authenticated TokenInterface instance, never null
-     *
+     * @return DpTransferSessionAuthToken   An authenticated TokenInterface instance, never null
      */
     public function authenticate(TokenInterface $token)
     {
+        /** @var DpTransferSessionAuthToken $token */
         if ($token->isAuthenticated()) {
             return $token;
         }
 
         // get the auth code and extract the impersonating agent and person
-        $auth                       = $token->getAuth();
-        list($agent_id, $person_id) = $this->getAgentAndPersonIds($auth);
-        list($agent, $person)       = $this->getPersonEntities($agent_id, $person_id);
+        $session_id                 = $token->getCredentials();
+        $sid = \Application\DeskPRO\Entity\Session::getIdFromCode($session_id);
+        if ($sid) {
+            $agent_session = App::getDb()->fetchAssoc(
+                "
+                    SELECT person_id, auth
+                    FROM sessions
+                    WHERE id = ?
+                ",
+                array(
+                    $sid
+                )
+            );
 
-        $token->setUser($person);
-        $token->setAgent($agent);
-        $token->setAuthenticated(true);
+            list(, $auth) = explode('-', $session_id);
 
-        return $token;
+            if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
+                if ($person = $this->em->getRepository('DeskPRO:Person')->find($agent_session['person_id'])) {
+                    $token = new DpTransferSessionAuthToken($person, $session_id);
+                    return $token;
+                }
+            }
+        }
+
+        throw new AuthenticationException('could not transfer session to portal: ' . $session_id);
     }
 
     /**
@@ -108,45 +124,6 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
      */
     public function supports(TokenInterface $token)
     {
-        return $token instanceof AgentImpersonateToken;
-    }
-
-    /**
-     * @param string $auth
-     *
-     * @return array
-     */
-    private function getAgentAndPersonIds($auth)
-    {
-        /** @var \Application\DeskPRO\Entity\TmpData $tmp */
-        $tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($auth);
-        if (!$tmp) {
-            throw new AuthenticationException();
-        }
-        $agent_id  = $tmp->getData('agent_id');
-        $person_id = $tmp->getData('person_id');
-        if (!$agent_id || !$person_id) {
-            throw new AuthenticationException();
-        }
-
-        return array($agent_id, $person_id);
-    }
-
-    /**
-     * @param $agent_id
-     * @param $person_id
-     *
-     * @return Person[]
-     */
-    private function getPersonEntities($agent_id, $person_id)
-    {
-        $agent_repo = $this->em->getRepository('DeskPRO:Person');
-        $agent      = $agent_repo->find($agent_id);
-        $person     = $agent_repo->find($person_id);
-        if (!$agent || !$person) {
-            throw new AuthenticationException();
-        }
-
-        return array($agent, $person);
+        return $token instanceof DpTransferSessionAuthToken;
     }
 }

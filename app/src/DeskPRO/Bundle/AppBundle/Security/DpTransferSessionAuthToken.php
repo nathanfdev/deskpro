@@ -29,24 +29,30 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Security\DependencyInjection;
+namespace DeskPRO\Bundle\AppBundle\Security;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Application\DeskPRO\Entity\Person;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class AuthExtension extends Extension
+class DpTransferSessionAuthToken extends AbstractToken
 {
-    public function load(array $config, ContainerBuilder $container)
+    protected $session_id;
+
+    public function __construct(Person $person = null, $session_id)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('security_services.yml');
-        $loader->load('security_handlers.yml');
-        $loader->load('portal_permissions.yml');
-        $loader->load('portal_voters.yml');
-        $loader->load('dp_form_login.yml');
-        $loader->load('agent_impersonate.yml');
-        $loader->load('validator_services.yml');
+        if ($person) {
+            parent::__construct($person->getRoles());
+            $this->setUser($person);
+        } else {
+            parent::__construct(array());
+        }
+
+        $this->session_id = $session_id;
+        $this->setAuthenticated($person && count($this->getRoles()) > 0);
+    }
+
+    public function getCredentials()
+    {
+        return $this->session_id;
     }
 }

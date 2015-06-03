@@ -35,6 +35,7 @@ namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Web;
 
@@ -164,33 +165,33 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 }
             // can we carry over an agent session in the user interface?
             } elseif (!empty($_COOKIE['dpsid']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
-                $sid = Entity\Session::getIdFromCode($_COOKIE['dpsid']);
+                $sid = $_COOKIE['dpsid'];
                 if ($sid) {
-                    if (App::getSetting('core.session_keepalive_require_page')) {
-                        $agent_session = App::getDb()->fetchAssoc(
-                            "
-                                                        SELECT person_id, auth
-                                                        FROM sessions
-                                                        WHERE id = ? AND date_last > ? AND date_last_page > ?
-                                                    ", array(
-                                $sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')),
-                                date(time() - App::getSetting('core.sessions_lifetime')),
-                            )
-                        );
-                    } else {
-                        $agent_session = App::getDb()->fetchAssoc(
-                            "
-                                                        SELECT person_id, auth
-                                                        FROM sessions
-                                                        WHERE id = ? AND date_last > ?
-                                                    ", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')))
-                        );
-                    }
+                    $agent_session = App::getDb()->fetchAssoc(
+                        "
+                            SELECT sess_data
+                            FROM sess_data
+                            WHERE sess_id = ?
+                        ",
+                        array(
+                            $sid
+                        )
+                    );
+                    $agent_sess_data = $agent_session['sess_data'];
+                    $agent_sess_data = base64_decode($agent_session['sess_data']);
 
-                    list(, $auth) = explode('-', $_COOKIE['dpsid']);
+                    //
+                    // a hack to maintain the original session data, while still decoding the
+                    // stored portal session
+                    $orig = $_SESSION;
+                    session_decode($agent_sess_data);
+                    $agent_sess_data = $_SESSION;
+                    $_SESSION = $orig;
+                    //
+                    // end session hack
 
-                    if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
-                        $person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
+                    if ($agent_sess_data && $person_id = Arrays::findPropertyPath($agent_sess_data, '[_sf2_attributes][auth_person_id]')) {
+                        $person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
                         if ($person && $person->is_agent) {
                             $person_id = $person->id;
                             $this->_setCurrentPerson($person);

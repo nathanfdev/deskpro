@@ -26,6 +26,7 @@ framework:
         - 127.0.0.1
     session:
         handler_id:  session.handler.dbal
+        name: dpsid
     fragments:       ~
     http_method_override: true
 
@@ -51,6 +52,15 @@ security:
             agent_impersonate:
                 failure_path: /login?retry=auth
                 login_path: /impersonate/agent-login
+                require_previous_session: false
+                remember_me: false
+                always_use_default_target_path: true
+                default_target_path: /
+                target_path_parameter: _destination
+                use_referer: false
+            transfer_session_auth:
+                failure_path: /
+                login_path: /
                 require_previous_session: false
                 remember_me: false
                 always_use_default_target_path: true

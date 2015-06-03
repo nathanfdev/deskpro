@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
+use DeskPRO\Bundle\AppBundle\Security\Factory\TransferSessionAuthFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -59,6 +60,7 @@ class AppBundle extends Bundle
         $security = $container->getExtension('security');
         $security->addSecurityListenerFactory(new DpFormLoginFactory());
         $security->addSecurityListenerFactory(new AgentImpersonateFactory());
+        $security->addSecurityListenerFactory(new TransferSessionAuthFactory());
     }
 
     public function registerCommands(Application $application)

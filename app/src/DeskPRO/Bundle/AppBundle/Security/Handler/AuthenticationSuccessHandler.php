@@ -36,10 +36,12 @@ use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface, LogoutSuccessHandlerInterface
 {
     /**
      * @var ContainerInterface
@@ -52,8 +54,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
         if ($token instanceof AgentImpersonateToken) {
+            $request->getSession()->set('auth_person_id', $token->getAgent()->getId());
             return $this->httpUtils->createRedirectResponse($request, '/');
         }
+
+        // do this after the AgentImpersonateToken bit above
+        // this allows agents/admin to login to portal and seamlessly move to other interfaces
+        $request->getSession()->set('auth_person_id', $token->getUser()->getId());
 
         if (
             $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
@@ -75,8 +82,17 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
     }
 
+
+
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    public function onLogoutSuccess(Request $request)
+    {
+        if ($person_id = $request->get('_dp_impersonate_exit')) {
+
+        }
     }
 }

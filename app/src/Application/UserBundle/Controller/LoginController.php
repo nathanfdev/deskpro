@@ -254,7 +254,20 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
             $cookie->send();
         }
-
+        if ($sid = Arrays::findPropertyPath($_COOKIE, '[dpsid]')) {
+            App::getDb()->executeUpdate(
+                "
+                    DELETE
+                    FROM sess_data
+                    WHERE sess_id = ?
+                ",
+                array(
+                    $sid
+                )
+            );
+            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpsid');
+            $cookie->send();
+        }
         App::setCurrentPerson(new \Application\DeskPRO\People\PersonGuest());
 
         \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplogout', 1, 0)->send();

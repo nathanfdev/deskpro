@@ -3,7 +3,7 @@
     {% if impersonator %}
         <div class="alert" style="border: 1px dotted black">
             {{ impersonator.display_name }}, you are impersonating the user: <strong> {{ user.display_name }} (ID #{{ user.id }})</strong>.
-            <a style="float: right" href="/logout">exit impersonation mode</a>.
+            <a style="float: right" href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">exit impersonation mode</a>.
         </div>
     {% endif %}
 
