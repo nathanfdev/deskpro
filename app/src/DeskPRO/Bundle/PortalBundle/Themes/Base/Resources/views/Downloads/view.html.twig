@@ -1,7 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {% show download_breadcrumbs with {category: file.category} %}
+    <div class="breadcrumbs">
+    {% show breadcrumbs %}
+    </div>
     {% show download %}
     {% show downloads_ratings %}
     {% show downloads_comments %}

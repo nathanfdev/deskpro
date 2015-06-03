@@ -1,7 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {% show download_breadcrumbs %}
+    <div class="breadcrumbs">
+    {% show breadcrumbs %}
+    </div>
     <h1>{{ category.realTitle }}</h1>
     {% show download_category_subscription %}
     {% show downloads_list %}

@@ -281,34 +281,6 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="download_breadcrumbs")
-     *
-     * @TagOptions(
-     *      defaults={"category": null, "file": null},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"},
-     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
-     *      },
-     *      attribute_expressions={
-     *          "category": "service('data.downloads').getCategory(options['category'])",
-     *          "file": "service('data.downloads').getDownload(options['file'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_DOWNLOADS')")
-     */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options, DownloadCategory $category = null, Download $file = null)
-    {
-        return $this->renderThemeView(
-            'Theme:Downloads:Tag/breadcrumbs.html.twig',
-            array(
-                'category' => $category,
-                'file'     => $file,
-            )
-        );
-    }
-
-    /**
      * @Tag(name="downloads_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(

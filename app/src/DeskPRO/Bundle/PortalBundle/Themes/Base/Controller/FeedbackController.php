@@ -169,31 +169,6 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_breadcrumbs")
-     *
-     * @TagOptions(
-     *      defaults={"item": null},
-     *      allowed_types={
-     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "item": "service('data.feedback').getItem(options['item'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_FEEDBACK')")
-     */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options, Feedback $item)
-    {
-        return $this->renderThemeView(
-            'Theme:Feedback:Tag/breadcrumbs.html.twig',
-            array(
-                'item' => $item,
-            )
-        );
-    }
-
-    /**
      * @Tag(name="feedback_comments")
      *
      * @TagOptions(

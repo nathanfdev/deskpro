@@ -1,6 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
-  {% show news_breadcrumbs %}
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
   {% show news_post %}
   {% show news_post_ratings %}
   {% show news_post_comments %}

@@ -66,6 +66,9 @@ class ArticlesController extends AbstractController
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
         }
 
+        //
+        // BREADCRUMBS
+        //
         $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
 
         //
@@ -104,6 +107,9 @@ class ArticlesController extends AbstractController
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
         }
 
+        //
+        // BREADCRUMBS
+        //
         if ($category) {
             $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKbCategory($category);
         } else {
@@ -150,6 +156,9 @@ class ArticlesController extends AbstractController
             }
         }
 
+        //
+        // BREADCRUMBS
+        //
         $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKbArticle($article);
 
         //

@@ -71,6 +71,11 @@ class DownloadsController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloads();
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -78,6 +83,7 @@ class DownloadsController extends AbstractController
             array(
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -109,6 +115,15 @@ class DownloadsController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        if ($category) {
+            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloadsCategory($category);
+        } else {
+            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloads();
+        }
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -118,6 +133,7 @@ class DownloadsController extends AbstractController
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -153,6 +169,11 @@ class DownloadsController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloadsFile($file);
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -162,6 +183,7 @@ class DownloadsController extends AbstractController
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }

@@ -137,6 +137,11 @@ class FeedbackController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildFeedback();
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -147,7 +152,8 @@ class FeedbackController extends AbstractController
                 'show_pagination' => true,
                 'form'            => $form->createView(),
                 'user'            => $this->getUser(),
-                'rerendering_saved'  => $rerendering_saved
+                'rerendering_saved'  => $rerendering_saved,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -170,10 +176,15 @@ class FeedbackController extends AbstractController
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
 
-        // order was incorrect, redirect them
+        // order was incorrect, redirect
         if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
             return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
         }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildFeedback();
 
         $page_options = array(
             'page'              => $page,
@@ -184,6 +195,7 @@ class FeedbackController extends AbstractController
             'types'             => $filter->getTypes(),
             'sort'              => $filter->getSort(),
             'sort_direction'    => $filter->getSortDirection(),
+            'breadcrumbs'       => $breadcrumbs,
             'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 
@@ -243,6 +255,11 @@ class FeedbackController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildFeedbackView($item);
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -252,6 +269,7 @@ class FeedbackController extends AbstractController
                 'content_id'       => $item->getId(),
                 'content_type'     => Feedback::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }

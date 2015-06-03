@@ -113,7 +113,7 @@ class BreadcrumbGenerator
     public function buildNewsPost(News $a)
     {
         return $this->createNewsCategoryBuilder($a->getCategory())
-            ->addNews($a)
+            ->addNewsView($a)
             ->done();
     }
 
@@ -133,7 +133,7 @@ class BreadcrumbGenerator
 
     protected function createDownloadsCategoryBuilder(DownloadCategory $cat)
     {
-        $b = $this->createBuilder()->addNews();
+        $b = $this->createBuilder()->addDownloads();
 
         foreach ($cat->getTreeParents() as $c) {
             $b->addDownloadCat($c);
@@ -144,7 +144,7 @@ class BreadcrumbGenerator
         return $b;
     }
 
-    public function buildDownloadsPost(Download $a)
+    public function buildDownloadsFile(Download $a)
     {
         return $this->createDownloadsCategoryBuilder($a->getCategory())
             ->addDownloadView($a)
@@ -152,7 +152,7 @@ class BreadcrumbGenerator
     }
 
     #####################################################################################################################
-    # Downloads
+    # Feedback
     #####################################################################################################################
 
     public function buildFeedback()

@@ -70,6 +70,11 @@ class NewsController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNews();
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -77,6 +82,7 @@ class NewsController extends AbstractController
             array(
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -108,6 +114,15 @@ class NewsController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        if ($category) {
+            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNewsCategory($category);
+        } else {
+            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNews();
+        }
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -117,6 +132,7 @@ class NewsController extends AbstractController
                 'page'            => $page,
                 'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -147,6 +163,11 @@ class NewsController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNewsPost($post);
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -157,6 +178,7 @@ class NewsController extends AbstractController
                 'content_id'       => $post->getId(),
                 'content_type'     => News::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }

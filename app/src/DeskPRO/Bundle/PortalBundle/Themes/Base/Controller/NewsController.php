@@ -280,34 +280,6 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_breadcrumbs")
-     *
-     * @TagOptions(
-     *      defaults={"category": null, "post": null},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"},
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
-     *      },
-     *      attribute_expressions={
-     *          "category": "service('data.news').getCategory(options['category'])",
-     *          "post": "service('data.news').getPost(options['post'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options, News $post = null, NewsCategory $category = null)
-    {
-        return $this->renderThemeView(
-            'Theme:News:Misc/breadcrumbs.html.twig',
-            array(
-                'category' => $category,
-                'post'     => $post,
-            )
-        );
-    }
-
-    /**
      * @Tag(name="news_post_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
