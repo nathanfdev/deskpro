@@ -130,7 +130,9 @@
                                 </label>
 
                                 <div class="col-lg-9">
-                                    <input type="text" ng-model="importer.config.initial_time" class="form-control"/>
+                                    <input type="text" ng-model="importer.config.initial_time" class="form-control"
+                                           dp-datetime-popup="DD MMM YYYY"
+                                           max-date="{{ 'now'|date('Y-m-d') }}"/>
 
                                     <p class="help-block">Initial time</p>
                                 </div>

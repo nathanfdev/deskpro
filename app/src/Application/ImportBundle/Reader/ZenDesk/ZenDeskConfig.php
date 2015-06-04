@@ -193,10 +193,18 @@ class ZenDeskConfig extends BaseConfig
 
     static public function fromArray(array $data)
     {
+        if (!$time = @$data['initial_time']) {
+            $time = '-2 years';
+        } else {
+            if (is_numeric($time)) {
+                $time = '@'.$time;
+            }
+        }
+
         $inst = new self(
             $data['subdomain'],
             $data['username'],
-            new \DateTime(@$data['initial_time'] ? ('@'.$data['initial_time']) : '-2 years')
+            new \DateTime($time)
         );
 
         $inst->setPassword(@$data['password']);

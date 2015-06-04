@@ -97,27 +97,27 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     importTest: ->
       @$scope.importer.status = 'testing'
-      @importSave()
       @$scope.busy = true
-      @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
-        (res) =>
-          @$scope.busy = false
-          @$scope.test_error = !res.data.result
-          @$scope.test_error_message = res.data.error_message
-        (res) =>
-          @$scope.busy = false
-          @$scope.test_error = true
-      )
+      @importSave().then () =>
+        @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
+          (res) =>
+            @$scope.busy = false
+            @$scope.test_error = !res.data.result
+            @$scope.test_error_message = res.data.error_message
+          (res) =>
+            @$scope.busy = false
+            @$scope.test_error = true
+        )
 
 
 
     importStart: ->
       @$scope.importer.status = 'pending'
-      @importSave()
-      @Api.sendGet("/server/importers/#{@$scope.id}/start").then(
-        (res) =>
-        (res) =>
-      )
+      @importSave().then =>
+        @Api.sendGet("/server/importers/#{@$scope.id}/start").then(
+          (res) =>
+            (res) =>
+        )
 
 
 
