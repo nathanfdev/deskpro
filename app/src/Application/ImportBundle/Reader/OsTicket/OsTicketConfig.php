@@ -25,7 +25,7 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk;
+namespace Application\ImportBundle\Reader\OsTicket;
 
 use Application\ImportBundle\Reader\BaseConfig;
 

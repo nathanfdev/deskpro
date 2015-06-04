@@ -37,7 +37,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           @$scope.$watch(
             'importer.config'
             (val) =>
-              1
+              @$scope.ready = val && val.host && val.db && val.user && val.password
             true
           )
 

@@ -2,7 +2,7 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\ImportBundle\Reader\ZenDesk\OsTicketConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Exception;
 
 /**
