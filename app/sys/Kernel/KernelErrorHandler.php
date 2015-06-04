@@ -1277,7 +1277,7 @@ class KernelErrorHandler
             }
 
             foreach ($var as $k => $v) {
-                if ($k == 'pass' || $k == 'password' || $k == 'passphrase') {
+                if ($k === 'pass' || $k === 'password' || $k === 'passphrase') {
                     $v = '***';
                 }
                 if ($_depth > 8) {

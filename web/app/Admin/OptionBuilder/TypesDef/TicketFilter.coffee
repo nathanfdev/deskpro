@@ -231,6 +231,11 @@ define [
       options = []
 
       options.push({
+        title: 'Organization',
+        value: 'FilterOrgId'
+      })
+
+      options.push({
         title: 'Organization Name',
         value: 'FilterOrgName'
       })
@@ -296,6 +301,7 @@ define [
           'org_fields':      '/org_fields',
           'ticket_accounts': '/email_accounts',
           'usergroups':      '/user_groups',
+          'organizations': '/organizations?per_page=250'
         }).then( (result) =>
           data = result.data
           options_data = {}
@@ -311,6 +317,7 @@ define [
           options_data['ticket_prods']     = data.ticket_prods?.products
           options_data['ticket_accounts']  = data.ticket_accounts.email_accounts
           options_data['usergroups']       = data.usergroups.groups
+          options_data['organizations'] = data.organizations.organizations
 
           @options_data = options_data
 
@@ -592,6 +599,33 @@ define [
     getFilterUserDateCreated: (options = {}) ->
       def = @getDateInput(options)
       return def
+
+    getFilterOrgId: (options = {}) ->
+      prop_name = options.propName = 'org_ids'
+      options.dataName = 'organizations'
+      options.optionsFormatter = (options) -> ({value: entry.id, title: entry.name} for k, entry of options)
+      def = @getStandardSelect options
+      def.getDataFormatter = ->
+        return {
+        getViewValue: (value = {}, data) ->
+          val = value.options?[prop_name] || null
+          if val == null and data.options and prop_name
+            val = data.options[0]?.value || null
+          if val && val[0]
+            val = val[0].split ','
+          else
+            val = []
+
+          return {value: val, op: value.op || data.operators[0]}
+        getValue:     (model = {}, data) ->
+          value = {}
+          value.type = options.type
+          value.op = model.op
+          value.options = {}
+          value.options[prop_name] = (model.value || []).join ','
+          return value
+        }
+      def
 
     getFilterOrgName: (options = {}) ->
       options.propName = 'name'
