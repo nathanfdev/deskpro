@@ -101,7 +101,6 @@ define [
       )
 
     updateView: (cats) ->
-      console.info cats
       if not cats
         cats = []
 

@@ -471,6 +471,10 @@ class CsvImport extends AbstractJob
                         $new_on_unknown = true;
                     }
 
+                    if (!$column_value) {
+                        continue;
+                    }
+
                     if ($custom_field_id && isset($this->_custom_fields[$custom_field_id])) {
                         $custom_field = $this->_custom_fields[$custom_field_id];
                         if ($custom_field->isChoiceType()) {

@@ -132,10 +132,6 @@ var DP = {
 	},
 
 	select: function(el, options) {
-    if (el.data('select2') || el.data('no-select2')) {
-			return;
-		}
-
 		if (el.length && el.length > 1) {
 			el.each(function() {
 				DP.select($(this), options);
@@ -143,7 +139,11 @@ var DP = {
 			return;
 		}
 
-		var options = options || {};
+    if (el.data('select2') || el.data('no-select2')) {
+      return;
+    }
+
+		options = options || {};
 
 		if (el.data('style-type')) {
 			switch (el.data('style-type')) {
@@ -212,17 +212,6 @@ var DP = {
 					break;
 			}
 		} else {
-
-      var optgroups = el.find('optgroup');
-      optgroups.each(function() {
-        var title = $(this).attr('label');
-        if (title) {
-          $(this).find('option').not('[data-full-title]').each(function() {
-            var fullTitle = title + ' > ' + $(this).text();
-            $(this).data('full-title', fullTitle).attr('data-full-title', fullTitle);
-          });
-        }
-      });
 
 			var withFullTitle = el.find('option[data-full-title]');
 			if (withFullTitle[0]) {

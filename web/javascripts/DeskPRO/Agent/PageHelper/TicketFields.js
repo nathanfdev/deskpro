@@ -233,6 +233,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}, this);
 
     this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
+    DP.select(this.display.find('select'));
 
 		last.detach().appendTo(this.display);
 	},
