@@ -35,13 +35,21 @@ class GeneratorFactory
     {
         /** @var GeneratorConfig $config */
         $config = $container->get('deskpro.import.config');
+
+        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
+        if ($exporter instanceof Exporter\ExporterBatchInterface) {
+            if (!$config->getExporterBatchConfig()) {
+                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
+            }
+        }
+
         $wf = $config->getWriterFactory($container);
         $writer = $wf
             ? $writer = $wf->createWriter()
             : null;
 
         return new Generator(
-            $config->getExporterFactory($container)->createExporter($config->getReaderConfig()),
+            $exporter,
             $writer,
             $container->get('validator'),
             $config
