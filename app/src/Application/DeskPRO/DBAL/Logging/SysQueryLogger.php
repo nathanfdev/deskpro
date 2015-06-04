@@ -350,7 +350,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
             }
 
             // Sort from highest to lowest
-            uksort($slow_queries, function ($a, $b) {
+            uasort(
+                $slow_queries,
+                function ($a, $b) {
                 if ($a['time_taken'] == $b['time_taken']) {
                     return 0;
                 }
