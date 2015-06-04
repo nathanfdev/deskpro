@@ -331,11 +331,11 @@ define [
                   date2_relative[1] = value.options.date2_relative_type || 'days'
 
               return {
-                op: value.op || _.first(operators),
-                use_relative: use_relative,
-                date1: date1 || null,
-                date2: date2 || null,
-                date1_relative: date1_relative || [1, 'days'],
+              op:             value.op || _.first(operators)
+              use_relative:   use_relative
+              date1:          date1 || null
+              date2:          date2 || null
+              date1_relative: date1_relative || [1, 'days']
                 date2_relative: date2_relative || [1, 'days']
               }
             getValue: (model = {}, data) ->
