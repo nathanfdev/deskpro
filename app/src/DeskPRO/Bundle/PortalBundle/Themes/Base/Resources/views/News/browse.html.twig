@@ -6,6 +6,6 @@
   <div class="browse-page">
     {% show news_cats_tabs %}
     {% show news_list_full with { count: 5 } %}
-    {% show news_pager %}
+    {% show news_pager with { count: 5 } %}
   </div>
 {% endblock inner_content %}

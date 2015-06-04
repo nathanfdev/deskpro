@@ -4,9 +4,13 @@
     <div class="breadcrumbs">
     {% show breadcrumbs %}
     </div>
-    <h1>{{ category.realTitle }}</h1>
-    {% show download_category_subscription %}
-    {% show downloads_list %}
-    {% show downloads_files_items %}
-    {% show downloads_pager %}
+    <div class="downloads browse-page">
+    <header class="section-header padded">
+        <h1>{{ category.title }}</h1>
+    </header>
+    {% show download_cat_subscription %}
+    {% show download_cats %}
+    {% show download_list_detail %}
+    {% show download_pager %}
+    </div>
 {% endblock inner_content %}

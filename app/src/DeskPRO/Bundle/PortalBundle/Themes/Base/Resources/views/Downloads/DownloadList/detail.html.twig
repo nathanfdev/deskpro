@@ -20,29 +20,14 @@
             </li>
         {% endfor %}
     </ul>
+    {% if show_category_link %}
+        <div class="list-meta">
+            <a href="{{ category ? path('portal_downloads_browse', { slug: category.slug }) : path('portal_downloads') }}">
+                {{ phrase('portal.downloads.view-x-files', {count: pager|length}) }}
+                <i class="fa fa-caret-right"></i>
+            </a>
+        </div>
+    {% endif %}
 {% else %}
     <strong>No downloads yet</strong>
 {% endif %}
-
-{# OLD: #}
-{#<ul class="download-list">#}
-    {#{% for download in cat.downloads %}#}
-        {#<li>#}
-            {#<div class="controls">#}
-                {#<ul>#}
-                    {#<li class="the-file"><a href="{{ path('portal_downloads_view', { slug: download.slug }) }}">Download#}
-                            {#<i class="fa fa-file-pdf-o"></i></a></li>#}
-                    {#<li class="the-comments"><a href="#"><i class="fa fa-comments"></i> 0</a></li>#}
-                    {#<li class="the-cudos has-cudos"><a href="#"><i class="fa fa-thumbs-up"></i> 15</a></li>#}
-                {#</ul>#}
-            {#</div>#}
-
-            {#<h1><a href="#"><i class="fa fa-file-pdf-o"></i> {{ download.realTitle }}</a></h1>#}
-            {#<span class="date">Uploaded: {{ download.date_created | date('Y-m-d') }}</span>#}
-
-            {#<p>#}
-                {#{{ download.content_html|raw }}#}
-            {#</p>#}
-        {#</li>#}
-    {#{% endfor %}#}
-{#</ul>#}

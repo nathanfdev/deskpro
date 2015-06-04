@@ -1,5 +1,5 @@
 {% if pager|length > 0 %}
-<ul>
+<ul class="download-list">
     {% for dl in pager %}
         <li>
             {% if dl.blob and dl.blob.extension %}
@@ -11,6 +11,14 @@
             <a href="{{ path('portal_downloads_view', { slug:dl.slug } ) }}">{{ dl.title }}</a>
         </li>
     {% endfor %}
+    {% if show_category_link %}
+        <div class="list-meta">
+            <a href="{{ category ? path('portal_downloads_browse', { slug: category.slug }) : path('portal_downloads') }}">
+                {{ phrase('portal.downloads.view-x-files', {count: pager|length}) }}
+                <i class="fa fa-caret-right"></i>
+            </a>
+        </div>
+    {% endif %}
 </ul>
 {% else %}
     <strong>No downloads yet</strong>

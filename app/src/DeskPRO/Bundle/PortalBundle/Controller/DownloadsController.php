@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -83,7 +84,8 @@ class DownloadsController extends AbstractController
             array(
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'show_category_link' => true
             )
         );
     }
@@ -124,16 +126,32 @@ class DownloadsController extends AbstractController
         }
 
         //
+        // SUBSCRIBE
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        //
+        // PAGER
+        //
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, 1);
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             array(
                 'category' => $category,
-                'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'pager' => $pager,
+                'is_subscribed' => $is_subscribed
             )
         );
     }
@@ -174,6 +192,22 @@ class DownloadsController extends AbstractController
         $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloadsFile($file);
 
         //
+        // RATING
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
+        }
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -183,7 +217,9 @@ class DownloadsController extends AbstractController
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'rating' => $rating,
+                'is_subscribed' => $is_subscribed
             )
         );
     }

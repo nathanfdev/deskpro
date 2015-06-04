@@ -3,7 +3,7 @@
     {% for category in category_children %}
         <li>
             <a href="{{ path('portal_downloads_browse', { slug: category.slug }) }}">
-                <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}"> {{ category.title }} - [{{ category.downloads|length }}]
+                {{ category.title }}
             </a>
         </li>
     {% endfor %}
