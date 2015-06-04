@@ -61,7 +61,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
 
     public function __construct(
         AbstractExporter $exporter,
-        AbstractWriter $writer,
+        AbstractWriter $writer = null,
         Validator $validator,
         GeneratorConfig $config
     ) {

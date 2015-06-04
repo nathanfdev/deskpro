@@ -8,9 +8,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$scope.id = @$stateParams.id
       @$scope.busy = false
 
-      @$scope.$watch 'importer.config.blobs.length', (val) =>
-        @$scope.ready = if val then true else false
-
       @$scope.$watch 'importer.status', (val) =>
         if val && 'testing' != val && 'done' != val
           @updateImportStatus = @$interval (=> @importGet()), 1000 if !@updateImportStatus
@@ -25,7 +22,24 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     initialLoad: ->
-      @importGet()
+      @importGet().then () =>
+        if 'csv' == @$scope.importer?.id
+          @$scope.$watch 'importer.config.blobs.length', (val) =>
+            @$scope.ready = !!val
+        else if 'zendesk' == @$scope.importer?.id
+          @$scope.$watch(
+            'importer.config'
+            (val) =>
+              @$scope.ready = val && val.subdomain && val.username && (val.password || val.token)
+            true
+          )
+        else if 'osticket' == @$scope.importer?.id
+          @$scope.$watch(
+            'importer.config'
+            (val) =>
+              1
+            true
+          )
 
 
 

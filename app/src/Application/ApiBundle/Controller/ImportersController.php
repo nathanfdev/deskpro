@@ -70,7 +70,6 @@ class ImportersController extends AbstractController implements ProtectedControl
             $ret[] = array(
                 'id' => str_replace('importers.', '', $importer['name']),
                 'title' => $importer->getData('title'),
-                'icon' => $importer->getData('icon'),
                 'status' => $importer->getData('status'),
                 'description' => $importer->getData('description'),
             );
@@ -102,8 +101,8 @@ class ImportersController extends AbstractController implements ProtectedControl
 
         $importer = ImportProcessor::getImporter($id, $this->container);
 
-        $importer->setData('config', $data['config']);
-        $importer->setData('status', $data['status']);
+        $importer->setData('config', @$data['config']);
+        $importer->setData('status', @$data['status']);
 
         if ($request->get('reset')) {
             $importer->setData('status', null);

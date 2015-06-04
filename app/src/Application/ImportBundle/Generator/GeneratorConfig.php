@@ -178,6 +178,10 @@ class GeneratorConfig
             WriterInterface::TYPE_JSON => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
         );
 
+        if (!$this->writer_type) {
+            return null;
+        }
+
         if (!isset($factories[$this->writer_type])) {
             throw new \Exception('Invalid writer type');
         }

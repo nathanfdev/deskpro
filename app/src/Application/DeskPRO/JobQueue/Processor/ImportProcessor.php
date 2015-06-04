@@ -254,16 +254,15 @@ class ImportProcessor extends AbstractJobProcessor
         if (!$importer = $rep->getByName('importers.'.$id)) {
             $importer = new DataStore();
             $importer['name'] = 'importers.'.$id;
+            $importer->setData('id', $id);
             $importer->setData('title', ucfirst($id));
-            $importer->setData('icon', null);
             $importer->setData('status', null);
             $importer->setData('description', null);
 
-            $config = array();
             if (ExporterInterface::TYPE_CSV === $id) {
-                $config['blobs'] = array();
+                $config = array('blobs' => array());
+                $importer->setData('config', $config);
             }
-            $importer->setData('config', $config);
 
             $em->persist($importer);
             $em->flush($importer);

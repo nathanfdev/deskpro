@@ -196,7 +196,7 @@ class ZenDeskConfig extends BaseConfig
         $inst = new self(
             $data['subdomain'],
             $data['username'],
-            new \DateTime('@'.$data['initial_time'])
+            new \DateTime(@$data['initial_time'] ? ('@'.$data['initial_time']) : '-2 years')
         );
 
         $inst->setPassword(@$data['password']);
