@@ -223,12 +223,28 @@ class Choice extends HandlerAbstract
             $attr['data-no-select2'] = 1;
         }
 
+        // - We need to always have a default blank
+        // option for backwards compat with lots of layout/UI code
+        // - Without a blank option, browser will send option1 along with any
+        // form, resulting in a value save when there shouldnt be
+        // (because client-side, we simply display:none fields that dont apply, but browser
+        // will still have field values for them; we need a blank option to send in a case like that).
+        if ($this->expanded) {
+            if ($selected && $required) {
+                $empty_val = '---';
+            } else {
+                $empty_val = false;
+            }
+        } else {
+            $empty_val = '';
+        }
+
         $field_opts = array(
             'choices' => $choices,
             'required' => $required,
             'multiple' => $this->multiple,
             'expanded' => $this->expanded,
-            'empty_value' => $this->multiple || $this->expanded || $required ? false : '',
+            'empty_value' => $empty_val,
             'attr' => $attr
         );
 
