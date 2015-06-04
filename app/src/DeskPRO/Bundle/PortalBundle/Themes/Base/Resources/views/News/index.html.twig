@@ -3,9 +3,13 @@
   <div class="breadcrumbs">
     {% show breadcrumbs %}
   </div>
-  <div class="browse-page">
+  <article class="feedback main-feedback">
+    <header class="section-header">
+      <h1>{{ phrase('portal.feedback.section-title') }}</h1>
+    </header>
+    <p>{{ phrase('portal.feedback.section-desc') }}</p>
     {% show news_cats_tabs %}
     {% show news_list_full with { count: 5 } %}
     {% show news_pager %}
-  </div>
+  </article>
 {% endblock inner_content %}

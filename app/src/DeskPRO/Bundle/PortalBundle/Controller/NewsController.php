@@ -64,6 +64,7 @@ class NewsController extends AbstractController
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
+                'page_title' => $this->createPageTitle()->news(),
                 'pager'    => $pager,
                 'category' => null,
             ));
@@ -72,7 +73,7 @@ class NewsController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNews();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
 
         //
         // RENDER THEME
@@ -82,6 +83,7 @@ class NewsController extends AbstractController
             array(
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'page_title' => $this->createPageTitle()->news(),
                 'breadcrumbs' => $breadcrumbs
             )
         );
@@ -110,6 +112,7 @@ class NewsController extends AbstractController
             return $this->render('PortalBundle:News:feed.rss.twig', array(
                 'pager'    => $pager,
                 'category' => $category,
+                'page_title' => $this->createPageTitle()->news($category),
             ));
         }
 
@@ -117,9 +120,9 @@ class NewsController extends AbstractController
         // BREADCRUMBS
         //
         if ($category) {
-            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNewsCategory($category);
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsCategory($category);
         } else {
-            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNews();
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
         }
 
         //
@@ -132,6 +135,7 @@ class NewsController extends AbstractController
                 'page'            => $page,
                 'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
+                'page_title' => $this->createPageTitle()->news($category),
                 'breadcrumbs' => $breadcrumbs
             )
         );
@@ -165,7 +169,7 @@ class NewsController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNewsPost($post);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsPost($post);
 
         //
         // RENDER THEME
@@ -178,6 +182,7 @@ class NewsController extends AbstractController
                 'content_id'       => $post->getId(),
                 'content_type'     => News::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'page_title' => $this->createPageTitle()->news($post),
                 'breadcrumbs' => $breadcrumbs
             )
         );

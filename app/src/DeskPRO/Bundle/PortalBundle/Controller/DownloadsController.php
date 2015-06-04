@@ -68,13 +68,14 @@ class DownloadsController extends AbstractController
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
                 'pager' => $pager,
                 'category' => null,
+                'page_title' => $this->createPageTitle()->downloads()
             ));
         }
 
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloads();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
 
         //
         // RENDER THEME
@@ -85,7 +86,8 @@ class DownloadsController extends AbstractController
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs' => $breadcrumbs,
-                'show_category_link' => true
+                'show_category_link' => true,
+                'page_title' => $this->createPageTitle()->downloads()
             )
         );
     }
@@ -113,6 +115,7 @@ class DownloadsController extends AbstractController
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
                 'pager' => $pager,
                 'category' => $category,
+                'page_title' => $this->createPageTitle()->downloads($category)
             ));
         }
 
@@ -120,9 +123,9 @@ class DownloadsController extends AbstractController
         // BREADCRUMBS
         //
         if ($category) {
-            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloadsCategory($category);
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloadsCategory($category);
         } else {
-            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloads();
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
         }
 
         //
@@ -151,7 +154,8 @@ class DownloadsController extends AbstractController
                 'show_pagination' => true,
                 'breadcrumbs' => $breadcrumbs,
                 'pager' => $pager,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
+                'page_title' => $this->createPageTitle()->downloads($category)
             )
         );
     }
@@ -189,7 +193,7 @@ class DownloadsController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildDownloadsFile($file);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloadsFile($file);
 
         //
         // RATING
@@ -197,7 +201,7 @@ class DownloadsController extends AbstractController
         $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
 
         //
-        // SUBSCRIPTIONS
+        // SUBSCRIPTION
         //
         $is_subscribed = false;
         if (
@@ -219,7 +223,8 @@ class DownloadsController extends AbstractController
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
                 'breadcrumbs' => $breadcrumbs,
                 'rating' => $rating,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
+                'page_title' => $this->createPageTitle()->downloads($file)
             )
         );
     }

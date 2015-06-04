@@ -39,6 +39,22 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class AbstractController extends BaseController
 {
     /**
+     * @return \DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
+     */
+    public function createPageTitle()
+    {
+        return $this->get('portal_view.page_title_generator');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
+     */
+    public function getBreadcrumbGenerator()
+    {
+        return $this->get('portal_view.breadcrumb_generator');
+    }
+
+    /**
      * @return \Doctrine\ORM\EntityManager
      */
     public function getEm()

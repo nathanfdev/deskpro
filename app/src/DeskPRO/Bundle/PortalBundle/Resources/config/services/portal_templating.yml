@@ -14,6 +14,12 @@ services:
   portal_view.breadcrumb_generator:
     class: DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
 
+  portal_view.page_title_generator:
+    class: DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
+    arguments:
+      - @language_manager
+      - @brand_stack
+
   portal_extension.twig:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalExtension
     arguments: [@service_container]

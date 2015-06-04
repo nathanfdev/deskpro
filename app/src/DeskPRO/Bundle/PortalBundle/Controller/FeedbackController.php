@@ -79,6 +79,7 @@ class FeedbackController extends AbstractController
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
                 'pager'    => $pager,
                 'category' => null,
+                'page_title' => $this->createPageTitle()->feedback()
             ));
         }
 
@@ -123,7 +124,6 @@ class FeedbackController extends AbstractController
                     }
 
                     // since the guest is set on the form, we need to update all of the associations
-                    // TODO: we should be able to deal with this better by using a contact to beign with
                     $new_feedback->setPerson($person);
                     foreach ($new_feedback->getAttachments() as $attachment) {
                         $attachment->setPerson($person);
@@ -139,7 +139,7 @@ class FeedbackController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildFeedback();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
         //
         // RENDER THEME
@@ -153,7 +153,8 @@ class FeedbackController extends AbstractController
                 'form'            => $form->createView(),
                 'user'            => $this->getUser(),
                 'rerendering_saved'  => $rerendering_saved,
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->feedback()
             )
         );
     }
@@ -184,7 +185,7 @@ class FeedbackController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildFeedback();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
         $page_options = array(
             'page'              => $page,
@@ -196,6 +197,7 @@ class FeedbackController extends AbstractController
             'sort'              => $filter->getSort(),
             'sort_direction'    => $filter->getSortDirection(),
             'breadcrumbs'       => $breadcrumbs,
+            'page_title' => $this->createPageTitle()->feedback(),
             'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 
@@ -257,7 +259,12 @@ class FeedbackController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildFeedbackView($item);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedbackView($item);
+
+        //
+        // RATING
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
 
         //
         // RENDER THEME
@@ -269,7 +276,9 @@ class FeedbackController extends AbstractController
                 'content_id'       => $item->getId(),
                 'content_type'     => Feedback::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'breadcrumbs' => $breadcrumbs
+                'page_title' => $this->createPageTitle()->feedback($item),
+                'breadcrumbs' => $breadcrumbs,
+                'rating' => $rating
             )
         );
     }

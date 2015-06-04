@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -63,13 +64,17 @@ class ArticlesController extends AbstractController
                 $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
+            return $this->render('PortalBundle:Articles:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => null,
+                'page_title' => $this->get('portal_view.page_title_generator')->kb()
+            ));
         }
 
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
         //
         // RENDER THEME
@@ -80,6 +85,7 @@ class ArticlesController extends AbstractController
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->get('portal_view.page_title_generator')->kb()
             )
         );
     }
@@ -104,17 +110,39 @@ class ArticlesController extends AbstractController
                 $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
+            return $this->render('PortalBundle:Articles:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => $category,
+                'page_title' => $this->get('portal_view.page_title_generator')->kb($category)
+            ));
         }
 
         //
         // BREADCRUMBS
         //
         if ($category) {
-            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKbCategory($category);
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbCategory($category);
         } else {
-            $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
         }
+
+        //
+        // SUBSCRIPTION
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+        ) {
+            // waiting info regarding article category subscriptions
+            $is_subscribed = false;//$this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        //
+        // PAGER
+        //
+        $count = $this->getBrandSetting('portal.per_page_content');
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count);
 
         //
         // RENDER THEME
@@ -124,9 +152,10 @@ class ArticlesController extends AbstractController
             array(
                 'category'        => $category,
                 'breadcrumbs'     => $breadcrumbs,
-                'page'            => $page,
-                'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
+                'page_title'      => $this->get('portal_view.page_title_generator')->kb($category),
+                'is_subscribed'   => $is_subscribed,
+                'pager'           => $pager
             )
         );
     }
@@ -159,7 +188,24 @@ class ArticlesController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKbArticle($article);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbArticle($article);
+
+        //
+        // RATING
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
+
+        //
+        // SUBSCRIPTION
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
+        ) {
+            // waiting on info on the kb subs
+            $is_subscribed = false;//$this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
+        }
 
         //
         // RENDER THEME
@@ -168,10 +214,13 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             array(
                 'article'          => $article,
+                'rating' => $rating,
+                'is_subscribed' => $is_subscribed,
                 'category'         => $article->getPrimaryCategory(),
                 'breadcrumbs'      => $breadcrumbs,
                 'content_id'       => $article->getId(),
                 'content_type'     => Article::CONTENT_TYPE,
+                'page_title'       => $this->get('portal_view.page_title_generator')->kb($article),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );

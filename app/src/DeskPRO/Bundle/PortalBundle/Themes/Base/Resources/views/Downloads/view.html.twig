@@ -57,6 +57,7 @@
     </article>
 
     {% show download_ratings %}
+    {% show related_content %}
 
     {% if file.num_comments or new_comment_form %}
     <div class="comment-box">
@@ -68,5 +69,4 @@
     </div>
     {% endif %}
 
-    {% show related_content %}
 {% endblock inner_content %}

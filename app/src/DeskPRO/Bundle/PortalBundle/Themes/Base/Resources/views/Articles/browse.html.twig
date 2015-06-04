@@ -1,4 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
+
 {% block inner_content %}
   <div class="breadcrumbs">
     {% show breadcrumbs %}
@@ -7,11 +8,11 @@
   <div class="browse-page">
     <header class="section-header padded">
       <h1>{{ category.title }}</h1>
+      {% show kb_cat_subscription_link %}
     </header>
 
     {% show kb %}
     {% show kb_list %}
     {% show kb_pager %}
-    {% show kb_category_subscription %}
   </div>
 {% endblock inner_content %}

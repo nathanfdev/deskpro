@@ -43,13 +43,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_items")
-     * @Tag(name="feedback_items_list", default_options={"style":"list"})
-     * @Tag(name="feedback_items_row", default_options={"style":"row"})
+     * @Tag(name="feedback_list_simple", default_options={"style":"simple"})
+     * @Tag(name="feedback_list_detail", default_options={"style":"detail"})
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "row",
+     *          "style": "detail",
      *          "count": 10,
      *          "page": 1,
      *          "status": "all",
@@ -71,6 +70,7 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
+        xdebug_break();
         $filter = new FeedbackFilter(array(
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
@@ -86,33 +86,9 @@ class FeedbackController extends AbstractController
         );
 
         return $this->renderThemeView(
-            sprintf('Theme:Feedback:Tag/items_%s.html.twig', $options['style']),
+            sprintf('Theme:Feedback:FeedbackList/%s.html.twig', $options['style']),
             array(
                 'pager' => $pager,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="item", esi=true)
-     * @TagHttpCache(content="item")
-     *
-     * @TagOptions(
-     *      required={"item"},
-     *      allowed_types={
-     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "item": "service('data.feedback').getItem(options['item'])"
-     *      }
-     * )
-     */
-    public function itemAction(TagRequest $tag_request, array $options, Feedback $item)
-    {
-        return $this->renderThemeView(
-            'Theme:Feedback:Tag/item.html.twig',
-            array(
-                'item' => $item,
             )
         );
     }
@@ -193,34 +169,5 @@ class FeedbackController extends AbstractController
             'item'     => $item,
             'comments' => $comments,
         ));
-    }
-
-    /**
-     * @Tag(name="feedback_ratings", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      defaults={"item": null},
-     *      allowed_types={
-     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "item": "service('data.feedback').getItem(options['item'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_FEEDBACK')")
-     */
-    public function ratingsAction(TagRequest $tag_request, array $options, Feedback $item)
-    {
-        $item   = $this->getFeedbackDataService()->getItem($options['item']);
-        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
-
-        return $this->renderThemeView(
-            'Theme:Feedback:Tag/ratings.html.twig',
-            array(
-                'rating' => $rating,
-                'item'   => $item,
-            )
-        );
     }
 }

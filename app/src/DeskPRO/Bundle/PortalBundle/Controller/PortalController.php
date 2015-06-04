@@ -45,7 +45,11 @@ class PortalController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        return $this->renderThemeView('Theme:Portal:index.html.twig');
+        return $this->renderThemeView('Theme:Portal:index.html.twig',
+            array(
+                'page_title' => $this->createPageTitle()->homepage()
+            )
+        );
     }
 
     /**
@@ -69,7 +73,8 @@ class PortalController extends AbstractController
                 'saved_form_message' => $saved_form_message,
                 'last_username' => $this->getSession()->get('last_username'),
                 'reset_success' => $request->get('reset_success', 0),
-                'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildLogin()
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildLogin(),
+                'page_title' => $this->createPageTitle()->loginPage()
             )
         );
     }
@@ -117,7 +122,8 @@ class PortalController extends AbstractController
 
             return $this->renderThemeView('Theme:Portal:password-reset-requested.html.twig', array(
                 'email' => $email,
-                'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+                'page_title' => $this->createPageTitle()->passwordReset()
             ));
         } elseif ($form->isSubmitted()) {
             $render_error = true;
@@ -127,7 +133,8 @@ class PortalController extends AbstractController
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
             'render_error' => $render_error,
-            'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+            'page_title' => $this->createPageTitle()->passwordReset()
         ));
     }
 
@@ -153,7 +160,8 @@ class PortalController extends AbstractController
 
         if (!$valid) {
             return $this->renderThemeView('Theme:Portal:password-reset-invalid-code.html.twig', array(
-                'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+                'page_title' => $this->createPageTitle()->passwordReset()
             ));
         }
 
@@ -179,7 +187,8 @@ class PortalController extends AbstractController
         return $this->renderThemeView('Theme:Portal:password-reset.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
-            'breadcrumbs' => $this->get('portal_view.breadcrumb_generator')->buildPasswordReset()
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+            'page_title' => $this->createPageTitle()->passwordReset()
         ));
     }
 }

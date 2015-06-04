@@ -6,14 +6,16 @@
     </div>
     <article class="feedback main-feedback">
       <header class="section-header">
-          <h1>Feedback</h1>
+          <h1>{{ phrase('portal.feedback.section-title') }}</h1>
       </header>
+        <p>{{ phrase('portal.feedback.section-desc') }}</p>
+
       {% if rerendering_saved %}
           <strong>{{ phrase('portal.general.rerender-form') }}</strong>
       {% endif %}
       {% include 'Theme:Feedback:form.html.twig' %}
       {% include 'Theme:Feedback:controls.html.twig' %}
-      {% show feedback_items %}
+      {% show feedback_list_detail %}
     </article>
   {% show feedback_pager %}
 {% endblock inner_content %}

@@ -18,11 +18,14 @@
 
     <div class="header-button-container">
       <div class="header-buttons">
+        {% show kb_subscription_link %}
         <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
         <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
         <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
       </div>
     </div>
+
+    {% show kb_subscription_info %}
 
     <div class="article-content padded">
       {{ article.realContent|raw }}
@@ -40,7 +43,7 @@
     {% endif %}
   </article>
 
-  {% show kb_article_ratings %}
+  {% show kb_ratings %}
   {% show related_content %}
 
   {% if article.num_comments or new_comment_form %}
@@ -48,10 +51,8 @@
       <div class="titled-header">
         <h1>{{ phrase('portal.general.comments-title', {count: article.num_comments}) }}</h1>
       </div>
-
       {% show kb_article_comments %}
-
-      {% if new_comment_form %}{% include 'Theme:Common:comments_new_form.html.twig' %}{% endif %}
+      {% show comment_form %}
     </div>
   {% endif %}
 {% endblock inner_content %}

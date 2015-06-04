@@ -7,14 +7,13 @@
 
     <div>
         <header class="section-header">
-            <h1>Registration</h1>
+            <h1>{{ phrase('portal.account.section-title-register') }}</h1>
         </header>
     </div>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_rest(form) }}
-    <button type="submit">Register</button>
+    <button type="submit">{{ phrase('portal.account.register-btn') }}</button>
     {{ form_end(form) }}
-
 {% endblock inner_content %}

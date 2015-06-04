@@ -44,7 +44,7 @@
       <div class="column">
         <article class="panel-tiny front-page-downloads">
           <div class="large-title clearfix"><h1>Recent News</h1></div>
-          {% show section news_list_simple with { count: 5 } %}
+          {% show section news_list_simple with { count: 5, show_category_link: true } %}
         </article>
       </div>
     {% enditem %}
@@ -53,7 +53,7 @@
       <div class="column">
         <article class="panel-tiny front-page-downloads">
           <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-          {% show section feedback_items_list with { count: 5 } %}
+          {% show  feedback_list_simple with { count: 5, show_category_link: true } %}
         </article>
       </div>
     {% enditem %}
@@ -62,7 +62,7 @@
       <div class="column">
         <article class="panel-tiny front-page-downloads">
           <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-          {% show section download_list_simple with { count: 5 } %}
+          {% show section download_list_simple with { count: 5, show_category_link: true } %}
         </article>
       </div>
     {% enditem %}

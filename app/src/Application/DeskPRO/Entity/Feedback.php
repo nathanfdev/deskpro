@@ -493,6 +493,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->attachments;
     }
 
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
     protected function addSlugHistory($old_slug)
     {
         $history = new FeedbackSlugHistory($this, $old_slug);

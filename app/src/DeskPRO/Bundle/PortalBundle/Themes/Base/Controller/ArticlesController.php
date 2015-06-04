@@ -71,7 +71,7 @@ class ArticlesController extends AbstractController
     {
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
 
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildKb();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:CategoryList/%s.html.twig', $options['style']),
@@ -125,71 +125,6 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="kb_article_subscription", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      required={"article"},
-     *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "article": "service('data.articles').getArticle(options['article'])"
-     *      }
-     * )
-     */
-    public function articleSubscriptionAction(TagRequest $tag_request, array $options, Article $article)
-    {
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
-        }
-
-        return $this->renderThemeView(
-            'Theme:Articles:ArticleView/subscription_info.html.twig',
-            array(
-                'article'       => $article,
-                'is_subscribed' => $is_subscribed,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="kb_category_subscription", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "category": "service('data.articles').getCategory(options['category'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function categorySubscriptionAction(TagRequest $tag_request, array $options, ArticleCategory $category)
-    {
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
-        return $this->renderThemeView(
-            'Theme:Articles:CategoryList/subscription_info.html.twig', array(
-                'category'      => $category,
-                'is_subscribed' => $is_subscribed,
-            )
-        );
-    }
-
-    /**
      * @Tag(name="kb_article_comments")
      *
      * @TagOptions(
@@ -214,66 +149,5 @@ class ArticlesController extends AbstractController
             'article'  => $article,
             'comments' => $comments,
         ));
-    }
-
-    /**
-     * @Tag(name="kb_pager")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "category": null,
-     *          "show_pagination": true,
-     *          "page": 1,
-     *          "count": 10
-     *      },
-     *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function pagerAction(TagRequest $tag_request, array $options)
-    {
-        if (!$options['show_pagination']) {
-            return new Response('');
-        }
-
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
-        $pager    = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
-
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig', array(
-                'pager' => $pager,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="kb_article_ratings", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      defaults={"article": null},
-     *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "article": "service('data.articles').getArticle(options['article'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function ratingsAction(TagRequest $tag_request, array $options, Article $article)
-    {
-        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
-
-        return $this->renderThemeView(
-            'Theme:Articles:ArticleView/ratings.html.twig',
-            array(
-                'rating'  => $rating,
-                'article' => $article,
-            )
-        );
     }
 }

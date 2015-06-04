@@ -138,7 +138,7 @@ class NewTicketController extends AbstractController
         //
         // BREADCRUMBS
         //
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildNewTicket();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewTicket();
 
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
@@ -147,7 +147,8 @@ class NewTicketController extends AbstractController
                 'ticket_display_js' => $ticket_display_js,
                 'rerendering'       => $rerendering,
                 'rerendering_saved' => $rerendering_saved,
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->newticket()
             )
         );
     }

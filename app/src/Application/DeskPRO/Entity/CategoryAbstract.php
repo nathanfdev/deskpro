@@ -207,7 +207,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     /**
      * Gets all parents in the tree, in order (left to right, aka, top to bottom).
      *
-     * @return array
+     * @return CategoryAbstract[]
      */
     public function getTreeParents()
     {

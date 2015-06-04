@@ -842,6 +842,15 @@ class Translate implements PersonContextInterface
             }
         }
 
+        /////////////////////////////////////////////////////////////////////////////////////
+        //
+        // DEBUG - adding this here until we are about to launch new portal so we dont miss any translations
+        //
+        /////////////////////////////////////////////////////////////////////////////////////
+        if (empty($phrase_text)) {
+            return '[missing translation: '.$phrase_name.']';
+        }
+
         return $phrase_text;
     }
 

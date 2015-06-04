@@ -90,7 +90,7 @@ class TicketsController extends AbstractController
         $resolved_pager       = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page, $resolved_pg_param);
 
         // BREADCRUMBS
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildTicketList();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketList();
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
@@ -106,7 +106,8 @@ class TicketsController extends AbstractController
 
                 'type'   => $type,
                 'person' => $person,
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets()
             )
         );
     }
@@ -149,7 +150,7 @@ class TicketsController extends AbstractController
         $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
 
         // BREADCRUMBS
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildTicketView($ticket);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
@@ -158,7 +159,8 @@ class TicketsController extends AbstractController
                 'timeline'    => $timeline,
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets($ticket)
             )
         );
     }
@@ -195,7 +197,7 @@ class TicketsController extends AbstractController
         }
 
         // BREADCRUMBS
-        $breadcrumbs = $this->get('portal_view.breadcrumb_generator')->buildTicketEdit($ticket);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketEdit($ticket);
 
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
@@ -203,7 +205,8 @@ class TicketsController extends AbstractController
                 'ticket'      => $ticket,
                 'form'        => $form->createView(),
                 'rerendering' => $rerendering,
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets($ticket)
             )
         );
     }

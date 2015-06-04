@@ -1,2 +1,5 @@
 show_tag_names:
-  - pager
+  - kb_pager
+  - download_pager
+  - feedback_pager
+  - news_pager
