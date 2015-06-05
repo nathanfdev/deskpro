@@ -82,7 +82,50 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
     }
 
+    /**
+     * Builds the target URL according to the defined options.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function determineTargetUrl(Request $request)
+    {
+        if ($this->options['always_use_default_target_path']) {
+            return $this->options['default_target_path'];
+        }
 
+        // the login url can't be the login destination
+        $login_url = $this->container->get('router')->generate('portal_login');
+
+        if ($targetUrl = $request->get($this->options['target_path_parameter'], null, true)) {
+            if ($targetUrl != $login_url) {
+                return $targetUrl;
+            }
+        }
+
+        if (null !== $this->providerKey && $targetUrl = $request->getSession()->get(
+                '_security.' . $this->providerKey . '.target_path'
+            )
+        ) {
+            $request->getSession()->remove('_security.' . $this->providerKey . '.target_path');
+
+            if ($targetUrl != $login_url) {
+                return $targetUrl;
+            }
+        }
+
+        if ($this->options['use_referer'] && ($targetUrl = $request->headers->get(
+                'Referer'
+            )) && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])
+        ) {
+            if ($targetUrl != $login_url) {
+                return $targetUrl;
+            }
+        }
+
+        return $this->options['default_target_path'];
+    }
 
     public function setContainer(ContainerInterface $container = null)
     {

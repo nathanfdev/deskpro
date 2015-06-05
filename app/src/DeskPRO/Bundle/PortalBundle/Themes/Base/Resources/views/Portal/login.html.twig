@@ -24,15 +24,13 @@
         {% if saved_form %}
             <div class="error"
                  style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-                {# the variable "saved_form_message" is available here... it is the type of saved form like "new ticket" or "feedback" #}
-                <p>{{ phrase('portal.account.login-saved-form') }}</p>
+                <p>{{ phrase('portal.account.login-saved-form', { type: saved_form_message }) }}</p>
             </div>
         {% endif %}
 
         {% if auth_manager.isLoginFormVisible %}
             <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
                 <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
-                <input type="hidden" name="_destination" value="{{ path('portal_index') }}"/>
 
                 <div class="column-half">
                     <div class="bucket">
