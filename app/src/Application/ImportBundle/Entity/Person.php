@@ -631,6 +631,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
             'custom_fields'         => $custom_fields,
+            'timezone' => $this->timezone->getName(),
         );
     }
 

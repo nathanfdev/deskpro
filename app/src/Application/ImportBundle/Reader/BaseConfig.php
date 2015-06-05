@@ -6,7 +6,7 @@
  * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -25,34 +25,14 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+namespace Application\ImportBundle\Reader;
 
-class GeneratorFactory
+
+abstract class BaseConfig
 {
-    static public function createGenerator(DeskproContainer $container)
+    static public function fromArray(array $data)
     {
-        /** @var GeneratorConfig $config */
-        $config = $container->get('deskpro.import.config');
-
-        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if (!$config->getExporterBatchConfig()) {
-                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
-        }
-
-        $wf = $config->getWriterFactory($container);
-        $writer = $wf
-            ? $writer = $wf->createWriter()
-            : null;
-
-        return new Generator(
-            $exporter,
-            $writer,
-            $container->get('validator'),
-            $config
-        );
+        throw new \Exception('Not implemented');
     }
 }

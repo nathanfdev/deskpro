@@ -6,7 +6,7 @@
  * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -25,34 +25,39 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+namespace Application\ImportBundle\Reader;
 
-class GeneratorFactory
+
+abstract class BaseReader
 {
-    static public function createGenerator(DeskproContainer $container)
+    protected $config;
+
+    /**
+     * @param BaseConfig $config
+     * @throws \Exception
+     */
+    public function __construct(BaseConfig $config)
     {
-        /** @var GeneratorConfig $config */
-        $config = $container->get('deskpro.import.config');
-
-        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if (!$config->getExporterBatchConfig()) {
-                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
+        if (!$config) {
+            throw new \Exception('Reader configuration is not defined');
         }
+        $this->config = $config;
+    }
 
-        $wf = $config->getWriterFactory($container);
-        $writer = $wf
-            ? $writer = $wf->createWriter()
-            : null;
+    /**
+     * @return BaseConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
 
-        return new Generator(
-            $exporter,
-            $writer,
-            $container->get('validator'),
-            $config
-        );
+    /**
+     * @return bool
+     */
+    public function isReady()
+    {
+        return false;
     }
 }

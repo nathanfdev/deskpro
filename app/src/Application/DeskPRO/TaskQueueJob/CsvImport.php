@@ -57,14 +57,14 @@ class CsvImport extends AbstractJob
         ),
         'enclosure' => array(
             'none' => null,
-            'semicolon' => '"',
+            'quotes' => '"',
         ),
     );
 
     /** @var array */
     protected static $defaults = array(
         'delimeter' => 'comma',
-        'enclosure' => 'semicolon',
+        'enclosure' => 'quotes',
     );
 
     public static function getOptions(array $options = array())

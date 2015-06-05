@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Exception;
@@ -147,5 +148,17 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         }
 
         return true;
+    }
+
+    static public function getOrderedTypes()
+    {
+        return array(
+            EntityInterface::TYPE_PERSON,
+            EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_ARTICLE,
+            EntityInterface::TYPE_DOWNLOAD,
+            EntityInterface::TYPE_FEEDBACK,
+            EntityInterface::TYPE_NEWS,
+        );
     }
 }

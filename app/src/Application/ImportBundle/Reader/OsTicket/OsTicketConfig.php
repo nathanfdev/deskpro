@@ -6,7 +6,7 @@
  * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -25,34 +25,67 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\ImportBundle\Reader\BaseConfig;
 
-class GeneratorFactory
+class OsTicketConfig extends BaseConfig
 {
-    static public function createGenerator(DeskproContainer $container)
+    protected $host;
+
+    protected $database;
+
+    protected $user;
+
+    protected $password;
+
+    public function __construct($host, $db, $user, $password)
     {
-        /** @var GeneratorConfig $config */
-        $config = $container->get('deskpro.import.config');
+        $this->host = $host;
+        $this->database = $db;
+        $this->user = $user;
+        $this->password = $password;
+    }
 
-        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if (!$config->getExporterBatchConfig()) {
-                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
-        }
+    /**
+     * @return mixed
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
 
-        $wf = $config->getWriterFactory($container);
-        $writer = $wf
-            ? $writer = $wf->createWriter()
-            : null;
+    /**
+     * @return mixed
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
 
-        return new Generator(
-            $exporter,
-            $writer,
-            $container->get('validator'),
-            $config
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    static public function fromArray(array $data)
+    {
+        return new self(
+            $data['host'],
+            $data['db'],
+            $data['user'],
+            $data['password']
         );
     }
 }

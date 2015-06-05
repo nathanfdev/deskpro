@@ -40,6 +40,7 @@ use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
@@ -95,11 +96,13 @@ class JobRouterService
         foreach (ResetDemoController::$types as $type) {
             $proc = 'Application\DeskPRO\JobQueue\Processor\Reset\\' . ucfirst($type) . 'Processor';
             if (class_exists($proc)) {
-                $router->addProcessor(new $proc($container, $queue));
+                $router->addProcessor(new $proc($container));
             }
         }
 
-        $router->addProcessor(new UsersImportProcessor($container, $queue));
+        $router->addProcessor(new UsersImportProcessor($container));
+
+        $router->addProcessor(new ImportProcessor($container));
 
         return $router;
     }

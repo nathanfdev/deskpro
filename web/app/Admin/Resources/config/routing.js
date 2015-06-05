@@ -2156,6 +2156,23 @@ define(function() {
   });
 
   //###
+  //# Imports
+  //###
+  routes.push({
+    id:           'server.importers',
+    url:          '/importers',
+    templateName: 'Server/importers-list.html',
+    controller:   'Admin_Server_Ctrl_ImportersList'
+  });
+
+  routes.push({
+    id:           'server.importers.view',
+    url:          '/{id}',
+    templateName: 'Server/importers-view.html',
+    controller:   'Admin_Server_Ctrl_ImportersView'
+  });
+
+  //###
   //# Cron
   //###
   routes.push({

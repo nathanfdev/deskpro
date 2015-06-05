@@ -55,7 +55,24 @@ class ZenDeskReaderFactory
                 new Request\RequestClientAdapter($client)
             ),
 
-            $config->getInitialTime()
+            $config
+        );
+    }
+
+    /**
+     * @param ZenDeskConfig $config
+     * @return ZenDeskReader
+     */
+    static public function createReader(ZenDeskConfig $config)
+    {
+        $client = self::createClient($config);
+
+        return new ZenDeskReader(
+            new Request\RequestCacheAdapter(
+                new Request\RequestClientAdapter($client)
+            ),
+
+            $config
         );
     }
 
@@ -100,7 +117,7 @@ class ZenDeskReaderFactory
      * @return ZenDeskConfig
      * @throws Exception
      */
-    private static function getZenDeskConfig()
+    public static function getZenDeskConfig()
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {

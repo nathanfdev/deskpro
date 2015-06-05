@@ -6,7 +6,7 @@
  * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -25,34 +25,34 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
+
 namespace Application\ImportBundle\Generator;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class GeneratorFactory
+use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\ORM\EntityManager;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\NullOutput;
+
+class ImporterProgressBar extends ProgressBar
 {
-    static public function createGenerator(DeskproContainer $container)
+    protected $em;
+    protected $importer;
+    protected $total_count;
+
+    public function __construct(DataStore $importer, EntityManager $em, $total_count)
     {
-        /** @var GeneratorConfig $config */
-        $config = $container->get('deskpro.import.config');
+        $this->em = $em;
+        $this->importer = $importer;
+        parent::__construct(new NullOutput(), $total_count);
+    }
 
-        $exporter = $config->getExporterFactory($container)->createExporter($config->getReaderConfig());
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if (!$config->getExporterBatchConfig()) {
-                $config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
-        }
+    public function display()
+    {
+        $this->importer->setData('progress_step', $this->getStep());
+        $this->importer->setData('progress_max', $this->getMaxSteps());
+        $this->importer->setData('progress_start', $this->getStartTime());
 
-        $wf = $config->getWriterFactory($container);
-        $writer = $wf
-            ? $writer = $wf->createWriter()
-            : null;
-
-        return new Generator(
-            $exporter,
-            $writer,
-            $container->get('validator'),
-            $config
-        );
+        $this->em->flush($this->importer);
     }
 }
