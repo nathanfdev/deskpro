@@ -85,21 +85,21 @@ define [
 
 
     showDelete: ->
-      return if !@feedback_category?.id
+      id = @feedback_category?.id
+      return if !id
+      list = @FeedbackCategoriesData.getListOfMovables @feedback_category
+
       deleteStart = =>
-        @Api.sendDelete("/feedback_categories/#{@feedback_category.id}").then =>
-          console.log @$scope.$parent
-      #          @$state.go('agents.groups')
+        @Api.sendDelete("/feedback_categories/#{id}").then =>
+          @FeedbackCategoriesData.remove id
+          @$state.go 'portal.feedback_categories'
 
       inst = @$modal.open({
         templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
         controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
-
-          $scope.doDelete = (options) ->
-            $scope.is_loading = true
-            deleteStart().then(-> $modalInstance.dismiss())
+          $scope.move_feedback_categories_list = list
+          $scope.dismiss = -> $modalInstance.dismiss()
+          $scope.confirm = -> deleteStart().then -> $modalInstance.dismiss()
         ]
       });
 
