@@ -83,4 +83,26 @@ define [
       return promise
 
 
+
+    showDelete: ->
+      return if !@feedback_category?.id
+      deleteStart = =>
+        @Api.sendDelete("/feedback_categories/#{@feedback_category.id}").then =>
+          console.log @$scope.$parent
+      #          @$state.go('agents.groups')
+
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
+        controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+
+          $scope.doDelete = (options) ->
+            $scope.is_loading = true
+            deleteStart().then(-> $modalInstance.dismiss())
+        ]
+      });
+
+
+
   Admin_FeedbackCategories_Ctrl_Edit.EXPORT_CTRL()
