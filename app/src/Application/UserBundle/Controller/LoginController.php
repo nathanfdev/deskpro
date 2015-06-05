@@ -1074,8 +1074,9 @@ HTML;
             return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
         }
 
-        $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
-        $this->em->getRepository('DeskPRO:TmpData')->removeDupes($code_data);
+        if ($code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password')) {
+            $this->em->getRepository('DeskPRO:TmpData')->removeDupes($code_data);
+        }
         $person = null;
         if ($code_data) {
             $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
