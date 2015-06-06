@@ -151,7 +151,6 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:browse.html.twig',
             array(
                 'category' => $category,
-                'show_pagination' => true,
                 'breadcrumbs' => $breadcrumbs,
                 'pager' => $pager,
                 'is_subscribed' => $is_subscribed,

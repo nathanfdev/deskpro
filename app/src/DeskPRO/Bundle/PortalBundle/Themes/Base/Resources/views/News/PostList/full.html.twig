@@ -12,8 +12,10 @@
           {% if item.person %}
             By <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.name }}
           {% endif %}
-          <i class="fa fa-folder-o"> {{ item.category.getRealTitle() }}</i>
-          <span class="comments"><i class="fa fa-comments"></i> <a href="#">0 comments</a></span>
+          <a href="{{ path('portal_news_browse', { slug: item.category.slug }) }}"><i class="fa fa-folder-o"> {{ item.category.getRealTitle() }}</i></a>
+          {% if item.num_comments > 0 %}
+          <span class="comments"><i class="fa fa-comments"></i> <a href="{{ path('portal_news_view', { slug: item.slug }) }}#comments">{{ item.num_comments }} comments</a></span>
+          {% endif %}
         </div>
       </header>
 
@@ -24,4 +26,8 @@
       </div><!-- end padded -->
     </article>
   {% endfor %}
+  {% if show_pager %}
+    {% show news_pager %}
+  {% endif %}
 {% endif %}
+

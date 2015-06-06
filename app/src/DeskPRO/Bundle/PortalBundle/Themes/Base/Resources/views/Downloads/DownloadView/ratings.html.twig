@@ -5,9 +5,12 @@
         </div>
 
         {% if rating %}
-            <div class="rate-article"
-                 style="background-color: {% if rating.positive %}#93d06e{% else %}#dc7575{% endif %}; color: white;">
-                You marked this page as {% if rating.positive %}helpful{% else %}not helpful{% endif %}
+            <div class="rate-article {% if rating.positive %}as-positive{% else %}as-negative{% endif %}">
+                {% if rating.positive %}
+                    {{ phrase('portal.general.rated-positive') }}
+                {% else %}
+                    {{ phrase('portal.general.rated-negative') }}
+                {% endif %}
             </div>
         {% endif %}
 

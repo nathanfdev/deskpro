@@ -8,7 +8,7 @@
     'portal.account.login-password'     => 'Your password',
     'portal.account.login-password-reminder'     => 'Need a password reminder?',
     'portal.account.login-invalid'     => 'Bad Credentials. Please try again.',
-    'portal.account.login-saved-form'     => 'Your form has not been submitted yet. Please login to continue.',
+    'portal.account.login-saved-form'     => 'Your {{ type }} has not been submitted yet. Please login to continue.',
     'portal.account.login-external'     => 'Login with an external service',
     'portal.account.login-register-header'     => 'Create a new account',
     'portal.account.login-register-btn'     => 'Register',

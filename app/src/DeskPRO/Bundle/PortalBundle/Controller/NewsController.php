@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -126,15 +127,32 @@ class NewsController extends AbstractController
         }
 
         //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        //
+        // PAGER
+        //
+        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $this->getBrandSetting(
+            'portal.per_page_content'
+        ));
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             array(
                 'category'        => $category,
-                'page'            => $page,
-                'count'           => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true,
+                'is_subscribed'   => $is_subscribed,
+                'pager'           => $pager,
                 'page_title' => $this->createPageTitle()->news($category),
                 'breadcrumbs' => $breadcrumbs
             )
@@ -172,13 +190,31 @@ class NewsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsPost($post);
 
         //
+        // RATINGS
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
+        }
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             array(
                 'post'             => $post,
-                'category'         => $post->category,
+                'is_subscribed'    => $is_subscribed,
+                'rating'           => $rating,
+                'category'         => $post->getCategory(),
                 'content_id'       => $post->getId(),
                 'content_type'     => News::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,

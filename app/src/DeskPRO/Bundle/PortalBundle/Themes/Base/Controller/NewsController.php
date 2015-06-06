@@ -95,7 +95,8 @@ class NewsController extends AbstractController
      *          "style": "excerpts",
      *          "page": 1,
      *          "count": 10,
-     *          "show_category_link": false
+     *          "show_category_link": false,
+     *          "show_pager": false
      *      },
      *      allowed_values={
      *          "style": {"excerpts", "full", "simple"}
@@ -119,105 +120,14 @@ class NewsController extends AbstractController
             array(
                 'pager'              => $pager,
                 'category'           => $category,
+                'show_category_link' => $options['show_category_link'],
+                'show_pager' => $options['show_pager']
             )
         );
     }
 
     /**
-     * @Tag(name="news_post", esi=true)
-     * @TagHttpCache(content="post")
-     *
-     * @TagOptions(
-     *      defaults={"is_subscribed":false},
-     *      required={"post"},
-     *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "post": "service('data.news').getPost(options['post'])"
-     *      }
-     * )
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function postAction(TagRequest $tag_request, array $options, News $post)
-    {
-        return $this->renderThemeView(
-            'Theme:News:PostView/post.html.twig',
-            array(
-                'post' => $post,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="news_post_subscription", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      required={"post"},
-     *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "post": "service('data.news').getPost(options['post'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function postSubscriptionAction(TagRequest $tag_request, array $options, News $post)
-    {
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
-        }
-
-        return $this->renderThemeView(
-            sprintf('Theme:News:PostView/subscription_info.html.twig', $options['style']),
-            array(
-                'post'          => $post,
-                'is_subscribed' => $is_subscribed,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="news_category_subscription", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "category": "service('data.news').getCategory(options['category'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function categorySubscriptionAction(TagRequest $tag_request, array $options, NewsCategory $category)
-    {
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
-        return $this->renderThemeView(
-            'Theme:News:CategoryList/subscription_info.html.twig', array(
-                'category'      => $category,
-                'is_subscribed' => $is_subscribed,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="news_post_comments")
+     * @Tag(name="news_comments")
      *
      * @TagOptions(
      *      defaults={
@@ -237,73 +147,8 @@ class NewsController extends AbstractController
     {
         $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
-        return $this->renderThemeView('Theme:News:PostView/comments.html.twig', array(
-            'post'     => $post,
+        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
             'comments' => $comments,
         ));
-    }
-
-    /**
-     * @Tag(name="news_pager")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "category": null,
-     *          "show_pagination": true,
-     *          "page": 1,
-     *          "count": 10
-     *      },
-     *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
-     *      },
-     *      attribute_expressions={
-     *          "category": "service('data.news').getCategory(options['category'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function pagerAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
-    {
-        if (!$options['show_pagination']) {
-            return new Response('');
-        }
-
-        $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
-
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig',
-            array(
-                'pager' => $pager,
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="news_post_ratings", esi=true, always_guest_inline=true)
-     *
-     * @TagOptions(
-     *      defaults={"post": null},
-     *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string"}
-     *      },
-     *      attribute_expressions={
-     *          "post": "service('data.news').getPost(options['post'])"
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function ratingsAction(TagRequest $tag_request, array $options, News $post)
-    {
-        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
-
-        return $this->renderThemeView(
-            'Theme:News:PostView/ratings.html.twig',
-            array(
-                'post'   => $post,
-                'rating' => $rating,
-            )
-        );
     }
 }

@@ -135,7 +135,7 @@ class ArticlesController extends AbstractController
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
         ) {
             // waiting info regarding article category subscriptions
-            $is_subscribed = false;//$this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
         //
@@ -152,7 +152,6 @@ class ArticlesController extends AbstractController
             array(
                 'category'        => $category,
                 'breadcrumbs'     => $breadcrumbs,
-                'show_pagination' => true,
                 'page_title'      => $this->get('portal_view.page_title_generator')->kb($category),
                 'is_subscribed'   => $is_subscribed,
                 'pager'           => $pager
@@ -204,7 +203,7 @@ class ArticlesController extends AbstractController
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
         ) {
             // waiting on info on the kb subs
-            $is_subscribed = false;//$this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
 
         //

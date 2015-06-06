@@ -5255,6 +5255,18 @@ ul.categories-article-list {
       content: " ";
     }
 
+    .as-positive {
+      border-bottom: 1px solid darken($button-color-secondary, 20%);
+      background: $button-color-secondary;
+      color: #ffffff;
+    }
+
+    .as-negative {
+      border-bottom: 1px solid darken($red, 20%);
+      background: $red;
+      color: #ffffff;
+    }
+
     .rate-up {
       border-bottom: 1px solid darken($button-color-secondary, 20%);
       background: $button-color-secondary;

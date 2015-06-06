@@ -146,7 +146,6 @@ class ArticlesController extends AbstractController
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
         return $this->renderThemeView('Theme:Common:comments.html.twig', array(
-            'article'  => $article,
             'comments' => $comments,
         ));
     }

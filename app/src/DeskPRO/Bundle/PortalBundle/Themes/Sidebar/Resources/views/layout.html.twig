@@ -2,7 +2,6 @@
 {% block body %}
 
     <div class="world">
-        {% if page_title is defined %} {{ page_title }}{% else %}{{ brand_setting('core.deskpro_name') }}{% endif %}
         <section>
             <div class="column-full">
               {% show section alerts %}
@@ -33,7 +32,5 @@
               {% show section sidebar %}
             </aside>
         </section>
-
     </div>
-
 {% endblock body %}

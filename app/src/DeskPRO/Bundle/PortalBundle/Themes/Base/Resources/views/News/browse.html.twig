@@ -4,8 +4,11 @@
     {% show breadcrumbs %}
   </div>
   <div class="browse-page">
+    <header class="section-header padded">
+      {% show kb_cat_subscription_link %}
+    </header>
     {% show news_cats_tabs %}
-    {% show news_list_full with { count: 5 } %}
-    {% show news_pager with { count: 5 } %}
+    {% show news_list_full %}
+    {% show news_pager %}
   </div>
 {% endblock inner_content %}

@@ -39,6 +39,7 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
 
 class FeedbackController extends AbstractController
 {
@@ -59,7 +60,7 @@ class FeedbackController extends AbstractController
      *          "show_category_link": true
      *      },
      *      allowed_values={
-     *          "style": {"list", "row"},
+     *          "style": {"simple", "detail"},
      *          "sort": {"date", "most-popular", "highest-rating", "most-discussed", "most-views"},
      *          "sort_direction": {"desc", "asc"},
      *          "status": {"all","active","closed"}
@@ -70,7 +71,6 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        xdebug_break();
         $filter = new FeedbackFilter(array(
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
@@ -89,6 +89,7 @@ class FeedbackController extends AbstractController
             sprintf('Theme:Feedback:FeedbackList/%s.html.twig', $options['style']),
             array(
                 'pager' => $pager,
+                'show_category_link' => $options['show_category_link']
             )
         );
     }
@@ -165,8 +166,7 @@ class FeedbackController extends AbstractController
     {
         $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
 
-        return $this->renderThemeView('Theme:Feedback:Tag/comments.html.twig', array(
-            'item'     => $item,
+        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
             'comments' => $comments,
         ));
     }
