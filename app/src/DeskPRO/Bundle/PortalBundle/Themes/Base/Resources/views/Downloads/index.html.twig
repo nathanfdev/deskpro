@@ -12,7 +12,7 @@
             {{ phrase('portal.downloads.section-desc') }}
         </p>
 
-        <a href="{{ path('portal_downloads', { _format: 'rss' }) }}">Subscribe to RSS Feed <i class="fa fa-rss"></i></a>
+        <a href="{{ path('portal_downloads', { _format: 'rss' }) }}">{{ phrase('portal.general.rss_subscribe') }} <i class="fa fa-rss"></i></a>
     </header>
 
     {% show section download_cats %}

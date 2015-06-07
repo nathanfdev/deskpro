@@ -3,13 +3,13 @@
         <ul class="content-list">
             {% for item in pager %}
                 <li>
-                    <span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.popularity }}</span>
+                    <span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.total_rating }}</span>
                     <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <strong>No feedback yet</strong>
+        <strong>{{ phrase('portal.feedback.none') }}</strong>
     {% endif %}
 
     {% if show_category_link %}

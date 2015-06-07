@@ -85,7 +85,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="kb_list", default_options={"style":"detail"})
+     * @Tag(name="kb_list_detail", default_options={"style":"detail"})
      * @Tag(name="kb_list_simple", default_options={"style":"simple"})
      *
      * @TagOptions(

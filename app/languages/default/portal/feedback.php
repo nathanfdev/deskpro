@@ -8,4 +8,5 @@
     'portal.feedback.btn-vote'         => 'I Agree',
     'portal.feedback.view-x-feedback' => 'View 1 feedback|View {{count}} feedback',
     'portal.feedback.x-feedback' => '1 feedback|{{count}} feedback',
+    'portal.feedback.none' => 'No feedback yet',
 );

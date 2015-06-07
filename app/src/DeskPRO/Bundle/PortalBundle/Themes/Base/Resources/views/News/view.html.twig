@@ -33,7 +33,7 @@
     {% if post.labels|length %}
       <div class="tag-list">
         <ul>
-          <li class="tag-list-header"><i class="fa fa-tags"></i> Tags</li>
+          <li class="tag-list-header"><i class="fa fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
           {% for l in post.labels %}
             <li class="tag-list-item"><a href="#">{{ l }}</a></li>
           {% endfor %}

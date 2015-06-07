@@ -35,5 +35,9 @@
     'portal.general.nav-register'           => 'Register',
     'portal.general.nav-login'              => 'Login',
     'portal.general.nav-reset-password'     => 'Reset Password',
-    'portal.general.rerender-form'          => 'Please review this form before you submit it.',
+    'portal.general.rerender-form' => 'Please review this form before you submit it.',
+    'portal.general.posted-by' => 'by',
+    'portal.general.posted-in' => 'in',
+    'portal.general.tags' => 'Tags',
+    'portal.general.rss_subscribe' => 'Subscribe to RSS Feed',
 );

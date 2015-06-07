@@ -14,16 +14,14 @@
           {% endif %}
           <a href="{{ path('portal_news_browse', { slug: item.category.slug }) }}"><i class="fa fa-folder-o"> {{ item.category.getRealTitle() }}</i></a>
           {% if item.num_comments > 0 %}
-          <span class="comments"><i class="fa fa-comments"></i> <a href="{{ path('portal_news_view', { slug: item.slug }) }}#comments">{{ item.num_comments }} comments</a></span>
+          <span class="comments"><i class="fa fa-comments"></i> <a href="{{ path('portal_news_view', { slug: item.slug }) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
           {% endif %}
         </div>
       </header>
-
       <hr>
-
       <div class="article-content padded">
         {{ render_news(item) }}
-      </div><!-- end padded -->
+      </div>
     </article>
   {% endfor %}
   {% if show_pager %}
