@@ -211,6 +211,8 @@ class Sla extends DomainObject
 
 
     /**
+     * Set work days (ISO-8601, 1=monday, 7=sunday)
+     *
      * @param array $days
      * @param bool  $raw
      */
@@ -226,6 +228,9 @@ class Sla extends DomainObject
 
             $this->work_days = $days;
         }
+
+        unset($this->work_days[0]);
+
         $this->_onPropertyChanged('work_days', $old, $this->work_days);
     }
 
