@@ -49,6 +49,7 @@ final class Tickets extends AbstractParser
     const STATUS_HOLD     = 'hold';
     const STATUS_SOLVED   = 'solved';
     const STATUS_CLOSED   = 'closed';
+    const STATUS_DELETED  = 'deleted';
 
     const PRIORITY_URGENT = 'urgent';
     const PRIORITY_HIGH   = 'high';
@@ -293,6 +294,7 @@ final class Tickets extends AbstractParser
             self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
+            self::STATUS_DELETED => DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
         );
 
         if (isset($map[$status])) {
