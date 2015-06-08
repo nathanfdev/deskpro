@@ -4,20 +4,20 @@
       <form>
         <div class="input-wrap">
           <i class="fa fa-search"></i>
-          <input type="text" placeholder="Search...">
+          <input type="text" placeholder="{{ phrase('portal.general.search_btn') }}...">
         </div>
-        <input type="submit" value="Search">
+        <button type="submit">{{ phrase('portal.general.search_btn') }}</button>
       </form>
     </div>
 
     <div class="search-or-ticket">
-      <span>or</span>
+      <span>{{ phrase('portal.general.or') }}</span>
     </div>
 
     <div class="search-and-ticket-dropdown">
       <a href="{{ path('portal_new_ticket') }}">
          <span class="button select-action">
-          <i class="fa fa-comments"></i> Contact Us
+          <i class="fa fa-comments"></i> {{ phrase('portal.general.nav-newticket') }}
           <span class="select-action-dropdown">
             <i class="fa fa-caret-down"></i>
           </span>

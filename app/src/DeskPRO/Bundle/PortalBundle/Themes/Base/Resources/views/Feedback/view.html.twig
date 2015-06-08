@@ -9,7 +9,7 @@
             <div class="feedback-item-controls">
                 <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
                     <i class="fa fa-thumbs-up"></i>
-                    <div>I agree</div>
+                    <div>{{ phrase('portal.feedback.btn-vote') }}</div>
                     <span class="counter">{{ item.total_rating }}</span>
                 </a>
                 {# fav/stars feature not supported yet #}
@@ -21,7 +21,6 @@
 
             <div class="feedback-item-content">
                 <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
-
 
                 <h1>
                     <span class="text-tag">{{ item.category }}</span>
@@ -37,7 +36,7 @@
                     <ul>
                         <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
                         <li><a href="#comments"><i
-                                        class="fa fa-comment"></i> {{ item.num_comments }} comments</a></li>
+                                        class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', { count: item.num_comments }) }}</a></li>
                         {% if item.getCustomDataSelection() %}
                             <li><a href="#"><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</a>
                             </li>
@@ -50,7 +49,7 @@
 
                 <div class="attached">
                     {% if item.attachments|length > 0 %}
-                        <h3>Attachements:</h3>
+                        <h3>{{ phrase('portal.feedback.attachments') }}</h3>
                         {% for attachment in item.attachments %}
                             <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
                                 {% if attachment.blob.is_image %}
@@ -63,9 +62,7 @@
                     {% endif %}
                 </div>
             </div>
-            <!-- End feedback-item-content -->
         </div>
-        <!-- End feedback-item -->
     </article>
 
     {% show feedback_ratings %}

@@ -11,12 +11,12 @@
         <a href="#" class="ticket-status">{{ ticket_status(ticket) }}</a>
       </h1>
         <span class="ticket-reference">
-            Ticket reference: {{ ticket.public_id }}
+            {{ phrase('portal.tickets.ticket-ref') }} <strong>{{ ticket.public_id }}</strong>
         </span>
       {% if can_edit %}
         <span class="ticket-reference">
               <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}">
-                EDIT TICKET
+                {{ phrase('portal.tickets.edit-ticket') }}
               </a>
           </span>
       {% endif %}
@@ -31,7 +31,7 @@
           {% endif %}
 
           <div class="agent-info">
-            <span class="agent-meta">Assigned Agent:</span>
+            <span class="agent-meta">{{ phrase('portal.tickets.assigned-agent') }}</span>
               <span class="agent-name">
                   {% if ticket.agent %}
                     {{ ticket.agent.display_name_user }}
@@ -44,7 +44,7 @@
         <div class="agent">
           <span class="agent-avatar" style="background: url({{ avatar_url(ticket.person) }}) no-repeat; background-size: cover;"></span>
           <div class="agent-info">
-            <span class="agent-meta">Opened by:</span>
+            <span class="agent-meta">{{ phrase('portal.tickets.opened-by') }}</span>
             <span class="agent-name">{{ ticket.person.display_name_user }}</span>
           </div>
         </div>
@@ -52,7 +52,7 @@
 
       {% if ticket.userParticipants|length %}
         <div class="agent-extras">
-          <span class="grey">Also CC'ed:</span>
+          <span class="grey">{{ phrase('portal.tickets.also-cc') }}</span>
           {% for person in ticket.userParticipants %}
             <div class="agent">
               <span class="agent-meta">{{ person.display_name_user }}</span>
@@ -83,8 +83,8 @@
 
     <div class="ticket-timeline">
       <div class="line"></div>
-      {% include 'Theme:Tickets:timeline/timeline.html.twig' %}
-      {% include 'Theme:Tickets:ticket_reply.html.twig' %}
+      {% show ticket_timeline %}
+      {% show ticket_reply %}
     </div>
     <br>
   </article>

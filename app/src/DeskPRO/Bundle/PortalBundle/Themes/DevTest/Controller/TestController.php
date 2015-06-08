@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
 class TestController extends AbstractController
 {
     /**
-     * @Tag(name="dev_test_portal", always_guest_inline=true)
+     * @Tag(name="dev_test_portal")
      */
     public function testAction(TagRequest $request)
     {

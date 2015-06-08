@@ -34,7 +34,7 @@
 
                 <div class="column-half">
                     <div class="bucket">
-                        <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}:</label>
+                        <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}</label>
                         <input type="text" tabindex="1" placeholder="Email" name="username" value="{{ last_username }}">
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                         {% if auth_manager.isForgotPasswordVisible %}
                             <div class="form-meta form-meta-grey"><a href="{{ path('portal_reset_password') }}">{{ phrase('portal.account.login-password-reminder') }}</a></div>
                         {% endif %}
-                        <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}:</label>
+                        <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}</label>
                         <input type="password" tabindex="1" placeholder="Your password" name="password">
                     </div>
                 </div>

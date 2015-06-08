@@ -3,19 +3,19 @@
   {% if line.type == 'ticket_created' %}
     <div class="item">
       <span class="badge"><i class="fa fa-star"></i></span>
-      <h1><strong>Ticket opened</strong> by {{ line.person.display_name_user }}</h1>
+      <h1><strong>{{ phrase('portal.tickets.timeline_opened') }}</strong> {{ phrase('portal.general.by') }} {{ line.person.display_name_user }}</h1>
       <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
     </div>
   {% elseif line.type == 'ticket_reopened' %}
     <div class="item">
       <span class="badge"><i class="fa fa-star"></i></span>
-      <h1><strong>Ticket re-opened</strong> by {{ line.person.display_name }}</h1>
+      <h1><strong>{{ phrase('portal.tickets.timeline_re_opened') }}</strong> {{ phrase('portal.general.by') }} {{ line.person.display_name }}</h1>
       <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
     </div>
   {% elseif line.type == 'ticket_closed' %}
     <div class="item">
       <span class="badge"><i class="fa fa-star"></i></span>
-      <h1><strong>Ticket closed</strong> by {{ line.person.display_name }}</h1>
+      <h1><strong>{{ phrase('portal.tickets.timeline_closed') }}</strong> {{ phrase('portal.general.by') }} {{ line.person.display_name }}</h1>
       <span class="event-happened-at">{{ line.datetime|date('full') }}</span>
     </div>
   {% elseif line.type == 'agent_message' %}

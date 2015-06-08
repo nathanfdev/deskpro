@@ -110,7 +110,7 @@
         {% endif %}
         {{ form.vars.data.blob.filename }}
     </a>
-    [ {{ form_widget(form.delete) }} Delete? ]
+    [ {{ form_widget(form.delete) }} {{ phrase('portal.general.delete_question') }} ]
     {{ form_widget(form.blob_auth) }}
 {% endif %}
 {% endblock feedback_attachment_widget %}

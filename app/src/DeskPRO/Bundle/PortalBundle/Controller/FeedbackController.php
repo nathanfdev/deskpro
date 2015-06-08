@@ -79,7 +79,7 @@ class FeedbackController extends AbstractController
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
                 'pager'    => $pager,
                 'category' => null,
-                'page_title' => $this->createPageTitle()->feedback()
+                'page_title' => $this->createPageTitle()->feedback(),
             ));
         }
 
@@ -142,14 +142,27 @@ class FeedbackController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
         //
+        // FILTER CATEGORIES
+        //
+        // TODO: turn this into a service that takes in to account security (access to categories)
+        $feedback_categories = $this->getRepo('DeskPRO:FeedbackCategory')->getAll();
+
+        //
         // RENDER THEME
         //
+        $filter = new FeedbackFilter(); // get the defaults
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
                 'page'            => $page,
+                'feedback_categories' => $feedback_categories,
                 'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
+                'status' => $filter->getStatus(),
+                'status_categories' => $filter->getStatusCategories(),
+                'types' => $filter->getTypes(),
+                'sort' => $filter->getSort(),
+                'sort_direction' => $filter->getSortDirection(),
                 'form'            => $form->createView(),
                 'user'            => $this->getUser(),
                 'rerendering_saved'  => $rerendering_saved,
@@ -179,6 +192,12 @@ class FeedbackController extends AbstractController
 
         // order was incorrect, redirect
         if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
+            if (strlen($generated_uri) < 1) {
+                // actually, in this case, it is all the defaults, so go back to the index
+                return $this->redirectToRoute(
+                    'portal_feedback'
+                );
+            }
             return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
         }
 
@@ -187,8 +206,15 @@ class FeedbackController extends AbstractController
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
+        //
+        // FILTER CATEGORIES
+        //
+        // TODO: turn this into a service that takes in to account security (access to categories)
+        $feedback_categories = $this->getRepo('DeskPRO:FeedbackCategory')->getAll();
+
         $page_options = array(
             'page'              => $page,
+            'feedback_categories' => $feedback_categories,
             'count'             => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination'   => true,
             'status'            => $filter->getStatus(),

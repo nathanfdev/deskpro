@@ -7,9 +7,9 @@
           News
           <select name="show_news">
             <option value=""></option>
-            <option value="pretty">pretty</option>
-            <option value="list">list</option>
-            <option value="normal">normal</option>
+            <option value="excerpts">excerpts</option>
+            <option value="full">full</option>
+            <option value="simple">simple</option>
           </select>
         </label>
       </div>
@@ -104,12 +104,12 @@
               <section>
                 <article class="news front-page-news">
                   <div class="large-title clearfix"><h1>News</h1></div>
-                  {% if opts.show_news == 'pretty' %}
-                    {% show section news_posts_pretty with { count: 2 } %}
-                  {% elseif opts.show_news == 'list' %}
-                    {% show section news_posts with { count: 2 } %}
-                  {% elseif opts.show_news == 'normal' %}
-                    {% show section news_posts_list with { count: 2 } %}
+                  {% if opts.show_news == 'excerpts' %}
+                    {% show section news_list_excerpts with { count: 2 } %}
+                  {% elseif opts.show_news == 'full' %}
+                    {% show section news_list_full with { count: 2 } %}
+                  {% elseif opts.show_news == 'simple' %}
+                    {% show section news_list_simple with { count: 2 } %}
                   {% endif %}
                 </article>
               </section>
@@ -120,7 +120,7 @@
                 <article class="news front-page-news">
                   <div class="large-title clearfix"><h1>Downloads</h1></div>
                   {% if opts.show_dl == 'normal' %}
-                    {% show section downloads %}
+                    {% show section download_cats %}
                   {% endif %}
                 </article>
               </section>
@@ -133,7 +133,7 @@
                   {% if opts.show_kb == 'normal' %}
                     {% show section kb with { articles_options: { count: 3 }} %}
                   {% elseif opts.show_kb == 'expander' %}
-                    {% show section kb_expander %}
+                    {% show section kb_cats_expander %}
                   {% endif %}
                 </article>
               </section>
@@ -150,7 +150,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent News</h1></div>
-                {% show section news_posts_list with { count: 5 } %}
+                {% show section news_list_simple with { count: 5 } %}
               </article>
             </div>
           {% endif %}
@@ -158,7 +158,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent KB Posts</h1></div>
-                {% show section kb_list with { count: 5 } %}
+                {% show section kb_list_simple with { count: 5 } %}
               </article>
             </div>
           {% endif %}
@@ -166,7 +166,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>KB</h1></div>
-                {% show section kb_list %}
+                {% show section kb_cats_simple %}
               </article>
             </div>
           {% endif %}
@@ -174,7 +174,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
-                {% show section downloads_files_list with { count: 5 } %}
+                {% show section downloads_list_simple with { count: 5 } %}
               </article>
             </div>
           {% endif %}
@@ -182,7 +182,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Downloads</h1></div>
-                {% show section downloads_list %}
+                {% show section download_cats_simple %}
               </article>
             </div>
           {% endif %}
@@ -190,7 +190,7 @@
             <div class="column">
               <article class="panel-tiny front-page-downloads">
                 <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
-                {% show section feedback_items_list with { count: 5 } %}
+                {% show section feedback_list_simple with { count: 5 } %}
               </article>
             </div>
           {% endif %}

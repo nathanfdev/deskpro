@@ -17,8 +17,8 @@
 <div class="item reply">
   <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
 
-  <a href="#" class="button button-reply">Add a Reply</a>
-  <a href="#" class="button button-resolved">Mark as Resolved</a>
+  <a href="#" class="button button-reply">{{ phrase('portal.tickets.add-reply') }}</a>
+  <a href="#" class="button button-resolved">{{ phrase('portal.tickets.mark-resolved') }}</a>
 
   <div class="reply-form">
     {{ form_errors(form) }}
@@ -29,5 +29,4 @@
     {{ form_rest(form) }}
     {{ form_end(form) }}
   </div>
-
 </div>

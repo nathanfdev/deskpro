@@ -66,7 +66,7 @@ class ProfileController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildRegistration();
 
         return $this->renderThemeView(
-            'Theme:Profile:register.html.twig',
+            'Theme:Portal:User/register.html.twig',
             array(
                 'form' => $form->createView(),
                 'breadcrumbs' => $breadcrumbs,
@@ -146,7 +146,7 @@ class ProfileController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
 
         return $this->renderThemeView(
-            'Theme:Profile:edit.html.twig', array(
+            'Theme:Portal:User/profile.html.twig', array(
                 'profile_form' => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
                 'emails_form' => $emails_form->createView(),

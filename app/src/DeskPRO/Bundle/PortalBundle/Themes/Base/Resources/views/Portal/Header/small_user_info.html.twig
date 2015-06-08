@@ -1,0 +1,22 @@
+{% if is_guest() %}
+  {% if display_registration_link %}
+    <li>
+      <a href="{{ path('portal_user_registration') }}" class="button-small button-signup">{{ phrase('portal.account.login-register-header') }}</a>
+    </li>
+  {% endif %}
+
+  <li>
+    <a href="{{ path('portal_login') }}" class="button-small button-login">{{ phrase('portal.account.login-btn') }} <i class="fa fa-caret-down"></i></a>
+  </li>
+{% else %}
+  <li class="welcome">
+    {{ phrase('portal.account.welcome-back') }} {{ app.user.name }}
+    &middot; <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
+    {% if ticket_count %}
+      &middot; <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
+    {% endif %}
+  </li>
+  <li>
+    <a href="{{ path('portal_logout') }}" class="button-small button-login">{{ phrase('portal.account.logout-btn') }}</a>
+  </li>
+{% endif %}

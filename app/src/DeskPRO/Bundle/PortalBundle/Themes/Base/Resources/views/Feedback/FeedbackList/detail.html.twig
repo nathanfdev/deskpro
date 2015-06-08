@@ -3,7 +3,7 @@
         <div class="feedback-item-controls">
             <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
                 <i class="fa fa-thumbs-up"></i>
-                <div>I agree</div>
+                <div>{{ phrase('portal.feedback.btn-vote') }}</div>
                 <span class="counter">{{ item.total_rating }}</span>
             </a>
             {# fav/stars feature not supported yet #}

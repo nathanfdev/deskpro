@@ -3,8 +3,8 @@
     <li class="{{ is_page_kb() ? 'active' }}">
       <a href="{{ path('portal_kb') }}">
         <i class="fa fa-columns"></i>
-        <span class="title">Knowledgebase</span>
-        <span class="subtitle">Read help articles</span>
+        <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
+        <span class="subtitle">{{ phrase('portal.general.nav-kb-desc') }}</span>
       </a>
     </li>
   {% endif %}
@@ -13,8 +13,8 @@
     <li class="{{ is_page_news() ? 'active' }}">
       <a href="{{ path('portal_news') }}">
         <i class="fa fa-file-text-o"></i>
-        <span class="title">News</span>
-        <span class="subtitle">News &amp; updates</span>
+        <span class="title">{{ phrase('portal.general.nav-news') }}</span>
+        <span class="subtitle">{{ phrase('portal.general.nav-news-desc') }}</span>
       </a>
     </li>
   {% endif %}
@@ -23,8 +23,8 @@
     <li class="{{ is_page_feedback() ? 'active' }}">
       <a href="{{ path('portal_feedback') }}">
         <i class="fa fa-list-alt"></i>
-        <span class="title">Feedback</span>
-        <span class="subtitle">Custom suggestions</span>
+        <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
+        <span class="subtitle">{{ phrase('portal.general.nav-feedback-desc') }}</span>
       </a>
     </li>
   {% endif %}
@@ -33,8 +33,8 @@
     <li class="{{ is_page_tickets() ? 'active' }}">
       <a href="{{ path('portal_new_ticket') }}">
         <i class="fa fa-comments"></i>
-        <span class="title">Contact Us</span>
-        <span class="subtitle">We are here to help</span>
+        <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
+        <span class="subtitle">{{ phrase('portal.general.nav-newticket-desc') }}</span>
       </a>
     </li>
   {% endif %}

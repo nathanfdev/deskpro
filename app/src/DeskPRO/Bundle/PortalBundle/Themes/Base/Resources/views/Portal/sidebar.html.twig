@@ -1,0 +1,90 @@
+{# This section is displayed if the user is logged in #}
+{% if is_user() %}
+    <strong>{{ app.user }}</strong>
+    <br>
+    <img src="{{ avatar_url(app.user) }}" alt="{{ app.user }}"/>
+
+    <ul class="user-info" style="margin-bottom: 40px;">
+        {% if ticket_count > 0 %}
+            <li>
+                <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }}
+                    )</a>
+            </li>
+        {% endif %}
+
+        <li>
+            <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.general.nav-profile') }}</a>
+        </li>
+
+        {% if app.user.is_agent and app.user.can_agent %}
+            <li>
+                <a href="{{ path('agent_interface') }}">{{ phrase('agent.general.agent_interface') }}</a>
+            </li>
+        {% endif %}
+
+        {% if app.user.is_agent and app.user.can_admin %}
+            <li>
+                <a href="{{ path('admin_interface') }}">{{ phrase('agent.general.admin_interface') }}</a>
+            </li>
+        {% endif %}
+
+        <li>
+            <a href="{{ path('portal_logout') }}">{{ phrase('portal.account.logout-btn') }}</a>
+        </li>
+    </ul>
+
+
+{# This section is only displayed if the user is not logged in #}
+{% elseif is_guest() and show_auth %}
+    <div class="small-form">
+        <h1>{{ phrase('portal.account.section-title-login') }}</h1>
+
+        {% if show_login_form %}
+            <form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar">
+                <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+                <label>
+                    <span>{{ phrase('portal.account.login-email') }}</span>
+                    <input type="text" tabindex="2" placeholder="email@example.com" name="username">
+                </label>
+
+                <label>
+                    <span>{{ phrase('portal.account.login-password') }}</span>
+                    <input type="password" tabindex="2" placeholder="Your password" name="password">
+                </label>
+
+                {% if show_remember_me %}
+                    <div class="permanent-login">
+                        <label>{{ phrase('portal.account.login-remember') }} <input tabindex="2" type="checkbox"
+                                                                                    name="remember_me"></label>
+                    </div>
+                {% endif %}
+
+                <button type="submit" tabindex="2">{{ phrase('portal.account.login-btn') }}</button>
+
+                {% if show_forgot_password %}
+                    <div class="secondary-action">
+                        <a href="{{ path('portal_reset_password') }}">{{ phrase('portal.account.login-password-reminder') }}</a>
+                    </div>
+                {% endif %}
+            </form>
+        {% endif %}
+
+        {# twitter, facebook, google (the old "icon" usersources) #}
+        {% if login_icon_usersources|length > 0 %}
+            {% for usersource in login_icon_usersources %}
+                <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
+                   class="button auth-{{ usersource.adapter.codeName|lower }}"><i
+                            class="fa fa-{{ usersource.adapter.codeName|lower }}"></i> Login
+                    with {{ usersource.adapter.codeName|title }}</a>
+            {% endfor %}
+        {% endif %}
+
+        {# the newer "text button" usersources #}
+        {% if login_text_button_usersources|length > 0 %}
+            {% for usersource in login_text_button_usersources %}
+                <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
+                   class="button">{{ usersource.options.login_custom_text }}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endif %}

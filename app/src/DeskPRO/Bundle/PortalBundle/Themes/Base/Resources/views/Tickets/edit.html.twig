@@ -6,11 +6,10 @@
     </div>
 
     {% if rerendering %}
-        <strong>You have switched departments and the form fields have changed. Please review the form and submit again.</strong>
+        <strong>{{ phrase('portal.tickets.switched-department-rerender') }}</strong>
     {% endif %}
 
-    {% embed 'Theme:Form:ticket.html.twig' %}{% endembed %}
+    {% show ticket_form %}
 
-    <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">Cancel edit, show me the ticket again</a>
-
+    <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">{{ phrase('portal.tickets.cancel-ticket-edit') }}</a>
 {% endblock inner_content %}

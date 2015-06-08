@@ -43,9 +43,9 @@ class PortalController extends AbstractController
      * @Route("/", name="portal_index")
      * @PageHttpCache()
      */
-    public function indexAction(Request $request)
+    public function homeAction(Request $request)
     {
-        return $this->renderThemeView('Theme:Portal:index.html.twig',
+        return $this->renderThemeView('Theme:Portal:home.html.twig',
             array(
                 'page_title' => $this->createPageTitle()->homepage()
             )
@@ -58,6 +58,10 @@ class PortalController extends AbstractController
      */
     public function loginAction(Request $request)
     {
+        if ($this->getUser() instanceof Person) {
+            return $this->redirectToRoute('portal_user_profile');
+        }
+
         $saved_form_message = null;
         if ($saved_form = $this->getFormSaver()->getByExternalCode($request->get('saved_form'))) {
             // this person just filled out a form and is being asked to login to auto-submit it
@@ -65,7 +69,7 @@ class PortalController extends AbstractController
         }
 
         return $this->renderThemeView(
-            'Theme:Portal:login.html.twig',
+            'Theme:Portal:User/login.html.twig',
             array(
                 'auth_manager'  => $this->get('dp_authentication_manager.user'),
                 'login_error'   => $request->get('retry') == 'auth',
@@ -120,7 +124,7 @@ class PortalController extends AbstractController
                 $this->get('new_mailer')->sendPasswordResetLink($person);
             }
 
-            return $this->renderThemeView('Theme:Portal:password-reset-requested.html.twig', array(
+            return $this->renderThemeView('Theme:Portal:User/password-reset-requested.html.twig', array(
                 'email' => $email,
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
                 'page_title' => $this->createPageTitle()->passwordReset()
@@ -129,7 +133,7 @@ class PortalController extends AbstractController
             $render_error = true;
         }
 
-        return $this->renderThemeView('Theme:Portal:password-reset-request.html.twig', array(
+        return $this->renderThemeView('Theme:Portal:User/password-reset-request.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
             'render_error' => $render_error,
@@ -159,7 +163,7 @@ class PortalController extends AbstractController
         }
 
         if (!$valid) {
-            return $this->renderThemeView('Theme:Portal:password-reset-invalid-code.html.twig', array(
+            return $this->renderThemeView('Theme:Portal:User/password-reset-invalid-code.html.twig', array(
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
                 'page_title' => $this->createPageTitle()->passwordReset()
             ));
@@ -184,7 +188,7 @@ class PortalController extends AbstractController
             return $this->redirectToRoute('portal_login', array('reset_success' => 1));
         }
 
-        return $this->renderThemeView('Theme:Portal:password-reset.html.twig', array(
+        return $this->renderThemeView('Theme:Portal:User/password-reset.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
             'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
