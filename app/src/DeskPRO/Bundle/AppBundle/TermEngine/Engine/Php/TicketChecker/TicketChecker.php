@@ -109,6 +109,8 @@ class TicketChecker implements PhpTicketCheckerInterface
                 )
             )
         );
+        
+        $eval = (bool) $eval;
 
         $this->logger->debug('TicketChecker: ' . ($eval ? 'PASS' : 'FAIL'), array('time' => $timer->getElapsedTime()));
 
