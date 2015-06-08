@@ -118,7 +118,7 @@ class WorkHoursSet implements WorkHoursInterface
         }
 
         if (!$any) {
-            $work_days_array = array(true, true, true, true, true, true, true);
+            $work_days_array = array(null, true, true, true, true, true, true, true);
         }
 
         $this->work_start = $work_start;

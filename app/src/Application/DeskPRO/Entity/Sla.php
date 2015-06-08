@@ -229,8 +229,6 @@ class Sla extends DomainObject
             $this->work_days = $days;
         }
 
-        unset($this->work_days[0]);
-
         $this->_onPropertyChanged('work_days', $old, $this->work_days);
     }
 
@@ -355,8 +353,8 @@ class Sla extends DomainObject
                 $work_hours = new OptionsArray($work_hours);
 
                 return new WorkHoursSet(
-                    $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-                    $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+                    $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
+                    $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
                     $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                     $work_hours->get('timezone', 'UTC'),
                     $work_hours->get('holidays', array())
