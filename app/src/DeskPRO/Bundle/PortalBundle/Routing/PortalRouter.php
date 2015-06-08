@@ -63,6 +63,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'serve_blob',
         'admin_interface',
         'agent_interface',
+        'serve_brand_asset',
         '_wdt',
         '_profiler',
     );
