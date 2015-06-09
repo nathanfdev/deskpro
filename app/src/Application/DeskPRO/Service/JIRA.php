@@ -48,6 +48,7 @@ class JIRA
 	const PARAM_CONSUMER    = 'consumer_key';
 	const PARAM_TOKENS      = 'oauth_tokens';
     const PARAM_KEY         = 'private_key';
+	const SSL_AUTHORITY     = 'ssl_authority';
 
     protected $allowed = array(
         'project',
@@ -127,6 +128,14 @@ class JIRA
 			return null;
 		}
 		return $app->getSetting(self::PARAM_URL);
+	}
+
+	public function getSSLAuthority()
+	{
+		if (!$app = $this->getApp()) {
+			return null;
+		}
+		return $app->getSetting(self::SSL_AUTHORITY);
 	}
 
 	/**

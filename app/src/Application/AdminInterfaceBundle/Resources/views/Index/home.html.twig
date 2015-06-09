@@ -123,6 +123,31 @@
 		</div>
 	{% endif %}
 
+  <div style="margin: 15px 15px 0 15px" ng-if="readable_config">
+    <div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+      <div style="float:left">
+        <i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+      </div>
+      <div style="margin-left: 50px;">
+        <h3 style="margin-top: 8px;">
+          <span style="display: inline-block; border-bottom: 2px dotted #f00;">
+            CRITICAL: Your config.php file is publicly readable
+          </span>
+        </h3>
+        <p>
+          Your DeskPRO config.php file is publicly readable at the following URL:<br/>
+          <a ng-href="{{ ng_var('config_php_url') }}" target="_blank">{{ ng_var('config_php_url') }}</a>
+        </p>
+        <p>
+          This is a CRITICAL vulnerability in the way your web server is configured. Your config.php file contains sensitive information such as your MySQL database details (including your password).
+        </p>
+        <p>
+          Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+        </p>
+      </div>
+    </div>
+  </div>
+
 	<div style="margin: 15px 15px 0 15px" ng-if="http_method_errors">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
 			<div style="float:left">
@@ -203,48 +228,50 @@
 		<table cellspacing="15" width="100%">
 			<tr>
 				{# DESKRPO UPDATES #}
-				<td width="50%" class="dp-item" ng-class="{'with-error': Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0 }">
-					<header>
-						<h3>DeskPRO Updates</h3>
-					</header>
-					<article style="padding: 10px;">
-						<p>
-							You are currently using DeskPRO version <strong>#{{ ng_var('Home.version_info.build_name') }}</strong>.
-						</p>
-						<div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
-							<header>
-								<div class="icon bad"><i class="fa fa-warning"></i></div>
-								<strong>
-									The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
-									You are behind by <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.count_behind') }} version(s)</a>.<br/>
-								</strong>
-							</header>
-							<article>
-								<p>
-									<a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Update DeskPRO Now &rarr;</a>
-								</p>
-							</article>
-						</div>
-						<div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind < 0">
-							<header>
-								<div class="icon okay"><i class="fa fa-check"></i></div>
-								<strong>You are up to date!</strong>
-							</header>
-						</div>
-						<div ng-show="Home.news_status == 'okay'" class="news-content">
-							<strong>News</strong>
-							<ul>
-								<li ng-repeat="item in Home.news">
-									<i class="fa fa-caret-right"></i>
-									<a ng-href="{{ ng_var('item.link') }}" target="_blank">{{ ng_var('item.title') }}</a>
-								</li>
-							</ul>
-						</div>
-					</article>
-				</td>
+                {% if not app.getSetting('disable_admin_deskpro_updates') %}
+                    <td width="50%" class="dp-item" ng-class="{'with-error': Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0 }">
+                        <header>
+                            <h3>DeskPRO Updates</h3>
+                        </header>
+                        <article style="padding: 10px;">
+                            <p>
+                                You are currently using DeskPRO version <strong>#{{ ng_var('Home.version_info.build_name') }}</strong>.
+                            </p>
+                            <div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
+                                <header>
+                                    <div class="icon bad"><i class="fa fa-warning"></i></div>
+                                    <strong>
+                                        The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
+                                        You are behind by <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.count_behind') }} version(s)</a>.<br/>
+                                    </strong>
+                                </header>
+                                <article>
+                                    <p>
+                                        <a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Update DeskPRO Now &rarr;</a>
+                                    </p>
+                                </article>
+                            </div>
+                            <div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind < 0">
+                                <header>
+                                    <div class="icon okay"><i class="fa fa-check"></i></div>
+                                    <strong>You are up to date!</strong>
+                                </header>
+                            </div>
+                            <div ng-show="Home.news_status == 'okay'" class="news-content">
+                                <strong>News</strong>
+                                <ul>
+                                    <li ng-repeat="item in Home.news">
+                                        <i class="fa fa-caret-right"></i>
+                                        <a ng-href="{{ ng_var('item.link') }}" target="_blank">{{ ng_var('item.title') }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </article>
+                    </td>
+                {% endif %}
 
 				{# HELP #}
-				<td class="dp-item">
+				<td class="dp-item" {% if app.getSetting('disable_admin_deskpro_updates') %}colspan="2"{% endif %}>
 					<header>
 						<h3>Getting Help</h3>
 					</header>
@@ -253,10 +280,9 @@
 							&bull; Visit the <a href="http://support.deskpro.com/">DeskPRO Knowledgebase</a> for how-to articles, troubleshooting guides and other help articles.
 						</div>
 						<div class="dp-mpadded">
-							&bull; Download our manuals for in-depth information:
-							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Admin-Manual.pdf' }) }}" target="_blank">Admin Manual</a></span>
-							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Agent-Manual.pdf' }) }}" target="_blank">Agent Manual</a></span>
-							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" target="_blank">Agent Quick Start Guide</a></span>
+							&bull; Browse our manuals for in-depth information:
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/admin/" target="_blank">Admin Manual</a></span>
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/agent/" target="_blank">Agent Manual</a></span>
 						</div>
 					</article>
 

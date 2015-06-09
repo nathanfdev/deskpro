@@ -57,6 +57,10 @@ final class Ticket extends AbstractConstraintValidator
             throw new ValidatorConstraintException($entity, $errors);
         }
 
+        if ($entity->getPriority()) {
+            $this->validator->validate($entity->getPriority());
+        }
+
         foreach ($entity->getMessages() as $message) {
             /** @var Entity\TicketMessage $message */
             $errors = $this->validator->validate($message);

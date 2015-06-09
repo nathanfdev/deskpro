@@ -72,6 +72,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
             ->setDateEnd($entity->getDateEnd())
+            ->setEndAction($entity->getEndAction())
             ->setViewsCount($entity->getViewCount());
 
         foreach ($entity->getCategories() as $category) {
@@ -89,7 +90,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
-        $this->logInfo(sprintf(
+        $this->logDebug(sprintf(
             'Looking for existing article with title `%s`, oid `%d`',
             $entity->getTitle(), $entity->getOid()
         ));
@@ -114,13 +115,13 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         if ($title) {
             $category = $this->getArticleCategoryMapper()->findOneByTitle($title, false);
             if ($category) {
-                $this->logInfo(sprintf('Found existing article category `%s`', $category->getTitle()));
+                $this->logDebug(sprintf('Found existing article category `%s`', $category->getTitle()));
             } else {
                 $category = new DeskPROEntity\ArticleCategory();
                 $category->setRealTitle($title);
 
                 $this->records->add($category);
-                $this->logWarning(sprintf('New article category creating `%s`', $category->getTitle()));
+                $this->logInfo(sprintf('New article category creating `%s`', $category->getTitle()));
             }
         }
 

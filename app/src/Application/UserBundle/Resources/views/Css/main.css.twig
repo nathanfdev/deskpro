@@ -287,6 +287,11 @@
 	padding: 0;
 }
 
+#dp .plaintext-email {
+  font-family: 'Lucida Sans Typewriter', 'Lucida Console', 'Monaco', 'Consolas', monospace;
+  font-size: 90%;
+}
+
 /***********************************************************************************************************************
 * Tweaks to respond to width of devices
 ***********************************************************************************************************************/
@@ -2407,6 +2412,27 @@ dp .dp-new-feedback td {
 #dp .dp-two-select.dp-show-child .dp-child {
 	display: block;
 }
+
+/******************************
+* Multi level selects
+******************************/
+
+#dp .multilevel-select .multilevel-select-wrap {
+    display: block;
+    background: url({{ stylevar.static_path }}/images/user/elbow-end.gif) no-repeat 0 0;
+	padding-left: 21px;
+	margin: 4px 0 0 3px;
+}
+
+#dp .multilevel-select .multilevel-select-wrap.level-0 {
+    background: none;
+    padding-left: 0;
+}
+{% for i in 2..15 %}
+    #dp .multilevel-select .multilevel-select-wrap.level-{{i}} {
+        margin-left: {{ (i * (i*3)) + 10 }}px;
+    }
+{% endfor %}
 
 /******************************
 * Rating bar

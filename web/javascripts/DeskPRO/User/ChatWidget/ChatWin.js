@@ -739,6 +739,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 
 		console.log('DpChat:handleIncomingMessage: %o', data);
+    DeskPRO_Window.playLibrarySound('pop');
 
 		this.addMessageRow(data);
 

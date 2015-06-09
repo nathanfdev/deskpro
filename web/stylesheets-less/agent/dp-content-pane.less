@@ -2400,7 +2400,8 @@ nav.section-subnav ul li.on em {
 
 .profile-box-container > header .save,
 .profile-box-container > header .controls button,
-.notes-wrap .new-note header .save {
+.notes-wrap .new-note header .save,
+.notes-wrap .note .delete {
 	cursor: pointer;
 	color: #808080;
 
@@ -6287,9 +6288,10 @@ header.page-header input[type="text"] {
 	.attachment-list li {
 		height: 60px;
 		line-height: 60px;
-		margin: 5px 0;
+		margin: 5px 5px 5px 0;
 		overflow: hidden;
 		border-top: 1px solid #D7D9DB;
+		position: relative;
 
 		&:first-child {
 			margin-top: 0;
@@ -6302,7 +6304,9 @@ header.page-header input[type="text"] {
 		}
 
 		.attachment-buttons {
-			float: right;
+			position: absolute;
+            right: 20px;
+            top: 0
 		}
 
 		.delete-trigger {
@@ -6950,6 +6954,11 @@ div.cc-autocomplete.loading .is-not-loading { display: none !important; }
 
 .article-content-wrap {
 	position: relative;
+
+  ol {
+    list-style-type: decimal;
+    margin: 0 0 9px 25px;
+  }
 
 	.article-loading {
 		position: absolute;

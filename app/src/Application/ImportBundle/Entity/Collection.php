@@ -38,6 +38,8 @@ use Application\ImportBundle\AbstractCollection;
 final class Collection extends AbstractCollection
 {
     /**
+     * Add an entity
+     *
      * @param EntityInterface $entity
      * @return $this
      */

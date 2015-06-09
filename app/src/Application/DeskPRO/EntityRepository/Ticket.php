@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -707,21 +708,19 @@ class Ticket extends AbstractEntityRepository
 
     public function getTicketCountsForPeople(array $people)
     {
-        $ids = array();
+	    $ids = array();
         foreach ($people as $p) {
-            $ids[] = $p->id;
+	        $ids[] = $p['id'];
         }
 
-        if (!$ids) {
-            return array();
-        }
-
-        return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
-            SELECT person_id, COUNT(*)
-            FROM tickets
-            WHERE person_id IN (?)
-            GROUP BY person_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+	    return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+            SELECT person_id, COUNT(person_id) FROM (
+				SELECT person_id FROM tickets WHERE person_id IN (?)
+				UNION ALL
+				SELECT person_id FROM tickets_participants WHERE person_id IN (?)
+			) a
+			GROUP BY person_id
+        ', array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
     }
 
     /**
@@ -911,7 +910,7 @@ class Ticket extends AbstractEntityRepository
             foreach ($ticket_ids as $id) {
                 $batch[] = array(
                     'channel'      => 'agent-notification.tickets.locked-status',
-                    'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                    'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                     'date_created' => $d,
                     'data' => serialize(array(
                         'ticket_id'       => $id,

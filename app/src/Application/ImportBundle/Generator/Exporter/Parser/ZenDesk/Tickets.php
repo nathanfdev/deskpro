@@ -29,6 +29,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
 
@@ -38,19 +41,38 @@ use Exception;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class Tickets extends AbstractParser implements PeopleStorageAwareInterface
+final class Tickets extends AbstractParser
 {
-    const STATUS_NEW     = 'new';
-    const STATUS_OPEN    = 'open';
-    const STATUS_PENDING = 'pending';
-    const STATUS_HOLD    = 'hold';
-    const STATUS_SOLVED  = 'solved';
-    const STATUS_CLOSED  = 'closed';
+    const STATUS_NEW      = 'new';
+    const STATUS_OPEN     = 'open';
+    const STATUS_PENDING  = 'pending';
+    const STATUS_HOLD     = 'hold';
+    const STATUS_SOLVED   = 'solved';
+    const STATUS_CLOSED   = 'closed';
+    const STATUS_DELETED  = 'deleted';
+
+    const PRIORITY_URGENT = 'urgent';
+    const PRIORITY_HIGH   = 'high';
+    const PRIORITY_NORMAL = 'normal';
+    const PRIORITY_LOW    = 'low';
 
     /**
-     * @var PeopleStorage
+     * @var TicketPeopleStorage
      */
-    private $people_storage;
+    private $tickets_people;
+
+
+    /**
+     * Constructor
+     *
+     * @param ZenDeskReaderInterface       $reader
+     * @param TicketPeopleStorageInterface $people_storage
+     */
+    public function __construct(ZenDeskReaderInterface $reader, TicketPeopleStorageInterface $people_storage)
+    {
+        parent::__construct($reader);
+        $this->tickets_people = $people_storage;
+    }
 
     /**
      * {@inheritdoc}
@@ -63,18 +85,9 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     /**
      * {@inheritdoc}
      */
-    public function setPeopleStorage(PeopleStorageInterface $storage)
-    {
-        $this->people_storage = $storage;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getCount()
     {
-        return $this->reader->getTicketsCount();
+        return count($this->getTickets());
     }
 
     /**
@@ -83,59 +96,25 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->reader->getTickets();
-        $people     = $this->getPeople($this->getTicketsPeopleIds($tickets));
+        $tickets    = $this->getTickets();
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
+            $tid = @$ticket['id'] ?: '?';
 
-            if ($this->hasRequiredTicketColumns($ticket) === false) {
-                $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
-            } else {
-                if (empty($people[$ticket['submitter_id']]['email'])) {
-                    $this->logWarning(sprintf('Submitter record not found (Skipping): %d', $num));
-                    continue;
-                }
-                if (empty($people[$ticket['assignee_id']]['email'])) {
-                    $this->logWarning(sprintf('Agent record not found (Skipping): %d', $num));
-                    continue;
-                }
-
-                $person_email = $people[$ticket['submitter_id']]['email'];
-                $agent_email  = $people[$ticket['assignee_id']]['email'];
-                $date_created = new DateTime($ticket['created_at']);
-
-                $entity = new Entity\Ticket();
-                $entity
-                    ->setDestination('ticket_' . $ticket['id'])
-                    ->setOid($ticket['id'])
-                    ->setRef($ticket['id'])
-                    ->setPersonEmail($person_email)
-                    ->setAgentEmail($agent_email)
-                    ->setSubject($ticket['subject'])
-                    ->setStatus($this->getStatus($ticket['status']))
-                    ->setPriority($ticket['priority'])
-                    ->setDateCreated($date_created)
-                    ->addMessage($this->exportMessage($ticket, $person_email));
-
-                switch ($ticket['status']) {
-                    case self::STATUS_HOLD:
-                        $entity->setAsHold(true);
-                        break;
-                    case self::STATUS_SOLVED:
-                        $entity->setDateResolved(new DateTime());
-                        break;
-                    case self::STATUS_CLOSED:
-                        $entity->setDateArchived(new DateTime());
-                        break;
+            try {
+                $entity = $this->exportTicket($ticket);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logDebug(sprintf('[ZDTicket #%s] Entity `%s` parsed successfully', $tid, $entity->getDestination()));
+                } else {
+                    $this->logDebugInfo(sprintf("[ZDTicket #%s] Invalid ticket entity", $tid), $ticket);
+                    $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
                 }
 
-                foreach ($ticket['tags'] as $label) {
-                    $entity->addLabel($label);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (\Exception $e) {
+                $this->logDebugException(sprintf("Exception with ticket %d", $tid), $e, $ticket);
+                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid));
             }
         }
 
@@ -143,7 +122,90 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Exports the ticket message
+     * Returns a ticket entity
+     *
+     * @param array $ticket
+     *
+     * @return Entity\Ticket
+     * @throws Exception
+     */
+    private function exportTicket(array $ticket)
+    {
+        if ($this->isTicketValid($ticket)) {
+            $person_email = $this->tickets_people->getPersonEmail($ticket['submitter_id']);
+            $agent_email  = $this->tickets_people->getPersonEmail($ticket['assignee_id']);
+
+            $entity = new Entity\Ticket();
+            $entity
+                ->setDestination('ticket_' . $ticket['id'])
+                ->setOid($ticket['id'])
+                ->setRef($ticket['id'])
+                ->setPersonEmail($person_email)
+                ->setAgentEmail($agent_email)
+                ->setSubject($ticket['subject'])
+                ->setStatus($this->getStatus($ticket['status']))
+                ->setPriority($this->exportPriority($ticket['priority']))
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
+                ->addMessage($this->exportMessage($ticket, $person_email));
+
+            switch ($ticket['status']) {
+                case self::STATUS_HOLD:
+                    $entity->setAsHold(true);
+                    break;
+                case self::STATUS_SOLVED:
+                    $entity->setDateResolved(new DateTime());
+                    break;
+                case self::STATUS_CLOSED:
+                    $entity->setDateArchived(new DateTime());
+                    break;
+            }
+
+            foreach ($ticket['tags'] as $label) {
+                $entity->addLabel($label);
+            }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a ticket priority entity
+     *
+     * @param string $priority
+     * @return Entity\TicketPriority|null
+     */
+    private function exportPriority($priority)
+    {
+        $mapping = array(
+            self::PRIORITY_URGENT => 100,
+            self::PRIORITY_HIGH   => 50,
+            self::PRIORITY_NORMAL => 20,
+            self::PRIORITY_LOW    => 10,
+        );
+
+        if ($priority) {
+            if (in_array($priority, array_keys($mapping), true)) {
+                $entity = new Entity\TicketPriority();
+                $entity
+                    ->setDestination('priority')
+                    ->setOid(0)
+                    ->setTitle($priority)
+                    ->setValue($mapping[$priority]);
+
+                return $entity;
+
+            } else {
+                $this->logWarning(sprintf('Unknown priority `%s`', $priority));
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a ticket message entity
      *
      * @param array  $ticket
      * @param string $person_email
@@ -154,12 +216,34 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     {
         $entity = new Entity\TicketMessage();
         $entity
+            ->setDestination('message_' . $ticket['id'])
             ->setOid($ticket['id'])
             ->setPersonEmail($person_email)
             ->setMessageText($ticket['description'])
-            ->setDateCreated(new DateTime($ticket['created_at']));
+            ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']));
 
         return $entity;
+    }
+
+    /**
+     * Returns tickets
+     *
+     * @return array
+     * @throws Exception
+     */
+    private function getTickets()
+    {
+        $tickets = array();
+        if ($this->getBatchConfig()->getTicketsEndTime() < new DateTime('-5 minutes')) {
+            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
+
+            $this->tickets_people->loadByTickets($tickets);
+            $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getTicketsEndTime());
+        } else {
+            $this->logAlert('No ticket was exported due 5 minutes timeout of the last end time');
+        }
+
+        return $tickets;
     }
 
     /**
@@ -168,7 +252,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
      * @param array $ticket
      * @return bool
      */
-    private function hasRequiredTicketColumns(array $ticket)
+    private function isTicketValid(array $ticket)
     {
         $columns = array(
             'id',
@@ -182,50 +266,9 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
             'tags',
         );
 
-        return $this->hasRequiredColumns($ticket, $columns);
-    }
-
-    /**
-     * Returns all unique people ids of the found ZenDesk tickets
-     *
-     * @param array $tickets
-     * @return array
-     */
-    private function getTicketsPeopleIds(array $tickets)
-    {
-        $people_ids = array();
-        foreach ($tickets as $ticket) {
-            if ($ticket['submitter_id'] > 0) {
-                $people_ids[] = $ticket['submitter_id'];
-            }
-            if ($ticket['assignee_id'] > 0) {
-                $people_ids[] = $ticket['assignee_id'];
-            }
-        }
-
-        return array_unique($people_ids);
-    }
-
-    /**
-     * Returns people from reader by ids
-     *
-     * @param array $ids
-     * @return array
-     */
-    private function getPeople($ids)
-    {
-        $request_ids = $this->people_storage ? $this->people_storage->getNotContainsIds($ids) : $ids;
-        $result = $this->reader->getPeopleByIds($request_ids);
-        $people = array();
-
-        foreach ($result as $person) {
-            $people[$person['id']] = $person;
-        }
-        if ($this->people_storage) {
-            $this->people_storage->addPeople($people);
-        }
-
-        return $people;
+        return $this->hasRequiredColumns($ticket, $columns)
+            && $this->isArrayColumn($ticket, 'custom_fields')
+            && $this->isArrayColumn($ticket, 'tags');
     }
 
     /**
@@ -245,6 +288,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
             self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
+            self::STATUS_DELETED => DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
         );
 
         if (isset($map[$status])) {

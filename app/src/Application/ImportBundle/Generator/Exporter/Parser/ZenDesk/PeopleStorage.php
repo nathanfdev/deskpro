@@ -86,7 +86,7 @@ class PeopleStorage implements PeopleStorageInterface
         $exist_ids     = $this->getPeopleIds();
 
         foreach ($request_ids as $id) {
-            if ( ! in_array($id, $exist_ids)) {
+            if ( ! in_array($id, $exist_ids, true)) {
                 $not_exist_ids[] = $id;
             }
         }

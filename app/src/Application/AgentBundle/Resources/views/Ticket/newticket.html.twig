@@ -6,7 +6,7 @@ pageMeta.ticket_id = 0;
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 
-pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer_new') %}true{% else %}false{% endif %};
+pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -236,6 +236,7 @@ pageMeta.baseId = '{{ baseId }}';
 					</tbody>
 				{% endif %}
 
+                {# todo why tbody included into loop? #}
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
 						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
@@ -247,7 +248,11 @@ pageMeta.baseId = '{{ baseId }}';
 					{% endfor %}
 				{% endif %}
 
-                {% include 'AgentBundle:Ticket:newticket-custom-fields-row.html.twig' with {new_custom_fields: new_custom_fields} %}
+                {% include 'AgentBundle:Ticket:newticket-custom-fields-row.html.twig' with {
+                    new_custom_fields: new_custom_fields,
+                    custom_person_fields: custom_person_fields,
+                    custom_org_fields: custom_org_fields
+                } %}
 
 			</table>
 		</article>

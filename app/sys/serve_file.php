@@ -671,24 +671,6 @@ class FilestorageLoader extends LoaderAbstract
                 $mimetype = 'application/pdf';
                 break;
 
-            case 'Admin-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-manual/en_US.pdf';
-                $filename = 'Admin Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
-            case 'Reports-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
-                $filename = 'Reports Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
-            case 'Agent-Manual.pdf':
-                $path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
-                $filename = 'Agent Manual.pdf';
-                $mimetype = 'application/pdf';
-                break;
-
             case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
                 $path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
@@ -866,7 +848,7 @@ class FilestorageLoader extends LoaderAbstract
         }
 
         $content_disposition = 'attachment';
-        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($mimetype)) {
+        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($mimetype, true, $filename)) {
             $content_disposition = 'inline';
         }
 
@@ -1082,7 +1064,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Type: ' . $blob['content_type'] . '; filename="' . addslashes($blob['filename']) . '"');
         header('Content-Length: ' . $blob['filesize']);
 
-        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
+        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'], true, $blob['filename'])) {
             header('Content-Disposition: inline; filename="' . addslashes($blob['filename']) . '"');
         } else {
             header('Content-Disposition: attachment; filename="' . addslashes($blob['filename_safe']) . '"');

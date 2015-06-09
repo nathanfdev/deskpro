@@ -50,16 +50,10 @@ class CustomFieldHelper
      */
     private $em;
 
-    /**
-     * @var \Application\DeskPRO\Input\Reader
-     */
-    private $in;
-
     public function __construct(AbstractController $controller)
     {
         $this->controller = $controller;
         $this->em = $controller->getContainer()->getEm();
-        $this->in = $controller->getContainer()->getIn();
     }
 
     /**
@@ -73,6 +67,10 @@ class CustomFieldHelper
         $model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
         $type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
 
+        if (!isset($form_data['choices_structure'])) {
+            $form_data['choices_structure'] = array();
+        }
+
         $editfield = new $model_class($field);
         $formtype  = new $type_class();
         $form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
@@ -80,8 +78,8 @@ class CustomFieldHelper
         $this->em->getConnection()->beginTransaction();
         try {
             if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-                $editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-                $editfield->default_option = $this->in->getString('default_option');
+                $editfield->choices_structure = $form_data['choices_structure'];
+                $editfield->default_option = @$form_data['default_option'];
             }
 
             // todo

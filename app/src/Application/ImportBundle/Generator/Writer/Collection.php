@@ -27,14 +27,18 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\AbstractCollection;
+use Application\ImportBundle\Generator\TypeOrderInterface;
 use Exception;
 
 /**
+ * Collection of the writers
+ *
  * Class Collection
  * @package Application\ImportBundle\Generator\Writer
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection implements TypeOrderInterface
 {
     /**
      * Add a writer
@@ -63,5 +67,20 @@ class Collection extends AbstractCollection
         }
 
         throw new Exception(sprintf('Generator writer `%s` not found', $type));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrderedTypes()
+    {
+        return array(
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 }

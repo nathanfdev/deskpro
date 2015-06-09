@@ -44,6 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
 use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -573,7 +574,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->ticket_slas   = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
-        $this->ref = Strings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
+        $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU) . '-' . date('YzB');
 
         // flag used in manager to signal that we should overwrite this with a real ref generator ref
         $this->__dp_is_autogen_ref = true;
@@ -581,7 +582,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this['date_created'] = new \DateTime();
         $this['date_status'] = new \DateTime();
 
-        $this['auth'] = Strings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
+        $this['auth'] = DpStrings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
 
         $this->__dp_auto_ticket_process = true;
     }
@@ -655,6 +656,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         return $this->subject;
+    }
+
+    /**
+     * Alias for getSubject.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getSubject();
     }
 
 
@@ -3133,8 +3144,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     $work_hours = new OptionsArray($work_hours);
 
                     return new WorkHoursSet(
-                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
+                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
                         $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                         $work_hours->get('timezone', 'UTC'),
                         $work_hours->get('holidays', array())

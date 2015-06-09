@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
+use Orb\Util\OptionsArray;
 use Orb\Util\Util;
 use Application\DeskPRO\Util as DeskPROUtil;
 
@@ -213,6 +214,13 @@ class LegacyTermsTransformer
                     'type'    => 'subject',
                     'op'      => $term->getTermOperator(),
                     'options' => array('subject' => $options['subject'])
+                );
+
+            case 'FilterFeedbackRating':
+                return array(
+                    'type' => 'feedback_rating',
+                    'op' => $term->getTermOperator(),
+                    'options' => $term->getTermOptions(),
                 );
 
             case 'FilterUrgency':
@@ -415,13 +423,28 @@ class LegacyTermsTransformer
             case 'FilterTicketField':
                 $t = $term->getTermOptions();
                 $fid = $t['field_id'];
+                $value = @$t['value'] ?: null;
+
+                if ($t->has('date1')) {
+                    $value = 'date|' . $t['date1'];
+                }
+                if ($t->has('date2')) {
+                    $value .= '|' . $t['date2'];
+                }
+
+                if ($t->has('date1_relative')) {
+                    $value = 'date_relative|' . (int) $t['date1_relative'] . ' ' . $t['date1_relative_type'];
+                }
+                if ($t->has('date2_relative')) {
+                    $value .= '|' . (int) $t['date2_relative'] . ' ' . $t['date2_relative_type'];
+                }
 
                 return array(
                     'type'    => "ticket_field[{$fid}]",
                     'op'      => $term->getTermOperator(),
                     'options' => array(
                         'custom_fields' => array(
-                            "field_{$fid}" => @$t['value'] ?: null
+                            "field_{$fid}" => $value
                         )
                     )
                 );
@@ -494,6 +517,10 @@ class LegacyTermsTransformer
 
         $op = $legacy_term['op'];
         $options = $legacy_term['options'];
+
+        if ($options instanceof OptionsArray) {
+            $options = $options->all();
+        }
 
         $type_name = $legacy_term['type'];
         $type_id = null;
@@ -806,9 +833,25 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts = array();
+                $new_opts = $options;
                 $new_opts['field_id'] = $type_id;
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+
+                $parts = is_string($new_opts['value'])
+                    ? explode('|', $new_opts['value'])
+                    : array();
+
+                if ($field = array_shift($parts)) {
+                    foreach ($parts as $k => $part) {
+                        if ('date_relative' === $field) {
+                            @list($interval, $type) = explode(' ', $part);
+                            $new_opts['date' . ($k + 1) . '_relative'] = $interval;
+                            $new_opts['date' . ($k + 1) . '_relative_type'] = $type;
+                        } else {
+                            $new_opts[$field . ($k + 1)] = $part;
+                        }
+                    }
+                }
 
                 return new Terms\FilterTicketField($op, $new_opts);
 
@@ -825,6 +868,9 @@ class LegacyTermsTransformer
                 $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterOrgField($op, $new_opts);
+
+            case 'feedback_rating':
+                return new Terms\FilterFeedbackRating($op, $options);
         }
 
         return null;

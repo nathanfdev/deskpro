@@ -13,8 +13,11 @@
 					<strong>User Layouts</strong>
 					<ul class="checkbox-list" style="min-width: 250px">
 						<li ng-repeat="layout in EditCtrl.user_layouts">
-							<label>
-								<input type="checkbox" ng-model="layout.enabled" />
+							<label ng-class="EditCtrl.field_type == 'choice' && !EditCtrl.form.choice.options.length && 'text-muted'">
+								<input type="checkbox" ng-model="layout.enabled"
+								       ng-disabled="EditCtrl.field_type == 'choice' && !EditCtrl.form.choice.options.length"
+								       ng-checked="layout.enabled && (EditCtrl.field_type != 'choice' || EditCtrl.form.choice.options.length)"
+										/>
 								<span ng-if="!layout.department">Default Layout</span>
 								<span ng-if="layout.department">{{ ng_var('layout.department.title_full') }}</span>
 							</label>
@@ -25,8 +28,11 @@
 					<strong>Agent Layouts</strong>
 					<ul class="checkbox-list" style="min-width: 250px">
 						<li ng-repeat="layout in EditCtrl.agent_layouts">
-							<label>
-								<input type="checkbox" ng-model="layout.enabled" />
+							<label ng-class="EditCtrl.field_type == 'choice' && !EditCtrl.form.choice.options.length && 'text-muted'">
+								<input type="checkbox" ng-model="layout.enabled"
+								       ng-disabled="EditCtrl.field_type == 'choice' && !EditCtrl.form.choice.options.length"
+								       ng-checked="layout.enabled && (EditCtrl.field_type != 'choice' || EditCtrl.form.choice.options.length)"
+										/>
 								<span ng-if="!layout.department">Default Layout</span>
 								<span ng-if="layout.department">{{ ng_var('layout.department.title_full') }}</span>
 							</label>

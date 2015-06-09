@@ -38,7 +38,7 @@ use DateTime;
  * Class Ticket
  * @package Application\ImportBundle\Entity
  */
-final class Ticket extends AbstractEntity implements PersonAwareInterface, LabelAwareInterface
+final class Ticket extends AbstractEntity implements PersonAwareInterface, LabelAwareInterface, LanguageAwareInterface
 {
     /**
      * @var int
@@ -91,7 +91,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     private $subject;
 
     /**
-     * @var string
+     * @var TicketPriority
      */
     private $priority;
 
@@ -365,7 +365,9 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @return string
+     * Returns ticket priority
+     *
+     * @return TicketPriority
      */
     public function getPriority()
     {
@@ -373,17 +375,19 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param string $priority
+     * Set priority
+     *
+     * @param TicketPriority $priority
      * @return $this
      */
-    public function setPriority($priority)
+    public function setPriority(TicketPriority $priority = null)
     {
         $this->priority = $priority;
         return $this;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getLanguage()
     {
@@ -391,8 +395,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param string $language
-     * @return $this
+     * {@inheritdoc}
      */
     public function setLanguage($language)
     {
@@ -455,6 +458,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
+     * Returns a ticket organization
+     *
      * @return string
      */
     public function getOrganization()
@@ -463,6 +468,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
+     * Set an organization
+     *
      * @param string $organization
      * @return $this
      */
@@ -613,7 +620,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             'date_resolved' => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
             'date_archived' => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
             'subject'       => $this->subject,
-            'priority'      => $this->priority,
+            'priority'      => $this->priority ? $this->priority->toArray() : null,
             'language'      => $this->language,
             'category'      => $this->category,
             'workflow'      => $this->workflow,
@@ -629,9 +636,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
+     * {@inheritdoc}
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

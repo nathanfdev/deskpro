@@ -114,7 +114,7 @@ class InReplyToDetector implements TicketDetectorInterface
         #------------------------------
 
         $matches = null;
-        if (preg_match_all('#PTAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('#(?:PTAC|TICKET)\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
 
             foreach ($matches as $m) {
                 $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);

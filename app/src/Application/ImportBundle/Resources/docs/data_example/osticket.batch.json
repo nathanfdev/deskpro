@@ -1,0 +1,10 @@
+{
+  "id"            : 1,
+  "type"          : "osticket",
+  "batch_size"    : 15,
+  "staff_offset"  : 0,
+  "user_offset"   : 0,
+  "ticket_offset" : 0,
+  "date_created"  : "2015-02-23",
+  "date_modified" : "2015-02-23"
+}

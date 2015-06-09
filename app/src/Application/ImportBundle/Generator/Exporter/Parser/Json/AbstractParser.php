@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
+use Exception;
 
 /**
  * Abstract json parser
@@ -57,14 +58,16 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
     /**
      * Get json reader config
-     * todo add support to exclude done files
      *
      * @param string $record_type
      * @return JsonConfig
      */
     protected function getReaderConfig($record_type)
     {
-        return new JsonConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        return new JsonConfig(sprintf(
+            '%s/%d/%s',
+            $this->config->getInputPath(), $this->getBatchConfig()->getId() + 1, $record_type
+        ));
     }
 
     /**
@@ -118,6 +121,33 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * Returns an attachment entity
+     *
+     * @param array $attachment
+     * @return Entity\Attachment|null
+     */
+    protected function exportAttachment(array $attachment)
+    {
+        if ($this->isAttachmentValid($attachment)) {
+            $entity = new Entity\Attachment();
+            $entity
+                ->setDestination('attachment_' . $attachment['oid'])
+                ->setOid($attachment['oid'])
+                ->setPersonEmail($attachment['person'])
+                ->setBlobData($attachment['blob_data'])
+                ->setBlobData($attachment['blob_url'])
+                ->setBlobData($attachment['blob_path'])
+                ->setFileName($attachment['file_name'])
+                ->setContentType($attachment['content_type'])
+                ->setAsInline($attachment['is_inline']);
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if an attachment has all required columns
      *
      * @param array $attachment
@@ -154,5 +184,20 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         );
 
         return $this->hasRequiredColumns($custom_field, $columns);
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
     }
 }

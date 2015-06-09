@@ -30,12 +30,16 @@ namespace Application\ImportBundle\Command;
 use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Exception;
 
 /**
+ * Import command
+ * Read and parse an external data and import it to database
+ *
  * Class ImportCommand
  * @package Application\ImportBundle\Command
  */
-class ImportCommand extends AbstractExportCommand
+class ImportCommand extends AbstractGenerateCommand
 {
     /**
      * {@inheritDoc}
@@ -55,47 +59,32 @@ class ImportCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config = $this->createGeneratorConfig($input, $this->importEntityTypesQueue());
+        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
-        if ( ! $config->getInputPath()) {
-            throw new \Exception('Input path must be specified');
+
+        if ($config->needInputPath() && ! $config->getInputPath()) {
+            throw new Exception('Input path must be specified');
+        }
+        if ($config->isBatchExporter() && ! $config->getOutputPath() && ! $config->getInputPath()) {
+            throw new Exception(sprintf(
+                'Output or input path must be specified for batch exporter `%s`',
+                $config->getExporterType()
+            ));
+        }
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
         $logger    = $this->createLogger($config, $output);
-        $generator = $this->createGenerator($config, $output, $logger);
+        $generator = $this->createGenerator($config, $logger);
 
-        try {
-            $generator->generate();
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'Done. Importing was successful. Look at the log file `%s` to see details.',
-                $config->getLogPath()
-            ));
+        if ($config->getRetryWaitTimeout()) {
+            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
 
-        } catch (Generator\GeneratorException $e) {
-            $output->writeln('');
-            foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorConstraintException $exception */
-                $logger->critical($exception);
-            }
-            if ($config->isVerbose() === false) {
-                $output->writeln(sprintf(
-                    'An error has occurred while importing. Look at the log file `%s` to see details.',
-                    $config->getLogPath()
-                ));
-            }
-
-        } catch (\Exception $e) {
-            $logger->critical($e->getMessage());
-
-            if ($config->isVerbose() === false) {
-                $output->writeln('');
-            }
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'An error has occurred while importing. Look at the log file `%s` to see details.',
-                $config->getLogPath()
-            ));
+            return;
         }
+
+        $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output, $logger);
     }
 }

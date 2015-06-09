@@ -34,6 +34,7 @@
 
 namespace Application\EmailBundle\Mail\RawTransport;
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
+use Application\EmailBundle\Mail\RawMessage\RawMessageUtil;
 
 /**
  * This is a generic wrapper for any swiftmailer transport.
@@ -89,118 +90,8 @@ class RawSwiftmailerTransport implements RawTransportInterface
     private function recreateSwiftMessage($from, array $send_tos = null, $raw_fp)
     {
         $raw_message = $this->decoder->createRawMessage($raw_fp);
-
         $message = \Swift_Message::newInstance();
-
-        #------------------------------
-        # From
-        #------------------------------
-
-        $from = $raw_message->getFrom();
-        if ($from) {
-            $message->setFrom($from['email'], $from['name']);
-        }
-
-        #------------------------------
-        # Subject
-        #------------------------------
-
-        $message->setSubject($raw_message->getSubject());
-
-        #------------------------------
-        # Recipients
-        #------------------------------
-
-        $included_tos = array();
-
-        foreach ($raw_message->getTos() as $to) {
-            $message->addTo($to['email'], $to['name']);
-            $included_tos[] = strtolower($to['email']);
-        }
-        foreach ($raw_message->getCcs() as $to) {
-            $message->addCc($to['email'], $to['name']);
-            $included_tos[] = strtolower($to['email']);
-        }
-
-        $bccs = array_diff($send_tos, $included_tos);
-        if ($bccs) {
-            foreach ($bccs as $bcc) {
-                $message->addBcc($bcc);
-            }
-        }
-
-        #------------------------------
-        # Message
-        #------------------------------
-
-        $text_body = $raw_message->getTextPart();
-        $html_body = $raw_message->getHtmlPart();
-
-        // Empty body, default to just empty string so it'll send
-        if ($text_body === null && $html_body === null) {
-            $text_body = '';
-        }
-
-        if ($text_body !== null && $html_body !== null) {
-            $message->setBody($text_body, 'text/plain');
-            $message->addPart($html_body, 'text/html');
-        } else {
-            if ($text_body !== null) {
-                $message->setBody($text_body, 'text/plain');
-            } else {
-                $message->setBody($html_body, 'text/html');
-            }
-        }
-
-        #------------------------------
-        # Attachments
-        #------------------------------
-
-        foreach ($raw_message->getAttachments() as $attach) {
-            $message->attach(\Swift_Attachment::newInstance()
-                ->setId($attach['cid'])
-                ->setFilename($attach['filename'])
-                ->setContentType($attach['type'])
-                ->setBody($attach['bin_data'])
-            );
-        }
-
-        #------------------------------
-        # Headers
-        #------------------------------
-
-        $headers = $message->getHeaders();
-        foreach ($raw_message->getHeaders() as $header_name => $header_values) {
-            try {
-                switch ($header_name) {
-                    case 'Message-ID':
-                        $message->setId($header_values[0]);
-                        break;
-
-                    case 'Date':
-                        $message->setDate(strtotime($header_values[0]));
-                        break;
-
-                    case 'Return-Path':
-                        $message->setReturnPath($header_values[0]);
-                        break;
-
-                    case 'DKIM-Signature':
-                    case 'DomainKey-Signature':
-                    case (strpos($header_name, 'X-') === 0):
-                        $headers->removeAll($header_name);
-                        foreach ($header_values as $v) {
-                            $headers->addTextHeader($header_name, $v);
-                        }
-                        break;
-                }
-            } catch (\Exception $e) {}
-        }
-
-        #------------------------------
-        # Done
-        #------------------------------
-
+        RawMessageUtil::applyRawToSwift($raw_message, $message, $send_tos);
         return $message;
     }
 }

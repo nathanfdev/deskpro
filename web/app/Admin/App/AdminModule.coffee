@@ -1,47 +1,47 @@
 define [
-  'angular',
-  'ZeroClipboard',
+  'angular'
+  'ZeroClipboard'
 
-  'angularAnimate',
-  'angularSanitize',
-  'angularBootstrap',
-  'angularSelect2',
-  'angularUiAce',
-  'angularUiRouter',
-  'angularUiSortable',
-  'angular-moment',
-  'angularFileUpload',
-  'angularSlider',
-  'angularSelectize',
-  'angularGrid',
-  'ngFileUpload',
-  'angularUiDatetime',
+  'angularAnimate'
+  'angularSanitize'
+  'angularBootstrap'
+  'angularSelect2'
+  'angularUiAce'
+  'angularUiRouter'
+  'angularUiSortable'
+  'angular-moment'
+  'angularFileUpload'
+  'angularSlider'
+  'angularSelectize'
+  'angularGrid'
+  'angularScrollGlue'
+  'ngFileUpload'
 
-  'moment',
-  'momentTimezone',
-  'aceEditor',
+  'moment'
+  'momentTimezone'
+  'aceEditor'
 
-  'jquery',
-  'jqueryUi',
-  'underscore',
-  'stacktrace',
+  'jquery'
+  'jqueryUi'
+  'underscore'
+  'stacktrace'
 
-  'microplugin',
-  'sifter',
-  'selectize',
+  'microplugin'
+  'sifter'
+  'selectize'
 
-  'ZeroClipboard',
-  'ngClip',
+  'ZeroClipboard'
+  'ngClip'
 
-  'bootstrapTooltip',
+  'bootstrapTooltip'
 
-  'select2',
-  'toastr',
+  'select2'
+  'toastr'
 
-  'DeskPRO/OptionBuilder/Module',
-  'DeskPRO/CategoryBuilder/Module',
-], (
-  angular,
+  'DeskPRO/OptionBuilder/Module'
+  'DeskPRO/CategoryBuilder/Module'
+  'DeskPRO/Directive/DpDateTimePicker'
+], (angular
   ZeroClipboard
 ) ->
 
@@ -55,22 +55,23 @@ define [
     ace.config.set("workerPath", DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict")
 
   AdminModule = angular.module('Admin_App', [
-    'ngAnimate',
-    'ngSanitize',
-    'ngClipboard',
-    'ui.router',
-    'ui.bootstrap',
-    'ui.select2',
-    'ui.sortable',
-    'ui.ace',
-    'angularMoment',
-    'blueimp.fileupload',
-    'angularFileUpload',
+    'ngAnimate'
+    'ngSanitize'
+    'ngClipboard'
+    'ui.router'
+    'ui.bootstrap'
+    'ui.select2'
+    'ui.sortable'
+    'ui.ace'
+    'angularMoment'
+    'blueimp.fileupload'
+    'angularFileUpload'
     'selectize'
-    'ngGrid',
-    'deskpro.option_builder',
-    'deskpro.category_builder',
-    'ui.datetime'
+    'ngGrid'
+    'deskpro.option_builder'
+    'deskpro.category_builder'
+    'dp.datetimepicker'
+    'luegg.directives'
   ])
 
   AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->

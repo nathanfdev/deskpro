@@ -40,6 +40,7 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use deskpro_sendgrid\InstallerHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
@@ -194,7 +195,8 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             'page'           => $filter->getPage(),
             'num_pages'      => $info['num_pages'],
             'count'          => $info['count'],
-            'sendmail_queue' => $data
+            'sendmail_queue' => $data,
+	        'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME . '.enabled'),
         ));
     }
 
@@ -415,7 +417,96 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             $info['sendmail_raw'] = null;
         }
 
+	    if ($this->container->getSetting(InstallerHandler::NAME . '.enabled')) {
+		    foreach ($sendmail->getStatuses() as $status) {
+			    $info['statuses'][] = $status->toArray();
+		    }
+	    }
+
         return $this->createApiResponse($info);
+    }
+
+    ####################################################################################################################
+    # get-sendmail-summary
+    ####################################################################################################################
+
+    public function getSendmailSummaryAction($id)
+    {
+        $source = $this->em->find('EmailBundle:SendmailSource', $id);
+        if (!$source) {
+            throw $this->createNotFoundException();
+        }
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
+
+        $info = "";
+
+        if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat("#", 72);
+            $info .= "\n# EMAIL HTML BODY\n";
+            $info .= str_repeat("#", 72);
+            $info .= "\n\n";
+            $info .= $t;
+            $info .= "\n\n\n\n\n";
+        }
+        unset($t);
+
+        if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
+            $info .= str_repeat("#", 72);
+            $info .= "\n# EMAIL TEXT BODY\n";
+            $info .= str_repeat("#", 72);
+            $info .= "\n\n";
+            $info .= $t;
+        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat("#", 72);
+            $info .= "\n# EMAIL TEXT BODY (generated based on html)\n";
+            $info .= str_repeat("#", 72);
+            $info .= "\n\n";
+            $info .= Strings::stripTags($t);
+        }
+        unset($t);
+
+        return $this->createApiResponse(array('summary' => trim($info)));
+    }
+
+    ####################################################################################################################
+    # get-sendmail-rendered
+    ####################################################################################################################
+
+    public function getSendmailRenderedAction($id)
+    {
+        $source = $this->em->find('EmailBundle:SendmailSource', $id);
+        if (!$source) {
+            throw $this->createNotFoundException();
+        }
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
+
+        $text = null;
+        $html = null;
+
+        if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $html = $t;
+            $html = $this->cleaner->clean($html, 'html_email_preclean');
+            $html = $this->cleaner->clean($html, 'html_email_basicclean');
+            $html = $this->cleaner->clean($html, 'html_email');
+            $html = $this->cleaner->clean($html, 'html_email_postclean');
+        }
+        unset($t);
+
+        if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
+            $text = $t;
+        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $text = Strings::stripTags($t);
+        }
+        unset($t);
+
+        return $this->createApiResponse(array(
+            'text' => $text,
+            'html' => $html
+        ));
     }
 
     ####################################################################################################################

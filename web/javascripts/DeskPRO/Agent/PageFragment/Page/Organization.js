@@ -105,11 +105,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
 			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 		});
-		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 			el: self.getEl('files_box'),
 			deleteUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save',
 		});
-		
+
 		this.ownObject(this.changePic);
 		this.ownObject(this.uploadFile);
 
@@ -330,6 +330,27 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
+    var $notes = this.getEl('notes_tab'),
+        notesClickHandler = function(e){
+          var $el = $(e.target).closest('li.note');
+          if (!$el.length) return;
+          $notes.off('click', notesClickHandler);
+
+          $.ajax({
+            url: BASE_URL + 'agent/organizations/notes/' + $el.data('note-id'),
+            type: 'DELETE',
+            dataType: 'json',
+            success: function(data) {
+              $el.remove();
+              $notes.on('click', '.delete', notesClickHandler);
+            },
+            error: function() {
+              $notes.on('click', '.delete', notesClickHandler);
+            }
+          });
+        };
+    $notes.on('click', '.delete', notesClickHandler);
+
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
 		if (this.meta.perms.edit) {
@@ -353,29 +374,31 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			} else {
 				if (!fieldsForm.hasClass('dp-has-init')) {
 					fieldsForm.addClass('dp-has-init');
-					fieldsForm.find('.Date.customfield input').datepicker({
-						dateFormat: 'yy-mm-dd',
-						showButtonPanel: true,
-						beforeShow: function(input) {
-							setTimeout(function() {
-								var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-								buttonPane.find('button:first').remove();
-
-								var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-								btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-								btn.appendTo( buttonPane );
-
-								$(input).datepicker("widget").css('z-index', 30001);
-							},1);
-						}
+					fieldsForm.find('.Date.customfield input').each(function() {
+						$(this).datetimepicker({
+							format: 'YYYY-MM-DD',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
+						})
 					});
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
 						$(this).datetimepicker({
-							format: 'yyyy-mm-dd hh:ii',
-							container: $(this).parent().css('position', 'relative'),
-							autoclose: true
+							format: 'YYYY-MM-DD HH:mm',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								time: 'fa fa-clock-o',
+								date: 'fa fa-calendar-o',
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
 						});
 					});
 				}
@@ -396,6 +419,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
 			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
 			  var n = $(this).attr('name');
+        if (!n) return;
 			  if (n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')
 			  formData[n] = $(this).val();
 			});

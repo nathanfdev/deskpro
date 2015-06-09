@@ -33,7 +33,6 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\SkipDuplicateInterface;
-use Application\ImportBundle\Generator\Writer\WriterException;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -78,6 +77,16 @@ final class DeskProWriter extends AbstractWriter
     /**
      * {@inheritdoc}
      */
+    public function prepare()
+    {
+        if ( ! $this->config->getInputPath()) {
+            $this->createOutputDirIfNotExist();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function writeData(EntityInterface $entity)
     {
         $importers = $this->getImporters($entity);
@@ -101,7 +110,7 @@ final class DeskProWriter extends AbstractWriter
 
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
-                        $this->logInfo(sprintf('Flush `%s` entity', get_class($record)));
+                        $this->logDebug(sprintf('Flush `%s` entity', get_class($record)));
                     }
                 }
 

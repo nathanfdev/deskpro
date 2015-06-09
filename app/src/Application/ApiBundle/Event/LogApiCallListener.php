@@ -29,22 +29,21 @@ namespace Application\ApiBundle\Event;
 
 
 use \Application\ApiBundle\Request\RequestAuth;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\ORM\EntityManager;
-use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogApiCallListener
 {
-    public function onControllerPostAction(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
+    public function onControllerPostAction(PrePostEvent $event, $eventName, EventDispatcherInterface $dispatcher)
     {
         try {
             $this->_do($event, $eventName, $dispatcher);
         } catch (\Exception $e) {}
     }
 
-    private function _do(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
+    private function _do(PrePostEvent $event, $eventName, EventDispatcherInterface $dispatcher)
     {
         /** @var $auth RequestAuth */
         if (!$auth = $dispatcher->getContainer()->get('deskpro.api.request_auth')) {

@@ -13,7 +13,9 @@
   "angularSlider":                   "bower_components/angular-slider/slider",
   "angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
-  "angularUiDatetime":               "vendor/ui-datetime",
+  "angularScrollGlue": "bower_components/angular-scroll-glue/src/scrollglue",
+
+  "bootstrapDatetime":               "bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
   "ngContextMenu":                   "vendor/ng-context-menu/src/ng-context-menu",

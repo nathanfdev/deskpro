@@ -27,9 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Reader\BaseConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Base exporter factory
+ *
  * Class AbstractFactory
  * @package Application\ImportBundle\Generator\Exporter
  */

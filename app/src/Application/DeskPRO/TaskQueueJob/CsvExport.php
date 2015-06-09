@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\TmpData;
+use Symfony\Component\Process\Process;
 
 class CsvExport extends AbstractJob
 {
@@ -68,7 +69,7 @@ class CsvExport extends AbstractJob
 	    $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $start_time = microtime(true);
         $file = $this->_data['file'];
-        $delimeter = ';';
+        $delimeter = ',';
         $enclosure = '"';
 
         if (!$file) {
@@ -138,6 +139,12 @@ class CsvExport extends AbstractJob
                 $this->fillWithContactData($person, $row);
                 $this->fillCustomFieldsValues($person, $row);
 
+                foreach ($row as &$col) {
+                    if ('' === $col || null === $col) {
+                        $col = " ";
+                    }
+                }
+
                 fputcsv($fp, $row, $delimeter, $enclosure);
 
                 $this->_data['offset']++;
@@ -160,11 +167,52 @@ class CsvExport extends AbstractJob
 
         if (!$batch) {
 
-            $data = TmpData::create(
-                'csv_export.file',
-                array('file' => $file, 'count' => $this->_data['offset']),
-                '+24 hours'
-            );
+            $this->getLogger()->logDebug(sprintf('File: %s', $file));
+
+            if (defined('DPC_IS_CLOUD')) {
+
+                $fname = basename($file);
+
+                $this->getLogger()->logDebug("Zipping: zip -j $fname.zip $fname");
+
+                $proc = new Process("zip -j $fname.zip $fname", dirname($file));
+                $proc->setTimeout(300);
+                $proc->run();
+
+                if ($proc->isSuccessful()) {
+                    $this->getLogger()->logDebug("Zip success");
+                    $blob = App::$container->getBlobStorage()->createBlobRecordFromFile(
+                        $file . '.zip',
+                        'export.csv.zip',
+                        'text/csv'
+                    );
+                    $data = TmpData::create(
+                        'csv_export.file',
+                        array('file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']),
+                        '+28 hours'
+                    );
+                } else {
+                    $out = $proc->getOutput() . "\n\n" . $proc->getErrorOutput();
+                    $this->getLogger()->logDebug("Zip failed: " . $out);
+                    $blob = App::$container->getBlobStorage()->createBlobRecordFromString(
+                        "There was a problem generating the export. Output:\n\n" . $out,
+                        'error.txt',
+                        'text/plain'
+                    );
+                    $data = TmpData::create(
+                        'csv_export.file',
+                        array('file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']),
+                        '+28 hours'
+                    );
+                }
+            } else {
+                $data = TmpData::create(
+                    'csv_export.file',
+                    array('file' => $file, 'count' => $this->_data['offset']),
+                    '+28 hours'
+                );
+            }
+
             $data['name'] = 'csv_export.file';
             $em->persist($data);
 

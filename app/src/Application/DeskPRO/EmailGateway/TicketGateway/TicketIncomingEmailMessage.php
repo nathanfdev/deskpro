@@ -224,10 +224,10 @@ class TicketIncomingEmailMessage
 
                         $this->body = $ticket_email->email_body_text;
                         if ($this->body) {
-                            $this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+                            $this->body = Strings::text2html($this->body, 'plaintext-email');
                         } else {
                             $this->body = strip_tags($ticket_email->email_body_html);
-                            $this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+                            $this->body = Strings::text2html($this->body, 'plaintext-email');
                         }
                         $this->body_is_html = false;
 
@@ -246,10 +246,10 @@ class TicketIncomingEmailMessage
 
                     $this->body = $ticket_email->email_body_text;
                     if ($this->body) {
-                        $this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+                        $this->body = Strings::text2html($this->body, 'plaintext-email');
                     } else {
                         $this->body = strip_tags($ticket_email->email_body_html);
-                        $this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+                        $this->body = Strings::text2html($this->body, 'plaintext-email');
                     }
                     $this->body_is_html = false;
 
@@ -331,9 +331,9 @@ class TicketIncomingEmailMessage
             $this->body_full   = Strings::utf8_bad_strip($this->body_full);
             $this->generic_cut = Strings::utf8_bad_strip($this->generic_cut);
 
-            $this->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
-            $this->body_full = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body_full, \ENT_QUOTES, 'UTF-8')));
-            $this->generic_cut = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->generic_cut, \ENT_QUOTES, 'UTF-8')));
+            $this->body = Strings::text2html($this->body, 'plaintext-email');
+            $this->body_full = Strings::text2html($this->body_full, 'plaintext-email');
+            $this->generic_cut = Strings::text2html($this->generic_cut, 'plaintext-email');
             $this->body_is_html = false;
         }
 
@@ -343,7 +343,7 @@ class TicketIncomingEmailMessage
 
             if ($did_html_trim) {
                 // We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
-                $this->body_full = nl2br(htmlspecialchars($orig_text, \ENT_QUOTES, 'UTF-8'));
+                $this->body_full = Strings::text2html($orig_text, 'plaintext-email');
             } else {
                 $this->body_full = $this->body;
             }
@@ -479,7 +479,7 @@ class TicketIncomingEmailMessage
         $this->body_full = $cleaner->clean($this->body_full, 'html_email_postclean');
 
         if ($is_text && $did_html_trim) {
-            $this->body_full = nl2br(htmlspecialchars($ticket_email->email_body_text));
+            $this->body_full = Strings::text2html($ticket_email->email_body_text, 'plaintext-email');
         }
     }
 

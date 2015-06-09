@@ -27,7 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Reader\BaseConfig;
+
 /**
+ * Exporter factory interface
+ *
  * Interface FactoryInterface
  * @package Application\ImportBundle\Generator\Exporter
  */
@@ -38,5 +42,5 @@ interface FactoryInterface
      *
      * @return ExporterInterface
      */
-    public function createExporter();
+    static public function createExporter(BaseConfig $config);
 }

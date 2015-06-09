@@ -111,7 +111,7 @@ final class Downloads extends AbstractParser
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']))
-                ->setAttachment($this->exportAttachment(self::DOWNLOAD_PREFIX, $download, 'person'));
+                ->setAttachment($this->exportAttachment($num, self::DOWNLOAD_PREFIX, $download, 'person'));
 
             if ($download['label']) {
                 $entity->addLabel($download['label']);

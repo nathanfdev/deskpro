@@ -52,7 +52,7 @@ class OsTicketReaderException extends \Exception
      * @param string $error_code
      * @param array  $error_info
      */
-    public function __construct($message, $error_code, array $error_info = null)
+    public function __construct($message, $error_code = '', array $error_info = null)
     {
         parent::__construct($message);
 

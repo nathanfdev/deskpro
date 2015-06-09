@@ -35,6 +35,7 @@ use Elastica\Query;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
+use Orb\Util\Strings;
 
 class UserSearch implements UserSearchInterface
 {
@@ -172,6 +173,31 @@ class UserSearch implements UserSearchInterface
         $objects = $this->transformer->transform($results);
 
         return new ResultSet($objects, $total);
+    }
+
+    /**
+     * @param  SearchContextInterface $context
+     * @param  string $content
+     * @param  array $options
+     * @return ResultSet
+     */
+    public function similarTo(SearchContextInterface $context, $content, array $options = null)
+    {
+        $content = $content ?: '';
+        $content = Strings::utf8_accents_to_ascii($content);
+        $content = strtolower($content);
+        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+        $content = preg_replace('#\s+#', ' ', $content);
+        $content = explode(' ', $content);
+        $content = array_filter($content, function ($s) { return isset($s[2]); });
+        $content = array_unique($content);
+        $content = implode(' ', $content);
+
+        if (!$content) {
+            return new ResultSet();
+        }
+
+        return $this->search($context, $content, $options);
     }
 
     private function getTicketResults(SearchContextInterface $context, array $query_words)

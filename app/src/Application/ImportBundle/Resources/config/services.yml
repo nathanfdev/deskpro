@@ -1,0 +1,15 @@
+services:
+  deskpro.import.config:
+    class: Application\ImportBundle\Generator\GeneratorConfig
+
+  deskpro.import.generator:
+    scope: prototype
+    class: Application\ImportBundle\Generator\Generator
+    factory_class: Application\ImportBundle\Generator\GeneratorFactory
+    factory_method: createGenerator
+    arguments: [@service_container]
+
+  deskpro.import.batch_exporter:
+    class: Application\ImportBundle\Generator\Exporter\Batch
+    factory_class: Application\ImportBundle\Generator\Exporter\BatchFactory
+    factory_method: createExporter

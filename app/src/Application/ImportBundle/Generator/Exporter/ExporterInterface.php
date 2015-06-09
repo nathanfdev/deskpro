@@ -31,7 +31,7 @@ use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Entity;
 
 /**
- * Data generator interface
+ * Exporter interface
  *
  * Interface ExporterInterface
  * @package Application\ImportBundle\Generator\Exporter
@@ -44,14 +44,14 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
     const TYPE_ZENDESK   = 'zendesk';
 
     /**
-     * Get exporter type
+     * Get an exporter type
      *
      * @return string
      */
-    public function getType();
+    static public function getType();
 
     /**
-     * Returns count of records of the current type to be exported
+     * Returns a count of records of the current type to be exported
      *
      * @param string $type
      * @return int
@@ -65,4 +65,11 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
      * @return Entity\Collection
      */
     public function exportByType($type);
+
+    /**
+     * test connection, file availability, etc
+     *
+     * @return bool
+     */
+    public function isReady();
 }

@@ -27,25 +27,36 @@ class OAuthWrapper
 	protected $client;
 	protected $service;
 
+	protected $ssl_authority = true;
+
 	public function __construct(JIRA $service, $callbackUrl = null)
 	{
 		$this->service = $service;
 
 		if (!$this->base_url = $this->service->getUrl()) {
-			throw new \Exception('JIRA base url is required', 1000);
+			throw new ApiGeneralException('JIRA base url is required', 1000);
 		}
 
 		if (!$this->private_key = $this->service->getPrivateKey()) {
-			throw new \Exception('JIRA private key is required', 1001);
+			throw new ApiGeneralException('JIRA private key is required', 1001);
 		}
 
 		if (!$this->consumer_key = $this->service->getConsumerKey()) {
-			throw new \Exception('JIRA consumer key is required', 1002);
+			throw new ApiGeneralException('JIRA consumer key is required', 1002);
 		}
 
 
 		$this->tokens = $this->service->getTokens();
 		$this->callback_url = $callbackUrl;
+
+		if ($authority = $service->getSSLAuthority()) {
+			if ('system' === $authority) {
+				$this->ssl_authority = $authority;
+			}
+			if ('disabled' === $authority) {
+				$this->ssl_authority = false;
+			}
+		}
 	}
 
 	/**
@@ -109,13 +120,13 @@ class OAuthWrapper
 		parse_str($body, $tokens);
 
 		if (empty($tokens)) {
-			throw new \Exception(sprintf(
+			throw new ApiGeneralException(sprintf(
 				'Bad response from host. Expected urlencoded string but "%s" received.', substr($body, 0, 200)
 			), 1003);
 		}
 
 		if (!isset($tokens['oauth_token'])) {
-			throw new \Exception(
+			throw new ApiGeneralException(
 				'Bad response from host. No OAuth token provided.'
 			, 1004);
 		}
@@ -138,7 +149,9 @@ class OAuthWrapper
 		$token = $token ?: (isset($this->tokens['oauth_token']) ? $this->tokens['oauth_token'] : null);
 		$secret = $tokenSecret ?: (isset($this->tokens['oauth_token_secret']) ? $this->tokens['oauth_token_secret'] : null);
 
-		$this->client = new Client($this->base_url);
+		$this->client = new Client($this->base_url, array(
+			Client::SSL_CERT_AUTHORITY => $this->ssl_authority,
+		));
 		$privateKey = $this->private_key;
 
 		$plugin = new OauthPlugin(array(
@@ -153,7 +166,7 @@ class OAuthWrapper
 				$privateKeyId = openssl_get_privatekey($certificate);
 				$signature = null;
 				if (!@openssl_sign($stringToSign, $signature, $privateKeyId)) {
-					throw new \Exception('Invalid Private Key', 1004);
+					throw new ApiGeneralException('Invalid Private Key', 1004);
 				}
 				@openssl_free_key($privateKeyId);
 				return $signature;

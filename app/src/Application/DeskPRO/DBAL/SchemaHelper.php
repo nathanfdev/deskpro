@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL;
+use Orb\Util\Arrays;
 
 class SchemaHelper
 {
@@ -86,6 +87,27 @@ class SchemaHelper
                 && in_array($f_col, $fk->getForeignColumns())
             ) {
                 return $fk;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string          $table The table that has the index
+     * @param string|string[] $cols  The columns the index is on
+     * @return DBAL\Schema\Index|null
+     */
+    public function findIndex($table, $cols)
+    {
+        if (!is_array($cols)) {
+            $cols = array($cols);
+        }
+
+        foreach ($this->getSchemaManager()->listTableIndexes($table) as $idx) {
+            $idx_cols = $idx->getUnquotedColumns();
+            if (count($cols) === count($idx_cols) && Arrays::isIn($cols, $idx_cols, true, true)) {
+                return $idx;
             }
         }
 

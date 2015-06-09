@@ -40,6 +40,7 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Input\Parser\CcListParser;
+use Orb\Util\Strings;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form
@@ -80,6 +81,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
     public $custom_ticket_fields = array();
     public $custom_user_fields = array();
+    public $custom_org_fields = array();
 
     public $new_message;
 
@@ -346,9 +348,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         $ticket_message['person']  = $person;
         $ticket_message['ticket']  = $ticket;
         if ($this->ticket->message_is_html) {
-            $ticket_message->setMessageHtml($this->ticket->message);
+            $ticket_message->setMessageHtml(Strings::linkifyHtml($this->ticket->message));
         } else {
-            $ticket_message->setMessageText($this->ticket->message);
+            $ticket_message->setMessageHtml(Strings::linkifyHtml(Strings::text2html($this->ticket->message)));
         }
         if (!$ticket_message['message']) {
             $ticket_message['message'] = '(no message)';
@@ -358,16 +360,16 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket_message['message_raw'] = $this->ticket->message_raw;
         }
 
-            $attach = null;
-            if ($this->ticket->new_upload) {
-                $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-                    $this->ticket->new_upload->getRealPath(),
-                    $this->ticket->new_upload->getClientOriginalName(),
-                    $this->ticket->new_upload->getClientMimeType()
-                );
-                $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-                $attach['blob'] = $blob;
-                $attach['person'] = $person;
+        $attach = null;
+        if ($this->ticket->new_upload) {
+            $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+                $this->ticket->new_upload->getRealPath(),
+                $this->ticket->new_upload->getClientOriginalName(),
+                $this->ticket->new_upload->getClientMimeType()
+            );
+            $attach = new \Application\DeskPRO\Entity\TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $person;
 
             $ticket_message->addAttachment($attach);
         }
@@ -499,6 +501,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $post_custom_fields = $this->custom_user_fields;
             if (!empty($post_custom_fields)) {
                 $user_field_manager->saveFormToObject($post_custom_fields, $person);
+            }
+            $org_field_manager = App::getSystemService('OrgFieldsManager');
+            if (!empty($this->custom_org_fields) && $person->organization) {
+                $org_field_manager->saveFormToObject($this->custom_org_fields, $person->organization);
             }
 
             $ticket_manager->saveTicket($ticket, $context);

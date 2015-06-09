@@ -34,11 +34,14 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\ApiBundle\Controller\ResetDemoController;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
+use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
@@ -86,6 +89,20 @@ class JobRouterService
                 $queue
             )
         );
+
+        /**
+         * todo instantiate processors on demand
+         */
+        foreach (ResetDemoController::$types as $type) {
+            $proc = 'Application\DeskPRO\JobQueue\Processor\Reset\\' . ucfirst($type) . 'Processor';
+            if (class_exists($proc)) {
+                $router->addProcessor(new $proc($container));
+            }
+        }
+
+        $router->addProcessor(new UsersImportProcessor($container));
+
+        $router->addProcessor(new ImportProcessor($container));
 
         return $router;
     }

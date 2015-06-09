@@ -27,16 +27,18 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\AbstractCollection;
+use Application\ImportBundle\Generator\TypeOrderInterface;
 use Exception;
 
 /**
- * Collection of exporters
+ * Collection of the exporters
  *
  * Class Collection
  * @package Application\ImportBundle\Generator\Exporter
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection implements TypeOrderInterface
 {
     /**
      * Add a validator
@@ -46,7 +48,7 @@ class Collection extends AbstractCollection
      */
     public function attach(ExporterInterface $exporter)
     {
-        $this->collection[$exporter->getType()] = $exporter;
+        $this->collection[$exporter::getType()] = $exporter;
         return $this;
     }
 
@@ -65,5 +67,20 @@ class Collection extends AbstractCollection
         }
 
         throw new Exception(sprintf('Generator exporter `%s` not found', $type));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrderedTypes()
+    {
+        return array(
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 }

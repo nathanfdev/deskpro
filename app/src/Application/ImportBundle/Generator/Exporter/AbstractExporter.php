@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
+use Application\ImportBundle\Reader\BaseReader;
 use Exception;
 
 /**
- * Base data generator class methods
+ * Base data exporter class methods
  *
  * Class AbstractExporter
  * @package Application\ImportBundle\Generator\Exporter
@@ -45,14 +47,17 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private $parsers;
 
+    protected $reader;
+
     /**
      * Constructor
      *
      * @param Parser\Collection $parsers
      */
-    public function __construct(Parser\Collection $parsers)
+    public function __construct(Parser\Collection $parsers, BaseReader $reader)
     {
         $this->parsers = $parsers;
+        $this->reader = $reader;
     }
 
     /**
@@ -60,7 +65,12 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function getCountByType($type)
     {
-        return $this->getParserByType($type)->getCount();
+        $parser = $this->getParserByType($type);
+        if ($parser instanceof Parser\NotSupportedInterface) {
+            return 0;
+        }
+
+        return $parser->getCount();
     }
 
     /**
@@ -68,7 +78,16 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function exportByType($type)
     {
-        return $this->getParserByType($type)->export();
+        $this->logNotice(sprintf('Parsing `%s` entities', $type));
+
+        $parser = $this->getParserByType($type);
+        if ($parser instanceof Parser\NotSupportedInterface) {
+            $this->logNotice(sprintf('Entity `%s` is not supported', $type));
+
+            return new Entity\Collection();
+        }
+
+        return $parser->export();
     }
 
     /**
@@ -79,13 +98,11 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      * @return Parser\ParserInterface
      * @throws Exception
      */
-    private function getParserByType($type)
+    protected function getParserByType($type)
     {
         if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
-
-        $this->logNotice(sprintf('Parsing `%s` entities', $type));
 
         $parser = $this->parsers->getByEntityType($type);
         $parser->setConfig($this->config);
@@ -100,5 +117,22 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         }
 
         return $parser;
+    }
+
+    public function isReady()
+    {
+        return $this->reader->isReady();
+    }
+
+    static public function getOrderedTypes()
+    {
+        return array(
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 }

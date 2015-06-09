@@ -141,7 +141,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         # Set reply flags
         #------------------------------
 
-        $new_replies = $state->getNewReplies();
+        $new_replies        = $state->getNewReplies();
         $is_new_ticket      = $state->isNewTicket();
         $is_new_agent_reply = false;
         $is_new_agent_note  = false;
@@ -181,7 +181,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             'is_new_user_reply'  => $is_new_user_reply,
             'is_status_change'   => $state->hasChangedField('status'),
             'action_performer'   => $context->getPersonContext(),
-            'new_message'        => Arrays::getLastItem($new_replies),
+            'new_message'        => Arrays::getFirstItem($new_replies),
             'new_messages'       => $new_replies,
             'ticket_logs'        => $ticket_logs,
             'user_vars'          => $context->getUserVars(),
@@ -285,6 +285,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     {
         $headers = array();
         foreach ($raw_headers as $h) {
+            if (empty($h['name'])) {
+                continue;
+            }
+            if (empty($h['value'])) {
+                $h['value'] = '';
+            }
             $headers[] = array(
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
                 'value' => $this->renderStringTemplate($h['value'], $ticket, $context)

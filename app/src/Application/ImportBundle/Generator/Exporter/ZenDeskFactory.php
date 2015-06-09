@@ -27,9 +27,14 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Reader\BaseConfig;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Entity;
 
 /**
+ * ZenDesk data exporter factory
+ *
  * Class ZenDeskFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
@@ -38,27 +43,33 @@ class ZenDeskFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    public function createExporter()
+    static public function createExporter(BaseConfig $config)
     {
         /** @var ZenDeskReaderInterface $reader */
-        $reader  = $this->container->get('deskpro.import.zen_desk_reader');
+        $reader = ZenDeskReaderFactory::createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
+        // People parser
+        $people = new Parser\ZenDesk\People($reader);
+        $people->setPeopleStorage($storage);
+
+        // Tickets parser
+        $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader);
+        $ticket_people->setPeopleStorage($storage);
+
+        $tickets = new Parser\ZenDesk\Tickets($reader, $ticket_people);
+
+        // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\ZenDesk\Downloads($reader))
             ->attach(new Parser\ZenDesk\Feedback($reader))
             ->attach(new Parser\ZenDesk\Articles($reader))
             ->attach(new Parser\ZenDesk\News($reader))
-            ->attach(new Parser\ZenDesk\People($reader))
-            ->attach(new Parser\ZenDesk\Tickets($reader));
+            ->attach($people)
+            ->attach($tickets);
 
-        foreach ($parsers as $parser) {
-            if ($parser instanceof Parser\ZenDesk\PeopleStorageAwareInterface) {
-                $parser->setPeopleStorage($storage);
-            }
-        }
 
-        return new ZenDesk($parsers);
+        return new ZenDesk($parsers, $reader);
     }
 }

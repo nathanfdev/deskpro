@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
+use Application\ImportBundle\Reader\BaseReader;
+use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Pdo;
 
 /**
@@ -58,7 +60,7 @@ use Pdo;
  * Class OsTicketReader
  * @package Application\ImportBundle\Reader\OsTicket
  */
-class OsTicketReader implements OsTicketReaderInterface
+class OsTicketReader extends BaseReader implements OsTicketReaderInterface
 {
     /**
      * @var ConnectionWrapperInterface
@@ -66,22 +68,77 @@ class OsTicketReader implements OsTicketReaderInterface
     private $connection_wrapper;
 
     /**
-     * Constructor
-     *
-     * @param ConnectionWrapperInterface $connection_wrapper
+     * @var array
      */
-    public function __construct(ConnectionWrapperInterface $connection_wrapper)
+    private $timezones = array();
+
+    /**
+     * @var bool
+     */
+    private $timezones_loaded = false;
+
+    /**
+     * @var array
+     */
+    private $ticket_priorities = array();
+
+    /**
+     * @var bool
+     */
+    private $ticket_priorities_loaded = false;
+
+
+    public function __construct(OsTicketConfig $config)
     {
-        $this->connection_wrapper = $connection_wrapper;
+        parent::__construct($config);
+        $this->connection_wrapper = new LazyConnectionWrapper(
+            sprintf('mysql:dbname=%s;host=%s', $config->getDatabase(), $config->getHost()),
+            $config->getUser(),
+            $config->getPassword()
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getTicketsCount()
+    public function getStaffCount($min_id = 0)
     {
-        $query = 'SELECT count(ticket_id) FROM ost_ticket';
+        $query = 'SELECT count(staff_id) FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC';
         $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get staff count', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsersCount($min_id = 0)
+    {
+        $query = 'SELECT count(id) FROM ost_user WHERE id > :min_id ORDER BY id ASC';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get users count', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTicketsCount($min_id = 0)
+    {
+        $query = 'SELECT count(ticket_id) FROM ost_ticket WHERE ticket_id > :min_id ORDER BY ticket_id ASC';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
+
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to get tickets count', $stmt->errorCode(), $stmt->errorInfo());
         }
@@ -92,32 +149,12 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getPeopleCount()
+    public function findStaff($limit, $min_id = 0)
     {
-        $query = 'SELECT count(staff_id) FROM ost_staff';
-        $staff_stmt = $this->getConnection()->prepare($query);
-        if ($staff_stmt->execute() === false) {
-            throw new OsTicketReaderException('Unable to get staff count', $staff_stmt->errorCode(), $staff_stmt->errorInfo());
-        }
-
-        $query = 'SELECT count(id) FROM ost_user';
-        $user_stmt = $this->getConnection()->prepare($query);
-        if ($user_stmt->execute() === false) {
-            throw new OsTicketReaderException('Unable to get users count', $user_stmt->errorCode(), $user_stmt->errorInfo());
-        }
-
-        return (int)$staff_stmt->fetchColumn() + (int)$user_stmt->fetchColumn();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findStaff($limit, $offset)
-    {
-        $query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
+        $query = 'SELECT * FROM ost_staff WHERE staff_id > :min_id ORDER BY staff_id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find staff', $stmt->errorCode(), $stmt->errorInfo());
@@ -129,12 +166,12 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findUsers($limit, $offset)
+    public function findUsers($limit, $min_id = 0)
     {
-        $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id LIMIT :limit OFFSET :offset';
+        $query = 'SELECT *, u.id user_id FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id WHERE u.id > :min_id ORDER BY u.id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
@@ -146,12 +183,12 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findTickets($limit, $offset)
+    public function findTickets($limit, $min_id = 0)
     {
-        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id LIMIT :limit OFFSET :offset';
+        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id WHERE t.ticket_id > :min_id ORDER BY t.ticket_id ASC LIMIT :limit';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':min_id', $min_id, PDO::PARAM_INT);
 
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find tickets', $stmt->errorCode(), $stmt->errorInfo());
@@ -211,6 +248,38 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function findOrganizationNameById($id)
+    {
+        $query = 'SELECT name FROM ost_organization WHERE id = :id';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find organization', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findUserGroupNameById($id)
+    {
+        $query = 'SELECT group_name FROM ost_groups WHERE group_id = :id';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find user group', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function findUserEmailById($id)
     {
         $query = 'SELECT address FROM ost_user_email e LEFT JOIN ost_user u ON e.user_id = u.id WHERE u.id = :id';
@@ -261,15 +330,18 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findTimezoneById($id)
     {
-        $query = 'SELECT timezone FROM ost_timezone WHERE id = :id';
-        $stmt  = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute() === false) {
-            throw new OsTicketReaderException('Unable to find timezone', $stmt->errorCode(), $stmt->errorInfo());
+        if ($this->timezones_loaded === false) {
+            $this->loadTimezones();
+            $this->timezones_loaded = true;
         }
 
-        return $stmt->fetchColumn();
+        $id = (int)$id;
+        if (isset($this->timezones[$id])) {
+            $timezone = $this->timezones[$id];
+            return TimeZoneMapper::getTimeZoneName($timezone['offset'], $timezone['timezone']);
+        }
+
+        return null;
     }
 
     /**
@@ -277,7 +349,6 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findAttachmentData($file_id)
     {
-        $data  = '';
         $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = :file_id';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->bindValue(':file_id', $file_id, PDO::PARAM_INT);
@@ -286,12 +357,73 @@ class OsTicketReader implements OsTicketReaderInterface
             throw new OsTicketReaderException('Unable to find attachment data', $stmt->errorCode(), $stmt->errorInfo());
         }
 
+        $data = '';
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $chunk) {
             $data .= $chunk['filedata'];
         }
 
         return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findTicketPriority($id)
+    {
+        if ($this->ticket_priorities_loaded === false) {
+            $this->loadTicketPriorities();
+            $this->ticket_priorities_loaded = true;
+        }
+
+        $id = (int)$id;
+        if (isset($this->ticket_priorities[$id])) {
+            return $this->ticket_priorities[$id];
+        }
+
+        return null;
+    }
+
+    /**
+     * Loads all timezones
+     *
+     * @throws OsTicketReaderException
+     */
+    private function loadTimezones()
+    {
+        $query = 'SELECT * FROM ost_timezone';
+        $stmt  = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find timezones', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        $this->timezones = array();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            $this->timezones[(int)$row['id']] = $row;
+        }
+    }
+
+    /**
+     * Loads all ticket priorities
+     *
+     * @throws OsTicketReaderException
+     */
+    private function loadTicketPriorities()
+    {
+        $query = 'SELECT * FROM ost_ticket_priority';
+        $stmt  = $this->getConnection()->prepare($query);
+
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find ticket priorities', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        $this->ticket_priorities = array();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            $this->ticket_priorities[(int)$row['priority_id']] = $row;
+        }
     }
 
     /**
@@ -302,5 +434,14 @@ class OsTicketReader implements OsTicketReaderInterface
     private function getConnection()
     {
         return $this->connection_wrapper->getConnection();
+    }
+
+    /**
+     * @return bool
+     * @throws OsTicketReaderException
+     */
+    public function isReady()
+    {
+        return null !== $this->getUsersCount();
     }
 }

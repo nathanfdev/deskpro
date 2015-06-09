@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Exception;
@@ -40,7 +39,7 @@ use Exception;
  * Class ExportCommand
  * @package Application\ImportBundle\Command
  */
-class ExportCommand extends AbstractExportCommand
+class ExportCommand extends AbstractGenerateCommand
 {
     /**
      * {@inheritDoc}
@@ -49,12 +48,6 @@ class ExportCommand extends AbstractExportCommand
     {
         $this->setName('dp:export:run');
         $this->setHelp('The actual export process');
-        $this->addOption(
-            'output-path',
-            null,
-            InputOption::VALUE_REQUIRED,
-            'The path to the directory where the files should be exported'
-        );
 
         parent::configure();
     }
@@ -66,7 +59,7 @@ class ExportCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
+        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
         if ($config->isDryRun() === false && ! $config->getOutputPath()) {
@@ -82,38 +75,19 @@ class ExportCommand extends AbstractExportCommand
         }
 
         $logger    = $this->createLogger($config, $output);
-        $generator = $this->createGenerator($config, $output, $logger);
+        $generator = $this->createGenerator($config, $logger);
 
-        try {
-            $generator->generate();
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'Done. Exporting was successful. Look at the log file `%s` to see details.',
-                $config->getLogPath()
-            ));
-
-        } catch (Generator\GeneratorException $e) {
-            $output->writeln('');
-            $output->writeln('');
-            foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorConstraintException $exception */
-                $logger->critical($exception);
-            }
-            if ($config->isVerbose() === false) {
-                $output->writeln(sprintf(
-                    'An error has occurred while exporting. Look at the log file `%s` to see details.',
-                    $config->getLogPath()
-                ));
-            }
-
-        } catch (Exception $e) {
-            $output->writeln('');
-            $output->writeln('');
-            $logger->critical($e->getMessage());
-            $output->writeln(sprintf(
-                'An error has occurred while importing. Look at the log file `%s` to see details.',
-                $config->getLogPath()
-            ));
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
+
+        if ($config->getRetryWaitTimeout()) {
+            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
+
+            return;
+        }
+
+        $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output, $logger);
     }
 }

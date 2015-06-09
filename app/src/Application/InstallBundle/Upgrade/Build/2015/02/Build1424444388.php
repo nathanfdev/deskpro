@@ -34,7 +34,6 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 
@@ -44,44 +43,59 @@ class Build1424444388 extends AbstractBuild
     {
         $this->out("Migrate Phone Numbers");
 
-        $limit = 100;
-        $offset = 0;
+        $sq = "
+            SELECT * FROM people_contact_data
+            WHERE contact_type IN ('phone', 'mobile', contact_type = 'fax')
+            LIMIT 250
+        ";
 
-        $sq = '
-            select * from people_contact_data
-            where contact_type = "phone" or contact_type = "mobile" or contact_type = "fax"
-            limit %d, %d
-        ';
-        $em = $this->container->getEm();
+        $date_now = date('Y-m-d H:i:s');
+        $db = $this->container->getDb();
         $ff = $this->container->getFormFactory();
 
-        $remove = array();
+        while ($rows = $db->fetchAll($sq)) {
 
-        while ($rows = $em->getConnection()->fetchAll(sprintf($sq, $offset, $limit))) {
+            $remove = array();
+            $values = array();
+            $invalid_values = array();
 
             foreach ($rows as $row) {
+                $remove[] = $row['id'];
                 $phone = new PhoneNumber();
                 $form = $ff->create(new PhoneNumberType(), $phone);
                 $form->submit(array('number' => '+' . preg_replace('/[^0-9]/', '', $row['field_10'])));
 
                 if ($form->isValid()) {
-                    $remove[] = $row['id'];
-                    $phone->person = $em->getReference('DeskPRO:Person', $row['person_id']);
-                    $em->persist($phone);
-                    $em->flush();
+                    $values[] = array(
+                        'person_id'    => $row['person_id'],
+                        'number'       => $phone->number,
+                        'region'       => $phone->region,
+                        'guessed_type' => $phone->guessed_type,
+                        'date_created' => $date_now
+                    );
+                } else {
+                    $invalid_values[] = array(
+                        'person_id'    => $row['person_id'],
+                        'agent_id'     => $row['person_id'],
+                        'date_created' => $date_now,
+                        'note'         => 'Invalid phone number could not be imported: ' . $row['field_10'],
+                    );
                 }
             }
 
-            $offset += $limit;
-            $em->clear();
-        }
+            if ($values) {
+                $db->batchInsert('phone_numbers', $values, true);
+                $this->out("Migrated " . count($values) . " numbers...");
+            }
 
-        if ($remove) {
-            $em->getConnection()->executeQuery(
-                'delete from people_contact_data where id in (:ids)',
-                array('ids' => $remove),
-                array('ids' => Connection::PARAM_INT_ARRAY)
-            );
+            if ($invalid_values) {
+                $db->batchInsert('people_notes', $invalid_values, true);
+                $this->out("Saved " . count($invalid_values) . " invalid numbers as notes...");
+            }
+
+            if ($remove) {
+                $db->deleteIn('people_contact_data', $remove);
+            }
         }
     }
 }

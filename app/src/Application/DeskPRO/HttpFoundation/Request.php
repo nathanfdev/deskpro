@@ -280,7 +280,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             }
         }
 
-        if (!$return = (string) $this->get('return')) {
+        $return = $this->get('return');
+        if (!$return || !is_string($return)) {
             return null;
         }
 

@@ -28,13 +28,13 @@
 			<input
 				dp-slider-switch
 				ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
-				ng-change="EditCtrl.updateHasPermOverridesStatus()"
+				ng-change="{% if 'use' == permname %}EditCtrl.changeUse('{{ typename }}'){% else %}EditCtrl.updateHasPermOverridesStatus(){% endif %}"
 				is-on="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
 				is-locked="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
 				{% if opts.toggleName %}
 					locked-tip-e="(EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}) && 'This permission is locked because you have enabled the parent permission' || 'This permission is locked because this agent is part of a usergroup with this perimssion'"
 				{% else %}
-					locked-tip="This permission is locked because this agent is part of a usergroup with this perimssion"
+                    locked-tip="This permission is locked because this agent is part of a usergroup with this permission"
 
 					{% if opts.showToggler %}
 						is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}')"
@@ -101,9 +101,6 @@
 			{{ _self.perm_row('ticket', 'create') }}
 			{{ _self.perm_row('ticket', 'reply_mass') }}
 			{{ _self.perm_row('ticket', 'modify_set_archived') }}
-			{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-				{{ _self.perm_row('ticket', 'modify_billing') }}
-			{% endif %}
 			{{ _self.perm_row('ticket', 'create_labels') }}
 		</tbody>
 		<tbody>
@@ -123,7 +120,10 @@
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_own',  {toggleName: 'ticket.modify_own'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
-            {{ _self.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
+      {{ _self.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
+      {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ _self.perm_row('ticket', 'modify_billing_own', {toggleName: 'ticket.modify_own'}) }}
+      {% endif %}
 			{{ _self.perm_row('ticket', 'modify_messages_own') }}
 			{{ _self.perm_row('ticket', 'delete_own') }}
 		</tbody>
@@ -144,7 +144,10 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_followed',  {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
-        {{ _self.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
+    {{ _self.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
+    {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+      {{ _self.perm_row('ticket', 'modify_billing_followed', {toggleName: 'ticket.modify_followed'}) }}
+    {% endif %}
 		{{ _self.perm_row('ticket', 'modify_messages_followed') }}
 		{{ _self.perm_row('ticket', 'delete_followed') }}
 		</tbody>
@@ -167,6 +170,9 @@
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_unresolved_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
+      {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ _self.perm_row('ticket', 'modify_billing_unassigned', {toggleName: 'ticket.modify_unassigned'}) }}
+      {% endif %}
 			{{ _self.perm_row('ticket', 'modify_messages_unassigned') }}
 			{{ _self.perm_row('ticket', 'delete_unassigned') }}
 		</tbody>
@@ -189,6 +195,9 @@
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_unresolved_others',     {toggleName: 'ticket.modify_others'}) }}
+      {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ _self.perm_row('ticket', 'modify_billing_others', {toggleName: 'ticket.modify_others'}) }}
+      {% endif %}
 			{{ _self.perm_row('ticket', 'modify_messages_others') }}
 			{{ _self.perm_row('ticket', 'delete_others') }}
 		</tbody>

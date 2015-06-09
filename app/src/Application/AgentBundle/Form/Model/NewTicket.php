@@ -40,8 +40,10 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 
 class NewTicket
 {
@@ -123,12 +125,20 @@ class NewTicket
     protected $_person_context;
 
     /**
+     * @var LayoutDisplay
+     */
+    protected $layout;
+
+    /**
      * @var \Application\DeskPRO\Entity\Ticket
      */
     public $exist_ticket;
 
     protected $_blob_inline_ids = array();
     public $suppress_user_notify = false;
+
+    public $custom_person_fields;
+    public $custom_org_fields;
 
     public function __construct(EntityManager $em, Person $person_context)
     {
@@ -139,6 +149,14 @@ class NewTicket
         $this->_ticket_manager = App::$container->getTicketManager();
 
         $this->person = new NewTicketPerson();
+    }
+
+    /**
+     * @param LayoutDisplay $layout
+     */
+    public function setLayout(LayoutDisplay $layout)
+    {
+        $this->layout = $layout;
     }
 
 
@@ -183,8 +201,14 @@ class NewTicket
 
         $field_manager = App::getSystemService('ticket_fields_manager');
         $custom_fields = $field_manager->createFormArrayForObject($ticket);
+        $custom_person_fields = App::$container->getPersonFieldManager()->createFormArrayForObject($ticket->person);
+        $custom_org_fields = $ticket->person->organization
+            ? App::$container->getOrgFieldManager()->createFormArrayForObject($ticket->person->organization)
+            : array();
 
         $this->ticket_fields = $custom_fields;
+        $this->custom_person_fields = $custom_person_fields;
+        $this->custom_org_fields = $custom_org_fields;
     }
 
     /**
@@ -350,7 +374,7 @@ class NewTicket
         $message_text = $formatter->formatText($message_text, $ticket);
 
         if ($this->is_html_reply) {
-            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
             $message_text = \Orb\Util\Strings::trimHtml($message_text);
             $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
@@ -408,9 +432,47 @@ class NewTicket
         }
 
         $field_manager = App::getSystemService('ticket_fields_manager');
-        $post_custom_fields = $this->ticket_fields;
+        $post_custom_fields = array();
+        if ($this->ticket_fields) {
+            foreach ($this->ticket_fields as $k => $v) {
+                $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                if (!$this->layout || $this->layout->hasActiveField('ticket_field_' . $id, $ticket)) {
+                    $post_custom_fields[$k] = $v;
+                }
+            }
+        }
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $ticket);
+        }
+
+        $manager = App::$container->getPersonFieldManager();
+        $post_custom_person_fields = array();
+        if ($this->custom_person_fields) {
+            foreach ($this->custom_person_fields as $k => $v) {
+                $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                if (!$this->layout || $this->layout->hasActiveField('user_field_' . $id, $ticket)) {
+                    $post_custom_person_fields[$k] = $v;
+                }
+            }
+        }
+        if (!empty($post_custom_person_fields)) {
+            $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
+        }
+
+        if ($ticket->person->organization) {
+            $manager = App::$container->getOrgFieldManager();
+            $post_custom_org_fields = array();
+            if ($this->custom_org_fields) {
+                foreach ($this->custom_org_fields as $k => $v) {
+                    $id = Strings::extractRegexMatch('#(\d+)$#', $k);
+                    if (!$this->layout || $this->layout->hasActiveField('org_field_' . $id, $ticket)) {
+                        $post_custom_org_fields[$k] = $v;
+                    }
+                }
+            }
+            if (!empty($post_custom_org_fields)) {
+                $manager->saveFormToObject($post_custom_org_fields, $ticket->person->organization);
+            }
         }
 
         foreach ($add_cc_people as $add_cc_person) {

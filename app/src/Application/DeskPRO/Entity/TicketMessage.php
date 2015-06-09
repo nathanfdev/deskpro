@@ -495,7 +495,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     public function setMessageText($message)
     {
-        $this->setMessage(Strings::convert4ByteCharsToHtmlEntities(nl2br(htmlspecialchars($message))));
+        $this->setMessage(Strings::text2html($message));
         return $this;
     }
 

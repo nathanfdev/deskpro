@@ -33,7 +33,6 @@ use Application\ImportBundle\Entity;
  * Exporter from csv files
  *
  * Class Csv
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
 final class Csv extends AbstractExporter
@@ -41,7 +40,7 @@ final class Csv extends AbstractExporter
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    static public function getType()
     {
         return self::TYPE_CSV;
     }

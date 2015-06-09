@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Form\Type\CriteriaFilterField\DateType;
 
 
 /**
@@ -117,11 +118,42 @@ class Date extends HandlerAbstract
         }
 
         $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false
+            'required' => false,
         ));
 
         return $field;
     }
+
+	public function getSearchCriteriaForm($data = null)
+	{
+		$setData = null;
+		if ($data AND !empty($data['value'])) {
+			try {
+				if (ctype_digit($data['value'])) {
+					$date = new \DateTime('@' . $data['value']);
+					if ($date) {
+						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+						$setData = $date->format('Y-m-d');
+					}
+				} else {
+					$date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+					if ($date) {
+						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+						$setData = $date->format('Y-m-d');
+					}
+				}
+			} catch (\Exception $e) {
+				$setData = null;
+			}
+		}
+
+		return App::getFormFactory()->createNamedBuilder(
+			$this->getFormFieldName(),
+			new DateType(),
+			$setData,
+			array('required' => false)
+		)->getForm();
+	}
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
@@ -188,7 +220,7 @@ class Date extends HandlerAbstract
 
             // Specific date ranges
             if ($this->field_def->getOption('date_valid_type') == 'date') {
-                $d1 = $this->field_def->getOption('date_valid_date1');
+                $d1 = $this->field_def->getOption('date_valid_range1');
                 $d2 = $this->field_def->getOption('date_valid_date2');
 
                 if ($d1) {
@@ -217,56 +249,33 @@ class Date extends HandlerAbstract
                     $now = new \DateTime('now', $admin_tz);
                 }
 
-                $days1 = $this->field_def->getOption('date_valid_range1');
-                $days2 = $this->field_def->getOption('date_valid_range2');
+                $days1 = (int)$this->field_def->getOption('date_valid_range1');
+                $days2 = (int)$this->field_def->getOption('date_valid_range2');
 
-                if ($days1) {
-                    $d1 = clone $now;
-                    $d1->modify("{$days1} days");
-                    $d1->setTime(0,0,0);
+                $d1 = clone $now;
+                $d1->modify("-{$days1} days");
+                $d1->setTime(0, 0, 0);
 
-                    // Go back if we hit on a unselectable date
-                    if ($valid_dow) {
-                        $x = 0;
-                        while ($x++ < 5000) {
-                            $check_dow = intval($d1->format('N')) - 1;
-                            if (in_array($check_dow, $valid_dow)) {
-                                break;
-                            }
+                $d2 = clone $now;
+                $d2->modify("+{$days2} days");
+                $d2->setTime(23, 59, 59);
 
-                            $d1->modify('-1 day');
-                        }
-                    }
-
-                    if ($date_admin < $d1) {
-                        return $this->makeErrorArray(array('invalid_date_range'));
-                    }
-                }
-                if ($days2) {
-                    $d2 = clone $now;
-                    $d2->modify("{$days1} days");
-                    $d2->setTime(23,59,59);
-
-                    // Go back if we hit on a unselectable date
-                    if ($valid_dow) {
-                        $x = 0;
-                        while ($x++ < 5000) {
-                            $check_dow = intval($d2->format('N')) - 1;
-                            if (in_array($check_dow, $valid_dow)) {
-                                break;
-                            }
-
-                            $d2->modify(\DateInterval::createFromDateString('1 day'));
-                        }
-                    }
-
-                    if ($date_admin > $d2) {
-                        return $this->makeErrorArray(array('invalid_date_range'));
-                    }
+                if ($date_admin < $d1 || $date_admin > $d2) {
+                    return $this->makeErrorArray(array('invalid_date_range'));
                 }
             }
         }
 
         return array();
     }
+
+	public function getSearchCapabilities()
+	{
+		return array('before', 'after', 'between');
+	}
+
+	public function getSearchType()
+	{
+		return 'value';
+	}
 }

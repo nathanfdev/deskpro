@@ -44,6 +44,8 @@ use Application\DeskPRO\Entity\OrganizationFile;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Handles viewing and editing an org
@@ -515,6 +517,28 @@ class OrganizationController extends AbstractController
             'organization_id' => $org['id'],
             'note_li_html' => $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note))
         ));
+    }
+
+    /**
+     * @param $note_id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function deleteNoteAction($note_id)
+    {
+        if (!$this->person->hasPerm('agent_org.notes')) {
+            throw new AccessDeniedException;
+        }
+
+        if (!$note = $this->em->find('DeskPRO:OrganizationNote', $note_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $this->em->remove($note);
+        $this->em->flush();
+        return $this->createJsonResponse(array('success' => true));
     }
 
     ############################################################################

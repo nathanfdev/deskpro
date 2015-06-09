@@ -55,6 +55,12 @@ $collection->create('api_deskpro_info', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_deskpro_dpspecial', array(
+    'path'        => '/deskpro/dp_special/{action}',
+    'controller'  => 'ApiBundle:Misc:dpSpecial',
+    'methods'     => array('GET', 'POST'),
+));
+
 $collection->create('api_me_lastlogin', array(
     'path'        => '/me/last-login',
     'controller'  => 'ApiBundle:Misc:getLastLogin',
@@ -224,6 +230,13 @@ $collection->create('api_tickets_ticket_merge', array(
     'path'          => '/tickets/{ticket_id}/merge/{merge_ticket_id}',
     'controller'    => 'ApiBundle:Ticket:mergeTicket',
     'requirements'  => array('ticket_id' => '\\d+', 'merge_ticket_id' => '\\d+'),
+    'methods'       => array('POST'),
+));
+
+$collection->create('api_tickets_ticket_link', array(
+    'path'          => '/tickets/{ticket_id}/link/{link_ticket_id}',
+    'controller'    => 'ApiBundle:Ticket:linkTicket',
+    'requirements'  => array('ticket_id' => '\\d+', 'link_ticket_id' => '\\d+'),
     'methods'       => array('POST'),
 ));
 
@@ -2314,6 +2327,12 @@ $collection->create('api_roundrobins_delete', array(
     'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_roundrobins_logs', array(
+    'path'        => '/round_robin/{id}/logs',
+    'controller'  => 'ApiBundle:RoundRobin:logs',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Start Settings
 ########################################################################################################################
@@ -2381,6 +2400,18 @@ $collection->create('api_server_settings_save', array(
 ########################################################################################################################
 # General Settings
 ########################################################################################################################
+
+$collection->create('api_general_settings_get_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:getLogoBlob',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_general_settings_set_logo_blob', array(
+    'path'        => '/general_settings/blob',
+    'controller'  => 'ApiBundle:Settings:setLogoBlob',
+    'methods'     => array('POST'),
+));
 
 $collection->create('api_general_settings', array(
     'path'        => '/general_settings',
@@ -2962,6 +2993,13 @@ $collection->create('api_ticket_fields_setenabled', array(
     'methods'     => array('POST'),
 ));
 
+$collection->create('api_ticket_fields_convert', array(
+    'path'        => '/ticket_fields/convert/{type}',
+    'controller'  => 'ApiBundle:TicketFields:convert',
+    'methods'     => array('POST'),
+    'requirements' => array('type' => 'categories|workflows|priorities|products'),
+));
+
 ########################################################################################################################
 # SMS Channel
 ########################################################################################################################
@@ -3207,6 +3245,20 @@ $collection->create('api_emailstatus_sendmail_delete', array(
     'methods'      => array('DELETE'),
 ));
 
+$collection->create('api_emailstatus_sendmail_get_summary', array(
+    'path'         => '/email_status/sendmail/{id}/summary',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailSummary',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmail_get_rendered', array(
+    'path'         => '/email_status/sendmail/{id}/rendered',
+    'controller'   => 'ApiBundle:EmailStatus:getSendmailRendered',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
 $collection->create('api_emailstatus_sendmail_resend', array(
     'path'         => '/email_status/sendmail/{id}/resend',
     'controller'   => 'ApiBundle:EmailStatus:resendSendmail',
@@ -3257,14 +3309,14 @@ $collection->create('api_ticket_triggers_getcustomactions', array(
 $collection->create('api_ticket_triggers_getspecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'ApiBundle:TicketTriggers:get',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_updatespecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'ApiBundle:TicketTriggers:save',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 
@@ -3313,7 +3365,7 @@ $collection->create('api_ticket_triggers_enabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/enable',
     'defaults'     => array('is_enabled' => true),
     'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 
@@ -3321,7 +3373,7 @@ $collection->create('api_ticket_triggers_disabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/disable',
     'defaults'     => array('is_enabled' => false),
     'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts|satisfaction)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 
@@ -3374,6 +3426,20 @@ $collection->create('api_ticket_escalations_update', array(
     'path'        => '/ticket_escalations/{id}',
     'controller'  => 'ApiBundle:TicketEscalations:save',
     'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_escalations_getspecial', array(
+    'path'         => '/ticket_escalations/{special_type}/{id}',
+    'controller'   => 'ApiBundle:TicketEscalations:get',
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_escalations_updatespecial', array(
+    'path'         => '/ticket_escalations/{special_type}/{id}',
+    'controller'   => 'ApiBundle:TicketEscalations:save',
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
+    'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_escalations_delete', array(
@@ -4353,6 +4419,18 @@ $collection->create('api_import_csv_status', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_import_csv_logs', array(
+    'path'        => '/import_csv_logs',
+    'controller'  => 'ApiBundle:CsvUpload:logs',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_import_csv_clean', array(
+    'path'        => '/import_csv_clean',
+    'controller'  => 'ApiBundle:CsvUpload:clean',
+    'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # CRM Export CSV
 ########################################################################################################################
@@ -4777,6 +4855,15 @@ $collection->create('api_blobs_get', array(
     'methods'      => array('GET'),
 ));
 
+$collection->create(
+    'api_blobs_delete',
+    array(
+        'path' => '/blobs/{id}/{auth}',
+        'controller' => 'ApiBundle:Blobs:delete',
+        'methods' => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # My
 ########################################################################################################################
@@ -4884,5 +4971,80 @@ $collection->create('api_apps_jira', array(
 	'controller'   => 'ApiBundle:Apps:jiraSettings',
 	'methods'      => array('GET'),
 ));
+
+
+########################################################################################################################
+# Reset Demo
+########################################################################################################################
+
+$collection->create('api_reset_demo_run', array(
+    'path'        => '/reset-demo',
+    'controller'  => 'ApiBundle:ResetDemo:run',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_reset_demo_status', array(
+    'path'        => '/reset-demo/status',
+    'controller'  => 'ApiBundle:ResetDemo:status',
+    'methods'     => array('GET'),
+));
+
+##############################################################################################
+# Importers
+##############################################################################################
+
+$collection->create(
+    'api_server_importers_list',
+    array(
+        'path' => '/server/importers',
+        'controller' => 'ApiBundle:Importers:list',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_get',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:get',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_getlog',
+    array(
+        'path' => '/server/importers/{id}/download-log',
+        'controller' => 'ApiBundle:Importers:downloadLog',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_save',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:save',
+        'methods' => array('PUT'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_test',
+    array(
+        'path' => '/server/importers/{id}/test',
+        'controller' => 'ApiBundle:Importers:test',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_start',
+    array(
+        'path' => '/server/importers/{id}/start',
+        'controller' => 'ApiBundle:Importers:start',
+        'methods' => array('GET'),
+    )
+);
 
 return $collection;

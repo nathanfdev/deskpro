@@ -408,6 +408,13 @@ class PersonController extends AbstractController
      *				paramType="query",
      *				required=false,
      *				type="boolean"
+     *			),
+     *			@SWG\Parameter(
+     *				name="via_agent",
+     *				description="Use this to signify you are creating the account on behalf of a user, which would result in the agent variant of the welcome email when send_email is enabled.",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean"
      *			)
      *		)
      * 	)
@@ -531,7 +538,12 @@ class PersonController extends AbstractController
         if ($this->in->getBool('send_email')) {
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
+
+            $tpl = 'DeskPRO:emails_user:register-welcome.html.twig';
+            if ($this->in->getBool('via_agent')) {
+                $tpl = 'DeskPRO:emails_user:register-welcome-byagent.html.twig';
+            }
+            $message->setTemplate($tpl, array(
                 'person' => $person
             ));
             App::getMailer()->send($message);

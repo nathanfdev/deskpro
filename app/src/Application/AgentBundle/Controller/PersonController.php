@@ -45,11 +45,14 @@ use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Handles viewing and editing a person
@@ -685,22 +688,27 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
                             'person' => $person
                         ));
+
+                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                            $message->prepare();
+                        });
+
                         $this->container->getMailer()->send($message);
                     }
                 }
                 break;
-                        case 'upload-vcard':
-                                $blobId = $this->in->getUint('blob_id');
+        case 'upload-vcard':
+                $blobId = $this->in->getUint('blob_id');
 
-                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
 
-                                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-                                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
 
-                                $vCardReader->applyToPerson($content, $person);
+                $vCardReader->applyToPerson($content, $person);
 
-                                break;
+                break;
 
             default:
                 return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
@@ -1160,6 +1168,28 @@ class PersonController extends AbstractController
         ));
     }
 
+    /**
+     * @param $note_id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function deleteNoteAction($note_id)
+    {
+        if (!$this->person->hasPerm('agent_people.notes')) {
+            throw new AccessDeniedException;
+        }
+
+        if (!$note = $this->em->find('DeskPRO:PersonNote', $note_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        $this->em->remove($note);
+        $this->em->flush();
+        return $this->createJsonResponse(array('success' => true));
+    }
+
     ############################################################################
     # /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
     ############################################################################
@@ -1422,7 +1452,7 @@ class PersonController extends AbstractController
 
         if ($this->in->getString('newperson.set_password')) {
             $password = 'generate' === $this->in->getString('newperson.set_password_radio') || !$this->in->getString('newperson.new_password')
-                ? Strings::random(8)
+                ? DpStrings::random(8)
                 : $this->in->getString('newperson.new_password');
             $newperson->password = $password;
         }

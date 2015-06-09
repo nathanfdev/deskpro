@@ -439,3 +439,9 @@
 		{% endif %}
 	{% endspaceless %}
 {% endblock cf_contextual_choice_widget %}
+
+{% block criteria_filter_date_widget %}
+	{% spaceless %}
+		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+	{% endspaceless %}
+{% endblock criteria_filter_date_widget %}

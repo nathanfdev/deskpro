@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use DateTime;
+
 /**
  * ZenDesk reader interface
  *
@@ -35,39 +37,84 @@ namespace Application\ImportBundle\Reader\ZenDesk;
  */
 interface ZenDeskReaderInterface
 {
+    const CODE_UN_PROCESSABLE_ENTITY = 422;
+    const CODE_TOO_MANY_REQUESTS     = 429;
+
     /**
-     * Returns total users count
+     * Returns a batch count of users
+     *
+     * @param DateTime $start_time
      *
      * @return int
+     * @throws RetryAfterException
      */
-    public function getPeopleCount();
+    public function getPeopleCount(DateTime $start_time = null);
 
     /**
-     * Returns batch of the users collection
+     * Returns a batch of the users collection
+     *
+     * @param DateTime $start_time
      *
      * @return array
+     * @throws RetryAfterException
      */
-    public function getPeople();
+    public function getPeople(DateTime $start_time = null);
 
     /**
-     * Returns batch of the users collection of certain ids
+     * Returns a batch end time of the users collection
+     *
+     * @param DateTime $start_time
+     *
+     * @return DateTime
+     * @throws RetryAfterException
+     */
+    public function getPeopleEndTime(DateTime $start_time = null);
+
+    /**
+     * Returns a batch of the users collection of certain ids
      *
      * @param array $ids
+     *
      * @return array
+     * @throws RetryAfterException
      */
     public function getPeopleByIds(array $ids);
 
     /**
-     * Returns total tickets count
+     * Returns an organization by id
      *
-     * @return int
+     * @param int $id
+     * @return mixed
      */
-    public function getTicketsCount();
+    public function getOrganizationById($id);
 
     /**
-     * Returns batch tickets collection
+     * Returns a batch count of users tickets
+     *
+     * @param DateTime $start_time
+     *
+     * @return int
+     * @throws RetryAfterException
+     */
+    public function getTicketsCount(DateTime $start_time = null);
+
+    /**
+     * Returns a batch of the tickets collection
+     *
+     * @param DateTime $start_time
      *
      * @return array
+     * @throws RetryAfterException
      */
-    public function getTickets();
+    public function getTickets(DateTime $start_time = null);
+
+    /**
+     * Returns a batch end time of the tickets collection
+     *
+     * @param DateTime $start_time
+     *
+     * @return DateTime
+     * @throws RetryAfterException
+     */
+    public function getTicketsEndTime(DateTime $start_time = null);
 }

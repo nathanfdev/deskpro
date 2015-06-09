@@ -11,6 +11,7 @@
 *.komodoproject
 *.sublime*
 /running_tests.trigger
+.DS_Store
 
 # vendors and build files
 /app/vendor
@@ -23,6 +24,7 @@
 
 # cache and log files
 /app/sys/cache/*
+!/app/sys/cache/index.html
 app/sys/logs/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php

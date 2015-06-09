@@ -98,6 +98,11 @@
     'core.deskpro_url' => '',
 
     /**
+     * Auto-correct the URL?
+     */
+    'core.deskpro_url_autocorrect' => true,
+
+    /**
      * The name of the DeskPRO helpdesk
      */
     'core.deskpro_name' => 'DeskPRO',
@@ -320,15 +325,6 @@
     'core.agent_intercept_external_link' => false,
 
     /**
-     * Show the share widget (twitter/facebook/linkedin/gplus)
-     */
-    'core.show_share_widget' => true,
-    'core.show_share_facebook' => true,
-    'core.show_share_twitter' => true,
-    'core.show_share_linkedin' => true,
-    'core.show_share_gplus' => true,
-
-    /**
      * Enable the KB?
      */
     'core.apps_kb' => 1,
@@ -468,19 +464,23 @@
 
     'core_tickets.use_ref' => false,
 
-    'core_tickets.gateway_enable_subject_match' => true,
-
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
     'core.allow_arbitrary_gateway_address' => 1,
 
-    'core_tickets.use_archive' => 0,
-    'core_tickets.auto_archive_time' => 2419000,
+    'core_tickets.use_archive' => 1,
+    'core_tickets.auto_archive_time' => 31536000,
 
     'core_tickets.enable_like_search_mode' => true,
 
     // See TicketMessage::checkDupeMessage
     'core_tickets.enable_dupe_checking' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector
+    'core_tickets.gateway_enable_subject_match' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableSameAccountMatching
+    'core_tickets.enable_same_account_subject_matching' => false,
 
     // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableExactSubjectMatching
     'core_tickets.enable_exact_subject_matching' => false,

@@ -27,19 +27,117 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
+use Application\ImportBundle\Entity;
+use DateTime;
+use Exception;
+
 /**
  * Exporter from ZenDesk service
  *
  * Class ZenDesk
  * @package Application\ImportBundle\Generator\Exporter
  */
-final class ZenDesk extends AbstractExporter
+final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
 {
+    /**
+     * @var DateTime
+     */
+    private $retry_date;
+
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    static public function getType()
     {
         return self::TYPE_ZENDESK;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountByType($type)
+    {
+        try {
+            return parent::getCountByType($type);
+
+        } catch (RetryAfterException $e) {
+            $this->retry_date = $e->getRetryAfterTime();
+            $this->logWarning(sprintf(
+                'Unable to get count of `%s` because of ZenDesk rate limits, retry after `%d` seconds',
+                $type, $e->getTimeout()
+            ));
+        }
+
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exportByType($type)
+    {
+        try {
+            return parent::exportByType($type);
+
+        } catch (RetryAfterException $e) {
+            $this->retry_date = $e->getRetryAfterTime();
+            $this->logWarning(sprintf(
+                'Unable to get a collection of `%s` because of ZenDesk rate limits, retry after `%d` seconds',
+                $type, $e->getTimeout()
+            ));
+        }
+
+        return new Entity\Collection();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUpdatedBatchConfig()
+    {
+        /** @var Parser\ZenDesk\Tickets $tickets_parser */
+        $tickets_parser = $this->getParserByType(Entity\EntityInterface::TYPE_TICKET);
+        /** @var Parser\ZenDesk\People $people_parser */
+        $people_parser  = $this->getParserByType(Entity\EntityInterface::TYPE_PERSON);
+
+        /** @var Parser\ZenDesk\BatchConfig $updated_config */
+        $updated_config = clone $this->config->getExporterBatchConfig();
+        $updated_config
+            ->setId($updated_config->getId() + 1)
+            ->setDateModified(new DateTime())
+            ->setRetryAfterTime($this->retry_date);
+
+        if ($tickets_parser->getCurrentEndTime()) {
+            $updated_config->setTicketsEndTime($tickets_parser->getCurrentEndTime());
+        }
+        if ($people_parser->getCurrentEndTime()) {
+            $updated_config->setPeopleEndTime($people_parser->getCurrentEndTime());
+        }
+
+        return $updated_config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultBatchConfig()
+    {
+        return new Parser\ZenDesk\BatchConfig();
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return Parser\ZenDesk\BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
     }
 }

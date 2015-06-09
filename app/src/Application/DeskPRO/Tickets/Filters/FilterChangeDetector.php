@@ -258,6 +258,7 @@ class FilterChangeDetector
         $start = microtime(true);
         foreach ($filter_checks as $filter_check) {
             foreach ($filter_check['scopes'] as $agent) {
+                /** @var Person $agent */
 
                 if (!$agent->is_agent) {
                     $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
@@ -279,13 +280,11 @@ class FilterChangeDetector
                 // testing check
                 // there is no mock for the PermissionsManager yet
                 if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
-                    if ($agent->isHelperLoader('PermissionsManager')) {
-                        if ($see_old && !$agent->PermissionsManager->TicketChecker->canView($orig_ticket)) {
-                            $see_old = false;
-                        }
-                        if ($see_new && !$agent->PermissionsManager->TicketChecker->canView($new_ticket)) {
-                            $see_new = false;
-                        }
+                    if ($see_old && !$agent->getPermissionsManager()->TicketChecker->canView($orig_ticket)) {
+                        $see_old = false;
+                    }
+                    if ($see_new && !$agent->getPermissionsManager()->TicketChecker->canView($new_ticket)) {
+                        $see_new = false;
                     }
                 }
 
@@ -520,6 +519,20 @@ class FilterChangeDetector
 
         if ($context) {
             $context->getVars()->set('filter_change_set', $set);
+        }
+
+        foreach ($set->getChangedFilters() as $change) {
+            $added_aids   = array_map(function($a) { return $a->id; }, $change->getAgentsAdded());
+            $removed_aids = array_map(function($a) { return $a->id; }, $change->getAgentsRemoved());
+
+            if ($added_aids || $removed_aids) {
+                $logger->info(sprintf(
+                    "[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)",
+                    $change->getFilter()->id,
+                    implode(', ', $added_aids ?: array('none')),
+                    implode(', ', $removed_aids ?: array('none'))
+                ));
+            }
         }
 
         return $set;
