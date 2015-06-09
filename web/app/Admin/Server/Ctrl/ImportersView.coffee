@@ -8,6 +8,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$scope.id = @$stateParams.id
       @$scope.busy = false
 
+      @$scope.$watch 'importer.logfile', (val) =>
+        @$scope.log_download_url = if val then @$http.formatApiUrl('/server/importers/'+@$scope.id+'/download-log') else null
+
       @$scope.$watch 'importer.status', (val) =>
         if val && 'testing' != val && 'done' != val
           @updateImportStatus = @$interval (=> @importGet()), 1000 if !@updateImportStatus

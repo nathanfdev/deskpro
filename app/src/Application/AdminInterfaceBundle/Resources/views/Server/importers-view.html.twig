@@ -222,10 +222,10 @@
 
                         <br/>
 
-                        <textarea class="form-control" readonly="readonly"
-                                  rows="10"
-                                  scroll-glue
-                                >{{ ng_var('importer.log') }}</textarea>
+                        <textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;" scroll-glue>{{ ng_var('importer.log') }}</textarea>
+                        <div ng-show="log_download_url" style="margin-top: 2px;">
+                          <a class="btn btn-default btn-xs" ng-href="{{ ng_var('log_download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log</a>
+                        </div>
 
                     </div>
 

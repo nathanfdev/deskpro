@@ -39,6 +39,9 @@ use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
 use Application\ImportBundle\Generator\Generator;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ImportersController extends AbstractController implements ProtectedControllerInterface
@@ -87,6 +90,29 @@ class ImportersController extends AbstractController implements ProtectedControl
         $importer = ImportProcessor::getImporter($id, $this->container);
 
         return $this->createJsonResponse($importer->getData());
+    }
+
+    /**
+     * @param $id
+     * @return BinaryFileResponse|Response
+     */
+    public function downloadLogAction($id)
+    {
+        $importer = ImportProcessor::getImporter($id, $this->container);
+
+        if (($logfile = $importer->getData('logfile')) && is_file($logfile) && is_readable($logfile)) {
+            $response = new BinaryFileResponse($logfile, 200);
+            $response->headers->set('Content-Type', 'text/plain');
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                'importlog.txt'
+            );
+            return $response;
+        } else {
+            $response = new Response($importer->getData('log'), 200);
+            $response->headers->set('Content-Type', 'text/plain');
+            return $response;
+        }
     }
 
     /**

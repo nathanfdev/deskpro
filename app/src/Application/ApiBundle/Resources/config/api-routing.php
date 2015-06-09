@@ -5012,6 +5012,15 @@ $collection->create(
 );
 
 $collection->create(
+    'api_server_importers_getlog',
+    array(
+        'path' => '/server/importers/{id}/download-log',
+        'controller' => 'ApiBundle:Importers:downloadLog',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
     'api_server_importers_save',
     array(
         'path' => '/server/importers/{id}',
