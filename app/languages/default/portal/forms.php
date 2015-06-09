@@ -1,0 +1,17 @@
+<?php return array(
+    'portal.forms.label_save' => 'Save Changes',
+    'portal.forms.label_submit' => 'Submit',
+    'portal.forms.label_email' => 'Email',
+    'portal.forms.label_name' => 'Name',
+    'portal.forms.label_first_name' => 'First Name',
+    'portal.forms.label_last_name' => 'Last Name',
+    'portal.forms.label_timezone' => 'Timezone',
+    'portal.forms.label_language' => 'Language',
+    'portal.forms.label_add_attachment' => 'Add Another Attachment',
+    'portal.forms.label_title' => 'Title',
+    'portal.forms.label_subject' => 'Subject',
+    'portal.forms.label_content' => 'Content',
+    'portal.forms.label_password' => 'Password',
+    'portal.forms.label_password_confirm' => 'Confirm',
+    'portal.forms.label_message' => 'Message',
+);

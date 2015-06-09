@@ -133,7 +133,7 @@ class FormFieldManager
     {
         list($type, $value_name, $options) = $this->getFormType($field, $agent_interface);
 
-        // custom fields are implemented as a compount type
+        // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
         // the real label will be on the parent form which is adding the field
         $options['label'] = false;

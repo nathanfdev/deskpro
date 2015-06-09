@@ -437,7 +437,7 @@ class TicketType extends AbstractType
     private function addSubject(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $options = array(
-            'label'       => 'Subject',
+            'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
@@ -476,7 +476,7 @@ class TicketType extends AbstractType
                 'deskpro_person_email_choice',
                 array(
                     'property_path' => 'ticket_person_email',
-                    'label' => 'Email',
+                    'label' => $this->phrase('portal.forms.label_email'),
                     'person' => $person
                 )
             );
@@ -503,7 +503,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'text', array(
             'property_path' => 'person.name',
-            'label'         => 'Name',
+            'label'         => $this->phrase('portal.forms.label_name'),
             'empty_data'    => $form_context->getPerson()->getName(),
         ));
     }
@@ -697,7 +697,7 @@ class TicketType extends AbstractType
             ));
             $form_context->getForm()->add('more_attachments', 'submit', array(
                 'validation_groups' => false,
-                'label'             => 'Add Another Attachment',
+                'label'             => $this->phrase('portal.forms.label_add_attachment'),
             ));
         }
     }
@@ -705,9 +705,9 @@ class TicketType extends AbstractType
     private function addSubmit(TicketFormContext $form_context)
     {
         if ($form_context->getVisibility() !== TicketFormContext::VISIBILITY_NEW) {
-            $label = 'Save Changes';
+            $label = $this->phrase('portal.forms.label_save');
         } else {
-            $label = 'Submit Ticket';
+            $label = $this->phrase('portal.forms.label_submit');
         }
         // TODO: add translation on $label
         $form_context->getForm()->add('submit', 'submit', array(
@@ -754,5 +754,10 @@ class TicketType extends AbstractType
     private function getSettingsBag(FormInterface $form)
     {
         return $form->getConfig()->getOption('settings');
+    }
+
+    private function phrase($name, array $vars = array())
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 }

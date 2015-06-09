@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -41,6 +42,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TicketReplyType extends AbstractType
 {
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(LanguageManager $language_manager)
+    {
+        $this->language_manager = $language_manager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('ticket_message', 'ticket_message', array(
@@ -61,11 +72,11 @@ class TicketReplyType extends AbstractType
 
         $builder->add('more_attachments', 'submit', array(
             'validation_groups' => false,
-            'label'             => 'Add Another Attachment',
+            'label'             => $this->language_manager->phrase('portal.forms.label_add_attachment'),
         ));
 
         $builder->add('submit', 'submit', array(
-            'label' => 'Submit Reply',
+            'label' => $this->language_manager->phrase('portal.forms.label_submit'),
         ));
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));

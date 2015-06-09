@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
@@ -48,15 +49,21 @@ class NewFeedbackType extends AbstractType
      */
     private $captcha_decider;
 
-    public function __construct(CaptchaDecider $captcha_decider)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
     {
         $this->captcha_decider = $captcha_decider;
+        $this->language_manager = $language_manager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text');
-        $builder->add('content', 'textarea');
+        $builder->add('title', 'text', array('label' => $this->phrase('portal.forms.label_title')));
+        $builder->add('content', 'textarea', array('label' => 'portal.forms.label_content'));
         $builder->add('category', 'feedback_category', array(
             'person' => $options['person'],
         ));
@@ -66,13 +73,14 @@ class NewFeedbackType extends AbstractType
         ));
         $builder->add('more_attachments', 'submit', array(
             'validation_groups' => false,
-            'label'             => 'Add Another Attachment',
+            'label'             => $this->phrase('portal.forms.label_add_attachment'),
         ));
 
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder->add('name', 'text', array(
                 'constraints'   => new Length(array('min' => 2)),
                 'property_path'                           => 'person.name',
+                'label' => $this->phrase('portal.forms.label_name')
             ));
             $builder->add('email', 'deskpro_person_email', array(
                 'label'         => false,
@@ -113,6 +121,11 @@ class NewFeedbackType extends AbstractType
                 )
             )
         ;
+    }
+
+    private function phrase($name, array $vars = array())
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 
     public function getName()

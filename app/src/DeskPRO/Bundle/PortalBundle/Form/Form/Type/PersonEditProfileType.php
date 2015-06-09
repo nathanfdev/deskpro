@@ -73,14 +73,15 @@ class PersonEditProfileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('first_name', 'text');
-        $builder->add('last_name', 'text');
+        $builder->add('first_name', 'text', array('label' => $this->phrase('portal.forms.label_first_name')));
+        $builder->add('last_name', 'text', array('label' => $this->phrase('portal.forms.label_last_name')));
 
-        $builder->add('timezone', 'timezone', array());
+        $builder->add('timezone', 'timezone', array('label' => $this->phrase('portal.forms.label_timezone')));
 
         if ($this->language_manager->isMultiLanguagePortal()) {
             $builder->add('language_id', 'deskpro_language', array(
                 'view_context' => 'user',
+                'label' => $this->phrase('portal.forms.label_language')
             ));
         }
 
@@ -166,6 +167,11 @@ class PersonEditProfileType extends AbstractType
                 'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
             )
         );
+    }
+
+    private function phrase($name, array $vars = array())
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 
     /**

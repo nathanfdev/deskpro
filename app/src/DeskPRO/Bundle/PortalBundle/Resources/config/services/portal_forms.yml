@@ -69,6 +69,7 @@ services:
 
   form.ticket_reply:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
+    arguments: [@language_manager]
     tags:
       - { name: form.type, alias: ticket_reply }
 
@@ -102,7 +103,7 @@ services:
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
-    arguments: [@captcha_decider]
+    arguments: [@captcha_decider, @language_manager]
     tags:
       - { name: form.type, alias: new_feedback }
 
@@ -167,6 +168,7 @@ services:
 
   form.ticket_message:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageType
+    arguments: [@language_manager]
     tags:
       - { name: form.type, alias: ticket_message }
 
