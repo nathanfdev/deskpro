@@ -4,6 +4,13 @@
     {% show breadcrumbs %}
   </div>
   <article class="news main-news">
+    <header class="section-header padded">
+      <div class="header-button-container">
+        <div class="header-buttons">
+          {% show rss_link %}
+        </div>
+      </div>
+    </header>
     {% show news_cats_tabs %}
     {% show news_list_full with { show_pager: true } %}
   </article>

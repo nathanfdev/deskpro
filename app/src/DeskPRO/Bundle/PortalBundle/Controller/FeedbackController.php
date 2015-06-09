@@ -82,6 +82,7 @@ class FeedbackController extends AbstractController
                 'page_title' => $this->createPageTitle()->feedback(),
             ));
         }
+        $rss_link = $this->generateUrl('portal_feedback', array('_format' => 'rss'));
 
         //
         // NEW FEEDBACK FORM
@@ -167,7 +168,8 @@ class FeedbackController extends AbstractController
                 'user'            => $this->getUser(),
                 'rerendering_saved'  => $rerendering_saved,
                 'breadcrumbs' => $breadcrumbs,
-                'page_title' => $this->createPageTitle()->feedback()
+                'page_title' => $this->createPageTitle()->feedback(),
+                'rss_link' => $rss_link
             )
         );
     }

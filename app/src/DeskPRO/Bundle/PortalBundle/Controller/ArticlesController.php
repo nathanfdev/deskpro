@@ -70,6 +70,10 @@ class ArticlesController extends AbstractController
                 'page_title' => $this->get('portal_view.page_title_generator')->kb()
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_kb',
+            array('_format' => 'rss')
+        );
 
         //
         // BREADCRUMBS
@@ -85,7 +89,8 @@ class ArticlesController extends AbstractController
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->get('portal_view.page_title_generator')->kb()
+                'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
+                'rss_link' => $rss_link
             )
         );
     }
@@ -116,6 +121,7 @@ class ArticlesController extends AbstractController
                 'page_title' => $this->get('portal_view.page_title_generator')->kb($category)
             ));
         }
+        $rss_link = $this->generateUrl('portal_kb_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
 
         //
         // BREADCRUMBS
@@ -156,7 +162,8 @@ class ArticlesController extends AbstractController
                 'is_subscribed'   => $is_subscribed,
                 'pager'           => $pager,
                 'count'           => $count,
-                'page'            => $page
+                'page'            => $page,
+                'rss_link'        => $rss_link
             )
         );
     }

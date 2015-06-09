@@ -5,14 +5,16 @@
         {% show breadcrumbs %}
     </div>
     <div class="downloads main-downloads">
-    <header class="section-header">
+    <header class="section-header padded">
         <h1>{{ phrase('portal.downloads.section-title') }}</h1>
 
         <p>
             {{ phrase('portal.downloads.section-desc') }}
         </p>
 
-        <a href="{{ path('portal_downloads', { _format: 'rss' }) }}">{{ phrase('portal.general.rss_subscribe') }} <i class="fa fa-rss"></i></a>
+        <div class="header-buttons">
+            {% show rss_link %}
+        </div>
     </header>
 
     {% show section download_cats_simple %}

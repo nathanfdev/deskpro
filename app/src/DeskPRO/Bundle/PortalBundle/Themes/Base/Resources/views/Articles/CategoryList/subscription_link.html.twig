@@ -1,5 +1,4 @@
 {% if brand_setting('user.kb_subscriptions') %}
-  <div class="header-buttons">
     <a href="{{ path('portal_kb_article_category_toggle_subscription', { slug: category.slug }) }}">
       {% if is_subscribed %}
         {{ phrase('portal.general.category-subscribed') }} |
@@ -8,5 +7,4 @@
         {{ phrase('portal.general.subscribe-to-category') }}
       {% endif %}
     </a>
-  </div>
 {% endif %}

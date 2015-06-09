@@ -7,7 +7,11 @@
     <div class="downloads browse-page">
     <header class="section-header padded">
         <h1>{{ category.title }}</h1>
-        {% show download_cat_subscription_link %}
+
+        <div class="header-buttons">
+            {% show rss_link %}
+            {% show download_cat_subscription_link %}
+        </div>
     </header>
     {% show download_cats_simple %}
     <div class="column-full">

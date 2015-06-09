@@ -5,17 +5,21 @@
         {% show breadcrumbs %}
     </div>
     <article class="feedback main-feedback">
-      <header class="section-header">
-          <h1>{{ phrase('portal.feedback.section-title') }}</h1>
-      </header>
+        <header class="section-header">
+            <h1>{{ phrase('portal.feedback.section-title') }}</h1>
+
+            <div class="header-buttons">
+                {% show rss_link %}
+            </div>
+        </header>
         <p>{{ phrase('portal.feedback.section-desc') }}</p>
 
-      {% if rerendering_saved %}
-          <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-      {% endif %}
-      {% show feedback_form %}
-      {% show feedback_filter_controls %}
-      {% show feedback_list_detail %}
+        {% if rerendering_saved %}
+            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+        {% endif %}
+        {% show feedback_form %}
+        {% show feedback_filter_controls %}
+        {% show feedback_list_detail %}
     </article>
-  {% show feedback_pager %}
+    {% show feedback_pager %}
 {% endblock inner_content %}

@@ -70,6 +70,10 @@ class NewsController extends AbstractController
                 'category' => null,
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_news',
+            array('_format' => 'rss')
+        );
 
         //
         // BREADCRUMBS
@@ -85,7 +89,8 @@ class NewsController extends AbstractController
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'page_title' => $this->createPageTitle()->news(),
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'rss_link' => $rss_link
             )
         );
     }
@@ -116,6 +121,10 @@ class NewsController extends AbstractController
                 'page_title' => $this->createPageTitle()->news($category),
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_news_browse',
+            array('slug' => $category->getSlug(), '_format' => 'rss')
+        );
 
         //
         // BREADCRUMBS
@@ -155,7 +164,8 @@ class NewsController extends AbstractController
                 'page'            => $page,
                 'count'           => $count,
                 'page_title' => $this->createPageTitle()->news($category),
-                'breadcrumbs' => $breadcrumbs
+                'breadcrumbs' => $breadcrumbs,
+                'rss_link' => $rss_link
             )
         );
     }

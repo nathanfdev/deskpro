@@ -71,6 +71,10 @@ class DownloadsController extends AbstractController
                 'page_title' => $this->createPageTitle()->downloads()
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_downloads',
+            array('_format' => 'rss')
+        );
 
         //
         // BREADCRUMBS
@@ -87,7 +91,8 @@ class DownloadsController extends AbstractController
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs' => $breadcrumbs,
                 'show_category_link' => true,
-                'page_title' => $this->createPageTitle()->downloads()
+                'page_title' => $this->createPageTitle()->downloads(),
+                'rss_link' => $rss_link
             )
         );
     }
@@ -118,6 +123,7 @@ class DownloadsController extends AbstractController
                 'page_title' => $this->createPageTitle()->downloads($category)
             ));
         }
+        $rss_link = $this->generateUrl('portal_downloads_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
 
         //
         // BREADCRUMBS
@@ -157,7 +163,8 @@ class DownloadsController extends AbstractController
                 'page' => $page,
                 'pager' => $pager,
                 'is_subscribed' => $is_subscribed,
-                'page_title' => $this->createPageTitle()->downloads($category)
+                'page_title' => $this->createPageTitle()->downloads($category),
+                'rss_link' => $rss_link
             )
         );
     }

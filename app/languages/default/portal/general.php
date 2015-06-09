@@ -48,7 +48,7 @@
     'portal.general.or' => 'or',
     'portal.general.delete_question' => 'Delete?',
     'portal.general.tags' => 'Tags',
-    'portal.general.rss_subscribe' => 'Subscribe to RSS Feed',
+    'portal.general.rss_subscribe' => 'RSS Feed',
     'portal.general.toggle_on' => 'on',
     'portal.general.toggle_off' => 'off',
     'portal.general.id' => 'ID',

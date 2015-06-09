@@ -8,7 +8,11 @@
   <div class="browse-page">
     <header class="section-header padded">
       <h1>{{ category.title }}</h1>
-      {% show kb_cat_subscription_link %}
+
+      <div class="header-buttons">
+        {% show rss_link %}
+        {% show kb_cat_subscription_link %}
+      </div>
     </header>
 
     {% show kb %}

@@ -170,6 +170,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         $this->updateSlug();
     }
 
+    /**
+     * @return string
+     * @deprecated use getSlug instead
+     */
     public function getUrlSlug()
     {
         return $this->id.'-'.Strings::slugifyTitle($this->title);
