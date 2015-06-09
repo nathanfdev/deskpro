@@ -1,9 +1,10 @@
-<div class="content-list-wrap simple as-articles {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
+<div class="content-list-wrap simple {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
     {% if pager|length %}
-        <ul class="content-list">
+        <ul>
             {% for item in pager %}
                 <li>
                     <span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.total_rating }}</span>
+                    <span class="text-tag">{{ item.status_category ?: item.status }}</span>
                     <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
                 </li>
             {% endfor %}

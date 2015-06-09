@@ -2862,14 +2862,14 @@ table {
 
 .file-pdf {
   background-color: #f44e4e;
-  background-image: url(../img/icon-pdf.png);
+  background-image: url("#{$portal-img-path}/icon-pdf.png");
   background-position: right center;
   background-repeat: no-repeat;
 }
 
 .file-zip {
   background-color: #b6b800;
-  background-image: url(../img/icon-zip.png);
+  background-image: url("#{$portal-img-path}/icon-zip.png");
   background-position: 30px center;
   background-repeat: no-repeat;
 }
