@@ -76,9 +76,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
             ->attach(new \Application\ImportBundle\Generator\Validator\News($validator))
             ->attach(new \Application\ImportBundle\Generator\Validator\Person($validator))
             ->attach(new \Application\ImportBundle\Generator\Validator\Ticket($validator));
-
-        $this->setHelpers($exporter);
-        $this->setHelpers($writer);
     }
 
     /**
@@ -180,6 +177,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExporter()
     {
+        $this->setHelpers($this->exporter);
         return $this->exporter;
     }
 
@@ -191,6 +189,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getWriter()
     {
+        $this->setHelpers($this->writer);
         return $this->writer;
     }
 

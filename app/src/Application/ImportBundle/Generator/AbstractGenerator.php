@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator;
 
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -103,6 +105,66 @@ abstract class AbstractGenerator
     {
         if ($this->logger) {
             $this->logger->info($message);
+        }
+    }
+
+    /**
+     * Log debug message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logDebug($message)
+    {
+        if ($this->logger) {
+            $this->logger->debug($message);
+        }
+    }
+
+    /**
+     * Logs a message with some array of data
+     *
+     * @param string $message
+     * @param mixed|array $info
+     */
+    protected function logDebugInfo($message, $info)
+    {
+        if ($this->logger) {
+            if ($message) {
+                $this->logger->debug($message);
+            }
+            if ($info) {
+                foreach (explode("\n", KernelErrorHandler::varToString($info, 3)) as $l) {
+                    $this->logger->debug("  [info] " . $l);
+                }
+            }
+        }
+    }
+
+    /**
+     * Logs debug message with exception and optionally array of data
+     *
+     * @param string $message
+     * @param \Exception $e
+     * @param mixed|array $info
+     */
+    protected function logDebugException($message, \Exception $e, $info = null)
+    {
+        if ($this->logger) {
+            if ($message) {
+                $this->logger->debug($message);
+            }
+
+            $einfo = KernelErrorHandler::getExceptionInfo($e);
+            $this->logger->debug($einfo['summary']);
+            foreach (explode("\n", $einfo['trace']) as $l) {
+                $this->logger->debug("  -> " . $l);
+            }
+
+            if ($info) {
+                foreach (explode("\n", KernelErrorHandler::varToString($info, 3)) as $l) {
+                    $this->logger->debug("  [info] " . $l);
+                }
+            }
         }
     }
 

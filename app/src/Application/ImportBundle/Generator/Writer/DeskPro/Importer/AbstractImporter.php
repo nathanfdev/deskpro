@@ -118,7 +118,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         if ($title) {
             $organization = $mapper->findOneByTitle($title, false);
             if ($organization) {
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Found existing organization `%d` with title `%s`',
                     $organization->getId(), $organization->getName()
                 ));
@@ -127,7 +127,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 $organization->setName($title);
 
                 $this->records->add($organization);
-                $this->logWarning(sprintf('Creating new organization `%s`', $organization->getName()));
+                $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
             }
         }
 

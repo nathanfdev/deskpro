@@ -123,13 +123,13 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
         if ($title) {
             $category = $this->getDownloadCategoryMapper()->findOneByTitle($title, false);
             if ($category) {
-                $this->logInfo(sprintf('Found existing download category `%s`', $category->getTitle()));
+                $this->logDebug(sprintf('Found existing download category `%s`', $category->getTitle()));
             } else {
                 $category = new DeskPROEntity\DownloadCategory();
                 $category->setRealTitle($title);
 
                 $this->records->add($category);
-                $this->logWarning(sprintf('New download category creating `%s`', $category->getTitle()));
+                $this->logInfo(sprintf('New download category creating `%s`', $category->getTitle()));
             }
         }
 

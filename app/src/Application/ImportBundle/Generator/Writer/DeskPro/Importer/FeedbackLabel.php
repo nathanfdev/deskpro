@@ -61,13 +61,13 @@ final class FeedbackLabel extends AbstractImporter
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
-                $this->logWarning(sprintf(
+                $this->logDebug(sprintf(
                     'Found an existing label `%s` for feedback with oid `%d` (Skipping)',
                     $label, $feedback->getId()
                 ));
             } else {
                 $feedback->addLabel($this->createFeedbackLabel($label));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Creating a new label `%s` for feedback with oid `%d`',
                     $label, $feedback->getId()
                 ));

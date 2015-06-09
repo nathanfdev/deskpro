@@ -110,7 +110,7 @@ final class DeskProWriter extends AbstractWriter
 
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
-                        $this->logInfo(sprintf('Flush `%s` entity', get_class($record)));
+                        $this->logDebug(sprintf('Flush `%s` entity', get_class($record)));
                     }
                 }
 

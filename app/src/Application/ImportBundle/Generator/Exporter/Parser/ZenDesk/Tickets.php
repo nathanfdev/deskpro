@@ -100,27 +100,21 @@ final class Tickets extends AbstractParser
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
+            $tid = @$ticket['id'] ?: '?';
 
             try {
                 $entity = $this->exportTicket($ticket);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    $this->logDebug(sprintf('[ZDTicket #%s] Entity `%s` parsed successfully', $tid, $entity->getDestination()));
                 } else {
-                    $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
+                    $this->logDebugInfo(sprintf("[ZDTicket #%s] Invalid ticket entity", $tid), $ticket);
+                    $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
                 }
 
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+            } catch (\Exception $e) {
+                $this->logDebugException(sprintf("Exception with ticket %d", $tid), $e, $ticket);
+                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid));
             }
         }
 
