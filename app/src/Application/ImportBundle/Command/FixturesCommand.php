@@ -75,7 +75,7 @@ class FixturesCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
         $logger = new Logger('exporter');
 
         $formatter = new ConsoleFormatter();

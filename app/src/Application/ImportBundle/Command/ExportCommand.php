@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use RuntimeException;
@@ -55,13 +56,20 @@ class ExportCommand extends AbstractGenerateCommand
     /**
      * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
-
-        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
+        $generator = $this->createGenerator($config, $logger);
 
+        $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function checkConfiguration(Generator\GeneratorConfig $config)
+    {
         if ($config->isDryRun() === false && ! $config->getOutputPath()) {
             throw new RuntimeException('Output path must be specified');
         }
@@ -73,21 +81,5 @@ class ExportCommand extends AbstractGenerateCommand
                 throw new RuntimeException('Output path must be different from input path');
             }
         }
-
-        $logger    = $this->createLogger($config, $output);
-        $generator = $this->createGenerator($config, $logger);
-
-        if ($config->isSilent()) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-        }
-
-        if ($config->getRetryWaitTimeout()) {
-            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
-
-            return;
-        }
-
-        $this->createAndSetProgressBar($generator, $output);
-        $this->generate($generator, $output, $logger);
     }
 }

@@ -96,9 +96,71 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'No progressbar'
-            );
-
+            )
+        ;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+
+        try {
+            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $logger = $this->createLogger($config, $output);
+
+            if ($config->isSilent()) {
+                $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            }
+            if ($config->getRetryWaitTimeout()) {
+                $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
+
+                return;
+            }
+
+            $this->doExecute($config, $logger, $input, $output);
+
+        } catch (\Exception $e) {
+            if (isset($logger)) {
+                $logger->critical($e->getMessage());
+                $logger->critical($e->getTraceAsString());
+            }
+            if (isset($config)) {
+                if ( ! $config->isVerbose() && ! isset($logger)) {
+                    $output->writeln($e->getMessage());
+                }
+
+                $output->writeln(sprintf(
+                    'An error has occurred while %s. Look at the log file `%s` to see details.',
+
+                    strtolower($config->getGenerationType()),
+                    $config->getLogPath()
+                ));
+            }
+        }
+    }
+
+    /**
+     * Checks generator configuration
+     *
+     * @param GeneratorConfig $config
+     * @throws RuntimeException
+     */
+    protected abstract function checkConfiguration(GeneratorConfig $config);
+
+    /**
+     * Executes command
+     *
+     * @param GeneratorConfig $config
+     * @param LoggerInterface $logger
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
+    protected abstract function doExecute(GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output);
 
     /**
      * Creates a new generator config instance
@@ -121,6 +183,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         foreach ($supported_types as $type) {
             $config->addEntityType($type);
         }
+
+        $this->checkConfiguration($config);
 
         return $config;
     }
