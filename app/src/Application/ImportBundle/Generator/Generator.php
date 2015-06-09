@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
-use Symfony\Component\Validator\Validator;
+use Symfony\Component\Validator\Validator as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
@@ -45,7 +45,7 @@ use Exception;
 final class Generator extends AbstractGenerator implements GeneratorInterface
 {
     /**
-     * @var AbstractExporter
+     * @var Exporter\ExporterInterface
      */
     private $exporter;
 
@@ -55,27 +55,36 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     private $validators;
 
     /**
-     * @var AbstractWriter
+     * @var Writer\WriterInterface
      */
     private $writer;
 
+    /**
+     * Constructor
+     *
+     * @param Exporter\ExporterInterface $exporter
+     * @param Writer\WriterInterface     $writer
+     * @param SymfonyValidator           $validator
+     * @param GeneratorConfig            $config
+     */
     public function __construct(
-        AbstractExporter $exporter,
-        AbstractWriter $writer = null,
-        Validator $validator,
-        GeneratorConfig $config
+        Exporter\ExporterInterface $exporter,
+        Writer\WriterInterface     $writer = null,
+        SymfonyValidator           $validator,
+        GeneratorConfig            $config
     ) {
-        $this->setConfig($config);
-        $this->exporter = $exporter;
-        $this->writer = $writer;
-        $this->validators = new \Application\ImportBundle\Generator\Validator\Collection();
+        $this->config     = $config;
+        $this->exporter   = $exporter;
+        $this->writer     = $writer;
+        $this->validators = new Validator\Collection();
         $this->validators
-            ->attach(new \Application\ImportBundle\Generator\Validator\Download($validator))
-            ->attach(new \Application\ImportBundle\Generator\Validator\Feedback($validator))
-            ->attach(new \Application\ImportBundle\Generator\Validator\Articles($validator))
-            ->attach(new \Application\ImportBundle\Generator\Validator\News($validator))
-            ->attach(new \Application\ImportBundle\Generator\Validator\Person($validator))
-            ->attach(new \Application\ImportBundle\Generator\Validator\Ticket($validator));
+            ->attach(new Validator\Download($validator))
+            ->attach(new Validator\Feedback($validator))
+            ->attach(new Validator\Articles($validator))
+            ->attach(new Validator\News($validator))
+            ->attach(new Validator\Person($validator))
+            ->attach(new Validator\Ticket($validator))
+        ;
     }
 
     /**

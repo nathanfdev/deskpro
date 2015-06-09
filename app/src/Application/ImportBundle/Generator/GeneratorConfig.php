@@ -147,16 +147,18 @@ class GeneratorConfig
     }
 
     /**
+     * @param ContainerInterface $container
+     *
      * @return AbstractExporterFactory
      * @throws Exception
      */
     public function getExporterFactory(ContainerInterface $container)
     {
         $factories = array(
-            ExporterInterface::TYPE_CSV => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
-            ExporterInterface::TYPE_JSON => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
+            ExporterInterface::TYPE_CSV       => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
+            ExporterInterface::TYPE_JSON      => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
             ExporterInterface::TYPE_OS_TICKET => 'Application\ImportBundle\Generator\Exporter\OsTicketFactory',
-            ExporterInterface::TYPE_ZENDESK => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
+            ExporterInterface::TYPE_ZENDESK   => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
         );
 
         if (!isset($factories[$this->exporter_type])) {
@@ -168,6 +170,7 @@ class GeneratorConfig
 
     /**
      * @param ContainerInterface $container
+     *
      * @return AbstractWriterFactory
      * @throws Exception
      */
@@ -175,7 +178,7 @@ class GeneratorConfig
     {
         $factories = array(
             WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPro\DeskProWriterFactory',
-            WriterInterface::TYPE_JSON => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
+            WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
         );
 
         if (!$this->writer_type) {
@@ -237,7 +240,7 @@ class GeneratorConfig
             }
             if ($this->exporter_type !== $config->getExporterType()) {
                 throw new Exception(sprintf(
-                    'Unable to set batch config up, it is supposed to be `%s`, `%s` given',
+                    'Unable to set up batch config, it is supposed to be `%s`, `%s` given',
                     $this->exporter_type, $config->getExporterType()
                 ));
             }
@@ -549,9 +552,11 @@ class GeneratorConfig
 
     /**
      * @param BaseConfig $reader_config
+     * @return $this
      */
     public function setReaderConfig(BaseConfig $reader_config)
     {
         $this->reader_config = $reader_config;
+        return $this;
     }
 }

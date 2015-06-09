@@ -127,15 +127,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $this->doExecute($config, $logger, $input, $output);
 
         } catch (\Exception $e) {
+            $output->writeln($e->getMessage());
+
             if (isset($logger)) {
                 $logger->critical($e->getMessage());
                 $logger->critical($e->getTraceAsString());
             }
             if (isset($config)) {
-                if ( ! $config->isVerbose() && ! isset($logger)) {
-                    $output->writeln($e->getMessage());
-                }
-
                 $output->writeln(sprintf(
                     'An error has occurred while %s. Look at the log file `%s` to see details.',
 
@@ -299,6 +297,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function setBatchConfigByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         $batch_config_file = null;
+        $config->setExporterBatchConfig(null);
 
         // Tries to get batch.json from output or input path
         if ($config->getBatchFilePath()) {
@@ -380,7 +379,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this->getContainer()->set('deskpro.import.config', $config);
 
         /** @var Generator\Generator $generator */
-        $generator = $this->getContainer()->get('deskpro.import.generator');
+        $generator = Generator\GeneratorFactory::createGenerator($this->getContainer());
         $generator->setLogger($logger);
 
         return $generator;

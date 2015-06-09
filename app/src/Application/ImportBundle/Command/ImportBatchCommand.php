@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
+use Application\ImportBundle\Reader\Json\JsonConfig;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,8 +61,8 @@ class ImportBatchCommand extends AbstractGenerateCommand
     {
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
-        $generator    = $this->createGenerator($config, $logger);
-        $progress_bar = $this->createAndSetProgressBar($generator, $output);
+        $generator = $this->createGenerator($config, $logger);
+        $this->createAndSetProgressBar($generator, $output);
 
         // Export data
         $success = $this->generate($generator, $output, $logger);
@@ -69,15 +70,18 @@ class ImportBatchCommand extends AbstractGenerateCommand
             $config
                 ->setInputPath($config->getOutputPath())
                 ->setOutputPath(null)
-                ->setExporterBatchConfig(null)
                 ->setExporterType(Generator\Exporter\ExporterInterface::TYPE_JSON)
-                ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
+                ->setReaderConfig(new JsonConfig($config->getInputPath()))
+                ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO)
+            ;
 
             $this->setBatchConfigByInputInterface($config, $input);
-
-            if ($progress_bar) {
-                $progress_bar->start();
+            if ( ! $config->getExporterBatchConfig()) {
+                $config->setExporterBatchConfig(new Generator\Exporter\Parser\Json\BatchConfig());
             }
+
+            $generator = $this->createGenerator($config, $logger);
+            $this->createAndSetProgressBar($generator, $output);
 
             // Import data
             $this->generate($generator, $output, $logger);
