@@ -265,6 +265,8 @@ class NewsController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($post, $visitor_id, $person);
         }
 
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
     }
 
@@ -280,10 +282,10 @@ class NewsController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedContent($post, $person)) {
             $subscriptions_helper->unsubscribeFromContent($post, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this news article.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToContent($post, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this news article. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_subscribe'));
         }
 
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
@@ -301,10 +303,10 @@ class NewsController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
             $subscriptions_helper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToCategory($category, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_subscribe'));
         }
 
         return $this->redirectToRoute('portal_news_browse', array('slug' => $category->getSlug()));
@@ -318,7 +320,7 @@ class NewsController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('news', $this->getUser());
 
-        $this->addFlash('success', 'Unsubscribed from all News subscriptions');
+        $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_index');
     }

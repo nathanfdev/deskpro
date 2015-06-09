@@ -160,4 +160,19 @@ class LanguageManager
 
         return $this->translate;
     }
+
+    /**
+     * Shortcut method to use the existing brand stack language to fetch a phrase from the Translator.
+     *
+     * Optionally, you can provide the $lang to use.
+     *
+     * @param $name
+     * @param array $vars
+     * @param Language|null $lang
+     * @return string
+     */
+    public function phrase($name, array $vars = array(), Language $lang = null)
+    {
+        return $this->getTranslator($lang)->phrase($name, $vars);
+    }
 }

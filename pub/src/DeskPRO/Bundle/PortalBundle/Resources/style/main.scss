@@ -3904,6 +3904,48 @@ ul.kb-checkbox-extra {
   }
 }
 
+.flashes {
+
+  .flash {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin-bottom: 10px;
+    padding: 0.75em 1em;
+    padding-right: 50px;
+    border-radius: 2px;
+    background: darken($page-background, 6%);
+    color: $text-color;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9em;
+
+    strong {
+      color: $text-color-darker;
+    }
+
+    i {
+      position: absolute;
+      top: 36%;
+      right: 20px;
+      color: $text-color-lighter;
+    }
+  }
+
+  .flash-success {
+    border-bottom: 1px solid darken($button-color-secondary, 20%);
+    background: $button-color-secondary;
+    color: #ffffff;
+  }
+
+  .flash-error {
+    border-bottom: 1px solid darken($red, 20%);
+    background: $red;
+    color: #ffffff;
+  }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // News

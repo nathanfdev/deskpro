@@ -325,6 +325,8 @@ class FeedbackController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($item, $visitor_id, $person);
         }
 
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
         return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
     }
 

@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Language;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -322,5 +323,19 @@ class AbstractController extends BaseController
     protected function getPersonFactory()
     {
         return $this->get('person_factory');
+    }
+
+    /**
+     * Leave language null unless you need a specific lang. The user's lang should already be in the
+     * LanguageStack.
+     *
+     * @param $phrase
+     * @param array $vars
+     * @param Language $lang
+     * @return string
+     */
+    protected function phrase($phrase, array $vars = array(), Language $lang = null)
+    {
+        return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
 }

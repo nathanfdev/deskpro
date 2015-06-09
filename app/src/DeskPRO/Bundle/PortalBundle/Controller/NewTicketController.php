@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -112,7 +113,7 @@ class NewTicketController extends AbstractController
 
                     $ticket = $this->saveNewTicket($ticket, $person);
 
-                    $this->addFlash('success', 'created.ticket.phrase.here');
+                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
                     if (!$person->isUser()) { // not a user, redirect home
                         return $this->redirectToRoute('portal_index');

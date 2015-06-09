@@ -139,7 +139,7 @@ class TicketsController extends AbstractController
                 // TODO: fire an event (Ticket::ADD_MESSAGE)
                 $this->getRepo('DeskPRO:Ticket')->saveNewMessage($ticket, $message);
 
-                $this->addFlash('success', 'ticket.successful_new_reply.translated');
+                $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
 
                 return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }
@@ -190,7 +190,7 @@ class TicketsController extends AbstractController
                 $this->getEm()->persist($ticket);
                 $this->getEm()->flush($ticket);
 
-                $this->addFlash('success', 'updated.ticket.translated');
+                $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
 
                 return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }

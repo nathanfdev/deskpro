@@ -56,7 +56,7 @@ class ProfileController extends AbstractController
         if ($form->isValid()) {
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
-            $this->addFlash('success', 'thank.you.for.registering');
+            $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
             $request->getSession()->set('last_username', $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : '');
 
             return $this->redirectToRoute('portal_login');
@@ -86,7 +86,7 @@ class ProfileController extends AbstractController
             if ($proposed_new_primary_email->getPerson()->getId() == $this->getUser()->getId()) {
                 $this->getUser()->setPrimaryEmail($proposed_new_primary_email);
                 $this->getEm()->flush();
-                $this->addFlash('success', 'updated.primary.email');
+                $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
 
                 return $this->redirectToRoute('portal_user_profile');
             }
@@ -99,7 +99,7 @@ class ProfileController extends AbstractController
                     $this->getUser()->removeEmail($proposed_email_removal);
                     $this->getEm()->remove($proposed_email_removal);
                     $this->getEm()->flush();
-                    $this->addFlash('success', 'removed.email');
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_removed_an_email', array('email' => $proposed_email_removal->email)));
 
                     return $this->redirectToRoute('portal_user_profile');
                 }
@@ -113,7 +113,7 @@ class ProfileController extends AbstractController
         $profile_form->handleRequest($request);
         if ($profile_form->isValid()) {
             $this->getEm()->flush();
-            $this->addFlash('success', 'success.updated.profile.phrase');
+            $this->addFlash('success', $this->phrase('portal.flashes.user_updated_profile'));
 
             return $this->redirectToRoute('portal_user_profile');
         }
@@ -125,7 +125,7 @@ class ProfileController extends AbstractController
         $emails_form->handleRequest($request);
         if ($emails_form->isValid()) {
             $this->getEm()->flush();
-            $this->addFlash('success', 'success.updated.emails.phrase');
+            $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
 
             return $this->redirectToRoute('portal_user_profile');
         }
@@ -137,7 +137,7 @@ class ProfileController extends AbstractController
         $password_form->handleRequest($request);
         if ($password_form->isValid()) {
             $this->getEm()->flush();
-            $this->addFlash('success', 'success.changed.password.phrase');
+            $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
 
             return $this->redirectToRoute('portal_user_profile');
         }

@@ -241,6 +241,8 @@ class ArticlesController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
         }
 
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
         return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
     }
 
@@ -256,10 +258,10 @@ class ArticlesController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedContent($article, $person)) {
             $subscriptions_helper->unsubscribeFromContent($article, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this article.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToContent($article, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this article. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_subscribe'));
         }
 
         return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
@@ -277,10 +279,10 @@ class ArticlesController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
             $subscriptions_helper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToCategory($category, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
         }
 
         return $this->redirectToRoute('portal_kb_browse', array('slug' => $category->getSlug()));
@@ -294,7 +296,7 @@ class ArticlesController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('kb', $this->getUser());
 
-        $this->addFlash('success', 'Unsubscribed from all Knowledgebase subscriptions');
+        $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_index');
     }
