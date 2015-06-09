@@ -142,7 +142,8 @@ class DownloadsController extends AbstractController
         //
         // PAGER
         //
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, 1);
+        $count = $this->getBrandSetting('portal.per_page_content');
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, $count);
 
         //
         // RENDER THEME
@@ -152,6 +153,8 @@ class DownloadsController extends AbstractController
             array(
                 'category' => $category,
                 'breadcrumbs' => $breadcrumbs,
+                'count' => $count,
+                'page' => $page,
                 'pager' => $pager,
                 'is_subscribed' => $is_subscribed,
                 'page_title' => $this->createPageTitle()->downloads($category)

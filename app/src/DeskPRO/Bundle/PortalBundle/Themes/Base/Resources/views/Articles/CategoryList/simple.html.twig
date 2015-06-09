@@ -1,5 +1,5 @@
 {% if pager|length > 0 %}
-  <ul class="categories-article-list">
+  <ul class="kb-simple-articles">
     {% for article in pager %}
       <li>
         <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">

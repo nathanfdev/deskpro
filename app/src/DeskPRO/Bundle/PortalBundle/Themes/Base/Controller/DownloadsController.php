@@ -46,6 +46,7 @@ class DownloadsController extends AbstractController
 {
     /**
      * @Tag(name="download_cats", default_options={"style":"detail"}, esi=true)
+     * @Tag(name="download_cats_detail", default_options={"style":"detail"}, esi=true)
      * @Tag(name="download_cats_simple", default_options={"style":"simple"}, esi=true)
      * @TagHttpCache()
      *

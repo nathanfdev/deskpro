@@ -154,7 +154,9 @@ class ArticlesController extends AbstractController
                 'breadcrumbs'     => $breadcrumbs,
                 'page_title'      => $this->get('portal_view.page_title_generator')->kb($category),
                 'is_subscribed'   => $is_subscribed,
-                'pager'           => $pager
+                'pager'           => $pager,
+                'count'           => $count,
+                'page'            => $page
             )
         );
     }

@@ -132,10 +132,16 @@ class CommonController extends AbstractController
         $related_content_finder = new RelatedContentFinder($this->getUser() ?: new PersonGuest(), $content);
         $related_content        = $related_content_finder->getRelatedEntities();
 
+        $count = 0;
+        foreach ($related_content as $type => $related) {
+            $count += count($related);
+        }
+
         return $this->render('Theme:Common:related_content.html.twig', array(
             'content_type'    => $content_type,
             'content_id'      => $content_id,
             'content'         => $content,
+            'related_count'   => $count,
             'related_content' => $related_content,
         ));
     }

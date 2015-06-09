@@ -1,3 +1,4 @@
+{% import 'Theme::icons.html.twig' as icons %}
 <div class="content-list-wrap simple as-articles {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
   {% if pager|length %}
     <ul class="content-list">
@@ -14,8 +15,7 @@
   {% if show_category_link %}
     <div class="list-meta">
       <a href="{{ category ? path('portal_kb_browse', { slug: category.slug }) : path('portal_kb') }}">
-        {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}
-        <i class="fa fa-caret-right"></i>
+        {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}{{ icons.view_more() }}
       </a>
     </div>
   {% endif %}

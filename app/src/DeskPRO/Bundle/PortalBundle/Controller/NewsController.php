@@ -140,9 +140,8 @@ class NewsController extends AbstractController
         //
         // PAGER
         //
-        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $this->getBrandSetting(
-            'portal.per_page_content'
-        ));
+        $count = $this->getBrandSetting('portal.per_page_content');
+        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count);
 
         //
         // RENDER THEME
@@ -153,6 +152,8 @@ class NewsController extends AbstractController
                 'category'        => $category,
                 'is_subscribed'   => $is_subscribed,
                 'pager'           => $pager,
+                'page'            => $page,
+                'count'           => $count,
                 'page_title' => $this->createPageTitle()->news($category),
                 'breadcrumbs' => $breadcrumbs
             )

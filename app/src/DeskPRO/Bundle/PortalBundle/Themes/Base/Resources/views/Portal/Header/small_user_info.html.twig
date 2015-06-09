@@ -10,7 +10,7 @@
   </li>
 {% else %}
   <li class="welcome">
-    {{ phrase('portal.account.welcome-back') }} {{ app.user.name }}
+    {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
     &middot; <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
     {% if ticket_count %}
       &middot; <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>

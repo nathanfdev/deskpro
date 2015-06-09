@@ -37,7 +37,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class PortalExtension extends \Twig_Extension
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 
@@ -78,7 +78,7 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('brand', array($this, 'getBrand')),
             new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
             new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html')))
         );
     }
 
