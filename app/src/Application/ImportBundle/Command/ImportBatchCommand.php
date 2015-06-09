@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Command;
 use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Exception;
+use RuntimeException;
 
 /**
  * Importing batch command
@@ -63,14 +63,14 @@ class ImportBatchCommand extends AbstractGenerateCommand
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
         if ($config->isDryRun() === false && ! $config->getOutputPath()) {
-            throw new Exception('Output path must be specified');
+            throw new RuntimeException('Output path must be specified');
         }
         if ($config->needInputPath()) {
             if ( ! $config->getInputPath()) {
-                throw new Exception('Input path must be specified');
+                throw new RuntimeException('Input path must be specified');
             }
             if ($config->getInputPath() === $config->getOutputPath()) {
-                throw new Exception('Output path must be different from input path');
+                throw new RuntimeException('Output path must be different from input path');
             }
         }
         if ($config->isSilent()) {

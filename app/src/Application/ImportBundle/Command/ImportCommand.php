@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Command;
 use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Exception;
+use RuntimeException;
 
 /**
  * Import command
@@ -63,10 +63,10 @@ class ImportCommand extends AbstractGenerateCommand
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
 
         if ($config->needInputPath() && ! $config->getInputPath()) {
-            throw new Exception('Input path must be specified');
+            throw new RuntimeException('Input path must be specified');
         }
         if ($config->isBatchExporter() && ! $config->getOutputPath() && ! $config->getInputPath()) {
-            throw new Exception(sprintf(
+            throw new RuntimeException(sprintf(
                 'Output or input path must be specified for batch exporter `%s`',
                 $config->getExporterType()
             ));

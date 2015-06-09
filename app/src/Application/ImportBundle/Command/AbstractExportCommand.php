@@ -48,7 +48,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Orb\Util\OptionsArray;
 use Psr\Log\LoggerInterface;
-use Exception;
+use RuntimeException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
 
@@ -108,7 +108,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param array          $supported_types
      *
      * @return GeneratorConfig
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function createGeneratorConfig(InputInterface $input, array $supported_types)
     {
@@ -161,14 +161,14 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         if ($input->hasArgument('script')) {
             $config->setExporterType($input->getArgument('script'));
         } else {
-            throw new Exception('Source type argument is not defined');
+            throw new RuntimeException('Source type argument is not defined');
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
@@ -188,6 +188,18 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             case ExporterInterface::TYPE_OS_TICKET:
                 $readerConfig = OsTicketReaderFactory::getDefaultConfig();
                 break;
+            default:
+                throw new RuntimeException(sprintf(
+                    'Unknown source type `%s`, expected: (%s)',
+
+                    $config->getExporterType(),
+                    implode(', ', array(
+                        ExporterInterface::TYPE_CSV,
+                        ExporterInterface::TYPE_JSON,
+                        ExporterInterface::TYPE_OS_TICKET,
+                        ExporterInterface::TYPE_ZENDESK,
+                    ))
+                ));
         }
 
         $config->setReaderConfig($readerConfig);
@@ -214,7 +226,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function setBatchConfigByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
@@ -298,9 +310,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         /** @var Generator\Generator $generator */
         $this->getContainer()->set('deskpro.import.config', $config);
+
+        /** @var Generator\Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
-        $generator
-            ->setLogger($logger);
+        $generator->setLogger($logger);
 
         return $generator;
     }

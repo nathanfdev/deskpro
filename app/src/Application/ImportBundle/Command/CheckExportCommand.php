@@ -27,11 +27,10 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Application\ImportBundle\Generator;
-use Exception;
+use RuntimeException;
 
 /**
  * Check export command
@@ -62,7 +61,7 @@ class CheckExportCommand extends AbstractExportCommand
 
         $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
         if ($config->needInputPath() &&  ! $config->getInputPath()) {
-            throw new Exception('Input path must be specified');
+            throw new RuntimeException('Input path must be specified');
         }
         if ($config->isSilent()) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);

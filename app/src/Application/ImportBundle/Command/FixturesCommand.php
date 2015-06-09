@@ -50,20 +50,22 @@ class FixturesCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('dpdev:import:fixtures');
-        $this->setHelp('Import bundle fixtures');
-        $this->addOption(
-            'type',
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Exporter type'
-        );
-        $this->addOption(
-            'offset',
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Offset'
-        );
+        $this
+            ->setName('dpdev:import:fixtures')
+            ->setHelp('Import bundle fixtures')
+            ->addOption(
+                'type',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Exporter type'
+            )
+            ->addOption(
+                'offset',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Offset'
+            )
+        ;
 
         parent::configure();
     }
