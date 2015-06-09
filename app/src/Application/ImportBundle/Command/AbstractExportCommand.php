@@ -66,7 +66,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->addArgument('script', InputArgument::REQUIRED, 'The target script to use')
+            ->addArgument(
+                'script',
+                InputArgument::REQUIRED,
+                'The target script to use'
+            )
             ->addOption(
                 'input-path',
                 null,
