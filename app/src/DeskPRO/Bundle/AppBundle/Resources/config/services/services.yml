@@ -1,4 +1,8 @@
 services:
+
+  deskpro_config:
+    class: DeskPRO\Bundle\AppBundle\Config\DeskproConfigService
+
   blob.storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
