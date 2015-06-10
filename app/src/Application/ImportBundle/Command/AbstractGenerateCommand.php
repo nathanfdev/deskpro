@@ -53,6 +53,7 @@ abstract class AbstractGenerateCommand extends AbstractExportCommand
     {
         try {
             $generator->generate();
+
             $output->writeln('');
             $output->writeln(sprintf(
                 'Done. %s was successful. Look at the log file `%s` to see details.',

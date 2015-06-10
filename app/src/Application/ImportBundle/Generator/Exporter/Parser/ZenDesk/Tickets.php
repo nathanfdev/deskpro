@@ -49,6 +49,7 @@ final class Tickets extends AbstractParser
     const STATUS_HOLD     = 'hold';
     const STATUS_SOLVED   = 'solved';
     const STATUS_CLOSED   = 'closed';
+    const STATUS_DELETED  = 'deleted';
 
     const PRIORITY_URGENT = 'urgent';
     const PRIORITY_HIGH   = 'high';
@@ -99,27 +100,21 @@ final class Tickets extends AbstractParser
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
+            $tid = @$ticket['id'] ?: '?';
 
             try {
                 $entity = $this->exportTicket($ticket);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    $this->logDebug(sprintf('[ZDTicket #%s] Entity `%s` parsed successfully', $tid, $entity->getDestination()));
                 } else {
-                    $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
+                    $this->logDebugInfo(sprintf("[ZDTicket #%s] Invalid ticket entity", $tid), $ticket);
+                    $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
                 }
 
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid ticket record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+            } catch (\Exception $e) {
+                $this->logDebugException(sprintf("Exception with ticket %d", $tid), $e, $ticket);
+                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid));
             }
         }
 
@@ -293,6 +288,7 @@ final class Tickets extends AbstractParser
             self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
+            self::STATUS_DELETED => DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
         );
 
         if (isset($map[$status])) {

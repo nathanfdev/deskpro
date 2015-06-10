@@ -76,7 +76,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function getReaderConfig($record_type)
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        /** @var CsvConfig $config */
+        $base = $this->reader->getConfig();
+        $config = clone $base;
+        $config->setResource($base->getResource().'/'.$record_type);
+
+        return $config;
     }
 
     /**

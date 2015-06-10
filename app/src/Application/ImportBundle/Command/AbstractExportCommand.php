@@ -31,6 +31,10 @@ use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Csv\CsvConfig;
+use Application\ImportBundle\Reader\Json\JsonConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -44,7 +48,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Orb\Util\OptionsArray;
 use Psr\Log\LoggerInterface;
-use Exception;
+use RuntimeException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
 
@@ -62,7 +66,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->addArgument('script', InputArgument::REQUIRED, 'The target script to use')
+            ->addArgument(
+                'script',
+                InputArgument::REQUIRED,
+                'The target script to use'
+            )
             ->addOption(
                 'input-path',
                 null,
@@ -92,9 +100,69 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'No progressbar'
-            );
-
+            )
+        ;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+
+        try {
+            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $logger = $this->createLogger($config, $output);
+
+            if ($config->isSilent()) {
+                $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            }
+            if ($config->getRetryWaitTimeout()) {
+                $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
+
+                return;
+            }
+
+            $this->doExecute($config, $logger, $input, $output);
+
+        } catch (\Exception $e) {
+            $output->writeln($e->getMessage());
+
+            if (isset($logger)) {
+                $logger->critical($e->getMessage());
+                $logger->critical($e->getTraceAsString());
+            }
+            if (isset($config)) {
+                $output->writeln(sprintf(
+                    'An error has occurred while %s. Look at the log file `%s` to see details.',
+
+                    strtolower($config->getGenerationType()),
+                    $config->getLogPath()
+                ));
+            }
+        }
+    }
+
+    /**
+     * Checks generator configuration
+     *
+     * @param GeneratorConfig $config
+     * @throws RuntimeException
+     */
+    protected abstract function checkConfiguration(GeneratorConfig $config);
+
+    /**
+     * Executes command
+     *
+     * @param GeneratorConfig $config
+     * @param LoggerInterface $logger
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
+    protected abstract function doExecute(GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output);
 
     /**
      * Creates a new generator config instance
@@ -104,7 +172,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param array          $supported_types
      *
      * @return GeneratorConfig
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function createGeneratorConfig(InputInterface $input, array $supported_types)
     {
@@ -117,6 +185,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         foreach ($supported_types as $type) {
             $config->addEntityType($type);
         }
+
+        $this->checkConfiguration($config);
 
         return $config;
     }
@@ -157,32 +227,50 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         if ($input->hasArgument('script')) {
             $config->setExporterType($input->getArgument('script'));
         } else {
-            throw new Exception('Source type argument is not defined');
+            throw new RuntimeException('Source type argument is not defined');
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
-        if ($input->hasOption('input-path')) {
-            if ($input->getOption('input-path')) {
-                $config->setInputPath(rtrim($input->getOption('input-path'), "\\/") . "/");
-            } else {
-                switch ($config->getExporterType()) {
-                    case ExporterInterface::TYPE_CSV:
-                        throw new Exception('You must supply an "input-path" argument while using CSV exporter');
-                    case ExporterInterface::TYPE_JSON:
-                        throw new Exception('You must supply an "input-path" argument while using JSON exporter');
-                }
-            }
+        switch ($config->getExporterType()) {
+            case ExporterInterface::TYPE_CSV:
+                $readerConfig = new CsvConfig($input->getOption('input-path'));
+                break;
+            case ExporterInterface::TYPE_JSON:
+                $readerConfig = new JsonConfig($input->getOption('input-path'));
+                break;
+            case ExporterInterface::TYPE_ZENDESK:
+                $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
+                break;
+            case ExporterInterface::TYPE_OS_TICKET:
+                $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                break;
+            default:
+                throw new RuntimeException(sprintf(
+                    'Unknown source type `%s`, expected: (%s)',
+
+                    $config->getExporterType(),
+                    implode(', ', array(
+                        ExporterInterface::TYPE_CSV,
+                        ExporterInterface::TYPE_JSON,
+                        ExporterInterface::TYPE_OS_TICKET,
+                        ExporterInterface::TYPE_ZENDESK,
+                    ))
+                ));
         }
+
+        $config->setReaderConfig($readerConfig);
+        // back compatibility
+        $config->setInputPath($input->getOption('input-path'));
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
@@ -204,11 +292,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function setBatchConfigByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         $batch_config_file = null;
+        $config->setExporterBatchConfig(null);
 
         // Tries to get batch.json from output or input path
         if ($config->getBatchFilePath()) {
@@ -287,10 +376,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function createGenerator(GeneratorConfig $config, LoggerInterface $logger)
     {
         /** @var Generator\Generator $generator */
-        $generator = $this->getContainer()->get('deskpro.import.generator');
-        $generator
-            ->setConfig($config)
-            ->setLogger($logger);
+        $this->getContainer()->set('deskpro.import.config', $config);
+
+        /** @var Generator\Generator $generator */
+        $generator = Generator\GeneratorFactory::createGenerator($this->getContainer());
+        $generator->setLogger($logger);
 
         return $generator;
     }

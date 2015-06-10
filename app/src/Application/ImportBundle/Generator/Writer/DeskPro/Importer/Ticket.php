@@ -84,7 +84,7 @@ final class Ticket extends AbstractImporter
 
         $ticket = $this->manager->createTicket();
         if ($ticket->getRef() !== $entity->getRef()) {
-            $this->logWarning(sprintf(
+            $this->logNotice(sprintf(
                 'Ticket ref with oid `%d` was changed, old ref `%s`, new ref `%s`',
                 $entity->getOid(), $entity->getRef(), $ticket->getRef()
             ));
@@ -110,7 +110,6 @@ final class Ticket extends AbstractImporter
             ->resetLabels();
 
         if ($entity->getAgentEmail()) {
-            $this->logInfo(sprintf('Ticket has agent `%s`', $entity->getAgentEmail()));
             $ticket->setAgentId($this->getPersonMapper()->findOneByEmail($entity->getAgentEmail())->getId());
         }
         foreach ($entity->getMessages() as $message) {
@@ -209,7 +208,7 @@ final class Ticket extends AbstractImporter
         if ($title) {
             $department = $this->getTicketDepartmentMapper()->findOneByTitle($title, false);
             if ($department) {
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Found existing department `%d` with title `%s`',
                     $department->getId(), $department->getTitle()
                 ));
@@ -218,7 +217,7 @@ final class Ticket extends AbstractImporter
                 $department->setRealTitle($title);
 
                 $this->records->add($department);
-                $this->logWarning(sprintf('New department creating `%s`', $department->getTitle()));
+                $this->logNotice(sprintf('New department creating `%s`', $department->getTitle()));
             }
         }
 
@@ -240,7 +239,7 @@ final class Ticket extends AbstractImporter
         if ($entity) {
             $priority = $this->getTicketPriorityMapper()->findOneByTitle($entity->getTitle(), false);
             if ($priority) {
-                $this->logInfo(sprintf('Found existing ticket priority `%s`', $priority->getTitle()));
+                $this->logDebug(sprintf('Found existing ticket priority `%s`', $priority->getTitle()));
             } else {
                 $priority = new DeskPROEntity\TicketPriority();
                 $priority
@@ -248,7 +247,7 @@ final class Ticket extends AbstractImporter
                     ->setPriority($entity->getValue());
 
                 $this->records->add($priority);
-                $this->logWarning(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
+                $this->logNotice(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
             }
         }
 
@@ -270,13 +269,13 @@ final class Ticket extends AbstractImporter
         if ($title) {
             $category = $this->getTicketCategoryMapper()->findOneByTitle($title, false);
             if ($category) {
-                $this->logInfo(sprintf('Found existing ticket category `%s`', $category->getTitle()));
+                $this->logDebug(sprintf('Found existing ticket category `%s`', $category->getTitle()));
             } else {
                 $category = new DeskPROEntity\TicketCategory();
                 $category->setRealTitle($title);
 
                 $this->records->add($category);
-                $this->logWarning(sprintf('New ticket category creating `%s`', $category->getTitle()));
+                $this->logInfo(sprintf('New ticket category creating `%s`', $category->getTitle()));
             }
         }
 

@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Zendesk\API\Client;
 use Exception;
 use DateTime;
@@ -55,7 +58,33 @@ class ZenDeskReaderFactory
                 new Request\RequestClientAdapter($client)
             ),
 
-            $config->getInitialTime()
+            $config
+        );
+    }
+
+    /**
+     * @param ZenDeskConfig $config
+     * @return ZenDeskReader
+     */
+    static public function createReader(ZenDeskConfig $config)
+    {
+        $client = self::createClient($config);
+        $logger = new Logger('zendesk');
+
+        $formatter = new LineFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+
+        $handler = new StreamHandler(dp_get_log_dir() . '/export_zendesk.log');
+        $handler->setFormatter($formatter);
+
+        $logger->pushHandler($handler);
+
+        return new ZenDeskReader(
+            new Request\RequestCacheAdapter(
+                new Request\RequestClientAdapter($client, $logger)
+            ),
+
+            $config
         );
     }
 
@@ -100,7 +129,7 @@ class ZenDeskReaderFactory
      * @return ZenDeskConfig
      * @throws Exception
      */
-    private static function getZenDeskConfig()
+    public static function getZenDeskConfig()
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {

@@ -48,7 +48,7 @@ final class Collection extends AbstractCollection implements TypeOrderInterface
      */
     public function attach(ExporterInterface $exporter)
     {
-        $this->collection[$exporter->getType()] = $exporter;
+        $this->collection[$exporter::getType()] = $exporter;
         return $this;
     }
 

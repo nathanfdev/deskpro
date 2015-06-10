@@ -25,9 +25,9 @@ $CONFIG = array();
 $CONFIG['OPTIONS'] = array(
     'java_path'       => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
     'yui_compressor'  => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
-    'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/local/bin/node',
-    'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/lib/node_modules/less/bin/lessc',
-    'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+    'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
+    'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
+    'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
 );
 
 if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {

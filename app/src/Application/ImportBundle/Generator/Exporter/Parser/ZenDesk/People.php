@@ -88,28 +88,22 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
+            $pid = @$person['id'] ?: '?';
 
             try {
                 $entity = $this->exportPerson($person);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    $this->logDebug(sprintf('[ZDUser #%s] Entity `%s` parsed successfully', $pid, $entity->getDestination()));
 
                 } else {
-                    $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
+                    $this->logDebugInfo(sprintf("[ZDUser #%s] Invalid user entity", $pid), $person);
+                    $this->logWarning(sprintf('[ZDUser #%s] Invalid user record found (Skipping): Could not create entity', $pid));
                 }
 
-            } catch (NoColumnException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid person record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
-
-            } catch (NotArrayException $e) {
-                $this->logWarning(sprintf(
-                    'Invalid person record `%d` found (Skipping): %s',
-                    $num, $e->getMessage()
-                ));
+            } catch (\Exception $e) {
+                $this->logDebugException(sprintf("[ZDUser #%s] Exception with user", $pid), $e, $person);
+                $this->logWarning(sprintf('[ZDUser #%s] Invalid user record found (Skipping): %s', $pid, $e->getMessage()));
             }
         }
 

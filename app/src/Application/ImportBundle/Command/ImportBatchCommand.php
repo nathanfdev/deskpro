@@ -28,9 +28,11 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
+use Application\ImportBundle\Reader\Json\JsonConfig;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Exception;
+use RuntimeException;
 
 /**
  * Importing batch command
@@ -55,38 +57,12 @@ class ImportBatchCommand extends AbstractGenerateCommand
     /**
      * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
-
-        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
-        if ($config->isDryRun() === false && ! $config->getOutputPath()) {
-            throw new Exception('Output path must be specified');
-        }
-        if ($config->needInputPath()) {
-            if ( ! $config->getInputPath()) {
-                throw new Exception('Input path must be specified');
-            }
-            if ($config->getInputPath() === $config->getOutputPath()) {
-                throw new Exception('Output path must be different from input path');
-            }
-        }
-        if ($config->isSilent()) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-        }
-
-        $logger    = $this->createLogger($config, $output);
         $generator = $this->createGenerator($config, $logger);
-
-        if ($config->getRetryWaitTimeout()) {
-            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
-
-            return;
-        }
-
-        $progress_bar = $this->createAndSetProgressBar($generator, $output);
+        $this->createAndSetProgressBar($generator, $output);
 
         // Export data
         $success = $this->generate($generator, $output, $logger);
@@ -94,18 +70,39 @@ class ImportBatchCommand extends AbstractGenerateCommand
             $config
                 ->setInputPath($config->getOutputPath())
                 ->setOutputPath(null)
-                ->setExporterBatchConfig(null)
                 ->setExporterType(Generator\Exporter\ExporterInterface::TYPE_JSON)
-                ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
+                ->setReaderConfig(new JsonConfig($config->getInputPath()))
+                ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO)
+            ;
 
             $this->setBatchConfigByInputInterface($config, $input);
-
-            if ($progress_bar) {
-                $progress_bar->start();
+            if ( ! $config->getExporterBatchConfig()) {
+                $config->setExporterBatchConfig(new Generator\Exporter\Parser\Json\BatchConfig());
             }
+
+            $generator = $this->createGenerator($config, $logger);
+            $this->createAndSetProgressBar($generator, $output);
 
             // Import data
             $this->generate($generator, $output, $logger);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function checkConfiguration(Generator\GeneratorConfig $config)
+    {
+        if ($config->isDryRun() === false && ! $config->getOutputPath()) {
+            throw new RuntimeException('Output path must be specified');
+        }
+        if ($config->needInputPath()) {
+            if ( ! $config->getInputPath()) {
+                throw new RuntimeException('Input path must be specified');
+            }
+            if ($config->getInputPath() === $config->getOutputPath()) {
+                throw new RuntimeException('Output path must be different from input path');
+            }
         }
     }
 }

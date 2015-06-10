@@ -28,7 +28,11 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Validator;
+use Application\ImportBundle\Generator\Exporter\AbstractExporter;
+use Application\ImportBundle\Generator\Validator\ExceptionCollection;
+use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
+use Symfony\Component\Validator\Validator as SymfonyValidator;
+use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
 /**
@@ -41,35 +45,46 @@ use Exception;
 final class Generator extends AbstractGenerator implements GeneratorInterface
 {
     /**
-     * @var Exporter\Collection
+     * @var Exporter\ExporterInterface
      */
-    private $exporters;
+    private $exporter;
 
     /**
-     * @var Validator\Collection
+     * @var \Application\ImportBundle\Generator\Validator\Collection
      */
     private $validators;
 
     /**
-     * @var Writer\Collection
+     * @var Writer\WriterInterface
      */
-    private $writers;
+    private $writer;
 
     /**
      * Constructor
      *
-     * @param Exporter\Collection  $exporters
-     * @param Validator\Collection $validators
-     * @param Writer\Collection    $writers
+     * @param Exporter\ExporterInterface $exporter
+     * @param Writer\WriterInterface     $writer
+     * @param SymfonyValidator           $validator
+     * @param GeneratorConfig            $config
      */
     public function __construct(
-        Exporter\Collection  $exporters,
-        Validator\Collection $validators,
-        Writer\Collection    $writers
+        Exporter\ExporterInterface $exporter,
+        Writer\WriterInterface     $writer = null,
+        SymfonyValidator           $validator,
+        GeneratorConfig            $config
     ) {
-        $this->exporters  = $exporters;
-        $this->validators = $validators;
-        $this->writers    = $writers;
+        $this->config     = $config;
+        $this->exporter   = $exporter;
+        $this->writer     = $writer;
+        $this->validators = new Validator\Collection();
+        $this->validators
+            ->attach(new Validator\Download($validator))
+            ->attach(new Validator\Feedback($validator))
+            ->attach(new Validator\Articles($validator))
+            ->attach(new Validator\News($validator))
+            ->attach(new Validator\Person($validator))
+            ->attach(new Validator\Ticket($validator))
+        ;
     }
 
     /**
@@ -151,7 +166,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
     public function validate()
     {
         $exporter   = $this->getExporter();
-        $exceptions = new Validator\ExceptionCollection();
+        $exceptions = new ExceptionCollection();
 
         foreach ($this->config->getEntityTypes() as $type) {
             $this->exporterLogHeader($type);
@@ -171,25 +186,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExporter()
     {
-        if ( ! $this->config) {
-            throw new Exception('Generator configuration is not defined');
-        }
-
-        $exporter = $this->exporters->getByType($this->config->getExporterType());
-
-        if ($exporter instanceof Exporter\LazyExporter) {
-            $exporter = $exporter->initialize();
-        }
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            if ( ! $this->config->getExporterBatchConfig()) {
-                $this->config->setExporterBatchConfig($exporter->getDefaultBatchConfig());
-            }
-        }
-
-        $this->setHelpers($exporter);
-        $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
-
-        return $exporter;
+        $this->setHelpers($this->exporter);
+        return $this->exporter;
     }
 
     /**
@@ -200,16 +198,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getWriter()
     {
-        if ( ! $this->config) {
-            throw new Exception('Generator configuration is not defined');
-        }
-
-        $writer = $this->writers->getByType($this->config->getWriterType());
-
-        $this->setHelpers($writer);
-        $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
-
-        return $writer;
+        $this->setHelpers($this->writer);
+        return $this->writer;
     }
 
     /**
@@ -239,11 +229,11 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      * @param string            $type
      * @param Entity\Collection $collection
      *
-     * @return Validator\ExceptionCollection
+     * @return ExceptionCollection
      */
     private function validateExportingCollection($type, Entity\Collection $collection)
     {
-        $exceptions = new Validator\ExceptionCollection();
+        $exceptions = new ExceptionCollection();
         $validators = $this->validators->getByRecordType($type);
 
         foreach ($collection as $entity) {
@@ -254,7 +244,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
                     /** @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
 
-                } catch (Validator\ValidatorExceptionInterface $e) {
+                } catch (ValidatorExceptionInterface $e) {
                     $exceptions->attach($e);
                 }
             }
@@ -297,7 +287,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getRequiredExportersOrderedEntityTypes()
     {
-        return $this->getRequiredOrderedEntityTypes($this->exporters);
+        return $this->getRequiredOrderedEntityTypes(AbstractExporter::getOrderedTypes());
     }
 
     /**
@@ -308,31 +298,35 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getRequiredWritersOrderedEntityTypes()
     {
-        return $this->getRequiredOrderedEntityTypes($this->writers);
+        return $this->getRequiredOrderedEntityTypes(AbstractWriter::getOrderedTypes());
     }
 
     /**
      * Returns a list of ordered entity types
      * Writers and exporters need different entities foreach order
      *
-     * @param TypeOrderInterface $handlers
-     *
-     * @return string[]
+     * @param array $types
+     * @return array
      * @throws Exception
      */
-    private function getRequiredOrderedEntityTypes(TypeOrderInterface $handlers)
+    private function getRequiredOrderedEntityTypes(array $types)
     {
         if ( ! $this->config) {
             throw new Exception('Generator configuration is not defined');
         }
 
-        $types = array();
-        foreach ($handlers->getOrderedTypes() as $type) {
+        $_types = array();
+        foreach ($types as $type) {
             if ($this->config->hasEntityType($type)) {
-                $types[] = $type;
+                $_types[] = $type;
             }
         }
 
-        return $types;
+        return $_types;
+    }
+
+    public function isReady()
+    {
+        return $this->getExporter()->isReady();
     }
 }

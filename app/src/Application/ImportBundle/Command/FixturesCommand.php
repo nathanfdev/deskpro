@@ -50,20 +50,22 @@ class FixturesCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('dpdev:import:fixtures');
-        $this->setHelp('Import bundle fixtures');
-        $this->addOption(
-            'type',
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Exporter type'
-        );
-        $this->addOption(
-            'offset',
-            null,
-            InputOption::VALUE_REQUIRED,
-            'Offset'
-        );
+        $this
+            ->setName('dpdev:import:fixtures')
+            ->setHelp('Import bundle fixtures')
+            ->addOption(
+                'type',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Exporter type'
+            )
+            ->addOption(
+                'offset',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Offset'
+            )
+        ;
 
         parent::configure();
     }
@@ -73,7 +75,7 @@ class FixturesCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
         $logger = new Logger('exporter');
 
         $formatter = new ConsoleFormatter();
@@ -85,7 +87,7 @@ class FixturesCommand extends ContainerAwareCommand
         $logger->pushHandler($handler);
 
         /** @var ZenDesk\Fixtures\Collection $fixtures */
-        $fixtures = $this->getContainer()->get('deskpro.import.zen_desk_fixtures');
+        $fixtures = ZenDesk\ZenDeskReaderFactory::createFixturesByDeskproConfig();
         $fixture  = $fixtures
             ->getByType($input->getOption('type'))
             ->setLogger($logger);

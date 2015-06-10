@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
 use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Psr\Log\LoggerInterface;
 use Zendesk\API;
 
 /**
@@ -45,13 +46,20 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private $client;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
-     * @param API\Client $client
+     * @param API\Client      $client
+     * @param LoggerInterface $logger
      */
-    public function __construct(API\Client $client)
+    public function __construct(API\Client $client, LoggerInterface $logger = null)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     /**
@@ -99,29 +107,33 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private function doRequest(ClientHelper\ClientHelperInterface $request)
     {
         try {
-            return $request->request($this->client);
+            $response = $request->request($this->client);
+
+            if ($this->logger && $response) {
+                $this->logger->debug(@json_encode($response));
+            }
+
+            return $response;
 
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
                 $debug = $this->client->getDebug();
 
                 switch ($debug->lastResponseCode) {
-                    // Handle HTTP 429 Too Many Requests response
+                    case ZenDeskReaderInterface::CODE_UNAUTHORIZED:
+                        throw new \RuntimeException('Unable to connect, check ZenDesk exporter credentials', $e->getCode(), $e);
                     case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
                         throw new RetryAfterException(
                             $e->getMessage(),
                             RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders)
                         );
+
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
 
                         break;
 
                     default:
-                        var_dump($e->getCode());
-                        var_dump($e->getMessage());
-                        var_dump($this->client->getDebug());
-
                         throw $e;
                 }
             }

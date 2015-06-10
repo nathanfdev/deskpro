@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\BaseReader;
 use Zendesk\API;
 use DateTime;
 
@@ -40,7 +41,7 @@ use DateTime;
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskReader implements ZenDeskReaderInterface
+class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
 {
     /**
      * @var Request\RequestAdapterInterface
@@ -56,12 +57,13 @@ class ZenDeskReader implements ZenDeskReaderInterface
      * Constructor
      *
      * @param Request\RequestAdapterInterface $adapter
-     * @param DateTime                        $initial_time
+     * @param ZenDeskConfig                   $config
      */
-    public function __construct(Request\RequestAdapterInterface $adapter, DateTime $initial_time)
+    public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
+        parent::__construct($config);
         $this->adapter      = $adapter;
-        $this->initial_time = $initial_time;
+        $this->initial_time = $config->getInitialTime();
     }
 
     /**
@@ -225,5 +227,13 @@ class ZenDeskReader implements ZenDeskReaderInterface
         }
 
         return 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReady()
+    {
+        return null !== $this->getPeopleCount();
     }
 }

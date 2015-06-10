@@ -4864,6 +4864,15 @@ $collection->create('api_blobs_get', array(
     'methods'      => array('GET'),
 ));
 
+$collection->create(
+    'api_blobs_delete',
+    array(
+        'path' => '/blobs/{id}/{auth}',
+        'controller' => 'ApiBundle:Blobs:delete',
+        'methods' => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # My
 ########################################################################################################################
@@ -4988,5 +4997,63 @@ $collection->create('api_reset_demo_status', array(
     'controller'  => 'ApiBundle:ResetDemo:status',
     'methods'     => array('GET'),
 ));
+
+##############################################################################################
+# Importers
+##############################################################################################
+
+$collection->create(
+    'api_server_importers_list',
+    array(
+        'path' => '/server/importers',
+        'controller' => 'ApiBundle:Importers:list',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_get',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:get',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_getlog',
+    array(
+        'path' => '/server/importers/{id}/download-log',
+        'controller' => 'ApiBundle:Importers:downloadLog',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_save',
+    array(
+        'path' => '/server/importers/{id}',
+        'controller' => 'ApiBundle:Importers:save',
+        'methods' => array('PUT'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_test',
+    array(
+        'path' => '/server/importers/{id}/test',
+        'controller' => 'ApiBundle:Importers:test',
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_server_importers_start',
+    array(
+        'path' => '/server/importers/{id}/start',
+        'controller' => 'ApiBundle:Importers:start',
+        'methods' => array('GET'),
+    )
+);
 
 return $collection;
