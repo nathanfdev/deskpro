@@ -16,9 +16,9 @@
     'adm.settings.reset_demo_titles_departments'            => 'Reset departments',
     'adm.settings.reset_demo_titles_perms'                  => 'Reset permissions',
     'adm.settings.reset_demo_titles_kb'                     => 'Purge KB',
-    'adm.settings.reset_demo_titles_news'                   => 'Purge news',
-    'adm.settings.reset_demo_titles_downloads'              => 'Purge downloads',
-    'adm.settings.reset_demo_titles_feedback'               => 'Purge feedback',
+    'adm.settings.reset_demo_titles_news'                   => 'Purge News',
+    'adm.settings.reset_demo_titles_downloads'              => 'Purge Downloads',
+    'adm.settings.reset_demo_titles_feedback'               => 'Purge Feedback',
     'adm.settings.reset_demo_titles_labels'                 => 'Purge labels',
     'adm.settings.reset_demo_titles_snippets'               => 'Purge snippets and macros',
     'adm.settings.reset_demo_titles_settings'               => 'Reset settings',
@@ -42,6 +42,6 @@
     'adm.settings.reset_demo_descriptions_labels'           => 'Delete all labels throughout helpdesk.',
     'adm.settings.reset_demo_descriptions_snippets'         => 'Delete all snippets and macros.',
     'adm.settings.reset_demo_descriptions_settings'         => 'Reset helpdesk settings to default state.',
-    'adm.settings.reset_demo_descriptions_apps'             => 'Uninstall every DeskPRO app.',
+    'adm.settings.reset_demo_descriptions_apps'             => 'Uninstall every DeskPRO app (including Gravatar).',
 
 );
