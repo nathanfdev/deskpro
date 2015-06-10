@@ -484,47 +484,49 @@ define [
     loadDataOptions: ->
       if !@loadDataPromise
         @loadDataPromise = @Api.sendDataGet({
-          'agents':          '/agents',
-          'agent_teams':     '/agent_teams',
-          'ticket_deps':     '/ticket_deps',
-          'ticket_cats':     '/ticket_cats',
-          'ticket_prods':    '/ticket_prods',
-          'ticket_pris':     '/ticket_pris',
-          'ticket_works':    '/ticket_works',
-          'ticket_fields':   '/ticket_fields',
-          'user_fields':     '/user_fields',
-          'org_fields':      '/org_fields',
-          'ticket_slas':     '/ticket_slas',
-          'ticket_accounts': '/email_accounts',
-          'usergroups':      '/user_groups',
-          'langs':           '/langs',
-          'email_tpls':      '/email-templates-info'
-          'api_keys':        '/api_keys'
-          'ticket_settings': '/ticket_settings'
-          'contextual_fields':'/custom_fields'
-          'jira_settings'    :'/apps/jira'
+          agents:             '/agents'
+          agent_teams:        '/agent_teams'
+          ticket_deps:        '/ticket_deps'
+          ticket_cats:        '/ticket_cats'
+          ticket_prods:       '/ticket_prods'
+          ticket_pris:        '/ticket_pris'
+          ticket_works:       '/ticket_works'
+          ticket_fields:      '/ticket_fields'
+          ticket_labels:      '/labels/definitions/tickets'
+          user_fields:        '/user_fields'
+          org_fields:         '/org_fields'
+          ticket_slas:        '/ticket_slas'
+          ticket_accounts:    '/email_accounts'
+          usergroups:         '/user_groups'
+          langs:              '/langs'
+          email_tpls:         '/email-templates-info'
+          api_keys:           '/api_keys'
+          ticket_settings:    '/ticket_settings'
+          contextual_fields:  '/custom_fields'
+          jira_settings    :  '/apps/jira'
         }).then( (result) =>
           data = result.data
           options_data = {}
-          options_data['agents']           = data.agents.agents
-          options_data['agent_teams']      = data.agent_teams.agent_teams
-          options_data['ticket_deps']      = data.ticket_deps.departments
-          options_data['ticket_cats']      = data.ticket_cats.categories
-          options_data['ticket_pris']      = data.ticket_pris.priorities
-          options_data['ticket_works']     = data.ticket_works.workflows
-          options_data['ticket_prods']     = data.ticket_prods?.products
-          options_data['ticket_fields']    = data.ticket_fields?.custom_fields
-          options_data['org_fields']       = data.org_fields?.custom_fields
-          options_data['user_fields']      = data.user_fields?.custom_fields
-          options_data['ticket_slas']      = data.ticket_slas?.slas
-          options_data['email_accounts']   = data.ticket_accounts.email_accounts
-          options_data['usergroups']       = data.usergroups.groups
-          options_data['langs']            = data.langs?.languages
-          options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
-          options_data['api_keys']         = data.api_keys.api_keys
-          options_data['ticket_settings']  = data.ticket_settings?.ticket_settings
-          options_data['contextual_fields']= data.contextual_fields
-          options_data['jira_settings']    = data.jira_settings
+          options_data['agents']            = data.agents.agents
+          options_data['agent_teams']       = data.agent_teams.agent_teams
+          options_data['ticket_deps']       = data.ticket_deps.departments
+          options_data['ticket_cats']       = data.ticket_cats.categories
+          options_data['ticket_pris']       = data.ticket_pris.priorities
+          options_data['ticket_works']      = data.ticket_works.workflows
+          options_data['ticket_prods']      = data.ticket_prods?.products
+          options_data['ticket_fields']     = data.ticket_fields?.custom_fields
+          options_data['org_fields']        = data.org_fields?.custom_fields
+          options_data['user_fields']       = data.user_fields?.custom_fields
+          options_data['ticket_slas']       = data.ticket_slas?.slas
+          options_data['email_accounts']    = data.ticket_accounts.email_accounts
+          options_data['usergroups']        = data.usergroups.groups
+          options_data['langs']             = data.langs?.languages
+          options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates
+          options_data['api_keys']          = data.api_keys.api_keys
+          options_data['ticket_settings']   = data.ticket_settings?.ticket_settings
+          options_data['contextual_fields'] = data.contextual_fields
+          options_data['jira_settings']     = data.jira_settings
+          options_data['ticket_labels']     = data.ticket_labels
           @options_data = options_data
 
           if @options_data?.ticket_fields
@@ -735,8 +737,11 @@ define [
       options.propName = 'labels'
       options.type_title = 'Labels'
       options.tags = true
+      options.options = []
+      @options_data.ticket_labels.map (def) ->
+        options.options.push {title: def.label, value: def.label}
       options.operators = ['contains', 'notcontains']
-      def = @getStandardInput(options)
+      def = @getStandardSelect(options)
       return def
 
     getCheckSlaStatus: (options = {}) ->

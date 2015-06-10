@@ -47,9 +47,9 @@ class LabelsController extends AbstractController implements ProtectedController
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-    public function listDefinitionsAction()
+    public function listDefinitionsAction($type = null)
     {
-        return $this->createApiResponse($this->rep()->getAllDefinitions());
+        return $this->createApiResponse($type ? $this->rep()->getDefinitionsByType($type) : $this->rep()->getAllDefinitions());
     }
 
     ####################################################################################################################

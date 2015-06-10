@@ -102,9 +102,10 @@ $collection->create('api_docs_get', array(
 ########################################################################################################################
 
 $collection->create('api_labels_definitions', array(
-    'path'          => '/labels/definitions',
+    'path'          => '/labels/definitions/{type}',
     'controller'    => 'ApiBundle:Labels:listDefinitions',
     'methods'       => array('GET'),
+    'defaults'      => array('type' => null),
 ));
 
 $collection->create('api_labels_definitions_create', array(
