@@ -16,3 +16,10 @@ services:
 
   translator.noop:
       class: DeskPRO\Bundle\AppBundle\Translator\NoopTranslator
+
+  monolog.handler.deskpro:
+    class: DeskPRO\Bundle\AppBundle\Logging\DeskproFilesystemHandler
+    arguments:
+      - @deskpro_config
+      - %kernel.name%
+      - %kernel.environment%

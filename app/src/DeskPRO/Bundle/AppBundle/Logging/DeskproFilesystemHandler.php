@@ -31,36 +31,32 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Config;
+namespace DeskPRO\Bundle\AppBundle\Logging;
 
+
+use DeskPRO\Bundle\AppBundle\Config\DeskproConfigService;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-/**
- * This is meant to be used in the container as a way of using expressions to get at some of our dynamic config
- * methods in config files.
- */
-class DeskproConfigService
+class DeskproFilesystemHandler extends StreamHandler
 {
-    public function getDataDir()
+    public function __construct(
+        DeskproConfigService $dp_config,
+        $kernel_name,
+        $kernel_environment
+    )
     {
-        return dp_get_data_dir();
-    }
+        $filename = $dp_config->getLogDir()
+            . DIRECTORY_SEPARATOR
+            . $kernel_name
+            . '-'
+            . $kernel_environment
+            . '.log'
+        ;
 
-    public function getLogDir()
-    {
-        return dp_get_log_dir();
-    }
-
-    public function getLogLevel()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level'])) {
-            $log_level = $DP_CONFIG['log_level'];
-        } else {
-            $log_level = Logger::ERROR;
-        }
-
-        return $log_level;
+        parent::__construct(
+            $filename,
+            $dp_config->getLogLevel()
+        );
     }
 }
