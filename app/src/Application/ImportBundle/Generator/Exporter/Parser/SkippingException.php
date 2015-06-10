@@ -25,81 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
-
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Exception;
-use DateTime;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
- * Abstract zenDesk parser
- *
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Class SkippingException
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+final class SkippingException extends \RuntimeException
 {
-    /**
-     * @var ZenDeskReaderInterface
-     */
-    protected $reader;
 
-    /**
-     * @var DateTime
-     */
-    protected $end_time;
-
-    /**
-     * Constructor
-     *
-     * @param ZenDeskReaderInterface $reader
-     */
-    public function __construct(ZenDeskReaderInterface $reader)
-    {
-        $this->reader = $reader;
-    }
-
-    /**
-     * Returns batch config
-     *
-     * @return BatchConfig
-     * @throws Exception
-     */
-    protected function getBatchConfig()
-    {
-        if ($this->config->getExporterBatchConfig()) {
-            return $this->config->getExporterBatchConfig();
-        }
-
-        throw new Exception('Batch config is not defined');
-    }
-
-    /**
-     * Returns a person organization name
-     *
-     * @param int $id
-     * @return null
-     */
-    protected function getOrganizationName($id)
-    {
-        $organization = null;
-        if ($id) {
-            $organization = $this->reader->getOrganizationById($id);
-            if ($organization) {
-                return $organization['name'];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns current end time
-     *
-     * @return DateTime
-     */
-    public function getCurrentEndTime()
-    {
-        return $this->end_time;
-    }
 }

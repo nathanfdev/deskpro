@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -149,25 +147,6 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             }
 
             return $entity;
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns a person organization name
-     *
-     * @param int $id
-     * @return null
-     */
-    private function getOrganizationName($id)
-    {
-        $organization = null;
-        if ($id) {
-            $organization = $this->reader->getOrganizationById($id);
-            if ($organization) {
-                return $organization['name'];
-            }
         }
 
         return null;

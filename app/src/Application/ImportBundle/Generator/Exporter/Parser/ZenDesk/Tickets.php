@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
@@ -110,9 +111,12 @@ final class Tickets extends AbstractParser
                     $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
                 }
 
+            } catch (SkippingException $e) {
+                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): %s', $tid, $e->getMessage()));
+
             } catch (\Exception $e) {
                 $this->logDebugException(sprintf("Exception with ticket %d", $tid), $e, $ticket);
-                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid));
+                $this->logError(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Unknown error: %s', $tid, $e->getMessage()));
             }
         }
 
@@ -125,13 +129,17 @@ final class Tickets extends AbstractParser
      * @param array $ticket
      *
      * @return Entity\Ticket
-     * @throws Exception
+     * @throws SkippingException
      */
     private function exportTicket(array $ticket)
     {
         if ($this->isTicketValid($ticket)) {
             $person_email = $this->tickets_people->getPersonEmail($ticket['submitter_id']);
             $agent_email  = $this->tickets_people->getPersonEmail($ticket['assignee_id']);
+
+            if ( ! $person_email) {
+                throw new SkippingException(sprintf('Unable to get submitter email by id %s', $ticket['submitter_id']));
+            }
 
             $entity = new Entity\Ticket();
             $entity
@@ -140,11 +148,13 @@ final class Tickets extends AbstractParser
                 ->setRef($ticket['id'])
                 ->setPersonEmail($person_email)
                 ->setAgentEmail($agent_email)
-                ->setSubject($ticket['subject'])
+                ->setSubject($ticket['subject'] ? : 'No subject')
                 ->setStatus($this->getStatus($ticket['status']))
+                ->setOrganization($this->getOrganizationName($ticket['organization_id']))
                 ->setPriority($this->exportPriority($ticket['priority']))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
-                ->addMessage($this->exportMessage($ticket, $person_email));
+                ->addMessage($this->exportMessage($ticket, $person_email))
+            ;
 
             switch ($ticket['status']) {
                 case self::STATUS_HOLD:
@@ -259,6 +269,7 @@ final class Tickets extends AbstractParser
             'description',
             'status',
             'priority',
+            'organization_id',
             'created_at',
             'custom_fields',
             'tags',
