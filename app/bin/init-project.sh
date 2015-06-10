@@ -23,11 +23,12 @@ echo ".. done"
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/web
-npm install --save
-bower install --config.interactive=false --allow-root
+npm install
+
+npm run-script bower-install
 echo ".. done"
 
 echo ">> Building web assets"
-gulp prod
+npm run-script gulp-prod
 echo ".. done"
 echo
