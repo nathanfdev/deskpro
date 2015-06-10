@@ -106,12 +106,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
                 $debug = $this->client->getDebug();
 
                 switch ($debug->lastResponseCode) {
-                    // Handle HTTP 429 Too Many Requests response
+                    case ZenDeskReaderInterface::CODE_UNAUTHORIZED:
+                        throw new \RuntimeException('Unable to connect, check ZenDesk exporter credentials', $e->getCode(), $e);
                     case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
                         throw new RetryAfterException(
                             $e->getMessage(),
                             RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders)
                         );
+
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
 
