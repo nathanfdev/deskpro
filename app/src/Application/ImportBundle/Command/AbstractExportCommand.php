@@ -346,6 +346,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($config->getLogPath()) {
             $formatter = new LineFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
+            $formatter->allowInlineLineBreaks(true);
 
             $handler = new StreamHandler($config->getLogPath());
             $handler->setFormatter($formatter);

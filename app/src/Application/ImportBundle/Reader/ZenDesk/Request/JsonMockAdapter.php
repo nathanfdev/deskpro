@@ -27,40 +27,65 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
-use Application\ImportBundle\Reader\ZenDesk\RetryAfterException;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
-use Psr\Log\LoggerInterface;
-use Zendesk\API;
 use RuntimeException;
 
 /**
- * ZenDesk API request adapter via ZenDesk client vendor
- *
- * Class RequestClientAdapter
+ * Class JsonMockAdapter
  * @package Application\ImportBundle\Reader\ZenDesk\Request
  */
-final class RequestClientAdapter implements RequestAdapterInterface
+class JsonMockAdapter implements RequestAdapterInterface
 {
     /**
-     * @var API\Client
+     * @var array
      */
-    private $client;
+    private $responses = array();
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Constructor
+     * Stores a people incremental export response
      *
-     * @param API\Client      $client
-     * @param LoggerInterface $logger
+     * @param string|array $response
+     * @return $this
      */
-    public function __construct(API\Client $client, LoggerInterface $logger = null)
+    public function addPeopleIncrementalExportResponse($response)
     {
-        $this->client = $client;
-        $this->logger = $logger;
+        $this->addResponse('people_incremental_export', $response);
+        return $this;
+    }
+
+    /**
+     * Stores a people find response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addPeopleFindResponse($response)
+    {
+        $this->addResponse('people_find', $response);
+        return $this;
+    }
+
+    /**
+     * Stores a organization find response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addOrganizationFindResponse($response)
+    {
+        $this->addResponse('organization_find', $response);
+        return $this;
+    }
+
+    /**
+     * Stores a ticket incremental export response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addTicketsIncrementalExportResponse($response)
+    {
+        $this->addResponse('tickets_incremental_export', $response);
+        return $this;
     }
 
     /**
@@ -68,7 +93,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doPeopleIncrementalExportRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\PeopleIncrementalExport($params));
+        return $this->getResponse('people_incremental_export', $params);
     }
 
     /**
@@ -76,7 +101,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doPeopleFindRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\PeopleFind($params));
+        return $this->getResponse('people_find', $params);
     }
 
     /**
@@ -84,7 +109,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doOrganizationFindRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\OrganizationFind($params));
+        return $this->getResponse('organization_find', $params);
     }
 
     /**
@@ -92,58 +117,46 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     public function doTicketsIncrementalExportRequest(array $params = array())
     {
-        return $this->doRequest(new ClientHelper\TicketsIncrementalExport($params));
+        return $this->getResponse('tickets_incremental_export', $params);
     }
 
     /**
-     * Do API request
+     * Stores a response
      *
-     * @param ClientHelper\ClientHelperInterface $request
-     *
-     * @return \stdClass
-     *
-     * @throws RetryAfterException
-     * @throws API\ResponseException
+     * @param string       $type
+     * @param string|array $response
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request)
+    private function addResponse($type, $response)
     {
-        try {
-            $response = $request->request($this->client);
-
-            if ($this->logger && $response) {
-                $this->logger->debug(@json_encode($response));
-            }
-
-            return $response;
-
-        } catch (API\ResponseException $e) {
-            if ($this->client->getDebug()) {
-                $debug = $this->client->getDebug();
-
-                switch ($debug->lastResponseCode) {
-                    case ZenDeskReaderInterface::CODE_UNAUTHORIZED:
-                        throw new RuntimeException(
-                            'Unable to connect, check ZenDesk exporter credentials',
-                            $e->getCode(), $e
-                        );
-
-                    case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
-                        throw new RetryAfterException(
-                            $e->getMessage(),
-                            RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders)
-                        );
-
-                    case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
-                        // nothing to do
-
-                        break;
-
-                    default:
-                        throw $e;
-                }
-            }
+        if ( ! isset($this->responses[$type])) {
+            $this->responses[$type] = array();
         }
 
-        return null;
+        if (is_string($response)) {
+            $content  = @file_get_contents($response);
+            $response = @json_decode($content);
+        }
+        if ( ! is_object($response)) {
+            throw new RuntimeException(sprintf('Bad response for `%s`', $type));
+        }
+
+        $this->responses[$type][] = $response;
+    }
+
+    /**
+     * Returns a response by request
+     *
+     * @param string $type
+     *
+     * @return array
+     * @throws RuntimeException
+     */
+    private function getResponse($type)
+    {
+        if (empty($this->responses[$type])) {
+            throw new RuntimeException(sprintf('No response exists for `%s`', $type));
+        }
+
+        return array_shift($this->responses[$type]);
     }
 }

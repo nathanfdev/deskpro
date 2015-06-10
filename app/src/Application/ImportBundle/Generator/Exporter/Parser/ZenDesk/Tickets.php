@@ -29,8 +29,6 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
@@ -238,7 +236,7 @@ final class Tickets extends AbstractParser
             $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
 
             $this->tickets_people->loadByTickets($tickets);
-            $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getTicketsEndTime());
+            $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
         } else {
             $this->logAlert('No ticket was exported due 5 minutes timeout of the last end time');
         }

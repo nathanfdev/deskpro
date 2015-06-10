@@ -80,8 +80,7 @@ abstract class AbstractGenerateCommand extends AbstractExportCommand
             }
 
         } catch (Exception $e) {
-            $logger->critical($e->getMessage());
-            $logger->critical($e->getTraceAsString());
+            $logger->critical($e);
 
             if ($generator->getConfig()->isVerbose() === false) {
                 $output->writeln('');

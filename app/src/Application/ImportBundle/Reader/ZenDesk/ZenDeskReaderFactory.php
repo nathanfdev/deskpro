@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -48,7 +49,7 @@ class ZenDeskReaderFactory
      * @return ZenDeskReader
      * @throws Exception
      */
-    public static function createReaderByDeskproConfig()
+    public static function createReaderByDeskPROConfig()
     {
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
@@ -66,7 +67,7 @@ class ZenDeskReaderFactory
      * @param ZenDeskConfig $config
      * @return ZenDeskReader
      */
-    static public function createReader(ZenDeskConfig $config)
+    public static function createReader(ZenDeskConfig $config)
     {
         $client = self::createClient($config);
         $logger = new Logger('zendesk');
@@ -89,6 +90,23 @@ class ZenDeskReaderFactory
     }
 
     /**
+     * @param ZenDeskConfig $config
+     * @return ZenDeskReader
+     */
+    public static function createMockReader(ZenDeskConfig $config)
+    {
+        $adapter = new JsonMockAdapter();
+        $adapter
+            ->addTicketsIncrementalExportResponse(dp_get_data_dir() . '/import/lamoda/tickets.json')
+            ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users.json')
+            ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users2.json')
+            ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users3.json')
+        ;
+
+        return new ZenDeskReader(new Request\RequestCacheAdapter($adapter), $config);
+    }
+
+    /**
      * Create a ZenDesk fixtures collection
      *
      * @return Fixtures\Collection
@@ -102,7 +120,8 @@ class ZenDeskReaderFactory
         $collection = new Fixtures\Collection();
         $collection
             ->attach(new Fixtures\People($client))
-            ->attach(new Fixtures\Tickets($client));
+            ->attach(new Fixtures\Tickets($client))
+        ;
 
         return $collection;
     }
@@ -140,7 +159,6 @@ class ZenDeskReaderFactory
             $dp_config['subdomain'],
             $dp_config['username'],
             new DateTime($dp_config['initial_time'])
-
         );
 
         if (isset($dp_config['password'])) {
