@@ -13,9 +13,3 @@ web_profiler:
 
 debug:
     max_items: 400
-
-monolog:
-    handlers:
-        main:
-            type:   service
-            id:     monolog.handler.deskpro

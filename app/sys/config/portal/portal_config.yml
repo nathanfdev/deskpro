@@ -26,10 +26,15 @@ framework:
         - 127.0.0.1
     session:
         handler_id:  session.handler.dbal
-        name: dpsid
+        name:        dpsid
     fragments:       ~
     http_method_override: true
 
+monolog:
+    handlers:
+        main:
+            type:   service
+            id:     monolog.handler.deskpro_fingers_crossed
 
 # FOSHttpCacheBundle
 fos_http_cache:

@@ -31,63 +31,25 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Config;
+namespace DeskPRO\Bundle\AppBundle\Logging;
 
+
+use DeskPRO\Bundle\AppBundle\Config\DeskproConfigService;
+use Monolog\Handler\FingersCrossedHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-/**
- * This is meant to be used in the container as a way of using expressions to get at some of our dynamic config
- * methods in config files.
- */
-class DeskproConfigService
+class DeskproFingersCrossedHandler extends FingersCrossedHandler
 {
-    /**
-     * The deskpro data dir (absolute path)
-     */
-    public function getDataDir()
+    public function __construct(
+        DeskproFilesystemHandler $handler,
+        DeskproConfigService $dp_config
+    )
     {
-        return dp_get_data_dir();
-    }
-
-    /**
-     * The dir we store all of our logs in (absolute path)
-     *
-     * @return string
-     */
-    public function getLogDir()
-    {
-        return dp_get_log_dir();
-    }
-
-    /**
-     * This (and higher) are the only log level lines we want stored
-     */
-    public function getLogLevel()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level'])) {
-            $log_level = $DP_CONFIG['log_level'];
-        } else {
-            $log_level = Logger::DEBUG;
-        }
-
-        return $log_level;
-    }
-
-    /**
-     * We don't store logs unless we hit a line with this log level
-     */
-    public function getLogLevelThreshold()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level_threshold'])) {
-            $log_level = $DP_CONFIG['log_level_threshold'];
-        } else {
-            $log_level = Logger::ERROR;
-        }
-
-        return $log_level;
+        // only use the deskpro handler if we cross the log level threshold
+        parent::__construct(
+            $handler,
+            $dp_config->getLogLevelThreshold()
+        );
     }
 }
