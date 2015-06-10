@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
+use Application\ImportBundle\Reader\BaseConfig;
+
 /**
  * Csv data parser configuration
  *
  * Class CsvConfig
  * @package Application\ImportBundle\Reader\Csv
  */
-class CsvConfig
+class CsvConfig extends BaseConfig
 {
     /**
      * @var string
@@ -135,5 +137,20 @@ class CsvConfig
     {
         $this->escape = $escape;
         return $this;
+    }
+
+    static public function fromArray(array $data)
+    {
+        $config = new self(@$data['resource'] ?: @$data['temp'].'/in');
+
+        if ($delimeter = @$data['delimeter']) {
+            $config->setDelimiter($delimeter);
+        }
+
+        if ($enclosure = @$data['enclosure']) {
+            $config->setDelimiter($enclosure);
+        }
+
+        return $config;
     }
 }

@@ -93,7 +93,7 @@ final class Person extends AbstractImporter
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
             } else {
                 $person->addEmailAddress($this->findOrCreatePersonEmail($email));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     $num ? 'Set email `%s`' : 'Set primary email `%s`',
                     $entity->getFirstEmail()
                 ));
@@ -150,7 +150,7 @@ final class Person extends AbstractImporter
     {
         $email = $this->getPersonEmailMapper()->findOneByEmail($email_string, false);
         if ($email) {
-            $this->logInfo(sprintf(
+            $this->logDebug(sprintf(
                 'Found existing person email, id=`%d` with email `%s`',
                 $email->getId(), $email->getEmail()
             ));
@@ -161,7 +161,7 @@ final class Person extends AbstractImporter
                 ->setIsValidated(true);
 
             $this->records->add($email);
-            $this->logWarning(sprintf('Creating new person email `%s`', $email->getEmail()));
+            $this->logDebug(sprintf('Creating new person email `%s`', $email->getEmail()));
         }
 
         return $email;
@@ -185,7 +185,7 @@ final class Person extends AbstractImporter
         if ($title) {
             $user_group = $mapper->findOneByTitle($title, false);
             if ($user_group) {
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Found existing user group `%d` with title `%s`',
                     $user_group->getId(), $user_group->getTitle()
                 ));
@@ -194,7 +194,7 @@ final class Person extends AbstractImporter
                 $user_group->setTitle($title);
 
                 $this->records->add($user_group);
-                $this->logWarning(sprintf('Creating new user group `%s`', $user_group->getTitle()));
+                $this->logInfo(sprintf('Creating new user group `%s`', $user_group->getTitle()));
             }
         }
 

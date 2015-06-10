@@ -104,13 +104,13 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
         if ($title) {
             $category = $this->getNewsCategoryMapper()->findOneByTitle($title, false);
             if ($category) {
-                $this->logInfo(sprintf('Found existing news category `%s`', $category->getTitle()));
+                $this->logDebug(sprintf('Found existing news category `%s`', $category->getTitle()));
             } else {
                 $category = new DeskPROEntity\NewsCategory();
                 $category->setRealTitle($title);
 
                 $this->records->add($category);
-                $this->logWarning(sprintf('New news category creating `%s`', $category->getTitle()));
+                $this->logInfo(sprintf('New news category creating `%s`', $category->getTitle()));
             }
         }
 

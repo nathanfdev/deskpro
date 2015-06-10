@@ -39,6 +39,6 @@ class Build1430211193 extends AbstractBuild
     public function run()
     {
         $this->out("Escalation Upgrade Class");
-		$this->execMutateSql("ALTER TABLE ticket_escalations ADD sys_name VARCHAR(255) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE ticket_escalations ADD sys_name VARCHAR(255) DEFAULT NULL", true);
     }
 }

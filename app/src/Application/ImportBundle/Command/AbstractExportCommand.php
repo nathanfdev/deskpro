@@ -31,6 +31,10 @@ use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\Csv\CsvConfig;
+use Application\ImportBundle\Reader\Json\JsonConfig;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -171,18 +175,24 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
-        if ($input->hasOption('input-path')) {
-            if ($input->getOption('input-path')) {
-                $config->setInputPath(rtrim($input->getOption('input-path'), "\\/") . "/");
-            } else {
-                switch ($config->getExporterType()) {
-                    case ExporterInterface::TYPE_CSV:
-                        throw new Exception('You must supply an "input-path" argument while using CSV exporter');
-                    case ExporterInterface::TYPE_JSON:
-                        throw new Exception('You must supply an "input-path" argument while using JSON exporter');
-                }
-            }
+        switch ($config->getExporterType()) {
+            case ExporterInterface::TYPE_CSV:
+                $readerConfig = new CsvConfig($input->getOption('input-path'));
+                break;
+            case ExporterInterface::TYPE_JSON:
+                $readerConfig = new JsonConfig($input->getOption('input-path'));
+                break;
+            case ExporterInterface::TYPE_ZENDESK:
+                $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
+                break;
+            case ExporterInterface::TYPE_OS_TICKET:
+                $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                break;
         }
+
+        $config->setReaderConfig($readerConfig);
+        // back compatibility
+        $config->setInputPath($input->getOption('input-path'));
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
@@ -287,9 +297,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function createGenerator(GeneratorConfig $config, LoggerInterface $logger)
     {
         /** @var Generator\Generator $generator */
+        $this->getContainer()->set('deskpro.import.config', $config);
         $generator = $this->getContainer()->get('deskpro.import.generator');
         $generator
-            ->setConfig($config)
             ->setLogger($logger);
 
         return $generator;

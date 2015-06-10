@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
 use Exception;
@@ -134,12 +135,12 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         $data = @json_encode($data);
 
         if ($this->config->isDryRun()) {
-            $this->logInfo(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
+            $this->logDebug(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
         } else {
             if (@file_exists($path)) {
                 $this->logWarning(sprintf('File `%s` already exists (Override).', $path));
             } else {
-                $this->logInfo(sprintf('Generate a new file `%s`', $path));
+                $this->logDebug(sprintf('Generate a new file `%s`', $path));
             }
             if (@file_put_contents($path, $data) === false) {
                 $this->logWarning(sprintf('Unable to write file `%s`', $path));
@@ -147,5 +148,17 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         }
 
         return true;
+    }
+
+    static public function getOrderedTypes()
+    {
+        return array(
+            EntityInterface::TYPE_PERSON,
+            EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_ARTICLE,
+            EntityInterface::TYPE_DOWNLOAD,
+            EntityInterface::TYPE_FEEDBACK,
+            EntityInterface::TYPE_NEWS,
+        );
     }
 }

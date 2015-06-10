@@ -12,6 +12,7 @@
 *.sublime*
 /running_tests.trigger
 *.swp
+.DS_Store
 
 # vendors and build files
 /app/vendor

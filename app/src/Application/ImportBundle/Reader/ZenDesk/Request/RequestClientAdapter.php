@@ -118,10 +118,6 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         break;
 
                     default:
-                        var_dump($e->getCode());
-                        var_dump($e->getMessage());
-                        var_dump($this->client->getDebug());
-
                         throw $e;
                 }
             }

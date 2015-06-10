@@ -73,12 +73,13 @@ class ExportCommand extends AbstractGenerateCommand
                 throw new Exception('Output path must be different from input path');
             }
         }
-        if ($config->isSilent()) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-        }
 
         $logger    = $this->createLogger($config, $output);
         $generator = $this->createGenerator($config, $logger);
+
+        if ($config->isSilent()) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        }
 
         if ($config->getRetryWaitTimeout()) {
             $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));

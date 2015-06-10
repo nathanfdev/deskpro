@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Application\ImportBundle\Reader\BaseConfig;
 use Exception;
 use DateTime;
 
@@ -36,7 +37,7 @@ use DateTime;
  * Class ZenDeskConfig
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZenDeskConfig
+class ZenDeskConfig extends BaseConfig
 {
     const AUTH_TYPE_PASSWORD = 'password';
     const AUTH_TYPE_TOKEN    = 'token';
@@ -188,5 +189,27 @@ class ZenDeskConfig
         }
 
         throw new Exception('Auth credentials is not set up');
+    }
+
+    static public function fromArray(array $data)
+    {
+        if (!$time = @$data['initial_time']) {
+            $time = '-2 years';
+        } else {
+            if (is_numeric($time)) {
+                $time = '@'.$time;
+            }
+        }
+
+        $inst = new self(
+            $data['subdomain'],
+            $data['username'],
+            new \DateTime($time)
+        );
+
+        $inst->setPassword(@$data['password']);
+        $inst->setApiToken(@$data['token']);
+
+        return $inst;
     }
 }

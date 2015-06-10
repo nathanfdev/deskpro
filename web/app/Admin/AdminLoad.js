@@ -122,6 +122,8 @@ define([
   'Admin/Server/Ctrl/ServerCronLogs',
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
+  'Admin/Server/Ctrl/ImportersList',
+  'Admin/Server/Ctrl/ImportersView',
   'Admin/Server/Ctrl/ServerReportFile',
   'Admin/Settings/Ctrl/AdvancedSettings',
   'Admin/Settings/Ctrl/ElasticSearch',

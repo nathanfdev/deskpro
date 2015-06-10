@@ -57,14 +57,14 @@ class CsvImport extends AbstractJob
         ),
         'enclosure' => array(
             'none' => null,
-            'semicolon' => '"',
+            'quotes' => '"',
         ),
     );
 
     /** @var array */
     protected static $defaults = array(
         'delimeter' => 'comma',
-        'enclosure' => 'semicolon',
+        'enclosure' => 'quotes',
     );
 
     public static function getOptions(array $options = array())
@@ -469,6 +469,10 @@ class CsvImport extends AbstractJob
                     } elseif ($map_field == 'new_custom') {
                         $custom_field_id = $this->_data['new_custom_map'][$column_id];
                         $new_on_unknown = true;
+                    }
+
+                    if (!$column_value) {
+                        continue;
                     }
 
                     if ($custom_field_id && isset($this->_custom_fields[$custom_field_id])) {

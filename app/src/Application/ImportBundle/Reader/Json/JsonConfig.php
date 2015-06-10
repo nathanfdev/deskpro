@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
+use Application\ImportBundle\Reader\BaseConfig;
+
 /**
  * Json data parser configuration
  *
  * Class JsonConfig
  * @package Application\ImportBundle\Reader\Json
  */
-class JsonConfig
+class JsonConfig extends BaseConfig
 {
     /**
      * @var string
@@ -89,5 +91,10 @@ class JsonConfig
     {
         $this->exclude_done = $exclude_done;
         return $this;
+    }
+
+    static public function fromArray(array $data)
+    {
+
     }
 }
