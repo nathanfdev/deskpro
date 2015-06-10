@@ -211,4 +211,11 @@ class PortalKernel extends Kernel
 
         $cache->write($content, $container->getResources());
     }
+
+    public function getName()
+    {
+        return 'portal';
+    }
+
+
 }

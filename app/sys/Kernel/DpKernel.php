@@ -220,6 +220,10 @@ class DpKernel extends AbstractKernel
         return DP_ROOT.'/sys';
     }
 
+    public function getName()
+    {
+        return 'agent';
+    }
 
     /**
      * @return string

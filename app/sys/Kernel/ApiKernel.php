@@ -215,4 +215,9 @@ class ApiKernel extends Kernel
 
         $cache->write($content, $container->getResources());
     }
+
+    public function getName()
+    {
+        return 'api';
+    }
 }
