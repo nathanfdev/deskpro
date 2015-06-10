@@ -220,4 +220,17 @@ class ApiKernel extends Kernel
     {
         return 'api';
     }
+
+    /**
+     * @deprecated Use dp_get_log_dir()
+     * @return string
+     */
+    public function getLogDir()
+    {
+        if (!function_exists('dp_get_log_dir')) {
+            require_once DP_ROOT . '/sys/load_config.php';
+        }
+
+        return dp_get_log_dir();
+    }
 }

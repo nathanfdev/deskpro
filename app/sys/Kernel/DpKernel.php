@@ -74,9 +74,7 @@ class DpKernel extends AbstractKernel
     {
         parent::__construct($environment, $debug);
 
-        $name = explode("\\", get_class($this));
-        $name = array_pop($name);
-        $this->name = $name;
+        $this->name = $this->getName();
         $this->interface = $interface;
 
         if (!defined('DP_DEBUG')) {
