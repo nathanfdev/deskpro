@@ -57,7 +57,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
      * Constructor
      *
      * @param Request\RequestAdapterInterface $adapter
-     * @param DateTime                        $initial_time
+     * @param ZenDeskConfig                   $config
      */
     public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
