@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
-use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -87,23 +86,6 @@ class ZenDeskReaderFactory
 
             $config
         );
-    }
-
-    /**
-     * @param ZenDeskConfig $config
-     * @return ZenDeskReader
-     */
-    public static function createMockReader(ZenDeskConfig $config)
-    {
-        $adapter = new JsonMockAdapter();
-        $adapter
-            ->addTicketsIncrementalExportResponse(dp_get_data_dir() . '/import/lamoda/tickets.json')
-            ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users.json')
-            ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users2.json')
-            ->addOrganizationFindResponse(dp_get_data_dir() . '/import/lamoda/organization.json')
-        ;
-
-        return new ZenDeskReader(new Request\RequestCacheAdapter($adapter), $config);
     }
 
     /**

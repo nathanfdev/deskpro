@@ -46,7 +46,7 @@ class ZenDeskFactory extends AbstractFactory
     static public function createExporter(BaseConfig $config)
     {
         /** @var ZenDeskReaderInterface $reader */
-        $reader = ZenDeskReaderFactory::createMockReader($config);
+        $reader = ZenDeskReaderFactory::createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
         // People parser
