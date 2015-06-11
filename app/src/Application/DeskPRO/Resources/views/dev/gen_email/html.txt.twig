@@ -17,7 +17,7 @@ Content-Disposition: inline
 
 {% if as_reply %}
   {% if as_agent %}
-    === {{ phrase('agent.emails.reply_above_line') }} ===
+    === {{ phrase('agent.emails.reply_above_line') }} [http://deskpro.com/l/reply] ===
 
 
   {% endif %}
@@ -35,7 +35,7 @@ Content-Disposition: inline
 {% if as_reply %}
   <br/><br/>
   {% if as_agent %}
-    === <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} ===<br /><br />
+    === <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} [<a href="http://deskpro.com/l/reply">{{ phrase('agent.chrome.link_help') }}</a>] ===<br /><br />
   {% else %}
     <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
   {% endif %}
