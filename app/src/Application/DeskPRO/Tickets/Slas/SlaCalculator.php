@@ -185,7 +185,7 @@ class SlaCalculator
 
         if ($this->type == self::TYPE_FIRST_RESPONSE) {
             // date_last_agent_reply && messages count === 1 means that this ticket is just created by agent
-            if ($ticket->date_last_agent_reply && $ticket->messages->count() > 1) {
+            if ($ticket->date_first_agent_reply && $ticket->count_agent_replies) {
                 $dates[] = $ticket->date_first_agent_reply->getTimestamp();
             }
 
