@@ -95,7 +95,9 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->getTickets();
+        $collection->setExpectedCount($this->getCount());
+
+        $tickets = $this->getTickets();
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();

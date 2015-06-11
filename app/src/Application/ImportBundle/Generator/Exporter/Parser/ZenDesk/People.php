@@ -82,7 +82,9 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     public function export()
     {
         $collection = new Entity\Collection();
-        $people     = $this->getPeople();
+        $collection->setExpectedCount($this->getCount());
+
+        $people = $this->getPeople();
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -120,7 +122,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     {
         if ($this->isPersonValid($person)) {
             $date_created = new DateTime($person['created_at']);
-            $timezone = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+            $timezone     = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
 
             $entity = new Entity\Person();
             $entity

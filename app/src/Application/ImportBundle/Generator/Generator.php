@@ -158,6 +158,10 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
                 }
             }
         }
+
+        if ($this->progress_bar && $collection->getSkippedCount()) {
+            $this->progress_bar->advance($collection->getSkippedCount() * 2);
+        }
     }
 
     /**
@@ -173,6 +177,10 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
 
             $collection = $exporter->exportByType($type);
             $exceptions->merge($this->validateExportingCollection($type, $collection));
+
+            if ($this->progress_bar && $collection->getSkippedCount()) {
+                $this->progress_bar->advance($collection->getSkippedCount());
+            }
         }
 
         return $exceptions;
