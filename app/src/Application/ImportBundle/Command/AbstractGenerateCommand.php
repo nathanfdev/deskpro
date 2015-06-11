@@ -72,7 +72,7 @@ abstract class AbstractGenerateCommand extends AbstractExportCommand
                 $logger->alert(sprintf("Validator failure for %s on record #%s: ", get_class($exception->getEntity()), $exception->getEntity()->getOid(), $exception->getErrors()));
                 if ($r = $exception->getEntity()->getRawData()) {
                     foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
-                        $this->logger->debug("  [info] " . $l);
+                        $output->writeln("  [info] " . $l);
                     }
                 }
             }
