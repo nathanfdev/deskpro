@@ -52,6 +52,11 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     private $people_storage;
 
     /**
+     * @var int
+     */
+    private $count;
+
+    /**
      * {@inheritdoc}
      */
     public function getEntityType()
@@ -73,7 +78,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function getCount()
     {
-        return count($this->getPeople());
+        return $this->count;
     }
 
     /**
@@ -81,10 +86,11 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount($this->getCount());
-
         $people = $this->getPeople();
+        $this->count = count($people);
+
+        $collection = new Entity\Collection();
+        $collection->setExpectedCount(count($people));
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -94,7 +100,6 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
                 $entity = $this->exportPerson($person);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logDebug(sprintf('[ZDUser #%s] Entity `%s` parsed successfully', $pid, $entity->getDestination()));
 
                 } else {
                     $this->logDebugInfo(sprintf("[ZDUser #%s] Invalid user entity", $pid), $person);
@@ -126,6 +131,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
             $entity = new Entity\Person();
             $entity
+                ->setRawData($person)
                 ->setDestination('person_' . $person['id'])
                 ->setOid($person['id'])
                 ->addEmail($person['email'])
@@ -162,18 +168,38 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     private function getPeople()
     {
+        $this->logDebugTimeStart('getPeople', "Reading people batch");
+
         $people = array();
         if ($this->people_storage) {
             $people = $this->people_storage->getPeople();
         }
         if (empty($people)) {
             if ($this->getBatchConfig()->getPeopleEndTime() < new DateTime('-5 minutes')) {
+                if ($this->getBatchConfig()->getPeopleEndTime()) {
+                    $this->logDebug(sprintf("Reading from time: %s", $this->getBatchConfig()->getPeopleEndTime()->format('Y-m-d H:i:s')));
+                } else {
+                    $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
+                }
+
                 $people = $this->reader->getPeople($this->getBatchConfig()->getPeopleEndTime());
-                $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getPeopleEndTime());
+
+                if (count($people)) {
+                    $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getPeopleEndTime());
+                    if ($this->end_time == $this->getBatchConfig()->getPeopleEndTime()) {
+                        $this->end_time->modify('+1 second');
+                    }
+                    $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
+                } else {
+                    $this->logDebug(sprintf("No more records"));
+                }
             } else {
                 $this->logAlert('No person was exported due 5 minutes timeout of the last end time');
             }
         }
+
+        $this->logDebug(sprintf("Read %d people", count($people)));
+        $this->logDebugTimeEnd('getPeople', "Done reading people batch");
 
         return $people;
     }

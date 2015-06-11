@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 use Psr\Log\LoggerInterface;
@@ -68,7 +69,12 @@ abstract class AbstractGenerateCommand extends AbstractExportCommand
             $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
                 /** @var Generator\Validator\ValidatorConstraintException $exception */
-                $logger->critical($exception);
+                $logger->alert(sprintf("Validator failure for %s on record #%s: ", get_class($exception->getEntity()), $exception->getEntity()->getOid(), $exception->getErrors()));
+                if ($r = $exception->getEntity()->getRawData()) {
+                    foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
+                        $this->logger->debug("  [info] " . $l);
+                    }
+                }
             }
             if ($generator->getConfig()->isVerbose() === false) {
                 $output->writeln(sprintf(

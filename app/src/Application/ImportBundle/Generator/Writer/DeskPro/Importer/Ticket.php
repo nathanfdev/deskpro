@@ -31,6 +31,7 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Orb\Util\Strings;
 
 /**
  * DeskPro ticket importer
@@ -82,18 +83,11 @@ final class Ticket extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $ticket = $this->manager->createTicket();
-        if ($ticket->getRef() !== $entity->getRef()) {
-            $this->logNotice(sprintf(
-                'Ticket ref with oid `%d` was changed, old ref `%s`, new ref `%s`',
-                $entity->getOid(), $entity->getRef(), $ticket->getRef()
-            ));
-
-            // Remember new ref, if it was changed to apply ticket labels
-            $entity->setRef($ticket->getRef());
-        }
+        $ticket = new DeskPROEntity\Ticket();
+        $ticket->disableAutoTicketProcess();
 
         $ticket
+            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
@@ -108,6 +102,11 @@ final class Ticket extends AbstractImporter
             ->resetMessages()
             ->resetParticipants()
             ->resetLabels();
+
+        if ($ticket->getRef() !== $entity->getRef()) {
+            // Remember new ref, if it was changed to apply ticket labels
+            $entity->setRef($ticket->getRef());
+        }
 
         if ($entity->getAgentEmail()) {
             $ticket->setAgentId($this->getPersonMapper()->findOneByEmail($entity->getAgentEmail())->getId());

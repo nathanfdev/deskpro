@@ -109,6 +109,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $GLOBALS['DP_IS_IMPORTING'] = true;
+        @ini_set('memory_limit', -1);
+
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         try {

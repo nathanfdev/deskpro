@@ -72,6 +72,9 @@ final class Ticket implements MapperInterface
             throw new MapperException('Ticket not found', $criteria);
         }
 
+        $record->disableAutoTicketProcess();
+        $record->__dp_skip_ticket_manager = true;
+
         return $record;
     }
 
@@ -85,6 +88,8 @@ final class Ticket implements MapperInterface
      */
     public function findOneByRef($ref, $throw_exception = true)
     {
-        return $this->findOneBy(array('ref' => $ref), $throw_exception);
+        $record = $this->findOneBy(array('ref' => $ref), $throw_exception);
+        $record->disableAutoTicketProcess();
+        return $record;
     }
 }

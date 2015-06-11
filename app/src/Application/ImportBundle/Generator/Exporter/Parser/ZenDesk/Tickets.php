@@ -60,6 +60,10 @@ final class Tickets extends AbstractParser
      */
     private $tickets_people;
 
+    /**
+     * @var int
+     */
+    private $count = 0;
 
     /**
      * Constructor
@@ -86,7 +90,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return count($this->getTickets());
+        return $this->count;
     }
 
     /**
@@ -94,10 +98,10 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $collection->setExpectedCount($this->getCount());
-
         $tickets = $this->getTickets();
+
+        $collection = new Entity\Collection();
+        $collection->setExpectedCount(count($tickets));
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
@@ -107,7 +111,6 @@ final class Tickets extends AbstractParser
                 $entity = $this->exportTicket($ticket);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logDebug(sprintf('[ZDTicket #%s] Entity `%s` parsed successfully', $tid, $entity->getDestination()));
                 } else {
                     $this->logDebugInfo(sprintf("[ZDTicket #%s] Invalid ticket entity", $tid), $ticket);
                     $this->logWarning(sprintf('[ZDTicket #%s] Invalid ticket record found (Skipping): Could not create entity', $tid));
@@ -145,6 +148,7 @@ final class Tickets extends AbstractParser
 
             $entity = new Entity\Ticket();
             $entity
+                ->setRawData($ticket)
                 ->setDestination('ticket_' . $ticket['id'])
                 ->setOid($ticket['id'])
                 ->setRef($ticket['id'])
@@ -243,15 +247,34 @@ final class Tickets extends AbstractParser
      */
     private function getTickets()
     {
+        $this->logDebugTimeStart('getTickets', "Reading tickets batch");
+
         $tickets = array();
         if ($this->getBatchConfig()->getTicketsEndTime() < new DateTime('-5 minutes')) {
+            if ($this->getBatchConfig()->getTicketsEndTime()) {
+                $this->logDebug(sprintf("Reading from time: %s", $this->getBatchConfig()->getTicketsEndTime()->format('Y-m-d H:i:s')));
+            } else {
+                $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
+            }
             $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
 
-            $this->tickets_people->loadByTickets($tickets);
-            $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
+            if (count($tickets)) {
+                $this->tickets_people->loadByTickets($tickets);
+                $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
+                if ($this->end_time == $this->getBatchConfig()->getTicketsEndTime()) {
+                    $this->end_time->modify('+1 second');
+                }
+                $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
+            } else {
+                $this->tickets_people->loadByTickets(array());
+                $this->logDebug(sprintf("No more records"));
+            }
         } else {
             $this->logAlert('No ticket was exported due 5 minutes timeout of the last end time');
         }
+
+        $this->logDebug(sprintf("Read %d tickets", count($tickets)));
+        $this->logDebugTimeEnd('getTickets', "Done reading tickets batch");
 
         return $tickets;
     }

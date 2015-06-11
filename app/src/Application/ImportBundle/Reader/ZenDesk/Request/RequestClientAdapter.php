@@ -99,26 +99,25 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request
+     * @param bool $is_retry
      *
      * @return \stdClass
      *
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request)
+    private function doRequest(ClientHelper\ClientHelperInterface $request, $is_retry = false)
     {
         try {
             $response = $request->request($this->client);
-
-            if ($this->logger && $response) {
-                $this->logger->debug(@json_encode($response));
-            }
-
             return $response;
-
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
                 $debug = $this->client->getDebug();
+
+                if ($this->logger) {
+                    $this->logger->error(sprintf("[%s] (%s) %s -- %s", $e->getCode(), get_class($e), $e->getMessage(), $debug ? print_r($debug) : "nodebug"));
+                }
 
                 switch ($debug->lastResponseCode) {
                     case ZenDeskReaderInterface::CODE_UNAUTHORIZED:
@@ -128,10 +127,19 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         );
 
                     case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
-                        throw new RetryAfterException(
-                            $e->getMessage(),
-                            RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders)
-                        );
+                        $secs = RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders);
+                        if ($is_retry) {
+                            throw new RetryAfterException(
+                                $e->getMessage(),
+                                $secs
+                            );
+                        } else {
+                            if ($this->logger) {
+                                $this->logger->info("Hit request limit, sleeping for $secs seconds");
+                            }
+                            sleep($secs+1);
+                            return $this->doRequest($request, true);
+                        }
 
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
@@ -139,6 +147,13 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         break;
 
                     default:
+                        if (!$is_retry) {
+                            if ($this->logger) {
+                                $this->logger->error("Unknown API request error. Will retry once.");
+                            }
+                            sleep(2);
+                            return $this->doRequest($request, true);
+                        }
                         throw $e;
                 }
             }

@@ -53,6 +53,11 @@ abstract class AbstractGenerator
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $debug_timers = array();
+
+    /**
      * @var ProgressBar
      */
     protected $progress_bar;
@@ -108,6 +113,30 @@ abstract class AbstractGenerator
     {
         if ($this->logger) {
             $this->logger->info($message);
+        }
+    }
+
+    /**
+     * @param string $id
+     * @param string $message
+     */
+    protected function logDebugTimeStart($id, $message)
+    {
+        $this->debug_timers[$id] = microtime(true);
+        if ($this->logger) {
+            $this->logger->debug($message);
+        }
+    }
+
+    /**
+     * @param string $id
+     * @param string $message
+     */
+    protected function logDebugTimeEnd($id, $message)
+    {
+        $time = sprintf("%.3fs", microtime(true) - $this->debug_timers[$id]);
+        if ($this->logger) {
+            $this->logger->debug($message . " -- $time");
         }
     }
 

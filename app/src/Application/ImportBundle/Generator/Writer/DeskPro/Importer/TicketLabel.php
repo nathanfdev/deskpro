@@ -54,6 +54,7 @@ final class TicketLabel extends AbstractImporter
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        return array();//todo
         $this->records = new ArrayCollection();
 
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());

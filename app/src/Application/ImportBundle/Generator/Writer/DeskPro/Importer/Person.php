@@ -128,13 +128,13 @@ final class Person extends AbstractImporter
 
         $person = $this->getPersonMapper()->findOneByEmails($emails, false);
         if ($person) {
-            $this->logNotice(sprintf(
+            $this->logDebug(sprintf(
                 'Found existing user, id=`%d` with email `%s`',
                 $person->getId(), $person->getEmailAddress()
             ));
         } else {
             $person = new DeskPROEntity\Person();
-            $this->logWarning(sprintf('Creating new person with email `%s`', $emails[0]));
+            $this->logInfo(sprintf('Creating new person with email `%s`', $emails[0]));
         }
 
         return $person;
@@ -161,7 +161,7 @@ final class Person extends AbstractImporter
                 ->setIsValidated(true);
 
             $this->records->add($email);
-            $this->logDebug(sprintf('Creating new person email `%s`', $email->getEmail()));
+            $this->logInfo(sprintf('Creating new person email `%s`', $email->getEmail()));
         }
 
         return $email;
