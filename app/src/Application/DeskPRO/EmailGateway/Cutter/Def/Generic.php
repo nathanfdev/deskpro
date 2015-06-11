@@ -308,7 +308,11 @@ class Generic implements ForwardDef, QuoteDef
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
                 $langs = App::getDataService('Language')->getAll();
                 foreach ($langs as $l) {
-                    $re = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
+                    $regex_with_links = sprintf(
+                        '%s(?: \\[.+\\])?',
+                        App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l)
+                    );
+                    $re = preg_quote($regex_with_links, '#');
                     $matches = null;
                     if (preg_match('#===(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*===#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
                         $pos = $matches[0][1];
