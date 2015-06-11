@@ -138,12 +138,12 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
             $this->logDebug(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
         } else {
             if (@file_exists($path)) {
-                $this->logWarning(sprintf('File `%s` already exists (Override).', $path));
+                $this->logInfo(sprintf('File `%s` already exists (Override).', $path));
             } else {
-                $this->logDebug(sprintf('Generate a new file `%s`', $path));
+                $this->logInfo(sprintf('Generate a new file `%s`', $path));
             }
             if (@file_put_contents($path, $data) === false) {
-                $this->logWarning(sprintf('Unable to write file `%s`', $path));
+                $this->logError(sprintf('Unable to write file `%s`', $path));
             }
         }
 

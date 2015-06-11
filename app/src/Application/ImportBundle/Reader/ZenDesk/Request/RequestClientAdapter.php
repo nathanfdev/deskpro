@@ -99,14 +99,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request
-     * @param bool $is_retry
+     * @param int $is_retry
      *
      * @return \stdClass
      *
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request, $is_retry = false)
+    private function doRequest(ClientHelper\ClientHelperInterface $request, $is_retry = 0)
     {
         try {
             $response = $request->request($this->client);
@@ -147,11 +147,11 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         break;
 
                     default:
-                        if (!$is_retry) {
+                        if ($is_retry++ < 4) {
                             if ($this->logger) {
-                                $this->logger->error("Unknown API request error. Will retry once.");
+                                $this->logger->error("Unknown API request error. Will retry.");
                             }
-                            sleep(2);
+                            sleep(2+$is_retry);
                             return $this->doRequest($request, true);
                         }
                         throw $e;

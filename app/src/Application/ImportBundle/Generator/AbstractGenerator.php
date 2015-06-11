@@ -72,6 +72,14 @@ abstract class AbstractGenerator
     }
 
     /**
+     * @return GeneratorConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setLogger(LoggerInterface $logger)

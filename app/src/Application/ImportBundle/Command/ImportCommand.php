@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -62,20 +63,26 @@ class ImportCommand extends AbstractGenerateCommand
     protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('batch')) {
-            $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
-            $generator = $this->createGenerator($config, $logger);
+            try {
+                $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
+                $generator = $this->createGenerator($config, $logger);
 
-            $this->createAndSetProgressBar($generator, $output);
-            $this->generate($generator, $output, $logger);
+                $this->createAndSetProgressBar($generator, $output);
+                $this->generate($generator, $output, $logger);
+            } catch (\Exception $e) {
+                KernelErrorHandler::logException($e, true);
+                echo $e->getMessage();
+                echo $e->getTraceAsString();
+                return 1;
+            }
 
-
+            return 0;
         } else {
             if ($r = $this->checkPhp($input, $output) !== 0) {
                 return $r;
             }
 
             do {
-                $rerun = false;
                 $cmd = sprintf('php cmd.php dp:import:run %s --output-path %s -b --verbose', escapeshellarg($input->getArgument('script')), escapeshellarg($input->getOption('output-path')));
                 $proc = new Process($cmd, realpath(DP_ROOT.'/../'));
                 $proc->setTimeout(18000);
@@ -83,13 +90,26 @@ class ImportCommand extends AbstractGenerateCommand
                     $output->write($data);
                 });
 
-                $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
-                $generator = $this->createGenerator($config, $logger);
+                if (!$proc->isSuccessful()) {
+                    $output->writeln("<error>Detected error, halting process");
+                    return 1;
+                }
 
-                if ($generator instanceof Generator\Exporter\ExporterBatchInterface) {
-                    $rerun = $generator->getDefaultBatchConfig()->getHasRemaining();
+                $output->writeln("<info>Done batch</info>");
+
+                $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+                $exporter_config = $config->getExporterBatchConfig();
+                if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
+                    $rerun = $exporter_config->getHasRemaining();
+                    if ($rerun) {
+                        $output->writeln("<info>Running next batch</info>");
+                    }
+                } else {
+                    $rerun = false;
                 }
             } while($rerun);
+
+            $output->writeln("<info>Done all.</info>");
         }
     }
 

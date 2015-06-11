@@ -42,7 +42,7 @@ use Exception;
  * Class Generator
  * @package Application\ImportBundle\Generator
  */
-final class Generator extends AbstractGenerator implements GeneratorInterface
+final class Generator extends AbstractGenerator implements GeneratorInterface, ExporterAwareInterface
 {
     /**
      * @var Exporter\ExporterInterface
@@ -192,7 +192,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface
      * @return Exporter\ExporterInterface
      * @throws Exception
      */
-    private function getExporter()
+    public function getExporter()
     {
         $this->setHelpers($this->exporter);
         return $this->exporter;

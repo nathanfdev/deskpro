@@ -25,73 +25,12 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Generator;
 
-use Application\ImportBundle\Generator\Exporter\ExporterInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchParser;
-use DateTime;
-
-/**
- * ZenDesk batch parser
- *
- * Class Batch
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
- */
-final class Batch extends AbstractBatchParser
+interface ExporterAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * @return Exporter\ExporterInterface
      */
-    public function getExporterType()
-    {
-        return ExporterInterface::TYPE_ZENDESK;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultBatchConfig()
-    {
-        return new BatchConfig();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(array $config)
-    {
-        $columns = array(
-            'people_end_time',
-            'tickets_end_time',
-            'retry_after_time',
-        );
-
-        return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function parse(array $config)
-    {
-        /** @var BatchConfig $batch_config */
-        $batch_config = parent::parse($config);
-
-        if ($config['people_end_time']) {
-            $batch_config->setPeopleEndTime(new DateTime($config['people_end_time']));
-        }
-        if ($config['tickets_end_time']) {
-            $batch_config->setTicketsEndTime(new DateTime($config['tickets_end_time']));
-        }
-        if ($config['retry_after_time']) {
-            $batch_config->setRetryAfterTime(new DateTime($config['retry_after_time']));
-        }
-        if ($config['has_remaining']) {
-            $batch_config->setHasRemaining($config['has_remaining']);
-        } else {
-            $batch_config->setHasRemaining(false);
-        }
-
-        return $batch_config;
-    }
+    public function getExporter();
 }
