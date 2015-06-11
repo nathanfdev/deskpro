@@ -100,7 +100,7 @@ class ZenDeskReaderFactory
             ->addTicketsIncrementalExportResponse(dp_get_data_dir() . '/import/lamoda/tickets.json')
             ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users.json')
             ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users2.json')
-            ->addPeopleFindResponse(dp_get_data_dir() . '/import/lamoda/users3.json')
+            ->addOrganizationFindResponse(dp_get_data_dir() . '/import/lamoda/organization.json')
         ;
 
         return new ZenDeskReader(new Request\RequestCacheAdapter($adapter), $config);

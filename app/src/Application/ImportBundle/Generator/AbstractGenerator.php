@@ -92,7 +92,10 @@ abstract class AbstractGenerator
     protected function advanceProgressBar()
     {
         if ($this->progress_bar) {
-            $this->progress_bar->advance();
+            if ($this->progress_bar->getStep() < $this->progress_bar->getMaxSteps()) {
+                $this->progress_bar->advance();
+            }
+
         }
     }
 

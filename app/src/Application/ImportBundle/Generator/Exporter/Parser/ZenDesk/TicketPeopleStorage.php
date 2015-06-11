@@ -101,6 +101,7 @@ class TicketPeopleStorage implements TicketPeopleStorageInterface, PeopleStorage
             $this->people[$person['id']] = $person;
         }
         if ($this->people_storage) {
+            $this->people_storage->addIgnoreIds($request_ids);
             $this->people_storage->addPeople($this->people);
         }
     }
