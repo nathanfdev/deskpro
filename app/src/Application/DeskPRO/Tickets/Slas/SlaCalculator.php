@@ -188,6 +188,10 @@ class SlaCalculator
             if ($ticket->date_last_agent_reply && $ticket->messages->count() > 1) {
                 $dates[] = $ticket->date_last_agent_reply->getTimestamp();
             }
+
+            if ($ticket->date_status && $ticket->status != 'awaiting_agent') {
+                $dates[] = $ticket->date_status->getTimestamp();
+            }
         }
 
         if ($dates) {
