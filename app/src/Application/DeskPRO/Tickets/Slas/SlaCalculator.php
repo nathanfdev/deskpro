@@ -183,15 +183,16 @@ class SlaCalculator
             $dates[] = $ticket->date_archived->getTimestamp();
         }
 
-        if ($this->type == self::TYPE_FIRST_RESPONSE) {
-            // date_last_agent_reply && messages count === 1 means that this ticket is just created by agent
-            if ($ticket->date_first_agent_reply && $ticket->count_agent_replies) {
-                $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+        if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
+            if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
+                // don't auto resolve sla on ticket creation, even if created by an agent
+                if ($ticket->date_first_agent_reply) $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                $dates[] = $ticket->date_last_agent_reply->getTimestamp();
             }
+        }
 
-            if ($ticket->date_status && $ticket->status != 'awaiting_agent') {
-                $dates[] = $ticket->date_status->getTimestamp();
-            }
+        if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
+            $dates[] = $ticket->date_status->getTimestamp();
         }
 
         if ($dates) {
