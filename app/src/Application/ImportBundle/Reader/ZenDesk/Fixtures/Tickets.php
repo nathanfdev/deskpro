@@ -88,7 +88,7 @@ final class Tickets extends AbstractFixture implements FixturePrepareInterface
     {
         $types      = array('problem', 'incident', 'question', 'task');
         $priorities = array('urgent', 'high', 'normal', 'low');
-        $statuses   = array('open', 'pending', 'hold', 'solved', 'closed');
+        $statuses   = array('open', 'pending', 'hold', 'solved', 'closed', 'deleted');
 
         $type   = $types[rand(0, count($types) - 1)];
         $params = array(
