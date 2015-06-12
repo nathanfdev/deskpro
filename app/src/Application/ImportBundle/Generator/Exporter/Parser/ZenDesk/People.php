@@ -52,11 +52,6 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     private $people_storage;
 
     /**
-     * @var int
-     */
-    private $count;
-
-    /**
      * {@inheritdoc}
      */
     public function getEntityType()
@@ -78,7 +73,8 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function getCount()
     {
-        return $this->count;
+        // We could read data from ZD reader twice because of ZD reader cache support
+        return count($this->getPeople());
     }
 
     /**
@@ -87,7 +83,6 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     public function export()
     {
         $people = $this->getPeople();
-        $this->count = count($people);
 
         $collection = new Entity\Collection();
         $collection->setExpectedCount(count($people));

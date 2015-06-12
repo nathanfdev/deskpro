@@ -61,11 +61,6 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
-     * @var int
-     */
-    private $count = 0;
-
-    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
@@ -90,7 +85,8 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->count;
+        // We could read data from ZD reader twice because of ZD reader cache support
+        return count($this->getTickets());
     }
 
     /**

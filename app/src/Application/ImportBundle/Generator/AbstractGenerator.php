@@ -108,7 +108,6 @@ abstract class AbstractGenerator
             if ($this->progress_bar->getStep() < $this->progress_bar->getMaxSteps()) {
                 $this->progress_bar->advance();
             }
-
         }
     }
 
