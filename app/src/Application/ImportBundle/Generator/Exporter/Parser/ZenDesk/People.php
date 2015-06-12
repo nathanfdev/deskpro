@@ -178,16 +178,18 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
                 }
 
                 $people = $this->reader->getPeople($this->getBatchConfig()->getPeopleEndTime());
-
                 if (count($people)) {
                     $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getPeopleEndTime());
                     if ($this->end_time == $this->getBatchConfig()->getPeopleEndTime()) {
                         $this->end_time->modify('+1 second');
                     }
+
                     $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
+
                 } else {
                     $this->logDebug(sprintf("No more records"));
                 }
+
             } else {
                 $this->logAlert('No person was exported due 5 minutes timeout of the last end time');
             }

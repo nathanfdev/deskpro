@@ -28,10 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Exception;
 use Symfony\Component\Console\Output\OutputInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Generator command
@@ -46,61 +43,19 @@ abstract class AbstractGenerateCommand extends AbstractExportCommand
      *
      * @param Generator\GeneratorInterface $generator
      * @param OutputInterface              $output
-     * @param LoggerInterface              $logger
      *
      * @return bool
      */
-    protected function generate(Generator\GeneratorInterface $generator, OutputInterface $output, LoggerInterface $logger)
+    protected function generate(Generator\GeneratorInterface $generator, OutputInterface $output)
     {
-        try {
-            $generator->generate();
+        $generator->generate();
 
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'Done. %s was successful. Look at the log file `%s` to see details.',
+        $output->writeln('');
+        $output->writeln(sprintf(
+            'Done. %s was successful. Look at the log file `%s` to see details.',
 
-                $generator->getConfig()->getGenerationType(),
-                $generator->getConfig()->getLogPath()
-            ));
-
-            return true;
-
-        } catch (Generator\GeneratorException $e) {
-            $output->writeln('');
-            foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorConstraintException $exception */
-                $logger->alert(sprintf("Validator failure for %s on record #%s: ", get_class($exception->getEntity()), $exception->getEntity()->getOid(), $exception->getErrors()));
-                if ($r = $exception->getEntity()->getRawData()) {
-                    foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
-                        $output->writeln("  [info] " . $l);
-                    }
-                }
-            }
-            if ($generator->getConfig()->isVerbose() === false) {
-                $output->writeln(sprintf(
-                    'An error has occurred while %s. Look at the log file `%s` to see details.',
-
-                    strtolower($generator->getConfig()->getGenerationType()),
-                    $generator->getConfig()->getLogPath()
-                ));
-            }
-
-        } catch (Exception $e) {
-            $logger->critical($e);
-
-            if ($generator->getConfig()->isVerbose() === false) {
-                $output->writeln('');
-            }
-
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'An error has occurred while %s. Look at the log file `%s` to see details.',
-
-                strtolower($generator->getConfig()->getGenerationType()),
-                $generator->getConfig()->getLogPath()
-            ));
-        }
-
-        return false;
+            $generator->getConfig()->getGenerationType(),
+            $generator->getConfig()->getLogPath()
+        ));
     }
 }

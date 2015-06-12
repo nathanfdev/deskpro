@@ -237,6 +237,7 @@ final class Tickets extends AbstractParser
 
     /**
      * Returns tickets
+     * Loads data from ZenDesk reader
      *
      * @return array
      * @throws Exception
@@ -252,19 +253,22 @@ final class Tickets extends AbstractParser
             } else {
                 $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
             }
-            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
 
+            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
             if (count($tickets)) {
                 $this->tickets_people->loadByTickets($tickets);
+
                 $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
                 if ($this->end_time == $this->getBatchConfig()->getTicketsEndTime()) {
                     $this->end_time->modify('+1 second');
                 }
+
                 $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
+
             } else {
-                $this->tickets_people->loadByTickets(array());
                 $this->logDebug(sprintf("No more records"));
             }
+
         } else {
             $this->logAlert('No ticket was exported due 5 minutes timeout of the last end time');
         }

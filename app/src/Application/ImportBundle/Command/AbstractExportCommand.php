@@ -155,6 +155,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $arguments   = array_map(function($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
         $arguments[] = '-b';
 
+        // todo always verbose mode by now
+        // todo check for progress bar in unattended mode
+        $arguments[] = '-vvv';
+
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
         do {
@@ -164,20 +168,22 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 $output->write($data);
             });
 
-            if (!$process->isSuccessful()) {
+            if ( ! $process->isSuccessful()) {
                 $output->writeln("<error>Detected error, halting process</error>");
                 return 1;
             }
 
             $output->writeln("<info>Done batch</info>");
 
-            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
             $exporter_config = $config->getExporterBatchConfig();
+
             if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
                 $rerun = $exporter_config->getHasRemaining();
                 if ($rerun) {
                     $output->writeln("<info>Running next batch</info>");
                 }
+
             } else {
                 $rerun = false;
             }
@@ -207,11 +213,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             }
             if ($config->getRetryWaitTimeout()) {
                 $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
-
-                return 0;
+            } else {
+                $this->doExecute($config, $logger, $input, $output);
             }
-
-            $this->doExecute($config, $logger, $input, $output);
 
             return 0;
 

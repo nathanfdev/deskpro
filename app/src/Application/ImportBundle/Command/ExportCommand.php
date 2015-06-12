@@ -62,7 +62,7 @@ class ExportCommand extends AbstractGenerateCommand
         $generator = $this->createGenerator($config, $logger);
 
         $this->createAndSetProgressBar($generator, $output);
-        $this->generate($generator, $output, $logger);
+        $this->generate($generator, $output);
     }
 
     /**
