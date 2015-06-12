@@ -219,6 +219,32 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             return 0;
 
+        } catch (Generator\GeneratorException $e) {
+            if (isset($logger)) {
+                foreach ($e->getExceptions() as $exception) {
+                    /** @var Generator\Validator\ValidatorConstraintException $exception */
+                    $logger->alert(sprintf(
+                        "Validator failure for %s on record #%s: %s",
+
+                        get_class($exception->getEntity()),
+                        $exception->getEntity()->getOid(),
+                        $exception->getErrors())
+                    );
+
+                    if ($r = $exception->getEntity()->getRawData()) {
+                        foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
+                            $output->writeln("  [info] " . $l);
+                        }
+                    }
+                }
+            }
+            if (isset($logger)) {
+                $logger->critical($e);
+            }
+
+            // Mark batch as successful even an error has occurred
+            return 0;
+
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e, true);
             $output->writeln($e->getMessage());
@@ -235,7 +261,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 ));
             }
 
-            return 1;
+            // Mark batch as successful even an error has occurred
+            return 0;
         }
     }
 

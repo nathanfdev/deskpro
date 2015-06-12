@@ -122,25 +122,31 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         // Exports data to a collection of entities
         foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
             $this->exporterLogHeader($type);
-
-            $entities   = $exporter->exportByType($type);
-            $exceptions = $this->validateExportingCollection($type, $entities);
-            if (count($exceptions) > 0) {
-                throw new GeneratorException($exceptions);
-            }
-
-            $collection->attach($type, $entities);
+            $collection->attach($type, $exporter->exportByType($type));
         }
+
+        // Writes batch config (even no entities to write to support "retry-after" timeout)
+        // Writes batch config before validation to skip broken batches
 
         if ($exporter instanceof Exporter\ExporterBatchInterface) {
             $outputWriter->setBatchConfig($exporter->getUpdatedBatchConfig());
-
-            // Writes batch config (even no entities to write to support "retry-after" timeout)
             $outputWriter->writeBatchConfig();
         }
 
-        // Writes entities to a storage
         if ($collection->hasEntities()) {
+            // Validate the collection of entities
+            foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
+                if ($collection->hasEntitiesByType($type)) {
+                    $entities   = $collection->getByEntityType($type);
+                    $exceptions = $this->validateExportingCollection($type, $entities);
+
+                    if (count($exceptions) > 0) {
+                        throw new GeneratorException($exceptions);
+                    }
+                }
+            }
+
+            // Writes entities to a storage
             $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
             $outputWriter->prepare();
 
