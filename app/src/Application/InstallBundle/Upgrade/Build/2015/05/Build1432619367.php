@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,35 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace deskpro_us_ldap;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
-use deskpro_us_ldap\Usersource\AppOptionsMapper;
-
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+class Build1432619367 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    public function run()
     {
-        $us->title             = $app->title;
-        $us->options           = AppOptionsMapper::getOptions($app);
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Ldap';
-
-        $us->setSyncEnabled($app->getSetting('sync_enabled') ? true : false);
-        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
-
-        $em->persist($app);
-        $em->persist($us);
-        $em->flush();
+        $this->out("add usersource sync");
+		$this->execMutateSql("CREATE TABLE usersource_sync_log (id INT AUTO_INCREMENT NOT NULL, usersource_id INT DEFAULT NULL, record_count INT NOT NULL, date_start DATETIME DEFAULT NULL, date_end DATETIME DEFAULT NULL, date_phase_2_start DATETIME DEFAULT NULL, date_phase_2_end DATETIME DEFAULT NULL, status VARCHAR(256) DEFAULT NULL, INDEX IDX_C5ADA5725B71BD01 (usersource_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE usersource_sync_log ADD CONSTRAINT FK_C5ADA5725B71BD01 FOREIGN KEY (usersource_id) REFERENCES usersources (id)");
+		$this->execMutateSql("ALTER TABLE person_usersource_assoc ADD updated_at DATETIME DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE usersources ADD sync_enabled TINYINT(1) DEFAULT '0' NOT NULL");
     }
 }

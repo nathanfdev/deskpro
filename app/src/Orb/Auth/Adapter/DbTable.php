@@ -286,6 +286,24 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
     }
 
 
+    public function getAllUserInfo($offset = 0)
+    {
+        if (!$this->getDb()) {
+            return array();
+        }
+
+        $table = $this->options[self::OPT_TABLE];
+        // From MySQL manuel, OFFSET without LIMIT: http://dev.mysql.com/doc/refman/5.0/en/select.html#id4651990
+        $result = $this->db->executeQuery("SELECT * FROM $table LIMIT 18446744073709551610 OFFSET $offset")->fetchAll();
+
+        if (!$result) {
+            return array();
+        }
+
+        return $result;
+    }
+
+
     /**
      * Get user info from a username
      *

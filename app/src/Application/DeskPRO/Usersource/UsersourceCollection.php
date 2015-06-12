@@ -62,6 +62,38 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
+     * Filter out any usersources that are not enabled
+     *
+     * @return UsersourceCollection
+     */
+    public function mustBeEnabled()
+    {
+        $filtered = array_filter(
+            (array)$this, function (Usersource $us) {
+                return (bool) $us->is_enabled;
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    /**
+     * Filter out any usersources that are not enabled
+     *
+     * @return UsersourceCollection
+     */
+    public function mustHaveSyncEnabled()
+    {
+        $filtered = array_filter(
+            (array)$this, function (Usersource $us) {
+                return (bool) $us->isSyncEnabled();
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    /**
      * Limits to this ID only, still allowing other filters to fit your criteria
      *
      * @param  int                  $id id
@@ -72,6 +104,22 @@ class UsersourceCollection extends \ArrayObject
         $filtered = array_filter(
             (array)$this, function (Usersource $us) use ($id) {
                 return $us->id == $id;
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    public function withAppId($app_id)
+    {
+        $filtered = array_filter(
+            (array)$this,
+            function (Usersource $us) use ($app_id) {
+                if ($app = $us->getApp()) {
+                    return $app->getId() == $app_id;
+                }
+
+                return false;
             }
         );
 

@@ -34,14 +34,16 @@
 
 namespace Orb\Auth\Adapter;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Util\Arrays;
 
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Zend\Ldap\Ldap;
 
-class LdapRaw implements FormLoginInterface, Loggable
+class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -258,6 +260,87 @@ class LdapRaw implements FormLoginInterface, Loggable
 
 
     /**
+     * Authenticate a user.
+     *
+     * @return
+     */
+    public function getIdentityForDn($provided_dn)
+    {
+        try {
+            $zend_auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $zend_auth->setUsername('__bogus__');
+                $zend_auth->setPassword('__bogus__');
+                $zend_auth->authenticate();
+            } catch (\Exception $e) {}
+            $raw_info = array();
+
+            /** @var $ldap \Zend\Ldap\Ldap */
+            $ldap = $zend_auth->getLdap();
+
+            $dn = $ldap->getCanonicalAccountName($provided_dn, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+
+            /** @var $rec \Zend\Ldap\Node */
+            $rec = $ldap->getNode($dn);
+            if ($rec) {
+                $raw_info = array_merge($raw_info, $rec->getAttributes());
+
+                if (!empty($raw_info['samaccountname'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
+                } elseif (!empty($raw_info['uid'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+                }
+                if (!empty($raw_info['distinguishedname'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
+                } elseif (!empty($raw_info['dn'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                } else {
+                    $raw_info['identity'] = $provided_dn;
+                }
+
+                if ($rec->getAttribute('givenName')) {
+                    $raw_info['first_name'] = Arrays::getFirstItem($rec->getAttribute('givenName'));
+                }
+                if ($rec->getAttribute('SN')) {
+                    $raw_info['last_name'] = Arrays::getFirstItem($rec->getAttribute('SN'));
+                }
+
+                if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')) . ' ' . Arrays::getFirstItem($rec->getAttribute('SN'));
+                } elseif ($rec->getAttribute('name')) {
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
+                } elseif ($rec->getAttribute('CN')) {
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('CN'));
+                }
+
+                if ($rec->getAttribute('mail')) {
+                    $raw_info['email_address'] = Arrays::getFirstItem($rec->getAttribute('mail'));
+                }
+
+                if ($rec->getAttribute('jpegPhoto')) {
+                    $raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('jpegPhoto'));
+                } elseif ($rec->getAttribute('thumbnailPhoto')) {
+                    $raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('thumbnailPhoto'));
+                }
+            }
+        } catch (\Exception $e) {
+            $raw_info['dp_error'] = "Error when fetching node";
+            $raw_info['exception_type'] = get_class($e);
+            $raw_info['exception_message'] = $e->getMessage();
+            $raw_info['exception_code'] = $e->getCode();
+            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
+        }
+
+        $identity = new Identity($raw_info['identity'], $raw_info);
+
+        return $identity;
+    }
+
+
+    /**
      * Search the AD for the user based on email address
      */
     public function findRecordViaEmail()
@@ -309,6 +392,29 @@ class LdapRaw implements FormLoginInterface, Loggable
         }
 
         return null;
+    }
+
+    public function findRecordViaDn($dn)
+    {
+        if ($this->logger) {
+            $this->logger->log("START Filter for dn", Logger::DEBUG);
+        }
+
+        $zend_auth = $this->getZendAuthAdapter();
+        // Bogus because zend only creates ldap obj when its needed,
+        // so this is a hack to get it to set all the correct options
+        // for us
+        try {
+            $zend_auth->setUsername('__bogus__');
+            $zend_auth->setPassword('__bogus__');
+            $zend_auth->authenticate();
+        } catch (\Exception $e) {
+        }
+
+        /** @var $ldap \Zend\Ldap\Ldap */
+        $ldap = $zend_auth->getLdap();
+
+        return $ldap->getEntry($dn);
     }
 
 

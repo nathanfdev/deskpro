@@ -13,6 +13,19 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
+		<h3>Enable Auto Sync</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.sync_enabled"/>
+			Enable Auto Sync
+		</label>
+		<span class="help-block">Routinely sync user information from this usersource to DeskPRO</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
 		<h3>Server</h3>
 	</div>
 	<div class="col-lg-8">
@@ -58,11 +71,24 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
-		<h3>Filter</h3>
+		<h3>Enable LDAP Paging</h3>
 	</div>
 	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.account_filter" style="width: 50%;" placeholder="Enter a custom filter" />
-		<span class="help-block">Enter the filter to use to search for users. By default, DeskPRO will search input aginst the dn, mail and uid fields: <code>(|(dn=%1$s)(mail=%1$s)(uid=%1$s))</code></span>
+		<label>
+			<input type="checkbox" ng-model="setting_values.ldap_paging"/>
+			Enable LDAP Paging
+		</label>
+		<span class="help-block">By default, our sync system does not use LDAP Paging. If your LDAP server supports LDAP paging, you can enable it here.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>LDAP Size Limit</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.ldap_per_page" style="width: 100px;" placeholder="0" />
+		<span class="help-block">LDAP servers typically set a limit on the number of entries that we can query for during a sync. For no limit, enter 0. If you are not sure, please check with your LDAP server administrator.</span>
 	</div>
 </div>
 

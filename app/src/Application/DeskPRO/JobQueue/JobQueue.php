@@ -114,6 +114,12 @@ class JobQueue
         $this->saveJob($job);
     }
 
+    public function abort(Job $job)
+    {
+        $job->abort();
+        $this->saveJob($job);
+    }
+
 
     /**
      * Determines if the job is ready to run now
@@ -158,6 +164,11 @@ class JobQueue
     public function retryByJobId($id, \DateTime $when)
     {
         $this->retry($this->getJob($id), $when);
+    }
+
+    public function abortJobId($id)
+    {
+        $this->abort($this->getJob($id));
     }
 
 

@@ -39,7 +39,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * This tracks associations between a user and a usersource.
- *
+ * @property Person $person
+ * @property Usersource $usersource
+ * @property string $identity
+ * @property string $identity_friendly
+ * @property mixed  $data
+ * @property \DateTime $date_updated
+ * @property \DateTime $date_created
  */
 class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -88,6 +94,13 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
     protected $data = array();
 
     /**
+     * When the associated person was last "synced" from the remote usersource
+     *
+     * @var \DateTime
+     */
+    protected $date_updated;
+
+    /**
      * When the record was first created in the system
      *
      * @var \DateTime
@@ -106,6 +119,95 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->id;
     }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+    }
+
+    /**
+     * @return Usersource
+     */
+    public function getUsersource()
+    {
+        return $this->usersource;
+    }
+
+    /**
+     * @param Usersource $usersource
+     */
+    public function setUsersource(Usersource $usersource)
+    {
+        $this->setModelField('usersource', $usersource);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentity()
+    {
+        return $this->identity;
+    }
+
+    /**
+     * @param string $identity
+     */
+    public function setIdentity($identity)
+    {
+        $this->setModelField('identity', $identity);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentityFriendly()
+    {
+        return $this->identity_friendly;
+    }
+
+    /**
+     * @param string $identity_friendly
+     */
+    public function setIdentityFriendly($identity_friendly)
+    {
+        $this->setModelField('identity_friendly', $identity_friendly);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param \DateTime $date_updated
+     */
+    public function setDateUpdated($date_updated)
+    {
+        $this->setModelField('date_updated', $date_updated);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
 
     ############################################################################
     # Doctrine Metadata
@@ -126,6 +228,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'identity', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity', ));
         $metadata->mapField(array( 'fieldName' => 'identity_friendly', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity_friendly', ));
         $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'updated_at', ));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));

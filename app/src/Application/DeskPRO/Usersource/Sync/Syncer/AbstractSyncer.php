@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,35 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace deskpro_us_ldap;
+namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
-use deskpro_us_ldap\Usersource\AppOptionsMapper;
+use Application\DeskPRO\Usersource\Sync\SyncerHelper;
+use Application\DeskPRO\Usersource\Sync\SyncerInterface;
 
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+abstract class AbstractSyncer implements SyncerInterface
 {
     /**
-     * {@inheritdoc}
+     * @var SyncerHelper
      */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    protected $helper;
+
+    /**
+     * @param SyncerHelper $helper
+     */
+    public function __construct(SyncerHelper $helper)
     {
-        $us->title             = $app->title;
-        $us->options           = AppOptionsMapper::getOptions($app);
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Ldap';
+        $this->helper = $helper;
+    }
 
-        $us->setSyncEnabled($app->getSetting('sync_enabled') ? true : false);
-        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
-
-        $em->persist($app);
-        $em->persist($us);
-        $em->flush();
+    public function supportsUsersource(Usersource $usersource)
+    {
+        return $this->supportsUsersourceAdapter($usersource->getSourceType());
     }
 }

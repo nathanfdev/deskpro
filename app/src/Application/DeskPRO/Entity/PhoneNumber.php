@@ -91,12 +91,45 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;
 
-    public function __construct($number = null)
+    /**
+     * LOOK at the static createEntity factory method, don't try to create yourself.
+     *
+     * @param null $number
+     * @param null $region
+     */
+    public function __construct($number = null, $region = null, $guessed_type = null)
     {
         if ($number) {
-            $this->setNumber($number);
+            $this->setModelField('number', $number);
+            $this->setModelField('region', $region);
+            $this->setModelField('guessed_type', $guessed_type);
         }
         $this->setModelField('date_created', new \DateTime());
+    }
+
+    /**
+     * @param $phone_number
+     * @return PhoneNumber
+     */
+    public static function createEntity($phone_number)
+    {
+        try {
+            if (!PhoneNumbers::isValid($phone_number)) {
+                return null;
+            }
+
+            $num = PhoneNumbers::parseNum($phone_number);
+            $region = PhoneNumbers::getRegionForNumber($num);
+            $type = PhoneNumbers::getType($num);
+
+            if (empty($num) || empty($region) || empty($type)) {
+                return null;
+            }
+
+            return new static($num, $region, $type);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**

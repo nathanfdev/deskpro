@@ -151,8 +151,7 @@ class UsersourceManager
     /**
      * Get all usersources for the agent/admin area
      *
-     * @param  bool                                                                                          $active if true only returns enabled usersources
-     * @return \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
+     * @return \Application\DeskPRO\Usersource\UsersourceCollection|\Application\DeskPRO\Entity\Usersource[]
      */
     public function getAll()
     {
@@ -225,5 +224,18 @@ class UsersourceManager
     public function getById($sso_usersource_id)
     {
         return $this->usersources = $this->em->getRepository('DeskPRO:Usersource')->find($sso_usersource_id);
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param \DateTime $last_updated
+     * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
+     */
+    public function findAssociationsUpdatedBefore(Usersource $usersource, \DateTime $last_updated)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repo */
+        $assoc_repo = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc');
+
+        return $assoc_repo->getAssociationsUpdatedBefore($usersource, $last_updated);
     }
 }
