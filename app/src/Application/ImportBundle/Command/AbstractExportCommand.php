@@ -35,9 +35,12 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Orb\Util\Env;
+use Orb\Util\OptionsArray;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -46,11 +49,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Orb\Util\OptionsArray;
-use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Process\Process;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Base export command
@@ -101,6 +104,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 InputOption::VALUE_NONE,
                 'No progressbar'
             )
+            ->addOption(
+                'batch',
+                'b',
+                InputOption::VALUE_NONE,
+                'Runs only the next batch'
+            )
         ;
     }
 
@@ -112,6 +121,81 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $GLOBALS['DP_IS_IMPORTING'] = true;
         @ini_set('memory_limit', -1);
 
+        if ($input->getOption('batch')) {
+            return $this->executeBatchRun($input, $output);
+        } else {
+            return $this->executeUnattendedRun($input, $output);
+        }
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
+    {
+        $out = $this->checkPhpInfo();
+        if ($out !== true) {
+            $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
+            $output->write('<error>Specify path to PHP in config.php by setting the $DP_CONFIG[\'php_path\'] option.</error>');
+
+            return 1;
+        }
+
+        $out = $this->checkRequirements();
+        if ($out !== true) {
+            $output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
+            $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
+
+            return 1;
+        }
+
+        $arguments   = array_map(function($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
+        $arguments[] = '-b';
+
+        $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
+
+        do {
+            $process = new Process($cmd, realpath(DP_ROOT.'/../'));
+            $process->setTimeout(18000);
+            $process->run(function($type, $data) use ($output) {
+                $output->write($data);
+            });
+
+            if (!$process->isSuccessful()) {
+                $output->writeln("<error>Detected error, halting process</error>");
+                return 1;
+            }
+
+            $output->writeln("<info>Done batch</info>");
+
+            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $exporter_config = $config->getExporterBatchConfig();
+            if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
+                $rerun = $exporter_config->getHasRemaining();
+                if ($rerun) {
+                    $output->writeln("<info>Running next batch</info>");
+                }
+            } else {
+                $rerun = false;
+            }
+
+        } while ($rerun);
+
+        $output->writeln("<info>Done all.</info>");
+        return 0;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    protected function executeBatchRun(InputInterface $input, OutputInterface $output)
+    {
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         try {
@@ -124,17 +208,19 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             if ($config->getRetryWaitTimeout()) {
                 $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
 
-                return;
+                return 0;
             }
 
             $this->doExecute($config, $logger, $input, $output);
 
+            return 0;
+
         } catch (\Exception $e) {
+            KernelErrorHandler::logException($e, true);
             $output->writeln($e->getMessage());
 
             if (isset($logger)) {
-                $logger->critical($e->getMessage());
-                $logger->critical($e->getTraceAsString());
+                $logger->critical($e);
             }
             if (isset($config)) {
                 $output->writeln(sprintf(
@@ -144,6 +230,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                     $config->getLogPath()
                 ));
             }
+
+            return 1;
         }
     }
 
@@ -421,5 +509,54 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function getContainer()
     {
         return parent::getContainer();
+    }
+
+    /**
+     * Check PHP info
+     *
+     * @return bool
+     */
+    protected function checkPhpInfo()
+    {
+        if (dp_is_php_path_guessed()) {
+            $cmd = sprintf(
+                "%s %s",
+
+                dp_get_php_path(),
+                escapeshellarg('bin/phpinfo.php')
+            );
+
+            $process = new Process($cmd, realpath(DP_ROOT));
+            $process->run();
+
+            return $process->isSuccessful() && Env::isSamePhpInfo(Env::getPhpInfo(), $process->getOutput());
+        }
+
+        return true;
+    }
+
+    /**
+     * Make sure PHP we have passes requirements
+     *
+     * @return bool|string
+     */
+    protected function checkRequirements()
+    {
+        $cmd = sprintf(
+            "%s %s",
+
+            dp_get_php_path(),
+            escapeshellarg('bin/check-req.php')
+        );
+
+        $process = new Process($cmd, realpath(DP_ROOT));
+        $process->run();
+
+        $output = $process->getOutput();
+        if ( ! $process->isSuccessful() || strpos($output, 'OKAY') === false) {
+            return $output;
+        }
+
+        return true;
     }
 }
