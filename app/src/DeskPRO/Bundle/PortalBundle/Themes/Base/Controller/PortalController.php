@@ -82,7 +82,7 @@ class PortalController extends AbstractController
      */
     public function sidebarAction(TagRequest $tag_request)
     {
-        return $this->renderThemeView('Theme:Portal:Sidebar/sidebar.html.twig');
+        return $this->renderThemeView('Theme:Portal:sidebar.html.twig');
     }
 
     /**
@@ -109,7 +109,7 @@ class PortalController extends AbstractController
         }
 
         return $this->renderThemeView(
-            'Theme:Portal:Sidebar/sidebar.html.twig',
+            'Theme:Portal:sidebar.html.twig',
             $page_vars
         );
     }

@@ -6,6 +6,7 @@ Feature: User Profile
   Background: Fresh DB
     Given I install the fresh data set
 
+  @reinstall
   Scenario: I visit my profile page but I am not logged in
     When I go to "/profile"
     Then I should be on "/login"

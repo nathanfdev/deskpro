@@ -184,7 +184,7 @@ class ThemeResolver
         if (isset($map[$theme->getId()])
             && isset($map[$theme->getId()][$name])
         ) {
-            return DP_ROOT . $map[$theme->getId()][$name];
+            return realpath(DP_ROOT . $map[$theme->getId()][$name]);
         }
 
         return null;
