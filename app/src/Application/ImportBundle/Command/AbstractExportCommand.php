@@ -451,6 +451,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($config->isConsoleOutputEnabled()) {
             $formatter = new ConsoleFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
+            $formatter->allowInlineLineBreaks(true);
 
             $handler = new ConsoleHandler($output);
             $handler->setFormatter($formatter);
