@@ -500,26 +500,27 @@ define [
         @loadDataPromise = @$q.defer();
 
         @Api.sendDataGet({
-          'agents':          '/agents'
-          'agent_teams':     '/agent_teams',
-          'ticket_deps':     '/ticket_deps',
-          'ticket_cats':     '/ticket_cats',
-          'ticket_prods':    '/ticket_prods',
-          'ticket_pris':     '/ticket_pris',
-          'ticket_works':    '/ticket_works',
-          'ticket_fields':   '/ticket_fields',
-          'user_fields':     '/user_fields',
-          'org_fields':      '/org_fields',
-          'ticket_slas':     '/ticket_slas',
-          'email_accounts':  '/email_accounts',
-          'usergroups':      '/user_groups',
-          'langs':           '/langs',
-          'email_tpls':      '/email-templates-info',
-          round_robin:       '/round_robin/settings',
-          round_robins:      '/round_robin',
-          tasks:             '/tasks/settings'
-          contextual_fields: '/custom_fields'
-          'jira_settings':   '/apps/jira'
+          agents:             '/agents'
+          agent_teams:        '/agent_teams'
+          ticket_deps:        '/ticket_deps'
+          ticket_cats:        '/ticket_cats'
+          ticket_prods:       '/ticket_prods'
+          ticket_pris:        '/ticket_pris'
+          ticket_works:       '/ticket_works'
+          ticket_fields:      '/ticket_fields'
+          ticket_labels:      '/labels/definitions/tickets'
+          user_fields:        '/user_fields'
+          org_fields:         '/org_fields'
+          ticket_slas:        '/ticket_slas'
+          email_accounts:     '/email_accounts'
+          usergroups:         '/user_groups'
+          langs:              '/langs'
+          email_tpls:         '/email-templates-info'
+          round_robin:        '/round_robin/settings'
+          round_robins:       '/round_robin'
+          tasks:              '/tasks/settings'
+          contextual_fields:  '/custom_fields'
+          jira_settings:      '/apps/jira'
         }).then( (result) =>
           data = result.data
           options_data = {}
@@ -543,6 +544,7 @@ define [
           options_data['tasks']            = data.tasks
           options_data['contextual_fields']= data.contextual_fields
           options_data['jira_settings']    = data.jira_settings
+          options_data['ticket_labels']    = data.ticket_labels
 
           options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
@@ -652,17 +654,22 @@ define [
         return {
           getViewValue: (value = {}, data) ->
             options = value?.options || {}
+            tags = []
+            if me.options_data.ticket_labels
+              me.options_data.ticket_labels.map (label) ->
+                tags.push label.label
+
             viewValue =
               add_labels:       options.add_labels || []
               remove_labels:    options.remove_labels || []
               select2_add:
                 multiple:     true
                 simple_tags:  true
-                tags: options.add_labels || []
+                tags: tags
               select2_remove:
                 multiple:     true
                 simple_tags:  true
-                tags: options.remove_labels || []
+                tags: tags
 
             viewValue.with_add    = viewValue.add_labels.length > 0
             viewValue.with_remove = viewValue.remove_labels.length > 0

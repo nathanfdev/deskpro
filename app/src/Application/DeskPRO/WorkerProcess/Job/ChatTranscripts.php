@@ -36,6 +36,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\ChatConversation;
 use Orb\Log\Logger;
 
 class ChatTranscripts extends AbstractJob
@@ -61,18 +62,20 @@ class ChatTranscripts extends AbstractJob
         ", array(date('Y-m-d H:i:s'), $chat_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
 
         foreach ($chat_ids as $chat_id) {
+            /** @var ChatConversation $chat */
             $chat = App::getOrm()->find('DeskPRO:ChatConversation', $chat_id);
 
             $email = '';
             $name = '';
-            if ($chat->person && $chat->person->getPrimaryEmailAddress()) {
-                $email = $chat->person->getPrimaryEmailAddress();
-            } elseif ($chat->person_email) {
+            if ($person = $chat->person) {
+                $email = $person->getPrimaryEmailAddress();
+                $name = $person->name;
+                App::getTranslator()->setPersonContext($chat->person);
+            }
+            if (!$email && $chat->person_email) {
                 $email = $chat->person_email;
             }
-            if ($chat->person && $chat->person->name) {
-                $name = $chat->person->name;
-            } elseif ($chat->person_name) {
+            if (!$name && $chat->person_name) {
                 $name = $chat->person_name;
             }
 
@@ -108,6 +111,7 @@ class ChatTranscripts extends AbstractJob
 
             App::getOrm()->detach($chat);
             $chat = null;
+            App::getTranslator()->setPersonContext();
         }
 
         $this->logger->log("Sent " . count($chat_ids) . " chat transcripts", Logger::INFO);

@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
@@ -270,5 +271,68 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         }
 
         return $definition;
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deleteOptionAction(Request $request)
+    {
+        $types = array(
+            'tickets' => 'CustomDefTicket',
+            'organizations' => 'CustomDefOrganization',
+            'people' => 'CustomDefPerson',
+            'chats' => 'CustomDefChat',
+        );
+
+        if (!$repClass = @$types[$request->get('type')]) {
+            throw new BadRequestHttpException;
+        }
+        if (!$ids = $request->get('ids')) {
+            throw new BadRequestHttpException;
+        }
+
+        $rep = $this->em->getRepository('DeskPRO:'.$repClass);
+        $step = (int)$request->get('step');
+        switch ($step) {
+
+            case 1:
+                $response = array('success' => $rep->hasData($ids));
+                $field = $rep->getByOptions($ids);
+                $root = (int)reset($ids);
+                $options = array();
+                $map = array();
+                foreach ($field->children as $child) {
+                    if ($pid = $child->getOption('parent_id')) {
+                        if ($root !== $child['id']) {
+                            $map[$pid] = 1;
+                        }
+                    }
+                }
+
+                foreach ($field->children as $child) {
+                    $id = $child['id'];
+                    if (!@$map[$id] && !in_array($id, $ids)) {
+                        $options[$id] = $child['title'];
+                    }
+                }
+
+                $response['options'] = $options ?: null;
+                $response['default'] = $options ? key($options) : null;
+
+                return $this->createJsonResponse($response);
+                break;
+
+            case 2:
+                if (!$to = $request->get('update_to')) {
+                    throw new BadRequestHttpException;
+                }
+                $rep->updateTo($ids, $to);
+                return $this->createSuccessResponse();
+                break;
+        }
+
+        throw new BadRequestHttpException;
     }
 }

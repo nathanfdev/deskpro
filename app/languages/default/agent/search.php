@@ -20,4 +20,5 @@
     'agent.search.type_download'                 => 'Download',
     'agent.search.type_news'                     => 'News',
     'agent.search.type_feedback'                 => 'Feedback',
+    'agent.search.type_ticket_deleted'           => 'Deleted Tickets',
 );
