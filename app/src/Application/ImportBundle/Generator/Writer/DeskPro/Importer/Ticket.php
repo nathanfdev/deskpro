@@ -101,7 +101,8 @@ final class Ticket extends AbstractImporter
             ->setDateArchived($entity->getDateArchived())
             ->resetMessages()
             ->resetParticipants()
-            ->resetLabels();
+            ->resetLabels()
+        ;
 
         if ($ticket->getRef() !== $entity->getRef()) {
             // Remember new ref, if it was changed to apply ticket labels
@@ -126,7 +127,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket message entity
+     * Returns the importing DeskPRO doctrine ticket message entity
      *
      * @param Entity\TicketMessage $entity
      * @return DeskPROEntity\TicketMessage
@@ -156,7 +157,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket message attachment entity
+     * Returns the importing DeskPRO doctrine ticket message attachment entity
      *
      * @param Entity\Attachment $entity
      * @param string            $person_email
@@ -176,7 +177,7 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket participant entity
+     * Returns the importing DeskPRO doctrine ticket participant entity
      *
      * @param string $email
      *
