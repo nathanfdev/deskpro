@@ -680,6 +680,36 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * Are there any CCed users?
+     * @return boolean
+     */
+    public function numCcedParticipants()
+    {
+        return count($this->ticket->getUserParticipants());
+    }
+
+    /**
+     * A nice and easy way to retrieve all participants in the ticket. Mainly for display.
+     * @return array the list of participants as an array of strings.
+     */
+    public function getCcedParticipants()
+    {
+        if (!$this->ticket) {
+            return array();
+        }
+
+        if ($this->numCcedParticipants() > 0) {
+            return array_map(function($p) {
+                    return $p->getDisplayContact();
+                },
+                $this->ticket->getUserParticipants()
+            );
+        } else {
+            return array();
+        }
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
