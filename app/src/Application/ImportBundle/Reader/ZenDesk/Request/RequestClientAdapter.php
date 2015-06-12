@@ -32,6 +32,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Psr\Log\LoggerInterface;
 use Zendesk\API;
 use RuntimeException;
+use Exception;
 
 /**
  * ZenDesk API request adapter via ZenDesk client vendor
@@ -99,24 +100,31 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request
-     * @param int $is_retry
+     * @param int                                $retry_attempt
      *
      * @return \stdClass
      *
      * @throws RetryAfterException
      * @throws API\ResponseException
      */
-    private function doRequest(ClientHelper\ClientHelperInterface $request, $is_retry = 0)
+    private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
-            $response = $request->request($this->client);
-            return $response;
+            return $request->request($this->client);
+
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
                 $debug = $this->client->getDebug();
 
                 if ($this->logger) {
-                    $this->logger->error(sprintf("[%s] (%s) %s -- %s", $e->getCode(), get_class($e), $e->getMessage(), $debug ? print_r($debug) : "nodebug"));
+                    $this->logger->error(sprintf(
+                        "[%s] (%s) %s -- %s",
+
+                        $e->getCode(),
+                        get_class($e),
+                        $e->getMessage(),
+                        $debug->__toString()
+                    ));
                 }
 
                 switch ($debug->lastResponseCode) {
@@ -127,19 +135,12 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         );
 
                     case ZenDeskReaderInterface::CODE_TOO_MANY_REQUESTS:
-                        $secs = RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders);
-                        if ($is_retry) {
-                            throw new RetryAfterException(
-                                $e->getMessage(),
-                                $secs
-                            );
-                        } else {
-                            if ($this->logger) {
-                                $this->logger->info("Hit request limit, sleeping for $secs seconds");
-                            }
-                            sleep($secs+1);
-                            return $this->doRequest($request, true);
+                        $timeout = RetryAfterException::parseRetryAfterTimeout($debug->lastResponseHeaders);
+                        if ($this->logger) {
+                            $this->logger->info("Hit request limit, sleeping for $timeout seconds");
                         }
+
+                        return $this->retry($request, $retry_attempt, new RetryAfterException($e->getMessage(), $timeout), $timeout);
 
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do
@@ -147,18 +148,51 @@ final class RequestClientAdapter implements RequestAdapterInterface
                         break;
 
                     default:
-                        if ($is_retry++ < 4) {
-                            if ($this->logger) {
-                                $this->logger->error("Unknown API request error. Will retry.");
-                            }
-                            sleep(2+$is_retry);
-                            return $this->doRequest($request, true);
+                        if ($this->logger) {
+                            $this->logger->error("Unknown API ResponseException. Will retry.");
+                            $this->logger->error($e);
                         }
-                        throw $e;
+
+                        return $this->retry($request, $retry_attempt, $e);
                 }
             }
+
+        } catch (Exception $e) {
+            if ($this->logger) {
+                $this->logger->error("Unknown API request error. Will retry.");
+                $this->logger->error($e);
+            }
+
+            return $this->retry($request, $retry_attempt, $e);
         }
 
         return null;
+    }
+
+    /**
+     * Retry api request on error response
+     *
+     * @param ClientHelper\ClientHelperInterface $request
+     * @param int                                $retry_attempt
+     * @param Exception                          $exception
+     * @param int                                $timeout
+     *
+     * @return \stdClass
+     *
+     * @throws Exception
+     * @throws RetryAfterException
+     */
+    private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
+    {
+        if ($retry_attempt++ < 4) {
+            if ($this->logger) {
+                $this->logger->error("Retry api request, attempt = $retry_attempt.");
+            }
+
+            sleep($timeout > 0 ? $timeout : 2 + $retry_attempt);
+            return $this->doRequest($request, $retry_attempt);
+        }
+
+        throw $exception;
     }
 }
