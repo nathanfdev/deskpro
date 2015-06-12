@@ -39,6 +39,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Processor\MemoryUsageProcessor;
 use Orb\Util\Env;
 use Orb\Util\OptionsArray;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
@@ -109,6 +110,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 'b',
                 InputOption::VALUE_NONE,
                 'Runs only the next batch'
+            )
+            ->addOption(
+                'memory-usage',
+                'm',
+                InputOption::VALUE_NONE,
+                'Shows memory usage'
             )
         ;
     }
@@ -209,7 +216,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         try {
             $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
-            $logger = $this->createLogger($config, $output);
+            $logger = $this->createLogger($config, $input, $output);
 
             if ($config->isSilent()) {
                 $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
@@ -460,11 +467,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Create a logger
      *
      * @param GeneratorConfig $config
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return LoggerInterface
      */
-    protected function createLogger(GeneratorConfig $config, OutputInterface $output)
+    protected function createLogger(GeneratorConfig $config, InputInterface $input, OutputInterface $output)
     {
         $logger = new Logger('exporter');
 
@@ -487,6 +495,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $handler->setFormatter($formatter);
 
             $logger->pushHandler($handler);
+        }
+        if ($input->getOption('memory-usage')) {
+            $logger->pushProcessor(new MemoryUsageProcessor());
         }
 
         return $logger;
