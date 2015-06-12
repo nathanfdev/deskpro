@@ -56,7 +56,7 @@ class PageTitleBuilder
                 continue;
             }
             if ($sec = implode($this->section_sep, $section)) {
-                $sections[] = $sec;
+                $sections[] = trim($sec);
             }
         }
 
