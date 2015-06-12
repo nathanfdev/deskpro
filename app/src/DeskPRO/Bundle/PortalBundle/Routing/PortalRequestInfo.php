@@ -119,7 +119,9 @@ class PortalRequestInfo
 
     protected function getReleventPathInfo()
     {
-        return $this->mode_factory->getInternalPath($this->request->getPathInfo());
+        $request_path_info = $this->request->getPathInfo();
+
+        return $this->mode_factory->getInternalPath($request_path_info);
     }
 
     public function isSpecialPath()
