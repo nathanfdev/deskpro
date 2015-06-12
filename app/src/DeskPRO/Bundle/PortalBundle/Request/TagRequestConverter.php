@@ -75,7 +75,9 @@ class TagRequestConverter implements ParamConverterInterface
         $tag_request = new TagRequest($query, array(), $attrs);
         $tag_request->attributes->set('_controller', $tag->getControllerName());
         $tag_request->setOptionsResolver(new OptionsResolver());
-        $tag_request->setSession($request->getSession());
+        if ($session = $request->getSession()) {
+            $tag_request->setSession($session);
+        }
 
         $request->attributes->set('tag_request', $tag_request);
 
