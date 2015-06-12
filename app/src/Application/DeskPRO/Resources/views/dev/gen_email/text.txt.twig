@@ -13,6 +13,8 @@ Content-Type: text/plain
 {% if as_reply %}
   {%- if as_agent %}
     === {{ phrase('agent.emails.reply_above_line') }} [http://deskpro.com/l/reply"] ===
+    --- Your reply will be sent to the user {{ person.getDisplayContact }} and
+	--- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com>
 
 
   {% endif %}
