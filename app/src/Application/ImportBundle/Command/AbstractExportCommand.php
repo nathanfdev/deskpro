@@ -175,6 +175,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             $output->writeln("<info>Done batch</info>");
 
+            $output->writeln("<info>Updating search tables.</info>");
+            $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+
             $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
             $exporter_config = $config->getExporterBatchConfig();
 
