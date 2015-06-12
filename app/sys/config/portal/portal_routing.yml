@@ -8,3 +8,14 @@ dp_routes:
     resource: "@DeskPRO/Resources/config/dp-routing.php"
 agent_routes:
     resource: "@AgentBundle/Resources/config/agent-routing.php"
+
+# this is the last registered route, so its the last one checked
+# it matches EVERYTHING, and the controller just throws a NotFoundHttpException
+# why? so that our 404 pages have access to the security token...
+# without this, the RouterListener throws an exception before FirewallListener
+# runs, and we lose all context of the user
+not_found_catch_all:
+    pattern:  /{path}
+    defaults: { _controller: PortalBundle:Error:notFound, path: '' }
+    requirements:
+        path: .*

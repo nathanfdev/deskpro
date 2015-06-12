@@ -36,10 +36,12 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
 class ErrorController extends AbstractController
 {
-    public function showExceptionAction(FlattenException $exception)
+    public function showExceptionAction(FlattenException $exception, $logger = null)
     {
         $code = $exception->getStatusCode();
 
@@ -50,6 +52,29 @@ class ErrorController extends AbstractController
             $template = $this->makeTemplateName($code, true);
         }
 
+        // if an exception occured BEFORE the security (Firewall) listener runs, then
+        // there is no token in storage. Our templates usually do is_granted type checks,
+        // so we need to do something to avoid the is_granted throwing its own exception while we render this page.
+        // Ideally, error templates would not contain security checks, but in practice they will, so this
+        // helps to at least show a nice error, even if the security context is missing.
+        // NOTE: this should be rather rare. the FirewallListener runs early. However,
+        //       the router runs before it so we'd have problems in 404s.
+        //       That said, we patched that by using the notFoundAction on this controller
+        //       to force the firewall to run before we throw the 404 exceptions.
+        if (!$this->getUser()) {
+            $this->get('security.token_storage')->setToken(new AnonymousToken('anon.', 'anon.'));
+        }
+
+        if ($this->container->getParameter('kernel.debug')) {
+            return $this->render('TwigBundle:Exception:exception_full.html.twig', array(
+                'status_code' => $code,
+                'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+                'exception' => $exception,
+                'logger' => $logger,
+                'currentContent' => null
+            ));
+        }
+
         return $this->renderThemeView(
             $template,
             array(
@@ -58,6 +83,14 @@ class ErrorController extends AbstractController
                 'exception' => $exception
             )
         );
+    }
+
+    public function notFoundAction($path)
+    {
+        // this is a portal catch all route. Anything that ends up here was not matched by the router.
+        // we have this so that 404s hit a controller (meaning all request listeners were run)
+        // and this ensures that FirewallListener populates our security token.
+        throw new NotFoundHttpException('could not find a route for: ' . $path);
     }
 
     // to be removed when the minimum required version of Twig is >= 2.0
