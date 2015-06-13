@@ -260,7 +260,6 @@ final class Tickets extends AbstractParser
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
-                ->setMessageHtml($comment['html_body'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
             ;
 
@@ -299,10 +298,10 @@ final class Tickets extends AbstractParser
                 // We have to load comments for each ticket separately
                 foreach ($tickets as &$ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
-                        $this->logDebug(sprintf('Reading ticket #%d comments', $ticket['id']));
+                        $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
                         $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
                     } else {
-                        $this->logDebug(sprintf('Ticket #%d is deleted, skipping comments', $ticket['id']));
+                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping comments', $ticket['id']));
                         $ticket['comments'] = array();
                     }
                 }
