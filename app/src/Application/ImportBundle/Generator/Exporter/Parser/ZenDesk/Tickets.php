@@ -94,7 +94,7 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $tickets = $this->getTickets();
+        $tickets    = $this->getTickets();
 
         $collection = new Entity\Collection();
         $collection->setExpectedCount(count($tickets));
@@ -155,7 +155,6 @@ final class Tickets extends AbstractParser
                 ->setOrganization($this->getOrganizationName($ticket['organization_id']))
                 ->setPriority($this->exportPriority($ticket['priority']))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
-                ->addMessage($this->exportMessage($ticket, $person_email))
             ;
 
             switch ($ticket['status']) {
@@ -172,6 +171,9 @@ final class Tickets extends AbstractParser
 
             foreach ($ticket['tags'] as $label) {
                 $entity->addLabel($label);
+            }
+            foreach ($this->exportComments($ticket) as $message) {
+                $entity->addMessage($message);
             }
 
             return $entity;
@@ -202,7 +204,8 @@ final class Tickets extends AbstractParser
                     ->setDestination('priority')
                     ->setOid(0)
                     ->setTitle($priority)
-                    ->setValue($mapping[$priority]);
+                    ->setValue($mapping[$priority])
+                ;
 
                 return $entity;
 
@@ -236,6 +239,42 @@ final class Tickets extends AbstractParser
     }
 
     /**
+     * Returns a ticket comments entity
+     *
+     * @param array $ticket
+     * @return Entity\TicketMessage[]
+     */
+    private function exportComments(array $ticket)
+    {
+        $comments = new Entity\Collection();
+        foreach ($ticket['comments'] as $comment) {
+            $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
+            if ( ! $author_email) {
+                $this->logError(sprintf('Unable to get comment author #%d', $ticket['author_id']));
+                continue;
+            }
+
+            $entity = new Entity\TicketMessage();
+            $entity
+                ->setDestination('message_' . $ticket['id'])
+                ->setOid($comment['id'])
+                ->setPersonEmail($author_email)
+                ->setMessageText($comment['body'])
+                ->setMessageHtml($comment['html_body'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
+            ;
+
+            foreach ($comment['attachments'] as $attachment) {
+                // todo
+            }
+
+            $comments->attach($entity);
+        }
+
+        return $comments;
+    }
+
+    /**
      * Returns tickets
      * Loads data from ZenDesk reader
      *
@@ -256,6 +295,18 @@ final class Tickets extends AbstractParser
 
             $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
             if (count($tickets)) {
+                // ZenDesk API does not allow to get ticket comments in a single request
+                // We have to load comments for each ticket separately
+                foreach ($tickets as &$ticket) {
+                    if ($ticket['status'] !== self::STATUS_DELETED) {
+                        $this->logDebug(sprintf('Reading ticket #%d comments', $ticket['id']));
+                        $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+                    } else {
+                        $this->logDebug(sprintf('Ticket #%d is deleted, skipping comments', $ticket['id']));
+                        $ticket['comments'] = array();
+                    }
+                }
+
                 $this->tickets_people->loadByTickets($tickets);
 
                 $this->end_time = $this->reader->getTicketsEndTime($this->getBatchConfig()->getTicketsEndTime());
@@ -298,11 +349,13 @@ final class Tickets extends AbstractParser
             'created_at',
             'custom_fields',
             'tags',
+            'comments',
         );
 
         return $this->hasRequiredColumns($ticket, $columns)
             && $this->isArrayColumn($ticket, 'custom_fields')
-            && $this->isArrayColumn($ticket, 'tags');
+            && $this->isArrayColumn($ticket, 'tags')
+            && $this->isArrayColumn($ticket, 'comments');
     }
 
     /**

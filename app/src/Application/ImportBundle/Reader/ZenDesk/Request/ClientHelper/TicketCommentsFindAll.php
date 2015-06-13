@@ -25,103 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Entity;
-
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+namespace Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper;
+use Zendesk\API\Client;
 
 /**
- * Base exporting entity
+ * ZenDesk ticket comments request client helper
  *
- * Class AbstractEntity
- * @package Application\ImportBundle\Entity
+ * Class TicketCommentsFindAll
+ * @package Application\ImportBundle\Reader\ZenDesk\Request\ClientHelper
  */
-abstract class AbstractEntity implements EntityInterface
+final class TicketCommentsFindAll extends AbstractHelper
 {
     /**
-     * @var array
-     */
-    protected $raw_data = array();
-
-    /**
-     * @var int
-     */
-    protected $oid;
-
-    /**
-     * @var string
-     */
-    protected $destination;
-
-    /**
-     * @return array
-     */
-    public function getRawData()
-    {
-        return $this->raw_data;
-    }
-
-    /**
-     * @param array $raw_data
-     * @return $this
-     */
-    public function setRawData($raw_data)
-    {
-        $this->raw_data = $raw_data;
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function getOid()
+    public function request(Client $client)
     {
-        return $this->oid;
-    }
-
-    /**
-     * Set entity oid
-     *
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = (int)$oid;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDestination()
-    {
-        return $this->destination;
-    }
-
-    /**
-     * Set entity destination
-     * It could be a file name or db name
-     *
-     * @param string $destination
-     * @return $this
-     */
-    public function setDestination($destination)
-    {
-        $this->destination = $destination;
-        return $this;
-    }
-
-    /**
-     * Validator class metadata
-     *
-     * @param ClassMetadata $metadata
-     */
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
-            ->addPropertyConstraint('destination', new Constraints\NotBlank())
-        ;
+        return $client->tickets()->comments()->findAll(array(
+            'ticket_id' => $this->params['ticket_id'],
+        ));
     }
 }

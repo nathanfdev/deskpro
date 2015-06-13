@@ -122,6 +122,14 @@ class TicketPeopleStorage implements TicketPeopleStorageInterface, PeopleStorage
             if (isset($ticket['assignee_id']) && $ticket['assignee_id'] > 0) {
                 $people_ids[] = $ticket['assignee_id'];
             }
+
+            if ( ! empty($ticket['comments'])) {
+                foreach ($ticket['comments'] as $comment) {
+                    if (isset($comment['author_id']) && $comment['author_id'] > 0) {
+                        $people_ids[] = $comment['author_id'];
+                    }
+                }
+            }
         }
 
         return array_unique($people_ids);

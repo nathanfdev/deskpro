@@ -89,6 +89,18 @@ class JsonMockAdapter implements RequestAdapterInterface
     }
 
     /**
+     * Stores a ticket comments response
+     *
+     * @param string|array $response
+     * @return $this
+     */
+    public function addTicketCommentsFindAllResponse($response)
+    {
+        $this->addResponse('ticket_comments_find_all', $response);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function doPeopleIncrementalExportRequest(array $params = array())
@@ -118,6 +130,14 @@ class JsonMockAdapter implements RequestAdapterInterface
     public function doTicketsIncrementalExportRequest(array $params = array())
     {
         return $this->getResponse('tickets_incremental_export', $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doTicketCommentsFindAllRequest(array $params = array())
+    {
+        return $this->getResponse('ticket_comments_find_all', $params);
     }
 
     /**

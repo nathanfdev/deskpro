@@ -97,6 +97,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function doTicketCommentsFindAllRequest(array $params = array())
+    {
+        return $this->doRequest(new ClientHelper\TicketCommentsFindAll($params));
+    }
+
+    /**
      * Do API request
      *
      * @param ClientHelper\ClientHelperInterface $request
@@ -117,14 +125,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
                 $debug = $this->client->getDebug();
 
                 if ($this->logger) {
-                    $this->logger->error(sprintf(
-                        "[%s] (%s) %s -- %s",
-
-                        $e->getCode(),
-                        get_class($e),
-                        $e->getMessage(),
-                        $debug->__toString()
-                    ));
+                    $this->logger->error($debug->__toString());
                 }
 
                 switch ($debug->lastResponseCode) {
@@ -140,7 +141,12 @@ final class RequestClientAdapter implements RequestAdapterInterface
                             $this->logger->info("Hit request limit, sleeping for $timeout seconds");
                         }
 
-                        return $this->retry($request, $retry_attempt, new RetryAfterException($e->getMessage(), $timeout), $timeout);
+                        return $this->retry(
+                            $request,
+                            $retry_attempt,
+                            new RetryAfterException($e->getMessage(), $timeout),
+                            $timeout
+                        );
 
                     case ZenDeskReaderInterface::CODE_UN_PROCESSABLE_ENTITY:
                         // nothing to do

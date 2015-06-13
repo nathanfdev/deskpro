@@ -177,6 +177,25 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getTicketComments($id)
+    {
+        $comments = array();
+        $result   = $this->adapter->doTicketCommentsFindAllRequest(array(
+            'ticket_id' => $id,
+        ));
+
+        if ($result) {
+            foreach ($result->comments as $comment) {
+                $comments[] = $this->toArray($comment);
+            }
+        }
+
+        return $comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTicketsEndTime(DateTime $start_time = null)
     {
         $request = $this->adapter->doTicketsIncrementalExportRequest(array(
