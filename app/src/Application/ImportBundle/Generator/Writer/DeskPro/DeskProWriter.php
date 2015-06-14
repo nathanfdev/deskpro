@@ -37,8 +37,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\Util;
 
 /**
- * Generator deskpro writer
- * Imports entities into deskpro database
+ * DeskPRO generator writer
+ * Imports entities into the DeskPRO database
  *
  * Class DeskProWriter
  * @package Application\ImportBundle\Generator\Writer\DeskPro
@@ -105,10 +105,18 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 $this->entity_manager->flush();
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Person');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\PersonEmail');
                 $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Ticket');
                 $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketMessage');
                 $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketAttachment');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketPriority');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketCategory');
                 $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketLog');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\LabelTicket');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\LabelPerson');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Department');
+                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\UserGroup');
                 $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Blob');
 
                 foreach ($records as $r) {
