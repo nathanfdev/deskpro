@@ -48,6 +48,11 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private $client;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -56,12 +61,14 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * Constructor
      *
      * @param API\Client      $client
+     * @param array           $options
      * @param LoggerInterface $logger
      */
-    public function __construct(API\Client $client, LoggerInterface $logger = null)
+    public function __construct(API\Client $client, array $options = array(), LoggerInterface $logger = null)
     {
-        $this->client = $client;
-        $this->logger = $logger;
+        $this->client  = $client;
+        $this->options = $options;
+        $this->logger  = $logger;
     }
 
     /**
@@ -118,6 +125,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private function doRequest(ClientHelper\ClientHelperInterface $request, $retry_attempt = 0)
     {
         try {
+            API\Http::$curl = new CurlRequest(null, $this->options);
             return $request->request($this->client);
 
         } catch (API\ResponseException $e) {

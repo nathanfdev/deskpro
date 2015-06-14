@@ -88,7 +88,7 @@ class FixturesCommand extends ContainerAwareCommand
         $logger->pushHandler($handler);
 
         /** @var ZenDesk\Fixtures\Collection $fixtures */
-        $fixtures = ZenDesk\ZenDeskReaderFactory::createFixturesByDeskproConfig();
+        $fixtures = ZenDesk\ZenDeskReaderFactory::createFixturesByDeskPROConfig();
         $fixture  = $fixtures
             ->getByType($input->getOption('type'))
             ->setLogger($logger)

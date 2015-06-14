@@ -55,7 +55,7 @@ class ZenDeskReaderFactory
 
         return new ZenDeskReader(
             new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client)
+                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config))
             ),
 
             $config
@@ -81,7 +81,7 @@ class ZenDeskReaderFactory
 
         return new ZenDeskReader(
             new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client, $logger)
+                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger)
             ),
 
             $config
@@ -94,7 +94,7 @@ class ZenDeskReaderFactory
      * @return Fixtures\Collection
      * @throws Exception
      */
-    public static function createFixturesByDeskproConfig()
+    public static function createFixturesByDeskPROConfig()
     {
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
@@ -125,6 +125,20 @@ class ZenDeskReaderFactory
     }
 
     /**
+     * Create a curl request
+     *
+     * @param ZenDeskConfig $config
+     * @return array
+     */
+    private static function getCurlRequestOptions(ZenDeskConfig $config)
+    {
+        return array(
+            CURLOPT_CONNECTTIMEOUT => $config->getConnectionTimeout(),
+            CURLOPT_TIMEOUT        => $config->getConnectionTimeout(),
+        );
+    }
+
+    /**
      * Create ZenDesk client config
      *
      * @return ZenDeskConfig
@@ -148,6 +162,9 @@ class ZenDeskReaderFactory
         }
         if (isset($dp_config['api_token'])) {
             $config->setApiToken($dp_config['api_token']);
+        }
+        if (isset($dp_config['connection_timeout'])) {
+            $config->setConnectionTimeout($dp_config['connection_timeout']);
         }
 
         return $config;
