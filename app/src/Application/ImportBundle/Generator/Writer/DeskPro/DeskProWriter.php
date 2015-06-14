@@ -105,19 +105,7 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 $this->entity_manager->flush();
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Person');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\PersonEmail');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Ticket');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketMessage');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketAttachment');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketPriority');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketCategory');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\TicketLog');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\LabelTicket');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\LabelPerson');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Department');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\UserGroup');
-                $this->entity_manager->clear('Application\\DeskPRO\\Entity\\Blob');
+                $this->entity_manager->clear();
 
                 foreach ($records as $r) {
                     $this->logDebug(sprintf("Persisted %s #%s", Util::getBaseClassname($r), method_exists($r, 'getId') ? $r->getId() : '_'));
