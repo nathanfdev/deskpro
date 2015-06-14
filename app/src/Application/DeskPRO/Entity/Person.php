@@ -708,6 +708,16 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setCanAgent($yesno)
+    {
+        $this->setModelField('can_agent', $yesno);
+        return $this;
+    }
+
 
     /**
      * @return bool|int

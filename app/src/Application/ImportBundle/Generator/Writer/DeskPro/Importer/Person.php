@@ -67,6 +67,7 @@ final class Person extends AbstractImporter
             ->setLastName($entity->getLastName())
             ->setTimezone($entity->getTimezone())
             ->setIsAgent($entity->isAgent())
+            ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
             ->setDateCreated($entity->getDateCreated())
             ->setLanguageId($this->findLanguageId($entity->getLanguage()))
@@ -74,7 +75,8 @@ final class Person extends AbstractImporter
             ->setOrganizationPosition($entity->getOrganizationPosition())
             ->resetEmails()
             ->resetLabels()
-            ->resetUsergroups();
+            ->resetUsergroups()
+        ;
 
         if ($entity->getPassword()) {
             if ($entity->isPlainPasswordScheme()) {
