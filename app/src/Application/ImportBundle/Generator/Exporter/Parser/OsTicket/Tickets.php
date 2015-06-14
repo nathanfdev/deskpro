@@ -276,6 +276,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
+                ->setDestination('attachment_' . $num)
                 ->setOid($num)
                 ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                 ->setFileName($attachment['name'])

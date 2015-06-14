@@ -29,10 +29,12 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
+use Guzzle\Http\Client as HttpClient;
 
 /**
  * ZenDesk tickets parser
@@ -61,15 +63,23 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
+     * @var HttpClient
+     */
+    private $http_client;
+
+    /**
      * Constructor
      *
      * @param ZenDeskReaderInterface       $reader
      * @param TicketPeopleStorageInterface $people_storage
+     * @param HttpClient                   $http_client
      */
-    public function __construct(ZenDeskReaderInterface $reader, TicketPeopleStorageInterface $people_storage)
+    public function __construct(ZenDeskReaderInterface $reader, TicketPeopleStorageInterface $people_storage, HttpClient $http_client)
     {
         parent::__construct($reader);
+
         $this->tickets_people = $people_storage;
+        $this->http_client    = $http_client;
     }
 
     /**
@@ -172,7 +182,7 @@ final class Tickets extends AbstractParser
             foreach ($ticket['tags'] as $label) {
                 $entity->addLabel($label);
             }
-            foreach ($this->exportComments($ticket) as $message) {
+            foreach ($this->exportMessages($ticket) as $message) {
                 $entity->addMessage($message);
             }
 
@@ -244,9 +254,10 @@ final class Tickets extends AbstractParser
      * @param array $ticket
      * @return Entity\TicketMessage[]
      */
-    private function exportComments(array $ticket)
+    private function exportMessages(array $ticket)
     {
         $comments = new Entity\Collection();
+
         foreach ($ticket['comments'] as $comment) {
             $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
             if ( ! $author_email) {
@@ -263,14 +274,73 @@ final class Tickets extends AbstractParser
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
             ;
 
-            foreach ($comment['attachments'] as $attachment) {
-                // todo
+            $attachments = $this->exportAttachments($comment['attachments']);
+            foreach ($attachments as $attachment) {
+                /** @var Entity\Attachment $attachment */
+                $entity->addAttachment($attachment);
             }
 
             $comments->attach($entity);
         }
 
         return $comments;
+    }
+
+    /**
+     * Returns a collection of the ticket message attachments
+     *
+     * @param array $attachments
+     * @return Entity\Collection
+     */
+    private function exportAttachments(array $attachments)
+    {
+        $collection = new Entity\Collection();
+
+        foreach ($attachments as $num => $attachment) {
+            try {
+                $entity = $this->exportAttachment($attachment);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid ticket message attachment record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an attachment entity
+     *
+     * @param array $attachment
+     * @return Entity\Attachment|null
+     */
+    private function exportAttachment(array $attachment)
+    {
+        if ($this->isAttachmentValid($attachment)) {
+            $http_request = $this->http_client->get($attachment['content_url']);
+
+            $entity = new Entity\Attachment();
+            $entity
+                ->setDestination('attachment_' . $attachment['id'])
+                ->setOid($attachment['id'])
+                ->setBlobData(base64_encode($http_request->send()->getBody(true)))
+                ->setFileName($attachment['file_name'])
+                ->setContentType($attachment['content_type'])
+            ;
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -355,6 +425,25 @@ final class Tickets extends AbstractParser
             && $this->isArrayColumn($ticket, 'custom_fields')
             && $this->isArrayColumn($ticket, 'tags')
             && $this->isArrayColumn($ticket, 'comments');
+    }
+
+    /**
+     * Check if ticket message attachment has all required columns
+     *
+     * @param array $attachment
+     * @return bool
+     */
+    private function isAttachmentValid(array $attachment)
+    {
+        $columns = array(
+            'id',
+            'file_name',
+            'content_type',
+            'content_url',
+            'inline',
+        );
+
+        return $this->hasRequiredColumns($attachment, $columns) && $attachment['inline'] === false;
     }
 
     /**

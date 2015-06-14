@@ -53,11 +53,12 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      * Constructor
      *
      * @param Parser\Collection $parsers
+     * @param BaseReader        $reader
      */
     public function __construct(Parser\Collection $parsers, BaseReader $reader)
     {
         $this->parsers = $parsers;
-        $this->reader = $reader;
+        $this->reader  = $reader;
     }
 
     /**
