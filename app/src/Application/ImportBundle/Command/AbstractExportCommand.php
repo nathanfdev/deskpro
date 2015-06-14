@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Command;
 
+use Application\DeskPRO\App;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
@@ -126,7 +127,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $GLOBALS['DP_IS_IMPORTING'] = true;
+        $GLOBALS['DP_NOSQL_LOG'] = true;
+
         @ini_set('memory_limit', -1);
+        $em = App::getOrm();
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if ($input->getOption('batch')) {
             return $this->executeBatchRun($input, $output);
