@@ -113,7 +113,7 @@ final class Ticket extends AbstractImporter
             $ticket->setAgentId($this->getPersonMapper()->findOneByEmail($entity->getAgentEmail())->getId());
         }
         foreach ($entity->getMessages() as $message) {
-            $ticket->addMessage($this->createTicketMessage($message));
+            $ticket->addMessage($this->createTicketMessage($message, $ticket));
         }
         foreach ($entity->getParticipants() as $participant) {
             $ticket->addParticipant($this->createParticipant($participant));
@@ -130,14 +130,18 @@ final class Ticket extends AbstractImporter
      * Returns the importing DeskPRO doctrine ticket message entity
      *
      * @param Entity\TicketMessage $entity
+     * @param DeskPROEntity\Ticket $ticket
+     *
      * @return DeskPROEntity\TicketMessage
      */
-    private function createTicketMessage(Entity\TicketMessage $entity)
+    private function createTicketMessage(Entity\TicketMessage $entity, DeskPROEntity\Ticket $ticket)
     {
         $message = new DeskPROEntity\TicketMessage();
         $message
+            ->setTicket($ticket)
             ->setPersonId($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail())->getId())
-            ->setDateCreated($entity->getDateCreated());
+            ->setDateCreated($entity->getDateCreated())
+        ;
 
         if ($entity->getMessageText()) {
             $message->setMessageText($entity->getMessageText());
@@ -146,10 +150,7 @@ final class Ticket extends AbstractImporter
             $message->setMessageHtml($entity->getMessageHtml());
         }
         foreach ($entity->getAttachments() as $attachment) {
-            $message->addAttachment($this->createAttachment(
-                $attachment,
-                $entity->getPersonEmail()
-            ));
+            $message->addAttachment($this->createAttachment($attachment, $entity->getPersonEmail()));
         }
 
         $this->records->add($message);
@@ -170,7 +171,8 @@ final class Ticket extends AbstractImporter
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->blob_adapter->createByAttachment($entity));
+            ->setBlob($this->blob_adapter->createByAttachment($entity))
+        ;
 
         $this->records->add($attachment);
         return $attachment;
