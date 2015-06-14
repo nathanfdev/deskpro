@@ -486,6 +486,86 @@ DeskPRO.Agent.RteEditor = {
 		}, textarea.data('redactor')));
 
     var origSyncCode = api.syncCode;
+
+    /**
+     * override linkify behaviour
+     */
+    api.$editor.unbind('keyup').on('keyup', $.proxy(function(e)
+    {
+      var key = e.keyCode || e.which;
+
+      if (this.browser('mozilla') && !this.pasteRunning)
+      {
+        this.saveSelection();
+      }
+
+      // callback as you type
+      if (typeof this.opts.keyupCallback === 'function')
+      {
+        this.opts.keyupCallback(this, e);
+      }
+
+      // if empty
+      if (key === 8 || key === 46)
+      {
+        this.observeImages();
+        return this.formatEmpty(e);
+      }
+
+      // new line p
+      if (key === 13 && !e.shiftKey && !e.ctrlKey && !e.metaKey)
+      {
+        if (this.browser('webkit'))
+        {
+          this.formatNewLine(e);
+        }
+
+        // convert links
+        if (this.opts.convertLinks)
+        {
+/******************************* overriden linkify ****************************/
+          var protocol = 'http://';
+          var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
+              url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
+
+              linkifyThis = function ()
+              {
+                var childNodes = this.childNodes,
+                    i = childNodes.length;
+                while(i--)
+                {
+                  var n = childNodes[i];
+                  if (n.nodeType === 3)
+                  {
+                    var html = n.nodeValue, newHtml;
+                    if (html)
+                    {
+                      newHtml = html.replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(url1, '$1<a href="' + protocol + '$2" target="_blank">$2</a>$3')
+                        .replace(url2, '$1<a href="$2" target="_blank">$2</a>$5');
+
+                      if (newHtml != html && newHtml != html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) {
+                        $(n).after(newHtml).remove();
+                      }
+                    }
+                  }
+                  else if (n.nodeType === 1  &&  !/^(a|button|textarea)$/i.test(n.tagName))
+                  {
+                    linkifyThis.call(n);
+                  }
+                }
+              };
+          this.$editor.each(linkifyThis);
+/******************************* overriden linkify end ****************************/
+        }
+      }
+
+      this.syncCode();
+
+    }, api));
+
     api.syncCode = $.proxy(function(html) {
       var copy = $('<div/>').html(this.$editor.html());
       var didChange, counter = 0;
