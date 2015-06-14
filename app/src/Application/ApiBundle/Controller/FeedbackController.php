@@ -39,6 +39,7 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 
 /**
@@ -808,7 +809,7 @@ class FeedbackController extends AbstractController
             || !$this->person->PermissionsManager->PublishChecker->canEdit($other_feedback)
             || !$this->person->PermissionsManager->PublishChecker->canDelete($other_feedback)
         ) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         try {
@@ -1306,11 +1307,11 @@ class FeedbackController extends AbstractController
 
         if ($check_perm) {
             if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
             if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($feedback)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 

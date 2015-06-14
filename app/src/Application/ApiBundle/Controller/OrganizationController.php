@@ -40,6 +40,7 @@ use Application\DeskPRO\Searcher\OrganizationSearch;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
 * @SWG\Resource(
@@ -245,7 +246,7 @@ class OrganizationController extends AbstractController
     public function newOrganizationAction()
     {
         if (!$this->person->hasPerm('agent_org.create')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         $org = new Organization();
@@ -1899,7 +1900,7 @@ class OrganizationController extends AbstractController
                 case 'create':
                 case 'note':
                     if (!$this->person->hasPerm('agent_org.' . $check_perm)) {
-                        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                        throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
                     }
                     break;
 

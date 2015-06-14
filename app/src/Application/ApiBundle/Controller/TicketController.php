@@ -43,6 +43,7 @@ use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -254,7 +255,7 @@ class TicketController extends AbstractController implements ProtectedController
     public function newTicketAction()
     {
         if (!$this->person->hasPerm('agent_tickets.create')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         $errors = array();
@@ -2570,12 +2571,16 @@ class TicketController extends AbstractController implements ProtectedController
 
         $ticket = $q->getOneOrNullResult();
 
-        if (!$ticket || !$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+        if (!$ticket) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $id");
         }
 
+        if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
+        }
+
         if ($check_perm && !$this->checkTicketPerm($ticket, $check_perm)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $id");
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         return $ticket;
