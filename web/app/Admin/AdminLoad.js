@@ -168,6 +168,18 @@ define([
 
 ], function(angular) {
 
+  /**
+   * ace editor hotfix
+   * see https://github.com/angular-ui/ui-ace/issues/104
+   * @type {Function}
+   */
+  var old = window.ace.edit;
+  window.ace.edit = function() {
+    var instance = old.apply(old, arguments);
+    instance.$blockScrolling = Infinity;
+    return instance;
+  };
+
   if (!window.console) {
     window.console = {
       log: function(){},
