@@ -682,7 +682,7 @@ class LegacyTermsTransformer
 
             case 'sla_status':
                 return new Terms\FilterSlaStatus($op, array(
-                    'sla_ids'    => @$options['sla_ids'] ?: array(),
+                    'sla_id'    => @$options['sla_id'] ?: 0,
                     'sla_status' => @$options['sla_status'] ?: ''
                 ));
 
