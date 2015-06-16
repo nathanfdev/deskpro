@@ -141,6 +141,7 @@ final class Ticket extends AbstractImporter
             ->setTicket($ticket)
             ->setPersonId($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail())->getId())
             ->setDateCreated($entity->getDateCreated())
+            ->setAsAgentNote($entity->isNote())
         ;
 
         if ($entity->getMessageText()) {

@@ -271,6 +271,7 @@ final class Tickets extends AbstractParser
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
+                ->setAsNote($comment['public'] === false)
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
             ;
 
