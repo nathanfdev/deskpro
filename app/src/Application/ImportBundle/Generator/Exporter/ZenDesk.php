@@ -106,7 +106,8 @@ final class ZenDesk extends AbstractExporter implements ExporterBatchInterface
         $updated_config
             ->setId($updated_config->getId() + 1)
             ->setDateModified(new DateTime())
-            ->setRetryAfterTime($this->retry_date);
+            ->setRetryAfterTime($this->retry_date)
+        ;
 
         if ($tickets_parser->getCurrentEndTime()) {
             $updated_config->setTicketsEndTime($tickets_parser->getCurrentEndTime());
