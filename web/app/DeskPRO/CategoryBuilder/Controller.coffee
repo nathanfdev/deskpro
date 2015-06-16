@@ -92,6 +92,10 @@ define [
             $modal.open
               templateUrl: DP_BASE_ADMIN_URL + '/load-view/' + 'CustomFields/Common/delete-option-modal.html'
               controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+                for k,v of res.data.options
+                  delete res.data.options[k] if !me.cat_rows[k]
+
                 $scope.dismiss = -> $modalInstance.dismiss()
                 $scope.mode = 0
                 $scope.options = res.data.options
