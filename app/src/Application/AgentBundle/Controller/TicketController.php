@@ -2449,6 +2449,7 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(array(
                 'inserted' => true,
                 'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+                    'ticket_perms' => $this->_getTicketPerms($ticket),
                     'ticket' => $ticket,
                     'charge' => $charge
                 ))
