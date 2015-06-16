@@ -129,7 +129,7 @@ final class Ticket extends AbstractImporter
      */
     private function findOrCreateTicket(Entity\Ticket $entity)
     {
-        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
+        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef(), false);
         if ($ticket) {
             $this->logDebug(sprintf(
                 'Found existing ticket, id=`%d` with ref `%s`',

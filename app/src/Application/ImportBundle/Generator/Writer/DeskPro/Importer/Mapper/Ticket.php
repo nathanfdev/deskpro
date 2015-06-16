@@ -68,12 +68,13 @@ final class Ticket implements MapperInterface
     {
         /** @var Entity\Ticket $record */
         $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Ticket not found', $criteria);
         }
-
-        $record->disableAutoTicketProcess();
-        $record->__dp_skip_ticket_manager = true;
+        if ($record) {
+            $record->disableAutoTicketProcess();
+            $record->__dp_skip_ticket_manager = true;
+        }
 
         return $record;
     }
@@ -88,8 +89,6 @@ final class Ticket implements MapperInterface
      */
     public function findOneByRef($ref, $throw_exception = true)
     {
-        $record = $this->findOneBy(array('ref' => $ref), $throw_exception);
-        $record->disableAutoTicketProcess();
-        return $record;
+        return $this->findOneBy(array('ref' => $ref), $throw_exception);
     }
 }
