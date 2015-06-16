@@ -293,6 +293,10 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             throw new BadRequestHttpException;
         }
 
+        if (!$ids = array_filter($ids, function($id){return 'cb_' !== substr($id, 0, 3);})) {
+            throw new BadRequestHttpException;
+        }
+
         $rep = $this->em->getRepository('DeskPRO:'.$repClass);
         $step = (int)$request->get('step');
         switch ($step) {

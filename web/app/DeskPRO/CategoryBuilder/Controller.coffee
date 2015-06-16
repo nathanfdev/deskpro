@@ -43,10 +43,15 @@ define [
         ev.preventDefault()
         row = $(this).closest('li')
 
-        removeIds = [row.data('catId')]
-        row.find('li').each(->
-          removeIds.push($(this).data('catId'))
-        )
+        id = row.data('catId')
+        removeIds = [id]
+        doRemoveIds = []
+        'cb_' != id.toString().substr(0, 3) && doRemoveIds.push id
+
+        row.find('li').each ->
+          id = $(this).data('catId')
+          removeIds.push(id)
+          'cb_' != id.toString().substr(0, 3) && doRemoveIds.push id
 
         doRemove = ->
           viewValue = me.ngModel.$viewValue || []
@@ -76,10 +81,10 @@ define [
         catch error
           Api = null
 
-        if !me.$scope.fieldType || !Api
+        if !doRemoveIds.length || !me.$scope.fieldType || !Api
           return doRemove()
 
-        Api.sendDelete('/custom_fields/option', {step: 1, type: me.$scope.fieldType, ids: removeIds}).then(
+        Api.sendDelete('/custom_fields/option', {step: 1, type: me.$scope.fieldType, ids: doRemoveIds}).then(
           (res) ->
             # if nothing to do, just delete
             return doRemove() if !res.data.success || !res.data.options?
