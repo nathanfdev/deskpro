@@ -1014,6 +1014,10 @@ class PersonController extends AbstractController
             throw $e;
         }
 
+        // to handle empty form submission
+        if (!$request->get('collection')) {
+            $request->request->set('collection', array());
+        }
 	    $phones_form->handleRequest($request);
 	    if ($phones_form->isValid()) {
 		    foreach ($phones_form->getData() as $phone) {
