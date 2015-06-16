@@ -2802,7 +2802,7 @@ class TicketController extends AbstractController
 
     public function changeUserOverlayAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
         return $this->render('AgentBundle:Ticket:change-user-overlay.html.twig', array(
             'ticket' => $ticket,
@@ -2811,7 +2811,7 @@ class TicketController extends AbstractController
 
     public function changeUserOverlayPreviewAction($ticket_id, $new_person_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
         $new_person = $this->em->find('DeskPRO:Person', $new_person_id);
         if (!$new_person) {
             throw $this->createNotFoundException();
@@ -2825,7 +2825,7 @@ class TicketController extends AbstractController
 
     public function changeUserAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
         $old_person = $ticket->person;
 
