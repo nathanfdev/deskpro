@@ -374,17 +374,16 @@ final class Tickets extends AbstractParser
                 $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
             }
 
-            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
-            if (count($tickets)) {
+            $response = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
+            if (count($response)) {
                 // ZenDesk API does not allow to get ticket comments in a single request
                 // We have to load comments for each ticket separately
-                foreach ($tickets as &$ticket) {
+                foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
                         $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
                         $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
-                    } else {
-                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping comments', $ticket['id']));
-                        $ticket['comments'] = array();
+
+                        $tickets[] = $ticket;
                     }
                 }
 
