@@ -267,7 +267,7 @@ final class Tickets extends AbstractParser
         $comments = new Entity\Collection();
 
         foreach ($ticket['comments'] as $comment) {
-            if ( ! $comment['author_id']) {
+            if (empty($comment['author_id'])) {
                 $this->logError(sprintf('Comment #%d without author_id, skipping', $comment['id']));
                 continue;
             }
