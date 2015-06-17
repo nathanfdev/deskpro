@@ -339,11 +339,12 @@ DeskPRO.Agent.RteEditor = {
 
 					var img = textarea.getEditor().find('img[data-paste-id=' + pasteId + ']');
 					if (json.error) {
-						img.remove();
-					} else {
+            img.remove();
+            api.opts.imageUploadError && api.opts.imageUploadError(pasteId);
+          } else {
 						img.data('paste-id', '').attr('src', json.filelink);
 						if (typeof api.opts.imageUploadCallback === 'function') {
-							api.opts.imageUploadCallback(api, json);
+							api.opts.imageUploadCallback(api, json, pasteId);
 						}
 					}
 
@@ -404,6 +405,8 @@ DeskPRO.Agent.RteEditor = {
 							var source = URLObj.createObjectURL(blob);
 
 							var pasteImageId = pasteImageCounter++;
+
+              api.opts.imageBeforeUploadCallback && api.opts.imageBeforeUploadCallback(api, pasteImageId);
 
 							if (sendImage(pasteImageId, RegExp.$1, blob)) {
 								textarea.insertHtml('<img src="' + source + '" data-paste-id="' + pasteImageId + '">');
@@ -523,7 +526,7 @@ DeskPRO.Agent.RteEditor = {
         // convert links
         if (this.opts.convertLinks)
         {
-/******************************* overriden linkify ****************************/
+
           var protocol = 'http://';
           var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
               url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
@@ -543,8 +546,8 @@ DeskPRO.Agent.RteEditor = {
                       newHtml = html.replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
                         .replace(/>/g, '&gt;')
-                        .replace(url1, '$1<a href="' + protocol + '$2" target="_blank">$2</a>$3')
-                        .replace(url2, '$1<a href="$2" target="_blank">$2</a>$5');
+                        .replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
+                        .replace(url2, '$1<a href="$2">$2</a>$5');
 
                       if (newHtml != html && newHtml != html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) {
                         $(n).after(newHtml).remove();
@@ -558,7 +561,6 @@ DeskPRO.Agent.RteEditor = {
                 }
               };
           this.$editor.each(linkifyThis);
-/******************************* overriden linkify end ****************************/
         }
       }
 
