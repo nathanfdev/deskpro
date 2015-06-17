@@ -1801,7 +1801,7 @@
 
 	1434551245 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1434551245.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/tickner/src/deskpro/old-portal/app/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1434551245'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1434551245'
 	),
 
 );
