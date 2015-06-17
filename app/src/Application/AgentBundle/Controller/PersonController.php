@@ -898,7 +898,8 @@ class PersonController extends AbstractController
 		    'allow_add' => true,
 		    'allow_delete' => true,
 		    'options' => array(
-			    'label' => false
+			    'label' => false,
+                'show_phone_label' => true
 		    ),
 	    ));
 
@@ -910,9 +911,9 @@ class PersonController extends AbstractController
 
                 // Setting comment
                 foreach ($email_comments as $email_id => $comment) {
-                    if (isset($person->emails[$email_id])) {
-                        $person->emails[$email_id]->comment = $comment;
-                        $this->em->persist($person->emails[$email_id]);
+                    if ($email = $person->getEmailId($email_id)) {
+                        $email->comment = $comment;
+                        $this->em->persist($email);
                     }
                 }
 
