@@ -266,6 +266,10 @@ final class Tickets extends AbstractParser
         $comments = new Entity\Collection();
 
         foreach ($ticket['comments'] as $comment) {
+            if (empty($comment['author_id'])) {
+                $this->logError(sprintf('No comment author'));
+                continue;
+            }
             $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
             if ( ! $author_email) {
                 $this->logError(sprintf('Unable to get comment author #%d', $ticket['author_id']));
