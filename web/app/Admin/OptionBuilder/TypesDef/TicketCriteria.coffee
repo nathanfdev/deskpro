@@ -871,7 +871,13 @@ define [
     getCheckUserId: (options = {}) ->
       options.propName = 'id'
       options.operators = ['is', 'not']
-      options.url = '/people/quick_search'
+      options.url = '/people'
+      options.map = (data) ->
+        id: data.person.id
+        email: data.person.primary_email?.email
+        first_name: data.person.first_name
+        last_name: data.person.last_name
+        name: data.person.name
       format = (item) ->
         "#{item['name']} (#{item.email || ''})"
       options.inputOptions =
@@ -884,7 +890,13 @@ define [
     getCheckUserEmail: (options = {}) ->
       options.propName = 'email'
       options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-      options.url = '/people/quick_search'
+      options.url = '/people'
+      options.map = (data) ->
+        id: data.person.id
+        email: data.person.primary_email?.email
+        first_name: data.person.first_name
+        last_name: data.person.last_name
+        name: data.person.name
       format = (item) ->
         "#{item[options.propName]} (#{item.name || ''})"
       options.inputOptions =
@@ -996,7 +1008,10 @@ define [
     getCheckOrgId: (options = {}) ->
       options.propName = 'id'
       options.operators = ['is', 'not']
-      options.url = '/organizations/quick_search'
+      options.url = '/organizations'
+      options.map = (data) ->
+        id: data.organization?.id
+        name: data.organization?.name
       format = (item) -> item['name']
       options.inputOptions =
         formatResult: format
