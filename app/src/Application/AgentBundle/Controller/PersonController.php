@@ -153,7 +153,8 @@ class PersonController extends AbstractController
 		    'allow_add' => true,
 		    'allow_delete' => true,
 		    'options' => array(
-			    'label' => false
+			    'label' => false,
+                'show_phone_label' => true
 		    ),
 	    ))->createView();
 

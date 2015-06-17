@@ -20,7 +20,10 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								{{ form_widget(phone) }}
+								{{ form_widget(phone.number) }}
+							</div>
+							<div class="label">
+								{{ form_widget(phone.label, { attr: { placeholder: 'Add a label' } }) }}
 							</div>
 							<br class="clear" />
 						</li>
@@ -36,8 +39,16 @@
 					<div class="controls">
 						<span class="remove">x</span>
 					</div>
-					<div class="input">
-						 {{ form_row(contact_data.phone_numbers.vars.prototype) }}
+					<div class="input"><div class="controls">
+								<span class="remove">x</span>
+							</div>
+							<div class="input">
+						 {{ form_widget(contact_data.phone_numbers.vars.prototype.number) }}
+							</div>
+							<div class="label">
+						 {{ form_widget(contact_data.phone_numbers.vars.prototype.label, { attr: { placeholder: 'Add a label' } }) }}
+							</div>
+							<br class="clear" />
 					</div>
 					<br class="clear" />
 				</li>

@@ -53,6 +53,9 @@
 	{% for phone in contact_data.phone_numbers if phone.vars.data %}
 		<li class="{{ 1 == phone.vars.data.guessed_type ? 'mobile' : 'phone' }}">
 			<span class="number">{{ phone.vars.data.number }}</span>
+			{% if phone.vars.data.label %}
+				<strong>{{ phone.vars.data.label }}</strong>
+			{% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}

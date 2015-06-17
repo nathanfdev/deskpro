@@ -65,6 +65,15 @@ class PhoneNumberType extends AbstractType
 		));
 		$builder->get('number')->addModelTransformer(new PhoneNumberModelTransformer());
 
+		if ($options['show_phone_label']) {
+			$builder->add('label', 'text', array(
+				'label' => false,
+				'attr' => array(
+					'class' => 'phone_label'
+				)
+			));
+		}
+
 		$builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event){
 			$data = $event->getForm()->getData();
 
@@ -89,6 +98,7 @@ class PhoneNumberType extends AbstractType
 	{
 		$resolver->setDefaults(array(
 			'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
+			'show_phone_label' => false
 		));
 	}
 

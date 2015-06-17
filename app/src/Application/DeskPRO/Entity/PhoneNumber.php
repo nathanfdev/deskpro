@@ -75,6 +75,13 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $number;
 
     /**
+     * A human-defined (optional) label to describe what this phone number is
+     *
+     * @var string
+     */
+    protected $label;
+
+    /**
      * The ISO 3166-1 country/region code of the phone number (2 char)
      *
      * @var string
@@ -177,6 +184,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array( 'fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
                                    'scale'     => 0, 'nullable' => false, 'columnName' => 'number', ));
+
+        $metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
+                                   'scale'     => 0, 'nullable' => true, 'columnName' => 'label', ));
 
         $metadata->mapField(array( 'fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
                                    'scale'     => 0, 'nullable' => false, 'columnName' => 'region', ));
