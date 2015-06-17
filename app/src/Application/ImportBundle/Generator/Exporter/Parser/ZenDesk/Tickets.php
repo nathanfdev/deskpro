@@ -35,6 +35,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
 use Guzzle\Http\Client as HttpClient;
+use Orb\Util\Strings;
 
 /**
  * ZenDesk tickets parser
@@ -152,12 +153,18 @@ final class Tickets extends AbstractParser
                 throw new SkippingException(sprintf('Unable to get submitter email by id %s', $ticket['submitter_id']));
             }
 
+            $ref = $this->getBatchConfig()->getTicketRef($ticket['id']);
+            if ( ! $ref) {
+                $ref = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
+                $this->getBatchConfig()->addTicketRef($ticket['id'], $ref);
+            }
+
             $entity = new Entity\Ticket();
             $entity
                 ->setRawData($ticket)
                 ->setDestination('ticket_' . $ticket['id'])
                 ->setOid($ticket['id'])
-                ->setRef($ticket['id'])
+                ->setRef($ref)
                 ->setPersonEmail($person_email)
                 ->setAgentEmail($agent_email)
                 ->setSubject($ticket['subject'] ? : 'No subject')
@@ -271,6 +278,7 @@ final class Tickets extends AbstractParser
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
+                ->setAsNote($comment['public'] === false)
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
             ;
 

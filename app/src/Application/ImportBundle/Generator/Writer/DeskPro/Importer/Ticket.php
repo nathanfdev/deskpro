@@ -31,7 +31,6 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Orb\Util\Strings;
 
 /**
  * DeskPro ticket importer
@@ -83,11 +82,9 @@ final class Ticket extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $ticket = new DeskPROEntity\Ticket();
+        $ticket = $this->findOrCreateTicket($entity);
         $ticket->disableAutoTicketProcess();
-
         $ticket
-            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
@@ -103,11 +100,6 @@ final class Ticket extends AbstractImporter
             ->resetParticipants()
             ->resetLabels()
         ;
-
-        if ($ticket->getRef() !== $entity->getRef()) {
-            // Remember new ref, if it was changed to apply ticket labels
-            $entity->setRef($ticket->getRef());
-        }
 
         if ($entity->getAgentEmail()) {
             $ticket->setAgentId($this->getPersonMapper()->findOneByEmail($entity->getAgentEmail())->getId());
@@ -127,6 +119,33 @@ final class Ticket extends AbstractImporter
     }
 
     /**
+     * Returns a ticket entity
+     * Creates a new ticket if not found
+     *
+     * @param Entity\Ticket $entity
+     *
+     * @return DeskPROEntity\Ticket
+     * @throws \Exception
+     */
+    private function findOrCreateTicket(Entity\Ticket $entity)
+    {
+        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef(), false);
+        if ($ticket) {
+            $this->logDebug(sprintf(
+                'Found existing ticket, id=`%d` with ref `%s`',
+                $ticket->getId(), $ticket->getRef()
+            ));
+        } else {
+            $ticket = new DeskPROEntity\Ticket();
+            $ticket->setRef($entity->getRef());
+
+            $this->logInfo(sprintf('Creating new ticket with ref `%s`', $entity->getRef()));
+        }
+
+        return $ticket;
+    }
+
+    /**
      * Returns the importing DeskPRO doctrine ticket message entity
      *
      * @param Entity\TicketMessage $entity
@@ -141,6 +160,7 @@ final class Ticket extends AbstractImporter
             ->setTicket($ticket)
             ->setPersonId($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail())->getId())
             ->setDateCreated($entity->getDateCreated())
+            ->setAsAgentNote($entity->isNote())
         ;
 
         if ($entity->getMessageText()) {

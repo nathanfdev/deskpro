@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchConfig;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchRetryAfterConfigInterface;
@@ -59,6 +60,13 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
      * @var bool
      */
     private $has_remaining = false;
+
+    /**
+     * @var array
+     */
+    private $ref_mapping = array(
+        EntityInterface::TYPE_TICKET => array(),
+    );
 
     /**
      * {@inheritdoc}
@@ -131,6 +139,7 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
 
     /**
      * @param bool $remaining
+     * @return $this
      */
     public function setHasRemaining($remaining)
     {
@@ -147,6 +156,43 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
     }
 
     /**
+     * Set ref mapping
+     *
+     * @param array $ref_mapping
+     * @return $this
+     */
+    public function setRefMapping(array $ref_mapping)
+    {
+        $this->ref_mapping = $ref_mapping;
+        return $this;
+    }
+
+    /**
+     * Returns a ref by id
+     *
+     * @param int $id
+     * @return string|null
+     */
+    public function getTicketRef($id)
+    {
+        return isset($this->ref_mapping[EntityInterface::TYPE_TICKET][$id]) ? $this->ref_mapping[EntityInterface::TYPE_TICKET][$id] : null;
+    }
+
+    /**
+     * Adds id to ref mapping
+     *
+     * @param int    $id
+     * @param string $ref
+     *
+     * @return $this
+     */
+    public function addTicketRef($id, $ref)
+    {
+        $this->ref_mapping[EntityInterface::TYPE_TICKET][$id] = $ref;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -155,7 +201,8 @@ final class BatchConfig extends AbstractBatchConfig implements BatchRetryAfterCo
             'people_end_time'   => $this->getDateFormatOrNull($this->people_end_time),
             'tickets_end_time'  => $this->getDateFormatOrNull($this->tickets_end_time),
             'retry_after_time'  => $this->getDateFormatOrNull($this->retry_after_time),
-            'has_remaining'     => $this->has_remaining
+            'has_remaining'     => $this->has_remaining,
+            'ref_mapping'       => $this->ref_mapping,
         ));
     }
 }

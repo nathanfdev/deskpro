@@ -261,6 +261,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @param bool $is_agent_note
+     * @return $this
+     */
+    public function setAsAgentNote($is_agent_note)
+    {
+        $this->setModelField('is_agent_note', $is_agent_note);
+        return $this;
+    }
+
     public function getPersonId()
     {
         return $this->person['id'];
