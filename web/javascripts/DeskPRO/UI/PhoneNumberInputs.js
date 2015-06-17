@@ -17,8 +17,6 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 		};
 
 		this.setOptions(options);
-
-		this.input_map = {};
 	},
 
 	renderPhoneInputs: function () {
@@ -26,14 +24,16 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 		$(this.options.input_selector).each(function () {
 			var input = $(this);
 			var id = input.attr('id');
-			if (id in that.input_map) {
+
+			if (input.next() && input.next().hasClass('intl-tel-input')) {
 				return;
 			}
 
+			input.data('phone-number-inputs-touched', true);
 			var phone_input = $('<input type="text" name="">');
 			var phone_input_id = id + '_phone_input';
 			phone_input.attr('id', phone_input_id);
-			input.parent().append(phone_input);
+			input.after(phone_input);
 
 			phone_input.intlTelInput({
 				defaultCountry: 'auto',
@@ -68,8 +68,6 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 					that.markValid(phone_input);
 				}
 			});
-
-			that.input_map[id] = phone_input;
 		});
 	},
 
