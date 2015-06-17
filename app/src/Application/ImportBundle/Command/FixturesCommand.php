@@ -80,6 +80,7 @@ class FixturesCommand extends ContainerAwareCommand
 
         $formatter = new ConsoleFormatter();
         $formatter->ignoreEmptyContextAndExtra(true);
+        $formatter->allowInlineLineBreaks(true);
 
         $handler = new ConsoleHandler($output);
         $handler->setFormatter($formatter);
@@ -87,10 +88,11 @@ class FixturesCommand extends ContainerAwareCommand
         $logger->pushHandler($handler);
 
         /** @var ZenDesk\Fixtures\Collection $fixtures */
-        $fixtures = ZenDesk\ZenDeskReaderFactory::createFixturesByDeskproConfig();
+        $fixtures = ZenDesk\ZenDeskReaderFactory::createFixturesByDeskPROConfig();
         $fixture  = $fixtures
             ->getByType($input->getOption('type'))
-            ->setLogger($logger);
+            ->setLogger($logger)
+        ;
 
         if ($fixture instanceof ZenDesk\Fixtures\FixturePrepareInterface) {
             $fixture->prepare(new DateTime('-2 year'), new DateTime('-1 year'));

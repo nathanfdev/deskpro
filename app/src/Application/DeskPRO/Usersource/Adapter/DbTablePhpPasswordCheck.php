@@ -98,6 +98,25 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
     }
 
     /**
+     * @param int $offset skip x users and return the rest
+     * @return array
+     */
+    public function findAllIdentities($offset = 0)
+    {
+        /** @var $adapter \Orb\Auth\Adapter\DbTable.php */
+        $adapter = $this->getAuthAdapter();
+
+        $user_infos = $adapter->getAllUserInfo($offset);
+
+        $identities = array();
+        foreach ($user_infos as $info) {
+            $identities[] = $adapter->getIdentityFromUserInfo($info);
+        }
+
+        return $identities;
+    }
+
+    /**
      * Find a user identity just by an email address.
      *
      * @param $id_input
@@ -116,6 +135,9 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
             }
             if (!$userinfo) {
                 $userinfo = $adapter->getUserInfoForUsername($id_input);
+            }
+            if (!$userinfo) {
+                $userinfo = $adapter->getUserInfoForId($id_input);
             }
         } catch (\Exception $e) {
             if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");

@@ -59,33 +59,30 @@ class ImportBatchCommand extends AbstractGenerateCommand
      */
     protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
+        // Export data
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
 
         $generator = $this->createGenerator($config, $logger);
         $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output);
 
-        // Export data
-        $success = $this->generate($generator, $output, $logger);
-        if ($success) {
-            $config
-                ->setInputPath($config->getOutputPath())
-                ->setOutputPath(null)
-                ->setExporterType(Generator\Exporter\ExporterInterface::TYPE_JSON)
-                ->setReaderConfig(new JsonConfig($config->getInputPath()))
-                ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO)
-            ;
+        // Import data
+        $config
+            ->setInputPath($config->getOutputPath())
+            ->setOutputPath(null)
+            ->setExporterType(Generator\Exporter\ExporterInterface::TYPE_JSON)
+            ->setReaderConfig(new JsonConfig($config->getInputPath()))
+            ->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO)
+        ;
 
-            $this->setBatchConfigByInputInterface($config, $input);
-            if ( ! $config->getExporterBatchConfig()) {
-                $config->setExporterBatchConfig(new Generator\Exporter\Parser\Json\BatchConfig());
-            }
-
-            $generator = $this->createGenerator($config, $logger);
-            $this->createAndSetProgressBar($generator, $output);
-
-            // Import data
-            $this->generate($generator, $output, $logger);
+        $this->setBatchConfigByInputInterface($config, $input);
+        if ( ! $config->getExporterBatchConfig()) {
+            $config->setExporterBatchConfig(new Generator\Exporter\Parser\Json\BatchConfig());
         }
+
+        $generator = $this->createGenerator($config, $logger);
+        $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output);
     }
 
     /**

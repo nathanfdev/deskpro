@@ -48,14 +48,14 @@ class ZenDeskReaderFactory
      * @return ZenDeskReader
      * @throws Exception
      */
-    public static function createReaderByDeskproConfig()
+    public static function createReaderByDeskPROConfig()
     {
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
 
         return new ZenDeskReader(
             new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client)
+                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config))
             ),
 
             $config
@@ -66,7 +66,7 @@ class ZenDeskReaderFactory
      * @param ZenDeskConfig $config
      * @return ZenDeskReader
      */
-    static public function createReader(ZenDeskConfig $config)
+    public static function createReader(ZenDeskConfig $config)
     {
         $client = self::createClient($config);
         $logger = new Logger('zendesk');
@@ -81,7 +81,7 @@ class ZenDeskReaderFactory
 
         return new ZenDeskReader(
             new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client, $logger)
+                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger)
             ),
 
             $config
@@ -94,7 +94,7 @@ class ZenDeskReaderFactory
      * @return Fixtures\Collection
      * @throws Exception
      */
-    public static function createFixturesByDeskproConfig()
+    public static function createFixturesByDeskPROConfig()
     {
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
@@ -102,7 +102,8 @@ class ZenDeskReaderFactory
         $collection = new Fixtures\Collection();
         $collection
             ->attach(new Fixtures\People($client))
-            ->attach(new Fixtures\Tickets($client));
+            ->attach(new Fixtures\Tickets($client))
+        ;
 
         return $collection;
     }
@@ -124,6 +125,20 @@ class ZenDeskReaderFactory
     }
 
     /**
+     * Create a curl request
+     *
+     * @param ZenDeskConfig $config
+     * @return array
+     */
+    private static function getCurlRequestOptions(ZenDeskConfig $config)
+    {
+        return array(
+            CURLOPT_CONNECTTIMEOUT => $config->getConnectionTimeout(),
+            CURLOPT_TIMEOUT        => $config->getConnectionTimeout(),
+        );
+    }
+
+    /**
      * Create ZenDesk client config
      *
      * @return ZenDeskConfig
@@ -140,7 +155,6 @@ class ZenDeskReaderFactory
             $dp_config['subdomain'],
             $dp_config['username'],
             new DateTime($dp_config['initial_time'])
-
         );
 
         if (isset($dp_config['password'])) {
@@ -148,6 +162,9 @@ class ZenDeskReaderFactory
         }
         if (isset($dp_config['api_token'])) {
             $config->setApiToken($dp_config['api_token']);
+        }
+        if (isset($dp_config['connection_timeout'])) {
+            $config->setConnectionTimeout($dp_config['connection_timeout']);
         }
 
         return $config;

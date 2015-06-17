@@ -66,4 +66,12 @@ interface RequestAdapterInterface
      * @return \stdClass
      */
     public function doTicketsIncrementalExportRequest(array $params = array());
+
+    /**
+     * Request a collection of ticket comments
+     *
+     * @param array $params
+     * @return \stdClass
+     */
+    public function doTicketCommentsFindAllRequest(array $params = array());
 }

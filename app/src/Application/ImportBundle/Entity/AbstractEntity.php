@@ -39,6 +39,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 abstract class AbstractEntity implements EntityInterface
 {
     /**
+     * @var array
+     */
+    protected $raw_data = array();
+
+    /**
      * @var int
      */
     protected $oid;
@@ -47,6 +52,24 @@ abstract class AbstractEntity implements EntityInterface
      * @var string
      */
     protected $destination;
+
+    /**
+     * @return array
+     */
+    public function getRawData()
+    {
+        return $this->raw_data;
+    }
+
+    /**
+     * @param array $raw_data
+     * @return $this
+     */
+    public function setRawData($raw_data)
+    {
+        $this->raw_data = $raw_data;
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
@@ -98,6 +121,7 @@ abstract class AbstractEntity implements EntityInterface
     {
         $metadata
             ->addPropertyConstraint('oid', new Constraints\NotBlank())
-            ->addPropertyConstraint('destination', new Constraints\NotBlank());
+            ->addPropertyConstraint('destination', new Constraints\NotBlank())
+        ;
     }
 }

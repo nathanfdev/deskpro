@@ -86,6 +86,16 @@ define [
           value: 'CheckEmailHeader'
         })
 
+        options.push({
+          title: 'Email bounced',
+          value: 'CheckEmailIsBounce'
+        })
+
+        options.push({
+          title: 'Automated email',
+          value: 'CheckEmailIsRobot'
+        })
+
         set_options.push({
           title: 'Email Criteria',
           subOptions: options
@@ -732,6 +742,64 @@ define [
             return value
           }
         }
+
+    getCheckEmailIsBounce: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              return {
+              op: value.op || 'is',
+              options: [
+                { value: 'is', title: 'Email message IS a bounced message' },
+                { value: 'not', title: 'Email message IS NOT a bounced message' }
+              ]
+              }
+
+            getValue: (model = {}, data) ->
+              return {
+              type: 'CheckEmailIsBounce',
+              op: model.op || 'is'
+              options: { run:true }
+              }
+          }
+      }
+
+    getCheckEmailIsRobot: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              return {
+              op: value.op || 'is',
+              options: [
+                { value: 'is', title: 'Email message IS an automated message' },
+                { value: 'not', title: 'Email message IS NOT an automated message' }
+              ]
+              }
+
+            getValue: (model = {}, data) ->
+              return {
+                type: 'CheckEmailIsRobot',
+                op: model.op || 'is'
+                options: { run:true }
+              }
+          }
+      }
 
     getCheckLabel: (options = {}) ->
       options.propName = 'labels'

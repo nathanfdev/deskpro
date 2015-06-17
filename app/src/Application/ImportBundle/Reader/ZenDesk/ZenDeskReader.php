@@ -62,6 +62,7 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     public function __construct(Request\RequestAdapterInterface $adapter, ZenDeskConfig $config)
     {
         parent::__construct($config);
+
         $this->adapter      = $adapter;
         $this->initial_time = $config->getInitialTime();
     }
@@ -176,9 +177,28 @@ class ZenDeskReader extends BaseReader implements ZenDeskReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getTicketComments($id)
+    {
+        $comments = array();
+        $result   = $this->adapter->doTicketCommentsFindAllRequest(array(
+            'ticket_id' => $id,
+        ));
+
+        if ($result) {
+            foreach ($result->comments as $comment) {
+                $comments[] = $this->toArray($comment);
+            }
+        }
+
+        return $comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTicketsEndTime(DateTime $start_time = null)
     {
-        $request = $this->adapter->doPeopleIncrementalExportRequest(array(
+        $request = $this->adapter->doTicketsIncrementalExportRequest(array(
             'start_time' => $this->getStartTimeTimestamp($start_time),
         ));
 

@@ -68,6 +68,11 @@ class ZenDeskConfig extends BaseConfig
     private $initial_time;
 
     /**
+     * @var int
+     */
+    private $connection_timeout = 120;
+
+    /**
      * Constructor
      *
      * @param string   $subdomain
@@ -156,6 +161,28 @@ class ZenDeskConfig extends BaseConfig
     }
 
     /**
+     * Returns connection timeout
+     *
+     * @return int
+     */
+    public function getConnectionTimeout()
+    {
+        return $this->connection_timeout;
+    }
+
+    /**
+     * Set curl connection timeout
+     *
+     * @param int $connection_timeout
+     * @return $this
+     */
+    public function setConnectionTimeout($connection_timeout)
+    {
+        $this->connection_timeout = (int)$connection_timeout;
+        return $this;
+    }
+
+    /**
      * Returns a text value indicating the type of authorization configured
      *
      * @return string
@@ -191,6 +218,10 @@ class ZenDeskConfig extends BaseConfig
         throw new Exception('Auth credentials is not set up');
     }
 
+    /**
+     * @param array $data
+     * @return ZenDeskConfig
+     */
     static public function fromArray(array $data)
     {
         if (!$time = @$data['initial_time']) {
@@ -209,6 +240,7 @@ class ZenDeskConfig extends BaseConfig
 
         $inst->setPassword(@$data['password']);
         $inst->setApiToken(@$data['token']);
+        $inst->setConnectionTimeout(@$data['connection_timeout']);
 
         return $inst;
     }

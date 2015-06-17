@@ -934,7 +934,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetParticipants()
     {
-        $this->participants = new ArrayCollection();
+        foreach ($this->participants as $participant) {
+            App::getOrm()->remove($participant);
+        }
+
+        $this->participants->clear();
         $this->_onPropertyChanged('participants', null, $this->participants);
 
         return $this;
@@ -1350,7 +1354,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetMessages()
     {
-        $this->messages = new ArrayCollection();
+        foreach ($this->messages as $message) {
+            App::getOrm()->remove($message);
+        }
+
+        $this->messages->clear();
         $this->_onPropertyChanged('messages', null, $this->messages);
 
         return $this;
@@ -1646,7 +1654,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $label) {
+            App::getOrm()->remove($label);
+        }
+
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;

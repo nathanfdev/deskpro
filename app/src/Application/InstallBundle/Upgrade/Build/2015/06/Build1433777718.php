@@ -53,7 +53,7 @@ class Build1433777718 extends AbstractBuild
             $default_wh = @unserialize($default_wh);
         }
         if ($default_wh && @$default_wh['work_days']) {
-            $default_wh['work_days'] = $this->getFixedDaysArray($default_wh['work_days'], $is_setting);
+            $default_wh['work_days'] = $this->getFixedDaysArray($default_wh['work_days'], true);
             $db->update('settings', array('value' => serialize($default_wh)), array('name' => 'core_tickets.work_hours'));
         }
     }

@@ -36,15 +36,69 @@ namespace Application\ApiBundle\Controller;
 
 
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
+use Application\DeskPRO\Usersource\Sync\SyncException;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\ExtraDetailsInterface;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Orb\Validator\StringEmail;
 
 class UsersourcesController extends AbstractController
 {
+    public function personRefreshAction($usersource_id, $identity_or_email)
+    {
+        // find Usersource
+        $sources = $this->getUsersourceManager()->getAll()->mustBeEnabled()->mustHaveId($usersource_id);
+        if (!$source = $sources->getFirstOrNull()) {
+            throw $this->createNotFoundException('usersource id=' . $usersource_id . ' not found or not enabled');
+        }
+
+        /** @var \Application\DeskPRO\Usersource\Sync\SyncManager $sync_manager */
+        $sync_manager = $this->container->getSystemService('usersource_sync_manager');
+
+        // run sync algorithm for this usersource with the passed identifier/email
+        try {
+            if ($sync_manager->refreshIdentity($source, $identity_or_email)) {
+                return $this->createApiSuccessResponse();
+            } else {
+                return $this->createApiErrorResponse('sync_error', 'unable to sync');
+            }
+        } catch (SyncException $e) {
+            return $this->createApiErrorResponse('sync_error', 'a problem occurred when trying to sync');
+        }
+    }
+
+    public function startUsersourceSyncAction()
+    {
+        // find any non complete job, may way to expand this to error'ed jobs in the future
+        // depending on how we use this endpoint
+        $job = $this->em
+            ->createQuery('SELECT j FROM DeskPRO:Job j WHERE j.type = :jtype AND j.status != :jstatus')
+            ->setParameter('jtype', UsersourceSyncProcessor::JOB_TYPE)
+            ->setParameter('jstatus', Job::STATUS_COMPLETE)
+            ->getOneOrNullResult()
+        ;
+
+        if (!$job) {
+            // only create a new sync job if there is not already a sync job
+            // the sync job renews itself continually, so we can't allow two going
+            // at once
+            $this->container->getJobQueue()->addJob(new Job(
+                'usersource_sync'
+            ));
+
+            return $this->createApiSuccessResponse();
+        }
+
+        return $this->createApiErrorResponse('sync_in_progress', 'Cannot start sync because it is already running in the job queue');
+    }
+
     public function listByTypeAction($type)
     {
         if ($type == Usersource::TYPE_USER) {
@@ -127,10 +181,85 @@ class UsersourcesController extends AbstractController
         );
     }
 
-
-    public function getUsersourceExtraAction($type, $id)
+    public function syncStartAction()
     {
-            $sources = $this->getUsersourceManager()->getAll();
+        $this->getSyncManager()->clearStopSignal();
+        $this->getSyncManager()->rescheduleSync(new \DateTime());
+
+        return $this->createApiSuccessResponse();
+    }
+
+    public function syncStopAction()
+    {
+        $this->getSyncManager()->abortSyncJobs();
+        $this->getSyncManager()->signalJobToStop();
+
+        return $this->createApiSuccessResponse();
+    }
+
+    public function syncStatusAction()
+    {
+        $next = $this->getSyncManager()->getNextScheduledSyncDate();
+        return $this->createApiResponse(
+            array(
+                'running_now' => $this->getSyncManager()->isSyncRunning(),
+                'next_sync' => $next ? $next->format('Y-m-d H:i:s') : null
+            )
+        );
+    }
+
+    public function getSyncInformationAction($app_id)
+    {
+        $source = $this->getUsersourceManager()->getAll()->withAppId($app_id)->getFirstOrNull();
+
+        if (!$source) {
+            throw $this->createNotFoundException('usersource app id=' . $app_id);
+        }
+
+        $sync_log = null;
+        if ($most_recent_log = $this->getSyncManager()->getMostRecentLog($source)) {
+            $sync_log = $most_recent_log->toApiData();
+
+            // phase 1 time
+            // no end date means phase 1 is running
+            if (null === $most_recent_log->getDateEnd()) {
+                $sync_log['phase_1_running'] = true;
+            } else {
+                $sync_log['phase_1_running'] = false;
+            }
+
+            // phase 2 time
+            $time_two = $most_recent_log->getPhaseTwoTimeInSeconds();
+            // no end date means phase 2 _might_ be running
+            $sync_log['phase_2_running'] = false;
+            if (null === $most_recent_log->getDateEnd()) {
+                $sync_log['phase_2_running'] = true;
+                $sync_log['phase_2_show'] = false;
+            } elseif ($time_two > 2) { // don't show phase 2 unless it took at least a few seconds
+                $sync_log['phase_2_show'] = true;
+            } else {
+                $sync_log['phase_2_show'] = false; // else signal that we shouldn't show it
+            }
+        }
+
+        return $this->createApiResponse(
+            array(
+                'sync_log' => $sync_log
+            )
+        );
+    }
+
+    /**
+     * @return \Application\DeskPRO\Usersource\Sync\SyncManager
+     */
+    protected function getSyncManager()
+    {
+        return $this->container->getSystemService('usersource_sync_manager');
+    }
+
+    public function getUsersourceExtraAction($type, $app_id)
+    {
+        $sources = $this->getUsersourceManager()->getAll();
 
         if ($type === Usersource::TYPE_USER) {
             $sources = $sources->configuredForUsers(true);
@@ -138,16 +267,10 @@ class UsersourcesController extends AbstractController
             $sources = $sources->configuredForAgents(true);
         }
 
-        $source = null;
-        foreach ($sources as $usersource) {
-            if ($usersource->app && $usersource->app->id == $id) {
-                $source = $usersource;
-                break;
-            }
-        }
+        $source = $sources->withAppId($app_id)->getFirstOrNull();
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource id=' . $id . ' not found');
+            throw $this->createNotFoundException('usersource app id=' . $app_id . ' not found for interface='.$type);
         }
 
         $adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($source, null, $type);
@@ -290,5 +413,17 @@ class UsersourcesController extends AbstractController
         $source = $sources->getFirstOrNull();
 
         return $source;
+    }
+
+    /**
+     * @param $email
+     * @return Person
+     */
+    protected function createPerson($email)
+    {
+        $person = Person::newContactPerson(array('email' => $email));
+        $this->em->persist($person);
+
+        return $person;
     }
 }

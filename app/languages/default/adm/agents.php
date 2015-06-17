@@ -74,7 +74,7 @@
     'adm.agents.perm_ticket_modify_assign_agent'                  => 'Can assign agents',
     'adm.agents.perm_ticket_modify_assign_team'                   => 'Can assign teams',
     'adm.agents.perm_ticket_modify_assign_self'                   => 'Can assign tickets to self',
-    'adm.agents.perm_ticket_modify_cc'                            => 'Can modify CCs',
+    'adm.agents.perm_ticket_modify_cc'                            => 'Can change ticket owner and add/remove CCs',
     'adm.agents.perm_ticket_modify_merge'                         => 'Can merge this ticket',
     'adm.agents.perm_ticket_modify_labels'                        => 'Can modify labels',
     'adm.agents.perm_ticket_modify_slas'                          => 'Can modify SLAs',
