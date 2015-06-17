@@ -153,12 +153,12 @@ class LicenseService
      */
     public static function fetchServiceResult($endpoint, array $post_data = array())
     {
-        $url = \DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/');
+        $url = \DeskPRO\Kernel\License::getSecureLicServer() . '/api/' . ltrim($endpoint, '/');
 
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 8, 'strictredirects' => true));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/'));
+            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer() . '/api/' . ltrim($endpoint, '/'));
             $client->getRequest()->getPost()->fromArray($post_data);
             $r = $client->send();
             $result = $r->getBody();

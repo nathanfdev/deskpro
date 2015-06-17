@@ -459,6 +459,7 @@ final class License
     /**
      * @static
      * @return string
+     * @deprecated Use getSecureLicServer
      */
     public static function getLicServer()
     {
@@ -505,6 +506,7 @@ final class License
     public static function create($license_code, $install_key = '')
     {
         self::getLicServer();
+        self::getSecureLicServer();
 
         $inst = new self($license_code, $install_key);
 
