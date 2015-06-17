@@ -101,6 +101,7 @@ class TicketPeopleStorage implements TicketPeopleStorageInterface, PeopleStorage
             $this->people[$person['id']] = $person;
         }
         if ($this->people_storage) {
+            $this->people_storage->addIgnoreIds($request_ids);
             $this->people_storage->addPeople($this->people);
         }
     }
@@ -120,6 +121,14 @@ class TicketPeopleStorage implements TicketPeopleStorageInterface, PeopleStorage
             }
             if (isset($ticket['assignee_id']) && $ticket['assignee_id'] > 0) {
                 $people_ids[] = $ticket['assignee_id'];
+            }
+
+            if ( ! empty($ticket['comments'])) {
+                foreach ($ticket['comments'] as $comment) {
+                    if (isset($comment['author_id']) && $comment['author_id'] > 0) {
+                        $people_ids[] = $comment['author_id'];
+                    }
+                }
             }
         }
 

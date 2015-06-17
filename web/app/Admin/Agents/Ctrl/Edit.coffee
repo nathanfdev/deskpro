@@ -20,7 +20,7 @@ define [
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
       @hasDepOverrides = false
-      @primary_phone_number_region = 'US'
+      @default_phone_number_region = 'US'
       @service =
         agents: @DataService.get 'Agents'
       @all_perms =
@@ -86,7 +86,9 @@ define [
           }
           @perm_form = null
 
-        @primary_phone_number_region = result.data.default_country.value || @primary_phone_number_region
+        if result.data.default_country_code
+          @default_phone_number_region = result.data.default_country_code
+        @primary_phone_number_region = result.data.default_country.value || @default_phone_number_region
 
         @teams  = result.data.teams.agent_teams
         @groups = result.data.groups.groups

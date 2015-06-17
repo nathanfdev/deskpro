@@ -110,6 +110,14 @@ interface ZenDeskReaderInterface
     public function getTickets(DateTime $start_time = null);
 
     /**
+     * Returns a collection of ticket comments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getTicketComments($id);
+
+    /**
      * Returns a batch end time of the tickets collection
      *
      * @param DateTime $start_time

@@ -129,4 +129,18 @@ final class GenerateCollection extends AbstractCollection
 
         return false;
     }
+
+    /**
+     * @return int
+     */
+    public function getSkippedCount()
+    {
+        $count = 0;
+        foreach ($this->collection as $type_collection) {
+            /** @var Entity\Collection $type_collection */
+            $count += $type_collection->getSkippedCount();
+        }
+
+        return $count;
+    }
 }

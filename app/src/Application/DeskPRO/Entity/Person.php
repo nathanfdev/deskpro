@@ -708,6 +708,16 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setCanAgent($yesno)
+    {
+        $this->setModelField('can_agent', $yesno);
+        return $this;
+    }
+
 
     /**
      * @return bool|int
@@ -2373,6 +2383,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function _savePersonLogs()
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+
         if ($this->_person_logger) {
             $this->_person_logger->done();
             $this->_person_logger = null;
@@ -2391,6 +2403,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     public function _presavePerson()
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+
         // If we're loaded, then set default timezone from setting
         if (!$this->timezone && class_exists('Application\\DeskPRO\\App')) {
             try {

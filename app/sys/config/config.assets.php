@@ -353,6 +353,7 @@ $CONFIG['agent_deskpro_ui'] = array(
     'files' => array(
         'javascripts/DeskPRO/UI/LabelsInput.js',
         'javascripts/DeskPRO/UI/Overlay.js',
+        'javascripts/DeskPRO/UI/PhoneNumberInputs.js',
         'javascripts/DeskPRO/UI/OptionBox.js',
         'javascripts/DeskPRO/UI/OptionBoxRevertable.js',
         'javascripts/DeskPRO/UI/OptionBoxBuilder.js',

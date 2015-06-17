@@ -31,6 +31,7 @@ use Application\ImportBundle\Reader\BaseConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use Application\ImportBundle\Entity;
+use Guzzle\Http\Client;
 
 /**
  * ZenDesk data exporter factory
@@ -57,8 +58,6 @@ class ZenDeskFactory extends AbstractFactory
         $ticket_people = new Parser\ZenDesk\TicketPeopleStorage($reader);
         $ticket_people->setPeopleStorage($storage);
 
-        $tickets = new Parser\ZenDesk\Tickets($reader, $ticket_people);
-
         // Parsers collection
         $parsers = new Parser\Collection();
         $parsers
@@ -67,8 +66,8 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\Articles($reader))
             ->attach(new Parser\ZenDesk\News($reader))
             ->attach($people)
-            ->attach($tickets);
-
+            ->attach(new Parser\ZenDesk\Tickets($reader, $ticket_people, new Client()))
+        ;
 
         return new ZenDesk($parsers, $reader);
     }

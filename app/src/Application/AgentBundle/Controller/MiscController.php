@@ -42,6 +42,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Symfony\Component\HttpFoundation\Request;
 
 class MiscController extends AbstractController
 {
@@ -52,6 +53,16 @@ class MiscController extends AbstractController
         }
 
         return parent::requireRequestToken($action, $arguments);
+    }
+
+    public function getGeoIpAction(Request $request)
+    {
+        /** @var \Orb\GeoIP\AbstractGeoIp $geoip */
+        $geoip = $this->container->getSystemService('geoip');
+
+        return $this->createJsonResponse(array(
+            'geoip' => $geoip->lookup($request->getClientIp())
+        ));
     }
 
     public function getInterfaceDataAction()

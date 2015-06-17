@@ -42,7 +42,7 @@ use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class ActiveDirectory implements FormLoginInterface, Loggable
+class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -126,6 +126,11 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         return $auth;
     }
 
+    public function findAllRecords($size_limit = 1000, $paging = true, $objectClass = 'User')
+    {
+        return parent::findAllRecords($size_limit, $paging, $objectClass);
+    }
+
 
     /**
      * Authenticate a user.
@@ -157,6 +162,125 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         return $res;
+    }
+
+    public function findRecordViaDn($provided_dn)
+    {
+        try {
+            $auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $auth->setUsername('__bogus__');
+                $auth->setPassword('__bogus__');
+                $auth->authenticate();
+            } catch (\Exception $e) {
+            }
+            /** @var $ldap \Zend\Ldap\Ldap */
+            $ldap = $auth->getLdap();
+
+            return $ldap->getEntry($provided_dn);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    public function getIdentityForDn($provided_dn)
+    {
+        try {
+            $auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $auth->setUsername('__bogus__');
+                $auth->setPassword('__bogus__');
+                $auth->authenticate();
+            } catch (\Exception $e) {
+            }
+            $raw_info = array();
+            /** @var $ldap \Zend\Ldap\Ldap */
+            $ldap = $auth->getLdap();
+            $dn = $ldap->getCanonicalAccountName($provided_dn, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+
+            /** @var $rec \Zend\Ldap\Node */
+            $rec = $ldap->getNode($dn);
+            if ($rec) {
+                foreach ($rec->getData() as $name => $value) {
+                    try {
+                        $raw_info[$name] = $rec->getAttribute($name, null);
+                    } catch (\Exception $e) {
+                        $raw_info[$name] = $value;
+                    }
+                }
+
+                if (!empty($raw_info['samaccountname'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
+                } elseif (!empty($raw_info['uid'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+                }
+                if (!empty($raw_info['distinguishedname'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
+                } elseif (!empty($raw_info['dn'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                } else {
+                    $raw_info['identity'] = $provided_dn;
+                }
+
+                $raw_info['domain'] = $this->options['accountDomainName'];
+
+                if ($rec->getAttribute('givenName')) {
+                    $raw_info['first_name'] = $rec->getAttribute('givenName', 0);
+                }
+                if ($rec->getAttribute('sn')) {
+                    $raw_info['last_name'] = $rec->getAttribute('sn', 0);
+                }
+
+                if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
+                    $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+                } elseif ($rec->getAttribute('name')) {
+                    $raw_info['name'] = $rec->getAttribute('name', 0);
+                } elseif ($rec->getAttribute('cn')) {
+                    $raw_info['name'] = $rec->getAttribute('cn', 0);
+                }
+
+                if ($rec->getAttribute('mail')) {
+                    $raw_info['email_address'] = $rec->getAttribute('mail', 0);
+                } elseif (\Orb\Validator\StringEmail::isValueValid($rec->getAttribute('userPrincipalName', 0))) {
+                    $raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
+                }
+
+                if ($rec->getAttribute('jpegPhoto')) {
+                    $raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
+
+                    // Large photo can potentially cause memory issues when we resize/edit it, so ignore it
+                    if (isset($raw_info['picture_data'][15000000])) {
+                        unset($raw_info['picture_data'][15000000]);
+                    }
+                } elseif ($rec->getAttribute('thumbnailPhoto')) {
+                    $raw_info['picture_data'] = $rec->getAttribute('thumbnailPhoto', 0);
+                }
+
+                if ($rec->getAttribute('telephoneNumber')) {
+                    $raw_info['phone'] = $rec->getAttribute('telephoneNumber', 0);
+                }
+            } else {
+                $raw_info['dp_error'] = "Empty record from node: $dn";
+            }
+
+        } catch (\Exception $e) {
+            $raw_info['dp_error'] = "Error when fetching node";
+            $raw_info['exception_type'] = get_class($e);
+            $raw_info['exception_message'] = $e->getMessage();
+            $raw_info['exception_code'] = $e->getCode();
+            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
+        }
+
+
+        $identity = new Identity($raw_info['identity'], $raw_info);
+
+        return $identity;
     }
 
 
@@ -217,84 +341,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         $raw_info = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
-        try {
-            /** @var $ldap \Zend\Ldap\Ldap */
-            $ldap = $auth->getLdap();
-            $dn = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
-
-            /** @var $rec \Zend\Ldap\Node */
-            $rec = $ldap->getNode($dn);
-            if ($rec) {
-                foreach ($rec->getData() as $name => $value) {
-                    try {
-                        $raw_info[$name] = $rec->getAttribute($name, null);
-                    } catch (\Exception $e) {
-                        $raw_info[$name] = $value;
-                    }
-                }
-
-                if (!empty($raw_info['samaccountname'])) {
-                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
-                } elseif (!empty($raw_info['uid'])) {
-                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
-                }
-                if (!empty($raw_info['distinguishedname'])) {
-                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
-                } elseif (!empty($raw_info['dn'])) {
-                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
-                } else {
-                    $raw_info['identity'] = $result->getIdentity();
-                }
-
-                $raw_info['domain'] = $this->options['accountDomainName'];
-
-                if ($rec->getAttribute('givenName')) {
-                    $raw_info['first_name'] = $rec->getAttribute('givenName', 0);
-                }
-                if ($rec->getAttribute('sn')) {
-                    $raw_info['last_name'] = $rec->getAttribute('sn', 0);
-                }
-
-                if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
-                    $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
-                } elseif ($rec->getAttribute('name')) {
-                    $raw_info['name'] = $rec->getAttribute('name', 0);
-                } elseif ($rec->getAttribute('cn')) {
-                    $raw_info['name'] = $rec->getAttribute('cn', 0);
-                }
-
-                if ($rec->getAttribute('mail')) {
-                    $raw_info['email_address'] = $rec->getAttribute('mail', 0);
-                } elseif (\Orb\Validator\StringEmail::isValueValid($rec->getAttribute('userPrincipalName', 0))) {
-                    $raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
-                }
-
-                if ($rec->getAttribute('jpegPhoto')) {
-                    $raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
-
-                    // Large photo can potentially cause memory issues when we resize/edit it, so ignore it
-                    if (isset($raw_info['picture_data'][15000000])) {
-                        unset($raw_info['picture_data'][15000000]);
-                    }
-                } elseif ($rec->getAttribute('thumbnailPhoto')) {
-                    $raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
-                }
-
-                if ($rec->getAttribute('telephoneNumber')) {
-                    $raw_info['phone'] = $rec->getAttribute('telephoneNumber', 0);
-                }
-            } else {
-                $raw_info['dp_error'] = "Empty record from node: $dn";
-            }
-        } catch (\Exception $e) {
-            $raw_info['dp_error']          = "Error when fetching node";
-            $raw_info['exception_type']    = get_class($e);
-            $raw_info['exception_message'] = $e->getMessage();
-            $raw_info['exception_code']    = $e->getCode();
-            $raw_info['exception_trace']   = KernelErrorHandler::formatBacktrace($e->getTrace());
-        }
-
-        $identity = new Identity($raw_info['identity'], $raw_info);
+        $identity = $this->getIdentityForDn($result->getIdentity());
 
         return new Result(Result::SUCCESS, $identity);
     }

@@ -75,6 +75,25 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * Returns a person organization name
+     *
+     * @param int $id
+     * @return null
+     */
+    protected function getOrganizationName($id)
+    {
+        $organization = null;
+        if ($id) {
+            $organization = $this->reader->getOrganizationById($id);
+            if ($organization) {
+                return $organization['name'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns current end time
      *
      * @return DateTime

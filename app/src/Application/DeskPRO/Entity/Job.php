@@ -47,7 +47,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * @property $date_touch
  * @property $date_created
  * @property $date_last_try
- * @property $date_next_try
+ * @property \DateTime $date_next_try
  * @property $priority
  * @property $num_tries
  * @property $log_summary
@@ -284,6 +284,13 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('status', Job::STATUS_WAITING);
         $this->setModelField('status_code', Job::STATUS_CODE_RETRYING);
         $this->setModelField('worker_id', null);
+        $this->setModelField('date_touch', new \DateTime());
+    }
+
+    public function abort()
+    {
+        $this->setModelField('status', Job::STATUS_ABORTED);
+        $this->setModelField('status_code', Job::STATUS_CODE_EXHAUSTED);
         $this->setModelField('date_touch', new \DateTime());
     }
 }

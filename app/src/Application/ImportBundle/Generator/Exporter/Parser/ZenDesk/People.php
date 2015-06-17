@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
-use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
@@ -75,6 +73,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function getCount()
     {
+        // We could read data from ZD reader twice because of ZD reader cache support
         return count($this->getPeople());
     }
 
@@ -83,8 +82,10 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     public function export()
     {
+        $people = $this->getPeople();
+
         $collection = new Entity\Collection();
-        $people     = $this->getPeople();
+        $collection->setExpectedCount(count($people));
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -94,7 +95,6 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
                 $entity = $this->exportPerson($person);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logDebug(sprintf('[ZDUser #%s] Entity `%s` parsed successfully', $pid, $entity->getDestination()));
 
                 } else {
                     $this->logDebugInfo(sprintf("[ZDUser #%s] Invalid user entity", $pid), $person);
@@ -122,10 +122,11 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     {
         if ($this->isPersonValid($person)) {
             $date_created = new DateTime($person['created_at']);
-            $timezone = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+            $timezone     = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
 
             $entity = new Entity\Person();
             $entity
+                ->setRawData($person)
                 ->setDestination('person_' . $person['id'])
                 ->setOid($person['id'])
                 ->addEmail($person['email'])
@@ -155,25 +156,6 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     }
 
     /**
-     * Returns a person organization name
-     *
-     * @param int $id
-     * @return null
-     */
-    private function getOrganizationName($id)
-    {
-        $organization = null;
-        if ($id) {
-            $organization = $this->reader->getOrganizationById($id);
-            if ($organization) {
-                return $organization['name'];
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Returns a collection of people to be exported
      * Gets a collection of people from the storage if it's defined or uses the ZenDesk reader
      *
@@ -181,18 +163,40 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      */
     private function getPeople()
     {
+        $this->logDebugTimeStart('getPeople', "Reading people batch");
+
         $people = array();
         if ($this->people_storage) {
             $people = $this->people_storage->getPeople();
         }
         if (empty($people)) {
             if ($this->getBatchConfig()->getPeopleEndTime() < new DateTime('-5 minutes')) {
+                if ($this->getBatchConfig()->getPeopleEndTime()) {
+                    $this->logDebug(sprintf("Reading from time: %s", $this->getBatchConfig()->getPeopleEndTime()->format('Y-m-d H:i:s')));
+                } else {
+                    $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
+                }
+
                 $people = $this->reader->getPeople($this->getBatchConfig()->getPeopleEndTime());
-                $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getPeopleEndTime());
+                if (count($people)) {
+                    $this->end_time = $this->reader->getPeopleEndTime($this->getBatchConfig()->getPeopleEndTime());
+                    if ($this->end_time == $this->getBatchConfig()->getPeopleEndTime()) {
+                        $this->end_time->modify('+1 second');
+                    }
+
+                    $this->logDebug(sprintf("New end time: %s", $this->end_time->format('Y-m-d H:i:s')));
+
+                } else {
+                    $this->logDebug(sprintf("No more records"));
+                }
+
             } else {
                 $this->logAlert('No person was exported due 5 minutes timeout of the last end time');
             }
         }
+
+        $this->logDebug(sprintf("Read %d people", count($people)));
+        $this->logDebugTimeEnd('getPeople', "Done reading people batch");
 
         return $people;
     }

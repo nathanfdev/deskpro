@@ -33,51 +33,13 @@
 
 namespace Application\ImportBundle;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Application\ImportBundle\DependencyInjection;
 
+/**
+ * Class ImportBundle
+ * @package Application\ImportBundle
+ */
 class ImportBundle extends Bundle
 {
-    public function __construct()
-    {
-        $this->name = 'Import';
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function build(ContainerBuilder $container)
-    {
-        $container->registerExtension(new DependencyInjection\ImportExtension());
-    }
-
-    /**
-     * @param Application $application An Application instance
-     */
-    public function registerCommands(Application $application)
-    {
-        $commands = array(
-            'Application\\ImportBundle\\Command\\CheckExportCommand',
-            'Application\\ImportBundle\\Command\\ExportCommand',
-            'Application\\ImportBundle\\Command\\ImportCommand',
-            'Application\\ImportBundle\\Command\\ImportBatchCommand',
-            'Application\\ImportBundle\\Command\\FixturesCommand',
-        );
-
-        foreach ($commands as $cmd) {
-            $application->add(new $cmd);
-        }
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
-    }
 }

@@ -22,6 +22,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.page.addEvent('destroy', this.destroy, this);
 
+		this.phone_numbers = new DeskPRO.UI.PhoneNumberInputs();
+
 		this.initEditorOverlay();
 
 		var displayEl = $(self.options.displayEl || '.contact-list-wrapper', self.wrapper);
@@ -50,6 +52,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 	initEditorOverlay: function() {
 
 		var self = this;
+
 		if (this.contactOverlay) {
 			this.contactOverlay.destroy();
 			this.contactOverlay = null;
@@ -167,7 +170,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 					rowTypeEl.removeClass('with-values');
 				}
 			});
-		};
+		}
+
 		contactEditor.on('click', '.remove', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 			var row = $(this).closest('li');
@@ -193,6 +197,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			var el = $(tpl);
 			el.addClass('new');
 			el.appendTo($('ul', rowTypeEl));
+			self.phone_numbers.renderPhoneInputs();
 
 			DeskPRO_Window.initInterfaceServices(el);
 
@@ -200,10 +205,13 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				checkFields(rowTypeEl);
 			});
 
-			$('.with-some', rowTypeEl).hide();
+			$('.with-none', rowTypeEl).hide();
+			$('.with-some', rowTypeEl).show();
 
 			rowTypeEl.addClass('with-values');
 		});
+
+		this.phone_numbers.renderPhoneInputs();
 	},
 
 	destroy: function() {

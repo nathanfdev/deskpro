@@ -129,6 +129,13 @@ class BounceDetector
             return true;
         }
 
+        // A custom header, can be used to explicitly mark message as a bounce (e.g., for debug or custom rules in mail server)
+        $failed = $this->reader->getHeader('X-Is-Bounce');
+        if ($failed && $failed->getHeader()) {
+            if ($this->logger) $this->logger->logDebug('Is bounced based on X-Is-Bounce');
+            return true;
+        }
+
         $from = $this->reader->getFromAddress();
         $postmaster_config = new \Application\DeskPRO\Config\UserFileConfig('postmaster-emails');
         foreach ($postmaster_config as $pattern) {

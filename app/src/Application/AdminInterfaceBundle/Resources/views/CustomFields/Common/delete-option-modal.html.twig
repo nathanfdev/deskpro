@@ -11,10 +11,10 @@
         <div class="radio">
             <label>
                 <input type="radio" name="mode" ng-model="mode" ng-value="0"/>
-                Delete this field and delete all data
+                Delete this option and delete all data
                 <br/>
                 <span class="text-muted" ng-show="!mode">
-                    Remove the option and remove the field from all {{ ng_var('type') }}
+                    Remove the option and remove the option from all {{ ng_var('type') }}
                     that are currently using the option
                 </span>
             </label>
@@ -23,7 +23,7 @@
         <div class="radio">
             <label>
                 <input type="radio" name="mode" ng-model="mode" ng-value="1"/>
-                Delete this field and update {{ ng_var('type') }}
+                Delete this option and update {{ ng_var('type') }}
                 <br/>
                 <span class="text-muted" ng-show="mode">
                     Remove the option and update any {{ ng_var('type') }} using it to:

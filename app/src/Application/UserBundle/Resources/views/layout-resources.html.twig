@@ -22,6 +22,9 @@
 	{% endif %}
 </script>
 
+{% include 'DeskPRO:Common:notify-logout-script.html.twig' %}
+{% include 'DeskPRO:Common:notify-login-script.html.twig' %}
+
 {% if app.isDebug() %}
 	{{ dp_asset_html('user_vendors') }}
 	{{ dp_asset_html('user_common') }}

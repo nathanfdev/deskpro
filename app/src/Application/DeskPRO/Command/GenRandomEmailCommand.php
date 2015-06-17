@@ -51,6 +51,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
         $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, "Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.");
         $this->addOption('vars', null, InputOption::VALUE_REQUIRED, "Extra vars to make available to the templates. Should be a JSON encoded string");
+        $this->addOption('is-bounce', null, InputOption::VALUE_NONE, "Set is_bounce=true in vars");
     }
 
     /**
@@ -206,6 +207,10 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
         if ($custom_vars) {
             $vars = array_merge($vars, $custom_vars);
+        }
+
+        if ($input->getOption('is-bounce')) {
+            $vars['is_bounce'] = true;
         }
 
         $proc_keys = array_keys($custom_vars);

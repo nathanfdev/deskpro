@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Orb\Util\Strings;
 
 /**
  * OsTicket tickets parser
@@ -123,7 +124,7 @@ final class Tickets extends AbstractParser
             $entity
                 ->setDestination('ticket_' . $ticket['ticket_id'])
                 ->setOid($ticket['ticket_id'])
-                ->setRef($ticket['number'])
+                ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
                 ->setPersonEmail($this->reader->findUserEmailById($ticket['user_id']))
                 ->setAgentEmail($this->reader->findUserEmailById($ticket['staff_id']))
@@ -276,6 +277,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
+                ->setDestination('attachment_' . $num)
                 ->setOid($num)
                 ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                 ->setFileName($attachment['name'])

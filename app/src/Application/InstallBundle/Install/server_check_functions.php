@@ -287,10 +287,10 @@ function deskpro_install_simple_data_submit($log)
         $data['php_has_tokenizer'] = 0;
     }
 
-    if (defined('DP_MA_SERVER')) {
-        $ma_server = DP_MA_SERVER;
+    if (defined('DP_MA_SERVER_SECURE')) {
+        $ma_server = DP_MA_SERVER_SECURE;
     } else {
-        $ma_server = 'http://www.deskpro.com/members';
+        $ma_server = 'https://www.deskpro.com/members';
     }
 
     $opts = array(

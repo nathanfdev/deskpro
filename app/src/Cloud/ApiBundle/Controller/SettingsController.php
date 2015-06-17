@@ -110,7 +110,7 @@ class SettingsController extends BaseSettingsController
                 $this->em->persist($tmpdata);
                 $this->em->flush();
 
-                $url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
+                $url = DP_MA_SERVER_SECURE . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
 
                 try {
                     $client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));

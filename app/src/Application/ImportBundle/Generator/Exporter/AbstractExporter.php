@@ -53,11 +53,12 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      * Constructor
      *
      * @param Parser\Collection $parsers
+     * @param BaseReader        $reader
      */
     public function __construct(Parser\Collection $parsers, BaseReader $reader)
     {
         $this->parsers = $parsers;
-        $this->reader = $reader;
+        $this->reader  = $reader;
     }
 
     /**
@@ -78,7 +79,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function exportByType($type)
     {
-        $this->logNotice(sprintf('Parsing `%s` entities', $type));
+        $this->logInfo(sprintf('Parsing `%s` entities', $type));
 
         $parser = $this->getParserByType($type);
         if ($parser instanceof Parser\NotSupportedInterface) {
@@ -86,6 +87,8 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
 
             return new Entity\Collection();
         }
+
+        $this->logDebug("Type: " . get_class($parser));
 
         return $parser->export();
     }

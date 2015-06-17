@@ -13,7 +13,7 @@
 						"user_name": app.user.display_name,
 						"email_address": app.user.email_address,
 						"org_name": app.user.guessOrganizationName(),
-						"ma_server": app.getLicense().getLicServer() ~ "/api/license/request-demo.json"
+						"ma_server": app.getLicense().getSecureLicServer() ~ "/api/license/request-demo.json"
 					}|json_encode_inhtml }}</script>
 
 				<div class="form-group" ng-class="{'has-warning': has_submit && form.user_name.$error.required}">
