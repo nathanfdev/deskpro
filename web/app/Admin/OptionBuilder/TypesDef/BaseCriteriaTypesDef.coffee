@@ -172,7 +172,7 @@ define [
 
 
     ###
-      # Constructs a standard "is" template (no options, just a boolean is)
+    # Constructs a standard "is" template (no options, just a boolean is)
     ###
     getStandardIs: (options) ->
       type      = options.type
