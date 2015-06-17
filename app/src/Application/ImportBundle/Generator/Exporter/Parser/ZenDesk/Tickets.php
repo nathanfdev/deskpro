@@ -35,6 +35,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
 use Guzzle\Http\Client as HttpClient;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use Orb\Util\Strings;
 
 /**
@@ -339,18 +340,29 @@ final class Tickets extends AbstractParser
     private function exportAttachment(array $attachment)
     {
         if ($this->isAttachmentValid($attachment)) {
-            $http_request = $this->http_client->get($attachment['content_url']);
+            try {
+                $request = $this->http_client->get($attachment['content_url']);
+                $entity  = new Entity\Attachment();
+                $entity
+                    ->setDestination('attachment_' . $attachment['id'])
+                    ->setOid($attachment['id'])
+                    ->setBlobData(base64_encode($request->send()->getBody(true)))
+                    ->setFileName($attachment['file_name'])
+                    ->setContentType($attachment['content_type'])
+                ;
 
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination('attachment_' . $attachment['id'])
-                ->setOid($attachment['id'])
-                ->setBlobData(base64_encode($http_request->send()->getBody(true)))
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-            ;
+                return $entity;
 
-            return $entity;
+            } catch (ClientErrorResponseException $e) {
+                $this->logError(sprintf('Unable to download attachment #%s', $attachment['id']));
+                $this->logError($e->getMessage());
+
+                $response = $e->getResponse();
+                if ($response) {
+                    $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
+                    $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
+                }
+            }
         }
 
         return null;
