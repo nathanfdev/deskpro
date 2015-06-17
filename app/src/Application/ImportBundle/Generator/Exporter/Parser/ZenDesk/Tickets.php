@@ -267,12 +267,13 @@ final class Tickets extends AbstractParser
 
         foreach ($ticket['comments'] as $comment) {
             if ( ! $comment['author_id']) {
+                $this->logError(sprintf('Comment #%d without author_id, skipping', $comment['id']));
                 continue;
             }
 
             $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
             if ( ! $author_email) {
-                $this->logError(sprintf('Unable to get comment author #%d', $ticket['author_id']));
+                $this->logError(sprintf('Unable to get comment author #%d, skipping', $comment['author_id']));
                 continue;
             }
 
@@ -384,6 +385,8 @@ final class Tickets extends AbstractParser
                         $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
 
                         $tickets[] = $ticket;
+                    } else {
+                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping', $ticket['id']));
                     }
                 }
 
