@@ -142,26 +142,22 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         register_shutdown_function($onShutdown);
         file_put_contents($pid_file, getmypid());
 
+
+
         if ($input->hasOption('config-from-db')) {
+
             /** @var ImportService $is */
             $is = $this->getContainer()->get('deskpro.import');
             $data = $is->getData();
             if (!$script = $data->getData('script')) {
                 throw new \Exception('"script" argument is required');
             }
-            $importer = $is->getImporter($data->getData('script'));
-            $config = $importer->getData('config');
-
-            if (!@$config['temp']) {
-                throw new \Exception('Importer directory is not defined');
-            }
-
             $input->setArgument('script', $script);
-            $input->setOption('input-path', $config['temp'] . '/in');
-            $input->setOption('output-path', $config['temp'] . '/out/');
-        } elseif (!$input->getArgument('script')) {
-            throw new \Exception('"script" argument is required');
+
         }
+
+
+
 
         $GLOBALS['DP_IS_IMPORTING'] = true;
         $GLOBALS['DP_NOSQL_LOG'] = true;
@@ -399,9 +395,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Use cli to set generator config params up
      *
      * @param GeneratorConfig $config
-     * @param InputInterface  $input
-     *
-     * @throws RuntimeException
+     * @param InputInterface $input
+     * @throws \Exception
      */
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
@@ -411,13 +406,29 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             throw new RuntimeException('Source type argument is not defined');
         }
 
+        $readerConfig = null;
+
+        if ($input->hasOption('config-from-db')) {
+            /** @var ImportService $is */
+            $is = $this->getContainer()->get('deskpro.import');
+            $importer = $is->getImporter($input->getArgument('script'));
+            $config = $importer->getData('config');
+            if (!@$config['temp']) {
+                throw new \Exception('Importer directory is not defined');
+            }
+            $input->setOption('input-path', $config['temp'] . '/in');
+            $input->setOption('output-path', $config['temp'] . '/out/');
+
+            $readerConfig = $is->getReaderConfig($input->getArgument('script'));
+
+            if ($logfile = $importer->getData('logfile')) {
+                $config->setLogPath($logfile);
+            }
+        }
+
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
-
-        $readerConfig = $input->hasOption('config-from-db')
-            ? $this->get('deskpro.import')->getReaderConfig($input->getArgument('script'))
-            : null;
 
         if (!$readerConfig) {
             switch ($config->getExporterType()) {

@@ -40,6 +40,7 @@ use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
+use Orb\Util\Strings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Import
@@ -173,7 +174,7 @@ class Import
         /**
          * create temp dir
          */
-        if ($tmp = @$config['temp']) {
+        if (!$tmp = @$config['temp']) {
             $tmp = dp_get_tmp_dir().'/importer-'.time();
             $config['temp'] = $tmp;
             $this->em->flush($importer);
@@ -196,6 +197,14 @@ class Import
                 }
                 $storage->copyBlobRecordToFile($tmp . '/in/' . $blob['filename'], $blob);
             }
+        }
+
+        /**
+         * log file
+         */
+        if (!$log_file = $importer->getData('logfile')) {
+            $log_file = dp_get_log_dir().'/importlog-'.date('Ymd-His').'-'.Strings::random(6, Strings::CHARS_ALPHA_IU);
+            $importer->setData('logfile', $log_file);
         }
 
         $importer->setData('config', $config);

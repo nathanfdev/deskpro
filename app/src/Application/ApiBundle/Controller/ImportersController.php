@@ -47,11 +47,28 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
+     * @var ImportService
+     */
+    protected $is;
+
+    /**
      * {@inheritDoc}
      */
     public function getPermissionStrategy()
     {
         return new UserTypePermission(UserTypePermission::ADMIN);
+    }
+
+    /**
+     * @return ImportService
+     */
+    protected function is()
+    {
+        if (!$this->is) {
+            $this->is = $this->get('deskpro.import');
+        }
+
+        return $this->is;
     }
 
     /**
@@ -87,7 +104,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function getAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
+        $importer = $this->is->getImporter($id);
 
         return $this->createJsonResponse($importer->getData());
     }
@@ -98,7 +115,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function downloadLogAction($id)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
+        $importer = $this->is()->getImporter($id, $this->container);
 
         if (($logfile = $importer->getData('logfile')) && is_file($logfile) && is_readable($logfile)) {
             $response = new BinaryFileResponse($logfile, 200);
