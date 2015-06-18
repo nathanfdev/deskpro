@@ -56,6 +56,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Process\Process;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Application\ImportBundle\Service\Import as ImportService;
 
 /**
  * Base export command
@@ -73,7 +74,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this
             ->addArgument(
                 'script',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'The target script to use'
             )
             ->addOption(
@@ -118,6 +119,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 InputOption::VALUE_NONE,
                 'Shows memory usage'
             )
+            ->addOption(
+                'config-from-db',
+                'c',
+                InputOption::VALUE_NONE,
+                'Whether to load config from DB'
+            )
         ;
     }
 
@@ -126,6 +133,32 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $pid_file = dp_get_data_dir() . '/importer.pid';
+        if (file_exists($pid_file)) {
+            throw new \Exception('Import/Export already in process');
+        }
+
+        $onShutdown = function()use($pid_file){ unlink($pid_file); };
+        register_shutdown_function($onShutdown);
+        file_put_contents($pid_file, getmypid());
+
+        if ($input->hasOption('config-from-db')) {
+            /** @var ImportService $is */
+            $is = $this->getContainer()->get('deskpro.import');
+            $data = $is->getData();
+            if (!$script = $data->getData('script')) {
+                throw new \Exception('"script" argument is required');
+            }
+            $importer = $is->initReader($script);
+            $config = $importer->getData('config');
+
+            $input->setArgument('script', $script);
+            $input->setOption('input-path', $config['temp'] . '/in');
+            $input->setOption('output-path', $config['temp'] . '/out/');
+        } elseif (!$input->getArgument('script')) {
+            throw new \Exception('"script" argument is required');
+        }
+
         $GLOBALS['DP_IS_IMPORTING'] = true;
         $GLOBALS['DP_NOSQL_LOG'] = true;
 
@@ -378,31 +411,37 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
-        switch ($config->getExporterType()) {
-            case ExporterInterface::TYPE_CSV:
-                $readerConfig = new CsvConfig($input->getOption('input-path'));
-                break;
-            case ExporterInterface::TYPE_JSON:
-                $readerConfig = new JsonConfig($input->getOption('input-path'));
-                break;
-            case ExporterInterface::TYPE_ZENDESK:
-                $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
-                break;
-            case ExporterInterface::TYPE_OS_TICKET:
-                $readerConfig = OsTicketReaderFactory::getDefaultConfig();
-                break;
-            default:
-                throw new RuntimeException(sprintf(
-                    'Unknown source type `%s`, expected: (%s)',
+        $readerConfig = $input->hasOption('config-from-db')
+            ? $this->get('deskpro.import')->getReaderConfig($input->getArgument('script'))
+            : null;
 
-                    $config->getExporterType(),
-                    implode(', ', array(
-                        ExporterInterface::TYPE_CSV,
-                        ExporterInterface::TYPE_JSON,
-                        ExporterInterface::TYPE_OS_TICKET,
-                        ExporterInterface::TYPE_ZENDESK,
-                    ))
-                ));
+        if (!$readerConfig) {
+            switch ($config->getExporterType()) {
+                case ExporterInterface::TYPE_CSV:
+                    $readerConfig = new CsvConfig($input->getOption('input-path'));
+                    break;
+                case ExporterInterface::TYPE_JSON:
+                    $readerConfig = new JsonConfig($input->getOption('input-path'));
+                    break;
+                case ExporterInterface::TYPE_ZENDESK:
+                    $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
+                    break;
+                case ExporterInterface::TYPE_OS_TICKET:
+                    $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                    break;
+                default:
+                    throw new RuntimeException(sprintf(
+                        'Unknown source type `%s`, expected: (%s)',
+
+                        $config->getExporterType(),
+                        implode(', ', array(
+                            ExporterInterface::TYPE_CSV,
+                            ExporterInterface::TYPE_JSON,
+                            ExporterInterface::TYPE_OS_TICKET,
+                            ExporterInterface::TYPE_ZENDESK,
+                        ))
+                    ));
+            }
         }
 
         $config->setReaderConfig($readerConfig);
