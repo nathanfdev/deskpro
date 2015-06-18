@@ -1,4 +1,9 @@
 services:
+
+  deskpro.import:
+    class: Application\ImportBundle\Service\Import
+    arguments: [@service_container]
+
   deskpro.import.config:
     class: Application\ImportBundle\Generator\GeneratorConfig
 
