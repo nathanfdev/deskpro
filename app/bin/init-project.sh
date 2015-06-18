@@ -24,8 +24,7 @@ echo ".. done"
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/web
 npm install
-
-npm run-script bower-install
+bower install --config.interactive=false --allow-root
 echo ".. done"
 
 echo ">> Building web assets"
