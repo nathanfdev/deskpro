@@ -113,14 +113,33 @@ class FormFieldManager
         return $fields;
     }
 
+    /**
+     * @param $id
+     * @return CustomDefTicket
+     */
     public function getCustomTicketFieldById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
     }
 
+    /**
+     * @param $id
+     * @return CustomDefPerson
+     */
     public function getCustomPersonFieldById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
+    }
+
+    /**
+     * per-user/per-organization special custom fields
+     *
+     * @param $id
+     * @return \Application\DeskPRO\Entity\CustomFieldDefinition
+     */
+    public function getCustomPerFieldById($id)
+    {
+        return $this->em->getRepository('DeskPRO:CustomFieldDefinition')->find($id);
     }
 
     /**

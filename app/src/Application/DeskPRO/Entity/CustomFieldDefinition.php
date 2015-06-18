@@ -176,6 +176,21 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $this->is_agent_field  = false;
     }
 
+    public function isForOrganization()
+    {
+        return $this->context_class == 'Application\DeskPRO\Entity\Organization';
+    }
+
+    public function isForPerson()
+    {
+        return $this->context_class == 'Application\DeskPRO\Entity\Person';
+    }
+
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
     /**
      * @return \Application\DeskPRO\Form\Type\CustomFields\CustomFieldType
      */

@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Service\CustomFieldManager;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -92,6 +93,11 @@ class TicketType extends AbstractType
      */
     private $captcha_decider;
 
+    /**
+     * @var CustomFieldManager
+     */
+    private $custom_fields_manager;
+
     public function __construct(
         FormFieldManager $field_manager,
         TicketLayoutFactory $ticket_layout_factory,
@@ -99,7 +105,8 @@ class TicketType extends AbstractType
         HierarchyGenerator $hierarchy_generator,
         EntityManager $em,
         LanguageManager $language_manager,
-        CaptchaDecider $captcha_decider
+        CaptchaDecider $captcha_decider,
+        CustomFieldManager $custom_fields_manager
     ) {
         $this->layout_differ         = $layout_differ;
         $this->field_manager         = $field_manager;
@@ -108,6 +115,7 @@ class TicketType extends AbstractType
         $this->em                    = $em;
         $this->language_manager      = $language_manager;
         $this->captcha_decider       = $captcha_decider;
+        $this->custom_fields_manager = $custom_fields_manager;
     }
 
     /**
@@ -415,6 +423,9 @@ class TicketType extends AbstractType
             case FormFields::TICKET_FIELD:
                 $this->addCustomTicketField($form_context, $field, $ignore_validation);
                 break;
+            case FormFields::CUSTOM_FIELD:
+                $this->addCustomPerField($form_context, $field, $ignore_validation);
+                break;
 
         }
     }
@@ -551,6 +562,53 @@ class TicketType extends AbstractType
     private function addCustomUserField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
+
+        if (!$field_def->is_enabled) {
+            return false;
+        }
+
+        $options = array(
+            'custom_data_field' => $field_def,
+            'person' => $form_context->getPerson(),
+            'property_path' => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label' => $field_def->getTitle(),
+        );
+
+        if ($ignore_validation) {
+            $options = $this->markNoValidation($form_context, $options);
+            $options['ignore_validation'] = true;
+        }
+
+        $form_context->getForm()->add(
+            $field->getId(),
+            'deskpro_custom_data_person',
+            $options
+        );
+    }
+
+    private function addCustomPerField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    {
+        $field_def = $this->field_manager->getCustomPerFieldById($field->getFieldId());
+
+        $person = $form_context->getPerson();
+        $context = null;
+
+        // who is the context of this custom data?
+        if ($field_def->isForPerson()) {
+            $context = $person;
+        } elseif ($field_def->isForOrganization()) {
+            if ($organization = $form_context->getPerson()->getOrganization()) {
+                $context = $organization;
+            }
+        } else {
+            // we only support per-person and per-organization on the ticket form for now
+            return;
+        }
+
+        $form = $this->custom_fields_manager->createFieldForm($field_def, $form_context->getTicket(), $context);
+        xdebug_break();
+
 
         if (!$field_def->is_enabled) {
             return false;
