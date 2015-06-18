@@ -216,7 +216,7 @@ class Choice extends HandlerAbstract
             'choices'  => $options,
             'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
             'data-max-depth' => $max_depth
-        );
+        ));
 
         if (!$this->multiple) {
             // turns off legacy select2 handler
