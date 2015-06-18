@@ -67,6 +67,7 @@ final class Person extends AbstractImporter
             ->setLastName($entity->getLastName())
             ->setTimezone($entity->getTimezone())
             ->setIsAgent($entity->isAgent())
+            ->setCanAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin())
             ->setDateCreated($entity->getDateCreated())
             ->setLanguageId($this->findLanguageId($entity->getLanguage()))
@@ -74,7 +75,12 @@ final class Person extends AbstractImporter
             ->setOrganizationPosition($entity->getOrganizationPosition())
             ->resetEmails()
             ->resetLabels()
-            ->resetUsergroups();
+            ->resetUsergroups()
+        ;
+
+        if ($entity->isAgent() && ! in_array('agent_all_safe_perms', $entity->getUserGroups(), true)) {
+            $entity->addUserGroup('agent_all_safe_perms');
+        }
 
         if ($entity->getPassword()) {
             if ($entity->isPlainPasswordScheme()) {
@@ -93,14 +99,17 @@ final class Person extends AbstractImporter
                 $this->logWarning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
             } else {
                 $person->addEmailAddress($this->findOrCreatePersonEmail($email));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     $num ? 'Set email `%s`' : 'Set primary email `%s`',
                     $entity->getFirstEmail()
                 ));
             }
         }
-        foreach ($entity->getUserGroups() as $user_group) {
-            $person->addUsergroup($this->findOrCreateUserGroup($user_group));
+        foreach ($entity->getUserGroups() as $user_group_name) {
+            $user_group = $this->findUserGroup($user_group_name);
+            if ($user_group) {
+                $person->addUsergroup($user_group);
+            }
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $person->addCustomData($this->createCustomData($custom_field));
@@ -128,13 +137,13 @@ final class Person extends AbstractImporter
 
         $person = $this->getPersonMapper()->findOneByEmails($emails, false);
         if ($person) {
-            $this->logNotice(sprintf(
+            $this->logDebug(sprintf(
                 'Found existing user, id=`%d` with email `%s`',
                 $person->getId(), $person->getEmailAddress()
             ));
         } else {
             $person = new DeskPROEntity\Person();
-            $this->logWarning(sprintf('Creating new person with email `%s`', $emails[0]));
+            $this->logInfo(sprintf('Creating new person with email `%s`', $emails[0]));
         }
 
         return $person;
@@ -150,7 +159,7 @@ final class Person extends AbstractImporter
     {
         $email = $this->getPersonEmailMapper()->findOneByEmail($email_string, false);
         if ($email) {
-            $this->logInfo(sprintf(
+            $this->logDebug(sprintf(
                 'Found existing person email, id=`%d` with email `%s`',
                 $email->getId(), $email->getEmail()
             ));
@@ -158,43 +167,39 @@ final class Person extends AbstractImporter
             $email = new DeskPROEntity\PersonEmail();
             $email
                 ->setEmail($email_string)
-                ->setIsValidated(true);
+                ->setIsValidated(true)
+            ;
 
             $this->records->add($email);
-            $this->logWarning(sprintf('Creating new person email `%s`', $email->getEmail()));
+            $this->logInfo(sprintf('Creating new person email `%s`', $email->getEmail()));
         }
 
         return $email;
     }
 
     /**
-     * Returns an user group by title
-     * Creates a new user group if not found
+     * Returns an user group by sys name
      *
-     * @param string $title
+     * @param string $sys_name
      *
-     * @return DeskPROEntity\UserGroup
+     * @return DeskPROEntity\UserGroup|null
      * @throws \Exception
      */
-    private function findOrCreateUserGroup($title)
+    private function findUserGroup($sys_name)
     {
         /** @var Mapper\UserGroup $mapper */
         $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
         $user_group = null;
 
-        if ($title) {
-            $user_group = $mapper->findOneByTitle($title, false);
+        if ($sys_name) {
+            $user_group = $mapper->findOneBySysName($sys_name, false);
             if ($user_group) {
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Found existing user group `%d` with title `%s`',
                     $user_group->getId(), $user_group->getTitle()
                 ));
             } else {
-                $user_group = new DeskPROEntity\Usergroup();
-                $user_group->setTitle($title);
-
-                $this->records->add($user_group);
-                $this->logWarning(sprintf('Creating new user group `%s`', $user_group->getTitle()));
+                $this->logWarning(sprintf('No user group `%s`', $sys_name));
             }
         }
 

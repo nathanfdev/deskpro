@@ -53,7 +53,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getDownloadReaderConfig());
     }
 
     /**
@@ -62,7 +62,7 @@ final class Downloads extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $downloads  = $this->reader->getData($this->getConfig());
+        $downloads  = $this->reader->getData($this->getDownloadReaderConfig());
 
         foreach ($downloads as $num => $download) {
             $this->advanceProgressBar();
@@ -169,7 +169,7 @@ final class Downloads extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getDownloadReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_DOWNLOAD_PATH);
     }

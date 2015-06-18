@@ -98,7 +98,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         $this->em->persist($ma_token);
         $this->em->flush($ma_token);
 
-        $ma_login_url = License::getLicServer().'/login_check_license';
+        $ma_login_url = License::getSecureLicServer() . '/login_check_license';
         if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
             $ma_login_url = str_replace('http://', 'https://', $ma_login_url);
         }
@@ -106,7 +106,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         return $this->createApiResponse(array(
             'license'          => $lic_info,
             'limits'           => $limits,
-            'lic_set_callback' => License::getLicServer().'/api/license/set-license.json',
+            'lic_set_callback' => License::getSecureLicServer() . '/api/license/set-license.json',
             'ma_token'         => $ma_token->toApiData(),
             'ma_login_url'     => $ma_login_url,
         ));

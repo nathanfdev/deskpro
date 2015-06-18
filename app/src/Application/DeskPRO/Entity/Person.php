@@ -773,6 +773,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this;
     }
 
+
     /**
      * @param bool $yesno
      *
@@ -785,9 +786,19 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
 
         $this->setModelField('can_admin', $yesno);
-
         return $this;
     }
+
+    /**
+     * @param bool $yesno
+     * @return $this
+     */
+    public function setCanAgent($yesno)
+    {
+        $this->setModelField('can_agent', $yesno);
+        return $this;
+    }
+
 
     /**
      * @return bool|int
@@ -803,6 +814,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->can_billing;
     }
 
+
+
     /**
      * @return bool|int
      */
@@ -810,6 +823,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     {
         return $this->can_billing;
     }
+
 
     /**
      * Add a new helper.
@@ -1211,7 +1225,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Sets the hashed form of the password for this user. Used with local auth.
      *
      * @param string $plain_password The password to set
-     *
      * @return string
      */
     public function setPassword($plain_password)
@@ -1359,7 +1372,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Get an array of named preferences.
      *
      * @param string $names ...
-     *
      * @return array
      */
     public function getNamedPrefs()
@@ -1393,6 +1405,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->language;
     }
 
+
     /**
      * Get the users language.
      *
@@ -1406,6 +1419,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
         return App::getDataService('Language')->getDefault();
     }
+
 
     /**
      * @return int
@@ -1565,7 +1579,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Find an existing data record for a field id.
      *
      * @param int $field_id
-     *
      * @return CustomDataPerson
      */
     public function getCustomDataForField($field_id)
@@ -1604,7 +1617,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      *
      * @param int $field_id
      * @param mixed $value
-     *
      * @return mixed
      */
     public function setCustomData($field_id, $value_type, $value)
@@ -1889,7 +1901,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Check if the user has an email address.
      *
      * @param string $email_address
-     *
      * @return bool
      */
     public function hasEmailAddress($email_address)
@@ -1997,7 +2008,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * we take care of creating the PersonEmail object here.
      *
      * @param string $email
-     *
      * @return PersonEmail
      */
     public function addEmailAddressString($email)
@@ -2020,7 +2030,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * then the primary email is made null.
      *
      * @param int $email_id
-     *
      * @return PersonEmail
      */
     public function removeEmailAddressId($email_id)
@@ -2559,6 +2568,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function _savePersonLogs()
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+
         if ($this->_person_logger) {
             $this->_person_logger->done();
             $this->_person_logger = null;
@@ -2581,6 +2592,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function _presavePerson()
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+
         // If we're loaded, then set default timezone from setting
         if (!$this->timezone && class_exists('Application\\DeskPRO\\App')) {
             try {
@@ -3008,7 +3021,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Get Elasticsearch highlight data.
      *
      * @param null $field
-     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)

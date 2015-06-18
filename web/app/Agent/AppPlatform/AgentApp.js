@@ -202,6 +202,7 @@ define([
 	});
 
 	AgentApp.directive('dpTimeago', ['$interval', '$filter', function($interval, $filter) {
+    var TimeAgo = Orb.Util.TimeAgo;
 		return {
 			restrict: 'AE',
 			template: '<time class="dp-timeago"></time>',
@@ -249,7 +250,7 @@ define([
 						timeoutId = null;
 					}
 
-					element.text(time.fromNow(noSuffix)).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
+					element.text(TimeAgo.get(time.toDate(), !noSuffix)).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
 				}
 
 				element.on('$destroy', function() {
@@ -645,7 +646,6 @@ define([
 							});
 							$el.addClass('with-set');
 							isRunning = false;
-							update();
 						},10);
 					});
 				};
@@ -674,19 +674,18 @@ define([
 					}
 
 					if (doUpdate) {
-						update();
-						$timeout(function() { update(); });
+            updateDebounce();
 					}
 				};
 
 				$timeout(function() {
 					$timeout(function() {
-						update();
+            updateDebounce();
 						interval = $interval(function() {
 							updateIfChanged();
 						}, 750);
 						$timeout(function() {
-							update();
+              updateDebounce();
 						}, 200);
 					});
 				});

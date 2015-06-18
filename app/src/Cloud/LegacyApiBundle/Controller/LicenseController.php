@@ -113,7 +113,7 @@ class LicenseController extends BaseLicenseController
 
         return $this->createJsonResponse(array(
             'code'   => $tmpdata->getCode(),
-            'ma_url' => DP_MA_SERVER.'/cloud/start/'.DPC_SITE_ID.'/'.$tmpdata->getCode(),
+            'ma_url' => DP_MA_SERVER_SECURE . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode()
         ));
     }
 }

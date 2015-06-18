@@ -57,6 +57,8 @@ class PersonChangeLogListener extends EntityChangeLogListener
      */
     public function onPreUpdate(Person $person, PreUpdateEventArgs $event)
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+
         if (!$changes = $this->getChangesForEntity($person)) {
             return;
         }
@@ -75,6 +77,7 @@ class PersonChangeLogListener extends EntityChangeLogListener
      */
     public function onPostUpdate(Person $person)
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
         $this->flush($person);
     }
 
@@ -83,6 +86,8 @@ class PersonChangeLogListener extends EntityChangeLogListener
      */
     public function onPrePersist(Person $person)
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
+
         // do not handle persisted entity
         if ($person['id']) {
             return;
@@ -107,6 +112,7 @@ class PersonChangeLogListener extends EntityChangeLogListener
      */
     public function onPostPersist(Person $person)
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) return;
         $this->flush($person);
     }
 

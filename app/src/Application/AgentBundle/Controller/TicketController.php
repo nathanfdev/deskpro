@@ -468,7 +468,7 @@ class TicketController extends AbstractController
         $ticket_perms['reply']               = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
         $ticket_perms['modify_set_archived'] = $this->person->PermissionsManager->TicketChecker->canSetArchived($ticket);
 
-        foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved') as $p) {
+        foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved', 'billing') as $p) {
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
 
@@ -2301,16 +2301,16 @@ class TicketController extends AbstractController
                 $permission_errors = true;
             } else {
 
+                $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
                 $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
                 $newticket->setValuesFromTicket($ticket);
+                $newticket->status = $ticket->status;
 
                 $validator = new NewTicketValidator();
                 $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
                 $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
                 $validator->setLayout($layout);
-
-                $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-                $newticket->status = $ticket->status;
 
                 if (!$validator->isValid($newticket)) {
                     $free = array();
@@ -2447,6 +2447,7 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(array(
                 'inserted'   => true,
                 'html'       => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+                    'ticket_perms' => $this->_getTicketPerms($ticket),
                     'ticket' => $ticket,
                     'charge' => $charge,
                 )),
@@ -2462,11 +2463,7 @@ class TicketController extends AbstractController
 
     public function editChargeAction($ticket_id, $charge_id)
     {
-        if (!$this->person->hasPerm('agent_tickets.modify_billing')) {
-            //throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-
-        $ticket = $this->getTicketOr404($ticket_id);
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_billing');
 
         $charge = $this->em->createQuery('
             SELECT c
@@ -2803,7 +2800,7 @@ class TicketController extends AbstractController
 
     public function changeUserOverlayAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
         return $this->render('AgentBundle:Ticket:change-user-overlay.html.twig', array(
             'ticket' => $ticket,
@@ -2812,7 +2809,7 @@ class TicketController extends AbstractController
 
     public function changeUserOverlayPreviewAction($ticket_id, $new_person_id)
     {
-        $ticket     = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
         $new_person = $this->em->find('DeskPRO:Person', $new_person_id);
         if (!$new_person) {
             throw $this->createNotFoundException();
@@ -2826,7 +2823,7 @@ class TicketController extends AbstractController
 
     public function changeUserAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+        $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
         $old_person = $ticket->person;
 
@@ -3652,6 +3649,7 @@ class TicketController extends AbstractController
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
             $newticket->status        = $set_status;
             $validator->setLayout($layout);
+            $newticket->setLayout($layout);
 
             if (!$validator->isValid($newticket)) {
                 $free = array();

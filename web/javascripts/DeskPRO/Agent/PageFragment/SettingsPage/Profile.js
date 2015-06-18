@@ -22,11 +22,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		}
 
-		var default_country = this.el.find('#settings_profile_primary_phone_number').attr('default-country');
-		if (default_country) {
-			this.el.find('#settings_profile_primary_phone_number').intlTelInput({"defaultCountry": default_country.toLowerCase()});
-			this.el.find('#settings_profile_primary_phone_number').parent().find('.arrow').css('left', '2px');
-		}
+		var drawPhoneNumberWidgets = new DeskPRO.UI.PhoneNumberInputs();
+		drawPhoneNumberWidgets.renderPhoneInputs();
 
 		var startEmail = $('#settings_profile_email').val();
 

@@ -246,5 +246,8 @@ window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% e
 </script>
 <script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
+
+{% include 'DeskPRO:Common:notify-login-script.html.twig' with {show:true} %}
+
 </body>
 </html>

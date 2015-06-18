@@ -149,7 +149,9 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        return $tr;
+        $raw_tr = new RawSmtpTransport($tr);
+
+        return $raw_tr;
     }
 
     /**

@@ -31,6 +31,7 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\Ldap\LdapPagedSearcher;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
@@ -47,12 +48,23 @@ class Ldap extends AbstractAdapter
             'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
             'email'            => isset($info['email_address']) ? $info['email_address'] : '',
             'email_confirmed'  => true,
+            'phone'            => isset($info['phone']) ? $info['phone'] : null,
             'picture_data'     => isset($info['picture_data']) ? $info['picture_data'] : null,
         );
     }
 
+    public function getIdentityForDn($identity)
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+        /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        return $adapter->getIdentityForDn($identity);
+    }
+
     /**
-     * @return \Orb\Auth\Adapter\ActiveDirectory
+     * @return \Orb\Auth\Adapter\LdapRaw
      */
     protected function _createAuthAdapterObject()
     {
@@ -65,7 +77,27 @@ class Ldap extends AbstractAdapter
     }
 
     /**
-     * Find a user identity just by an email address.
+     * @return LdapPagedSearcher
+     */
+    public function findAllRecords()
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+
+        $us_adapter = $usersource->getAdapter();
+        /** @var \Orb\Auth\Adapter\LdapRaw $adapter */
+        $adapter = $us_adapter->getAuthAdapter();
+
+        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
+
+        $paging = $usersource->getOption('ldapPaging', false);
+        $size = $usersource->getOption('ldapPerPage', 0);
+
+        return $adapter->findAllRecords($size, $paging);
+    }
+
+    /**
+     * Find a user identity with an email address, a username, or the DN.
      *
      * @param string $id_input Username or email address
      *
@@ -95,6 +127,10 @@ class Ldap extends AbstractAdapter
             if (!$rec_arr || !isset($rec_arr['dn'])) {
                 $rec_arr = $adapter->findRecordViaUsername($id_input);
             }
+
+            if (!$rec_arr || !isset($rec_arr['dn'])) {
+                $rec_arr = $adapter->findRecordViaDn($id_input);
+            }
         } catch (\Exception $e) {
             if ($adapter->getLogger()) {
                 $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
@@ -118,7 +154,11 @@ class Ldap extends AbstractAdapter
             if (!empty($raw_info['distinguishedname'])) {
                 $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
             } else {
-                $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                if (is_array($raw_info['dn'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                } else {
+                    $raw_info['identity'] = (string) $raw_info['dn'];
+                }
             }
 
             $auth = $this->getAuthAdapter()->getZendAuthAdapter();

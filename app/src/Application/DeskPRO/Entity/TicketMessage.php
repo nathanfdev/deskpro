@@ -229,9 +229,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @param Ticket $ticket
+     * @return $this
+     */
     public function setTicket(Ticket $ticket)
     {
         $this->setModelField('ticket', $ticket);
+        return $this;
     }
 
     public function setPerson(Person $person)
@@ -252,6 +257,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setPersonId($id)
     {
         $this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($id));
+        return $this;
+    }
+
+    /**
+     * @param bool $is_agent_note
+     * @return $this
+     */
+    public function setAsAgentNote($is_agent_note)
+    {
+        $this->setModelField('is_agent_note', $is_agent_note);
         return $this;
     }
 

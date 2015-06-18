@@ -64,6 +64,7 @@ final class Batch extends AbstractBatchParser
             'people_end_time',
             'tickets_end_time',
             'retry_after_time',
+            'ref_mapping',
         );
 
         return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
@@ -85,6 +86,14 @@ final class Batch extends AbstractBatchParser
         }
         if ($config['retry_after_time']) {
             $batch_config->setRetryAfterTime(new DateTime($config['retry_after_time']));
+        }
+        if ($config['has_remaining']) {
+            $batch_config->setHasRemaining($config['has_remaining']);
+        } else {
+            $batch_config->setHasRemaining(false);
+        }
+        if ( ! empty($config['ref_mapping'])) {
+            $batch_config->setRefMapping($config['ref_mapping']);
         }
 
         return $batch_config;

@@ -231,6 +231,11 @@ define [
       options = []
 
       options.push({
+        title: 'Organization',
+        value: 'FilterOrgId'
+      })
+
+      options.push({
         title: 'Organization Name',
         value: 'FilterOrgName'
       })
@@ -284,33 +289,37 @@ define [
     loadDataOptions: ->
       if !@loadDataPromise
         @loadDataPromise = @Api.sendDataGet({
-          'agents':          '/agents',
-          'agent_teams':     '/agent_teams',
-          'ticket_deps':     '/ticket_deps',
-          'ticket_cats':     '/ticket_cats',
-          'ticket_prods':    '/ticket_prods',
-          'ticket_pris':     '/ticket_pris',
-          'ticket_works':    '/ticket_works',
-          'ticket_fields':   '/ticket_fields',
-          'user_fields':     '/user_fields',
-          'org_fields':      '/org_fields',
-          'ticket_accounts': '/email_accounts',
-          'usergroups':      '/user_groups',
+          agents:          '/agents'
+          agent_teams:      '/agent_teams'
+          ticket_deps:      '/ticket_deps'
+          ticket_cats:      '/ticket_cats'
+          ticket_prods:     '/ticket_prods'
+          ticket_pris:      '/ticket_pris'
+          ticket_works:     '/ticket_works'
+          ticket_fields:    '/ticket_fields'
+          ticket_slas:      '/ticket_slas'
+          user_fields:      '/user_fields'
+          org_fields:       '/org_fields'
+          ticket_accounts:  '/email_accounts'
+          usergroups:       '/user_groups'
+          organizations:    '/organizations?per_page=250'
         }).then( (result) =>
           data = result.data
           options_data = {}
-          options_data['agents']           = data.agents.agents
-          options_data['agent_teams']      = data.agent_teams.agent_teams
-          options_data['ticket_deps']      = data.ticket_deps.departments
-          options_data['ticket_cats']      = data.ticket_cats.categories
-          options_data['ticket_pris']      = data.ticket_pris.priorities
-          options_data['ticket_works']     = data.ticket_works.workflows
-          options_data['ticket_fields']    = data.ticket_fields?.custom_fields
-          options_data['org_fields']       = data.org_fields?.custom_fields
-          options_data['user_fields']      = data.user_fields?.custom_fields
-          options_data['ticket_prods']     = data.ticket_prods?.products
-          options_data['ticket_accounts']  = data.ticket_accounts.email_accounts
-          options_data['usergroups']       = data.usergroups.groups
+          options_data['agents']            = data.agents.agents
+          options_data['agent_teams']       = data.agent_teams.agent_teams
+          options_data['ticket_deps']       = data.ticket_deps.departments
+          options_data['ticket_cats']       = data.ticket_cats.categories
+          options_data['ticket_pris']       = data.ticket_pris.priorities
+          options_data['ticket_works']      = data.ticket_works.workflows
+          options_data['ticket_fields']     = data.ticket_fields?.custom_fields
+          options_data['ticket_slas']       = data.ticket_slas
+          options_data['org_fields']        = data.org_fields?.custom_fields
+          options_data['user_fields']       = data.user_fields?.custom_fields
+          options_data['ticket_prods']      = data.ticket_prods?.products
+          options_data['ticket_accounts']   = data.ticket_accounts.email_accounts
+          options_data['usergroups']        = data.usergroups.groups
+          options_data['organizations']     = data.organizations.organizations
 
           @options_data = options_data
 
@@ -400,6 +409,41 @@ define [
               }
               return value
           }
+      }
+
+    getFilterSlaStatus: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get 'OptionBuilder/type-filter-sla.html'
+
+        getData: ->
+          defer = me.$q.defer()
+          me.loadDataOptions().then =>
+            options = []
+            for sla in me.options_data.ticket_slas?.slas
+              options.push
+                title: sla.title
+                value: sla.id
+            defer.resolve {options: options}
+          defer.promise
+
+        getDataFormatter: ->
+          getViewValue: (value = {}, data) ->
+            options = value.options || {}
+            return {
+              op:           value.op || 'is'
+              sla_status:   options.sla_status || 'fail'
+              sla_id:       options.sla_id || 0
+            }
+          getValue: (model = {}, data) ->
+            return {
+              type:         'FilterSlaStatus'
+              op:           model.op
+              options:
+                sla_status: model.sla_status || 'fail'
+                sla_id:     model.sla_id || 0
+            }
       }
 
     getFilterUserWaiting: (options = {}) ->
@@ -592,6 +636,33 @@ define [
     getFilterUserDateCreated: (options = {}) ->
       def = @getDateInput(options)
       return def
+
+    getFilterOrgId: (options = {}) ->
+      prop_name = options.propName = 'org_ids'
+      options.dataName = 'organizations'
+      options.optionsFormatter = (options) -> ({value: entry.id, title: entry.name} for k, entry of options)
+      def = @getStandardSelect options
+      def.getDataFormatter = ->
+        return {
+        getViewValue: (value = {}, data) ->
+          val = value.options?[prop_name] || null
+          if val == null and data.options and prop_name
+            val = data.options[0]?.value || null
+          if val && val[0]
+            val = val[0].split ','
+          else
+            val = []
+
+          return {value: val, op: value.op || data.operators[0]}
+        getValue:     (model = {}, data) ->
+          value = {}
+          value.type = options.type
+          value.op = model.op
+          value.options = {}
+          value.options[prop_name] = (model.value || []).join ','
+          return value
+        }
+      def
 
     getFilterOrgName: (options = {}) ->
       options.propName = 'name'

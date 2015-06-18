@@ -376,6 +376,8 @@ class ApiSampleDb extends AbstractDbSet
         $this->getEm()->persist($message);
         $this->getEm()->flush();
 
+        $this->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+
         #------------------------------
         # Settings
         #------------------------------

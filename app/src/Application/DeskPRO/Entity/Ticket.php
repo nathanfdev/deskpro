@@ -939,7 +939,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetParticipants()
     {
-        $this->participants = new ArrayCollection();
+        foreach ($this->participants as $participant) {
+            App::getOrm()->remove($participant);
+        }
+
+        $this->participants->clear();
         $this->_onPropertyChanged('participants', null, $this->participants);
 
         return $this;
@@ -1386,7 +1390,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetMessages()
     {
-        $this->messages = new ArrayCollection();
+        foreach ($this->messages as $message) {
+            App::getOrm()->remove($message);
+        }
+
+        $this->messages->clear();
         $this->_onPropertyChanged('messages', null, $this->messages);
 
         return $this;
@@ -1683,7 +1691,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $label) {
+            App::getOrm()->remove($label);
+        }
+
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
@@ -3227,8 +3239,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     $work_hours = new OptionsArray($work_hours);
 
                     return new WorkHoursSet(
-                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
+                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
                         $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                         $work_hours->get('timezone', 'UTC'),
                         $work_hours->get('holidays', array())

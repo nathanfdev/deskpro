@@ -34,10 +34,11 @@ use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\SkipDuplicateInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Util\Util;
 
 /**
- * Generator deskpro writer
- * Imports entities into deskpro database.
+ * DeskPRO generator writer
+ * Imports entities into the DeskPRO database
  *
  * Class DeskProWriter
  */
@@ -96,24 +97,19 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 $records = $importer->getDoctrineEntities($entity);
-                if ($this->config->isDryRun()) {
-                    $this->logNotice('Dry run mode is enabled, no data was flushed');
-                }
-
                 foreach ($records as $record) {
-                    if (method_exists($record, 'getId') && $record->getId() > 0) {
-                        $this->logInfo(sprintf('Update an existing `%s` entity', get_class($record)));
-                    } else {
-                        $this->logInfo(sprintf('Generate a new `%s` entity', get_class($record)));
-                    }
-
                     if ($this->config->isDryRun() === false) {
                         $this->entity_manager->persist($record);
-                        $this->logInfo(sprintf('Flush `%s` entity', get_class($record)));
                     }
                 }
 
                 $this->entity_manager->flush();
+                $this->entity_manager->clear();
+
+                foreach ($records as $r) {
+                    $this->logDebug(sprintf("Persisted %s #%s", Util::getBaseClassname($r), method_exists($r, 'getId') ? $r->getId() : '_'));
+                }
+
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(
                     'Unable to create `%s` with oid `%s`. Reason %s',

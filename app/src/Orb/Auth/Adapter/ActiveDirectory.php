@@ -26,7 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb.
+ * Orb
  *
  * @category Auth
  */
@@ -41,7 +41,7 @@ use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class ActiveDirectory implements FormLoginInterface, Loggable
+class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -123,6 +123,12 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         return $auth;
     }
 
+    public function findAllRecords($size_limit = 1000, $paging = true, $objectClass = 'User')
+    {
+        return parent::findAllRecords($size_limit, $paging, $objectClass);
+    }
+
+
     /**
      * Authenticate a user.
      *
@@ -155,67 +161,45 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         return $res;
     }
 
-    /**
-     * Authenticate a user.
-     *
-     * @return Result
-     */
-    public function doAuthenticate()
+    public function findRecordViaDn($provided_dn)
     {
-        if (!$this->set_username) {
-            if ($this->logger) {
-                $this->logger->logDebug('No username provided');
-            }
-
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
-        }
-        if (!$this->set_password) {
-            if ($this->logger) {
-                $this->logger->logDebug('No password provided');
-            }
-
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
-        }
-
-        $time_start = microtime(true);
-        if ($this->logger) {
-            $this->logger->log("START ActiveDirectory::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: ".trim(print_r($this->options, 1)), Logger::DEBUG);
-            $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
-        }
-
-        $auth = $this->getZendAuthAdapter();
-
         try {
-            /** @var $result \Zend\Authentication\Result */
-            $result = $auth->authenticate();
-        } catch (\Exception $e) {
-            if ($this->logger) {
-                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
+            $auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $auth->setUsername('__bogus__');
+                $auth->setPassword('__bogus__');
+                $auth->authenticate();
+            } catch (\Exception $e) {
             }
-
-            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
-        }
-
-        if ($this->logger) {
-            foreach ($result->getMessages() as $msg) {
-                $this->logger->log($msg, \Orb\Log\Logger::DEBUG);
-            }
-
-            $this->logger->log(sprintf("END ActiveDirectory::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
-        }
-
-        if (!$result->isValid()) {
-            return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
-        }
-
-        $raw_info                      = array();
-        $raw_info['identity_friendly'] = $result->getIdentity();
-
-        try {
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
-            $dn   = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+
+            return $ldap->getEntry($provided_dn);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    public function getIdentityForDn($provided_dn)
+    {
+        try {
+            $auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $auth->setUsername('__bogus__');
+                $auth->setPassword('__bogus__');
+                $auth->authenticate();
+            } catch (\Exception $e) {
+            }
+            $raw_info = array();
+            /** @var $ldap \Zend\Ldap\Ldap */
+            $ldap = $auth->getLdap();
+            $dn = $ldap->getCanonicalAccountName($provided_dn, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
 
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($dn);
@@ -238,7 +222,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                 } elseif (!empty($raw_info['dn'])) {
                     $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
                 } else {
-                    $raw_info['identity'] = $result->getIdentity();
+                    $raw_info['identity'] = $provided_dn;
                 }
 
                 $raw_info['domain'] = $this->options['accountDomainName'];
@@ -251,7 +235,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                 }
 
                 if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
-                    $raw_info['name'] = $raw_info['first_name'].' '.$raw_info['last_name'];
+                    $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
                 } elseif ($rec->getAttribute('name')) {
                     $raw_info['name'] = $rec->getAttribute('name', 0);
                 } elseif ($rec->getAttribute('cn')) {
@@ -281,26 +265,92 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             } else {
                 $raw_info['dp_error'] = "Empty record from node: $dn";
             }
+
         } catch (\Exception $e) {
-            $raw_info['dp_error']          = "Error when fetching node";
-            $raw_info['exception_type']    = get_class($e);
+            $raw_info['dp_error'] = "Error when fetching node";
+            $raw_info['exception_type'] = get_class($e);
             $raw_info['exception_message'] = $e->getMessage();
-            $raw_info['exception_code']    = $e->getCode();
-            $raw_info['exception_trace']   = KernelErrorHandler::formatBacktrace($e->getTrace());
+            $raw_info['exception_code'] = $e->getCode();
+            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
         }
 
+
         $identity = new Identity($raw_info['identity'], $raw_info);
+
+        return $identity;
+    }
+
+
+    /**
+     * Authenticate a user.
+     *
+     * @return Result
+     */
+    public function doAuthenticate()
+    {
+        if (!$this->set_username) {
+            if ($this->logger) {
+                $this->logger->logDebug('No username provided');
+            }
+
+            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
+        }
+        if (!$this->set_password) {
+            if ($this->logger) {
+                $this->logger->logDebug('No password provided');
+            }
+
+            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
+        }
+
+        $time_start = microtime(true);
+        if ($this->logger) {
+            $this->logger->log("START ActiveDirectory::authenticate", Logger::DEBUG);
+            $this->logger->log("Options: " . trim(print_r($this->options,1)), Logger::DEBUG);
+            $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
+        }
+
+        $auth = $this->getZendAuthAdapter();
+
+        try {
+            /** @var $result \Zend\Authentication\Result */
+            $result = $auth->authenticate();
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
+            }
+
+            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+        }
+
+        if ($this->logger) {
+            foreach ($result->getMessages() as $msg) {
+                $this->logger->log($msg, \Orb\Log\Logger::DEBUG);
+            }
+
+            $this->logger->log(sprintf("END ActiveDirectory::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
+        }
+
+        if (!$result->isValid()) {
+            return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
+        }
+
+        $raw_info = array();
+        $raw_info['identity_friendly'] = $result->getIdentity();
+
+        $identity = $this->getIdentityForDn($result->getIdentity());
 
         return new Result(Result::SUCCESS, $identity);
     }
 
+
     /**
-     * Search the AD for the user based on email address.
+     * Search the AD for the user based on email address
      */
     public function findRecordViaEmail()
     {
         if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
-            return;
+            return null;
         }
 
         if ($this->logger) {
@@ -309,7 +359,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         $set = false;
         if (!$this->options['accountDomainName']) {
-            $set                                = true;
+            $set = true;
             $this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
         }
 
@@ -321,8 +371,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -336,10 +385,10 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
+                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
             }
 
-            return;
+            return null;
         }
 
         if ($set) {
@@ -347,22 +396,23 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: ".print_r($r->toArray(), 1), Logger::DEBUG);
+            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
-            $arr                      = $r->getFirst();
-            $arr['domain']            = $this->options['accountDomainName'];
+            $arr = $r->getFirst();
+            $arr['domain'] = $this->options['accountDomainName'];
             $arr['accountDomainName'] = $this->options['accountDomainName'];
 
             return $arr;
         }
 
-        return;
+        return null;
     }
 
+
     /**
-     * Search the AD for the user based on username.
+     * Search the AD for the user based on username
      */
     public function findRecordViaUsername()
     {
@@ -372,7 +422,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         $set = false;
         if (!$this->options['accountDomainName']) {
-            $set                                = true;
+            $set = true;
             $this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
         }
 
@@ -384,8 +434,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -399,10 +448,10 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
+                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
             }
 
-            return;
+            return null;
         }
 
         if ($set) {
@@ -410,18 +459,18 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: ".print_r($r->toArray(), 1), Logger::DEBUG);
+            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
-            $arr                      = $r->getFirst();
-            $arr['domain']            = $this->options['accountDomainName'];
+            $arr = $r->getFirst();
+            $arr['domain'] = $this->options['accountDomainName'];
             $arr['accountDomainName'] = $this->options['accountDomainName'];
 
             return $arr;
         }
 
-        return;
+        return null;
     }
 
     /**

@@ -24,9 +24,9 @@ $CONFIG = array();
 $CONFIG['OPTIONS'] = array(
     'java_path'       => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
     'yui_compressor'  => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
-    'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/local/bin/node',
-    'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/lib/node_modules/less/bin/lessc',
-    'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+    'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
+    'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
+    'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
 );
 
 if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {
@@ -344,14 +344,15 @@ $CONFIG['agent_agent_ui'] = array(
         'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
         'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
         'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
-    ),
+    )
 );
 
 $CONFIG['agent_deskpro_ui'] = array(
-    'out'   => 'js/agent-deskpro-ui.js',
+    'out' => 'js/agent-deskpro-ui.js',
     'files' => array(
         'javascripts/DeskPRO/UI/LabelsInput.js',
         'javascripts/DeskPRO/UI/Overlay.js',
+        'javascripts/DeskPRO/UI/PhoneNumberInputs.js',
         'javascripts/DeskPRO/UI/OptionBox.js',
         'javascripts/DeskPRO/UI/OptionBoxRevertable.js',
         'javascripts/DeskPRO/UI/OptionBoxBuilder.js',
@@ -363,11 +364,11 @@ $CONFIG['agent_deskpro_ui'] = array(
         'javascripts/DeskPRO/UI/Select/Menu.js',
         'javascripts/DeskPRO/UI/Select/WidgetSimple.js',
         'javascripts/DeskPRO/UI/Select/MenuHtml.js',
-    ),
+    )
 );
 
 $CONFIG['agent_misc'] = array(
-    'out'   => 'js/agent-misc.js',
+    'out' => 'js/agent-misc.js',
     'files' => array(
         'javascripts/DeskPRO/Form/InlineEdit.js',
         'javascripts/DeskPRO/Form/RuleBuilder.js',
@@ -412,7 +413,8 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
-    ),
+        'javascripts/DeskPRO/UI/MultiLevelSelect.js',
+    )
 );
 
 $CONFIG['user_helpdeskwin'] = array(
@@ -462,6 +464,7 @@ $CONFIG['user_common'] = array(
         'javascripts/DeskPRO/BasicWindow.js',
         'javascripts/DeskPRO/UI/SimpleTabs.js',
         'javascripts/DeskPRO/UI/TwoLevelSelect.js',
+        'javascripts/DeskPRO/UI/MultiLevelSelect.js',
         'javascripts/DeskPRO/UI/Overlay.js',
         'javascripts/DeskPRO/User/Window.js',
         'javascripts/DeskPRO/TouchCaller.js',

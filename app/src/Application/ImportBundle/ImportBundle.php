@@ -31,16 +31,14 @@
 
 namespace Application\ImportBundle;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Class ImportBundle
+ * @package Application\ImportBundle
+ */
 class ImportBundle extends Bundle
 {
-    public function __construct()
-    {
-        $this->name = 'Import';
-    }
 
     /**
      * {@inheritdoc}

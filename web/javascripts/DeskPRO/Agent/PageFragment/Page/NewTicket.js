@@ -215,6 +215,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var depId = depSel.val();
 
 			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
+      self.getEl('fields_container').find('select').dpMultiLevelSelect();
 
 			self.updateUi();
 		};

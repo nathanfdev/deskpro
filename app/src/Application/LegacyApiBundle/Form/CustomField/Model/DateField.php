@@ -179,8 +179,8 @@ class DateField extends CustomFieldAbstract
             }
 
             $field->setOption('date_valid_type', 'range');
-            $field->setOption('date_valid_range1', $this->date_valid_range1);
-            $field->setOption('date_valid_range2', $this->date_valid_range2);
+            $field->setOption('date_valid_range1', (int)$this->date_valid_range1);
+            $field->setOption('date_valid_range2', (int)$this->date_valid_range2);
         }
 
         $field->setOption('date_valid_timezone', App::getCurrentPerson()->getTimezone());

@@ -60,13 +60,13 @@ final class ArticleLabel extends AbstractImporter
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
-                $this->logWarning(sprintf(
+                $this->logDebug(sprintf(
                     'Found an existing label `%s` for article with oid `%d` (Skipping)',
                     $label, $article->getId()
                 ));
             } else {
                 $article->addLabel($this->createArticleLabel($label));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Creating a new label `%s` for article with oid `%d`',
                     $label, $article->getId()
                 ));

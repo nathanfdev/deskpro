@@ -13,6 +13,7 @@
   "angularSlider":                   "bower_components/angular-slider/slider",
   "angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
+  "angularScrollGlue": "bower_components/angular-scroll-glue/src/scrollglue",
 
   "bootstrapDatetime":               "bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker",
 
@@ -47,6 +48,7 @@
   "intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
   "redactor":                        "vendor/redactor/redactor.min",
   "cutstring":                       "vendor/cuthtmlstring/cutstring",
+  "intl-tel-input-utils":            "bower_components/intl-tel-input/lib/libphonenumber/build/utils",
   "perfect-scrollbar":               "bower_components/perfect-scrollbar/src/perfect-scrollbar",
 
   "json3":                           "bower_components/json3/lib/json3.min",

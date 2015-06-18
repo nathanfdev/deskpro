@@ -40,6 +40,11 @@ class PeopleStorage implements PeopleStorageInterface
     private $people = array();
 
     /**
+     * @var array
+     */
+    private $ignore_ids = array();
+
+    /**
      * {@inheritdoc}
      */
     public function setPeople(array $people)
@@ -57,6 +62,15 @@ class PeopleStorage implements PeopleStorageInterface
             $this->people[$person['id']] = $person;
         }
 
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addIgnoreIds(array $ignore_ids)
+    {
+        $this->ignore_ids = array_unique(array_merge($this->ignore_ids, $ignore_ids));
         return $this;
     }
 
@@ -85,7 +99,7 @@ class PeopleStorage implements PeopleStorageInterface
         $exist_ids     = $this->getPeopleIds();
 
         foreach ($request_ids as $id) {
-            if ( ! in_array($id, $exist_ids, true)) {
+            if ( ! in_array($id, $exist_ids) && ! in_array($id, $this->ignore_ids)) {
                 $not_exist_ids[] = $id;
             }
         }

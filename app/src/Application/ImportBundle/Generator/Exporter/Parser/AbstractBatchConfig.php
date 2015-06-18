@@ -112,6 +112,14 @@ abstract class AbstractBatchConfig implements BatchConfigInterface
     }
 
     /**
+     * @return bool
+     */
+    public function getHasRemaining()
+    {
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()

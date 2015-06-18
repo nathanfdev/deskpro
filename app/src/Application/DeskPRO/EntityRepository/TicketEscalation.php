@@ -35,6 +35,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
+use Application\DeskPRO\Tickets\Filters\FilterTerms;
+use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketEscalation extends AbstractEntityRepository
@@ -47,6 +49,21 @@ class TicketEscalation extends AbstractEntityRepository
                 'event' => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_RESOLVED,
                 'default_time' => 259200,// 60 * 60 * 24 * 3
                 'default_template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
+                'terms' => array(
+                    array(
+                        'type' => 'FilterDateLastAgentReply',
+                        'op' => 'gte',
+                        'options' => array(
+                            'date2' => 1,
+                            'value' => 'date',
+                        ),
+                    ),
+                    array(
+                        'type' => 'FilterFeedbackRating',
+                        'op' => 'not',
+                        'options' => array(),
+                    ),
+                ),
             ),
         ),
         'statuses' => array(
@@ -126,6 +143,16 @@ class TicketEscalation extends AbstractEntityRepository
             $esc->actions->addAction(new SetStatus(array(
                 'status' => $def['default_status'],
             )));
+        }
+
+        if (@$def['terms']) {
+            $crit = new FilterTerms();
+            $trans = new LegacyTermsTransformer();
+            foreach ($def['terms'] as $term) {
+                $crit->addTermFromArray($term);
+            }
+
+            $esc->terms = $trans->toLegacyTerms($crit);
         }
 
         $this->getEntityManager()->persist($esc);

@@ -53,7 +53,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getPersonReaderConfig());
     }
 
     /**
@@ -62,7 +62,7 @@ final class People extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $people     = $this->reader->getData($this->getConfig());
+        $people     = $this->reader->getData($this->getPersonReaderConfig());
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -150,7 +150,7 @@ final class People extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_PERSON_PATH);
     }

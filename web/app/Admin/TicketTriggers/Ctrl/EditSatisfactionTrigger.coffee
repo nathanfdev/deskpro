@@ -72,10 +72,11 @@ define [
           @trigger = result.data.trigger.trigger
           @triggerId = @trigger.id
           @$scope.$watch(
-            => @trigger.is_enabled
+            =>
+              @$scope.$parent?.settings?.satisfaction_enabled && @trigger.is_enabled
             (val) =>
               return if undefined == val
-              @dpTriggers.saveEnabledStateById @trigger.id, @trigger.is_enabled
+              @dpTriggers.saveEnabledStateById @trigger.id, @$scope.$parent?.settings?.satisfaction_enabled && @trigger.is_enabled
           )
         else
           @trigger = {}

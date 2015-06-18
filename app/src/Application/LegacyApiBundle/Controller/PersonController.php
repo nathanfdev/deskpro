@@ -38,6 +38,7 @@ use Application\DeskPRO\Searcher\PersonSearch;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -407,6 +408,13 @@ class PersonController extends AbstractController
      *				paramType="query",
      *				required=false,
      *				type="boolean"
+     *			),
+     *			@SWG\Parameter(
+     *				name="via_agent",
+     *				description="Use this to signify you are creating the account on behalf of a user, which would result in the agent variant of the welcome email when send_email is enabled.",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean"
      *			)
      *		)
      * 	)
@@ -415,7 +423,7 @@ class PersonController extends AbstractController
     public function newPersonAction()
     {
         if (!$this->person->hasPerm('agent_people.create')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         $person = new Person();
@@ -530,7 +538,12 @@ class PersonController extends AbstractController
         if ($this->in->getBool('send_email')) {
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
+
+            $tpl = 'DeskPRO:emails_user:register-welcome.html.twig';
+            if ($this->in->getBool('via_agent')) {
+                $tpl = 'DeskPRO:emails_user:register-welcome-byagent.html.twig';
+            }
+            $message->setTemplate($tpl, array(
                 'person' => $person,
             ));
             App::getMailer()->send($message);
@@ -814,11 +827,11 @@ class PersonController extends AbstractController
         }
 
         if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($other_person)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         $merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
@@ -1040,7 +1053,7 @@ class PersonController extends AbstractController
         $person = $this->_getPersonOr404($person_id, 'edit');
 
         if (!$this->person->hasPerm('agent_people.manage_emails')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         $email = $this->in->getString('email');
@@ -1183,7 +1196,7 @@ class PersonController extends AbstractController
         }
 
         if (!$this->person->hasPerm('agent_people.manage_emails')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         if ($this->in->checkIsset('comment')) {
@@ -1244,7 +1257,7 @@ class PersonController extends AbstractController
         }
 
         if (!$this->person->hasPerm('agent_people.manage_emails')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         if (count($person->emails) == 1) {

@@ -36,7 +36,7 @@
 											tooltip="{{ ng_var('sub_stat.title') }}"
 											class="value tipped"
 											width="{{ ng_var('sub_stat.percentage') }}%">
-											<div style="background-color:#{{ ng_var('sub_stat.background') }}">
+                                            <div ng-style="{background: '#' + sub_stat.background}">
 												&nbsp;
 											</div>
 										</td>

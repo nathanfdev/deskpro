@@ -58,6 +58,13 @@
 				"options_variable": "permission_groups",
 				"is_required": true
 			}
+		},
+		{
+		  "name": "sync_enabled",
+		  "type": "checkbox",
+		  "label": "Enable Auto Sync",
+		  "checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
+		  "default_value": false
 		}
 	]
 }

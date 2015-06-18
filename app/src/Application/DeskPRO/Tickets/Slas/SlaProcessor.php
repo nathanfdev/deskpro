@@ -124,7 +124,7 @@ class SlaProcessor
             }
 
             if (!$ticket_sla->is_completed) {
-                if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
+                if ($ticket_sla->sla_status == 'warning') {
                     if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
                         $ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
                             'ticket_sla_status',

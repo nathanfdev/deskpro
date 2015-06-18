@@ -16,7 +16,7 @@
 						</div>
 						{% if email.comment|length or perms.manage_emails %}
 						<div class="label">
-							<input type="text" size="10" name="emails_comment[{{ email.id }}]" value="{{ email.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" {% if perms.manage_emails %}onkeydown="return false;"{% endif %} />
+							<input type="text" size="10" name="emails_comment[{{ email.id }}]" value="{{ email.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" {% if not perms.manage_emails %}onkeydown="return false;"{% endif %} />
 						</div>
 						{% endif %}
 					<br class="clear" /></li>

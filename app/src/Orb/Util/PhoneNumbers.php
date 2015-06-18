@@ -34,6 +34,7 @@ namespace Orb\Util;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
+use Application\DeskPRO\Entity\PhoneNumber;
 
 /**
  * A wrapper around the php libphonenumber library.
@@ -143,6 +144,15 @@ class PhoneNumbers
         }
 
         return $phone_util->isValidNumber($number);
+    }
+
+    public static function parseNum($phone_number)
+    {
+        $phone_util = PhoneNumberUtil::getInstance();
+
+        $libnum = $phone_util->parse($phone_number, null);
+
+        return (string)$libnum;
     }
 
     /**

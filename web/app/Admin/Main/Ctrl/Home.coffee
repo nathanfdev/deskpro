@@ -23,6 +23,7 @@ define [
       @service =
         agents: @DataService.get 'Agents'
 
+      @loadConfigPhpTest();
       @loadMethodTests()
       return
 
@@ -128,7 +129,21 @@ define [
 
         @$timeout (=> @refreshAgents()), 60 * 1000
 
+    loadConfigPhpTest: ->
+      checkUrl = DP_BASE_URL + 'config.php'
 
+      @$scope.config_php_url = location.protocol+'//'+location.hostname+(if location.port then ':' + location.port else '')+checkUrl
+
+      @$http({
+        method: 'GET',
+        url: checkUrl + '?x=' + ((new Date()).getTime()),
+        responseType: "text",
+        cache: false
+      }).success((res) =>
+        if not res then return
+        if res.indexOf('<?') != -1 and res.indexOf('define') != -1 and res.indexOf('DP_DATABASE_PASSWORD') != -1
+          @$scope.readable_config = true
+      )
 
     loadMethodTests: ->
       promises = []

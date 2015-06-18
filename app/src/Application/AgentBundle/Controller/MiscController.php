@@ -36,10 +36,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Symfony\Component\HttpFoundation\Request;
 
 class MiscController extends AbstractController
 {
@@ -50,6 +51,16 @@ class MiscController extends AbstractController
         }
 
         return parent::requireRequestToken($action, $arguments);
+    }
+
+    public function getGeoIpAction(Request $request)
+    {
+        /** @var \Orb\GeoIP\AbstractGeoIp $geoip */
+        $geoip = $this->container->getSystemService('geoip');
+
+        return $this->createJsonResponse(array(
+            'geoip' => $geoip->lookup($request->getClientIp())
+        ));
     }
 
     public function getInterfaceDataAction()
@@ -904,7 +915,7 @@ JS;
         $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
         foreach ($usersources as $us) {
             foreach ($this->person->getEmailAddresses() as $email) {
-                /* @var $us \Application\DeskPRO\Entity\Usersource */
+                /** @var $us \Application\DeskPRO\Entity\Usersource */
                 $adapter = $this->_initUserSourceAdapter($us);
                 $adapter->setFormData(array(
                     'username' => $email,
@@ -1145,13 +1156,13 @@ JS;
 
     public function viewDpNewsAction($id)
     {
-        $dp_news = require_once DP_ROOT.'/sys/config/config.news.php';
+        $dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
         if (!isset($dp_news[$id])) {
             throw $this->createNotFoundException();
         }
 
         return $this->render('AgentBundle:Misc:dp-news-view.html.twig', array(
-                'dp_news' => $dp_news[$id],
+                'dp_news' => $dp_news[$id]
             ));
     }
 }

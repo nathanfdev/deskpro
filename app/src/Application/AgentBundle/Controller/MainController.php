@@ -33,8 +33,10 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketDeleted;
+use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
@@ -111,10 +113,10 @@ class MainController extends AbstractController
         $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
 
         $org_options = array(
-            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
+            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
         );
 
-        $cutoff           = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
+        $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
         $online_agent_ids = $this->db->fetchAllCol("
             SELECT p.id
             FROM sessions s
@@ -147,7 +149,7 @@ class MainController extends AbstractController
             $agent_chat_depmap = array();
         }
 
-        $is_first_login      = false;
+        $is_first_login = false;
         $is_first_login_name = false;
 
         if ($this->person->getPref('agent.first_login')) {
@@ -416,6 +418,8 @@ class MainController extends AbstractController
             $index_running = false;
         }
 
+        $return_results[] = $this->getDeletedTicketResults($q);
+
         return $this->createJsonResponse(array(
             'grouped_results' => $return_results,
             'index_running'   => $index_running,
@@ -443,8 +447,8 @@ class MainController extends AbstractController
 
                 $return_results[] = array(
                     'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
-                    'results' => $rows,
+                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
+                    'results' => $rows
                 );
             }
         }
@@ -453,9 +457,36 @@ class MainController extends AbstractController
             $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
         }
 
+        $return_results[] = $this->getDeletedTicketResults($q);
+
         return $this->createJsonResponse(array(
-            'grouped_results' => $return_results,
+            'grouped_results' => $return_results
         ));
+    }
+
+    protected function getDeletedTicketResults($query)
+    {
+        $res = array(
+            'type'      => 'deleted_tickets',
+            'title'     => $this->container->getTranslator()->phrase('agent.search.type_ticket_deleted'),
+            'results'   => array(),
+        );
+
+        if (!$query = preg_replace('/[^\d]/', '', $query)) {
+            return $res;
+        }
+
+        /** @var $deleted TicketDeleted */
+        if (!$deleted = $this->em->find('DeskPRO:TicketDeleted', $query)) {
+            return $res;
+        }
+
+        $res['results'][] = array(
+            'id' => $deleted['ticket_id'],
+            'reason' => $deleted['reason'],
+        );
+
+        return $res;
     }
 
     /**
@@ -540,7 +571,7 @@ class MainController extends AbstractController
                         'id'      => $r->id,
                         'subject' => $r->subject,
                         'person'  => null,
-                        'agent'   => null,
+                        'agent'   => null
                     );
 
                     $agent = $r->agent;
@@ -577,6 +608,8 @@ class MainController extends AbstractController
                     );
                 }
             break;
+            case 'deleted_tickets':
+
         }
 
         return $rows;
@@ -585,7 +618,7 @@ class MainController extends AbstractController
     public function getPersonTicketsAction(Request $request)
     {
         if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $sort = 'date_created';

@@ -124,6 +124,8 @@ define([
   'Admin/Server/Ctrl/ServerCronLogs',
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
+  'Admin/Server/Ctrl/ImportersList',
+  'Admin/Server/Ctrl/ImportersView',
   'Admin/Server/Ctrl/ServerReportFile',
   'Admin/Settings/Ctrl/AdvancedSettings',
   'Admin/Settings/Ctrl/ElasticSearch',
@@ -139,6 +141,7 @@ define([
   'Admin/Usersources/Ctrl/Edit',
   'Admin/Usersources/Ctrl/New',
   'Admin/Usersources/Ctrl/EditInstance',
+  'Admin/Usersources/Ctrl/SyncInformation',
   'Admin/Usersources/Helper/UsersourceTypeDecider',
   'Admin/ChatFields/Ctrl/List',
   'Admin/ChatSetup/Ctrl/ChatSetup',
@@ -167,6 +170,18 @@ define([
   'CloudAdminLoad'
 
 ], function(angular) {
+
+  /**
+   * ace editor hotfix
+   * see https://github.com/angular-ui/ui-ace/issues/104
+   * @type {Function}
+   */
+  var old = window.ace.edit;
+  window.ace.edit = function() {
+    var instance = old.apply(old, arguments);
+    instance.$blockScrolling = Infinity;
+    return instance;
+  };
 
   if (!window.console) {
     window.console = {

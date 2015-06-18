@@ -106,8 +106,8 @@ if (!@ini_get('error_log')) {
     @ini_set('error_log', dp_get_log_dir().'/server-phperr-cli.log');
 }
 
-if (!defined('DP_MA_SERVER')) {
-    define('DP_MA_SERVER', 'http://www.deskpro.com/members');
+if (!defined('DP_MA_SERVER_SECURE')) {
+    define('DP_MA_SERVER_SECURE', 'https://www.deskpro.com/members');
 }
 
 // Current build time
@@ -2005,7 +2005,7 @@ class Upgrade
     public function callService($endpoint, array $post_data = array(), $url = null)
     {
         if ($url === null) {
-            $url = DP_MA_SERVER;
+            $url = DP_MA_SERVER_SECURE;
         }
 
         $url = rtrim($url, '/').'/api/'.ltrim($endpoint, '/');

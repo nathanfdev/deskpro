@@ -37,6 +37,7 @@ use DateTime;
  */
 interface ZenDeskReaderInterface
 {
+    const CODE_UNAUTHORIZED          = 401;
     const CODE_UN_PROCESSABLE_ENTITY = 422;
     const CODE_TOO_MANY_REQUESTS     = 429;
 
@@ -107,6 +108,14 @@ interface ZenDeskReaderInterface
      * @throws RetryAfterException
      */
     public function getTickets(DateTime $start_time = null);
+
+    /**
+     * Returns a collection of ticket comments
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getTicketComments($id);
 
     /**
      * Returns a batch end time of the tickets collection

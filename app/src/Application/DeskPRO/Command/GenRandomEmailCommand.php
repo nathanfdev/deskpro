@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,10 +46,12 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->setName('dp:gen-rand-email');
         $this->addOption('from', null, InputOption::VALUE_REQUIRED, "An email address to send from. Create a user first if you want to send a name as well.");
         $this->addOption('to', null, InputOption::VALUE_REQUIRED, "An email address or a ticket account ID. If none supplied, the first ticket account in the DB is chosen. Note: Does not NEED to be a ticket account, but generaly is.");
-        $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, "The template to use: text, html");
-        $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with ! to pass the subject string throug twig.");
-        $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with ! to pass the string through twig.");
+        $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, "The template to use: text, html, fwd, fwd_with_reply");
+        $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
+        $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
         $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, "Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.");
+        $this->addOption('vars', null, InputOption::VALUE_REQUIRED, "Extra vars to make available to the templates. Should be a JSON encoded string");
+        $this->addOption('is-bounce', null, InputOption::VALUE_NONE, "Set is_bounce=true in vars");
     }
 
     /**
@@ -174,6 +177,10 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
         $vars = array(
             'uid'        => uniqid('dp', true),
+            'ts'         => time(),
+            'rand'       => mt_rand(100000, 999999),
+            'rand_ref'   => Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU),
+            'rand_str'   => Strings::random(10, Strings::CHARS_ALPHA_IU),
             'subject'    => $subject,
             'message'    => $message,
 
@@ -190,10 +197,30 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'to_acc'     => $to_acc,
         );
 
+        $custom_vars = null;
+        if ($custom_vars = $input->getOption('vars')) {
+            $custom_vars = @json_decode($custom_vars, true);
+        }
+        if (!$custom_vars) {
+            $custom_vars = array();
+        }
+
+        if ($custom_vars) {
+            $vars = array_merge($vars, $custom_vars);
+        }
+
+        if ($input->getOption('is-bounce')) {
+            $vars['is_bounce'] = true;
+        }
+
+        $proc_keys = array_keys($custom_vars);
+        $proc_keys[] = 'subject';
+        $proc_keys[] = 'message';
+
         $twig = $this->getContainer()->getTwig();
-        foreach (array('subject', 'message') as $k) {
-            if ($vars[$k][0] === '!') {
-                $vars[$k] = $twig->renderStringTemplate($vars[$k], $vars);
+        foreach ($proc_keys as $k) {
+            if (substr($vars[$k], 0, 5) === 'twig:') {
+                $vars[$k] = $twig->renderStringTemplate(substr($vars[$k], 5), $vars);
             }
         }
 

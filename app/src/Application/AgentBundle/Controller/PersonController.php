@@ -33,13 +33,16 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\DependencyInjection\SystemServices\PersonEditManagerService;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
-use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonFile;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
+use Application\DeskPRO\Mail\Mailer;
+use Application\DeskPRO\People\PersonEditManager;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Util\PhoneNumbers;
@@ -153,10 +156,11 @@ class PersonController extends AbstractController
             'type'         => new PhoneNumberType(),
             'allow_add'    => true,
             'allow_delete' => true,
-            'options'      => array(
-                'label' => false,
-            ),
-        ))->createView();
+		    'options' => array(
+			    'label' => false,
+                'show_phone_label' => true
+		    ),
+	    ))->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         $visitor = null;
@@ -885,10 +889,11 @@ class PersonController extends AbstractController
             'type'         => new PhoneNumberType(),
             'allow_add'    => true,
             'allow_delete' => true,
-            'options'      => array(
-                'label' => false,
-            ),
-        ));
+		    'options' => array(
+			    'label' => false,
+                'show_phone_label' => true
+		    ),
+	    ));
 
         try {
             if ($this->person->hasPerm('agent_people.manage_emails')) {
@@ -897,9 +902,9 @@ class PersonController extends AbstractController
 
                 // Setting comment
                 foreach ($email_comments as $email_id => $comment) {
-                    if (isset($person->emails[$email_id])) {
-                        $person->emails[$email_id]->comment = $comment;
-                        $this->em->persist($person->emails[$email_id]);
+                    if ($email = $person->getEmailId($email_id)) {
+                        $email->comment = $comment;
+                        $this->em->persist($email);
                     }
                 }
 
@@ -1000,22 +1005,24 @@ class PersonController extends AbstractController
             throw $e;
         }
 
-        $phones_form->handleRequest($request);
-        if ($phones_form->isValid()) {
-            foreach ($phones_form->getData() as $phone) {
-                if ($phone->person) {
-                    continue;
-                }
-                $phone->person = $person;
-                $this->em->persist($phone);
-            }
-            $this->em->flush();
-        } else {
-            foreach ($phones_form->getErrors(true, true) as $error) {
-                /* @var $error FormError */
-                $errors[] = $error->getMessage();
-            }
+        // to handle empty form submission
+        if (!$request->get('collection')) {
+            $request->request->set('collection', array());
         }
+	    $phones_form->handleRequest($request);
+	    if ($phones_form->isValid()) {
+		    foreach ($phones_form->getData() as $phone) {
+			    if ($phone->person) continue;
+			    $phone->person = $person;
+			    $this->em->persist($phone);
+		    }
+		    $this->em->flush();
+	    } else {
+		    foreach ($phones_form->getErrors(true, true) as $error) {
+			    /** @var $error FormError */
+			    $errors[] = $error->getMessage();
+		    }
+	    }
 
         // Reset display array
         $contact_data_array = array(
@@ -1325,28 +1332,39 @@ class PersonController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $personDeleted = new Entity\PersonDeleted();
+        $this->em->beginTransaction();
+        try {
+            $personDeleted = new Entity\PersonDeleted();
 
-        $personDeleted['person_id'] = $person_id;
-        $personDeleted['by_person'] = $this->getPerson();
-        $personDeleted['reason']    = $this->in->getString('reason');
+            $personDeleted['person_id'] = $person_id;
+            $personDeleted['by_person'] = $this->getPerson();
+            $personDeleted['reason']    = $this->in->getString('reason');
 
-        $this->em->persist($personDeleted);
-        $this->em->flush();
+            $this->em->persist($personDeleted);
+            $this->em->flush();
 
-        if ($this->in->getBool('ban')) {
-            foreach ($person->emails as $email) {
-                $email_addy = strtolower($email->email);
-                App::getDb()->replace('ban_emails', array(
-                    'banned_email' => $email_addy,
-                    'is_pattern'   => 0,
-                ));
+            if ($this->in->getBool('ban')) {
+                foreach ($person->emails as $email) {
+                    $email_addy = strtolower($email->email);
+                    App::getDb()->replace('ban_emails', array(
+                        'banned_email' => $email_addy,
+                        'is_pattern' => 0
+                    ));
+                }
             }
+
+            /** @var PersonEditManager $edit_manager */
+            $edit_manager = $this->container->getSystemService('person_edit_manager');
+            $edit_manager->setPersonContext($this->person);
+            $edit_manager->deleteUser($person);
+
+            $this->em->commit();
+        } catch(\Exception $e) {
+            $this->em->rollback();
+            throw $e;
         }
 
-        $edit_manager = $this->container->getSystemService('person_edit_manager');
-        $edit_manager->setPersonContext($this->person);
-        $edit_manager->deleteUser($person);
+
 
         return $this->createJsonResponse(array('success' => true));
     }

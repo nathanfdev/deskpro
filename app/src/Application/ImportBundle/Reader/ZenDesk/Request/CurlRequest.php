@@ -25,90 +25,42 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
-
-use Application\ImportBundle\Generator\GeneratorConfig;
-use Exception;
+namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
 /**
- * Exporter proxy to lazy load createExporter() method when the importer is initialized
+ * Override CurlRequest to tune curl options
  *
- * Class LazyExporter
- * @package Application\ImportBundle\Generator\Exporter
+ * Class CurlRequest
+ * @package Application\ImportBundle\Reader\ZenDesk\Request
  */
-final class LazyExporter implements ExporterInterface
+class CurlRequest extends \Zendesk\API\CurlRequest
 {
     /**
-     * @var FactoryInterface
+     * @var array
      */
-    private $factory;
-
-    /**
-     * @var ExporterInterface
-     */
-    private $instance;
+    private $options;
 
     /**
      * Constructor
      *
-     * @param FactoryInterface $factory
+     * @param string $url
+     * @param array  $options
      */
-    public function __construct(FactoryInterface $factory)
+    public function __construct($url, array $options = array())
     {
-        $this->factory = $factory;
+        parent::__construct($url);
+        $this->options = $options;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    public function setopt($option, $value)
     {
-        // Getting type from a mock object (with out initialize of an exporter reader)
-        $exporter_class = str_replace('Factory', '', get_class($this->factory));
-        if ( ! class_exists($exporter_class)) {
-            throw new Exception(sprintf('Exporter `%s` not found', $exporter_class));
+        if (isset($this->options[$option])) {
+            $value = $this->options[$option];
         }
 
-        /** @var ExporterInterface $exporter */
-        $exporter = new $exporter_class(new Parser\Collection());
-        return $exporter->getType();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setConfig(GeneratorConfig $config)
-    {
-        throw new Exception('Use initialize method to get instance');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCountByType($type)
-    {
-        throw new Exception('Use initialize method to get instance');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function exportByType($type)
-    {
-        throw new Exception('Use initialize method to get instance');
-    }
-
-    /**
-     * Lazy loading when any interface method was called
-     *
-     * @return ExporterInterface
-     */
-    public function initialize()
-    {
-        if ($this->instance === null) {
-            $this->instance = $this->factory->createExporter();
-        }
-
-        return $this->instance;
+        return parent::setopt($option, $value);
     }
 }

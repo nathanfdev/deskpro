@@ -27,7 +27,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         enabled = 0
         @listCtrl().usersources.map (source) =>
           s = source.usersource
-          return if 'agent' != s.type
+          return if @usersourceType != s.type
           return if 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO' == s.source_type
           enabled++ if s.is_enabled
         @$scope.can_disable_deskpro = enabled > 0

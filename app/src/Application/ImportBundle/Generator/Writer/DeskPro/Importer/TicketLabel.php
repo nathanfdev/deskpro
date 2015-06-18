@@ -60,7 +60,7 @@ final class TicketLabel extends AbstractImporter
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
-                $this->logWarning(sprintf(
+                $this->logDebug(sprintf(
                     'Found an existing label `%s` for ticket with oid `%d` (Skipping)',
                     $label, $ticket->getId()
                 ));

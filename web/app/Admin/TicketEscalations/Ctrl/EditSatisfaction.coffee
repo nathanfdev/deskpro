@@ -65,28 +65,16 @@ define [
           @$timeout(=>
             @esc  = loadData.escalation
             @form = loadData.form
+
+            @$scope.$watch(
+              =>
+                @$scope.settings?.satisfaction_enabled && @esc.is_enabled
+              (val) =>
+                return if undefined == val
+                @escData.saveEnabledStateById @esc.id, @$scope.$parent?.settings?.satisfaction_enabled && @esc.is_enabled
+            )
           )
         )
-
-
-
-    saveForm: ->
-      return if not @$scope.form_props.$valid
-
-      is_new = !@esc.id
-
-      promise = @escData.saveFormModel(@esc, @form)
-
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving', true).then(=>
-          @Growl.success("Saved")
-        )
-
-        @skipDirtyState()
-        if is_new
-          @$state.go('tickets.ticket_escalations.gocreate')
-      )
 
 
 

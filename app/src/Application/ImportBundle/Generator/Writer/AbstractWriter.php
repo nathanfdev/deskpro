@@ -27,9 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Exporter\Parser\BatchConfigInterface;
-use Exception;
+use RuntimeException;
 
 /**
  * Base generator writer
@@ -73,13 +74,13 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
     public function writeBatchConfig()
     {
         if ( ! $this->config) {
-            throw new Exception('Generator configuration is not defined');
+            throw new RuntimeException('Generator configuration is not defined');
         }
         if ( ! $this->batch_config) {
-            throw new Exception('Batch configuration is not defined');
+            throw new RuntimeException('Batch configuration is not defined');
         }
         if ( ! $this->config->getBatchFilePath()) {
-            throw new Exception('Batch config file path is not defined');
+            throw new RuntimeException('Batch config file path is not defined');
         }
 
         $this->createDirIfNotExist($this->config->getBatchFileDir());
@@ -91,15 +92,15 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
     /**
      * Creates output directory if not exist
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function createOutputDirIfNotExist()
     {
         if ( ! $this->config) {
-            throw new Exception('Generator configuration is not defined');
+            throw new RuntimeException('Generator configuration is not defined');
         }
         if ( ! $this->config->getOutputPath()) {
-            throw new Exception('Output path is not defined');
+            throw new RuntimeException('Output path is not defined');
         }
 
         $this->createDirIfNotExist($this->config->getOutputPath());
@@ -109,13 +110,13 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
      * Creates a directory if not exist
      *
      * @param string $dir
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function createDirIfNotExist($dir)
     {
         if (is_dir($dir) === false) {
             if (mkdir($dir, 0777, true) === false) {
-                throw new Exception(sprintf('Unable to create dir `%s`', $dir));
+                throw new RuntimeException(sprintf('Unable to create dir `%s`', $dir));
             }
         }
     }
@@ -134,18 +135,30 @@ abstract class AbstractWriter extends AbstractGenerator implements WriterInterfa
         $data = @json_encode($data);
 
         if ($this->config->isDryRun()) {
-            $this->logInfo(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
+            $this->logDebug(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
         } else {
             if (@file_exists($path)) {
-                $this->logWarning(sprintf('File `%s` already exists (Override).', $path));
+                $this->logInfo(sprintf('File `%s` already exists (Override).', $path));
             } else {
                 $this->logInfo(sprintf('Generate a new file `%s`', $path));
             }
             if (@file_put_contents($path, $data) === false) {
-                $this->logWarning(sprintf('Unable to write file `%s`', $path));
+                $this->logError(sprintf('Unable to write file `%s`', $path));
             }
         }
 
         return true;
+    }
+
+    static public function getOrderedTypes()
+    {
+        return array(
+            EntityInterface::TYPE_PERSON,
+            EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_ARTICLE,
+            EntityInterface::TYPE_DOWNLOAD,
+            EntityInterface::TYPE_FEEDBACK,
+            EntityInterface::TYPE_NEWS,
+        );
     }
 }

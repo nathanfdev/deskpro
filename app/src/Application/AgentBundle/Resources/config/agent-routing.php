@@ -14,6 +14,11 @@ $collection->create('agent', array(
     'controller'  => 'AgentBundle:Main:index',
 ));
 
+$collection->create('geoip', array(
+    'path'        => '/geoip',
+    'controller'  => 'AgentBundle:Misc:getGeoIp',
+));
+
 $collection->create('agent_savedom', array(
     'path'        => '/save-dom.json',
     'controller'  => 'AgentBundle:Misc:saveDom',

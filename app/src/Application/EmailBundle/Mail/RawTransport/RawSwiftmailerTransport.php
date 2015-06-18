@@ -32,6 +32,7 @@
 namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
+use Application\EmailBundle\Mail\RawMessage\RawMessageUtil;
 
 /**
  * This is a generic wrapper for any swiftmailer transport.
@@ -88,31 +89,8 @@ class RawSwiftmailerTransport implements RawTransportInterface
     private function recreateSwiftMessage($from, array $send_tos = null, $raw_fp)
     {
         $raw_message = $this->decoder->createRawMessage($raw_fp);
-
         $message = \Swift_Message::newInstance();
-
-        #------------------------------
-        # From
-        #------------------------------
-
-        $from = $raw_message->getFrom();
-        if ($from) {
-            $message->setFrom($from['email'], $from['name']);
-        }
-
-        #------------------------------
-        # Subject
-        #------------------------------
-
-        $message->setSubject($raw_message->getSubject());
-
-        #------------------------------
-        # Recipients
-        #------------------------------
-
-        $included_tos = array();
-
-        foreach ($raw_message->getTos() as $to) {
+        RawMessageUtil::applyRawToSwift($raw_message, $message, $send_tos);
             $message->addTo($to['email'], $to['name']);
             $included_tos[] = strtolower($to['email']);
         }

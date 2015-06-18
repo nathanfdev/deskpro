@@ -31,8 +31,8 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobProcessorInterface;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
@@ -101,8 +101,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      *
      * @param array $data validated data (the payload)
      * @param array $job  the full job db row array
-     *
-     * @return bool TRUE if successfully processed
+     * @return void
      */
     abstract public function process(array $data, array $job);
 
@@ -246,7 +245,6 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      * @param            $status_code
      * @param            $log_summary
      * @param \Exception $e
-     *
      * @throws \Doctrine\DBAL\DBALException
      */
     protected function markExceptionError(array $job, $status_code, $log_summary, \Exception $e)
@@ -286,7 +284,6 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      *
      * @param array $job
      * @param       $date_string
-     *
      * @throws \Doctrine\DBAL\DBALException
      *
      * @deprecated this will be deleted soon, inject the JobQueue and use JobQueue->retry(Job) instead

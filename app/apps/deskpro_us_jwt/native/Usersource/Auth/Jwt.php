@@ -198,10 +198,19 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         }
 
         try {
+
+            if (empty($callback_data['jwt'])) {
+                throw new \InvalidArgumentException("Missing `jwt` (token) in callback data");
+            }
+
             $jwt = $callback_data['jwt'];
             $secret = $this->options->get('secret');
             $payload = \JWT::decode($jwt, $secret, array($this->options->get('algo', 'HS256')));
             $payload_array = Arrays::fromStdClass($payload);
+
+            if (empty($payload_array['email'])) {
+                throw new \InvalidArgumentException("Missing required `email` in payload data");
+            }
 
             if ($this->logger) {
                 $op['jwt'] = $jwt;

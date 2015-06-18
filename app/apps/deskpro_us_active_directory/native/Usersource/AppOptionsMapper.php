@@ -68,6 +68,8 @@ class AppOptionsMapper
         $options['accountDomainName']      = $settings->get('domain_name');
         $options['accountDomainNameShort'] = $settings->get('short_domain_name');
         $options['accountFilterFormat']    = $settings->get('filter');
+        $options['disableLdapPaging']      = $settings->get('disable_ldap_paging');
+        $options['ldapPerPage']            = $settings->get('ldap_per_page');
 
         switch ($settings->get('secure')) {
             case 'ssl':

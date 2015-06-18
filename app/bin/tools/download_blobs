@@ -1,0 +1,341 @@
+#!/usr/bin/env php
+<?php
+namespace DeskPRO\Bin\Tools\download_blobs;
+
+########################################################################################################################
+
+error_reporting(E_ALL | E_STRICT);
+set_time_limit(0);
+
+########################################################################################################################
+
+$opts = getopt('', array(
+    'dbhost:',
+    'dbuser:',
+    'dbpass:',
+    'dbname:',
+    'files-path:',
+
+    // instead of downloading remote files, will write url to a file list
+    // You can then download files in parallel, like this:
+    // $ parallel --gnu --linebuffer --colsep '\t' curl -s --retry 4 -w "'%{filename_effective}: %{size_download} bytes downloaded from %{url_effective} in %{time_total}s\n'" -o "'{2}'" "'{1}'" < filelist
+    'filelist:',
+));
+
+if (empty($opts['dbhost'])) {
+    $opts['dbhost'] = 'localhost';
+}
+
+$is_err = false;
+foreach (array('dbuser', 'dbuser', 'dbpass', 'dbname', 'files-path') as $k) {
+    if (empty($opts[$k])) {
+        echo "The `$k` option is required\n";
+        $is_err = true;
+    }
+}
+
+if ($is_err) {
+    exit(1);
+}
+
+########################################################################################################################
+
+$dbhost = $opts['dbhost'];
+$unix_socket = null;
+$port = '';
+
+$m = null;
+if (preg_match('#^unix_socket:(.*?)$#', $dbhost, $m)) {
+    $unix_socket = trim($m[1]);
+}
+
+if (!$unix_socket) {
+    $m = null;
+    if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+        $dbhost = $m[1];
+        $port   = ";port={$m[2]};";
+    }
+}
+
+if ($unix_socket) {
+    $host_part = "unix_socket=$unix_socket";
+} else {
+    $host_part = "host={$dbhost}$port";
+}
+
+$pdo = new \PDO("mysql:dbname={$opts['dbname']};$host_part", $opts['dbuser'], $opts['dbpass']);
+$pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+$pdo->exec("SET sql_mode=''");
+$pdo->exec("SET NAMES 'UTF8'");
+
+$count = $pdo->query("SELECT COUNT(*) FROM blobs WHERE storage_loc != 'fs'")->fetchColumn();
+
+if (!$count) {
+    echo "No blobs to move.\n";
+    exit(0);
+}
+
+echo "Blobs to move to the filesystem: {$count}\n";
+
+$filesize = $pdo->query("SELECT SUM(filesize) FROM blobs WHERE storage_loc != 'fs'")->fetchColumn();
+
+echo "Storage space required: " . $filesize . " bytes\n";
+
+########################################################################################################################
+
+$path = $opts['files-path'];
+$path = preg_replace('#^\./#', '', $path);
+
+if ($path[0] != '/') {
+    $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+}
+
+if (!is_dir($path)) {
+    if (!@mkdir($path, 0755, true)) {
+        echo "Bad path and could not create: $path\n";
+        exit(1);
+    }
+    echo "Created files-path directory automaticaly.\n";
+}
+
+$path = realpath($path);
+if (!$path) {
+    echo "Invalid path: $path\n";
+    exit(1);
+}
+
+echo "Saving to the files-path: $path\n";
+
+########################################################################################################################
+
+$filelist = @$opts['filelist'] ?: null;
+if ($filelist) {
+
+    if ($filelist[0] != '/') {
+        $filelist = getcwd() . DIRECTORY_SEPARATOR . $filelist;
+    }
+
+    if (!touch($filelist)) {
+        echo "Could not create file: $filelist\n";
+        exit(1);
+    }
+
+    $filelist = realpath($filelist);
+
+    echo "Saving file list: $filelist\n";
+}
+
+$filelist_fp = null;
+if ($filelist) {
+    $filelist_fp = fopen($filelist, 'a');
+}
+
+########################################################################################################################
+
+echo "\n";
+echo "Ready to continue? This will download files to the filesystem and modify the `blobs` table directly.\n";
+echo "Type 'yes' to continue. Any other input will abort.\n";
+echo "> ";
+
+$i = strtolower(trim(fgets(STDIN, 256)));
+if ($i != 'yes') {
+    echo "Aborting\n";
+    exit(1);
+}
+
+echo "\n\n\n";
+
+########################################################################################################################
+
+function random_string($len = 10)
+{
+    static $chars = 'ABCDGHJKMNPQRSTWXYZ';
+
+    $string = '';
+    $max_range = strlen($chars) - 1;
+
+    for ($i = 0; $i < $len; $i++) {
+        $string .= $chars[mt_rand(0, $max_range)];
+    }
+
+    return $string;
+}
+
+$last_id = 0;
+$sth = $pdo->prepare("
+  SELECT id, storage_loc, save_path, filename, filesize, blob_hash, file_url
+  FROM blobs
+  WHERE storage_loc != 'fs' AND id > ? AND (storage_loc_specific IS NULL OR storage_loc_specific = 'fs')
+  ORDER BY id ASC
+  LIMIT 1000
+");
+
+$update_sth = $pdo->prepare("
+    UPDATE blobs
+    SET storage_loc = 'fs', save_path = ?, authcode = ?, file_url = NULL
+    WHERE id = ?
+");
+
+$blobrow_sth = null;
+
+do {
+    $sth->execute(array($last_id));
+    $batch = $sth->fetchAll(\PDO::FETCH_ASSOC);
+    if (!$batch) {
+        break;
+    }
+
+    foreach ($batch as $blob) {
+
+        if ($blob['id'] > $last_id) {
+            $last_id = $blob['id'];
+        }
+
+        printf("[%6d] %-45s -> ", $blob['id'], substr($blob['filename'], 0, 45));
+
+        $folder_num = (int)(($blob['id']-1) / 1000) + 1;
+
+        $filename_safe = $blob['filename'];
+        $filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+        $filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+
+        if (!$filename_safe) {
+            $filename_safe = 'file';
+        }
+
+        $namehash = strtoupper(substr(sha1($filename_safe . $blob['id']), 0, 3));
+        $namehash .= strtoupper(substr(md5($filename_safe . $blob['id']), 0, 3));
+
+        $authcode = $folder_num . random_string() . $blob['id'] . $namehash;
+
+        $store_path = $folder_num . DIRECTORY_SEPARATOR . $authcode;
+        $real_store_path = $path . DIRECTORY_SEPARATOR . $store_path;
+        $real_store_dir = dirname($real_store_path);
+
+        if (!is_dir($real_store_dir)) {
+            if (!mkdir($real_store_dir, 0777, true)) {
+                echo "Failed to create directory: $real_store_dir\n";
+                exit(1);
+            }
+        }
+
+        $fp = fopen($real_store_path, 'w');
+        if (!$fp) {
+            echo "Failed to get fp for: $real_store_path\n";
+            exit(1);
+        }
+
+        printf("%-25s ... ", $store_path);
+
+        $t = microtime(true);
+
+        switch ($blob['storage_loc']) {
+            case 'db':
+                if (!$blobrow_sth) {
+                    $blobrow_sth = $pdo->prepare("
+                        SELECT data
+                        FROM blobs_storage
+                        WHERE id = ?
+                        ORDER BY id ASC
+                    ");
+                }
+
+                $ok = true;
+
+                $blobrow_sth->execute(array($blob['id']));
+                $errcode = $blobrow_sth->errorCode();
+                if ($errcode && $errcode != "00000") {
+                    echo "\n";
+                    echo "> Failed to fetch blobs_storage\n";
+                    print_r($blobrow_sth->errorInfo());
+                    $ok = false;
+                }
+
+                if ($ok) {
+                    while ($r = $blobrow_sth->fetchColumn()) {
+                        if (!fwrite($fp, $r)) {
+                            $ok = false;
+                        }
+                    }
+                }
+
+                if (!$ok) {
+                    echo "\n";
+                    echo "> failed\n";
+                }
+
+                @$blobrow_sth->closeCursor();
+                unset($r);
+
+                break;
+
+            case 's3':
+
+                if ($filelist_fp) {
+                    fwrite($filelist_fp, "{$blob['file_url']}\t$real_store_path\n");
+                    fwrite($fp, "File stored at: {$blob['file_url']}\n");
+                    $ok = true;
+                } else {
+                    @trigger_error("bogus");
+
+                    $try = 3;
+                    $ok = false;
+                    while (--$try >= 0) {
+                        $fp_read = fopen($blob['file_url'], 'r');
+                        stream_copy_to_stream($fp_read, $fp);
+
+                        $e = error_get_last();
+                        @fclose($fp_read);
+
+                        if (!$e || $e['message'] === 'bogus') {
+                            $ok = true;
+                            break;
+                        } else {
+                            sleep(2);
+                        }
+                    }
+
+                    if (!$ok) {
+                        echo "\n";
+                        echo "> failed to copy {$blob['file_url']} -- {$e['message']}\n";
+                    }
+                }
+
+                break;
+
+            default:
+                $ok = false;
+                echo "Skipping (unknown adapter {$blob['storage_loc']}\n";
+        }
+
+        fclose($fp);
+
+        if (!$ok) {
+            @unlink($real_store_path);
+            echo "Failed\n";
+            continue;
+        }
+
+        $update_sth->execute(array(
+            $store_path,
+            $authcode,
+            $blob['id']
+        ));
+
+        if ($update_sth->errorCode() && $update_sth->errorCode() !== '00000') {
+            echo "\nUpdate error:\n";
+            print_r($update_sth->errorInfo());
+            echo "\n";
+            exit(1);
+        }
+
+        printf("Done (%.2fs)\n", microtime(true)-$t);
+    }
+} while ($batch);
+
+if ($filelist_fp) {
+    fclose($filelist_fp);
+}
+
+echo "\n\n";
+echo "Done all\n";

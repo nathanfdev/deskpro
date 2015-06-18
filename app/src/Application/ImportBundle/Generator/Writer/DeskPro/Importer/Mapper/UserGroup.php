@@ -81,4 +81,17 @@ final class UserGroup implements MapperInterface, MapperByTitleInterface
     {
         return $this->findOneBy(array('title' => $title), $throw_exception);
     }
+
+    /**
+     * Returns the DeskPRO record by title
+     *
+     * @param string $name
+     * @param bool   $throw_exception
+     *
+     * @return mixed
+     */
+    public function findOneBySysName($name, $throw_exception = true)
+    {
+        return $this->findOneBy(array('sys_name' => $name), $throw_exception);
+    }
 }

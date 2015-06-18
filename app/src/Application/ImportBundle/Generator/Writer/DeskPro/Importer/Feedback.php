@@ -129,13 +129,13 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         if ($title) {
             $category = $this->getFeedbackCategoryMapper()->findOneByTitle($title, false);
             if ($category) {
-                $this->logInfo(sprintf('Found existing feedback category `%s`', $category->getTitle()));
+                $this->logDebug(sprintf('Found existing feedback category `%s`', $category->getTitle()));
             } else {
                 $category = new DeskPROEntity\FeedbackCategory();
                 $category->setRealTitle($title);
 
                 $this->records->add($category);
-                $this->logWarning(sprintf('New feedback category creating `%s`', $category->getTitle()));
+                $this->logInfo(sprintf('New feedback category creating `%s`', $category->getTitle()));
             }
         }
 

@@ -55,7 +55,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getFeedbackReaderConfig());
     }
 
     /**
@@ -64,7 +64,7 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
-        $feedback_items = $this->reader->getData($this->getConfig());
+        $feedback_items = $this->reader->getData($this->getFeedbackReaderConfig());
 
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
@@ -176,7 +176,7 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getFeedbackReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_FEEDBACK_PATH);
     }

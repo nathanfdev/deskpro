@@ -36,14 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
-use Application\ApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\CustomFields\CustomDataPersister;
-use Application\DeskPRO\Entity\CustomFieldDefinition;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ResetDemoController extends AbstractController implements ProtectedControllerInterface
 {

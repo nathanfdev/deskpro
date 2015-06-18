@@ -85,121 +85,180 @@ class Choice extends HandlerAbstract
     protected function _getRenderableString($data)
     {
         $val = array();
-
-        if ($this->field_def->field_manager) {
-            $children = $this->field_def->field_manager->getFieldChildren($this->field_def);
-        } else {
-            $children = $this->field_def['children'];
-        }
-
-        // Index array
-        $children = \Orb\Util\Arrays::keyFromData($children, 'id');
-
-        foreach ($children as $child) {
-            $id = $child['id'];
-            if (isset($data['children'][$id]) and isset($data['children'][$id]['value'])) {
-                $parent_title = '';
-                if ($child->getOption('parent_id')) {
-                    $parent_title = $children[$child->getOption('parent_id')]->getTitle().' > ';
-                }
-                $val[] = $parent_title.$child['title'];
-            }
-        }
-
-        $val = implode(', ', $val);
-
-        return $val;
-    }
-
-    public function getFormField($data = null)
-    {
-        $options = array();
-
-        $selected_options = array();
-
         $children = $this->getFieldChildren();
 
-        // Add options
-        $has_children = array();
-        foreach ($children as $child) {
-            if ($child->getOption('parent_id')) {
-                $has_children[$child->getOption('parent_id')] = true;
-            }
+        if (!isset($data['children'])) {
+            return null;
         }
 
-        foreach ($children as $child) {
-            if (isset($has_children[$child->getId()])) {
-                if (!$this->expanded && !isset($options[$child->getTitle()])) {
-                    $options[$child->getTitle()] = array();
+        foreach ($data['children'] as $id => $v) {
+            if (!isset($v['value']) || (!$child = @$children[$id])) {
+                continue;
+            }
+
+            $title = $child['title'];
+            // full path
+            while ($parent = @$children[$child->getOption('parent_id')]) {
+                $title = $parent['title'].' > '.$title;
+                $child = $parent;
+            }
+            $val[] = $title;
+        }
+
+        return implode(', ', $val);
+    }
+
+    public function getFormField($data = null, $availableOnly = false)
+    {
+        $children = $this->getFieldChildren();
+        $choices = array();
+        $selected = array();
+        $map = array();
+        // client-side hierarchy
+        $root = array();
+        $max_depth = 1;
+        $sort_map = array();
+
+        foreach ($children as $id => $child) {
+
+            // map for client-side
+            $map[$id] = new \StdClass();
+            $map[$id]->id = $id;
+            $map[$id]->title = $child['title'];
+
+            // add choices
+            $title = $child['title'];
+            $sort_map[$id] = array($child['display_order']);
+            $d = 1;
+
+            $sub_child = $child;
+            while ($parent = @$children[$sub_child->getOption('parent_id')]) {
+                $d++;
+                if ($d > $max_depth) $max_depth = $d;
+
+                $title = $parent['title'].' > '.$title;
+                $sort_map[$id][] = $parent['display_order'];
+
+                $sub_child = $parent;
+            }
+            $sort_map[$id] = array_reverse($sort_map[$id]);
+            $choices[$id] = $title;
+
+
+            // set values
+            if (!isset($data['children'][$id]['value'])) {
+                continue;
+            }
+            $selected[] = $id;
+        }
+
+        uksort($choices, function($a_opt, $b_opt) use ($sort_map) {
+            $a_depth = count($sort_map[$a_opt]);
+            $b_depth = count($sort_map[$b_opt]);
+
+            $max_depth = max($a_depth, $b_depth);
+
+            $an = $bn = 0;
+            for ($i = 0; $i < $max_depth; $i++) {
+                $an = @$sort_map[$a_opt][$i] ?: 0;
+                $bn = @$sort_map[$b_opt][$i] ?: 0;
+
+                if ($an != $bn) {
+                    break;
                 }
-            } elseif ($child->getOption('parent_id')) {
-                if (!$this->expanded) {
-                    $title = $children[$child->getOption('parent_id')]->getTitle();
-                    if (!isset($options[$title])) {
-                        $options[$title] = array();
-                    }
-                    $options[$title][$child->getId()] = $child->getTitle();
-                } else {
-                    $title                    = $children[$child->getOption('parent_id')]->getTitle();
-                    $options[$child->getId()] = $title.' > '.$child->getTitle();
+            }
+
+            if ($an == $bn) {
+                return 0;
+            }
+            return $an < $bn ? -1 : 1;
+        });
+
+        // map for client-side
+        foreach ($children as $id => $child) {
+            if ($parent = @$map[$child->getOption('parent_id')]) {
+                $parent->children[] = $map[$id];
+                if (isset($choices[$parent->id])) {
+                    unset($choices[$parent->id]);
                 }
             } else {
-                $options[$child->getId()] = $child->getTitle();
+                $root[] = @$map[$id];
             }
         }
 
-        foreach ($children as $child) {
-            $id = $child['id'];
-            if (!$child['handler_class']) {
-                if (isset($data['children'][$id]) and isset($data['children'][$id]['value'])) {
-                    $selected_options[] = $id;
+        // For max 2-level multi-select, use optgroups
+        if ($max_depth <= 2 && $this->multiple && !$this->expanded) {
+            $choices = array();
+
+            foreach ($root as $opt) {
+                if (!empty($opt->children)) {
+                    $optgroup = array();
+                    foreach ($opt->children as $sub_opt) {
+                        $optgroup[$sub_opt->id] = $sub_opt->title;
+                    }
+                    $choices[$opt->title] = $optgroup;
+                } else {
+                    $choices[$opt->id] = $opt->title;
                 }
             }
         }
 
-        $setData = $selected_options;
-        if (!$this->multiple && is_array($setData)) {
-            $setData = array_pop($setData);
+        // required
+        $required = defined('DP_INTERFACE') && (
+            ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+            ||
+            ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+        );
+
+        $attr = array(
+            'data-map' => json_encode($root),
+        $field_opts = array(
+            'choices'  => $options,
+            'data-custom-field' => 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null),
+            'data-max-depth' => $max_depth
+        );
+
+        if (!$this->multiple) {
+            // turns off legacy select2 handler
+            $attr['data-no-select2'] = 1;
+        }
+
+        // - We need to always have a default blank
+        // option for backwards compat with lots of layout/UI code
+        // - Without a blank option, browser will send option1 along with any
+        // form, resulting in a value save when there shouldnt be
+        // (because client-side, we simply display:none fields that dont apply, but browser
+        // will still have field values for them; we need a blank option to send in a case like that).
+        if ($this->expanded) {
+            if ($selected && $required) {
+                $empty_val = '---';
+            } else {
+                $empty_val = false;
+            }
+        } else {
+            $empty_val = '';
         }
 
         $field_opts = array(
-            'choices'  => $options,
-            'required' => false,
+            'choices' => $choices,
+            'required' => $required,
+            'multiple' => $this->multiple,
+            'expanded' => $this->expanded,
+            'empty_value' => $empty_val,
+            'attr' => $attr
         );
-        if ($this->multiple) {
-            $field_opts['multiple'] = true;
-        }
-        if ($this->expanded) {
-            $field_opts['expanded'] = true;
+
+        if (!$this->multiple) {
+            // selected value for single select
+            $selected = reset($selected) ?: null;
         }
 
-        $is_radio = false;
-        if ($this->expanded && !$this->multiple) {
-            $is_radio = true;
-        }
-        $is_check = false;
-        if ($this->expanded && $this->multiple) {
-            $is_check = true;
-        }
-
-        $req_opt = false;
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $req_opt = $this->field_def->getOption('required');
-        } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $req_opt = $this->field_def->getOption('agent_required');
-        }
-        if ($is_radio || $is_check) {
-            $field_opts['empty_value'] = false;
-        } else {
-            $field_opts['empty_value'] = '';
-        }
-
-        $field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);
-        if ($setData) {
-            $field_choice->setData($setData);
-        }
-
-        return $field_choice;
+        return App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            'choice',
+            $selected,
+            $field_opts
+        );
     }
 
     public function getDataFromForm(array $form_data)
@@ -241,6 +300,7 @@ class Choice extends HandlerAbstract
             $data = array($data);
         }
 
+        $data = Arrays::func($data, array('Orb\Util\Strings', 'trimWhitespace'));
         $data = Arrays::removeFalsey($data);
 
         // - Choice values are always ints
@@ -320,3 +380,5 @@ class Choice extends HandlerAbstract
         return 'id';
     }
 }
+
+

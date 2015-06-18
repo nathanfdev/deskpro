@@ -83,4 +83,28 @@ define [
       return promise
 
 
+
+    showDelete: ->
+      id = @feedback_category?.id
+      return if !id
+      list = @FeedbackCategoriesData.getListOfMovables @feedback_category
+
+      deleteStart = (move_to) =>
+        @Api.sendDelete("/feedback_categories/#{id}?move_to=#{move_to || 0}").then =>
+          @FeedbackCategoriesData.remove id
+          @$state.go 'portal.feedback_categories'
+
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
+        controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.move_feedback_categories_list = list
+          $scope.model = {}
+          $scope.dismiss = -> $modalInstance.dismiss()
+          $scope.confirm = ->
+            deleteStart($scope.model.move_to).then -> $modalInstance.dismiss()
+        ]
+      });
+
+
+
   Admin_FeedbackCategories_Ctrl_Edit.EXPORT_CTRL()
