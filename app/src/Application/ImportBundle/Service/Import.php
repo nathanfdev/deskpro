@@ -32,8 +32,11 @@ namespace Application\ImportBundle\Service;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\DataStore;
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
@@ -80,6 +83,10 @@ class Import
         $this->rep = $container->getEm()->getRepository('DeskPRO:DataStore');
     }
 
+    /**
+     * get DataStore pointer
+     * @return DataStore
+     */
     public function getData()
     {
         if (!$data = $this->rep->getByName('importers.main')) {
@@ -93,6 +100,11 @@ class Import
         return $data;
     }
 
+    /**
+     * get importer by id
+     * @param $id
+     * @return DataStore
+     */
     public function getImporter($id)
     {
         if (!in_array($id, self::$allowed)) {
@@ -119,6 +131,11 @@ class Import
         return $importer;
     }
 
+    /**
+     * create reader config
+     * @param $id
+     * @return CsvConfig|OsTicketConfig|ZenDeskConfig|null
+     */
     public function getReaderConfig($id)
     {
         $importer = $this->getImporter($id);
@@ -140,6 +157,14 @@ class Import
         return $readerConfig;
     }
 
+    /**
+     * create/copy all necessary dirs/files for import
+     * @param $id
+     * @return DataStore
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
     public function initReader($id)
     {
         $importer = $this->getImporter($id);
@@ -187,5 +212,63 @@ class Import
 
         $this->current->setData('state', $state);
         $this->em->flush($this->current);
+    }
+
+    public function startImport($id)
+    {
+        $importer = $this->initReader($id);
+        $data = $this->getData();
+
+        // set pointer to current import
+        $data->setData('script', $id);
+        $importer->setData('status', self::STATE_PENDING);
+        $this->em->flush($data);
+        $this->em->flush($importer);
+
+        // trigger cron to start console command
+        file_put_contents(dp_get_data_dir() . '/importer.pid', 0);
+        return $importer;
+    }
+
+    public function createGeneratorConfig(DataStore $importer)
+    {
+        $config = new GeneratorConfig();
+        $config->setVerbose(true);
+        $config->setExporterType(str_replace('importers.', '', $importer['name']));
+        $config->setWriterType(WriterInterface::TYPE_JSON);
+
+        $supported_types = array(
+            EntityInterface::TYPE_TICKET,
+            EntityInterface::TYPE_PERSON,
+            EntityInterface::TYPE_ARTICLE,
+            EntityInterface::TYPE_DOWNLOAD,
+            EntityInterface::TYPE_FEEDBACK,
+            EntityInterface::TYPE_NEWS,
+        );
+
+        foreach ($supported_types as $type) {
+            $config->addEntityType($type);
+        }
+
+        $id = $importer->getData('id');
+        $this->initReader($id);
+        $config->setReaderConfig($this->getReaderConfig($id));
+
+        return $config;
+    }
+
+    public function cleanup(DataStore $importer)
+    {
+        $readerConfigData = $importer->getData('config');
+
+        $tmp = @$readerConfigData['temp'];
+        if ($tmp && false !== strpos($tmp, 'importer-')) {
+            PHP_OS === 'Windows'
+                ? exec("rd /s /q {$tmp}")
+                : exec("rm -rf {$tmp}");
+
+            unset($readerConfigData['temp']);
+            $this->em->flush($importer);
+        }
     }
 }

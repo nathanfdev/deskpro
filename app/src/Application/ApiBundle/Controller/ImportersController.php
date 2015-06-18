@@ -37,8 +37,8 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 use Application\DeskPRO\HttpFoundation\Request;
-use Application\DeskPRO\JobQueue\Processor\ImportProcessor;
 use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Service\Import as ImportService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -124,13 +124,13 @@ class ImportersController extends AbstractController implements ProtectedControl
         if (!$data = json_decode($request->getContent(), 1)) {
             throw new BadRequestHttpException;
         }
-
-        $importer = ImportProcessor::getImporter($id, $this->container);
-
+        /** @var ImportService $is */
+        $is = $this->get('deskpro.import');
+        $importer = $is->getImporter($id);
         $importer->setData('config', @$data['config']);
-        $importer->setData('status', @$data['status']);
 
-        if ($request->get('reset')) {
+        if ($request->get('reset') && $is::STATE_DONE === $importer->getData('status')) {
+            $is->cleanup($importer);
             $importer->setData('status', null);
             $importer->setData('log', null);
             $importer->setData('progress_start', null);
@@ -152,8 +152,11 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function testAction($id, Request $request)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-        $config = ImportProcessor::createGeneratorConfig($importer, $this->container);
+        /** @var ImportService $is */
+        $is = $this->get('deskpro.import');
+        $importer = $is->getImporter($id);
+        $config = $is->createGeneratorConfig($importer);
+
         /** @var Generator $generator */
         $this->container->set('deskpro.import.config', $config);
         $generator = $this->container->get('deskpro.import.generator');
@@ -164,7 +167,7 @@ class ImportersController extends AbstractController implements ProtectedControl
             $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
         }
 
-        ImportProcessor::cleanup($importer, $this->container);
+        $is->cleanup($importer);
 
         return $res;
     }
@@ -176,16 +179,10 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function startAction($id, Request $request)
     {
-        $importer = ImportProcessor::getImporter($id, $this->container);
-        $importer->setData('status', 'pending');
-
-        $queue = $this->container->getJobQueue();
-        $queue->add(ImportProcessor::JOB_TYPE, array('id' => $id));
-
-        $this->em->flush();
+        /** @var ImportService $is */
+        $is = $this->get('deskpro.import');
+        $is->startImport($id);
 
         return $this->getAction($id);
     }
-
-
 }
