@@ -77,11 +77,12 @@ class ImportersController extends AbstractController implements ProtectedControl
     public function listAction()
     {
         $importers = $this->em->getRepository('DeskPRO:DataStore')->getByPrefix('importers.');
+        $is = $this->is();
 
-        if (count($importers) !== count(ImportProcessor::$allowed)) {
+        if (count($importers) !== count($is::$allowed)) {
             $importers = array();
-            foreach (ImportProcessor::$allowed as $type) {
-                $importers[] = ImportProcessor::getImporter($type, $this->container);
+            foreach ($is::$allowed as $type) {
+                $importers[] = $is->getImporter($type);
             }
         }
 
@@ -91,7 +92,6 @@ class ImportersController extends AbstractController implements ProtectedControl
                 'id' => str_replace('importers.', '', $importer['name']),
                 'title' => $importer->getData('title'),
                 'status' => $importer->getData('status'),
-                'description' => $importer->getData('description'),
             );
         }
 
@@ -104,8 +104,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function getAction($id)
     {
-        $importer = $this->is->getImporter($id);
-
+        $importer = $this->is()->getImporter($id);
         return $this->createJsonResponse($importer->getData());
     }
 
@@ -141,8 +140,8 @@ class ImportersController extends AbstractController implements ProtectedControl
         if (!$data = json_decode($request->getContent(), 1)) {
             throw new BadRequestHttpException;
         }
-        /** @var ImportService $is */
-        $is = $this->get('deskpro.import');
+
+        $is = $this->is();
         $importer = $is->getImporter($id);
         $importer->setData('config', @$data['config']);
 
@@ -169,8 +168,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function testAction($id, Request $request)
     {
-        /** @var ImportService $is */
-        $is = $this->get('deskpro.import');
+        $is = $this->is();
         $importer = $is->getImporter($id);
         $config = $is->createGeneratorConfig($importer);
 
@@ -196,10 +194,7 @@ class ImportersController extends AbstractController implements ProtectedControl
      */
     public function startAction($id, Request $request)
     {
-        /** @var ImportService $is */
-        $is = $this->get('deskpro.import');
-        $is->startImport($id);
-
+        $this->is()->startImport($id);
         return $this->getAction($id);
     }
 }
