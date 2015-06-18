@@ -811,6 +811,7 @@ class KernelBooter
 
             $check_twitter = true;
             $check_indexer = true;
+            self::checkImporter();
         }
 
         if ($check_twitter && !defined('DPC_IS_CLOUD') && \Application\DeskPRO\App::getConfig('enable_twitter')) {
@@ -892,6 +893,35 @@ class KernelBooter
         }
 
         return $return;
+    }
+
+    static protected function checkImporter()
+    {
+        if (defined('DPC_IS_CLOUD')) return;
+
+        $file = dp_get_data_dir() . '/importer.pid';
+        $pid = file_exists($file) ? (int) file_get_contents($file) : null;
+
+        if (0 !== $pid) return;
+
+        // need to restart the twitter runner in the background
+        $command = escapeshellcmd(DP_ROOT . '/../cmd.php dp:import:run');
+        $php_path = dp_get_php_path(false);
+
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            return exec("$php_path $command > /dev/null 2>&1 &");
+        }
+
+        // this is needed as we need a fake window to hide the process
+        $php_path = str_replace('php-win.exe', 'php.exe', $php_path);
+        $command = str_replace('/', '\\', $command);
+
+        if (!class_exists('\COM', false)) {
+            return pclose(popen("start \"dpimport\" /MIN $php_path $command", "r"));
+        }
+
+        $shell = new \COM("WScript.Shell");
+        $shell->Run("$php_path $command", 0, false);
     }
 
 
