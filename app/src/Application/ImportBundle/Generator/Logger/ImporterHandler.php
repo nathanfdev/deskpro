@@ -55,25 +55,14 @@ class ImporterHandler extends AbstractProcessingHandler
     {
         $log = $this->importer->getData('log').(string)$record['formatted'];
         if (isset($log[300000])) {
-            $log = substr($log, -300000);
-            $log = substr($log, strpos($log, "\n"));
+            $log = substr($log, strpos($log, "\n", strlen($log) - 300000));
             $log = trim($log);
         }
 
         $this->importer->setData('log', $log);
-        $this->em->persist($this->importer);
 
         if ($this->last_time - time() > 1 || $this->count++ % 5 === 0 || !$this->importer->getId()) {
             $this->em->flush($this->importer);
         }
-
-        if (!($log_file = $this->importer->getData('logfile'))) {
-            $log_file = dp_get_log_dir().'/importlog-'.date('Ymd-His').'-'.Strings::random(6, Strings::CHARS_ALPHA_IU);
-            $this->importer->setData('logfile', $log_file);
-            $this->em->persist($this->importer);
-            $this->em->flush($this->importer);
-        }
-
-        @file_put_contents($log_file, $record['formatted'], FILE_APPEND);
     }
 }

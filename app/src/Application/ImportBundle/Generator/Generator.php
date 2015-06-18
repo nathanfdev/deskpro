@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
+use Application\ImportBundle\Service\Import as ImportService;
 use Symfony\Component\Validator\Validator as SymfonyValidator;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
@@ -60,22 +61,30 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     private $writer;
 
     /**
+     * @var ImportService
+     */
+    protected $is;
+
+    /**
      * Constructor
      *
      * @param Exporter\ExporterInterface $exporter
      * @param Writer\WriterInterface     $writer
      * @param SymfonyValidator           $validator
      * @param GeneratorConfig            $config
+     * @param ImportService              $is
      */
     public function __construct(
         Exporter\ExporterInterface $exporter,
         Writer\WriterInterface     $writer = null,
         SymfonyValidator           $validator,
-        GeneratorConfig            $config
+        GeneratorConfig            $config,
+        ImportService              $is
     ) {
         $this->config     = $config;
         $this->exporter   = $exporter;
         $this->writer     = $writer;
+        $this->is         = $is;
         $this->validators = new Validator\Collection();
         $this->validators
             ->attach(new Validator\Download($validator))
@@ -119,6 +128,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $outputWriter = $this->getWriter();
         $collection   = new GenerateCollection();
 
+        $this->is->setState(ImportService::STATE_EXPORT);
+
         // Exports data to a collection of entities
         foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
             $this->exporterLogHeader($type);
@@ -134,6 +145,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         }
 
         if ($collection->hasEntities()) {
+
+            $this->is->setState(ImportService::STATE_VALIDATION);
+
             // Validate the collection of entities
             foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
                 if ($collection->hasEntitiesByType($type)) {
@@ -145,6 +159,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                     }
                 }
             }
+
+            $this->is->setState(ImportService::STATE_IMPORT);
 
             // Writes entities to a storage
             $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
@@ -168,6 +184,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         if ($this->progress_bar && $collection->getSkippedCount()) {
             $this->progress_bar->advance($collection->getSkippedCount() * 2);
         }
+
+        $this->is->setState(ImportService::STATE_DONE);
     }
 
     /**

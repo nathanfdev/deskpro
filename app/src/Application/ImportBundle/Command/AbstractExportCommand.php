@@ -149,8 +149,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             if (!$script = $data->getData('script')) {
                 throw new \Exception('"script" argument is required');
             }
-            $importer = $is->initReader($script);
+            $importer = $is->getImporter($data->getData('script'));
             $config = $importer->getData('config');
+
+            if (!@$config['temp']) {
+                throw new \Exception('Importer directory is not defined');
+            }
 
             $input->setArgument('script', $script);
             $input->setOption('input-path', $config['temp'] . '/in');
@@ -529,6 +533,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $handler->setFormatter($formatter);
 
             $logger->pushHandler($handler);
+
+            if ($input->hasOption('config-from-db')) {
+                $importer = $this->get('deskpro.import')->getImporter($input->getArgument('script'));
+                $handler = new Generator\Logger\ImporterHandler($importer, $this->getContainer()->getEm());
+                $handler->setFormatter($formatter);
+                $logger->pushHandler($handler);
+            }
         }
         if ($config->isConsoleOutputEnabled()) {
             $formatter = new ConsoleFormatter();

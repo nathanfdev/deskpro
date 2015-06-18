@@ -47,6 +47,12 @@ class Import
         ExporterInterface::TYPE_ZENDESK,
     );
 
+    const STATE_PENDING     = 1;
+    const STATE_EXPORT      = 2;
+    const STATE_VALIDATION  = 3;
+    const STATE_IMPORT      = 4;
+    const STATE_DONE        = 5;
+
     /**
      * @var DeskproContainer
      */
@@ -62,6 +68,11 @@ class Import
      */
     protected $rep;
 
+    /**
+     * @var DataStore
+     */
+    protected $current;
+
     public function __construct(DeskproContainer $container)
     {
         $this->c = $container;
@@ -75,7 +86,6 @@ class Import
             $data = new DataStore();
             $data['name'] = 'importers.main';
             $data->setData('script', null);
-            $data->setData('status', null);
             $this->em->persist($data);
             $this->em->flush($data);
         }
@@ -90,6 +100,7 @@ class Import
         }
 
         if ($importer = $this->rep->getByName('importers.'.$id)) {
+            $this->current = $importer;
             return $importer;
         }
 
@@ -97,7 +108,6 @@ class Import
         $importer['name'] = 'importers.'.$id;
         $importer->setData('id', $id);
         $importer->setData('title', ucfirst($id));
-        $importer->setData('status', null);
 
         if (ExporterInterface::TYPE_CSV === $id) {
             $data = array('blobs' => array());
@@ -167,5 +177,15 @@ class Import
         $this->em->flush($importer);
 
         return $importer;
+    }
+
+    public function setState($state)
+    {
+        if (!$this->current) {
+            throw new \Exception('Importer was not initialized');
+        }
+
+        $this->current->setData('state', $state);
+        $this->em->flush($this->current);
     }
 }

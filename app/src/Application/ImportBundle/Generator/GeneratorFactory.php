@@ -52,7 +52,8 @@ class GeneratorFactory
             $exporter,
             $writer,
             $container->get('validator'),
-            $config
+            $config,
+            $container->get('deskpro.import')
         );
     }
 }
