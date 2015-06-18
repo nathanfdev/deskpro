@@ -11,10 +11,25 @@
 {% else %}
   <li class="welcome">
     {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
-    &middot; <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
-    {% if ticket_count %}
-      &middot; <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
+
+    &middot;
+    <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
+
+    {% if app.user.is_agent and app.user.can_agent %}
+      &middot;
+      <a href="{{ path('agent_interface') }}">{{ phrase('agent.general.agent_interface') }}</a>
     {% endif %}
+
+    {% if app.user.is_agent and app.user.can_admin %}
+      &middot;
+      <a href="{{ path('admin_interface') }}">{{ phrase('agent.general.admin_interface') }}</a>
+    {% endif %}
+
+    {% if ticket_count %}
+      &middot;
+      <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
+    {% endif %}
+
   </li>
   <li>
     <a href="{{ path('portal_logout') }}" class="button-small button-login">{{ phrase('portal.account.logout-btn') }}</a>
