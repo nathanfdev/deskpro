@@ -16,13 +16,13 @@
             <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.general.nav-profile') }}</a>
         </li>
 
-        {% if app.user.is_agent and app.user.can_agent %}
+        {% if is_agent() %}
             <li>
                 <a href="{{ path('agent_interface') }}">{{ phrase('agent.general.agent_interface') }}</a>
             </li>
         {% endif %}
 
-        {% if app.user.is_agent and app.user.can_admin %}
+        {% if is_admin() %}
             <li>
                 <a href="{{ path('admin_interface') }}">{{ phrase('agent.general.admin_interface') }}</a>
             </li>
