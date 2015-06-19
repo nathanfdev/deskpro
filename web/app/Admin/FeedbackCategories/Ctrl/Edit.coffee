@@ -87,6 +87,10 @@ define [
     showDelete: ->
       id = @feedback_category?.id
       return if !id
+
+      if @FeedbackCategoriesData.hasChildren @feedback_category
+        return @showAlert 'You cannot delete a category with sub-categories. Move or delete the sub-categories first.'
+
       list = @FeedbackCategoriesData.getListOfMovables @feedback_category
 
       deleteStart = (move_to) =>
@@ -98,7 +102,7 @@ define [
         templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
         controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
           $scope.move_feedback_categories_list = list
-          $scope.model = {}
+          $scope.model = {move_to: list[0]?.id}
           $scope.dismiss = -> $modalInstance.dismiss()
           $scope.confirm = ->
             deleteStart($scope.model.move_to).then -> $modalInstance.dismiss()

@@ -97,11 +97,9 @@ define [
       move_list = []
       parent_id = model.parent_id
 
-      @recs.forEach( (key, val) =>
-
-        if val.id != model.id and val.id != ~~parent_id
-          move_list.push(val)
-      )
+      @recs.forEach (key, val) =>
+        if !@hasChildren(val) && val.id != model.id
+          move_list.push val
 
       return move_list
 
