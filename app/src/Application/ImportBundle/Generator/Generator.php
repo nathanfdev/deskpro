@@ -128,7 +128,8 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $outputWriter = $this->getWriter();
         $collection   = new GenerateCollection();
 
-        $this->is->setState(ImportService::STATE_EXPORT);
+        $this->logger->error('GENERATING STATE ' . ImportService::STATUS_IMPORT);
+        $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
 
         // Exports data to a collection of entities
         foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
@@ -146,7 +147,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
         if ($collection->hasEntities()) {
 
-            $this->is->setState(ImportService::STATE_VALIDATION);
+            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
 
             // Validate the collection of entities
             foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
@@ -160,7 +161,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
                 }
             }
 
-            $this->is->setState(ImportService::STATE_IMPORT);
+            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
 
             // Writes entities to a storage
             $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
@@ -185,7 +186,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             $this->progress_bar->advance($collection->getSkippedCount() * 2);
         }
 
-        $this->is->setState(ImportService::STATE_DONE);
+        $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
     }
 
     /**

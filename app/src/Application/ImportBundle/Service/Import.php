@@ -51,11 +51,11 @@ class Import
         ExporterInterface::TYPE_ZENDESK,
     );
 
-    const STATE_PENDING     = 1;
-    const STATE_EXPORT      = 2;
-    const STATE_VALIDATION  = 3;
-    const STATE_IMPORT      = 4;
-    const STATE_DONE        = 5;
+    const STATUS_PENDING     = 'pending';
+    const STATUS_EXPORT      = 'export';
+    const STATUS_VALIDATION  = 'validation';
+    const STATUS_IMPORT      = 'import';
+    const STATUS_DONE        = 'done';
 
     /**
      * @var DeskproContainer
@@ -85,20 +85,32 @@ class Import
     }
 
     /**
-     * get DataStore pointer
+     * get current importer name
      * @return DataStore
      */
-    public function getData()
+    public function getCurrentName()
+    {
+        if (!$data = $this->rep->getByName('importers.main')) {
+            return null;
+        }
+
+        return $data->getData('current');
+    }
+
+    /**
+     * set current importer name
+     * @param $name
+     */
+    public function setCurrentName($name)
     {
         if (!$data = $this->rep->getByName('importers.main')) {
             $data = new DataStore();
             $data['name'] = 'importers.main';
-            $data->setData('script', null);
             $this->em->persist($data);
-            $this->em->flush($data);
         }
 
-        return $data;
+        $data->setData('current', $name);
+        $this->em->flush($data);
     }
 
     /**
@@ -113,8 +125,7 @@ class Import
         }
 
         if ($importer = $this->rep->getByName('importers.'.$id)) {
-            $this->current = $importer;
-            return $importer;
+           return $this->current = $importer;
         }
 
         $importer = new DataStore();
@@ -129,7 +140,7 @@ class Import
 
         $this->em->persist($importer);
         $this->em->flush($importer);
-        return $importer;
+        return $this->current = $importer;
     }
 
     /**
@@ -213,29 +224,30 @@ class Import
         return $importer;
     }
 
-    public function setState($state)
+    /**
+     * set state of import
+     * @param $state
+     * @param null $id
+     * @throws \Exception
+     */
+    public function setStatus($id, $state)
     {
-        if (!$this->current) {
-            throw new \Exception('Importer was not initialized');
-        }
-
-        $this->current->setData('state', $state);
-        $this->em->flush($this->current);
+        $importer = $this->getImporter($id);
+        $importer->setData('status', $state);
+        $this->em->flush($importer);
     }
 
     public function startImport($id)
     {
         $importer = $this->initReader($id);
-        $data = $this->getData();
 
         // set pointer to current import
-        $data->setData('script', $id);
-        $importer->setData('status', self::STATE_PENDING);
-        $this->em->flush($data);
+        $importer->setData('status', self::STATUS_PENDING);
         $this->em->flush($importer);
+        $this->setCurrentName($id);
 
         // trigger cron to start console command
-        file_put_contents(dp_get_data_dir() . '/importer.pid', 0);
+        file_put_contents(dp_get_data_dir() . '/importer_cron.pid', 0);
         return $importer;
     }
 

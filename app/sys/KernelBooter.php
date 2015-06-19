@@ -899,13 +899,15 @@ class KernelBooter
     {
         if (defined('DPC_IS_CLOUD')) return;
 
-        $file = dp_get_data_dir() . '/importer.pid';
-        $pid = file_exists($file) ? (int) file_get_contents($file) : null;
+        $trigger = dp_get_data_dir() . '/importer_cron.pid';
+        $pid = @file_get_contents($trigger);
+        if (false === $pid || (int)$pid) return;
+        file_put_contents($trigger, getmypid());
+        register_shutdown_function(function()use($trigger){
+            unlink($trigger);
+        });
 
-        if (0 !== $pid) return;
-
-        // need to restart the twitter runner in the background
-        $command = escapeshellcmd(DP_ROOT . '/../cmd.php dp:import:run');
+        $command = escapeshellcmd(DP_ROOT . '/../cmd.php dp:import:run --config-from-db');
         $php_path = dp_get_php_path(false);
 
         if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {

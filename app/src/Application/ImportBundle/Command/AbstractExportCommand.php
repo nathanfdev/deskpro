@@ -125,6 +125,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 InputOption::VALUE_NONE,
                 'Whether to load config from DB'
             )
+            ->addOption(
+                'skip-pid-check',
+                'pid',
+                InputOption::VALUE_NONE,
+                'Skip pid check'
+            )
         ;
     }
 
@@ -133,29 +139,37 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $pid_file = dp_get_data_dir() . '/importer.pid';
-        if (file_exists($pid_file)) {
-            throw new \Exception('Import/Export already in process');
+        if (!$input->getOption('skip-pid-check')) {
+            $pid_file = dp_get_data_dir() . '/importer.pid';
+            if (file_exists($pid_file)) {
+                throw new \Exception('Import/Export already in process');
+            }
+
+            $onShutdown = function()use($pid_file){ unlink($pid_file); };
+            register_shutdown_function($onShutdown);
+            file_put_contents($pid_file, getmypid());
         }
 
-        $onShutdown = function()use($pid_file){ unlink($pid_file); };
-        register_shutdown_function($onShutdown);
-        file_put_contents($pid_file, getmypid());
-
-
-
-        if ($input->hasOption('config-from-db')) {
-
+        if ($input->getOption('config-from-db')) {
             /** @var ImportService $is */
             $is = $this->getContainer()->get('deskpro.import');
-            $data = $is->getData();
-            if (!$script = $data->getData('script')) {
-                throw new \Exception('"script" argument is required');
-            }
-            $input->setArgument('script', $script);
-
+            $input->setArgument('script', $is->getCurrentName());
         }
 
+        $allowed = array(
+            ExporterInterface::TYPE_CSV,
+            ExporterInterface::TYPE_JSON,
+            ExporterInterface::TYPE_OS_TICKET,
+            ExporterInterface::TYPE_ZENDESK,
+        );
+
+        if (!in_array($input->getArgument('script'), $allowed)) {
+            throw new RuntimeException(sprintf(
+                'Unknown source type `%s`, expected: (%s)',
+                $input->getArgument('script'),
+                implode(', ', $allowed)
+            ));
+        }
 
 
 
@@ -203,6 +217,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         // todo always verbose mode by now
         // todo check for progress bar in unattended mode
         $arguments[] = '-vvv';
+        $arguments[] = '--skip-pid-check';
 
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
@@ -408,16 +423,16 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         $readerConfig = null;
 
-        if ($input->hasOption('config-from-db')) {
+        if ($input->getOption('config-from-db')) {
             /** @var ImportService $is */
             $is = $this->getContainer()->get('deskpro.import');
             $importer = $is->getImporter($input->getArgument('script'));
-            $config = $importer->getData('config');
-            if (!@$config['temp']) {
+            $configData = $importer->getData('config');
+            if (!@$configData['temp']) {
                 throw new \Exception('Importer directory is not defined');
             }
-            $input->setOption('input-path', $config['temp'] . '/in');
-            $input->setOption('output-path', $config['temp'] . '/out/');
+            $input->setOption('input-path', $configData['temp'] . '/in');
+            $input->setOption('output-path', $configData['temp'] . '/out/');
 
             $readerConfig = $is->getReaderConfig($input->getArgument('script'));
 
@@ -445,17 +460,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                     $readerConfig = OsTicketReaderFactory::getDefaultConfig();
                     break;
                 default:
-                    throw new RuntimeException(sprintf(
-                        'Unknown source type `%s`, expected: (%s)',
-
-                        $config->getExporterType(),
-                        implode(', ', array(
-                            ExporterInterface::TYPE_CSV,
-                            ExporterInterface::TYPE_JSON,
-                            ExporterInterface::TYPE_OS_TICKET,
-                            ExporterInterface::TYPE_ZENDESK,
-                        ))
-                    ));
+                    throw new \RuntimeException('No reader config defined');
             }
         }
 
@@ -545,8 +550,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             $logger->pushHandler($handler);
 
-            if ($input->hasOption('config-from-db')) {
-                $importer = $this->get('deskpro.import')->getImporter($input->getArgument('script'));
+            if ($input->getOption('config-from-db')) {
+                $importer = $this->getContainer()->get('deskpro.import')->getImporter($input->getArgument('script'));
                 $handler = new Generator\Logger\ImporterHandler($importer, $this->getContainer()->getEm());
                 $handler->setFormatter($formatter);
                 $logger->pushHandler($handler);
