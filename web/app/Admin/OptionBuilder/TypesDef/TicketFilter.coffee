@@ -115,6 +115,10 @@ define [
         value: 'FilterTotalUserWaiting'
       })
 
+      options.push
+        title: 'Ticket SLA Status'
+        value: 'FilterSlaStatus'
+
       set_options.push({
         title: 'Ticket Criteria',
         subOptions: options
