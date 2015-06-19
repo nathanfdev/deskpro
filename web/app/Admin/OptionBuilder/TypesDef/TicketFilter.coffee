@@ -654,7 +654,6 @@ define [
 
     getFilterOrgId: (options = {}) ->
       prop_name = options.propName = 'org_ids'
-      options.operators = ['is', 'not']
       options.dataName = 'organizations'
       options.optionsFormatter = (options) -> ({value: entry.id, title: entry.name} for k, entry of options)
       def = @getStandardSelect options
