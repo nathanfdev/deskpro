@@ -33,7 +33,7 @@ define [
 
         if @$stateParams.id
           @feedback_category = result[1].data.feedback_category.feedback_category
-          @feedback_categories_parent_list = @FeedbackCategoriesData.getListOfParents(@feedback_category)
+        @feedback_categories_parent_list = @FeedbackCategoriesData.getListOfParents @feedback_category
       )
 
       return promise

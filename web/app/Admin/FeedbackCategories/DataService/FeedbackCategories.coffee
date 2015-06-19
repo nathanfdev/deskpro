@@ -112,7 +112,7 @@ define [
     getListOfParents: (model) ->
 
       parent_list = [{
-        id: 0,
+        id: '',
         title: 'No Parent'
       }]
 
