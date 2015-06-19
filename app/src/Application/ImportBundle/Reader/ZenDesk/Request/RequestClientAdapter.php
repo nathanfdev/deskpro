@@ -58,6 +58,11 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private $logger;
 
     /**
+     * @var bool
+     */
+    private $was_request = false;
+
+    /**
      * Constructor
      *
      * @param API\Client      $client
@@ -126,7 +131,11 @@ final class RequestClientAdapter implements RequestAdapterInterface
     {
         try {
             API\Http::$curl = new CurlRequest(null, $this->options);
-            return $request->request($this->client);
+
+            $response = $request->request($this->client);
+            $this->was_request = true;
+
+            return $response;
 
         } catch (API\ResponseException $e) {
             if ($this->client->getDebug()) {
@@ -198,12 +207,22 @@ final class RequestClientAdapter implements RequestAdapterInterface
      */
     private function retry(ClientHelper\ClientHelperInterface $request, $retry_attempt, Exception $exception, $timeout = 0)
     {
-        if ($retry_attempt++ < 4) {
+        // Retry attempt timeouts (in seconds)
+        $retry_timeouts = array(2, 5, 10, 30);
+
+        if ($this->was_request && $retry_attempt++ < 10) {
+            if ($timeout < 1) {
+                $timeout = isset($retry_timeouts[$retry_attempt]) ? $retry_timeouts[$retry_attempt] : 60;
+            }
             if ($this->logger) {
-                $this->logger->error("Retry api request, attempt = $retry_attempt.");
+                $this->logger->error(sprintf(
+                    "Retry api request, attempt = %d, timeout = %d.",
+                    $retry_attempt, $timeout
+                ));
             }
 
-            sleep($timeout > 0 ? $timeout : 2 + $retry_attempt);
+            sleep($timeout);
+
             return $this->doRequest($request, $retry_attempt);
         }
 

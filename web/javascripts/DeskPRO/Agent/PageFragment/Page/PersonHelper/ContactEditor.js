@@ -129,22 +129,14 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		var checkFields = function(rowTypeEl) {
 			var row = $('li', rowTypeEl).last();
 
-			var show = false;
-			if (row.is('.new')) {
-				var fields = $('input, textarea, select', row);
-				fields.each(function() {
-					if ($(this).val()) {
-						show = true;
-					}
-				});
-			} else {
-				show = false;
-			}
+			var show = row.length > 0;
 
 			if (show) {
 				$('.with-some', rowTypeEl).show();
+				$('.with-none', rowTypeEl).hide();
 			} else {
 				$('.with-some', rowTypeEl).hide();
+				$('.with-none', rowTypeEl).show();
 			}
 		};
 

@@ -35,6 +35,7 @@ use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
 use Exception;
 use Guzzle\Http\Client as HttpClient;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use Orb\Util\Strings;
 
 /**
@@ -267,12 +268,13 @@ final class Tickets extends AbstractParser
 
         foreach ($ticket['comments'] as $comment) {
             if (empty($comment['author_id'])) {
-                $this->logError(sprintf('No comment author'));
+                $this->logError(sprintf('Comment #%d without author_id, skipping', $comment['id']));
                 continue;
             }
+
             $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
             if ( ! $author_email) {
-                $this->logError(sprintf('Unable to get comment author #%d', $ticket['author_id']));
+                $this->logError(sprintf('Unable to get comment author #%d, skipping', $comment['author_id']));
                 continue;
             }
 
@@ -338,18 +340,29 @@ final class Tickets extends AbstractParser
     private function exportAttachment(array $attachment)
     {
         if ($this->isAttachmentValid($attachment)) {
-            $http_request = $this->http_client->get($attachment['content_url']);
+            try {
+                $request = $this->http_client->get($attachment['content_url']);
+                $entity  = new Entity\Attachment();
+                $entity
+                    ->setDestination('attachment_' . $attachment['id'])
+                    ->setOid($attachment['id'])
+                    ->setBlobData(base64_encode($request->send()->getBody(true)))
+                    ->setFileName($attachment['file_name'])
+                    ->setContentType($attachment['content_type'])
+                ;
 
-            $entity = new Entity\Attachment();
-            $entity
-                ->setDestination('attachment_' . $attachment['id'])
-                ->setOid($attachment['id'])
-                ->setBlobData(base64_encode($http_request->send()->getBody(true)))
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-            ;
+                return $entity;
 
-            return $entity;
+            } catch (ClientErrorResponseException $e) {
+                $this->logError(sprintf('Unable to download attachment #%s', $attachment['id']));
+                $this->logError($e->getMessage());
+
+                $response = $e->getResponse();
+                if ($response) {
+                    $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
+                    $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
+                }
+            }
         }
 
         return null;
@@ -374,17 +387,18 @@ final class Tickets extends AbstractParser
                 $this->logDebug(sprintf("Reading from time: %s", "Beginning"));
             }
 
-            $tickets = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
-            if (count($tickets)) {
+            $response = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
+            if (count($response)) {
                 // ZenDesk API does not allow to get ticket comments in a single request
                 // We have to load comments for each ticket separately
-                foreach ($tickets as &$ticket) {
+                foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
                         $this->logDebug(sprintf('[ZDTicket #%s] Reading comments', $ticket['id']));
                         $ticket['comments'] = $this->reader->getTicketComments($ticket['id']);
+
+                        $tickets[] = $ticket;
                     } else {
-                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping comments', $ticket['id']));
-                        $ticket['comments'] = array();
+                        $this->logDebug(sprintf('[ZDTicket #%s] Status deleted, skipping', $ticket['id']));
                     }
                 }
 
