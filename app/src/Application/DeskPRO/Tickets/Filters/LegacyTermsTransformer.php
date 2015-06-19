@@ -678,7 +678,7 @@ class LegacyTermsTransformer
                 ));
 
             case 'sla':
-                return new Terms\FilterSla($op, array('sla_ids' => @$options['sla_ids'] ?: array()));
+                return new Terms\FilterSla($op, array('sla_id' => @$options['sla_id'] ?: array()));
 
             case 'sla_status':
                 return new Terms\FilterSlaStatus($op, array(
