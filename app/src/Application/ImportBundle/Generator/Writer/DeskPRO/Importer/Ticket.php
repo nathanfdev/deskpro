@@ -83,8 +83,8 @@ final class Ticket extends AbstractImporter
         $this->records = new ArrayCollection();
 
         $ticket = $this->findOrCreateTicket($entity);
-        $ticket->disableAutoTicketProcess();
         $ticket
+            ->disableAutoTicketProcess()
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
