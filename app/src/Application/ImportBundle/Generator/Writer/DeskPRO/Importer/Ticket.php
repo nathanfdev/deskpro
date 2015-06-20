@@ -140,6 +140,17 @@ final class Ticket extends AbstractImporter
             $ticket->setRef($entity->getRef());
 
             $this->logInfo(sprintf('Creating new ticket with ref `%s`', $entity->getRef()));
+
+            $ticket_log = new DeskPROEntity\TicketLog();
+            $ticket_log
+                ->setTicket($ticket)
+                ->setActionType('free')
+                ->setDetails(array(
+                    'message' => $entity->getLogMessage() ? : sprintf('Imported (old ticket ID #%s)', $entity->getOid()),
+                ))
+            ;
+
+            $this->records->add($ticket_log);
         }
 
         return $ticket;
