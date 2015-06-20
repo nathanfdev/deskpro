@@ -64,7 +64,6 @@ final class Batch extends AbstractBatchParser
             'people_end_time',
             'tickets_end_time',
             'retry_after_time',
-            'ref_mapping',
         );
 
         return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
