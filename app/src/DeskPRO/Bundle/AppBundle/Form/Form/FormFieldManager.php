@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
@@ -70,6 +71,30 @@ class FormFieldManager
     public function getCustomPersonField(CustomDefPerson $field, $agent_interface)
     {
         return $this->createCustomField($field, $agent_interface);
+    }
+
+    public function getCustomPerField(CustomFieldDefinition $field, $agent_interface)
+    {
+        $constraints = array();
+
+        // required
+        if ($field->isRequired($agent_interface)) {
+            $constraints[] = new NotBlank(array('message' => 'This value is required'));
+        }
+
+        return array(
+            'data',
+            'deskpro_contextual_per_field_choice',
+            array(
+                'required' => $field->isRequired($agent_interface),
+                'expanded' => $field->isExpanded(),
+                'multiple' => $field->isMultiple(),
+                'custom_field' => $field,
+                'label' => false,
+                'constraints' => $constraints,
+                'help' => $field->getDescription()
+            )
+        );
     }
 
     /**
@@ -264,9 +289,9 @@ class FormFieldManager
         throw new \InvalidArgumentException('invalid field. cannot find type for handler class: '.$field_type->getHandlerClass());
     }
 
-    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options, $agent_nterface)
+    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options, $agent_interface)
     {
-        $isAgent = $agent_nterface;
+        $isAgent = $agent_interface;
 
         $options = array(
             'required' => $field_type->isRequired($isAgent),

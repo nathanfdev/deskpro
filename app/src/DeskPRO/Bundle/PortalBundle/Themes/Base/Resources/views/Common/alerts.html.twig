@@ -2,8 +2,7 @@
     <div class="alerts">
     {% if impersonator %}
         <a class="alert" href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">
-            {{ impersonator.display_name }} {{ phrase('portal.account.impersonating') }} <strong>{{ user.display_name }} ({{ phrase('portal.general.id') }} #{{ user.id }})</strong>.
-            <a style="float: right" href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">{{ phrase('portal.account.exit_impersonation') }}</a>.
+            {{ impersonator.display_name }} {{ phrase('portal.account.impersonating') }} <strong>{{ user.display_name }} ({{ phrase('portal.general.id') }} #{{ user.id }})</strong> <a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">[{{ phrase('portal.account.exit_impersonation') }}]</a>
         </a>
     {% endif %}
 

@@ -34,16 +34,17 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Service\CustomFieldManager;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
+use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
+use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
@@ -94,9 +95,9 @@ class TicketType extends AbstractType
     private $captcha_decider;
 
     /**
-     * @var CustomFieldManager
+     * @var CustomPerFieldManager
      */
-    private $custom_fields_manager;
+    private $custom_per_field_manager;
 
     public function __construct(
         FormFieldManager $field_manager,
@@ -106,7 +107,7 @@ class TicketType extends AbstractType
         EntityManager $em,
         LanguageManager $language_manager,
         CaptchaDecider $captcha_decider,
-        CustomFieldManager $custom_fields_manager
+        CustomPerFieldManager $custom_per_field_manager
     ) {
         $this->layout_differ         = $layout_differ;
         $this->field_manager         = $field_manager;
@@ -115,7 +116,7 @@ class TicketType extends AbstractType
         $this->em                    = $em;
         $this->language_manager      = $language_manager;
         $this->captcha_decider       = $captcha_decider;
-        $this->custom_fields_manager = $custom_fields_manager;
+        $this->custom_per_field_manager = $custom_per_field_manager;
     }
 
     /**
@@ -507,6 +508,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'timezone', array(
             'property_path' => 'person.timezone',
+            'label' => $this->phrase('portal.forms.label_timezone')
         ));
     }
 
@@ -589,47 +591,44 @@ class TicketType extends AbstractType
 
     private function addCustomPerField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        $field_def = $this->field_manager->getCustomPerFieldById($field->getFieldId());
+        $context = new CustomFieldTicketContext($form_context->getTicket());
 
-        $person = $form_context->getPerson();
-        $context = null;
-
-        // who is the context of this custom data?
-        if ($field_def->isForPerson()) {
-            $context = $person;
-        } elseif ($field_def->isForOrganization()) {
-            if ($organization = $form_context->getPerson()->getOrganization()) {
-                $context = $organization;
-            }
-        } else {
-            // we only support per-person and per-organization on the ticket form for now
+        if (!$def = $this->custom_per_field_manager->getCustomPerFieldDefinition(
+            $field->getFieldId(),
+            $context
+        )) {
             return;
         }
 
-        $form = $this->custom_fields_manager->createFieldForm($field_def, $form_context->getTicket(), $context);
-        xdebug_break();
-
-
-        if (!$field_def->is_enabled) {
-            return false;
+        if (!$def->isEnabled()) {
+            return;
         }
 
+        $possible_choices = $this->custom_per_field_manager->getCustomPerFieldChoices($def, $context);
+
+        if (count($possible_choices) < 1) {
+            return;
+        }
+
+        $data = $this->custom_per_field_manager->getOrCreateCustomPerFieldData($def, $context);
+
         $options = array(
-            'custom_data_field' => $field_def,
-            'person'            => $form_context->getPerson(),
-            'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label'             => $field_def->getTitle(),
+            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label' => $def->getTitle(),
+            'data' => $data,
+            'custom_per_field_context' => $context,
+            'custom_per_field_definition' => $def,
+            'mapped' => false
         );
 
         if ($ignore_validation) {
-            $options                      = $this->markNoValidation($form_context, $options);
+            $options = $this->markNoValidation($form_context, $options);
             $options['ignore_validation'] = true;
         }
 
         $form_context->getForm()->add(
             $field->getId(),
-            'deskpro_custom_data_person',
+            'deskpro_custom_per_field_data',
             $options
         );
     }

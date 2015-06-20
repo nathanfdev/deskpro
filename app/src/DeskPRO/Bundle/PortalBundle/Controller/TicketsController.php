@@ -189,6 +189,7 @@ class TicketsController extends AbstractController
             if (!$form->has('rerender_form')) {
                 $this->getEm()->persist($ticket);
                 $this->getEm()->flush($ticket);
+                $this->get('portal_custom_per_field_manager')->flushDataQueue();
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
 

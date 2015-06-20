@@ -176,6 +176,7 @@ class NewTicketController extends AbstractController
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
+            $this->get('portal_custom_per_field_manager')->flushDataQueue();
             $em->commit();
         } catch (DuplicateTicketException $e) {
             $em->rollback();

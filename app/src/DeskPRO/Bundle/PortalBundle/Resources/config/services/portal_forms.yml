@@ -56,7 +56,7 @@ services:
       - @doctrine.orm.default_entity_manager
       - @language_manager
       - @captcha_decider
-      - @dp.custom_fields.manager
+      - @portal_custom_per_field_manager
     tags:
       - { name: form.type, alias: ticket }
 
@@ -146,6 +146,13 @@ services:
       - { name: form.type, alias: person_change_password }
 
 
+  form.deskpro_custom_per_field_data:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomPerFieldType
+    arguments: [@portal_custom_per_field_manager, @form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_per_field_data }
+
+
   form.custom_data_ticket:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataTicketType
     arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
@@ -192,6 +199,13 @@ services:
     arguments: [@form_hierarchy_generator]
     tags:
       - { name: form.type, alias: deskpro_custom_field_choice }
+
+
+  form.deskpro_contextual_per_field_choice:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: deskpro_contextual_per_field_choice }
 
 
   form.language:
