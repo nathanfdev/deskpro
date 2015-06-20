@@ -65,6 +65,11 @@ final class Tickets extends AbstractParser
     private $tickets_people;
 
     /**
+     * @var TicketsMapper
+     */
+    private $tickets_mapper;
+
+    /**
      * @var HttpClient
      */
     private $http_client;
@@ -75,12 +80,18 @@ final class Tickets extends AbstractParser
      * @param ZenDeskReaderInterface       $reader
      * @param TicketPeopleStorageInterface $people_storage
      * @param HttpClient                   $http_client
+     * @param TicketsMapper                $tickets_mapper
      */
-    public function __construct(ZenDeskReaderInterface $reader, TicketPeopleStorageInterface $people_storage, HttpClient $http_client)
-    {
+    public function __construct(
+        ZenDeskReaderInterface       $reader,
+        TicketPeopleStorageInterface $people_storage,
+        TicketsMapper                $tickets_mapper,
+        HttpClient                   $http_client
+    ) {
         parent::__construct($reader);
 
         $this->tickets_people = $people_storage;
+        $this->tickets_mapper = $tickets_mapper;
         $this->http_client    = $http_client;
     }
 
@@ -154,10 +165,10 @@ final class Tickets extends AbstractParser
                 throw new SkippingException(sprintf('Unable to get submitter email by id %s', $ticket['submitter_id']));
             }
 
-            $ref = $this->getBatchConfig()->getTicketRef($ticket['id']);
+            $ref = $this->tickets_mapper->findRefByOldId($ticket['id']);
             if ( ! $ref) {
                 $ref = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
-                $this->getBatchConfig()->addTicketRef($ticket['id'], $ref);
+                $this->tickets_mapper->saveMapping($ticket['id'], $ref);
             }
 
             $entity = new Entity\Ticket();
@@ -233,27 +244,6 @@ final class Tickets extends AbstractParser
         }
 
         return null;
-    }
-
-    /**
-     * Returns a ticket message entity
-     *
-     * @param array  $ticket
-     * @param string $person_email
-     *
-     * @return Entity\TicketMessage
-     */
-    public function exportMessage(array $ticket, $person_email)
-    {
-        $entity = new Entity\TicketMessage();
-        $entity
-            ->setDestination('message_' . $ticket['id'])
-            ->setOid($ticket['id'])
-            ->setPersonEmail($person_email)
-            ->setMessageText($ticket['description'])
-            ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']));
-
-        return $entity;
     }
 
     /**

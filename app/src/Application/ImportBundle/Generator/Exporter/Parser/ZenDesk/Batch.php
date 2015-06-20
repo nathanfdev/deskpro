@@ -92,9 +92,6 @@ final class Batch extends AbstractBatchParser
         } else {
             $batch_config->setHasRemaining(false);
         }
-        if ( ! empty($config['ref_mapping'])) {
-            $batch_config->setRefMapping($config['ref_mapping']);
-        }
 
         return $batch_config;
     }

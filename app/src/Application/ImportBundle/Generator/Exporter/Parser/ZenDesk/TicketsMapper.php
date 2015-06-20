@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,35 +25,77 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class ImportMap
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class OsTicketFactory extends AbstractFactory
+class TicketsMapper
 {
     /**
-     * {@inheritdoc}
+     * @var EntityRepository\ImportMap
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
-    {
-        $reader = OsTicketReaderFactory::createReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+    private $repository;
 
-        return new Osticket($parsers, $reader);
+    /**
+     * @var ObjectManager
+     */
+    private $entity_manager;
+
+    /**
+     * Constructor
+     *
+     * @param EntityRepository\ImportMap $repository
+     * @param ObjectManager              $entity_manager
+     */
+    public function __construct(EntityRepository\ImportMap $repository, ObjectManager $entity_manager)
+    {
+        $this->repository     = $repository;
+        $this->entity_manager = $entity_manager;
+    }
+
+    /**
+     * Find a ZenDesk ticket mapping
+     *
+     * @param int $id
+     * @return string|null
+     */
+    public function findRefByOldId($id)
+    {
+        /** @var Entity\ImportMap $mapping */
+        $mapping = $this->repository->findOneBy(array(
+            'old_id'   => $id,
+            'typename' => Entity\ImportMap::TYPE_ZENDESK_TICKET,
+        ));
+
+        return $mapping ? $mapping->getNewId() : null;
+    }
+
+    /**
+     * Saves a ZenDesk ticket mapping
+     *
+     * @param int $old_id
+     * @param int $ref
+     *
+     * @return $this
+     */
+    public function saveMapping($old_id, $ref)
+    {
+        $entity = new Entity\ImportMap();
+        $entity
+            ->setTypename(Entity\ImportMap::TYPE_ZENDESK_TICKET)
+            ->setOldId($old_id)
+            ->setNewId($ref)
+        ;
+
+        $this->entity_manager->persist($entity);
+        $this->entity_manager->flush();
+
+        return $this;
     }
 }
