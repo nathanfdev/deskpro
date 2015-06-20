@@ -122,7 +122,9 @@ final class Tickets extends AbstractParser
                 ->setOrganization($ticket['organization'])
                 ->setAsHold($ticket['is_hold'])
                 ->setUrgency($ticket['urgency'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']))
+                ->setLogMessage($ticket['log_message'])
+            ;
 
             if ($ticket['date_resolved']) {
                 $entity->setDateResolved(new DateTime($ticket['date_resolved']));
@@ -316,6 +318,7 @@ final class Tickets extends AbstractParser
             'participants',
             'labels',
             'custom_fields',
+            'log_message',
         );
 
         return $this->hasRequiredColumns($ticket, $columns)

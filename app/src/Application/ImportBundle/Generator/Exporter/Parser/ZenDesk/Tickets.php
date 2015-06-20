@@ -184,6 +184,7 @@ final class Tickets extends AbstractParser
                 ->setOrganization($this->getOrganizationName($ticket['organization_id']))
                 ->setPriority($this->exportPriority($ticket['priority']))
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
+                ->setLogMessage(sprintf('Imported from ZenDesk (old ticket ID #)', $ticket['id']))
             ;
 
             switch ($ticket['status']) {
