@@ -27,11 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
+use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
+use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\ImporterInterface;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\SkipDuplicateInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\Util;
@@ -56,15 +58,22 @@ final class DeskProWriter extends AbstractWriter
     private $entity_manager;
 
     /**
+     * @var EntityWatcher
+     */
+    private $entity_watcher;
+
+    /**
      * Constructor
      *
      * @param Importer\Collection $importers
      * @param ObjectManager       $entity_manager
+     * @param EntityWatcher       $entity_watcher
      */
-    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager)
+    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager, EntityWatcher $entity_watcher)
     {
         $this->importers      = $importers;
         $this->entity_manager = $entity_manager;
+        $this->entity_watcher = $entity_watcher;
     }
 
     /**
@@ -97,6 +106,7 @@ final class DeskProWriter extends AbstractWriter
                     $importer->checkAlreadyExists($entity);
                 }
 
+                /** @var ImporterInterface $importer */
                 $records = $importer->getDoctrineEntities($entity);
                 foreach ($records as $record) {
                     if ($this->config->isDryRun() === false) {
@@ -106,6 +116,7 @@ final class DeskProWriter extends AbstractWriter
 
                 $this->entity_manager->flush();
                 $this->entity_manager->clear();
+                $this->entity_watcher->flushUpdatesQuiet();
 
                 foreach ($records as $r) {
                     $this->logDebug(sprintf("Persisted %s #%s", Util::getBaseClassname($r), method_exists($r, 'getId') ? $r->getId() : '_'));

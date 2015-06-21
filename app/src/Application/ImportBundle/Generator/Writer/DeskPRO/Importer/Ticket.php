@@ -158,6 +158,7 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns the importing DeskPRO doctrine ticket message entity
+     * We should pass ticket entity due to set attachment ticket_id field
      *
      * @param Entity\TicketMessage $entity
      * @param DeskPROEntity\Ticket $ticket
@@ -169,7 +170,7 @@ final class Ticket extends AbstractImporter
         $message = new DeskPROEntity\TicketMessage();
         $message
             ->setTicket($ticket)
-            ->setPersonId($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail())->getId())
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setDateCreated($entity->getDateCreated())
             ->setAsAgentNote($entity->isNote())
         ;
@@ -205,7 +206,6 @@ final class Ticket extends AbstractImporter
             ->setBlob($this->blob_adapter->createByAttachment($entity))
         ;
 
-        $this->records->add($attachment);
         return $attachment;
     }
 
