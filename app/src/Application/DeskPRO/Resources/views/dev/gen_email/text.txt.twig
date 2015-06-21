@@ -13,8 +13,11 @@ Content-Type: text/plain
 {% if as_reply %}
   {%- if as_agent %}
     === {{ phrase('agent.emails.reply_above_line') }} [http://deskpro.com/l/reply"] ===
-    --- Your reply will be sent to the user {{ person.getDisplayContact }} and
-	--- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com>
+    {% if app.getSetting('core_tickets.email_reply_as_note') %}
+    --- Your reply will be added as a private agent note
+    {% else %}
+    --- Your reply will be sent to the user {{ person.getDisplayContact }}
+    {% endif %}
 
 
   {% endif %}
