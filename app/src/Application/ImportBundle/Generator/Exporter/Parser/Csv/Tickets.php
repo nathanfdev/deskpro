@@ -56,7 +56,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getTicketsConfig());
+        return $this->getReaderCount($this->getTicketReaderConfig());
     }
 
     /**
@@ -65,7 +65,7 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->getReaderData($this->getTicketsConfig());
+        $tickets    = $this->getReaderData($this->getTicketReaderConfig());
         $messages   = $this->exportMessages();
 
         foreach ($tickets as $num => $ticket) {
@@ -132,7 +132,7 @@ final class Tickets extends AbstractParser
     private function exportMessages()
     {
         $collection  = new Entity\Collection();
-        $messages    = $this->getReaderData($this->getTicketMessagesConfig());
+        $messages    = $this->getReaderData($this->getTicketMessageReaderConfig());
         $attachments = $this->exportTicketAttachments();
 
         foreach ($messages as $num => $message) {
@@ -196,7 +196,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicketAttachments()
     {
-        return $this->exportAttachments($this->getTicketAttachmentsConfig(), self::MESSAGE_PREFIX, 'message_id');
+        return $this->exportAttachments($this->getTicketAttachmentReaderConfig(), self::MESSAGE_PREFIX, 'message_id');
     }
 
     /**
@@ -242,7 +242,7 @@ final class Tickets extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getTicketsConfig()
+    private function getTicketReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKETS);
     }
@@ -252,7 +252,7 @@ final class Tickets extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getTicketMessagesConfig()
+    private function getTicketMessageReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKET_MESSAGES);
     }
@@ -262,7 +262,7 @@ final class Tickets extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getTicketAttachmentsConfig()
+    private function getTicketAttachmentReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
     }

@@ -54,7 +54,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getFeedbackConfig());
+        return $this->getReaderCount($this->getFeedbackReaderConfig());
     }
 
     /**
@@ -63,7 +63,7 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
-        $feedback_items = $this->getReaderData($this->getFeedbackConfig());
+        $feedback_items = $this->getReaderData($this->getFeedbackReaderConfig());
         $attachments    = $this->exportFeedbackAttachments();
 
         foreach ($feedback_items as $num => $feedback) {
@@ -139,7 +139,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedbackAttachments()
     {
-        return $this->exportAttachments($this->getFeedbackAttachmentsConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+        return $this->exportAttachments($this->getFeedbackAttachmentsReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
     }
 
     /**
@@ -173,7 +173,7 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getFeedbackConfig()
+    private function getFeedbackReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_FEEDBACK);
     }
@@ -183,7 +183,7 @@ final class Feedback extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getFeedbackAttachmentsConfig()
+    private function getFeedbackAttachmentsReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_FEEDBACK_ATTACHMENTS);
     }
