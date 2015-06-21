@@ -71,5 +71,22 @@ class CsvTest extends \DpIntegrationTestCase
 
         $this->helper->seeFileFound('1/articles/article_0.json');
         $this->helper->seeInThisFile('Article 1');
+
+        $this->helper->seeFileFound('1/feedback/feedback_1.json');
+        $this->helper->seeInThisFile('Feedback 1');
+
+        $this->helper->seeFileFound('1/people/person_2.json');
+        $this->helper->seeInThisFile('Some Customer');
+
+        $this->helper->seeFileFound('1/tickets/ticket_144.json');
+        $this->helper->seeInThisFile('How to submit a ticket');
+        $this->helper->seeInThisFile('Any update on my ticket yet?');
+        $this->helper->seeInThisFile('Resources\/docs\/data_example\/csv\/tickets.csv');
+
+        $this->helper->seeFileFound('1/news/news_0.json');
+        $this->helper->seeInThisFile('News Title 1');
+
+        $this->helper->seeFileFound('1/downloads/download_0.json');
+        $this->helper->seeInThisFile('Download 1');
     }
 }
