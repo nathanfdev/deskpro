@@ -82,7 +82,7 @@ class ProcessReply extends ProcessAbstract
      */
     public function run($context = 'user')
     {
-        $this->logMessage("doNewRelpy context $context");
+        $this->logMessage("doNewReply context $context");
 
         $this->processBlobs();
 
@@ -212,7 +212,9 @@ class ProcessReply extends ProcessAbstract
             $message['show_full_hint'] = true;
         }
 
-        if (isset($this->ticket_email->reply_actions['is_note'])) {
+        if ((App::getSetting('core_tickets.email_reply_as_note') && $this->person->is_agent)
+            || isset($this->ticket_email->reply_actions['is_note'])
+        ) {
             $message['is_agent_note'] = true;
             $this->ticket->email_reader_action = 'agent_note';
         }
