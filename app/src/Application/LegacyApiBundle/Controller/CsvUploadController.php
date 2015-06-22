@@ -31,7 +31,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;

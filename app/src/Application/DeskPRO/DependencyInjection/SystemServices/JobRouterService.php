@@ -33,7 +33,7 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\ApiBundle\Controller\ResetDemoController;
+use Application\LegacyApiBundle\Controller\ResetDemoController;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;

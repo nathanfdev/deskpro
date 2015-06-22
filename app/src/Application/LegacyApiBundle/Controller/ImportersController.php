@@ -32,9 +32,9 @@
  * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\JobQueue\Processor\ImportProcessor;

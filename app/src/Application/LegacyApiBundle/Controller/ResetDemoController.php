@@ -32,10 +32,10 @@
  * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\LegacyApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Symfony\Component\HttpFoundation\Request;
 
 class ResetDemoController extends AbstractController implements ProtectedControllerInterface

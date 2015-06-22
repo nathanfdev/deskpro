@@ -206,7 +206,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newTicketAction()
     {
-        return $this->redirectRoute('user_tickets_new', array(), 301);
+        return $this->redirectRoute('portal_new_ticket', array(), 301);
     }
 
     /**
@@ -216,7 +216,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function ticketListAction()
     {
-        return $this->redirectRoute('user_tickets', array(), 301);
+        return $this->redirectRoute('portal_tickets', array(), 301);
     }
 
     /**
@@ -237,7 +237,7 @@ class Deskpro3RedirectController extends AbstractController
             }
         }
 
-        return $this->redirectRoute('user_tickets', array(), 301);
+        return $this->redirectRoute('portal_tickets', array(), 301);
     }
 
     ############################################################################
@@ -249,7 +249,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function loginAction()
     {
-        return $this->redirectRoute('user_login', array(), 301);
+        return $this->redirectRoute('portal_login', array(), 301);
     }
 
     /**
@@ -257,7 +257,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function registerAction()
     {
-        return $this->redirectRoute('user_register', array(), 301);
+        return $this->redirectRoute('portal_user_registration', array(), 301);
     }
 
     /**
@@ -267,7 +267,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function profileAction()
     {
-        return $this->redirectRoute('user_profile', array(), 301);
+        return $this->redirectRoute('portal_user_profile', array(), 301);
     }
 
     ############################################################################

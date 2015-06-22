@@ -148,17 +148,17 @@ class SitemapGenerator
     {
         $items   = array();
         $items[] = array(
-            'loc'        => $this->router->generate('user', array()),
+            'loc'        => $this->router->generate('portal_index', array()),
             'changefreq' => 'daily',
         );
 
         $items[] = array(
-            'loc'        => $this->router->generate('user_tickets_new', array()),
+            'loc'        => $this->router->generate('portal_new_ticket', array()),
             'changefreq' => 'monthly',
         );
 
         $items[] = array(
-            'loc'        => $this->router->generate('user_feedback_new', array()),
+            'loc'        => $this->router->generate('portal_feedback', array()),
             'changefreq' => 'monthly',
         );
 
@@ -178,7 +178,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc'        => $this->router->generate('user_articles', array()),
+            'loc'        => $this->router->generate('portal_kb', array()),
             'changefreq' => 'daily',
         );
 
@@ -190,7 +190,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc'        => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('portal_kb_browse', array('slug' => $cat->getSlug())),
                 'changefreq'                                                          => 'daily',
             );
         }
@@ -208,7 +208,7 @@ class SitemapGenerator
 
         foreach ($articles as $a) {
             $items[] = array(
-                'loc'        => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
+                'loc'        => $this->router->generate('portal_kb_view', array('slug' => $a->getSlug())),
                 'changefreq'                                                                  => 'weekly',
             );
         }
@@ -229,7 +229,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc'        => $this->router->generate('user_news', array()),
+            'loc'        => $this->router->generate('portal_news', array()),
             'changefreq' => 'daily',
         );
 
@@ -241,7 +241,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc'        => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('portal_news_browse', array('slug' => $cat->getSlug())),
                 'changefreq'                                                      => 'daily',
             );
         }
@@ -259,7 +259,7 @@ class SitemapGenerator
 
             foreach ($news as $n) {
                 $items[] = array(
-                    'loc'        => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
+                    'loc'        => $this->router->generate('portal_news_view', array('slug' => $n->getSlug())),
                     'changefreq'                                                           => 'weekly',
                 );
             }
@@ -281,7 +281,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc'        => $this->router->generate('user_downloads', array()),
+            'loc'        => $this->router->generate('portal_downloads', array()),
             'changefreq' => 'daily',
         );
 
@@ -293,7 +293,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc'        => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('portal_downloads_browse', array('slug' => $cat->getSlug())),
                 'changefreq'                                                           => 'daily',
             );
         }
@@ -310,7 +310,7 @@ class SitemapGenerator
 
         foreach ($downloads as $d) {
             $items[] = array(
-                'loc'        => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
+                'loc'        => $this->router->generate('portal_downloads_view', array('slug' => $d->getSlug())),
                 'changefreq'                                                                => 'weekly',
             );
         }
@@ -331,7 +331,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc'        => $this->router->generate('user_feedback', array()),
+            'loc'        => $this->router->generate('portal_feedback', array()),
             'changefreq' => 'daily',
         );
 
@@ -339,14 +339,14 @@ class SitemapGenerator
         # Categories
         #------------------------------
 
-        $cats = $this->structure->getFeedbackCategories();
-
-        foreach ($cats as $cat) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
-                'changefreq'                                                          => 'daily',
-            );
-        }
+//        $cats = $this->structure->getFeedbackCategories();
+//
+//        foreach ($cats as $cat) {
+//            $items[] = array(
+//                'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
+//                'changefreq'                                                          => 'daily',
+//            );
+//        }
 
         #------------------------------
         # Downloads
@@ -360,7 +360,7 @@ class SitemapGenerator
 
         foreach ($feedback as $f) {
             $items[] = array(
-                'loc'        => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
+                'loc'        => $this->router->generate('portal_feedback_view', array('slug' => $f->getSlug())),
                 'changefreq'                                                               => 'weekly',
             );
         }
