@@ -130,6 +130,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $GLOBALS['DP_NOSQL_LOG'] = true;
 
         @ini_set('memory_limit', -1);
+        @set_time_limit(0);
+
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
