@@ -727,11 +727,24 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return (bool)$this->is_user;
     }
 
+    /**
+     * You can trust this method to answer the question "Do we consider
+     * this person valid?"
+     *
+     * @return bool
+     */
     public function isUserValid()
     {
         return ($this->isEmailValidated() && $this->isAgentValidated());
     }
 
+    /**
+     * Tells you if the user is "email validated", but they might still need
+     * agent validation depending on the system settings.See isUserValid() for a more
+     * encompassing method.
+     *
+     * @return bool
+     */
     public function isEmailValidated()
     {
         if (!$primary = $this->getPrimaryEmail()) {
@@ -741,6 +754,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return (bool) $primary->isValidated();
     }
 
+    /**
+     * Tells you if the user is considered to be "agent validated", but they
+     * might still need to validate an email. See isUserValid() for a more
+     * encompassing method.
+     *
+     * @return bool
+     */
     public function isAgentValidated()
     {
         return (bool) $this->is_agent_confirmed;
