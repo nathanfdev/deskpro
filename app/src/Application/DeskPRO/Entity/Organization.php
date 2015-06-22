@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -145,6 +146,11 @@ class Organization extends DomainObject implements HighlightableModelInterface
     protected $_search_highlights;
 
     /**
+     * @var CustomDataCollection
+     */
+    protected $_cdc;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -230,6 +236,13 @@ class Organization extends DomainObject implements HighlightableModelInterface
         }
 
         return;
+    }
+
+    public function getCustomDataCollection()
+    {
+        return $this->_cdc = ($this->_cdc ?: new CustomDataCollection(
+            $this->custom_data ? $this->custom_data : new ArrayCollection(), $this
+        ));
     }
 
     /**

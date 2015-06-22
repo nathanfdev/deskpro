@@ -48,7 +48,7 @@ class CustomFieldTicketContextSpec extends ObjectBehavior
     function let(Ticket $ticket, Person $person, Organization $organization)
     {
         $ticket->getPerson()->willReturn($person);
-        $person->getOrganization()->willReturn($organization);
+        $ticket->getOrganization()->willReturn($organization);
 
         $this->beConstructedWith($ticket);
     }

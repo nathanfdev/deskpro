@@ -421,6 +421,9 @@ class TicketType extends AbstractType
             case FormFields::USER_FIELD:
                 $this->addCustomUserField($form_context, $field, $ignore_validation);
                 break;
+            case FormFields::ORG_FIELD:
+                $this->addCustomOrgField($form_context, $field, $ignore_validation);
+                break;
             case FormFields::TICKET_FIELD:
                 $this->addCustomTicketField($form_context, $field, $ignore_validation);
                 break;
@@ -585,6 +588,44 @@ class TicketType extends AbstractType
         $form_context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_person',
+            $options
+        );
+    }
+
+    private function addCustomOrgField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    {
+        $field_def = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
+
+        if (!$field_def->is_enabled) {
+            return false;
+        }
+
+        if (!$organization = $form_context->getTicket()->getOrganization()) {
+            // must be in an organization to see this field
+            return false;
+        }
+
+        if ($form_context->getPerson()->getOrganization() !== $form_context->getTicket()->getOrganization()) {
+            // person must be a part of the tickets organization to edit org fields
+            return false;
+        }
+
+        $options = array(
+            'custom_data_field' => $field_def,
+            'organization' => $organization,
+            'property_path' => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label' => $field_def->getTitle(),
+        );
+
+        if ($ignore_validation) {
+            $options = $this->markNoValidation($form_context, $options);
+            $options['ignore_validation'] = true;
+        }
+
+        $form_context->getForm()->add(
+            $field->getId(),
+            'deskpro_custom_data_organization',
             $options
         );
     }

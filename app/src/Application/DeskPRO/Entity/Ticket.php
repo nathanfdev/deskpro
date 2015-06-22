@@ -38,6 +38,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -556,6 +557,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @var bool
      */
     public $_is_new = false;
+
+    /**
+     * @var CustomDataCollection
+     */
+    protected $_cdc;
 
     public function __construct()
     {
@@ -1475,6 +1481,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
         $this->getStateChangeRecorder()->record('attachments', null, $attach);
+    }
+
+    public function getCustomDataCollection()
+    {
+        return $this->_cdc = ($this->_cdc ?: new CustomDataCollection(
+            $this->custom_data ? $this->custom_data : new ArrayCollection(), $this
+        ));
     }
 
 

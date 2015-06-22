@@ -67,10 +67,8 @@ class CustomFieldTicketContext extends CustomFieldContext
             case 'Application\DeskPRO\Entity\Person':
                 return $this->ticket->getPerson();
             case 'Application\DeskPRO\Entity\Organization':
-                if ($person = $this->ticket->getPerson()) {
-                    if ($org = $person->getOrganization()) {
-                        return $org;
-                    }
+                if ($org = $this->ticket->getOrganization()) {
+                    return $org;
                 }
 
                 return null;

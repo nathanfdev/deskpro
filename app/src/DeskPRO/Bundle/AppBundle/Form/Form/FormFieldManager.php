@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
@@ -69,6 +70,11 @@ class FormFieldManager
     }
 
     public function getCustomPersonField(CustomDefPerson $field, $agent_interface)
+    {
+        return $this->createCustomField($field, $agent_interface);
+    }
+
+    public function getCustomOrganizationField(CustomDefOrganization $field, $agent_interface)
     {
         return $this->createCustomField($field, $agent_interface);
     }
@@ -154,6 +160,16 @@ class FormFieldManager
     public function getCustomPersonFieldById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
+    }
+
+
+    /**
+     * @param $id
+     * @return CustomDefOrganization
+     */
+    public function getCustomOrganizationFieldById($id)
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->find($id);
     }
 
     /**

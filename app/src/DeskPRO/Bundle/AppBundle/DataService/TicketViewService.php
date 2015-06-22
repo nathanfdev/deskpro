@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
@@ -114,6 +115,21 @@ class TicketViewService extends AbstractDataService
                         /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
                         if ($data = $ticket->getCustomDataForField($field_def)) {
                             $value                                        = $this->getValueForCustomFormField($field_def, $data);
+                            $view->attribute_list[$field_def->getTitle()] = $value;
+                        }
+                    }
+                    break;
+                case FormFields::ORG_FIELD:
+                    if ($layout_field->isVisibleOnView()) {
+                        if (!$ticket->getOrganization() instanceof Organization) {
+                            break;
+                        }
+
+                        /** @var \Application\DeskPRO\Entity\CustomDefOrganization $field_def */
+                        $field_def = $this->form_field_manager->getCustomOrganizationFieldById($layout_field->getFieldId());
+                        /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
+                        if ($data = $ticket->getOrganization()->getCustomDataForField($field_def)) {
+                            $value = $this->getValueForCustomFormField($field_def, $data);
                             $view->attribute_list[$field_def->getTitle()] = $value;
                         }
                     }
