@@ -447,6 +447,36 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @param $field
+     */
+    public function removeCustomDataForField($field)
+    {
+        $parent_id = null;
+        $field_id = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        $change = false;
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+                $change = true;
+                $this->custom_data->removeElement($data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
+            }
+        }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        }
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
