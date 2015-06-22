@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Email;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NewMailer
 {
@@ -50,10 +51,14 @@ class NewMailer
 
         $context = array(
             'person'                  => $person,
-            'reset_url'               => $this->getRouter()->generate('portal_reset_password_process', array(
-                'password_reset_code' => $person->getPasswordResetCode(),
-            )),
-    );
+            'reset_url'               => $this->getRouter()->generate(
+                'portal_reset_password_process',
+                array(
+                    'password_reset_code' => $person->getPasswordResetCode(),
+                ),
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
+        );
 
         $this->sendMessage(
             'AppBundle:Email:reset-password.html.twig',

@@ -104,7 +104,7 @@ class PortalController extends AbstractController
         } else {
             $page_vars = array(
                 'user' => $user,
-                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user)
             );
         }
 
