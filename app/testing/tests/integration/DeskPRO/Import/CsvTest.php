@@ -2,20 +2,58 @@
 
 namespace DpIntegrationTests\DeskPRO\Import;
 
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
+use Application\ImportBundle\Command\ImportBatchCommand;
+use Application\ImportBundle\Command\ImportCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class ImportCsvTest
  * @package DpIntegrationTests\DeskPRO\Import
+ *
+ * @group importer
  */
 class CsvTest extends \DpIntegrationTestCase
 {
+    /**
+     * @var string
+     */
+    private $output_path;
+
+    /**
+     * @var EntityRepository\Ticket
+     */
+    private $ticket_repository;
+
+    /**
+     * @var EntityRepository\Person
+     */
+    private $person_repository;
+
+    /**
+     * Set up
+     */
     public function runBefore()
     {
-        $this->helper->enableDatabaseSet('EmptyDb');
+        $entity_manager = $this->helper->getSymfonyContainer()->getEm();
+        $this->helper->enableFreshDatabaseSet('EmptyDb');
+
+        $this->ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+
+        $this->output_path = dp_get_data_dir() . '/import/csv/export';
+        if ( ! is_dir($this->output_path)) {
+            mkdir($this->output_path, 0755, true);
+        }
+
+        $this->helper->amInPath($this->output_path);
+        $this->helper->cleanDir($this->output_path);
+
+        $this->checkDbEmpty();
+        $this->checkJsonEmpty();
     }
 
     public function testCheck()
@@ -47,18 +85,13 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `news_0` parsed successfully!', $output);
         $this->assertContains('Entity `news_1` parsed successfully!', $output);
         $this->assertContains('Done. Checking was successful.', $output);
+
+        $this->checkDbEmpty();
+        $this->checkJsonEmpty();
     }
 
     public function testExport()
     {
-        $output_path = dp_get_data_dir() . '/import/csv/export';
-        if (!is_dir($output_path)) {
-            mkdir($output_path, 0755, true);
-        }
-
-        $this->helper->amInPath($output_path);
-        $this->helper->cleanDir($output_path);
-
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ExportCommand());
 
@@ -68,10 +101,63 @@ class CsvTest extends \DpIntegrationTestCase
             'command'       => $command->getName(),
             'script'        => 'csv',
             '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
-            '--output-path' => $output_path,
+            '--output-path' => $this->output_path,
             '--batch'       => true,
         ));
 
+        $this->checkDbEmpty();
+        $this->checkJsonData();
+    }
+
+    public function testImport()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportCommand());
+
+        $command = $application->find('dp:import:run');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'csv',
+            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--batch'       => true,
+        ));
+
+        $this->checkDbData();
+        $this->checkJsonEmpty();
+    }
+
+    public function testImportBatch()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportBatchCommand());
+
+        $command = $application->find('dp:import:batch');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'csv',
+            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--output-path' => $this->output_path,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbData();
+        $this->checkJsonData();
+    }
+
+    private function checkJsonEmpty()
+    {
+        $this->assertFalse(file_exists('1/articles/'));
+        $this->assertFalse(file_exists('1/people/'));
+        $this->assertFalse(file_exists('1/tickets/'));
+        $this->assertFalse(file_exists('1/feedback/'));
+        $this->assertFalse(file_exists('1/news/'));
+        $this->assertFalse(file_exists('1/downloads/'));
+    }
+
+    private function checkJsonData()
+    {
         $this->helper->seeFileFound('1/articles/article_0.json');
         $this->helper->seeInThisFile('Article 1');
 
@@ -91,5 +177,17 @@ class CsvTest extends \DpIntegrationTestCase
 
         $this->helper->seeFileFound('1/downloads/download_0.json');
         $this->helper->seeInThisFile('Download 1');
+    }
+
+    private function checkDbEmpty()
+    {
+        $this->assertEmpty($this->ticket_repository->findAll());
+        $this->assertEmpty($this->person_repository->findAll());
+    }
+
+    private function checkDbData()
+    {
+        $this->assertCount(2, $this->ticket_repository->findAll());
+        $this->assertCount(7, $this->person_repository->findAll());
     }
 }
