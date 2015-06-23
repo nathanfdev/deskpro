@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 use Application\ImportBundle\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Extension designed to make working with templates easier by simplifying
@@ -94,6 +95,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
             new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
+            new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
             new \Twig_SimpleFunction('date', array($this, 'date'))
         );
 
@@ -110,6 +112,11 @@ class PortalSupportExtension extends \Twig_Extension
         );
 
         return $filters;
+    }
+
+    public function urlFull($route_name, $vars = array())
+    {
+        return $this->container->get('router.default')->generate($route_name, $vars, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**

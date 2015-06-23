@@ -45,6 +45,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class PersonValidator
 {
     const TYPE_EMAIL = 'email';
+    const TYPE_EMAIL_PRIMARY = 'email-primary';
 
     /**
      * @var BrandStack
@@ -118,6 +119,15 @@ class PersonValidator
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
+            case PersonValidator::TYPE_EMAIL_PRIMARY:
+                return $this->router->generate(
+                    'portal_validation',
+                    array(
+                        'object_type' => self::TYPE_EMAIL_PRIMARY,
+                        'email_id' => $person_email->getId()
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
         }
 
         return null;
@@ -141,6 +151,9 @@ class PersonValidator
         switch ($type) {
             case PersonValidator::TYPE_EMAIL:
                 $this->mailer->sendEmailConfirmationEmail($person_email);
+                return true;
+            case PersonValidator::TYPE_EMAIL_PRIMARY:
+                $this->mailer->sendEmailConfirmationEmail($person_email, true);
                 return true;
         }
 
@@ -169,6 +182,15 @@ class PersonValidator
                     array(
                         'email_id' => $person_email->getId(),
                         'object_type' => self::TYPE_EMAIL
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            case PersonValidator::TYPE_EMAIL_PRIMARY:
+                return $this->router->generate(
+                    'portal_send_validation',
+                    array(
+                        'email_id' => $person_email->getId(),
+                        'object_type' => self::TYPE_EMAIL_PRIMARY
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );

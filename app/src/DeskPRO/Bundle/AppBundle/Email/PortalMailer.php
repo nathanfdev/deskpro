@@ -76,24 +76,39 @@ class PortalMailer
     {
         $email = $person->getPrimaryEmail();
 
-        $this->sendToPerson($person, 'DeskPRO:emails_user:register-validate.html.twig', array(
+        if (!$verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)) {
+            $verify_url = null;
+        }
+
+        $portal_url = $this->getRouter()->generate('portal_index', array(), UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $this->sendToPerson($person, 'DeskPRO:emails_user:register-welcome.html.twig', array(
             'person' => $person,
             'email' => $email,
-            'verify_url' => $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)
+            'verify_url' => $verify_url,
+            'portal_url' => $portal_url
         ));
     }
 
-    public function sendEmailConfirmationEmail(PersonEmail $email)
+    public function sendEmailConfirmationEmail(PersonEmail $email, $primary = false)
     {
         $person = $email->getPerson();
 
+        if ($primary) {
+            $tpl = 'DeskPRO:emails_user:new-email-validate-primary.html.twig';
+            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email);
+        } else {
+            $tpl = 'DeskPRO:emails_user:new-email-validate.html.twig';
+            $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email);
+        }
+
         $this->sendToPerson(
             $person,
-            'DeskPRO:emails_user:new-email-validate.html.twig',
+            $tpl,
             array(
                 'person' => $person,
                 'email' => $email,
-                'verify_url' => $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)
+                'verify_url' => $verify_url
             )
         );
     }
@@ -140,6 +155,11 @@ class PortalMailer
     protected function sendMessage($templateName, $context, $fromEmail, $toEmail)
     {
         $context = $this->getTwig()->mergeGlobals($context);
+
+        if (isset($context['person']) && !isset($context['to_name'])) {
+            $person = $context['person'];
+            $context['to_name'] = $person->name;
+        }
 
         $template = $this->getTwig()->loadTemplate($templateName);
         $subject  = trim($template->renderBlock('subject', $context));
