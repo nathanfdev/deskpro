@@ -33,6 +33,7 @@
     'user.emails.password_agent-reset'        => 'An agent has reset your account password. You can log in with these credentials',
     'user.emails.password_reset'              => 'You requested a password reset. To reset your password, click on the link below:',
     'user.emails.profile_email-new-confirm'   => 'To finish adding this secondary email address to your account, simply click on the following validation link',
+    'user.emails.profile_email-primary-confirm'   => 'To verify your primary email address, simply click on the following validation link',
     'user.emails.profile_email_link-validate' => 'Simply click on the following link to validate to your email address',
     'user.emails.register-agent-validation'   => 'Note: Before your account is fully active, our agents must manually validate your account. Tickets and other content you submit will be held in a validation queue until an agent validates your accounts.',
     'user.emails.register-confirm'            => 'Thank you for registering an account.<br /><br />Before you will be able to use your account, you must click on the following link to validate your email address',

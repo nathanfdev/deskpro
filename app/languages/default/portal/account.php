@@ -31,6 +31,7 @@
     'portal.account.reset-password-sent-to'     => 'We sent an email to',
     'portal.account.reset-password-success'     => 'Your password has been reset. You may now login with your new password.',
     'portal.account.email-managment'     => 'Manage Emails',
+    'portal.account.email-primary-needs-validation'     => 'Your email (<strong>{{ email }}</strong>) is awaiting validation. Please check your email. After you click the verification link, you will be able to add more emails. <br><a href="{{ verify_url }}">Click here to send the email again.</a>',
     'portal.account.email-primary-indicator'     => 'primary',
     'portal.account.email-btn-make-primary'     => 'make primary',
     'portal.account.email-btn-remove'     => 'remove',
@@ -38,6 +39,6 @@
     'portal.account.register-btn'     => 'Register',
     'portal.account.impersonating'     => 'you are impersonating the user',
     'portal.account.exit_impersonation'     => 'exit impersonation mode',
-    'portal.account.validation_alert' =>  'Please verify your email address by clicking the link we sent you. Some functions may be disabled until you verify. Click here to re-send the email.',
-    'portal.account.validation_agent_alert' =>  'Your account is waiting to be validated by the support staff. Some functions of your account may be disabled until it is validated.'
+    'portal.account.validation_alert' =>  'Please verify your email address by clicking the link we sent you. Some helpdesk features may be disabled until you verify. Click here to re-send the email.',
+    'portal.account.validation_agent_alert' =>  'Your account is waiting to be validated by our agents. Tickets and other content you submit will be held in a validation queue until an agent validates your account.'
 );

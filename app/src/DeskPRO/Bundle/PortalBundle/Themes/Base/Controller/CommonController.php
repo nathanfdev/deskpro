@@ -77,18 +77,14 @@ class CommonController extends AbstractController
             $primary_email = $user->getPrimaryEmail();
             if (!$user->isEmailValidated()) {
                 $validation_alerts[] = array(
-                    'type' => PersonValidator::TYPE_EMAIL,
+                    'type' => PersonValidator::TYPE_EMAIL_PRIMARY,
                     'message' => $this->phrase('portal.account.validation_alert'),
-                    // TODO: delete verify_url, it is just here temporarily
-                    'verify_url' => $person_validator->getEmailLink(PersonValidator::TYPE_EMAIL, $primary_email),
-                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL, $primary_email)
+                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email)
                 );
             } elseif (!$user->isAgentValidated()) {
                 $validation_alerts[] = array(
                     'type' => null,
                     'message' => $this->phrase('portal.account.validation_agent_alert'),
-                    // TODO: delete verify_url, it is just here temporarily
-                    'verify_url' => null,
                     'resend_url' => null
                 );
             }

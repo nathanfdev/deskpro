@@ -14,8 +14,8 @@
         {{ form_row(profile_form.language_id) }}
     {% endif %}
     {% if profile_form.delete_picture is defined %}
-        <img src="{{ app.user.picture_url }}"
-             alt="{{ app.user }}"/> {{ form_row(profile_form.delete_picture, { label: phrase('portal.account.profile-delete-picture') }) }}
+        <img src="{{ person.picture_url }}"
+             alt="{{ person }}"/> {{ form_row(profile_form.delete_picture, { label: phrase('portal.account.profile-delete-picture') }) }}
     {% else %}
         {{ form_row(profile_form.upload_picture) }}
     {% endif %}
@@ -29,21 +29,25 @@
     <br><br><br>
     {# EMAILS #}
     <h1>{{ phrase('portal.account.email-managment') }}</h1>
-    {{ form_start(emails_form) }}
-    {% for email_form in emails_form.emails %}
-    <div style="display: block; padding-top: 5px; padding-bottom: 5px;">
-        {{ form_widget(email_form.email) }}
-        {% if email_form.vars.data.isPrimary %}
-            <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
-        {% elseif email_form.vars.data.id %}
-            [<a href="{{ path('portal_user_profile', { new_primary: email_form.vars.data.id }) }}">{{ phrase('portal.account.email-btn-make-primary') }}</a>]
-            [<a href="{{ path('portal_user_profile', { remove_email: email_form.vars.data.id }) }}">{{ phrase('portal.account.email-btn-remove') }}</a>]
-        {% endif %}
-    </div>
-    {% endfor %}
-    <button type="submit">{{ phrase('portal.account.email-btn-update') }}</button>
-    {{ form_rest(emails_form) }}
-    {{ form_end(emails_form) }}
+    {%  if person.isEmailValidated() %}
+        {{ form_start(emails_form) }}
+        {% for email_form in emails_form.emails %}
+        <div style="display: block; padding-top: 5px; padding-bottom: 5px;">
+            {{ form_widget(email_form.email) }}
+            {% if email_form.vars.data.isPrimary %}
+                <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
+            {% elseif email_form.vars.data.id %}
+                [<a href="{{ path('portal_user_profile', { new_primary: email_form.vars.data.id }) }}">{{ phrase('portal.account.email-btn-make-primary') }}</a>]
+                [<a href="{{ path('portal_user_profile', { remove_email: email_form.vars.data.id }) }}">{{ phrase('portal.account.email-btn-remove') }}</a>]
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit">{{ phrase('portal.account.email-btn-update') }}</button>
+        {{ form_rest(emails_form) }}
+        {{ form_end(emails_form) }}
+    {% else %}
+        {{ phrase('portal.account.email-primary-needs-validation', { email: person.primary_email.email, verify_url: verify_url }) }}
+    {% endif %}
 
     <br><br><br>
     {# PASSWORD #}

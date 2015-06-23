@@ -7,7 +7,7 @@
     {% endif %}
 
     {% for validation in validation_alerts %}
-        <a href="{{ validation.verify_url ?: '' }}" class="alert">
+        <a href="{{ validation.resend_url ?: '' }}" class="alert">
             <i class="fa fa-times"></i> <strong>{{ validation.message }}</strong>
         </a>
     {% endfor %}
