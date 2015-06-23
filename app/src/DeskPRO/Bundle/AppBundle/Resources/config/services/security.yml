@@ -37,7 +37,7 @@ services:
           - @security.http_utils
           - {}
           - @logger
-          - @new_mailer
+          - @portal_mailer
           - @doctrine.dbal.default_connection
           - @person_repository
         tags:

@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Person;
 
 
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
-use DeskPRO\Bundle\AppBundle\Email\NewMailer;
+use DeskPRO\Bundle\AppBundle\Email\PortalMailer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
@@ -62,7 +62,7 @@ class PersonValidator
     private $email_data;
 
     /**
-     * @var NewMailer
+     * @var PortalMailer
      */
     private $mailer;
 
@@ -71,7 +71,7 @@ class PersonValidator
      */
     private $em;
 
-    public function __construct(EntityManager $em, BrandStack $brand_stack, PortalRouter $router, EmailDataService $email_data, NewMailer $mailer)
+    public function __construct(EntityManager $em, BrandStack $brand_stack, PortalRouter $router, EmailDataService $email_data, PortalMailer $mailer)
     {
         $this->brand_stack = $brand_stack;
         $this->router = $router;

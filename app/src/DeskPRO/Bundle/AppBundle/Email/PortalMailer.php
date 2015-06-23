@@ -40,7 +40,7 @@ use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class NewMailer
+class PortalMailer
 {
     protected $container;
 
