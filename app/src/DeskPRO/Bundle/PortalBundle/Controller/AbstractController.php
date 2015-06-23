@@ -36,9 +36,18 @@ use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Application\DeskPRO\Entity\Person;
 
 class AbstractController extends BaseController
 {
+    /**
+     * @return Person|null
+     */
+    public function getUser()
+    {
+        return parent::getUser();
+    }
+
     /**
      * @return \DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
      */
@@ -246,11 +255,27 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\Email\NewMailer
+     */
+    protected function getMailer()
+    {
+        return $this->get('new_mailer');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\PersonDataService
      */
     public function getPersonDataService()
     {
         return $this->get('data.person');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\EmailDataService
+     */
+    public function getEmailDataService()
+    {
+        return $this->get('data.email');
     }
 
     /**

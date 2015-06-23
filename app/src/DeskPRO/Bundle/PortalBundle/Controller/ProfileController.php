@@ -46,6 +46,14 @@ class ProfileController extends AbstractController
      */
     public function registerAction(Request $request)
     {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('portal_index');
+        }
+
+        if (!$this->getBrandSetting('core.reg_enabled')) {
+            return $this->redirectToRoute('portal_index');
+        }
+
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM
@@ -56,7 +64,12 @@ class ProfileController extends AbstractController
         if ($form->isValid()) {
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
-            $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
+            $this->getMailer()->sendWelcomeEmail($person);
+            if ($this->getBrandSetting('core.email_validation')) {
+                $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
+            } else {
+                $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+            }
             $request->getSession()->set('last_username', $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : '');
 
             return $this->redirectToRoute('portal_login');

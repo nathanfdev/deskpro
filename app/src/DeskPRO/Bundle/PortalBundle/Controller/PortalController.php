@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
@@ -84,7 +85,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/login/reset-password", name="portal_reset_password")
+     * @Route("/reset-password", name="portal_reset_password")
      * @PageHttpCache()
      */
     public function passwordResetRequestAction(Request $request)
@@ -143,7 +144,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/login/reset-password/{password_reset_code}", name="portal_reset_password_process")
+     * @Route("/reset-password/{password_reset_code}", name="portal_reset_password_process")
      */
     public function passwordResetAction(Request $request, $password_reset_code)
     {
@@ -194,5 +195,53 @@ class PortalController extends AbstractController
             'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
             'page_title' => $this->createPageTitle()->passwordReset()
         ));
+    }
+
+    /**
+     * @Route("/validate/{object_type}/{email_id}/{object_id}", name="portal_validation", defaults={"object_id":null})
+     */
+    public function validateAction(Request $request, $object_type, $email_id, $object_id)
+    {
+        switch($object_type) {
+            case PersonValidator::TYPE_EMAIL:
+                $this->getPersonValidator()->validateEmail($email_id);
+                $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
+                break;
+        }
+
+        if (!$this->getUser()) {
+            // if the user is not logged in, send them to the login page with their email filled in
+            $email = $this->getEmailDataService()->getEmail($email_id);
+            $request->getSession()->set(
+                'last_username',
+               $email ? $email->getEmail() : ''
+            );
+            return $this->redirectToRoute('portal_login');
+        }
+
+        return $this->redirectToRoute('portal_index');
+    }
+
+    /**
+     * @Route("/validate-send/{object_type}/{email_id}/{object_id}", name="portal_send_validation", defaults={"object_id":null})
+     */
+    public function resendValidationEmailAction(Request $request, $object_type, $email_id, $object_id)
+    {
+        switch($object_type) {
+            case PersonValidator::TYPE_EMAIL:
+                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL, $email_id);
+                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email'));
+                break;
+        }
+
+        return $this->redirectToRoute('portal_index');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Person\PersonValidator
+     */
+    protected function getPersonValidator()
+    {
+        return $this->get('portal_person_validator');
     }
 }

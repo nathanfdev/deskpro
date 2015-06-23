@@ -29,47 +29,59 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Templating;
+namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
-class PortalTemplating implements EngineInterface
+class EmailDataService extends AbstractDataService
 {
     /**
-     * @var \Symfony\Bundle\TwigBundle\TwigEngine
+     * @var \Doctrine\ORM\EntityManager
      */
-    private $engine;
+    private $em;
 
-    public function __construct(TwigEngine $engine)
+    public function __construct(EntityManager $em)
     {
-        $this->engine = $engine;
+        $this->em = $em;
     }
 
-    public function render($name, array $parameters = array())
+    /**
+     * @param int|null|PersonEmail $person_email
+     *
+     * @return PersonEmail|null
+     */
+    public function getEmail($person_email)
     {
-        return $this->engine->render($name, $parameters);
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'getEmail',
+                $person_email,
+            ),
+            function () use ($that, $person_email) {
+                if (!$person_email) { // we need some input
+                    return null;
+                }
+
+                if ($person_email instanceof PersonEmail) { // already have what you seek
+                    return $person_email;
+                }
+
+                return $that->getPersonEmailRepo()->find($person_email);
+            }
+        );
     }
 
-    public function renderResponse($view, array $parameters = array(), Response $response = null)
+    /**
+     * @return \Application\DeskPRO\EntityRepository\PersonEmail
+     */
+    public function getPersonEmailRepo()
     {
-        if (null === $response) {
-            $response = new Response();
-        }
-
-        $response->setContent($this->render($view, $parameters));
-
-        return $response;
-    }
-
-    public function exists($name)
-    {
-        return $this->engine->exists($name);
-    }
-
-    public function supports($name)
-    {
-        return $this->engine->supports($name);
+        return $this->em->getRepository('DeskPRO:PersonEmail');
     }
 }

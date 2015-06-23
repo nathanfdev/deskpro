@@ -128,7 +128,7 @@ class PersonRegistrationType extends AbstractType
                         'person'            => $event->getData(),
                         'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
                         'agent_interface'   => false,
-                        'label'             => false,
+                        'label'             => $field_def->getTitle(),
                     )
                 );
             }

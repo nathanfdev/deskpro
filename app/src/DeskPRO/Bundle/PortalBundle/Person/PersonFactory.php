@@ -93,10 +93,27 @@ class PersonFactory
         return $person;
     }
 
+    protected function getBrandSetting($name, $default = null)
+    {
+        return $this->brand_stack->getActive()->getSetting($name, $default);
+    }
+
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
-        $email                = $person->getPrimaryEmail();
-        $email->is_validated  = true;
+        $email = $person->getPrimaryEmail();
+
+        if ($this->getBrandSetting('core.email_validation')) {
+            $email->is_validated = false;
+        } else {
+            $email->is_validated = true;
+        }
+
+        if ($this->getBrandSetting('core.agent_validation')) {
+            $person->is_agent_confirmed = false;
+        } else {
+            $person->is_agent_confirmed = true;
+        }
+
         $person->is_confirmed = true;
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));

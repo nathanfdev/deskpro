@@ -6,6 +6,12 @@
         </a>
     {% endif %}
 
+    {% for validation in validation_alerts %}
+        <a href="{{ validation.verify_url ?: '' }}" class="alert">
+            <i class="fa fa-times"></i> <strong>{{ validation.message }}</strong>
+        </a>
+    {% endfor %}
+
     {% for saved in saved_forms %}
         <a href="{{ saved.link }}" class="alert">
             <i class="fa fa-times"></i> {{ phrase('portal.account.login-saved-form', { type: saved.message }) }}

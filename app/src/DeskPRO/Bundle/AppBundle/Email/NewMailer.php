@@ -33,6 +33,10 @@ namespace DeskPRO\Bundle\AppBundle\Email;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
+use Application\DeskPRO\Templating\Templates\EmailTemplateFile;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -68,6 +72,42 @@ class NewMailer
         );
     }
 
+    public function sendWelcomeEmail(Person $person)
+    {
+        $email = $person->getPrimaryEmail();
+
+        $this->sendToPerson($person, 'DeskPRO:emails_user:register-validate.html.twig', array(
+            'person' => $person,
+            'email' => $email,
+            'verify_url' => $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)
+        ));
+    }
+
+    public function sendEmailConfirmationEmail(PersonEmail $email)
+    {
+        $person = $email->getPerson();
+
+        $this->sendToPerson(
+            $person,
+            'DeskPRO:emails_user:new-email-validate.html.twig',
+            array(
+                'person' => $person,
+                'email' => $email,
+                'verify_url' => $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL, $email)
+            )
+        );
+    }
+
+    public function sendToPerson(Person $person, $template, $vars)
+    {
+        $email_template = new EmailTemplateFile($template);
+        $message = $this->container->get('mailer')->createMessage();
+        $message->setTo($person->getPrimaryEmail()->email, $person->name);
+        $message->setTemplate($template, $vars);
+        $message->prepare();
+        $this->container->get('mailer')->send($message);
+    }
+
     public function sendLoginAlert(Person $person, $success)
     {
         $context = array(
@@ -82,6 +122,13 @@ class NewMailer
             $from,
             $person->getPrimaryEmail()->email
         );
+    }
+
+    public function getDefaultOutgoingEmailAddress()
+    {
+        $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback();
+
+        return $account->getUseEmailAddress();
     }
 
     /**
@@ -115,7 +162,7 @@ class NewMailer
     /**
      * @return \Swift_Mailer
      */
-    public function getSwiftMailer()
+    protected function getSwiftMailer()
     {
         return $this->container->get('mailer');
     }
@@ -123,23 +170,34 @@ class NewMailer
     /**
      * @return \Twig_Environment
      */
-    public function getTwig()
+    protected function getTwig()
     {
         return $this->container->get('twig');
+    }
+
+    protected function getSetting($name, $default = null)
+    {
+        // if we have a brand activated, use its settings
+        if ($brand = $this->container->get('brand_stack')->getActive()) {
+            return $brand->getSetting($name, $default);
+        }
+
+        return $this->container->get('settings_resolver')->getGlobalSettings()->get($name, $default);
     }
 
     /**
      * @return \DeskPRO\Bundle\PortalBundle\Routing\PortalRouter
      */
-    public function getRouter()
+    protected function getRouter()
     {
         return $this->container->get('router');
     }
 
-    public function getDefaultOutgoingEmailAddress()
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Person\PersonValidator
+     */
+    protected function getPersonValidator()
     {
-        $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback();
-
-        return $account->getUseEmailAddress();
+        return $this->container->get('portal_person_validator');
     }
 }

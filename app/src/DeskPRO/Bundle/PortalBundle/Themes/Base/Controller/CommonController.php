@@ -42,6 +42,7 @@ use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -64,6 +65,38 @@ class CommonController extends AbstractController
     {
         $user = $this->getUser();
 
+        // TODO: this controller can be refactored into a module that collects alerts, but
+        //       we'll keep the code here until we figure out all of the different alerts
+
+        //
+        // ACCOUNT VALIDATION
+        //
+        $person_validator = $this->get('portal_person_validator');
+        $validation_alerts = array();
+        if ($user && !$user->isUserValid()) {
+            $primary_email = $user->getPrimaryEmail();
+            if (!$user->isEmailValidated()) {
+                $validation_alerts[] = array(
+                    'type' => PersonValidator::TYPE_EMAIL,
+                    'message' => $this->phrase('portal.account.validation_alert'),
+                    // TODO: delete verify_url, it is just here temporarily
+                    'verify_url' => $person_validator->getEmailLink(PersonValidator::TYPE_EMAIL, $primary_email),
+                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL, $primary_email)
+                );
+            } elseif (!$user->isAgentValidated()) {
+                $validation_alerts[] = array(
+                    'type' => null,
+                    'message' => $this->phrase('portal.account.validation_agent_alert'),
+                    // TODO: delete verify_url, it is just here temporarily
+                    'verify_url' => null,
+                    'resend_url' => null
+                );
+            }
+        }
+
+        //
+        // AGENT IMPERSONATION
+        //
         $agent = null;
         if ($token = $this->get('security.token_storage')->getToken()) {
             if ($token instanceof AgentImpersonateToken) {
@@ -86,7 +119,8 @@ class CommonController extends AbstractController
             'impersonator' => $agent,
             'user'         => $user,
             'saved_forms'  => $saved_forms,
-            'display_alerts' => count($saved_forms) || $agent
+            'validation_alerts' => $validation_alerts,
+            'display_alerts' => count($saved_forms) || $agent || count($validation_alerts),
         ));
     }
 

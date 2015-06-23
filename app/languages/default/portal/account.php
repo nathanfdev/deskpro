@@ -38,4 +38,6 @@
     'portal.account.register-btn'     => 'Register',
     'portal.account.impersonating'     => 'you are impersonating the user',
     'portal.account.exit_impersonation'     => 'exit impersonation mode',
+    'portal.account.validation_alert' =>  'Please verify your email address by clicking the link we sent you. Some functions may be disabled until you verify. Click here to re-send the email.',
+    'portal.account.validation_agent_alert' =>  'Your account is waiting to be validated by the support staff. Some functions of your account may be disabled until it is validated.'
 );
