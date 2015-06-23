@@ -68,6 +68,7 @@ app/sys/Resources/agent-perm-names.php
 /data/files/*
 /data/manuals
 /data/emailstore
+/data/import/csv/export/*
 
 /web/build
 /web/app/build/*/build.js
