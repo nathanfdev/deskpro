@@ -22,10 +22,38 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
     public function getApi()
     {
         if (!$this->api) {
-            $this->api = new \DeskPRO\Api('http://localhost:8888', '1:XXXXXXXXXXXXXXXXXXXXXXXXX');
+            $url = defined('DP_TESTING_API_URL') ? DP_TESTING_API_URL : 'http://localhost:8888';
+            $this->api = new \DeskPRO\Api($url, '1:XXXXXXXXXXXXXXXXXXXXXXXXX');
         }
 
         return $this->api;
+    }
+
+    /**
+     * @param $expected
+     * @param $actual
+     * @param string $message
+     */
+    public static function assertApiArrayEqual($expected, $actual, $message = '')
+    {
+        $normalize = function($expected, $actual) use (&$normalize) {
+            // Hack to 'pass' trivial differences (e.g., a date that is different becase we just inserted it)
+            if (is_array($expected) && is_array($actual)) {
+                foreach ($actual as $k => $v) {
+                    if (isset($expected[$k]) && gettype($expected[$k]) === gettype($v)) {
+                        if (is_array($v)) {
+                            $expected[$k] = $normalize($expected[$k], $v);
+                        } else {
+                            $expected[$k] = $v;
+                        }
+                    }
+                }
+            }
+
+            return $expected;
+        };
+
+        self::assertEquals($normalize($expected, $actual), $actual, $message);
     }
 
     /**
@@ -39,7 +67,8 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
     public function getApiWithLimitedAccess()
     {
         if (!$this->limitedAccessApi) {
-            $this->limitedAccessApi = new \DeskPRO\Api('http://localhost:8888', '2:' . str_repeat('Y', 25));
+            $url = defined('DP_TESTING_API_URL') ? DP_TESTING_API_URL : 'http://localhost:8888';
+            $this->limitedAccessApi = new \DeskPRO\Api($url, '2:YYYYYYYYYYYYYYYYYYYYYYYYY');
         }
 
         return $this->limitedAccessApi;
