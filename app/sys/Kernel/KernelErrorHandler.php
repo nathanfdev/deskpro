@@ -161,6 +161,9 @@ class KernelErrorHandler
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return;
         }
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException) {
+            return;
+        }
         if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
             return;
         }

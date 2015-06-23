@@ -17,7 +17,7 @@ class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 
         $result = $this->getApiWithLimitedAccess()->tickets->findById($ticketId);
 
-        $this->assertEquals('404', $result->getResponseCode());
+        $this->assertEquals('403', $result->getResponseCode());
     }
 
     public function testFindBySubjectWithoutPermission()

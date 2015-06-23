@@ -43,7 +43,7 @@ class GetPersonTest extends AbstractApiResultTest
             unset($expectedPersonArray[$key]);
         }
 
-        return $this->assertEquals($retrievedPersonArray, $retrievedPersonArray);
+        $this->assertApiArrayEqual($retrievedPersonArray, $retrievedPersonArray);
     }
 
     public function testCanFindByAgentGroup()
