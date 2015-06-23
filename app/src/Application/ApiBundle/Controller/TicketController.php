@@ -868,7 +868,7 @@ class TicketController extends AbstractController implements ProtectedController
 
     /**
      * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/log",
+     * 	path="/tickets/{ticket_id}/logs",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets all logs in a Ticket by Ticket ID.",
@@ -898,16 +898,8 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        $trackers = $this->em->fetchAllCol("
-            SELECT log
-            FROM ticket_changetracker_logs
-            WHERE ticket_id = ?
-            ORDER BY id ASC
-        ", array($ticket->getId()));
-
         return $this->createApiResponse(array(
-            'logs' => $this->getApiData($ticket_logs),
-            'tracker_logs' => $trackers
+            'logs' => $this->getApiData($ticket_logs)
         ));
     }
 
