@@ -168,6 +168,7 @@ class LdapSyncer extends AbstractSyncer
             }
         }
 
+        $this->helper->getEm()->flush();
         $cursor->setPhase(2);
         $cursor->setLocation(1);
     }
