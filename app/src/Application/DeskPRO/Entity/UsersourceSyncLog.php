@@ -44,7 +44,7 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
 {
     const STATUS_COMPLETED = 'completed';
-    const STATUS_ERROR = 'error';
+    const STATUS_ERROR = 'connection error';
     const STATUS_CANCELLED = 'cancelled';
     const STATUS_PENDING = 'pending';
 
