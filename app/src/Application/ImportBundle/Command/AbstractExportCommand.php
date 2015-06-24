@@ -380,12 +380,17 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
+        $input_path = '';
+        if ($input->hasOption('input-path') && $input->getOption('input-path')) {
+            $input_path = rtrim($input->getOption('input-path'), "\\/") . "/";
+        }
+
         switch ($config->getExporterType()) {
             case ExporterInterface::TYPE_CSV:
-                $readerConfig = new CsvConfig($input->getOption('input-path'));
+                $readerConfig = new CsvConfig($input_path);
                 break;
             case ExporterInterface::TYPE_JSON:
-                $readerConfig = new JsonConfig($input->getOption('input-path'));
+                $readerConfig = new JsonConfig($input_path);
                 break;
             case ExporterInterface::TYPE_ZENDESK:
                 $readerConfig = ZenDeskReaderFactory::getZenDeskConfig();
@@ -409,7 +414,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         $config->setReaderConfig($readerConfig);
         // back compatibility
-        $config->setInputPath($input->getOption('input-path'));
+        $config->setInputPath($input_path);
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));

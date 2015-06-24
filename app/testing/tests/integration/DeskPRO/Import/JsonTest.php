@@ -5,6 +5,8 @@ namespace DpIntegrationTests\DeskPRO\Import;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
 use Application\ImportBundle\Command\ExportCommand;
+use Application\ImportBundle\Command\ImportBatchCommand;
+use Application\ImportBundle\Command\ImportCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -78,8 +80,15 @@ class JsonTest extends \DpIntegrationTestCase
             mkdir($this->output_path, 0755, true);
         }
 
+        $this->helper->seeFileFound($this->input_path);
+        $this->helper->seeFileFound($this->output_path);
+
         $this->helper->amInPath($this->output_path);
         $this->helper->cleanDir($this->output_path);
+
+        if (file_exists($this->input_path . '/input.batch.json')) {
+            $this->helper->deleteFile($this->input_path . '/input.batch.json');
+        }
     }
 
     public function testCheck()
@@ -131,6 +140,43 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonData();
     }
 
+    public function testImport()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportCommand());
+
+        $command = $application->find('dp:import:run');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'json',
+            '--input-path'  => $this->input_path,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbData();
+        $this->checkJsonEmpty();
+    }
+
+    public function testImportBatch()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ImportBatchCommand());
+
+        $command = $application->find('dp:import:batch');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'json',
+            '--input-path'  => $this->input_path,
+            '--output-path' => $this->output_path,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbData();
+        $this->checkJsonData();
+    }
+
     private function checkJsonEmpty()
     {
         $this->assertFalse(file_exists('1/articles/'));
@@ -177,5 +223,11 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEmpty($this->article_repository->findAll());
         $this->assertEmpty($this->feedback_repository->findAll());
         $this->assertEmpty($this->download_repository->findAll());
+    }
+
+    private function checkDbData()
+    {
+        $this->assertCount(1, $this->ticket_repository->findAll());
+        $this->assertCount(1, $this->person_repository->findAll());
     }
 }
