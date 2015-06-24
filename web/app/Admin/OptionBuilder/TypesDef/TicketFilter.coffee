@@ -7,6 +7,9 @@ define [
     init: ->
       @options_data = null
 
+    getOperators: (options) ->
+      return options.operators || ['is', 'not']
+
     getOptionsForTypes: (types, typesData = null) ->
       set_options = []
       #------------------------------
