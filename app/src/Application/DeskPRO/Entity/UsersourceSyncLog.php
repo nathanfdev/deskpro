@@ -313,7 +313,10 @@ class UsersourceSyncLog extends \Application\DeskPRO\Domain\DomainObject
             ->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\UsersourceSyncLog')
             ->setChangeTrackingPolicyNotify();
         $builder->mapId();
-        $builder->addManyToOne('usersource', 'Application\DeskPRO\Entity\Usersource', null);
+
+
+        $metadata->mapManyToOne(array('fieldName' => 'usersource', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usersource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array(0 => array('name' => 'usersource_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL,),),));
+
         $builder->mapInteger('record_count', false);
         $builder->mapDateTime('date_start');
         $builder->mapDateTime('date_end');
