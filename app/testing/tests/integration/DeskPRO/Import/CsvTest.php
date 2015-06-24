@@ -226,7 +226,6 @@ class CsvTest extends \DpIntegrationTestCase
 
     private function checkDbData()
     {
-        $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
             'subject' => 'How to submit a ticket',
         )));
@@ -234,6 +233,7 @@ class CsvTest extends \DpIntegrationTestCase
             'subject' => 'Another Ticket',
         )));
 
+        $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(7, $this->person_repository->findAll());
     }
 }
