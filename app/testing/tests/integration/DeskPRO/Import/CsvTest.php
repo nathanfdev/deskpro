@@ -34,6 +34,26 @@ class CsvTest extends \DpIntegrationTestCase
     private $person_repository;
 
     /**
+     * @var EntityRepository\News
+     */
+    private $news_repository;
+
+    /**
+     * @var EntityRepository\Article
+     */
+    private $article_repository;
+
+    /**
+     * @var EntityRepository\Feedback
+     */
+    private $feedback_repository;
+
+    /**
+     * @var EntityRepository\Download
+     */
+    private $download_repository;
+
+    /**
      * Set up
      */
     public function runBefore()
@@ -41,8 +61,12 @@ class CsvTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $this->helper->enableFreshDatabaseSet('EmptyDb');
 
-        $this->ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->news_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
+        $this->article_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
+        $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
+        $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
 
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
         if ( ! is_dir($this->output_path)) {
@@ -183,6 +207,10 @@ class CsvTest extends \DpIntegrationTestCase
     {
         $this->assertEmpty($this->ticket_repository->findAll());
         $this->assertEmpty($this->person_repository->findAll());
+        $this->assertEmpty($this->news_repository->findAll());
+        $this->assertEmpty($this->article_repository->findAll());
+        $this->assertEmpty($this->feedback_repository->findAll());
+        $this->assertEmpty($this->download_repository->findAll());
     }
 
     private function checkDbData()
