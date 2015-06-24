@@ -100,6 +100,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Attachment of entity `message_0` parsed successfully!', $output);
         $this->assertContains('Entity `message_1` parsed successfully!', $output);
         $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
+        $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
         $this->assertContains('Entity `person_0` parsed successfully!', $output);
         $this->assertContains('Entity `person_6` parsed successfully!', $output);
         $this->assertContains('Entity `article_0` parsed successfully!', $output);
@@ -196,6 +197,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('Any update on my ticket yet?');
         $this->helper->seeInThisFile('Resources\/docs\/data_example\/csv\/tickets.csv');
 
+        $this->helper->seeFileFound('1/tickets/ticket_145.json');
+        $this->helper->seeInThisFile('Another Ticket');
+
         $this->helper->seeFileFound('1/news/news_0.json');
         $this->helper->seeInThisFile('News Title 1');
 
@@ -216,6 +220,13 @@ class CsvTest extends \DpIntegrationTestCase
     private function checkDbData()
     {
         $this->assertCount(2, $this->ticket_repository->findAll());
+        $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
+            'subject' => 'How to submit a ticket',
+        )));
+        $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
+            'subject' => 'Another Ticket',
+        )));
+
         $this->assertCount(7, $this->person_repository->findAll());
     }
 }
