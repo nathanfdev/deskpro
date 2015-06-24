@@ -109,7 +109,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			})
 		});
 
-		$('.DateTime.customfield', this.wrapper).each(function(){
+    $('.DateTime.customfield input', this.wrapper).each(function () {
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
