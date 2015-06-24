@@ -343,11 +343,11 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<header>
         <nav>
-            <ul>
-                <li id="{{ baseId }}_message_btn" class="on">
+            <ul id="{{ baseId }}_message_toggle">
+                <li class="on">
                     {{ phrase('agent.general.ticket') }} {{ phrase('agent.general.message') }}
                 </li>
-                <li id="{{ baseId }}_note_btn" class="note-type ">
+                <li data-is-note="1">
                     {{ phrase('agent.general.ticket') }} {{ phrase('agent.general.note') }}
                 </li>
             </ul>
