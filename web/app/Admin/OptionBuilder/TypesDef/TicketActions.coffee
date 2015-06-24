@@ -1010,11 +1010,15 @@ define [
             getViewValue: (value = {}, data) ->
               options = value?.options || {}
 
-              from_name = options.from_name || 'helpdesk_name'
-              from_name_custom = null
-              if from_name not in ['performer', 'helpdesk_name', 'site_name']
+              if options.from_name_custom and options.from_name_custom not in ['performer', 'helpdesk_name', 'site_name']
                 from_name = 'custom'
-                from_name_custom = options.from_name
+                from_name_custom = options.from_name_custom
+              else
+                from_name = options.from_name || 'helpdesk_name'
+                from_name_custom = null
+                if from_name not in ['performer', 'helpdesk_name', 'site_name']
+                  from_name = 'custom'
+                  from_name_custom = options.from_name
 
               view_model = {
                 template: options.template || '',
@@ -1122,11 +1126,15 @@ define [
             getViewValue: (value = {}, data) ->
               options = value?.options || {}
 
-              from_name = options.from_name || 'helpdesk_name'
-              from_name_custom = null
-              if from_name not in ['performer', 'helpdesk_name', 'site_name']
+              if options.from_name_custom and options.from_name_custom not in ['performer', 'helpdesk_name', 'site_name']
                 from_name = 'custom'
-                from_name_custom = options.from_name
+                from_name_custom = options.from_name_custom
+              else
+                from_name = options.from_name || 'helpdesk_name'
+                from_name_custom = null
+                if from_name not in ['performer', 'helpdesk_name', 'site_name']
+                  from_name = 'custom'
+                  from_name_custom = options.from_name
 
               agent_ids = {}
               if options.agent_ids
@@ -1232,11 +1240,15 @@ define [
           options = value?.options || {}
 
           emails = options.emails || []
-          from_name = options.from_name || 'helpdesk_name'
-          from_name_custom = null
-          if from_name not in ['performer', 'helpdesk_name', 'site_name']
+          if options.from_name_custom and options.from_name_custom not in ['performer', 'helpdesk_name', 'site_name']
             from_name = 'custom'
-            from_name_custom = options.from_name
+            from_name_custom = options.from_name_custom
+          else
+            from_name = options.from_name || 'helpdesk_name'
+            from_name_custom = null
+            if from_name not in ['performer', 'helpdesk_name', 'site_name']
+              from_name = 'custom'
+              from_name_custom = options.from_name
 
           return {
             emails: emails
