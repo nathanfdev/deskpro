@@ -39,7 +39,12 @@ class Build1435155110 extends AbstractBuild
     public function run()
     {
         $this->out("usersource sync log");
-		$this->execMutateSql("ALTER TABLE usersource_sync_log DROP FOREIGN KEY FK_C5ADA5725B71BD01");
+
+        $sh = $this->getSchemaHelper();
+        $fk = $sh->findForeignKey('usersource_sync_log', 'usersource_id', 'usersources', 'id');
+
+        $sh->getSchemaManager()->dropForeignKey($fk, 'usersource_sync_log');
+
 		$this->execMutateSql("ALTER TABLE usersource_sync_log CHANGE usersource_id usersource_id INT NOT NULL");
 		$this->execMutateSql("ALTER TABLE usersource_sync_log ADD CONSTRAINT FK_C5ADA5725B71BD01 FOREIGN KEY (usersource_id) REFERENCES usersources (id) ON DELETE CASCADE");
     }
