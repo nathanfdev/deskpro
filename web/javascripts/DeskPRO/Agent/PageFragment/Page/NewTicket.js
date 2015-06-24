@@ -627,7 +627,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var formData = this.form.serializeArray();
     formData.push({
       name: 'is_note',
-      value: this.getEl('message_toggle').children('li.on').data('is-note')
+      value: this.getEl('message_toggle').children('li.on').data('is-note') || ''
     });
 
 		$('div.error.section', this.wrapper).removeClass('error');
