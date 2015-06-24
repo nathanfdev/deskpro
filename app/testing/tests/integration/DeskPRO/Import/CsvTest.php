@@ -21,6 +21,11 @@ class CsvTest extends \DpIntegrationTestCase
     /**
      * @var string
      */
+    private $input_path;
+
+    /**
+     * @var string
+     */
     private $output_path;
 
     /**
@@ -68,7 +73,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
         $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
 
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
+
         if ( ! is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
@@ -90,7 +97,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'      => $command->getName(),
             'script'       => 'csv',
-            '--input-path' => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path' => $this->input_path,
             '--verbose'    => true,
             '--batch'      => true,
         ));
@@ -125,7 +132,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
-            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
             '--batch'       => true,
         ));
@@ -144,7 +151,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
-            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path'  => $this->input_path,
             '--batch'       => true,
         ));
 
@@ -162,7 +169,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
-            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
             '--batch'       => true,
         ));

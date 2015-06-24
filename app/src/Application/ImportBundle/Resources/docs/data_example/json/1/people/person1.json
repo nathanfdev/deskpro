@@ -9,7 +9,7 @@
   "override_display_name": null,
   "password": null,
   "password_scheme": "plain",
-  "timezone": {},
+  "timezone": "Europe/Moscow",
   "date_created": "2015-02-06 19:05:35",
   "language": null,
   "organization": null,

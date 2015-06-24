@@ -4,6 +4,7 @@ namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
+use Application\ImportBundle\Command\ExportCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -15,6 +16,11 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class JsonTest extends \DpIntegrationTestCase
 {
+    /**
+     * @var string
+     */
+    private $input_path;
+
     /**
      * @var string
      */
@@ -65,7 +71,9 @@ class JsonTest extends \DpIntegrationTestCase
         $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
         $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
 
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
+
         if ( ! is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
@@ -84,14 +92,13 @@ class JsonTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'      => $command->getName(),
             'script'       => 'json',
-            '--input-path' => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json',
+            '--input-path' => $this->input_path,
             '--verbose'    => true,
             '--batch'      => true,
         ));
 
         $output = $commandTester->getDisplay();
 
-        $this->assertContains('Entity `message_1` parsed successfully!', $output);
         $this->assertContains('Entity `ticket_1` parsed successfully!', $output);
         $this->assertContains('Entity `person_710618382` parsed successfully!', $output);
         $this->assertContains('Entity `news_1` parsed successfully!', $output);
@@ -105,6 +112,25 @@ class JsonTest extends \DpIntegrationTestCase
         $this->checkJsonEmpty();
     }
 
+    public function testExport()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ExportCommand());
+
+        $command = $application->find('dp:export:run');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'json',
+            '--input-path'  => $this->input_path,
+            '--output-path' => $this->output_path,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbEmpty();
+        $this->checkJsonData();
+    }
+
     private function checkJsonEmpty()
     {
         $this->assertFalse(file_exists('1/articles/'));
@@ -113,6 +139,34 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertFalse(file_exists('1/feedback/'));
         $this->assertFalse(file_exists('1/news/'));
         $this->assertFalse(file_exists('1/downloads/'));
+    }
+
+    private function checkJsonData()
+    {
+        $this->helper->seeFileFound('1/articles/article_1.json');
+        $this->helper->seeFileFound('1/articles/article_2.json');
+        $this->helper->seeFileFound('1/feedback/feedback_1.json');
+        $this->helper->seeFileFound('1/people/person_710618382.json');
+        $this->helper->seeFileFound('1/tickets/ticket_1.json');
+        $this->helper->seeFileFound('1/news/news_1.json');
+        $this->helper->seeFileFound('1/downloads/download_1.json');
+
+        $this->checkJsonFile('/1/articles/article1.json', '1/articles/article_1.json');
+        $this->checkJsonFile('/1/articles/article2.json', '1/articles/article_2.json');
+        $this->checkJsonFile('/1/feedback/feedback1.json', '1/feedback/feedback_1.json');
+        $this->checkJsonFile('/1/people/person1.json', '1/people/person_710618382.json');
+        $this->checkJsonFile('/1/tickets/ticket1.json', '1/tickets/ticket_1.json');
+        $this->checkJsonFile('/1/news/news1.json', '1/news/news_1.json');
+        $this->checkJsonFile('/1/news/news2.json', '1/news/news_2.json');
+        $this->checkJsonFile('/1/downloads/download1.json', '1/downloads/download_1.json');
+    }
+
+    private function checkJsonFile($input, $output)
+    {
+        $this->assertEquals(
+            json_decode(file_get_contents($this->input_path . $input)),
+            json_decode(file_get_contents($output))
+        );
     }
 
     private function checkDbEmpty()
