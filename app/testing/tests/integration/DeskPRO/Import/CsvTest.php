@@ -52,6 +52,9 @@ class CsvTest extends \DpIntegrationTestCase
     public function testExport()
     {
         $output_path = dp_get_data_dir() . '/import/csv/export';
+        if (!is_dir($output_path)) {
+            mkdir($output_path, 0755, true);
+        }
 
         $this->helper->amInPath($output_path);
         $this->helper->cleanDir($output_path);
