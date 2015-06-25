@@ -1,12 +1,17 @@
 {
-	"oid": 1,
-	"person": "admin@example.com",
-	"language": "English",
-	"title": "News item imported via Importer",
-	"content": "The commitment announced Wednesday as part of Apple's fiscal second-quarter earnings report expands on the company's previous pledge to spend $60 billion on stock buybacks by the end of next year.",
-	"total_rating": "4",
-	"num_comments": "5",
-	"num_ratings": "6",
-	"category": "Announcement",
-	"labels": ["label1", "label2"]
+  "oid": 1,
+  "person": "some@email.tld",
+  "language": "english",
+  "slug": "news-slug-1",
+  "title": "News Title 1",
+  "content": "News Content 1",
+  "view_count": 0,
+  "total_rating": 0,
+  "num_comments": 0,
+  "num_ratings": 0,
+  "status": "published",
+  "date_created": "2015-03-05 19:40:10",
+  "date_published": null,
+  "category": "News Category 1",
+  "labels": ["News Label 1"]
 }

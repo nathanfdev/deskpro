@@ -21,6 +21,11 @@ class CsvTest extends \DpIntegrationTestCase
     /**
      * @var string
      */
+    private $input_path;
+
+    /**
+     * @var string
+     */
     private $output_path;
 
     /**
@@ -34,6 +39,26 @@ class CsvTest extends \DpIntegrationTestCase
     private $person_repository;
 
     /**
+     * @var EntityRepository\News
+     */
+    private $news_repository;
+
+    /**
+     * @var EntityRepository\Article
+     */
+    private $article_repository;
+
+    /**
+     * @var EntityRepository\Feedback
+     */
+    private $feedback_repository;
+
+    /**
+     * @var EntityRepository\Download
+     */
+    private $download_repository;
+
+    /**
      * Set up
      */
     public function runBefore()
@@ -41,10 +66,16 @@ class CsvTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $this->helper->enableFreshDatabaseSet('EmptyDb');
 
-        $this->ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->news_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
+        $this->article_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
+        $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
+        $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
 
+        $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
+
         if ( ! is_dir($this->output_path)) {
             mkdir($this->output_path, 0755, true);
         }
@@ -66,7 +97,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'      => $command->getName(),
             'script'       => 'csv',
-            '--input-path' => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path' => $this->input_path,
             '--verbose'    => true,
             '--batch'      => true,
         ));
@@ -76,6 +107,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Attachment of entity `message_0` parsed successfully!', $output);
         $this->assertContains('Entity `message_1` parsed successfully!', $output);
         $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
+        $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
         $this->assertContains('Entity `person_0` parsed successfully!', $output);
         $this->assertContains('Entity `person_6` parsed successfully!', $output);
         $this->assertContains('Entity `article_0` parsed successfully!', $output);
@@ -100,7 +132,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
-            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
             '--batch'       => true,
         ));
@@ -119,7 +151,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
-            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path'  => $this->input_path,
             '--batch'       => true,
         ));
 
@@ -137,7 +169,7 @@ class CsvTest extends \DpIntegrationTestCase
         $commandTester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
-            '--input-path'  => DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv',
+            '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
             '--batch'       => true,
         ));
@@ -172,6 +204,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeInThisFile('Any update on my ticket yet?');
         $this->helper->seeInThisFile('Resources\/docs\/data_example\/csv\/tickets.csv');
 
+        $this->helper->seeFileFound('1/tickets/ticket_145.json');
+        $this->helper->seeInThisFile('Another Ticket');
+
         $this->helper->seeFileFound('1/news/news_0.json');
         $this->helper->seeInThisFile('News Title 1');
 
@@ -183,10 +218,21 @@ class CsvTest extends \DpIntegrationTestCase
     {
         $this->assertEmpty($this->ticket_repository->findAll());
         $this->assertEmpty($this->person_repository->findAll());
+        $this->assertEmpty($this->news_repository->findAll());
+        $this->assertEmpty($this->article_repository->findAll());
+        $this->assertEmpty($this->feedback_repository->findAll());
+        $this->assertEmpty($this->download_repository->findAll());
     }
 
     private function checkDbData()
     {
+        $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
+            'subject' => 'How to submit a ticket',
+        )));
+        $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
+            'subject' => 'Another Ticket',
+        )));
+
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(7, $this->person_repository->findAll());
     }

@@ -36,6 +36,7 @@ use DateTime;
 use Exception;
 use Guzzle\Http\Client as HttpClient;
 use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Exception\ServerErrorResponseException;
 use Orb\Util\Strings;
 
 /**
@@ -345,6 +346,16 @@ final class Tickets extends AbstractParser
                 return $entity;
 
             } catch (ClientErrorResponseException $e) {
+                $this->logError(sprintf('Unable to download attachment #%s', $attachment['id']));
+                $this->logError($e->getMessage());
+
+                $response = $e->getResponse();
+                if ($response) {
+                    $this->logError(sprintf('Status code: %s', $response->getStatusCode()));
+                    $this->logError(sprintf('Reason phrase: %s', $response->getReasonPhrase()));
+                }
+
+            } catch (ServerErrorResponseException $e) {
                 $this->logError(sprintf('Unable to download attachment #%s', $attachment['id']));
                 $this->logError($e->getMessage());
 
