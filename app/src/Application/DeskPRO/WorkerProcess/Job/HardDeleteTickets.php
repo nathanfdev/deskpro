@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 /**
  * Goes through soft-deleted tickets that were deleted long ago,
- * and permanantly removes them now.
+ * and permanently removes them now.
  */
 class HardDeleteTickets extends AbstractJob
 {
