@@ -134,11 +134,30 @@ class NewTicket
      */
     public $exist_ticket;
 
+    /**
+     * @var array
+     */
     protected $_blob_inline_ids = array();
+
+    /**
+     * @var bool
+     */
     public $suppress_user_notify = false;
 
+    /**
+     * @var array
+     */
     public $custom_person_fields;
+
+    /**
+     * @var array
+     */
     public $custom_org_fields;
+
+    /**
+     * @var bool
+     */
+    public $is_note = false;
 
     public function __construct(EntityManager $em, Person $person_context)
     {
@@ -368,6 +387,10 @@ class NewTicket
         $message = new TicketMessage();
         $message->person = $this->_person_context;
         $message->setVisitorFromRequest();
+
+        if ($this->is_note) {
+            $message->is_agent_note = true;
+        }
 
         $message_text = $this->message;
         $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
