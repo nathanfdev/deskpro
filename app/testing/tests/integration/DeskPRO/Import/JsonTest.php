@@ -97,8 +97,8 @@ class JsonTest extends \DpIntegrationTestCase
         $application->add(new CheckExportCommand());
 
         $command = $application->find('dp:export:check');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'      => $command->getName(),
             'script'       => 'json',
             '--input-path' => $this->input_path,
@@ -106,7 +106,7 @@ class JsonTest extends \DpIntegrationTestCase
             '--batch'      => true,
         ));
 
-        $output = $commandTester->getDisplay();
+        $output = $command_tester->getDisplay();
 
         $this->assertContains('Entity `ticket_1` parsed successfully!', $output);
         $this->assertContains('Entity `person_710618382` parsed successfully!', $output);
@@ -127,8 +127,8 @@ class JsonTest extends \DpIntegrationTestCase
         $application->add(new ExportCommand());
 
         $command = $application->find('dp:export:run');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'json',
             '--input-path'  => $this->input_path,
@@ -146,8 +146,8 @@ class JsonTest extends \DpIntegrationTestCase
         $application->add(new ImportCommand());
 
         $command = $application->find('dp:import:run');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'json',
             '--input-path'  => $this->input_path,
@@ -164,8 +164,8 @@ class JsonTest extends \DpIntegrationTestCase
         $application->add(new ImportBatchCommand());
 
         $command = $application->find('dp:import:batch');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'json',
             '--input-path'  => $this->input_path,

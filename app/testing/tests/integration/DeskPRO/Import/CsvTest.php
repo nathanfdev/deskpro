@@ -93,8 +93,8 @@ class CsvTest extends \DpIntegrationTestCase
         $application->add(new CheckExportCommand());
 
         $command = $application->find('dp:export:check');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'      => $command->getName(),
             'script'       => 'csv',
             '--input-path' => $this->input_path,
@@ -102,7 +102,7 @@ class CsvTest extends \DpIntegrationTestCase
             '--batch'      => true,
         ));
 
-        $output = $commandTester->getDisplay();
+        $output = $command_tester->getDisplay();
 
         $this->assertContains('Attachment of entity `message_0` parsed successfully!', $output);
         $this->assertContains('Entity `message_1` parsed successfully!', $output);
@@ -128,8 +128,8 @@ class CsvTest extends \DpIntegrationTestCase
         $application->add(new ExportCommand());
 
         $command = $application->find('dp:export:run');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
             '--input-path'  => $this->input_path,
@@ -147,14 +147,16 @@ class CsvTest extends \DpIntegrationTestCase
         $application->add(new ImportCommand());
 
         $command = $application->find('dp:import:run');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
             '--input-path'  => $this->input_path,
+            '--verbose'     => true,
             '--batch'       => true,
         ));
 
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonEmpty();
     }
@@ -165,15 +167,17 @@ class CsvTest extends \DpIntegrationTestCase
         $application->add(new ImportBatchCommand());
 
         $command = $application->find('dp:import:batch');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
             'command'       => $command->getName(),
             'script'        => 'csv',
             '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
+            '--verbose'     => true,
             '--batch'       => true,
         ));
 
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonData();
     }
@@ -235,5 +239,18 @@ class CsvTest extends \DpIntegrationTestCase
 
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(7, $this->person_repository->findAll());
+    }
+    
+    private function checkDbWriterOutput(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertContains('Creating new ticket with ref', $output);
+        $this->assertContains('Persisted TicketLog #1', $output);
+        $this->assertContains('Persisted TicketLog #2', $output);
+        $this->assertContains('Persisted TicketMessage #1', $output);
+        $this->assertContains('Persisted TicketMessage #2', $output);
+        $this->assertContains('Persisted Ticket #1', $output);
+        $this->assertContains('Persisted Ticket #2', $output);
     }
 }
