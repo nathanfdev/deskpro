@@ -80,6 +80,10 @@ class DPTest extends \DpIntegrationTestCase
         $this->assertArrayHasKey('id', $response);
         $service->link($ticket, $response['id'], $person);
 
+        $issues = $service->issues($ticket['id']);
+
+        return var_dump(print_r($issues));
+
         /** @var JiraIssue $issue */
         $issue = $em->getRepository('DeskPRO:JiraIssue')->findOneBy(array());
         $this->assertInstanceOf('Application\DeskPRO\Entity\JiraIssue', $issue);
@@ -123,6 +127,7 @@ class DPTest extends \DpIntegrationTestCase
         $em = $this->helper->getSymfonyContainer()->getEm();
         $service = $this->js();
         $api = $service->getApi();
+        $res = array();
 
         /** @var Ticket $ticket */
         $ticket = $em->find('DeskPRO:Ticket', 1);
