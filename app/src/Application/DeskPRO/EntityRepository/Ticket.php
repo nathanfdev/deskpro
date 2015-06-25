@@ -428,9 +428,11 @@ class Ticket extends AbstractEntityRepository
             $count = App::getDb()->fetchColumn("
                 SELECT SUM(count)
                 FROM (
-                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . " AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     UNION
-                    SELECT COUNT(*) AS count FROM tickets_participants WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    SELECT COUNT(*) AS count FROM tickets_participants
+                    LEFT JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
+                    WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . " AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                 ) a
             ", array($person->id, $person->id));
         }
@@ -472,6 +474,7 @@ class Ticket extends AbstractEntityRepository
                     WHERE
                         tickets.organization_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
                         AND tickets.department_id IN (".implode(',', $allowed_ids).")
+                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                 ", array($person->getOrganizationId()));
             }
         }
