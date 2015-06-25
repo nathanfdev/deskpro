@@ -82,7 +82,7 @@ class DPTest extends \DpIntegrationTestCase
 
         $issues = $service->issues($ticket['id']);
 
-        throw new \Exception(print_r($issues));
+        throw new \Exception(print_r($issues, 1));
 
         /** @var JiraIssue $issue */
         $issue = $em->getRepository('DeskPRO:JiraIssue')->findOneBy(array());
