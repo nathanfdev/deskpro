@@ -83,6 +83,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->amInPath($this->output_path);
         $this->helper->cleanDir($this->output_path);
 
+        $this->overrideDpRootPath('/ticket_attachments.csv');
         $this->checkDbEmpty();
         $this->checkJsonEmpty();
     }
@@ -143,8 +144,6 @@ class CsvTest extends \DpIntegrationTestCase
 
     public function testImport()
     {
-        $this->markTestSkipped('Skip this for a while');
-
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportCommand());
 
@@ -165,8 +164,6 @@ class CsvTest extends \DpIntegrationTestCase
 
     public function testImportBatch()
     {
-        $this->markTestSkipped('Skip this for a while');
-
         $application = new Application($this->helper->getSymfonyContainer()->getKernel());
         $application->add(new ImportBatchCommand());
 
@@ -256,5 +253,15 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Persisted TicketMessage #2', $output);
         $this->assertContains('Persisted Ticket #1', $output);
         $this->assertContains('Persisted Ticket #2', $output);
+    }
+
+    private function overrideDpRootPath($file)
+    {
+        $dp_root = str_replace('/app', '/', DP_ROOT);
+
+        $content = file_get_contents($this->input_path . $file);
+        $content = str_replace('/deskpro/www/', $dp_root, $content);
+
+        file_put_contents($this->input_path . $file, $content);
     }
 }
