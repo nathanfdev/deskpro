@@ -64,6 +64,11 @@ class AgentCheckerService
      */
     public function addAgentSeat(Person $person)
     {
+        // 0 = unlimited
+        if (License::getLicense()->getMaxAgents() == 0) {
+            return true;
+        }
+
         $active_agent_count = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
         if ($active_agent_count >= License::getLicense()->getMaxAgents()) {
             return false;
