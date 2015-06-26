@@ -142,7 +142,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $ret = $this->executeUnattendedRun($input, $output);
         }
 
-        $GLOBALS['DP_IS_IMPORTING'] = false;
+        unset($GLOBALS['DP_IS_IMPORTING']);
         $GLOBALS['DP_NOSQL_LOG'] = false;
 
         return $ret;
