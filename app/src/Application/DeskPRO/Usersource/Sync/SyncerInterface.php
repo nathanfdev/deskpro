@@ -64,7 +64,7 @@ interface SyncerInterface
      * @param callable $pause_check a callable that takes the SyncCursor originally passed as an argument
      * @return mixed
      */
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check);
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check);
 
     /**
      * True if we should use this syncer for the usersource adapter class.
