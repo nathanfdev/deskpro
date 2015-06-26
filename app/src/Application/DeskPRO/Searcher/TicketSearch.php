@@ -26,10 +26,10 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -133,6 +133,7 @@ class TicketSearch extends SearcherAbstract
      * @var array
      */
     protected $affected_fields = array();
+    protected $done_affected_fields = false;
 
     /**
      * An array of search terms that are specific, as in only allow a single
@@ -375,9 +376,171 @@ class TicketSearch extends SearcherAbstract
      */
     public function getAffectedFields()
     {
-        $this->getSqlParts();
+        if ($this->done_affected_fields) {
+            return $this->affected_fields;
+        }
 
-        return array_unique($this->affected_fields, SORT_STRING);
+        $this->done_affected_fields = true;
+        $this->affected_fields = array();
+
+        foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
+            foreach ($term_set[1] as $info) {
+                if (!$info || !is_array($info)) continue;
+                list($term, $op, $choice) = $info;
+
+                $term_id = null;
+
+                // $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
+                $m = null;
+                if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+                    $term = $m[1];
+                    $term_id = $m[2];
+                }
+
+                if (!$term) {
+                    continue;
+                }
+
+                switch ($term) {
+                    case self::TERM_ID:
+                        break;
+                    case self::TERM_REF:
+                        break;
+                    case self::TERM_PERSON_ID:
+                        break;
+                    case self::TERM_ARCHIVE_SEARCH:
+                        break;
+                    case self::TERM_DEPARTMENT:
+                        $this->affected_fields[] = 'ticket.department_id';
+                        break;
+                    case self::TERM_EMAIL_ACCOUNT:
+                        $this->affected_fields[] = 'ticket.email_account_id';
+                        break;
+                    case self::TERM_DELETED:
+                        $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.hidden_status';
+                        break;
+                    case self::TERM_CATEGORY:
+                        $this->affected_fields[] = 'ticket.category_id';
+                        break;
+                    case self::TERM_PRODUCT:
+                        $this->affected_fields[] = 'ticket.product_id';
+                        break;
+                    case self::TERM_PRIORITY:
+                        $this->affected_fields[] = 'ticket.priority_id';
+                        break;
+                    case self::TERM_URGENCY:
+                        $this->affected_fields[] = 'ticket.urgency';
+                        break;
+                    case self::TERM_DATE_CREATED:
+                        break;
+                    case self::TERM_DATE_STATUS:
+                        break;
+                    case self::TERM_DATE_RESOLVED:
+                        $this->affected_fields[] = 'ticket.date_resolved';
+                        break;
+                    case self::TERM_DATE_ARCHIVED:
+                        $this->affected_fields[] = 'ticket.date_archived';
+                        break;
+                    case self::TERM_DATE_LAST_USER_REPLY:
+                        $this->affected_fields[] = 'ticket.date_last_user_reply';
+                        break;
+                    case self::TERM_DATE_LAST_AGENT_REPLY:
+                        $this->affected_fields[] = 'ticket.date_last_agent_reply';
+                        break;
+                    case self::TERM_DATE_LAST_REPLY:
+                        $this->affected_fields[] = 'ticket.date_last_reply';
+                        break;
+                    case self::TERM_WORKFLOW:
+                        $this->affected_fields[] = 'ticket.workflow_id';
+                        break;
+                    case self::TERM_FEEDBACK_RATING:
+                        break;
+                    case self::TERM_SLA:
+                        $this->affected_fields[] = 'ticket.sla_id';
+                        break;
+                    case self::TERM_SLA_STATUS:
+                        break;
+                    case self::TERM_SLA_COMPLETED:
+                        $this->affected_fields[] = 'ticket.sla_completed';
+                        $this->affected_fields[] = 'ticket.sla_id';
+                        break;
+                    case self::TERM_LANGUAGE:
+                        $this->affected_fields[] = 'ticket.language_id';
+                        break;
+                    case self::TERM_AGENT:
+                        $this->affected_fields[] = 'ticket.agent_id';
+                        break;
+                    case self::TERM_AGENT_TEAM:
+                        $this->affected_fields[] = 'ticket.agent_team_id';
+                        break;
+                    case self::TERM_STATUS:
+                        $this->affected_fields[] = 'ticket.status';
+                        break;
+                    case self::TERM_HIDDEN_STATUS:
+                        $this->affected_fields[] = 'ticket.hidden_status';
+                        break;
+                    case self::TERM_HOLD:
+                        $this->affected_fields[] = 'ticket.is_hold';
+                        break;
+                    case self::TERM_ORGANIZATION:
+                        $this->affected_fields[] = 'ticket.organization_id';
+                        break;
+                    case self::TERM_PARTICIPANT:
+                        $this->affected_fields[] = 'ticket.participants';
+                        break;
+                    case self::TERM_PERSON:
+                        $this->affected_fields[] = 'ticket.person_id';
+                        break;
+                    case self::TERM_IP_ADDRESS:
+                        break;
+                    case self::TERM_SUBJECT:
+                        $this->affected_fields[] = 'ticket.subject';
+                        break;
+                    case self::TERM_SUBJECT_ADV:
+                        $this->affected_fields[] = 'ticket.subject';
+                        break;
+                    case self::TERM_MESSAGE:
+                        $this->affected_fields[] = 'ticket.message';
+                        break;
+                    case self::TERM_MESSAGE_ADV:
+                        $this->affected_fields[] = 'ticket.message';
+                        break;
+                    case self::TERM_FLAGGED:
+                        $this->affected_fields[] = 'tickets_flagged';
+                        break;
+                    case self::TERM_LABEL:
+                        $this->affected_fields[] = 'ticket.labels';
+                        break;
+                    case self::TERM_TICKET_FIELD:
+                        $this->affected_fields[] = 'ticket.custom_data_ticket_' . $term_id;
+                        break;
+                    case 'time_waiting':
+                    case self::TERM_USER_WAITING:
+                        $this->affected_fields[] = 'ticket.date_user_waiting';
+                        break;
+                    case self::TERM_AGENT_WAITING:
+                        $this->affected_fields[] = 'ticket.date_agent_waiting';
+                        break;
+                    case self::TERM_TOTAL_USER_WAITING:
+                        $this->affected_fields[] = 'ticket.total_user_waiting';
+                        break;
+                    case self::TERM_CREATION_SYSTEM:
+                        break;
+                    case 'escalation_eliminator':
+                        break;
+                    case 'time_created':
+                    case 'time_last_user_reply':
+                        break;
+                    case self::TERM_DAY_CREATED:
+                        break;
+                }
+            }
+        }
+
+        $this->affected_fields = array_unique($this->affected_fields, SORT_STRING);
+
+        return $this->affected_fields;
     }
 
 
@@ -389,11 +552,9 @@ class TicketSearch extends SearcherAbstract
      */
     public function hasAnyAffectedFields(array $fields)
     {
-        $this->getSqlParts();
-
-        $affected_fields = $this->getAffectedFields();
+        $affected_fields = array_fill_keys($this->getAffectedFields(), true);
         foreach ($fields as $f) {
-            if (in_array($f, $affected_fields)) {
+            if (isset($affected_fields[$f])) {
                 return true;
             }
         }
@@ -1367,8 +1528,8 @@ class TicketSearch extends SearcherAbstract
                                 $joins[] = array(
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
-                                        . " AND $join_name.sla_status IN ($statuses_in)"
-                                        . ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
+                                    . " AND $join_name.sla_status IN ($statuses_in)"
+                                    . ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
                                 );
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
@@ -1430,8 +1591,8 @@ class TicketSearch extends SearcherAbstract
                                 $joins[] = array(
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
-                                        . "AND $join_name.is_completed IN ($completed_in)"
-                                        . ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
+                                    . "AND $join_name.is_completed IN ($completed_in)"
+                                    . ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
                                 );
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
@@ -2354,6 +2515,9 @@ class TicketSearch extends SearcherAbstract
                     $field = str_replace('time', 'date', $term);
 
                     $f = $ticket[$field];
+                    if (!$f || !($f instanceof \DateTime)) {
+                        return false;
+                    }
                     $ticket_time = clone $f;
 
                     if (!empty($choice['timezone'])) {
