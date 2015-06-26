@@ -135,11 +135,17 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
+        $ret = null;
         if ($input->getOption('batch')) {
-            return $this->executeBatchRun($input, $output);
+            $ret = $this->executeBatchRun($input, $output);
         } else {
-            return $this->executeUnattendedRun($input, $output);
+            $ret = $this->executeUnattendedRun($input, $output);
         }
+
+        $GLOBALS['DP_IS_IMPORTING'] = false;
+        $GLOBALS['DP_NOSQL_LOG'] = false;
+
+        return $ret;
     }
 
     /**
