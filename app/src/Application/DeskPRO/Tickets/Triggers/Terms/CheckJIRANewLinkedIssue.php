@@ -69,8 +69,6 @@ class CheckJIRANewLinkedIssue extends AbstractTriggerTerm
 		}
 		$issue = $change->getData();
 
-        throw new \Exception(print_r($issue, 1));
-
 		if ($options['project'] && $options['project'] != $issue['fields']['project']['id']) {
 			return false;
 		}
