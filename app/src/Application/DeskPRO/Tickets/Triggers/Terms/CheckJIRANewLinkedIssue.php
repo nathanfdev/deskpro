@@ -65,13 +65,11 @@ class CheckJIRANewLinkedIssue extends AbstractTriggerTerm
 	{
 		$options = $this->getTermOptions();
 		if (!$change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.linked')) {
-            throw new \Exception(print_r($change, 1));
 			return false;
 		}
 		$issue = $change->getData();
 
 		if ($options['project'] && $options['project'] != $issue['fields']['project']['id']) {
-            throw new \Exception(print_r($options['project'], 1));
 			return false;
 		}
 

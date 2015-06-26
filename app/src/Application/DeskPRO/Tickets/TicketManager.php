@@ -265,6 +265,7 @@ class TicketManager
     public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (isset($GLOBALS['DP_IS_IMPORTING'])) {
+            \Codeception\Util\Debug::debug('Simple flush');
             $this->em->persist($ticket);
             $this->em->flush();
             return null;
@@ -303,6 +304,10 @@ class TicketManager
             $context->getLogger()->debug("is_trivial_change = true");
             $context->setEventType('noop');
             $is_noop = true;
+        }
+
+        if ($is_noop) {
+            \Codeception\Util\Debug::debug('NOOP');
         }
 
         if ($context->getPersonContext()) {
