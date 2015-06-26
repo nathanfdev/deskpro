@@ -33,6 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\Form\CustomField\Type\PersonStartType;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\Entity\Blob;
@@ -444,10 +445,33 @@ class SettingsController extends AbstractController implements ProtectedControll
     # save-start-settings
     ############################################################################
 
-    public function setStartSettingsAction()
+    public function setStartSettingsAction(Request $request)
     {
         $this->settings->setSetting('core.deskpro_url', $this->in->getString('deskpro_url'));
         $this->settings->setSetting('core.deskpro_name', $this->in->getString('deskpro_name'));
+
+        $content = json_decode($request->getContent(), 1);
+
+        if ($content && isset($content['email'])) {
+
+            $form = $this->createForm(new PersonStartType());
+            $data = array_intersect_key($content, $form->all());
+            $form->submit($data);
+
+            if (!$form->isValid()) {
+                return $this->createApiErrorResponse('form_error', (string)$form->getErrors(1));
+            }
+
+            $data = $form->getData();
+            $p = $this->person;
+            $email = $p->getPrimaryEmail();
+            $email['email'] = $data['email'];
+            $p['first_name'] = $data['first_name'];
+            $p['last_name'] = $data['last_name'];
+            $p->setPassword($data['password']);
+            $this->em->flush($email);
+            $this->em->flush($p);
+        }
 
         try {
             $tz = $this->in->getString('timezone');
