@@ -63,8 +63,10 @@ class CsvTest extends \DpIntegrationTestCase
      */
     public function runBefore()
     {
+        $this->helper->enableFreshDatabaseSet('FreshDb');
+
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
-        $this->helper->enableFreshDatabaseSet('EmptyDb');
+        $entity_manager->clear();
 
         $this->ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
         $this->person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
@@ -221,12 +223,12 @@ class CsvTest extends \DpIntegrationTestCase
 
     private function checkDbEmpty()
     {
-        $this->assertEmpty($this->ticket_repository->findAll());
-        $this->assertEmpty($this->person_repository->findAll());
-        $this->assertEmpty($this->news_repository->findAll());
-        $this->assertEmpty($this->article_repository->findAll());
-        $this->assertEmpty($this->feedback_repository->findAll());
-        $this->assertEmpty($this->download_repository->findAll());
+        $this->assertEquals(0, $this->ticket_repository->countAll());
+        $this->assertEquals(1, $this->person_repository->countAll());
+        $this->assertEquals(1, $this->news_repository->countAll());
+        $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(1, $this->feedback_repository->countAll());
+        $this->assertEquals(0, $this->download_repository->countAll());
     }
 
     private function checkDbData()
@@ -238,13 +240,17 @@ class CsvTest extends \DpIntegrationTestCase
             'subject' => 'Another Ticket',
         )));
 
+        $this->assertCount(3, $this->news_repository->findAll());
         $this->assertCount(2, $this->ticket_repository->findAll());
-        $this->assertCount(7, $this->person_repository->findAll());
+        $this->assertCount(8, $this->person_repository->findAll());
     }
     
     private function checkDbWriterOutput(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
+
+        $this->assertContains('Persisted News #2', $output);
+        $this->assertContains('Persisted Person #2', $output);
 
         $this->assertContains('Creating new ticket with ref', $output);
         $this->assertContains('Persisted TicketLog #1', $output);
