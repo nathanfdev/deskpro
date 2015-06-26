@@ -108,6 +108,9 @@ class Build1400056701 extends AbstractBuild
         $this->out("Change data type of usersources.options");
         $this->execMutateSql("ALTER TABLE usersources CHANGE options options LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
 
+        $this->out("Add usersources.sync_enabled");
+        // pre-emptive because use of doctrine entity later in Build1400056729
+        $this->execMutateSql("ALTER TABLE usersources ADD sync_enabled TINYINT(1) DEFAULT '0' NOT NULL", true);
 
         #-------------------------
         # Mark a couple default datas as done

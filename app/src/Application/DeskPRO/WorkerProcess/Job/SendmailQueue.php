@@ -41,7 +41,7 @@ use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
  */
 class SendmailQueue extends AbstractJob
 {
-    const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 1;
 
     public function run()
     {
