@@ -256,40 +256,42 @@ class FilterChangeDetector
         // Calculate who could actually see it
         $agent_perm_cache = array();
         $start = microtime(true);
+
+        $distinct_agents = array();
         foreach ($filter_checks as $filter_check) {
             foreach ($filter_check['scopes'] as $agent) {
-                /** @var Person $agent */
-
-                if (!$agent->is_agent) {
-                    $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
-                }
-
-                // Already done checks in a previous iteration
-                if (isset($agent_perm_cache[$agent->id])) {
-                    continue;
-                }
-
-                if ($is_new_ticket) {
-                    $see_old = false;
-                    $see_new = true;
-                } else {
-                    $see_old = true;
-                    $see_new = true;
-                }
-
-                // testing check
-                // there is no mock for the PermissionsManager yet
-                if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
-                    if ($see_old && !$agent->getPermissionsManager()->TicketChecker->canView($orig_ticket)) {
-                        $see_old = false;
-                    }
-                    if ($see_new && !$agent->getPermissionsManager()->TicketChecker->canView($new_ticket)) {
-                        $see_new = false;
-                    }
-                }
-
-                $agent_perm_cache[$agent->id] = array('old' => $see_old, 'new' => $see_new);
+                $distinct_agents[$agent->id] = $agent;
             }
+        }
+
+        foreach ($distinct_agents as $agent) {
+            /** @var Person $agent */
+
+            if (!$agent->is_agent) {
+                $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
+                continue;
+            }
+
+            if ($is_new_ticket) {
+                $see_old = false;
+                $see_new = true;
+            } else {
+                $see_old = true;
+                $see_new = true;
+            }
+
+            // testing check
+            // there is no mock for the PermissionsManager yet
+            if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
+                if ($see_old && !$agent->getPermissionsManager()->TicketChecker->canView($orig_ticket)) {
+                    $see_old = false;
+                }
+                if ($see_new && !$agent->getPermissionsManager()->TicketChecker->canView($new_ticket)) {
+                    $see_new = false;
+                }
+            }
+
+            $agent_perm_cache[$agent->id] = array('old' => $see_old, 'new' => $see_new);
         }
         $logger->debug(sprintf("[FilterChangeDetector] Permissions of %d agents calculated in %.3fs", count($agent_perm_cache), microtime(true)-$start));
 
