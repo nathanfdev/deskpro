@@ -63,8 +63,10 @@ class JsonTest extends \DpIntegrationTestCase
      */
     public function runBefore()
     {
-        $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $this->helper->enableFreshDatabaseSet('EmptyDb');
+
+        $entity_manager = $this->helper->getSymfonyContainer()->getEm();
+        $entity_manager->clear();
 
         $this->ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
         $this->person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
