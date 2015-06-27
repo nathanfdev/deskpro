@@ -34,6 +34,11 @@ class CsvTest extends \DpIntegrationTestCase
     private $ticket_repository;
 
     /**
+     * @var EntityRepository\TicketAttachment
+     */
+    private $ticket_attachment_repository;
+
+    /**
      * @var EntityRepository\Person
      */
     private $person_repository;
@@ -52,6 +57,11 @@ class CsvTest extends \DpIntegrationTestCase
      * @var EntityRepository\Feedback
      */
     private $feedback_repository;
+
+    /**
+     * @var EntityRepository\FeedbackAttachment
+     */
+    private $feedback_attachment_repository;
 
     /**
      * @var EntityRepository\Download
@@ -73,13 +83,15 @@ class CsvTest extends \DpIntegrationTestCase
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
-        $this->blob_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
+        $this->ticket_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->ticket_attachment_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
+        $this->person_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->news_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
+        $this->article_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
+        $this->feedback_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
+        $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
+        $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
@@ -233,27 +245,36 @@ class CsvTest extends \DpIntegrationTestCase
     private function checkDbEmpty()
     {
         $this->assertEquals(0, $this->ticket_repository->countAll());
+        $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
         $this->assertEquals(1, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
         $this->assertEquals(1, $this->article_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
+        $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
         $this->assertEquals(0, $this->blob_repository->countAll());
     }
 
     private function checkDbData()
     {
+        $this->assertCount(3, $this->news_repository->findAll());
+        $this->assertCount(8, $this->person_repository->findAll());
+
+        // Checking for tickets
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
             'subject' => 'How to submit a ticket',
         )));
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(
             'subject' => 'Another Ticket',
         )));
-
-        $this->assertCount(3, $this->news_repository->findAll());
         $this->assertCount(2, $this->ticket_repository->findAll());
-        $this->assertCount(8, $this->person_repository->findAll());
+        $this->assertCount(1, $this->ticket_attachment_repository->findAll());
 
+        // Checking for feedback
+        $this->assertEquals(2, $this->feedback_repository->countAll());
+        $this->assertEquals(1, $this->feedback_attachment_repository->countAll());
+
+        // Checking for blob
         $this->assertCount(3, $this->blob_repository->findBy(array('content_type' => 'csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
         $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'tickets.csv')));
