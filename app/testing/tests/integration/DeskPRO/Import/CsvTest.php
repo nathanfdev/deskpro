@@ -249,9 +249,10 @@ class CsvTest extends \DpIntegrationTestCase
     {
         $output = $command_tester->getDisplay();
 
-        $this->assertContains('Persisted News #2', $output);
+        // Checking for people
         $this->assertContains('Persisted Person #2', $output);
 
+        // Checking for tickets
         $this->assertContains('Creating new ticket with ref', $output);
         $this->assertContains('Persisted TicketLog #1', $output);
         $this->assertContains('Persisted TicketLog #2', $output);
@@ -259,6 +260,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Persisted TicketMessage #2', $output);
         $this->assertContains('Persisted Ticket #1', $output);
         $this->assertContains('Persisted Ticket #2', $output);
+
+        // Checking for news
+        $this->assertContains('Persisted News #2', $output);
     }
 
     private function overrideDpRootPath($file)

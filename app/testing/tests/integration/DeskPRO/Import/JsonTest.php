@@ -59,6 +59,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $download_repository;
 
     /**
+     * @var EntityRepository\Blob
+     */
+    private $blob_repository;
+
+    /**
      * Set up
      */
     public function runBefore()
@@ -74,6 +79,7 @@ class JsonTest extends \DpIntegrationTestCase
         $this->article_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
         $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
         $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $this->blob_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
@@ -91,6 +97,8 @@ class JsonTest extends \DpIntegrationTestCase
         if (file_exists($this->input_path . '/input.batch.json')) {
             $this->helper->deleteFile($this->input_path . '/input.batch.json');
         }
+
+        $this->overrideDpRootPath('/1/downloads/download1.json');
     }
 
     public function testCheck()
@@ -229,25 +237,54 @@ class JsonTest extends \DpIntegrationTestCase
         $this->assertEquals(1, $this->article_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
+        $this->assertEquals(0, $this->blob_repository->countAll());
     }
 
     private function checkDbData()
     {
         $this->assertCount(1, $this->ticket_repository->findAll());
         $this->assertCount(2, $this->person_repository->findAll());
+
+        $this->assertCount(1, $this->blob_repository->findBy(array('content_type' => 'csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
     }
 
     private function checkDbWriterOutput(CommandTester $command_tester)
     {
         $output = $command_tester->getDisplay();
 
+        // Checking for people
         $this->assertContains('Persisted Person #2', $output);
+
+        // Checking for tickets
         $this->assertContains('Creating new ticket with ref', $output);
         $this->assertContains('Persisted TicketLog #1', $output);
         $this->assertContains('Persisted TicketMessage #1', $output);
         $this->assertContains('Persisted TicketPriority #1', $output);
         $this->assertContains('Persisted Ticket #1', $output);
+
+        // Checking for news
         $this->assertContains('Persisted News #2', $output);
         $this->assertContains('Unable to create `news` with oid `2`. Reason Person not found. Criteria: {"email":"some@email.tld"}', $output);
+
+        // Checking for articles
+        $this->assertContains('Persisted Article #2', $output);
+        $this->assertContains('Unable to create `article` with oid `2`. Reason Person not found. Criteria: {"email":"another@email.tld"}', $output);
+
+        // Checking for downloads
+        $this->assertContains('Persisted Download #1', $output);
+        $this->assertContains('Persisted DownloadCategory #2', $output);
+    }
+
+    private function overrideDpRootPath($file)
+    {
+        $dp_root = str_replace('/app', '/', DP_ROOT);
+        $dp_root = str_replace('\'', '', $dp_root);
+        $dp_root = str_replace('/', '\/', $dp_root);
+
+        $content = file_get_contents($this->input_path . $file);
+        $content = str_replace('\/deskpro\/www\/', $dp_root, $content);
+
+        file_put_contents($this->input_path . $file, $content);
     }
 }
