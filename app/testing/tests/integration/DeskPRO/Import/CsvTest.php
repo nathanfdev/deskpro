@@ -59,6 +59,11 @@ class CsvTest extends \DpIntegrationTestCase
     private $download_repository;
 
     /**
+     * @var EntityRepository\Blob
+     */
+    private $blob_repository;
+
+    /**
      * Set up
      */
     public function runBefore()
@@ -74,6 +79,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->article_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
         $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
         $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $this->blob_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
@@ -86,6 +92,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->cleanDir($this->output_path);
 
         $this->overrideDpRootPath('/ticket_attachments.csv');
+        $this->overrideDpRootPath('/feedback_attachments.csv');
+        $this->overrideDpRootPath('/downloads.csv');
+
         $this->checkDbEmpty();
         $this->checkJsonEmpty();
     }
@@ -229,6 +238,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals(1, $this->article_repository->countAll());
         $this->assertEquals(1, $this->feedback_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
+        $this->assertEquals(0, $this->blob_repository->countAll());
     }
 
     private function checkDbData()
@@ -243,6 +253,10 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertCount(3, $this->news_repository->findAll());
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(8, $this->person_repository->findAll());
+
+        $this->assertCount(3, $this->blob_repository->findBy(array('content_type' => 'csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'tickets.csv')));
     }
     
     private function checkDbWriterOutput(CommandTester $command_tester)
