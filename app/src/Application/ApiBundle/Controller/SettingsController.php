@@ -452,7 +452,8 @@ class SettingsController extends AbstractController implements ProtectedControll
 
         $content = json_decode($request->getContent(), 1);
 
-        if ($content && isset($content['email'])) {
+        $remove_label = false;
+        if ($content && isset($content['email']) && $this->person) {
 
             $form = $this->createForm(new PersonStartType());
             $data = array_intersect_key($content, $form->all());
@@ -469,8 +470,10 @@ class SettingsController extends AbstractController implements ProtectedControll
             $p['first_name'] = $data['first_name'];
             $p['last_name'] = $data['last_name'];
             $p->setPassword($data['password']);
+
             $this->em->flush($email);
             $this->em->flush($p);
+            $remove_label = true;
         }
 
         try {
@@ -488,6 +491,10 @@ class SettingsController extends AbstractController implements ProtectedControll
         }
 
         $this->settings->setSetting('core.license', $license_code);
+        if ($remove_label) {
+            $p->getLabelManager()->removeLabel('not_user');
+            $this->em->flush($p);
+        }
 
         return $this->createApiSuccessResponse();
     }
