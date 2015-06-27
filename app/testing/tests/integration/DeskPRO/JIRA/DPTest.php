@@ -123,6 +123,7 @@ class DPTest extends \DpIntegrationTestCase
         $em = $this->helper->getSymfonyContainer()->getEm();
         $service = $this->js();
         $api = $service->getApi();
+        $res = array();
 
         /** @var Ticket $ticket */
         $ticket = $em->find('DeskPRO:Ticket', 1);
