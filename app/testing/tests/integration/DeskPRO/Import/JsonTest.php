@@ -63,7 +63,7 @@ class JsonTest extends \DpIntegrationTestCase
      */
     public function runBefore()
     {
-        $this->helper->enableFreshDatabaseSet('EmptyDb');
+        $this->helper->enableFreshDatabaseSet('FreshDb');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
@@ -153,9 +153,11 @@ class JsonTest extends \DpIntegrationTestCase
             'command'       => $command->getName(),
             'script'        => 'json',
             '--input-path'  => $this->input_path,
+            '--verbose'     => true,
             '--batch'       => true,
         ));
 
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonEmpty();
     }
@@ -172,9 +174,11 @@ class JsonTest extends \DpIntegrationTestCase
             'script'        => 'json',
             '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
+            '--verbose'     => true,
             '--batch'       => true,
         ));
 
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonData();
     }
@@ -219,17 +223,31 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbEmpty()
     {
-        $this->assertEmpty($this->ticket_repository->findAll());
-        $this->assertEmpty($this->person_repository->findAll());
-        $this->assertEmpty($this->news_repository->findAll());
-        $this->assertEmpty($this->article_repository->findAll());
-        $this->assertEmpty($this->feedback_repository->findAll());
-        $this->assertEmpty($this->download_repository->findAll());
+        $this->assertEquals(0, $this->ticket_repository->countAll());
+        $this->assertEquals(1, $this->person_repository->countAll());
+        $this->assertEquals(1, $this->news_repository->countAll());
+        $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(1, $this->feedback_repository->countAll());
+        $this->assertEquals(0, $this->download_repository->countAll());
     }
 
     private function checkDbData()
     {
         $this->assertCount(1, $this->ticket_repository->findAll());
-        $this->assertCount(1, $this->person_repository->findAll());
+        $this->assertCount(2, $this->person_repository->findAll());
+    }
+
+    private function checkDbWriterOutput(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        $this->assertContains('Persisted Person #2', $output);
+        $this->assertContains('Creating new ticket with ref', $output);
+        $this->assertContains('Persisted TicketLog #1', $output);
+        $this->assertContains('Persisted TicketMessage #1', $output);
+        $this->assertContains('Persisted TicketPriority #1', $output);
+        $this->assertContains('Persisted Ticket #1', $output);
+        $this->assertContains('Persisted News #2', $output);
+        $this->assertContains('Unable to create `news` with oid `2`. Reason Person not found. Criteria: {"email":"some@email.tld"}', $output);
     }
 }
