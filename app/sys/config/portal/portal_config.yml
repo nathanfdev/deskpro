@@ -6,6 +6,7 @@ parameters:
   router.options.matcher.cache_class: null
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
+  templating.globals.class: DeskPRO\Bundle\AppBundle\Twig\GlobalVariables
 
 framework:
     esi:             { enabled: true }

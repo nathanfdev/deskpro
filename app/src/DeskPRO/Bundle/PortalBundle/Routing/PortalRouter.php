@@ -39,6 +39,7 @@ use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -163,6 +164,22 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         );
 
         return (string) $url_builder;
+    }
+
+    /**
+     * This has a semantically different meaning from the standard generate() function. Both methods were
+     * used in the DpKernel Router, and the difference seems to be that:
+     *
+     * generateUrl is absolute
+     * genereare   is the abs path "/tickets"
+     *
+     * @param $name
+     * @param array $parameters
+     * @return string
+     */
+    public function generateUrl($name, $parameters = array())
+    {
+        return $this->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     protected function getActiveLanguage()
