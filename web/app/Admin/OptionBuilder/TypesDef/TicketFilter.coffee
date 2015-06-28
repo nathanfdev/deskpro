@@ -7,6 +7,9 @@ define [
     init: ->
       @options_data = null
 
+    getOperators: (options) ->
+      return options.operators || ['is', 'not']
+
     getOptionsForTypes: (types, typesData = null) ->
       set_options = []
       #------------------------------
@@ -114,6 +117,14 @@ define [
         title: 'Total User Waiting Time',
         value: 'FilterTotalUserWaiting'
       })
+
+      options.push
+        title: 'Ticket SLA'
+        value: 'FilterSla'
+
+      options.push
+        title: 'Ticket SLA Status'
+        value: 'FilterSlaStatus'
 
       set_options.push({
         title: 'Ticket Criteria',
@@ -410,6 +421,13 @@ define [
               return value
           }
       }
+
+    getFilterSla: (options = {}) ->
+      options.propName = 'sla_id'
+      options.dataName = 'ticket_slas'
+      options.optionsFormatter = (res) =>
+        (res.slas || []).map (item) -> {title: item.title, value: item.id}
+      @getStandardSelect(options)
 
     getFilterSlaStatus: (options = {}) ->
       me = @

@@ -265,6 +265,7 @@ abstract class AbstractDbSet
             } else {
                 $this->installDatabase();
                 $this->installSet();
+                $this->getContainer()->getSettingsHandler()->reloadSettings();
 
                 if ($this->cache_dir) {
                     $this->dumpToCache();

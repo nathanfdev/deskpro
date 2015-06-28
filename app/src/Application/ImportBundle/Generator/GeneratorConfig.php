@@ -177,7 +177,7 @@ class GeneratorConfig
     public function getWriterFactory(ContainerInterface $container)
     {
         $factories = array(
-            WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPro\DeskProWriterFactory',
+            WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPRO\DeskProWriterFactory',
             WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
         );
 

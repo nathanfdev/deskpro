@@ -52,7 +52,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getConfig());
+        return $this->getReaderCount($this->getPersonReaderConfig());
     }
 
     /**
@@ -61,7 +61,7 @@ final class People extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $people     = $this->getReaderData($this->getConfig());
+        $people     = $this->getReaderData($this->getPersonReaderConfig());
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -129,7 +129,7 @@ final class People extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getConfig()
+    private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_PEOPLE);
     }

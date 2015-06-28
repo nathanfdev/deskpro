@@ -116,13 +116,18 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
      * @param array $person
      *
      * @return Entity\Person
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     private function exportPerson(array $person)
     {
         if ($this->isPersonValid($person)) {
             $date_created = new DateTime($person['created_at']);
             $timezone     = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+
+            if ( ! $person['email']) {
+                $this->logError(sprintf('Person #%s without email, skipping', $person['id']));
+                return null;
+            }
 
             $entity = new Entity\Person();
             $entity

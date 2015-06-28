@@ -594,19 +594,25 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * This is mostly for legacy reasons though. It's recommneded you always handle it yourself.
      * So if you are manually managing the ticket will save the ticket through the TicketManager,
      * you should disable auto-processing.
+     *
+     * @return $this
      */
     public function disableAutoTicketProcess()
     {
         $this->__dp_auto_ticket_process = false;
+        return $this;
     }
 
     /**
      * Enable auto ticket processing
      * @see disableAutoTicketProcess
+     *
+     * @return $this
      */
     public function enableAutoTicketProcess()
     {
         $this->__dp_auto_ticket_process = true;
+        return $this;
     }
 
     /**

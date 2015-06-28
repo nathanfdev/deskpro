@@ -105,7 +105,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('ticket_' . $person['oid'])
+                ->setDestination('person_' . $person['oid'])
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])

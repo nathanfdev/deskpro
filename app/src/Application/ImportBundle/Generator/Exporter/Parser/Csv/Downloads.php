@@ -53,7 +53,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->getReaderCount($this->getConfig());
+        return $this->getReaderCount($this->getDownloadReaderConfig());
     }
 
     /**
@@ -62,7 +62,7 @@ final class Downloads extends AbstractParser
     public function export()
     {
         $collection  = new Entity\Collection();
-        $downloads   = $this->getReaderData($this->getConfig());
+        $downloads   = $this->getReaderData($this->getDownloadReaderConfig());
 
         foreach ($downloads as $num => $download) {
             $this->advanceProgressBar();
@@ -151,7 +151,7 @@ final class Downloads extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getConfig()
+    private function getDownloadReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_DOWNLOADS);
     }

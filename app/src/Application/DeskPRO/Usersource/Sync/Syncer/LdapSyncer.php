@@ -49,7 +49,7 @@ class LdapSyncer extends AbstractSyncer
 {
     const TMP_DATA_NAME = 'LdapSyncer_synced_raw_info';
 
-    public function refreshAll(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function refreshAll(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         if ($cursor->getPhase() == 1) {
             $this->runFirstPass($usersource, $cursor, $pause_check);
@@ -66,7 +66,7 @@ class LdapSyncer extends AbstractSyncer
         }
     }
 
-    public function runSecondPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function runSecondPass(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         // here we fetch data from tmp_data and actually update/create the person record
 
@@ -105,7 +105,7 @@ class LdapSyncer extends AbstractSyncer
         $cursor->setPhase(3);
     }
 
-    public function runFirstPass(Usersource $usersource, SyncCursor $cursor, callable $pause_check)
+    public function runFirstPass(Usersource $usersource, SyncCursor $cursor, $pause_check)
     {
         // here we are doing a first pass on the data by fetching it from ldap and putting it into tmp_data
 
@@ -168,6 +168,7 @@ class LdapSyncer extends AbstractSyncer
             }
         }
 
+        $this->helper->getEm()->flush();
         $cursor->setPhase(2);
         $cursor->setLocation(1);
     }

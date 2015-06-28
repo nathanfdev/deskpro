@@ -64,6 +64,8 @@ class JIRA
         'comment',
         'resolution',
         'duedate',
+        'components',
+        'versions',
     );
 
     protected $allowed_custom = array(
@@ -574,4 +576,4 @@ class JIRA
     {
         return $this->getApi()->updateIssueJson($id, $json);
     }
-} 
+}

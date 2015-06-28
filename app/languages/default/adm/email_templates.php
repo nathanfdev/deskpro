@@ -20,7 +20,7 @@
     'adm.email_templates.emails_agent_new-agent-chat-message_desc'    => 'Email sent when someone sends a chat message to an agent and they are offline.',
     'adm.email_templates.emails_agent_new-comment_title'              => 'New Comment',
     'adm.email_templates.emails_agent_new-comment_desc'               => 'Email sent when a new comment has been posted to an article, news post or download item.',
-    'adm.email_templates.emails_agent_new-feedback_title'             => 'New Feedabck',
+    'adm.email_templates.emails_agent_new-feedback_title'             => 'New Feedback',
     'adm.email_templates.emails_agent_new-feedback_desc'              => 'Email sent when new feedback has been submitted.',
     'adm.email_templates.emails_agent_new-registration_title'         => 'New Registration',
     'adm.email_templates.emails_agent_new-registration_desc'          => 'Email sent when a new user has registered',

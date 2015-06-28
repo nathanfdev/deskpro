@@ -177,14 +177,22 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $GLOBALS['DP_NOSQL_LOG'] = true;
 
         @ini_set('memory_limit', -1);
+        @set_time_limit(0);
+
         $em = App::getOrm();
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
+        $ret = null;
         if ($input->getOption('batch')) {
-            return $this->executeBatchRun($input, $output);
+            $ret = $this->executeBatchRun($input, $output);
         } else {
-            return $this->executeUnattendedRun($input, $output);
+            $ret = $this->executeUnattendedRun($input, $output);
         }
+
+        unset($GLOBALS['DP_IS_IMPORTING']);
+        $GLOBALS['DP_NOSQL_LOG'] = false;
+
+        return $ret;
     }
 
     /**
@@ -234,8 +242,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             }
 
             $output->writeln("<info>Done batch</info>");
-
             $output->writeln("<info>Updating search tables.</info>");
+
             $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
             $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
@@ -296,7 +304,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
                     if ($r = $exception->getEntity()->getRawData()) {
                         foreach (explode("\n", KernelErrorHandler::varToString($r, 2)) as $l) {
-                            $output->writeln("  [info] " . $l);
+                            $logger->info($l);
                         }
                     }
                 }
@@ -466,7 +474,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         $config->setReaderConfig($readerConfig);
         // back compatibility
-        $config->setInputPath($input->getOption('input-path'));
+        $config->setInputPath($input_path);
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
@@ -636,12 +644,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function checkPhpInfo()
     {
         if (dp_is_php_path_guessed()) {
-            $cmd = sprintf(
-                "%s %s",
-
-                dp_get_php_path(),
-                escapeshellarg('bin/phpinfo.php')
-            );
+            $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
 
             $process = new Process($cmd, realpath(DP_ROOT));
             $process->run();
@@ -659,12 +662,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function checkRequirements()
     {
-        $cmd = sprintf(
-            "%s %s",
-
-            dp_get_php_path(),
-            escapeshellarg('bin/check-req.php')
-        );
+        $cmd = sprintf("%s %s", dp_get_php_path(), escapeshellarg('bin/check-req.php'));
 
         $process = new Process($cmd, realpath(DP_ROOT));
         $process->run();

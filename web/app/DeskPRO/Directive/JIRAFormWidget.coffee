@@ -54,6 +54,8 @@ define ->
       resolutiondate: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
       created: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
       updated: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
+      components: 'com.atlassian.jira.plugin.system.customfieldtypes:multiselect'
+      versions:   'com.atlassian.jira.plugin.system.customfieldtypes:multiselect'
 
     restrict: 'AE'
     scope:

@@ -270,11 +270,11 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
             }
 
         } catch (\Exception $e) {
-            $raw_info['dp_error'] = "Error when fetching node";
-            $raw_info['exception_type'] = get_class($e);
-            $raw_info['exception_message'] = $e->getMessage();
-            $raw_info['exception_code'] = $e->getCode();
-            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
+            if ($this->logger) {
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
+            }
+
+            throw $e;
         }
 
 
@@ -341,9 +341,17 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         $raw_info = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
-        $identity = $this->getIdentityForDn($result->getIdentity());
+        try {
+            $identity = $this->getIdentityForDn($result->getIdentity());
 
-        return new Result(Result::SUCCESS, $identity);
+            return new Result(Result::SUCCESS, $identity);
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
+            }
+
+            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+        }
     }
 
 
