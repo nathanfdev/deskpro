@@ -474,7 +474,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         $config->setReaderConfig($readerConfig);
         // back compatibility
-        $config->setInputPath($input_path);
+        $config->setInputPath($input->getOption('input-path'));
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
