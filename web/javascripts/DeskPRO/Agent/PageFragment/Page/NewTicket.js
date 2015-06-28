@@ -450,6 +450,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       if ($(this).data('is-note')) {
 
+        self._is_note = true;
         emailCheckboxState = $input.prop('checked');
         replyAsState = self.getEl('reply_as_type').data('type');
         self.removeSignature();
@@ -459,8 +460,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       } else {
 
+        self._is_note = false;
         $input.prop('checked', emailCheckboxState).parent().show();
-        self.setReplyAsOptionName(replyAsState);
+        self.setReplyAsOptionName(replyAsState, true);
         self.addSignature();
 
       }
@@ -468,6 +470,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
   addSignature: function() {
+
+    if (this._is_note) return;
 
     var textarea = this.textarea
       , api = this.textarea.data('redactor')
@@ -529,14 +533,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     }
   },
 
-	setReplyAsOptionName: function(name) {
+	setReplyAsOptionName: function(name, ignoreMacro) {
 		var item = this.getEl('status_menu').find('li[data-type="' + name + '"]').first();
 		if (item[0]) {
-			this.setReplyAsOption(item);
+			this.setReplyAsOption(item, ignoreMacro);
 		}
 	},
 
-	setReplyAsOption: function(item) {
+	setReplyAsOption: function(item, ignoreMacro) {
 		var replyAsType = this.getEl('reply_as_type');
 
 		var html = Orb.escapeHtml(item.data('label'));
@@ -579,7 +583,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						actionsRowList.append(li);
 					});
 
-					actionsRowList.find('.with-reply, .with-snippet').each(function() {
+					!ignoreMacro && actionsRowList.find('.with-reply, .with-snippet').each(function() {
 						var pos = $(this).data('reply-pos');
 						var html = $(this).find('.reply-text').get(0).innerHTML;
 
