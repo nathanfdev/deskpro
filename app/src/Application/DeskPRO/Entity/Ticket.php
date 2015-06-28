@@ -3223,12 +3223,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public function getPath()
     {
-        return App::getRouter()->generate('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
+        return App::getRouter()->generate('portal_tickets_view', array('id' => $this->getId()));
     }
 
     public function getLink()
     {
-        return App::getRouter()->generateUrl('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
+        return App::getRouter()->generateUrl('portal_tickets_view', array('id' => $this->getId()));
     }
 
     public function isAgentCreated()

@@ -183,12 +183,20 @@ class TicketViewService extends AbstractDataService
         $value = '';
         switch ($field_def->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
-                $datetime = new \DateTime($data->getData());
-                $value    = date('F j, Y', $datetime->getTimestamp());
+                try {
+                    $datetime = new \DateTime($data->getData());
+                    $value = date('F j, Y', $datetime->getTimestamp());
+                } catch (\Exception $e) {
+                    $value = '';
+                }
                 break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
-                $datetime = new \DateTime($data->getData());
-                $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
+                try {
+                    $datetime = new \DateTime($data->getData());
+                    $value = date('F j, Y, g:i a', $datetime->getTimestamp());
+                } catch (\Exception $e) {
+                    $value = '';
+                }
                 break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
                 if ($data->getData() == 1) {
