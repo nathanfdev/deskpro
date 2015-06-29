@@ -438,6 +438,7 @@ final class Tickets extends AbstractParser
         $columns = array(
             'id',
             'submitter_id',
+            'assignee_id',
             'subject',
             'description',
             'status',

@@ -71,6 +71,8 @@ class ZenDeskTest extends \DpIntegrationTestCase
 
         $this->checkDbEmpty();
         $this->checkJsonEmpty();
+
+        $this->prepareReaderResponse();
     }
 
     public function testCheck()
@@ -86,6 +88,14 @@ class ZenDeskTest extends \DpIntegrationTestCase
             '--verbose' => true,
             '--batch'   => true,
         ));
+
+        $output = $command_tester->getDisplay();
+
+        $this->assertContains('Read 2 tickets', $output);
+        $this->assertContains('[ZDTicket #1] Reading comments', $output);
+        $this->assertContains('[ZDTicket #2] Reading comments', $output);
+        $this->assertContains('Read 2 people', $output);
+        $this->assertContains('Done. Checking was successful.', $output);
     }
 
     private function checkJsonEmpty()
@@ -99,5 +109,80 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertEquals(0, $this->ticket_repository->countAll());
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
         $this->assertEquals(1, $this->person_repository->countAll());
+    }
+
+    private function prepareReaderResponse()
+    {
+        $date1 = new \DateTime('-1 year');
+        $date2 = new \DateTime('-5 months');
+
+        $this->adapter
+            ->addTicketsIncrementalExportResponse((object)array(
+                'tickets' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'submitter_id'    => 1,
+                        'assignee_id'     => 3,
+                        'subject'         => 'Ticket 1',
+                        'description'     => 'Ticket description 1',
+                        'status'          => 'new',
+                        'priority'        => 'high',
+                        'organization_id' => 1,
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'custom_fields'   => (object)array(),
+                        'tags'            => (object)array('label 1', 'label 2'),
+                    ),
+                    (object)array(
+                        'id'              => 2,
+                        'submitter_id'    => 2,
+                        'assignee_id'     => 4,
+                        'subject'         => 'Ticket 2',
+                        'description'     => 'Ticket description 2',
+                        'status'          => 'open',
+                        'priority'        => 'low',
+                        'organization_id' => 1,
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'custom_fields'   => (object)array(),
+                        'tags'            => (object)array('label 1', 'label 3'),
+                    ),
+                ),
+            ))
+            ->addTicketCommentsFindAllResponse((object)array(
+                'comments' => array(),
+            ))
+            ->addTicketCommentsFindAllResponse((object)array(
+                'comments' => array(),
+            ))
+            ->addPeopleFindResponse((object)array(
+                'users' => array(
+                    (object)array(
+                        'id'              => 1,
+                        'name'            => 'Person 1',
+                        'email'           => 'person1@domain.tld',
+                        'time_zone'       => 'Paris',
+                        'role'            => 'end-user',
+                        'created_at'      => $date1->format('Y-m-d H:i:s'),
+                        'user_fields'     => array(),
+                        'organization_id' => 1,
+                    ),
+                    (object)array(
+                        'id'              => 2,
+                        'name'            => 'Person 2',
+                        'email'           => 'person2@domain.tld',
+                        'time_zone'       => 'Moscow',
+                        'role'            => 'agent',
+                        'created_at'      => $date2->format('Y-m-d H:i:s'),
+                        'user_fields'     => array(),
+                        'organization_id' => 1,
+                    ),
+                ),
+            ))
+            ->addOrganizationFindResponse((object)array(
+                'organization' => (object)array(
+                    'id'   => 1,
+                    'name' => 'An organization name',
+                ),
+            ))
+        ;
     }
 }
