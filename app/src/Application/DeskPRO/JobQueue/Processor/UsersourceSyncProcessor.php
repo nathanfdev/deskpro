@@ -111,9 +111,13 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
 
             static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
             if (1 == $data['phase']) {
-                return $this->runPhaseOne($data);
+                $return = $this->runPhaseOne($data);
+                $this->sync_manager->getEm()->clear();
+                return $return;
             } else {
-                return $this->runPhaseTwo($data);
+                $return = $this->runPhaseTwo($data);
+                $this->sync_manager->getEm()->clear();
+                return $return;
             }
         } catch (\Exception $e) {
             $this->abort(true);
@@ -126,7 +130,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // we return true if we want to signal to the syncer to pause
 
         // condition 1: if we allocate 80% or greater of our max memory usage
-        if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
+        if (memory_get_usage() > UsersourceSyncProcessor::$max_memory_usage) {
             return true;
         }
 
