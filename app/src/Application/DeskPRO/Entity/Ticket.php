@@ -1635,6 +1635,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function addCustomData(CustomDataTicket $data)
     {
+        if ($this->custom_data === null) {
+            $this->custom_data = new ArrayCollection();
+        }
+
         $this->custom_data->add($data);
         $data['ticket'] = $this;
 

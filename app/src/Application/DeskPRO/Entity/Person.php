@@ -1682,6 +1682,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function addCustomData(CustomDataPerson $data)
     {
+        if ($this->custom_data === null) {
+            $this->custom_data = new ArrayCollection();
+        }
+
         $this->custom_data->add($data);
         $data->person = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);

@@ -354,6 +354,10 @@ class Organization extends DomainObject implements HighlightableModelInterface
      */
     public function addCustomData(CustomDataOrganization $data)
     {
+        if ($this->custom_data === null) {
+            $this->custom_data = new ArrayCollection();
+        }
+
         $this->custom_data->add($data);
         $data['organization'] = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
