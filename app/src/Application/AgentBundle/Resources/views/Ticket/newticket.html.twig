@@ -342,7 +342,16 @@ pageMeta.baseId = '{{ baseId }}';
 		<strong>{{ phrase('agent.tickets.sending_your_message') }}</strong>
 	</div>
 	<header>
-		<h4>{{ phrase('agent.general.ticket') }}</h4>
+        <nav>
+            <ul id="{{ baseId }}_message_toggle">
+                <li class="on">
+                    {{ phrase('agent.general.ticket') }} {{ phrase('agent.general.message') }}
+                </li>
+                <li data-is-note="1">
+                    {{ phrase('agent.general.ticket') }} {{ phrase('agent.general.note') }}
+                </li>
+            </ul>
+        </nav>
 	</header>
 	<section class="ticketreply">
 		<article>

@@ -42,7 +42,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
  */
 class ProcessEmailGateways extends AbstractJob
 {
-    const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 1;
 
     public function run()
     {

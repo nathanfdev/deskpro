@@ -152,10 +152,9 @@ final class Downloads extends AbstractParser
             $entity = $this->exportAttachment($attachment);
             if ($entity) {
                 return $entity;
-
-            } else {
-                $this->logError('Invalid download attachment record found');
             }
+
+            $this->logError('Invalid download attachment record found');
 
         } catch (NoColumnException $e) {
             $this->logError(sprintf(

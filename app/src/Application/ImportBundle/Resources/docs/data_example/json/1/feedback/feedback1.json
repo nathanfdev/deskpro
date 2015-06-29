@@ -1,6 +1,6 @@
 {
   "oid": 1,
-  "person": "some@email.tld",
+  "person": "serg.yastrebov@gmail.com",
   "language": "english",
   "title": "Feedback 1",
   "content": "Feedback Content 1",
@@ -18,11 +18,11 @@
   "attachments": [
     {
       "oid": 0,
-      "person": "some@email.tld",
+      "person": "serg.yastrebov@gmail.com",
       "blob_data": null,
       "blob_url": "",
-      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/docs\/data_example\/csv\/tickets.csv",
-      "file_name": "tickets.csv",
+      "blob_path": "\/deskpro\/www\/app\/src\/Application\/ImportBundle\/Resources\/docs\/data_example\/csv\/feedback.csv",
+      "file_name": "feedback.csv",
       "content_type": "csv",
       "is_inline": false
     }

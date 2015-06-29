@@ -239,7 +239,7 @@
 	'agent.tickets.perm_del_user_and_content'           => 'Permanently Delete User and their other content',
 	'agent.tickets.perm_del_user_and_other_tickets'     => 'Permanently Delete User and their {{ticket_count}} Tickets',
 	'agent.tickets.perm_del_user_and_ticket'            => 'Permanently Delete User and this Ticket',
-	'agent.tickets.perm_delete_note'                    => 'This ticket will be permanantly purged from the system in {{time}}',
+	'agent.tickets.perm_delete_note'                    => 'This ticket will be permanently purged from the system in {{time}}',
 	'agent.tickets.placeholder_type_a_result'           => 'Start typing a reply...',
 	'agent.tickets.please_choose_or_create_user'        => 'Please choose or create a user',
 	'agent.tickets.please_enter_subject'                => 'Please enter a subject',

@@ -53,7 +53,7 @@ final class BlobData implements MapperInterface
             $data = base64_decode($criteria['data']);
         }
         if ( ! empty($criteria['path'])) {
-            if (!is_readable($criteria['path'])) {
+            if ( ! is_readable($criteria['path'])) {
                 throw new MapperException(sprintf('Invalid blob path %s', $criteria['path']), $criteria);
             }
 
