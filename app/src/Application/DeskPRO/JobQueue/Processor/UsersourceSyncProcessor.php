@@ -37,6 +37,7 @@ namespace Application\DeskPRO\JobQueue\Processor;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\UsersourceSyncLog;
 use Application\DeskPRO\JobQueue\JobQueue;
+use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
@@ -202,7 +203,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                             'sync_cursor_phase' => $cursor->getPhase(),
                             'current_usersource_id' => $last_processed_usersource_id
                         ),
-                        new \DateTime('now')
+                        new \DateTime('now + 20 seconds')
                     );
 
                     // update the log before pausing job
@@ -237,7 +238,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // schedule phase 2 for immediate
         $this->scheduleNextSync(
             array('original_start_timestamp' => $start_timestamp, 'phase' => 2),
-            new \DateTime('now')
+            new \DateTime('now + 20 seconds')
         );
 
         return true;
@@ -313,7 +314,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                         'phase_2_usersource' => $last_processed_usersource_id,
                         'original_start_timestamp' => $data['original_start_timestamp'],
                     ),
-                    new \DateTime('now + 1 minutes')
+                    new \DateTime('now + 20 seconds')
                 );
 
                 return true;
