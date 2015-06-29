@@ -28,19 +28,15 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
       return if not isValid
 
       @$scope.is_loading = true
-      @Api.sendPostJson('/start-settings', {
-        deskpro_url:  @$scope.opt.deskpro_url,
-        deskpro_name: @$scope.opt.deskpro_name,
-        timezone:     @$scope.opt.timezone,
-        license_code: @$scope.opt.license
-      }).success( (data) =>
+      @Api.sendPostJson('/start-settings', @$scope.opt).success((data) =>
         @$location.path('/cron')
       ).error( (data) =>
         @$scope.is_loading = false
-        if data and data.error_code
-          @$scope.lic_error = data.error_code
+        if 'form_error' == data?.error_code
+          @$scope.error_message = data.error_message
         else
-          @$scope.lic_error = 'generic'
+          @$scope.lic_error = data.error_code || 'generic'
+
       )
 
     showRequestDemo: ->
