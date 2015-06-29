@@ -35,7 +35,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 interface MapperByTitleInterface
 {
     /**
-     * Returns the DeskPro record by title.
+     * Returns the DeskPRO record by title
      *
      * @param string $title
      * @param bool   $throw_exception

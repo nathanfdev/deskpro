@@ -26,20 +26,24 @@
 \**************************************************************************/
 
 /**
- * Orb.
+ * Orb
  *
+ * @package Orb
  * @category Auth
  */
 
 namespace Orb\Auth\Adapter;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Log\Loggable;
-use Orb\Log\Logger;
 use Orb\Util\Arrays;
 
-class LdapRaw implements FormLoginInterface, Loggable
+use Orb\Log\Logger;
+use Orb\Log\Loggable;
+use Zend\Ldap\Ldap;
+
+class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -89,17 +93,14 @@ class LdapRaw implements FormLoginInterface, Loggable
     public function __construct(array $options)
     {
         $this->options = array_merge($this->options, $options);
-        if (!$this->options['field_email']) {
-            $this->options['field_email'] = 'mail';
-        }
-        if (!$this->options['field_username']) {
-            $this->options['field_username'] = 'uid';
-        }
+        if (!$this->options['field_email']) $this->options['field_email'] = 'mail';
+        if (!$this->options['field_username']) $this->options['field_username'] = 'uid';
 
         if (!isset($this->options['accountFilterFormat']) || !$this->options['accountFilterFormat']) {
             $this->options['accountFilterFormat']  = '(|(dn=%1$s)(mail=%1$s)(uid=%1$s))';
         }
     }
+
 
     /**
      * @param string $username
@@ -107,9 +108,10 @@ class LdapRaw implements FormLoginInterface, Loggable
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
     }
+
 
     /**
      * @return \Zend\Authentication\Adapter\Ldap
@@ -127,12 +129,13 @@ class LdapRaw implements FormLoginInterface, Loggable
 
         if ($this->options['ldapClass']) {
             $class = $this->options['ldapClass'];
-            $ldap  = new $class();
+            $ldap = new $class();
             $auth->setLdap($ldap);
         }
 
         return $auth;
     }
+
 
     /**
      * Authenticate a user.
@@ -151,7 +154,7 @@ class LdapRaw implements FormLoginInterface, Loggable
         $time_start = microtime(true);
         if ($this->logger) {
             $this->logger->log("START Ldap::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: ".trim(print_r($this->options, 1)), Logger::DEBUG);
+            $this->logger->log("Options: " . trim(print_r($this->options,1)), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
@@ -168,6 +171,7 @@ class LdapRaw implements FormLoginInterface, Loggable
             return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
         }
 
+
         if ($this->logger) {
             foreach ($result->getMessages() as $msg) {
                 $this->logger->log($msg, \Orb\Log\Logger::DEBUG);
@@ -180,7 +184,7 @@ class LdapRaw implements FormLoginInterface, Loggable
             return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
         }
 
-        $raw_info                      = array();
+        $raw_info = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
@@ -197,7 +201,7 @@ class LdapRaw implements FormLoginInterface, Loggable
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $zend_auth->getLdap();
 
-            $dn   = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+            $dn = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
 
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($dn);
@@ -225,7 +229,7 @@ class LdapRaw implements FormLoginInterface, Loggable
                 }
 
                 if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
-                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')).' '.Arrays::getFirstItem($rec->getAttribute('SN'));
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')) . ' ' . Arrays::getFirstItem($rec->getAttribute('SN'));
                 } elseif ($rec->getAttribute('name')) {
                     $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
                 } elseif ($rec->getAttribute('CN')) {
@@ -254,17 +258,146 @@ class LdapRaw implements FormLoginInterface, Loggable
         return new Result(Result::SUCCESS, $identity);
     }
 
+
     /**
-     * Search the AD for the user based on email address.
+     * Authenticate a user.
+     *
+     * @return
+     */
+    public function getIdentityForDn($provided_dn)
+    {
+        try {
+            $zend_auth = $this->getZendAuthAdapter();
+            // Bogus because zend only creates ldap obj when its needed,
+            // so this is a hack to get it to set all the correct options
+            // for us
+            try {
+                $zend_auth->setUsername('__bogus__');
+                $zend_auth->setPassword('__bogus__');
+                $zend_auth->authenticate();
+            } catch (\Exception $e) {}
+            $raw_info = array();
+
+            /** @var $ldap \Zend\Ldap\Ldap */
+            $ldap = $zend_auth->getLdap();
+
+            $dn = $ldap->getCanonicalAccountName($provided_dn, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+
+            /** @var $rec \Zend\Ldap\Node */
+            $rec = $ldap->getNode($dn);
+            if ($rec) {
+                $raw_info = array_merge($raw_info, $rec->getAttributes());
+
+                if (!empty($raw_info['samaccountname'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
+                } elseif (!empty($raw_info['uid'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+                }
+                if (!empty($raw_info['distinguishedname'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
+                } elseif (!empty($raw_info['dn'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                } else {
+                    $raw_info['identity'] = $provided_dn;
+                }
+
+                if ($rec->getAttribute('givenName')) {
+                    $raw_info['first_name'] = Arrays::getFirstItem($rec->getAttribute('givenName'));
+                }
+                if ($rec->getAttribute('SN')) {
+                    $raw_info['last_name'] = Arrays::getFirstItem($rec->getAttribute('SN'));
+                }
+
+                if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')) . ' ' . Arrays::getFirstItem($rec->getAttribute('SN'));
+                } elseif ($rec->getAttribute('name')) {
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
+                } elseif ($rec->getAttribute('CN')) {
+                    $raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('CN'));
+                }
+
+                if ($rec->getAttribute('mail')) {
+                    $raw_info['email_address'] = Arrays::getFirstItem($rec->getAttribute('mail'));
+                }
+
+                if ($rec->getAttribute('jpegPhoto')) {
+                    $raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('jpegPhoto'));
+                } elseif ($rec->getAttribute('thumbnailPhoto')) {
+                    $raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('thumbnailPhoto'));
+                }
+            }
+        } catch (\Exception $e) {
+            $raw_info['dp_error'] = "Error when fetching node";
+            $raw_info['exception_type'] = get_class($e);
+            $raw_info['exception_message'] = $e->getMessage();
+            $raw_info['exception_code'] = $e->getCode();
+            $raw_info['exception_trace'] = KernelErrorHandler::formatBacktrace($e->getTrace());
+        }
+
+        $identity = new Identity($raw_info['identity'], $raw_info);
+
+        return $identity;
+    }
+
+
+    /**
+     * Search the AD for the user based on email address
      */
     public function findRecordViaEmail()
     {
         if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
-            return;
+            return null;
         }
 
         if ($this->logger) {
             $this->logger->log("START Filter for email", Logger::DEBUG);
+        }
+
+        $zend_auth = $this->getZendAuthAdapter();
+        // Bogus because zend only creates ldap obj when its needed,
+        // so this is a hack to get it to set all the correct options
+        // for us
+        try {
+            $zend_auth->setUsername('__bogus__');
+            $zend_auth->setPassword('__bogus__');
+            $zend_auth->authenticate();
+        } catch (\Exception $e) {}
+
+        /** @var $ldap \Zend\Ldap\Ldap */
+        $ldap = $zend_auth->getLdap();
+
+        $filter = sprintf('(&(objectClass=inetOrgPerson)('.$this->options[self::OPT_FIELD_EMAIL].'=%s))', \Zend\Ldap\Filter::escapeValue($this->set_username));
+        if ($this->logger) {
+            $this->logger->log("Sending filter: $filter", Logger::DEBUG);
+        }
+
+        try {
+            $r = $ldap->search($filter, $this->options['baseDn']);
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+            }
+
+            return null;
+        }
+
+        if ($this->logger) {
+            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+        }
+
+        if ($r->count() == 1) {
+            $arr = $r->getFirst();
+
+            return $arr;
+        }
+
+        return null;
+    }
+
+    public function findRecordViaDn($dn)
+    {
+        if ($this->logger) {
+            $this->logger->log("START Filter for dn", Logger::DEBUG);
         }
 
         $zend_auth = $this->getZendAuthAdapter();
@@ -281,36 +414,12 @@ class LdapRaw implements FormLoginInterface, Loggable
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
 
-        $filter = sprintf('(&(objectClass=inetOrgPerson)('.$this->options[self::OPT_FIELD_EMAIL].'=%s))', \Zend\Ldap\Filter::escapeValue($this->set_username));
-        if ($this->logger) {
-            $this->logger->log("Sending filter: $filter", Logger::DEBUG);
-        }
-
-        try {
-            $r = $ldap->search($filter, $this->options['baseDn']);
-        } catch (\Exception $e) {
-            if ($this->logger) {
-                $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
-            }
-
-            return;
-        }
-
-        if ($this->logger) {
-            $this->logger->log("Filter results: ".print_r($r->toArray(), 1), Logger::DEBUG);
-        }
-
-        if ($r->count() == 1) {
-            $arr = $r->getFirst();
-
-            return $arr;
-        }
-
-        return;
+        return $ldap->getEntry($dn);
     }
 
+
     /**
-     * Search the AD for the user based on username.
+     * Search the AD for the user based on username
      */
     public function findRecordViaUsername()
     {
@@ -326,8 +435,7 @@ class LdapRaw implements FormLoginInterface, Loggable
             $zend_auth->setUsername('__bogus__');
             $zend_auth->setPassword('__bogus__');
             $zend_auth->authenticate();
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
 
         /** @var $ldap \Zend\Ldap\Ldap */
         $ldap = $zend_auth->getLdap();
@@ -341,14 +449,14 @@ class LdapRaw implements FormLoginInterface, Loggable
             $r = $ldap->search($filter, $this->options['baseDn']);
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
+                $this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
             }
 
-            return;
+            return null;
         }
 
         if ($this->logger) {
-            $this->logger->log("Filter results: ".print_r($r->toArray(), 1), Logger::DEBUG);
+            $this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
         }
 
         if ($r->count() == 1) {
@@ -357,7 +465,7 @@ class LdapRaw implements FormLoginInterface, Loggable
             return $arr;
         }
 
-        return;
+        return null;
     }
 
     /**

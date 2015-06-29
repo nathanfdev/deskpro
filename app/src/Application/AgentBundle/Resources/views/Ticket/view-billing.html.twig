@@ -17,8 +17,10 @@
 	<th>{{ phrase('agent.general.agent') }}</th>
 	<th>{{ phrase('agent.general.date') }}</th>
 	<th>{{ phrase('agent.general.comment') }}</th>
-	<th style="min-width: 70px">&nbsp;</th>
-	<th style="max-width: 20px">&nbsp;</th>
+  {% if ticket_perms.modify_billing %}
+    <th style="min-width: 70px">&nbsp;</th>
+    <th style="max-width: 20px">&nbsp;</th>
+  {% endif %}
 </thead>
 <tbody id="{{ baseId }}_billing_rows" data-delete-confirm="{{ phrase('agent.tickets.billing_delete_confirm') }}">
 {% for charge in ticket.charges %}

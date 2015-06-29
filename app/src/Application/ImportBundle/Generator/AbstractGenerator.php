@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator;
 
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -50,6 +52,11 @@ abstract class AbstractGenerator
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $debug_timers = array();
+
+    /**
      * @var ProgressBar
      */
     protected $progress_bar;
@@ -60,8 +67,15 @@ abstract class AbstractGenerator
     public function setConfig(GeneratorConfig $config)
     {
         $this->config = $config;
-
         return $this;
+    }
+
+    /**
+     * @return GeneratorConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -90,7 +104,9 @@ abstract class AbstractGenerator
     protected function advanceProgressBar()
     {
         if ($this->progress_bar) {
-            $this->progress_bar->advance();
+            if ($this->progress_bar->getStep() < $this->progress_bar->getMaxSteps()) {
+                $this->progress_bar->advance();
+            }
         }
     }
 
@@ -103,6 +119,90 @@ abstract class AbstractGenerator
     {
         if ($this->logger) {
             $this->logger->info($message);
+        }
+    }
+
+    /**
+     * @param string $id
+     * @param string $message
+     */
+    protected function logDebugTimeStart($id, $message)
+    {
+        $this->debug_timers[$id] = microtime(true);
+        if ($this->logger) {
+            $this->logger->debug($message);
+        }
+    }
+
+    /**
+     * @param string $id
+     * @param string $message
+     */
+    protected function logDebugTimeEnd($id, $message)
+    {
+        $time = sprintf("%.3fs", microtime(true) - $this->debug_timers[$id]);
+        if ($this->logger) {
+            $this->logger->debug($message . " -- $time");
+        }
+    }
+
+    /**
+     * Log debug message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logDebug($message)
+    {
+        if ($this->logger) {
+            $this->logger->debug($message);
+        }
+    }
+
+    /**
+     * Logs a message with some array of data
+     *
+     * @param string $message
+     * @param mixed|array $info
+     */
+    protected function logDebugInfo($message, $info)
+    {
+        if ($this->logger) {
+            if ($message) {
+                $this->logger->debug($message);
+            }
+            if ($info) {
+                foreach (explode("\n", KernelErrorHandler::varToString($info, 3)) as $l) {
+                    $this->logger->debug("  [info] " . $l);
+                }
+            }
+        }
+    }
+
+    /**
+     * Logs debug message with exception and optionally array of data
+     *
+     * @param string $message
+     * @param \Exception $e
+     * @param mixed|array $info
+     */
+    protected function logDebugException($message, \Exception $e, $info = null)
+    {
+        if ($this->logger) {
+            if ($message) {
+                $this->logger->debug($message);
+            }
+
+            $einfo = KernelErrorHandler::getExceptionInfo($e);
+            $this->logger->debug($einfo['summary']);
+            foreach (explode("\n", $einfo['trace']) as $l) {
+                $this->logger->debug("  -> " . $l);
+            }
+
+            if ($info) {
+                foreach (explode("\n", KernelErrorHandler::varToString($info, 3)) as $l) {
+                    $this->logger->debug("  [info] " . $l);
+                }
+            }
         }
     }
 

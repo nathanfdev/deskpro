@@ -40,6 +40,9 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
+ * THIS IS A TEST ENTITY and is only here temporarily to show how the API works (we also run unit tests
+ * against it).  This data is NOT used in the actual deskpro app.
+ *
  * @ORM\Entity()
  * @ORM\Table("api_sandbox_widgets")
  * @Serializer\ExclusionPolicy("ALL")

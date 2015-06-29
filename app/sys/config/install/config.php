@@ -59,28 +59,6 @@ $definition->setArguments(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 
-// twig.helpers.deskpro_user_templating
-$definition = new Definition();
-$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
-$definition->setArguments(
-    array(
-        new Reference('service_container'),
-    )
-);
-$definition->addTag('twig.extension', array());
-$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
-
-// twig.helpers.deskpro_user_templating
-$definition = new Definition();
-$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
-$definition->setArguments(
-    array(
-        new Reference('service_container'),
-    )
-);
-$definition->addTag('twig.extension', array());
-$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
-
 // doctrine.dbal.connection_factory
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');

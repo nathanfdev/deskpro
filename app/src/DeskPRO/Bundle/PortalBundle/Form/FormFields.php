@@ -41,6 +41,7 @@ class FormFields
     const USER_TIMEZONE = 'user_timezone';
     const USER_LANGUAGE = 'user_language';
     const USER_FIELD    = 'user_field';
+    const ORG_FIELD     = 'org_field';
     const TICKET_FIELD  = 'ticket_field';
     const CUSTOM_FIELD  = 'custom_field';
     const CATEGORY      = 'category';

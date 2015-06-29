@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,27 +47,44 @@ class ProfileController extends AbstractController
      */
     public function registerAction(Request $request)
     {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('portal_index');
+        }
+
+        if (!$this->getBrandSetting('core.reg_enabled')) {
+            return $this->redirectToRoute('portal_index');
+        }
+
         $person = $this->getPersonFactory()->createNewPerson();
 
+        // FORM
         $form = $this->createForm('person_registration', $person, array(
             'settings' => $this->getBrandContainer()->getSettings(),
         ));
-
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
-            $this->addFlash('success', 'thank.you.for.registering');
+            $this->getMailer()->sendWelcomeEmail($person);
+            if ($this->getBrandSetting('core.email_validation')) {
+                $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
+            } else {
+                $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+            }
             $request->getSession()->set('last_username', $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : '');
 
             return $this->redirectToRoute('portal_login');
         }
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildRegistration();
+
         return $this->renderThemeView(
-            'Theme:Profile:register.html.twig',
+            'Theme:Portal:User/register.html.twig',
             array(
                 'form' => $form->createView(),
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->register()
             )
         );
     }
@@ -77,72 +95,113 @@ class ProfileController extends AbstractController
      */
     public function editAction(Request $request)
     {
-        if ($email_id = $request->query->get('new_primary')) {
-            $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
-            if ($proposed_new_primary_email->getPerson()->getId() == $this->getUser()->getId()) {
-                $this->getUser()->setPrimaryEmail($proposed_new_primary_email);
-                $this->getEm()->flush();
-                $this->addFlash('success', 'updated.primary.email');
+        $person = $this->getUser();
 
-                return $this->redirectToRoute('portal_user_profile');
-            }
+
+        //
+        // PROFILE
+        //
+        $profile_form = $this->createForm(
+            'person_profile',
+            $person,
+            array(
+                'settings' => $this->getBrandContainer()->getSettings(),
+            )
+        );
+        $profile_form->handleRequest($request);
+        if ($profile_form->isValid()) {
+            $this->getEm()->flush();
+            $this->addFlash('success', $this->phrase('portal.flashes.user_updated_profile'));
+
+            return $this->redirectToRoute('portal_user_profile');
         }
 
-        if ($email_id = $request->query->get('remove_email')) {
-            $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
-            if ($proposed_email_removal->getPerson()->getId() == $this->getUser()->getId()) {
-                if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
-                    $this->getUser()->removeEmail($proposed_email_removal);
-                    $this->getEm()->remove($proposed_email_removal);
+
+        //
+        // EMAILS (person must be considered "email validated" to even attempt email manipulation)
+        //
+        $emails_form = null;
+        $verify_url = null;
+        if ($person->isEmailValidated()) {
+            if ($email_id = $request->query->get('new_primary')) {
+                $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
+                if ($proposed_new_primary_email->getPerson()->getId() == $person->getId()) {
+                    $person->setPrimaryEmail($proposed_new_primary_email);
                     $this->getEm()->flush();
-                    $this->addFlash('success', 'removed.email');
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
 
                     return $this->redirectToRoute('portal_user_profile');
                 }
             }
+
+            if ($email_id = $request->query->get('remove_email')) {
+                $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
+                if ($proposed_email_removal->getPerson()->getId() == $person->getId()) {
+                    if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
+                        $person->removeEmail($proposed_email_removal);
+                        $this->getEm()->remove($proposed_email_removal);
+                        $this->getEm()->flush();
+                        $this->addFlash(
+                            'success',
+                            $this->phrase(
+                                'portal.flashes.user_removed_an_email',
+                                array('email' => $proposed_email_removal->email)
+                            )
+                        );
+
+                        return $this->redirectToRoute('portal_user_profile');
+                    }
+                }
+            }
+
+            $emails_form = $this->createForm(
+                'person_manage_emails',
+                $person,
+                array(
+                    'settings' => $this->getBrandContainer()->getSettings(),
+                )
+            );
+            $emails_form->handleRequest($request);
+            if ($emails_form->isValid()) {
+                $this->getEm()->flush();
+                $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
+
+                return $this->redirectToRoute('portal_user_profile');
+            }
+        } else {
+            $verify_url = $this->get('portal_person_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
         }
 
-        // PROFILE
-        $profile_form = $this->createForm('person_profile', $this->getUser(), array(
-            'settings' => $this->getBrandContainer()->getSettings(),
-        ));
-        $profile_form->handleRequest($request);
-        if ($profile_form->isValid()) {
-            $this->getEm()->flush();
-            $this->addFlash('success', 'success.updated.profile.phrase');
 
-            return $this->redirectToRoute('portal_user_profile');
-        }
-
-        // EMAILS
-        $emails_form = $this->createForm('person_manage_emails', $this->getUser(), array(
-            'settings' => $this->getBrandContainer()->getSettings(),
-        ));
-        $emails_form->handleRequest($request);
-        if ($emails_form->isValid()) {
-            $this->getEm()->flush();
-            $this->addFlash('success', 'success.updated.emails.phrase');
-
-            return $this->redirectToRoute('portal_user_profile');
-        }
-
+        //
         // PASSWORD
-        $password_form = $this->createForm('person_change_password', $this->getUser(), array(
+        //
+        $password_form = $this->createForm('person_change_password', $person, array(
             'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $password_form->handleRequest($request);
         if ($password_form->isValid()) {
             $this->getEm()->flush();
-            $this->addFlash('success', 'success.changed.password.phrase');
+            $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
 
             return $this->redirectToRoute('portal_user_profile');
         }
 
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
+
         return $this->renderThemeView(
-            'Theme:Profile:edit.html.twig', array(
+            'Theme:Portal:User/profile.html.twig', array(
+                'person' => $person,
+                'verify_url' => $verify_url,
                 'profile_form' => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
-                'emails_form' => $emails_form->createView(),
+                'emails_form' => $emails_form ? $emails_form->createView() : null,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->profile()
             )
         );
     }

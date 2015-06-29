@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 use Application\ImportBundle\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Extension designed to make working with templates easier by simplifying
@@ -44,10 +45,10 @@ class PortalSupportExtension extends \Twig_Extension
     /**
      * @var ContainerInterface
      */
-    private $continer;
+    private $container;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
     private $brand_stack;
 
@@ -56,7 +57,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     function __construct(ContainerInterface $continer)
     {
-        $this->continer = $continer;
+        $this->container = $continer;
         $this->brand_stack = $continer->get('brand_stack');
     }
 
@@ -89,12 +90,13 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('can_use_*', array($this, 'canUseCheck')),
             new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
+            new \Twig_SimpleFunction('is_agent', array($this, 'isAgent')),
+            new \Twig_SimpleFunction('is_admin', array($this, 'isAdmin')),
             new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
+            new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
-            new \Twig_SimpleFunction('date', array($this, 'date')),
-
-            new \Twig_SimpleFunction('dp_context_tag_*', array($this, 'processPortalPageTag'), array('is_safe' => array('html'), 'needs_context' => true)),
-            new \Twig_SimpleFunction('dp_tag_*', array($this, 'processPortalTag'), array('is_safe' => array('html'), 'needs_context' => true)),
+            new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
+            new \Twig_SimpleFunction('date', array($this, 'date'))
         );
 
         return $funcs;
@@ -112,6 +114,11 @@ class PortalSupportExtension extends \Twig_Extension
         return $filters;
     }
 
+    public function urlFull($route_name, $vars = array())
+    {
+        return $this->container->get('router.default')->generate($route_name, $vars, UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
     /**
      * Check if the current user can see/use a certain feature.
      *
@@ -121,7 +128,7 @@ class PortalSupportExtension extends \Twig_Extension
     public function canUseCheck($name)
     {
         $n = strtoupper($name);
-        return $this->continer->get('security.authorization_checker')->isGranted("USE_" . $n);
+        return $this->container->get('security.authorization_checker')->isGranted("USE_" . $n);
     }
 
 
@@ -133,26 +140,26 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function hasAnyCheck($name)
     {
-        $sec = $this->continer->get('security.authorization_checker');
+        $sec = $this->container->get('security.authorization_checker');
 
         switch ($name) {
             case 'articles':
-                if ($sec->isGranted('USE_ARTICLES') && $this->continer->get('data.articles')->hasAny()) {
+                if ($sec->isGranted('USE_ARTICLES') && $this->container->get('data.articles')->hasAny()) {
                     return true;
                 }
                 break;
             case 'news':
-                if ($sec->isGranted('USE_NEWS') && $this->continer->get('data.news')->hasAny()) {
+                if ($sec->isGranted('USE_NEWS') && $this->container->get('data.news')->hasAny()) {
                     return true;
                 }
                 break;
             case 'downloads':
-                if ($sec->isGranted('USE_DOWNLOADS') && $this->continer->get('data.downloads')->hasAny()) {
+                if ($sec->isGranted('USE_DOWNLOADS') && $this->container->get('data.downloads')->hasAny()) {
                     return true;
                 }
                 break;
             case 'feedback':
-                if ($sec->isGranted('USE_FEEDBACK') && $this->continer->get('data.feedback')->hasAny()) {
+                if ($sec->isGranted('USE_FEEDBACK') && $this->container->get('data.feedback')->hasAny()) {
                     return true;
                 }
                 break;
@@ -167,7 +174,54 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function isUser()
     {
-        return $this->continer->get('security.authorization_checker')->isGranted("ROLE_USER");
+        return $this->container->get('security.authorization_checker')->isGranted("ROLE_USER");
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isAgent()
+    {
+        if (!$person = $this->getPerson()) {
+            return false;
+        }
+
+        return $person->is_agent && $person->can_agent;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        if (!$person = $this->getPerson()) {
+            return false;
+        }
+
+        return $person->is_agent && $person->can_admin;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Person|null
+     */
+    private function getPerson()
+    {
+        if (!$this->container->has('security.token_storage')) {
+            throw new \LogicException('The SecurityBundle is not registered in your application.');
+        }
+
+        if (null === $token = $this->container->get('security.token_storage')->getToken()) {
+            return;
+        }
+
+        if (!is_object($user = $token->getUser())) {
+            // e.g. anonymous authentication
+            return;
+        }
+
+        return $user;
     }
 
     /**
@@ -175,7 +229,41 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function isGuest()
     {
-        return !$this->continer->get('security.authorization_checker')->isGranted("ROLE_USER");
+        return !$this->container->get('security.authorization_checker')->isGranted("ROLE_USER");
+    }
+
+    /**
+     * @param string $page
+     * @return bool
+     */
+    public function pageIsCheck($page)
+    {
+        try {
+            $r = $this->container->get('request_stack')->getMasterRequest();
+        } catch (\Exception $e) {
+            $r = null;
+        }
+
+        if (!$r || !($route = $r->attributes->get('_route'))) {
+            return false;
+        }
+
+        switch ($page) {
+            case 'home':
+                return $route === 'portal_index';
+            case 'kb':
+                return preg_match('#^portal_kb#', $route);
+            case 'news':
+                return preg_match('#^portal_news#', $route);
+            case 'downloads':
+                return preg_match('#^portal_downloads#', $route);
+            case 'feedback':
+                return preg_match('#^portal_feedback#', $route);
+            case 'tickets':
+                return preg_match('#^portal_tickets#', $route) || $route === 'portal_new_ticket';
+        }
+
+        return false;
     }
 
     /**
@@ -204,7 +292,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function date($date, $format = 'fulltime', $timezone = null)
     {
-        $brand = $this->continer->get('brand_stack')->getActive();
+        $brand = $this->container->get('brand_stack')->getActive();
         switch ($format) {
             case 'full':
                 //D, jS M Y
@@ -251,7 +339,7 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         if ($timezone === null) {
-            $person = $this->continer->get('security.token_storage')->getToken()->getUser();
+            $person = $this->container->get('security.token_storage')->getToken()->getUser();
             if ($person && $person instanceof Person) {
                 $timezone = $person->getTimezone();
             } else {
@@ -302,6 +390,28 @@ class PortalSupportExtension extends \Twig_Extension
     public function processPortalTag($context, $tag_name, $arguments = array())
     {
         return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+    }
+
+    /**
+     * @param string $tag_name
+     * @return bool
+     */
+    public function hasTag($tag_name)
+    {
+        $theme = $this->brand_stack->getActive()->getTheme();
+        $resolver = $this->container->get('theme_resolver');
+        return $resolver->hasTag($theme, $tag_name);
+    }
+
+    /**
+     * @param string $tag_name
+     * @return string|null
+     */
+    public function getTagIncludeTemplate($tag_name)
+    {
+        $theme = $this->brand_stack->getActive()->getTheme();
+        $resolver = $this->container->get('theme_resolver');
+        return $resolver->templatePath($theme, 'ThemeTagTemplate::' . $tag_name . '.html.twig');
     }
 
     /**

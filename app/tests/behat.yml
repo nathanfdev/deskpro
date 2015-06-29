@@ -83,6 +83,9 @@ portal:
             namespaces:
                 page: DpBehat\Portal\Page
                 element: DpBehat\Portal\Page\Element
+            factory:
+                page_parameters:
+                          base_url: /
 
 
 

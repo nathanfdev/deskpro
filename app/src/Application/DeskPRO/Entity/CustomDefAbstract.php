@@ -413,6 +413,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         $obj           = new static();
         $obj['parent'] = $this;
+        $this->children->add($obj);
 
         return $obj;
     }
@@ -646,10 +647,29 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         if ($data['type_name'] == 'choice') {
             $data['choices'] = array();
+            $has_children = $map = array();
+
             foreach ($this->children as $c) {
+                $map[$c['id']] = $c;
+                if ($parent = $c->getOption('parent_id')) {
+                    $has_children[$parent] = 1;
+                }
+            }
+
+            foreach ($this->children as $c) {
+                // todo? exclude parents from choice list
+//                if (@$has_children[$c['id']]) continue;
+
+                $title = $c['title'];
+//                $child = $c;
+//                while ($parent = @$map[$child->getOption('parent_id')]) {
+//                    $title = $parent['title'] . ' > ' . $title;
+//                    $child = $parent;
+//                }
+
                 $data['choices'][] = array(
                     'id'            => $c->id,
-                    'title'         => $c->title,
+                    'title'         => $title,
                     'parent_id'     => $c->getOption('parent_id') ?: null,
                     'display_order' => $c->display_order,
                 );

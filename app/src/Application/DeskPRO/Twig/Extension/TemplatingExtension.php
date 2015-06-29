@@ -273,6 +273,8 @@ class TemplatingExtension extends \Twig_Extension
             'DPC_ACCOUNT_ID'        => true,
             'DPC_BILL_OVERDUE'      => true,
             'DPC_BILL_DATE'         => true,
+            'DP_NOTIFY_LOGIN_SCRIPT' => true,
+            'DP_NOTIFY_LOGOUT_SCRIPT' => true,
         );
 
         if (!$name || !defined($name) || !isset($whitelist[$name])) {
@@ -1711,10 +1713,10 @@ class TemplatingExtension extends \Twig_Extension
         for ($i = 0; $i < 5; $i++) {
             $text          = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
             $text          = str_replace('{{count}}', '{}', $text);
+            if (!in_array($text, $positions, true)) {
             $positions[$i] = $text;
         }
-
-        $positions = array_unique($positions);
+        }
 
         if (count($positions) == 2) {
             $positions['other'] = $positions[0];
@@ -1728,6 +1730,11 @@ class TemplatingExtension extends \Twig_Extension
                 );
             }
             $positions['other'] = Arrays::getLastItem($positions);
+        }
+
+        // Must always specify 1 because ng on admin side uses en_US
+        if (!isset($positions[1])) {
+            $positions[1] = $positions['other'];
         }
 
         return json_encode($positions);

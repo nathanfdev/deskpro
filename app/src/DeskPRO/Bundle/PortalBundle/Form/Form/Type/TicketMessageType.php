@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -42,6 +43,16 @@ use Symfony\Component\Validator\Constraints\NotNull;
 
 class TicketMessageType extends AbstractType
 {
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(LanguageManager $language_manager)
+    {
+        $this->language_manager = $language_manager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (count($options['message_constraints'])) {
@@ -88,11 +99,12 @@ class TicketMessageType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'message_label'       => 'Message',
+            'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
             'message_constraints' => array(),
         ));
         $resolver->setRequired(array(
-            'person', 'ticket',
+            'person',
+            'ticket',
         ));
         $resolver->setAllowedTypes(array(
             'person' => 'Application\\DeskPRO\\Entity\\Person',

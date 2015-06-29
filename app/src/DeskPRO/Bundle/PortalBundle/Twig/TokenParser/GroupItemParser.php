@@ -36,9 +36,16 @@ use Twig_Token;
 use DeskPRO\Bundle\PortalBundle\Twig\Node\GroupItemNode;
 
 /**
+ * An item is part of a group. An item out of a group makes no sense.
+ *
  * {% item if some_condition %}{% enditem %}
  * {% item my_id %}{% enditem %}
  * {% item my_id if some_condition %} {%endif %}
+ *
+ * Giving an item an ID makes it possible to use the value in `group.items.my_id`, useful
+ * when you want to use it as part of a condition.
+ *
+ * @see GroupParser
  */
 class GroupItemParser extends \Twig_TokenParser
 {

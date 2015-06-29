@@ -74,6 +74,13 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $number;
 
     /**
+     * A human-defined (optional) label to describe what this phone number is
+     *
+     * @var string
+     */
+    protected $label;
+
+    /**
      * The ISO 3166-1 country/region code of the phone number (2 char).
      *
      * @var string
@@ -90,20 +97,45 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;
 
-    public function __construct($number = null)
+    /**
+     * LOOK at the static createEntity factory method, don't try to create yourself.
+     *
+     * @param null $number
+     * @param null $region
+     */
+    public function __construct($number = null, $region = null, $guessed_type = null)
     {
         if ($number) {
-            $this->setNumber($number);
+            $this->setModelField('number', $number);
+            $this->setModelField('region', $region);
+            $this->setModelField('guessed_type', $guessed_type);
         }
         $this->setModelField('date_created', new \DateTime());
     }
 
     /**
-     * @return int
+     * @param $phone_number
+     * @return PhoneNumber
      */
-    public function getId()
+    public static function createEntity($phone_number)
     {
-        return $this->id;
+        try {
+            if (!PhoneNumbers::isValid($phone_number)) {
+                return null;
+            }
+
+            $num = PhoneNumbers::parseNum($phone_number);
+            $region = PhoneNumbers::getRegionForNumber($num);
+            $type = PhoneNumbers::getType($num);
+
+            if (empty($num) || empty($region) || empty($type)) {
+                return null;
+            }
+
+            return new static($num, $region, $type);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -167,6 +199,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array( 'fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
                                    'scale'     => 0, 'nullable' => false, 'columnName' => 'number', ));
+        $metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 100, 'precision' => 0,
+
+                                   'scale'     => 0, 'nullable' => true, 'columnName' => 'label', ));
 
         $metadata->mapField(array( 'fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
                                    'scale'     => 0, 'nullable' => false, 'columnName' => 'region', ));

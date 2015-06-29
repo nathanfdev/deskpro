@@ -36,10 +36,12 @@ use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface, LogoutSuccessHandlerInterface
 {
     /**
      * @var ContainerInterface
@@ -52,8 +54,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
         if ($token instanceof AgentImpersonateToken) {
+            $request->getSession()->set('auth_person_id', $token->getAgent()->getId());
             return $this->httpUtils->createRedirectResponse($request, '/');
         }
+
+        // do this after the AgentImpersonateToken bit above
+        // this allows agents/admin to login to portal and seamlessly move to other interfaces
+        $request->getSession()->set('auth_person_id', $token->getUser()->getId());
 
         if (
             $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
@@ -64,11 +71,71 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
         }
 
+        // if we should be auto submitting, send to auto submit controller (this was a login intercept)
+        if ($this->container->get('form_saver')->getAutoSubmitSavedForm()) {
+            return $this->httpUtils->createRedirectResponse(
+                $request,
+                $this->container->get('router')->generate('saved_form_auto_submit')
+            );
+        }
+
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
+    }
+
+    /**
+     * Builds the target URL according to the defined options.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function determineTargetUrl(Request $request)
+    {
+        if ($this->options['always_use_default_target_path']) {
+            return $this->options['default_target_path'];
+        }
+
+        // the login url can't be the login destination
+        $login_url = $this->container->get('router')->generate('portal_login');
+
+        if ($targetUrl = $request->get($this->options['target_path_parameter'], null, true)) {
+            if ($targetUrl != $login_url) {
+                return $targetUrl;
+            }
+        }
+
+        if (null !== $this->providerKey && $targetUrl = $request->getSession()->get(
+                '_security.' . $this->providerKey . '.target_path'
+            )
+        ) {
+            $request->getSession()->remove('_security.' . $this->providerKey . '.target_path');
+
+            if ($targetUrl != $login_url) {
+                return $targetUrl;
+            }
+        }
+
+        if ($this->options['use_referer'] && ($targetUrl = $request->headers->get(
+                'Referer'
+            )) && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])
+        ) {
+            if ($targetUrl != $login_url) {
+                return $targetUrl;
+            }
+        }
+
+        return $this->options['default_target_path'];
     }
 
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    public function onLogoutSuccess(Request $request)
+    {
+        if ($person_id = $request->get('_dp_impersonate_exit')) {
+
+        }
     }
 }

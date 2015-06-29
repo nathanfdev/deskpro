@@ -1,8 +1,21 @@
-{% if impersonator %}
-<div class="alerts">
-    <div class="alert" style="border: 1px dotted black">
-        {{ impersonator.display_name }}, you are impersonating the user: <strong> {{ user.display_name }} (ID #{{ user.id }})</strong>.
-        <a style="float: right" href="/logout">exit impersonation mode</a>.
+{% if display_alerts %}
+    <div class="alerts">
+    {% if impersonator %}
+        <a class="alert" href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">
+            {{ impersonator.display_name }} {{ phrase('portal.account.impersonating') }} <strong>{{ user.display_name }} ({{ phrase('portal.general.id') }} #{{ user.id }})</strong> <a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">[{{ phrase('portal.account.exit_impersonation') }}]</a>
+        </a>
+    {% endif %}
+
+    {% for validation in validation_alerts %}
+        <a href="{{ validation.resend_url ?: '' }}" class="alert">
+            <i class="fa fa-times"></i> <strong>{{ validation.message }}</strong>
+        </a>
+    {% endfor %}
+
+    {% for saved in saved_forms %}
+        <a href="{{ saved.link }}" class="alert">
+            <i class="fa fa-times"></i> {{ phrase('portal.account.login-saved-form', { type: saved.message }) }}
+        </a>
+    {% endfor %}
     </div>
-</div>
 {% endif %}

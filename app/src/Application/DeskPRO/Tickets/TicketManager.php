@@ -255,6 +255,12 @@ class TicketManager
      */
     public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) {
+            $this->em->persist($ticket);
+            $this->em->flush();
+            return null;
+        }
+
         $this->db->beginTransaction();
 
         try {

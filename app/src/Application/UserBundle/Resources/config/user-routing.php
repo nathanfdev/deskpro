@@ -38,6 +38,12 @@ $collection->create('portal_kb_unsubscribe_all', array(
 $collection->create('portal_agent_login', array(
     'path' => ' /impersonate/agent-login/{code}',
 ));
+$collection->create(
+    'portal_feedback_view',
+    array(
+        'path' => '/feedback/view/{slug}',
+    )
+);
 
 $collection->create('user', array(
     'path'        => '/',

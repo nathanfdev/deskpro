@@ -101,7 +101,7 @@ class PortalUsergroupDecider
 
                 // if a user is logged in and agent confirmed, they also get the "regsitered" perm.
                 $registeredGroup = $em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'registered'));
-                if ($registeredGroup && $registeredGroup->is_enabled && $person->getId() && $person->is_agent_confirmed) {
+                if ($registeredGroup && $registeredGroup->is_enabled && $person->getId() && $person->isUserValid()) {
                     $ids[] = $registeredGroup->id;
                 }
 

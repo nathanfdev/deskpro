@@ -106,6 +106,19 @@ class PortalKernel extends Kernel
     }
 
     /**
+     * @deprecated Use dp_get_log_dir()
+     * @return string
+     */
+    public function getLogDir()
+    {
+        if (!function_exists('dp_get_log_dir')) {
+            require_once DP_ROOT . '/sys/load_config.php';
+        }
+
+        return dp_get_log_dir();
+    }
+
+    /**
      * @return string
      */
     public function getRootDir()
@@ -211,4 +224,11 @@ class PortalKernel extends Kernel
 
         $cache->write($content, $container->getResources());
     }
+
+    public function getName()
+    {
+        return 'portal';
+    }
+
+
 }

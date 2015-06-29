@@ -122,7 +122,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 			$(this).width(min);
 		});
-		DP.select(this.display.find('select'));
+
+    this.display.find('select[data-custom-field]').dpMultiLevelSelect();
+    DP.select(this.display.find('select'));
 
 		this.updateDisplay();
 
@@ -229,6 +231,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
+
+    this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
+    DP.select(this.display.find('select'));
 
 		last.detach().appendTo(this.display);
 	},

@@ -31,10 +31,65 @@
 
 namespace DpBehat\Portal\Page;
 
+use Behat\Mink\Session;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Factory;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class BasePage extends Page
 {
+    /**
+     * @param Session $session
+     * @param Factory $factory
+     * @param array $parameters
+     */
+    public function __construct(Session $session, Factory $factory, array $parameters = array())
+    {
+        parent::__construct($session, $factory, $parameters);
+        // ensure no base_url is used. this test suite is meant to be run in the symfony kernel only
+        // to support phantomjs or any external driver, you'll need to do some work (I don't know what, though)
+        if (isset($parameters['base_url'])) {
+            $parameters['base_url'] = null;
+        }
+    }
+
+    /**
+     * @param array $urlParameters
+     *
+     * @return string
+     */
+    protected function getUrl(array $urlParameters = array())
+    {
+        return $this->makeSurePathIsAbsolute($this->unmaskUrl($urlParameters));
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    private function makeSurePathIsAbsolute($path)
+    {
+        $baseUrl = '/';
+
+        return 0 !== strpos($path, '/') ? $baseUrl . ltrim($path, '/') : $path;
+    }
+
+    /**
+     * @param array $urlParameters
+     *
+     * @return string
+     */
+    private function unmaskUrl(array $urlParameters)
+    {
+        $url = $this->getPath();
+
+        foreach ($urlParameters as $parameter => $value) {
+            $url = str_replace(sprintf('{%s}', $parameter), $value, $url);
+        }
+
+        return $url;
+    }
+
     protected function verifyUrl(array $urlParameters = array())
     {
         // we need to override this to allow for not using a hostname at all in the session (it uses localhost)

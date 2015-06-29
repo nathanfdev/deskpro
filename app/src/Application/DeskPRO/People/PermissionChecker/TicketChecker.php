@@ -57,6 +57,7 @@ class TicketChecker extends AbstractChecker
         'set_resolved',
         'set_unresolved',
         'followed',
+        'billing',
     );
 
     /**
@@ -220,6 +221,10 @@ class TicketChecker extends AbstractChecker
 
         if ($this->person->hasPerm('agent_tickets.reply_own')) {
             if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+                return true;
+            }
+
+            if ($ticket->person && $ticket->person->id == $this->person->id) {
                 return true;
             }
 

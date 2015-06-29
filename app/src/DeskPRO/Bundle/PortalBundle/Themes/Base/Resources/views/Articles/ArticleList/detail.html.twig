@@ -4,15 +4,24 @@
       <li>
         <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
           <h1>{{ article.realTitle }}</h1>
+        </a>
 
           <div class="article-meta">
+            {{ phrase('portal.articles.authored_by') }}
+            <span class="agent-avatar agent-avatar-mini"
+                  style="background: url({{ avatar_url(article.person, 36) }}) no-repeat; background-size: cover;"></span>
+            <span class="focus">{{ article.person.name }}</span>
             <span class="updated"><i class="fa fa-calendar-o"></i> {{ article.date_created|date('day') }}</span>
-            <span class="comments"><i class="fa fa-comments"></i> 0 comments</span>
+            {% if article.num_comments > 0 %}
+              <span class="comments focus"><i class="fa fa-comments"></i> <a
+                        href="{{ path('portal_kb_view', { slug: article.slug }) }}#comments">
+                  {{ phrase('portal.general.comments-count', {count: article.num_comments}) }}
+                </a></span>
+            {% endif %}
           </div>
-        </a>
       </li>
     {% endfor %}
   </ul>
 {% else %}
-  <strong>No articles yet</strong>
+  <strong>{{ phrase('portal.articles.none') }}</strong>
 {% endif %}

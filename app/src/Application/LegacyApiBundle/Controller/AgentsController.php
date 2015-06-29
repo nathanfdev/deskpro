@@ -578,9 +578,16 @@ class AgentsController extends AbstractController implements ProtectedController
         });
 
         $existPersons = $this->em->getRepository('DeskPRO:Person')->findByEmails($set_emails);
+        $agent = reset($existPersons);
 
         // we have a dupe email error
-        if(count($existPersons) > 1) {
+        // not yet
+        $dupe =
+            ($id && $agent && $agent['id'] != $id) // update an agent (or user to agent)
+            ||
+            (!$id && $agent && $agent['is_agent']); // insert an agent
+
+        if ($dupe) {
             $error_info = array('existing' => array());
 
             foreach ($existPersons as $person) {
@@ -599,7 +606,7 @@ class AgentsController extends AbstractController implements ProtectedController
         # Get agent
         #-------------------------
 
-        if (!$agent = reset($existPersons)) {
+        if (!$agent) {
             if ($id) {
                 if (!$agent = $this->container->getAgentData()->get($id)) {
                     throw $this->createNotFoundException();

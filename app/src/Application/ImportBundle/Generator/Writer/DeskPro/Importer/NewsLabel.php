@@ -60,13 +60,13 @@ final class NewsLabel extends AbstractImporter
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
-                $this->logWarning(sprintf(
+                $this->logDebug(sprintf(
                     'Found an existing label `%s` for news with oid `%d` (Skipping)',
                     $label, $news->getId()
                 ));
             } else {
                 $news->addLabel($this->createNewsLabel($label));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Creating a new label `%s` for news with oid `%d`',
                     $label, $news->getId()
                 ));

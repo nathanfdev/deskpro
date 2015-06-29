@@ -75,6 +75,11 @@ class InstallKernel extends BaseKernel
         App::$container          = $this->container;
     }
 
+    public function getName()
+    {
+        return 'install';
+    }
+
     /**
      * {@inheritDoc}
      */

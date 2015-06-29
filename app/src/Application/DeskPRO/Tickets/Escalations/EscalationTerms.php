@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 
@@ -71,9 +72,10 @@ class EscalationTerms implements \Serializable, FilterTermInterface
      */
     public function addTermFromArray(array $term_info)
     {
-        $class_name = "Application\\DeskPRO\\Tickets\\Filters\\Terms\\{$term_info['type']}";
+        $type = $term_info['type'];
+        $class_name = "Application\\DeskPRO\\Tickets\\Filters\\Terms\\$type";
         if (!class_exists($class_name)) {
-            throw new \InvalidArgumentException("Unknown term {$term_info['type']} (could not locate class: $class_name)");
+            throw new \InvalidArgumentException("Unknown term $type (could not locate class: $class_name)");
         }
 
         $term = new $class_name($term_info['op'], $term_info['options']);
@@ -83,7 +85,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
     /**
      * {@inheritDoc}
      */
-    public function getFilterQuery()
+    public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         return $this->criteria->getFilterQuery();
     }

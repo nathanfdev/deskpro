@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -47,9 +48,15 @@ class TicketMessageAttachmentType extends AbstractType
      */
     private $blob_storage;
 
-    public function __construct(DeskproBlobStorage $blob_storage)
+    /**
+     * @var BlobRepo
+     */
+    private $blob_repo;
+
+    public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo)
     {
         $this->blob_storage = $blob_storage;
+        $this->blob_repo = $blob_repo;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -80,7 +87,7 @@ class TicketMessageAttachmentType extends AbstractType
                 $attachment = new TicketAttachment();
                 $form->setData($attachment);
             }
-            $form->getData()->setBlob($this->blob_storage->getBlobEntityFromAuthcode($submittedData['blob_auth']));
+            $form->getData()->setBlob($this->blob_repo->getByAuthCode($submittedData['blob_auth']));
 
             // delete?
             if (array_key_exists('delete', $submittedData)) {

@@ -1,0 +1,7 @@
+# this only works if your cache dir is the default app/sys/cache
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+cd ..
+
+rm -rf data/logs/*.log

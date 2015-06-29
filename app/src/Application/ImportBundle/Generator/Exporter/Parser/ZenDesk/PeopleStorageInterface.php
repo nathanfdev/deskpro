@@ -53,6 +53,14 @@ interface PeopleStorageInterface
     public function addPeople(array $people);
 
     /**
+     * Add deleted user ids
+     *
+     * @param array $ignore_ids
+     * @return mixed
+     */
+    public function addIgnoreIds(array $ignore_ids);
+
+    /**
      * Get stored users collection.
      *
      * @return array

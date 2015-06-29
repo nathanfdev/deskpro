@@ -31,6 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
+use Application\ImportBundle\Reader\BaseReader;
 use Exception;
 
 /**
@@ -46,14 +47,18 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private $parsers;
 
+    protected $reader;
+
     /**
      * Constructor
      *
      * @param Parser\Collection $parsers
+     * @param BaseReader        $reader
      */
-    public function __construct(Parser\Collection $parsers)
+    public function __construct(Parser\Collection $parsers, BaseReader $reader)
     {
         $this->parsers = $parsers;
+        $this->reader  = $reader;
     }
 
     /**
@@ -74,7 +79,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public function exportByType($type)
     {
-        $this->logNotice(sprintf('Parsing `%s` entities', $type));
+        $this->logInfo(sprintf('Parsing `%s` entities', $type));
 
         $parser = $this->getParserByType($type);
         if ($parser instanceof Parser\NotSupportedInterface) {
@@ -82,6 +87,8 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
 
             return new Entity\Collection();
         }
+
+        $this->logDebug("Type: " . get_class($parser));
 
         return $parser->export();
     }
@@ -113,5 +120,22 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         }
 
         return $parser;
+    }
+
+    public function isReady()
+    {
+        return $this->reader->isReady();
+    }
+
+    static public function getOrderedTypes()
+    {
+        return array(
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 }

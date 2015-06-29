@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
@@ -43,9 +44,13 @@ class PortalController extends AbstractController
      * @Route("/", name="portal_index")
      * @PageHttpCache()
      */
-    public function indexAction(Request $request)
+    public function homeAction(Request $request)
     {
-        return $this->renderThemeView('Theme:Portal:index.html.twig');
+        return $this->renderThemeView('Theme:Portal:home.html.twig',
+            array(
+                'page_title' => $this->createPageTitle()->homepage()
+            )
+        );
     }
 
     /**
@@ -54,19 +59,33 @@ class PortalController extends AbstractController
      */
     public function loginAction(Request $request)
     {
+        if ($this->getUser() instanceof Person) {
+            return $this->redirectToRoute('portal_user_profile');
+        }
+
+        $saved_form_message = null;
+        if ($saved_form = $this->getFormSaver()->getByExternalCode($request->get('saved_form'))) {
+            // this person just filled out a form and is being asked to login to auto-submit it
+            $saved_form_message = $this->getFormSaver()->getMessage($saved_form);
+        }
+
         return $this->renderThemeView(
-            'Theme:Portal:login.html.twig',
+            'Theme:Portal:User/login.html.twig',
             array(
                 'auth_manager'  => $this->get('dp_authentication_manager.user'),
                 'login_error'   => $request->get('retry') == 'auth',
+                'saved_form' => $saved_form,
+                'saved_form_message' => $saved_form_message,
                 'last_username' => $this->getSession()->get('last_username'),
                 'reset_success' => $request->get('reset_success', 0),
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildLogin(),
+                'page_title' => $this->createPageTitle()->loginPage()
             )
         );
     }
 
     /**
-     * @Route("/login/reset-password", name="portal_reset_password")
+     * @Route("/reset-password", name="portal_reset_password")
      * @PageHttpCache()
      */
     public function passwordResetRequestAction(Request $request)
@@ -103,25 +122,29 @@ class PortalController extends AbstractController
                 $person->setDatePasswordResetRequested(new \DateTime());
 
                 $this->persistAndFlushEntity($person);
-                $this->get('new_mailer')->sendPasswordResetLink($person);
+                $this->get('portal_mailer')->sendPasswordResetLink($person);
             }
 
-            return $this->renderThemeView('Theme:Portal:password-reset-requested.html.twig', array(
+            return $this->renderThemeView('Theme:Portal:User/password-reset-requested.html.twig', array(
                 'email' => $email,
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+                'page_title' => $this->createPageTitle()->passwordReset()
             ));
         } elseif ($form->isSubmitted()) {
             $render_error = true;
         }
 
-        return $this->renderThemeView('Theme:Portal:password-reset-request.html.twig', array(
+        return $this->renderThemeView('Theme:Portal:User/password-reset-request.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
             'render_error' => $render_error,
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+            'page_title' => $this->createPageTitle()->passwordReset()
         ));
     }
 
     /**
-     * @Route("/login/reset-password/{password_reset_code}", name="portal_reset_password_process")
+     * @Route("/reset-password/{password_reset_code}", name="portal_reset_password_process")
      */
     public function passwordResetAction(Request $request, $password_reset_code)
     {
@@ -141,7 +164,10 @@ class PortalController extends AbstractController
         }
 
         if (!$valid) {
-            return $this->renderThemeView('Theme:Portal:password-reset-invalid-code.html.twig');
+            return $this->renderThemeView('Theme:Portal:User/password-reset-invalid-code.html.twig', array(
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+                'page_title' => $this->createPageTitle()->passwordReset()
+            ));
         }
 
         $form = $this->createForm('person_change_password', $person, array(
@@ -163,9 +189,67 @@ class PortalController extends AbstractController
             return $this->redirectToRoute('portal_login', array('reset_success' => 1));
         }
 
-        return $this->renderThemeView('Theme:Portal:password-reset.html.twig', array(
+        return $this->renderThemeView('Theme:Portal:User/password-reset.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form'         => $form->createView(),
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(),
+            'page_title' => $this->createPageTitle()->passwordReset()
         ));
+    }
+
+    /**
+     * @Route("/validate/{object_type}/{email_id}/{object_id}", name="portal_validation", defaults={"object_id":null})
+     */
+    public function validateAction(Request $request, $object_type, $email_id, $object_id)
+    {
+        switch($object_type) {
+            case PersonValidator::TYPE_EMAIL:
+                $this->getPersonValidator()->validateEmail($email_id);
+                $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
+                break;
+            case PersonValidator::TYPE_EMAIL_PRIMARY:
+                $this->getPersonValidator()->validateEmail($email_id);
+                $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
+                break;
+        }
+
+        if (!$this->getUser()) {
+            // if the user is not logged in, send them to the login page with their email filled in
+            $email = $this->getEmailDataService()->getEmail($email_id);
+            $request->getSession()->set(
+                'last_username',
+               $email ? $email->getEmail() : ''
+            );
+            return $this->redirectToRoute('portal_login');
+        }
+
+        return $this->redirectToRoute('portal_index');
+    }
+
+    /**
+     * @Route("/validate-send/{object_type}/{email_id}/{object_id}", name="portal_send_validation", defaults={"object_id":null})
+     */
+    public function resendValidationEmailAction(Request $request, $object_type, $email_id, $object_id)
+    {
+        switch($object_type) {
+            case PersonValidator::TYPE_EMAIL:
+                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL, $email_id);
+                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email'));
+                break;
+            case PersonValidator::TYPE_EMAIL_PRIMARY:
+                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email_id);
+                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email'));
+                break;
+        }
+
+        return $this->redirectToRoute('portal_index');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Person\PersonValidator
+     */
+    protected function getPersonValidator()
+    {
+        return $this->get('portal_person_validator');
     }
 }

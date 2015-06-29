@@ -114,61 +114,39 @@ class EmailSource extends AbstractEntityRepository
             return false;
         }
 
-        $active_reject_id = $db->fetchColumn("
+        /**
+         * ----AR---|---R-R-------------RAAR|NOW
+         *      |-----------------------|  |----
+         *               lock time
+         *
+         * - find last accepted (A) within lock time
+         * - find first rejected (R) after (A)
+         *
+         */
+        $last_accepted_id = $db->fetchColumn(
+            '
             SELECT id
             FROM email_sources
-            WHERE date_created >= ? AND from_email = ?
+            WHERE date_created >= ? AND from_email = ? AND !(status = "rejected" AND error_code = "rate_limit")
             ORDER BY id DESC
             LIMIT 1
-        ", array(date('Y-m-d H:i:s', time()-$lock_time), $email));
+        ',
+            array(date('Y-m-d H:i:s', time() - $lock_time), $email)
+        );
 
-        if (!$active_reject_id) {
+        if (!$last_accepted_id) {
             return false;
         }
 
-        #------------------------------
-        # We need to double-check that the record we just
-        # got isn't a reject from a previously set lock which could now be expired
-        #------------------------------
-
-        // Find the last real message
-        $last_message_id = $db->fetchColumn("
+        return (bool)$db->fetchColumn(
+            '
             SELECT id
             FROM email_sources
-            WHERE from_email = ? AND !(status = 'rejected' AND error_code = 'rate_limit')
-            ORDER BY id DESC
+            WHERE id > ? AND from_email = ? AND status = "rejected" AND error_code = "rate_limit"
             LIMIT 1
-        ", array($email));
-
-        if ($last_message_id) {
-            $reject_start = $db->fetchColumn("
-                SELECT date_created
-                FROM email_sources
-                WHERE from_email = ? AND status = 'rejected' AND error_code = 'rate_limit' AND id > ?
-                ORDER BY id ASC
-                LIMIT 1
-            ", array($email, $last_message_id));
-        } else {
-            $reject_start = $db->fetchColumn("
-                SELECT date_created
-                FROM email_sources
-                WHERE from_email = ? AND status = 'rejected' AND error_code = 'rate_limit' AND id < ?
-                ORDER BY id ASC
-                LIMIT 1
-            ", array($email, $active_reject_id));
-        }
-
-        if (!$reject_start) {
-            return false;
-        }
-
-        $time = \DateTime::createFromFormat('Y-m-d H:i:s', $reject_start)->getTimestamp();
-
-        if (($time+$lock_time) > time()) {
-            return true;
-        } else {
-            return false;
-        }
+        ',
+            array($last_accepted_id, $email)
+        );
     }
 
     /**

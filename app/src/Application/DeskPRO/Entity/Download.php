@@ -413,6 +413,11 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $this->date_updated;
     }
 
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
     protected function addSlugHistory($old_slug)
     {
         $history = new DownloadSlugHistory($this, $old_slug);

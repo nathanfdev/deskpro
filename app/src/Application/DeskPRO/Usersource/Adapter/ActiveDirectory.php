@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Ldap\LdapPagedSearcher;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
@@ -70,6 +71,39 @@ class ActiveDirectory extends AbstractAdapter
     }
 
     /**
+     * @return LdapPagedSearcher
+     */
+    public function findAllRecords()
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+
+        /** @var \Orb\Auth\Adapter\ActiveDirectory $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findAllIdentities");
+
+        $disable_paging = $usersource->getOption('disableLdapPaging', false);
+        $paging = !$disable_paging;
+        $size = $usersource->getOption('ldapPerPage', 1000);
+
+        return $adapter->findAllRecords($size, $paging);
+    }
+
+    public function getIdentityForDn($dn)
+    {
+        $usersource = clone $this->usersource;
+        $usersource->setOption('bindRequiresDn', true);
+
+        /** @var \Orb\Auth\Adapter\ActiveDirectory $adapter */
+        $adapter = $usersource->getAdapter()->getAuthAdapter();
+
+        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("getIdentityForDn");
+
+        return $adapter->getIdentityForDn($dn);
+    }
+
+    /**
      * Find a user identity just by an email address.
      *
      * @param string $id_input Username or email address
@@ -99,6 +133,9 @@ class ActiveDirectory extends AbstractAdapter
             if (!$rec_arr || !isset($rec_arr['dn'])) {
                 $rec_arr = $adapter->findRecordViaUsername($id_input);
             }
+            if (!$rec_arr || !isset($rec_arr['dn'])) {
+                $rec_arr = $adapter->findRecordViaDn($id_input);
+            }
         } catch (\Exception $e) {
             if ($adapter->getLogger()) {
                 $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
@@ -108,6 +145,7 @@ class ActiveDirectory extends AbstractAdapter
 
         $raw_info = array();
         if ($rec_arr && isset($rec_arr['dn'])) {
+
             if ($adapter->getLogger()) {
                 $adapter->getLogger()->logDebug("findRecordViaEmail result: ".print_r($rec_arr, 1));
             }

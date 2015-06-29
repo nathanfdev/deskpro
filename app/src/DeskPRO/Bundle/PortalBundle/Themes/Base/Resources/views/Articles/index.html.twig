@@ -1,6 +1,17 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-  <h1 style="padding-bottom: 10px;">Knowledge Base</h1>
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
+
+  <header class="section-header padded">
+      <h1 style="padding-bottom: 10px;">{{ phrase('portal.articles.section-title') }}</h1>
+
+      <div class="header-buttons">
+        {% show rss_link %}
+      </div>
+  </header>
+  <p>{{ phrase('portal.articles.section-desc') }}</p>
   {% show section kb with { articles_options: { count: 5 } } %}
 {% endblock inner_content %}

@@ -39,6 +39,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Custom ticket data.
+ * @property int $id
+ * @property \Application\DeskPRO\Entity\CustomFieldDefinition $definition
+ * @property \Application\DeskPRO\Entity\CustomFieldDefinition $root_definition
+ * @property int $owner_id
+ * @property int $value
+ * @property string|mixed $input
+ * @property DomainObject $owner
  */
 class CustomFieldData extends DomainObject
 {
@@ -68,7 +75,7 @@ class CustomFieldData extends DomainObject
     protected $value;
 
     /**
-     * @var input
+     * @var string|mixed input
      */
     protected $input;
 
@@ -81,6 +88,15 @@ class CustomFieldData extends DomainObject
     {
         $this->value = 0;
         $this->input = '';
+    }
+
+    public function setData($data)
+    {
+        if (is_int($data)) {
+            $this->setModelField('value', $data);
+        } else {
+            $this->setModelField('input', (string)$data);
+        }
     }
 
     public function getData()

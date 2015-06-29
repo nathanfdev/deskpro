@@ -91,6 +91,10 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $headers = array();
         }
 
+        $method = strtoupper($this->getActionOption('method')) ?: 'POST';
+        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($method, $url, $headers);
+
+        if ($method == 'POST' || $method == 'PUT') {
         $data                    = array();
         $data['ticket']          = $ticket->toApiData();
         $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
@@ -105,9 +109,8 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         } else {
             $headers['content-type'] = 'application/x-www-form-urlencoded';
         }
-
-        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($this->getActionOption('method') ?: 'POST', $url, $headers);
         $request->setBody($data);
+        }
 
         if ($username || $password) {
             $request->setAuth($username ?: '', $password ?: '');

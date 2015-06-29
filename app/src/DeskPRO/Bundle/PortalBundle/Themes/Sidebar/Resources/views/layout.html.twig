@@ -2,9 +2,9 @@
 {% block body %}
 
     <div class="world">
-
         <section>
             <div class="column-full">
+              {% show section alerts %}
               {% show section page_top %}
             </div>
         </section>
@@ -33,6 +33,10 @@
             </aside>
         </section>
 
+        <section>
+            <div class="column-full">
+                {% show section footer %}
+            </div>
+        </section>
     </div>
-
 {% endblock body %}

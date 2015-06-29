@@ -38,6 +38,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -557,6 +558,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public $_is_new = false;
 
+    /**
+     * @var CustomDataCollection
+     */
+    protected $_cdc;
+
     public function __construct()
     {
         $this->_original_id  = null;
@@ -939,7 +945,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetParticipants()
     {
-        $this->participants = new ArrayCollection();
+        foreach ($this->participants as $participant) {
+            App::getOrm()->remove($participant);
+        }
+
+        $this->participants->clear();
         $this->_onPropertyChanged('participants', null, $this->participants);
 
         return $this;
@@ -1386,7 +1396,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetMessages()
     {
-        $this->messages = new ArrayCollection();
+        foreach ($this->messages as $message) {
+            App::getOrm()->remove($message);
+        }
+
+        $this->messages->clear();
         $this->_onPropertyChanged('messages', null, $this->messages);
 
         return $this;
@@ -1467,6 +1481,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
         $this->getStateChangeRecorder()->record('attachments', null, $attach);
+    }
+
+    public function getCustomDataCollection()
+    {
+        return $this->_cdc = ($this->_cdc ?: new CustomDataCollection(
+            $this->custom_data ? $this->custom_data : new ArrayCollection(), $this
+        ));
     }
 
 
@@ -1614,6 +1635,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function addCustomData(CustomDataTicket $data)
     {
+        if ($this->custom_data === null) {
+            $this->custom_data = new ArrayCollection();
+        }
+
         $this->custom_data->add($data);
         $data['ticket'] = $this;
 
@@ -1683,7 +1708,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        foreach ($this->labels as $label) {
+            App::getOrm()->remove($label);
+        }
+
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
@@ -1841,6 +1870,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             return $this->person['primary_email'];
         }
+    }
+
+    /**
+     * @param PersonEmail $person_email
+     *
+     * Set the email address that should be used for this ticket. Setting to null
+     * means use the person's primary email (see self::getTicketPersonEmail).
+     *
+     * Note that this is a necessary method for the form component propery accessor.
+     */
+    public function setTicketPersonEmail(PersonEmail $person_email = null)
+    {
+        $this->setModelField('person_email', $person_email);
     }
 
     public function getPersonEmailAddress()
@@ -3185,12 +3227,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public function getPath()
     {
-        return App::getRouter()->generate('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
+        return App::getRouter()->generate('portal_tickets_view', array('id' => $this->getId()));
     }
 
     public function getLink()
     {
-        return App::getRouter()->generateUrl('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
+        return App::getRouter()->generateUrl('portal_tickets_view', array('id' => $this->getId()));
     }
 
     public function isAgentCreated()
@@ -3214,8 +3256,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     $work_hours = new OptionsArray($work_hours);
 
                     return new WorkHoursSet(
-                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+                        $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
+                        $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
                         $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                         $work_hours->get('timezone', 'UTC'),
                         $work_hours->get('holidays', array())

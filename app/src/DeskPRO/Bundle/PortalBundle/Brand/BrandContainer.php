@@ -63,11 +63,17 @@ class BrandContainer
      */
     private $theme;
 
-    public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver)
+    /**
+     * @var BrandAssetLoader
+     */
+    private $asset_loader;
+
+    public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver, BrandAssetLoader $asset_loader)
     {
         $this->brand          = $brand;
         $this->settings       = $settings;
         $this->theme_resolver = $theme_resolver;
+        $this->asset_loader   = $asset_loader;
     }
 
     /**
@@ -98,6 +104,14 @@ class BrandContainer
     }
 
     /**
+     * @return BrandAssetLoader
+     */
+    public function getAssetLoader()
+    {
+        return $this->asset_loader;
+    }
+
+    /**
      * @return SettingsBag
      */
     public function getSettings()
@@ -125,6 +139,11 @@ class BrandContainer
         return $this->theme_resolver->templatePath($this->getTheme(), $name);
     }
 
+    /**
+     * @param string $tag_name
+     * @param array $arguments
+     * @return string
+     */
     public function renderTag($tag_name, array $arguments)
     {
         return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);

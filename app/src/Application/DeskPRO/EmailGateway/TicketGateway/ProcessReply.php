@@ -175,14 +175,18 @@ class ProcessReply extends ProcessAbstract
             return;
         }
 
-        if ($this->ticket_email->is_bounce) {
-            $executor_context->getVars()->set('is_bounce_message', true);
-        }
-
         $message               = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
+        }
+
+        if ($this->ticket_email->is_bounce) {
+            $executor_context->getVars()->set('is_bounce_message', true);
+            $message->is_agent_note = true;
+        }
+        if ($this->reader->isFromRobot()) {
+            $executor_context->getVars()->set('is_robot_message', true);
         }
 
         if ($this->person->is_agent) {

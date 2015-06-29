@@ -103,6 +103,23 @@ class StickyWordSearch implements PersonContextInterface
         return $words;
     }
 
+    public function getStickyWords($type, $id, $limit = 5)
+    {
+        $ret = array();
+        $res = $this->db->executeQuery(sprintf('
+            SELECT word
+            FROM search_sticky_result
+            WHERE object_type = :type AND object_id = :id
+            LIMIT %d
+        ', $limit), array('type' => $type, 'id' => $id));
+
+        while($word = $res->fetchColumn()) {
+            $ret[] = $word;
+        }
+
+        return $ret;
+    }
+
     public function getResults($query, $limit = 10)
     {
         $words = $this->getWordsFromQuery($query);

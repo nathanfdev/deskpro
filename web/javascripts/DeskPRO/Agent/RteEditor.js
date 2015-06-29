@@ -339,11 +339,12 @@ DeskPRO.Agent.RteEditor = {
 
 					var img = textarea.getEditor().find('img[data-paste-id=' + pasteId + ']');
 					if (json.error) {
-						img.remove();
-					} else {
+            img.remove();
+            api.opts.imageUploadError && api.opts.imageUploadError(pasteId);
+          } else {
 						img.data('paste-id', '').attr('src', json.filelink);
 						if (typeof api.opts.imageUploadCallback === 'function') {
-							api.opts.imageUploadCallback(api, json);
+							api.opts.imageUploadCallback(api, json, pasteId);
 						}
 					}
 
@@ -404,6 +405,8 @@ DeskPRO.Agent.RteEditor = {
 							var source = URLObj.createObjectURL(blob);
 
 							var pasteImageId = pasteImageCounter++;
+
+              api.opts.imageBeforeUploadCallback && api.opts.imageBeforeUploadCallback(api, pasteImageId);
 
 							if (sendImage(pasteImageId, RegExp.$1, blob)) {
 								textarea.insertHtml('<img src="' + source + '" data-paste-id="' + pasteImageId + '">');
@@ -486,6 +489,85 @@ DeskPRO.Agent.RteEditor = {
 		}, textarea.data('redactor')));
 
     var origSyncCode = api.syncCode;
+
+    /**
+     * override linkify behaviour
+     */
+    api.$editor.unbind('keyup').on('keyup', $.proxy(function(e)
+    {
+      var key = e.keyCode || e.which;
+
+      if (this.browser('mozilla') && !this.pasteRunning)
+      {
+        this.saveSelection();
+      }
+
+      // callback as you type
+      if (typeof this.opts.keyupCallback === 'function')
+      {
+        this.opts.keyupCallback(this, e);
+      }
+
+      // if empty
+      if (key === 8 || key === 46)
+      {
+        this.observeImages();
+        return this.formatEmpty(e);
+      }
+
+      // new line p
+      if (key === 13 && !e.shiftKey && !e.ctrlKey && !e.metaKey)
+      {
+        if (this.browser('webkit'))
+        {
+          this.formatNewLine(e);
+        }
+
+        // convert links
+        if (this.opts.convertLinks)
+        {
+
+          var protocol = 'http://';
+          var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
+              url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
+
+              linkifyThis = function ()
+              {
+                var childNodes = this.childNodes,
+                    i = childNodes.length;
+                while(i--)
+                {
+                  var n = childNodes[i];
+                  if (n.nodeType === 3)
+                  {
+                    var html = n.nodeValue, newHtml;
+                    if (html)
+                    {
+                      newHtml = html.replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
+                        .replace(url2, '$1<a href="$2">$2</a>$5');
+
+                      if (newHtml != html && newHtml != html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) {
+                        $(n).after(newHtml).remove();
+                      }
+                    }
+                  }
+                  else if (n.nodeType === 1  &&  !/^(a|button|textarea)$/i.test(n.tagName))
+                  {
+                    linkifyThis.call(n);
+                  }
+                }
+              };
+          this.$editor.each(linkifyThis);
+        }
+      }
+
+      this.syncCode();
+
+    }, api));
+
     api.syncCode = $.proxy(function(html) {
       var copy = $('<div/>').html(this.$editor.html());
       var didChange, counter = 0;

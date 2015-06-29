@@ -1,0 +1,26 @@
+{#
+Uncomment this section to show buttons to other sections of the helpdesk
+{% show section nav_buttons %}
+#}
+
+<ul>
+  {% if breadcrumbs is defined %}
+    {% for item in breadcrumbs %}
+      <li>
+        <a href="{{ path(item.route, item.route_params) }}">
+          {% if item.phrase %}
+            {{ phrase(item.phrase) }}
+          {% elseif item.var.title is defined %}
+            {{ item.var.title }}
+          {% elseif item.var.name is defined %}
+            {{ item.var.name }}
+          {% else %}
+            {{ item.route }}
+          {% endif %}
+        </a>
+        {% if not loop.last %}<i class="fa fa-angle-right"></i>{% endif %}
+      </li>
+    {% endfor %}
+  {% endif %}
+</ul>
+<hr/>

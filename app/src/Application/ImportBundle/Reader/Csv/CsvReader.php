@@ -27,19 +27,25 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
-use LimitIterator;
-use Orb\Util\Arrays;
-use SplFileObject;
+use Application\ImportBundle\Reader\BaseReader;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use Orb\Util\Arrays;
+use SplFileObject;
+use LimitIterator;
 
 /**
  * Csv data parser.
  *
  * Class CsvReader
  */
-class CsvReader implements CsvReaderInterface
+class CsvReader extends BaseReader implements CsvReaderInterface
 {
+    public function __construct(CsvConfig $config)
+    {
+        parent::__construct($config);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -126,5 +132,14 @@ class CsvReader implements CsvReaderInterface
         $file->setCsvControl($config->getDelimiter(), $config->getEnclosure(), $config->getEscape());
 
         return new LimitIterator($file);
+    }
+
+    /**
+     * todo?
+     * @return bool
+     */
+    public function isReady()
+    {
+        return true;
     }
 }

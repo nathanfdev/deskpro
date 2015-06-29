@@ -31,11 +31,13 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
+use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,6 +68,7 @@ class NewTicketController extends AbstractController
                 'method' => 'GET',
                 'validation_groups' => false,
                 'settings' => $this->getBrandContainer()->getSettings(),
+                'action' => $this->generateUrl('portal_new_ticket')
             ));
             $form->submit($request->get('ticket', array()), false);
         }
@@ -74,6 +77,7 @@ class NewTicketController extends AbstractController
             'person'         => $person,
             'ticket_message' => $ticket_message,
             'settings'       => $this->getBrandContainer()->getSettings(),
+            'action' => $this->generateUrl('portal_new_ticket')
         ));
         $form->handleRequest($request);
 
@@ -81,18 +85,25 @@ class NewTicketController extends AbstractController
         if ($form->has('rerender_form')) {
             $rerendering = true;
         }
+        $rerendering_saved = $request->attributes->get('rerender-form', false);
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
                 // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
-                if (!$form->has('rerender_form')) {
+                // keep the $form->has('rerender_form') because it may have changed after $form->isValid
+                if (!$form->has('rerender_form') && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
-                        $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                        try {
+                            $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                        } catch (LoginRequiredException $e) {
+                            // the email used belongs to a user, and brand settings say they need to log in
+                            $person = $e->getPerson();
+                            return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                        }
 
                         // since the guest is set on the form, we need to update all of the associations
-                        // TODO: we should be able to deal with this better by using a contact to beign with
                         $ticket->setPerson($person);
                         $ticket_message->setPerson($person);
                         foreach ($ticket_message->getAttachments() as $attachment) {
@@ -102,8 +113,13 @@ class NewTicketController extends AbstractController
 
                     $ticket = $this->saveNewTicket($ticket, $person);
 
-                    $this->addFlash('success', 'created.ticket.phrase.here');
+                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
+                    if (!$person->isUser()) { // not a user, redirect home
+                        return $this->redirectToRoute('portal_index');
+                    }
+
+                    // is a user, redirect to ticket view (will ask to login if not already)
                     return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
                 }
             }
@@ -114,10 +130,16 @@ class NewTicketController extends AbstractController
             'ticket_message' => null,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'full_version'   => true,
+            'action' => $this->generateUrl('portal_new_ticket')
         ));
 
         $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
         $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewTicket();
 
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
@@ -125,6 +147,9 @@ class NewTicketController extends AbstractController
                 'form_full'         => $form_full->createView(),
                 'ticket_display_js' => $ticket_display_js,
                 'rerendering'       => $rerendering,
+                'rerendering_saved' => $rerendering_saved,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->newticket()
             )
         );
     }
@@ -151,6 +176,7 @@ class NewTicketController extends AbstractController
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
+            $this->get('portal_custom_per_field_manager')->flushDataQueue();
             $em->commit();
         } catch (DuplicateTicketException $e) {
             $em->rollback();

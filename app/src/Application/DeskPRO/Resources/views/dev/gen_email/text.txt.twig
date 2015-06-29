@@ -5,6 +5,8 @@ Message-ID: <{{ uid }}@test-message>
 Subject: {{ subject }}
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain
+{% if is_bounce %}X-Is-Bounce: 1
+{% endif %}
 
 {{ message }}
 

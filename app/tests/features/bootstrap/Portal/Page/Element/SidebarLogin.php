@@ -41,6 +41,6 @@ class SidebarLogin extends Element
     {
         $this->fillField('username', $username);
         $this->fillField('password', $password);
-        $this->pressButton('Log In');
+        $this->pressButton('Login');
     }
 }

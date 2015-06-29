@@ -1,7 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
-    {% show section newticket_breadcrumbs %}
-
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
     <section>
         <header class="section-header">
             <h1>{{ phrase('portal.tickets.new-section-title') }}</h1>
@@ -13,7 +14,11 @@
             <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
         {% endif %}
 
-        {% include 'Theme:NewTicket:form_parts.html.twig' %}
+        {% if rerendering_saved %}
+            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+        {% endif %}
+
+        {% show new_ticket_form %}
     </section>
 {% endblock inner_content %}
 {% block doc_end %}

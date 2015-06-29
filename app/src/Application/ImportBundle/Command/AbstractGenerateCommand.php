@@ -28,9 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
-use Exception;
 use Symfony\Component\Console\Output\OutputInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Generator command
@@ -45,56 +43,19 @@ abstract class AbstractGenerateCommand extends AbstractExportCommand
      *
      * @param Generator\GeneratorInterface $generator
      * @param OutputInterface              $output
-     * @param LoggerInterface              $logger
      *
      * @return bool
      */
-    protected function generate(Generator\GeneratorInterface $generator, OutputInterface $output, LoggerInterface $logger)
+    protected function generate(Generator\GeneratorInterface $generator, OutputInterface $output)
     {
-        try {
-            $generator->generate();
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'Done. %s was successful. Look at the log file `%s` to see details.',
+        $generator->generate();
 
-                $generator->getConfig()->getGenerationType(),
-                $generator->getConfig()->getLogPath()
-            ));
+        $output->writeln('');
+        $output->writeln(sprintf(
+            'Done. %s was successful. Look at the log file `%s` to see details.',
 
-            return true;
-
-        } catch (Generator\GeneratorException $e) {
-            $output->writeln('');
-            foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorConstraintException $exception */
-                $logger->critical($exception);
-            }
-            if ($generator->getConfig()->isVerbose() === false) {
-                $output->writeln(sprintf(
-                    'An error has occurred while %s. Look at the log file `%s` to see details.',
-
-                    strtolower($generator->getConfig()->getGenerationType()),
-                    $generator->getConfig()->getLogPath()
-                ));
-            }
-
-        } catch (Exception $e) {
-            $logger->critical($e->getMessage());
-            $logger->critical($e->getTraceAsString());
-
-            if ($generator->getConfig()->isVerbose() === false) {
-                $output->writeln('');
-            }
-
-            $output->writeln('');
-            $output->writeln(sprintf(
-                'An error has occurred while %s. Look at the log file `%s` to see details.',
-
-                strtolower($generator->getConfig()->getGenerationType()),
-                $generator->getConfig()->getLogPath()
-            ));
-        }
-
-        return false;
+            $generator->getConfig()->getGenerationType(),
+            $generator->getConfig()->getLogPath()
+        ));
     }
 }

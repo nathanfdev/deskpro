@@ -42,6 +42,7 @@ use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -57,10 +58,41 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="alerts", esi=true, always_guest_inline=true)
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests
+     * @Tag(name="alerts", esi=true)
      */
     public function alertsAction(TagRequest $tag_request)
     {
+        $user = $this->getUser();
+
+        // TODO: this controller can be refactored into a module that collects alerts, but
+        //       we'll keep the code here until we figure out all of the different alerts
+
+        //
+        // ACCOUNT VALIDATION
+        //
+        $person_validator = $this->get('portal_person_validator');
+        $validation_alerts = array();
+        if ($user && !$user->isUserValid()) {
+            $primary_email = $user->getPrimaryEmail();
+            if (!$user->isEmailValidated()) {
+                $validation_alerts[] = array(
+                    'type' => PersonValidator::TYPE_EMAIL_PRIMARY,
+                    'message' => $this->phrase('portal.account.validation_alert'),
+                    'resend_url' => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email)
+                );
+            } elseif (!$user->isAgentValidated()) {
+                $validation_alerts[] = array(
+                    'type' => null,
+                    'message' => $this->phrase('portal.account.validation_agent_alert'),
+                    'resend_url' => null
+                );
+            }
+        }
+
+        //
+        // AGENT IMPERSONATION
+        //
         $agent = null;
         if ($token = $this->get('security.token_storage')->getToken()) {
             if ($token instanceof AgentImpersonateToken) {
@@ -69,14 +101,28 @@ class CommonController extends AbstractController
             }
         }
 
+        $saved_forms = array();
+        if ($user && $all_saved = $this->getFormSaver()->getSavedForms($user)) {
+            foreach ($all_saved as $saved) {
+                $saved_forms[] = array(
+                    'message' => $this->getFormSaver()->getMessage($saved),
+                    'link' => $this->generateUrl('saved_form_auto_submit', array('auth_code' => $saved->getExternalCode()))
+                );
+            }
+        }
+
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'impersonator' => $agent,
-            'user'         => $this->getUser(),
+            'user'         => $user,
+            'saved_forms'  => $saved_forms,
+            'validation_alerts' => $validation_alerts,
+            'display_alerts' => count($saved_forms) || $agent || count($validation_alerts),
         ));
     }
 
     /**
-     * @Tag(name="flashes", esi=true, always_guest_inline=true)
+     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests
+     * @Tag(name="flashes", esi=true)
      */
     public function flashesAction(TagRequest $tag_request)
     {
@@ -116,10 +162,16 @@ class CommonController extends AbstractController
         $related_content_finder = new RelatedContentFinder($this->getUser() ?: new PersonGuest(), $content);
         $related_content        = $related_content_finder->getRelatedEntities();
 
+        $count = 0;
+        foreach ($related_content as $type => $related) {
+            $count += count($related);
+        }
+
         return $this->render('Theme:Common:related_content.html.twig', array(
             'content_type'    => $content_type,
             'content_id'      => $content_id,
             'content'         => $content,
+            'related_count'   => $count,
             'related_content' => $related_content,
         ));
     }

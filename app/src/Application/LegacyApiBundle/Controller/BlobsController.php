@@ -31,15 +31,32 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class BlobsController extends AbstractController
 {
-    ####################################################################################################################
-    # upload
-    ####################################################################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'uploadAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getInfoAction');
+
+        return $multi;
+    }
 
     /**
      * Uploads a new temp file. Note that temp files are removed automatically after some time,
      * so whatever process that uses the file upload must toggle the temp status off.
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function uploadAction()
     {
@@ -65,10 +82,16 @@ class BlobsController extends AbstractController
         ), $this->generateUrl('api'));
     }
 
-    ####################################################################################################################
-    # get-info
-    ####################################################################################################################
-
+    /**
+     * get-info
+     *
+     * @param $id
+     * @param $auth
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
     public function getInfoAction($id, $auth)
     {
         $blob = $this->em->find('DeskPRO:Blob', $id);
@@ -79,5 +102,26 @@ class BlobsController extends AbstractController
         return $this->createApiResponse(array(
             'blob' => $blob->toApiData(),
         ));
+    }
+
+    /**
+     * @param $id
+     * @param $auth
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function deleteAction($id, $auth)
+    {
+        $blob = $this->em->find('DeskPRO:Blob', $id);
+        if (!$blob || $blob->authcode != $auth) {
+            throw new NotFoundHttpException;
+        }
+
+        $this->em->remove($blob);
+        $this->em->flush();
+
+        return $this->createSuccessResponse();
     }
 }

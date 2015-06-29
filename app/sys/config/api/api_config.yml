@@ -31,6 +31,12 @@ framework:
     fragments:       ~
     http_method_override: true
 
+monolog:
+    handlers:
+        main:
+            type:   service
+            id:     monolog.handler.deskpro_fingers_crossed
+
 jms_serializer:
     visitors:
         json:

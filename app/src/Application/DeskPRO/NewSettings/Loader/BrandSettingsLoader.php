@@ -64,6 +64,9 @@ class BrandSettingsLoader implements SettingsLoaderInterface
      */
     public function load($force = false, $brand_id = null)
     {
+        // NOTE: when you use the main SettingsResolver->getBrandSettings() it
+        // will first load the global settings and use these brand specific settings on top of that
+        // in short: don't use this class by itself
         if (!$brand_id) {
             throw new \InvalidArgumentException('must pass a brand id');
         }
@@ -79,8 +82,9 @@ class BrandSettingsLoader implements SettingsLoaderInterface
         return $this->cache->get(
             $cacheKey,
             function () use ($conn, $brand_id) {
+                // start with the settings_brand table
                 try {
-                    return $conn->fetchAllKeyValue(
+                    $db_brand_settings = $conn->fetchAllKeyValue(
                         "
                             SELECT name, value
                             FROM settings_brand
@@ -89,8 +93,21 @@ class BrandSettingsLoader implements SettingsLoaderInterface
                         array('brand_id' => $brand_id)
                     );
                 } catch (\Exception $e) {
-                    return array();
+                    $db_brand_settings = array();
                 }
+
+                // USE THE $DP_CONFIG['BRAND_X_SETTINGS']
+                $global_settings_key = 'BRAND_'.$brand_id.'_SETTINGS';
+                if (
+                    isset($GLOBALS['DP_CONFIG'][$global_settings_key])
+                    && is_array($GLOBALS['DP_CONFIG'][$global_settings_key])
+                ) {
+                    $global_settings = $GLOBALS['DP_CONFIG'][$global_settings_key];
+                } else {
+                    $global_settings = array();
+                }
+
+                return array_merge($db_brand_settings, $global_settings);
             }
         );
     }

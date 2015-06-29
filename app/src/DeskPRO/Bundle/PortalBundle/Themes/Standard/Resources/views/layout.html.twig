@@ -1,30 +1,35 @@
 {% extends 'ThemeParent::layout.html.twig' %}
 {% block body %}
 
-    <div class="world with-searchbox">
-        <section>
-            <div class="column-full">
-              {% show section alerts %}
-              {% show section page_top %}
-            </div>
-        </section>
+<div class="world with-searchbox">
+    <section>
+        <div class="column-full">
+          {% show section alerts %}
+          {% show section page_top %}
+        </div>
+    </section>
 
-        <section class="search-section">
-            <div class="column-full">
-              {% show section page_search_box %}
-            </div>
-        </section>
+    <section class="search-section">
+        <div class="column-full">
+          {% show section page_search_box %}
+        </div>
+    </section>
 
-        {% show section flashes %}
+    {% show section flashes %}
 
-        {% block page_content %}
-          <section>
-            <div class="column-full">
-              {% block inner_content %}{% endblock inner_content %}
-            </div>
-          </section>
-        {% endblock %}
+    {% block page_content %}
+      <section>
+        <div class="column-full">
+          {% block inner_content %}{% endblock inner_content %}
+        </div>
+      </section>
+    {% endblock %}
 
+  <section>
+    <div class="column-full">
+      {% show section footer %}
     </div>
+  </section>
+</div>
 
 {% endblock body %}

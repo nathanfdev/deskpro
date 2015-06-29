@@ -39,15 +39,6 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 class PortalController extends AbstractController
 {
     /**
-     * @Tag(name="home", esi=true)
-     * @TagHttpCache()
-     */
-    public function homeAction(TagRequest $tag_request)
-    {
-        return $this->renderThemeView('Theme:Portal:Tag/home.html.twig');
-    }
-
-    /**
      * @Tag(name="page_top", esi=true)
      * @TagHttpCache()
      */
@@ -57,22 +48,13 @@ class PortalController extends AbstractController
         $language_manager = $this->get('language_manager');
 
         return $this->renderThemeView(
-            'Theme:Portal:Tag/top_bar.html.twig',
+            'Theme:Portal:Header/top_bar.html.twig',
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
                 'current_language'  => $language_manager->getLanguageStack()->getActive(),
                 'is_multi_language' => $language_manager->isMultiLanguagePortal(),
             )
         );
-    }
-
-    /**
-     * @Tag(name="page_search_box", esi=true)
-     * @TagHttpCache()
-     */
-    public function topSearchAction(TagRequest $tag_request)
-    {
-        return $this->renderThemeView('Theme:Portal:Tag/top_search.html.twig');
     }
 
     /**
@@ -100,36 +82,35 @@ class PortalController extends AbstractController
      */
     public function sidebarAction(TagRequest $tag_request)
     {
-        return $this->renderThemeView('Theme:Portal:Tag/sidebar.html.twig');
+        return $this->renderThemeView('Theme:Portal:sidebar.html.twig');
     }
 
     /**
-     * @Tag(name="user_sidebar", esi=true, always_guest_inline=true)
+     * @Tag(name="sidebar", esi=true, always_guest_inline=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
         if (!$user = $this->getUser()) {
             $auth_manager = $this->get('dp_authentication_manager.user');
 
-            return $this->renderThemeView(
-                'Theme:Portal:Tag/sidebar_login.html.twig',
-                array(
-                    'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
-                    'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),
-                    'show_forgot_password'          => $auth_manager->isForgotPasswordVisible(),
-                    'show_remember_me'              => $auth_manager->isRememberMeEnabled(),
-                    'show_login_form'               => $auth_manager->isLoginFormVisible(),
-                    'show_auth'                     => $auth_manager->isAuthVisible(),
-                )
+            $page_vars = array(
+                'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
+                'login_icon_usersources' => $auth_manager->getLoginIconUsersources(),
+                'show_forgot_password' => $auth_manager->isForgotPasswordVisible(),
+                'show_remember_me' => $auth_manager->isRememberMeEnabled(),
+                'show_login_form' => $auth_manager->isLoginFormVisible(),
+                'show_auth' => $auth_manager->isAuthVisible(),
+            );
+        } else {
+            $page_vars = array(
+                'user' => $user,
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user)
             );
         }
 
         return $this->renderThemeView(
-            'Theme:Portal:Tag/sidebar_user.html.twig',
-            array(
-                'user'         => $user,
-                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
-            )
+            'Theme:Portal:sidebar.html.twig',
+            $page_vars
         );
     }
 
@@ -141,7 +122,7 @@ class PortalController extends AbstractController
         $user = $this->getUser();
 
         return $this->renderThemeView(
-            'Theme:Portal:Tag/small_user_info.html.twig',
+            'Theme:Portal:Header/small_user_info.html.twig',
             array(
                 'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
                 'ticket_count'              => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,

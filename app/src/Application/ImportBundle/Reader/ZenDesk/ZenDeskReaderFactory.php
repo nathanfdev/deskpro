@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Zendesk\API\Client;
 use Exception;
 use DateTime;
@@ -45,17 +48,43 @@ class ZenDeskReaderFactory
      * @return ZenDeskReader
      * @throws Exception
      */
-    public static function createReaderByDeskproConfig()
+    public static function createReaderByDeskPROConfig()
     {
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
 
         return new ZenDeskReader(
             new Request\RequestCacheAdapter(
-                new Request\RequestClientAdapter($client)
+                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config))
             ),
 
-            $config->getInitialTime()
+            $config
+        );
+    }
+
+    /**
+     * @param ZenDeskConfig $config
+     * @return ZenDeskReader
+     */
+    public static function createReader(ZenDeskConfig $config)
+    {
+        $client = self::createClient($config);
+        $logger = new Logger('zendesk');
+
+        $formatter = new LineFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+
+        $handler = new StreamHandler(dp_get_log_dir() . '/export_zendesk.log');
+        $handler->setFormatter($formatter);
+
+        $logger->pushHandler($handler);
+
+        return new ZenDeskReader(
+            new Request\RequestCacheAdapter(
+                new Request\RequestClientAdapter($client, self::getCurlRequestOptions($config), $logger)
+            ),
+
+            $config
         );
     }
 
@@ -65,7 +94,7 @@ class ZenDeskReaderFactory
      * @return Fixtures\Collection
      * @throws Exception
      */
-    public static function createFixturesByDeskproConfig()
+    public static function createFixturesByDeskPROConfig()
     {
         $config = self::getZenDeskConfig();
         $client = self::createClient($config);
@@ -73,7 +102,8 @@ class ZenDeskReaderFactory
         $collection = new Fixtures\Collection();
         $collection
             ->attach(new Fixtures\People($client))
-            ->attach(new Fixtures\Tickets($client));
+            ->attach(new Fixtures\Tickets($client))
+        ;
 
         return $collection;
     }
@@ -95,12 +125,26 @@ class ZenDeskReaderFactory
     }
 
     /**
+     * Create a curl request
+     *
+     * @param ZenDeskConfig $config
+     * @return array
+     */
+    private static function getCurlRequestOptions(ZenDeskConfig $config)
+    {
+        return array(
+            CURLOPT_CONNECTTIMEOUT => $config->getConnectionTimeout(),
+            CURLOPT_TIMEOUT        => $config->getConnectionTimeout(),
+        );
+    }
+
+    /**
      * Create ZenDesk client config
      *
      * @return ZenDeskConfig
      * @throws Exception
      */
-    private static function getZenDeskConfig()
+    public static function getZenDeskConfig()
     {
         $dp_config = dp_get_config('zendesk_import');
         if (empty($dp_config)) {
@@ -111,7 +155,6 @@ class ZenDeskReaderFactory
             $dp_config['subdomain'],
             $dp_config['username'],
             new DateTime($dp_config['initial_time'])
-
         );
 
         if (isset($dp_config['password'])) {
@@ -119,6 +162,9 @@ class ZenDeskReaderFactory
         }
         if (isset($dp_config['api_token'])) {
             $config->setApiToken($dp_config['api_token']);
+        }
+        if (isset($dp_config['connection_timeout'])) {
+            $config->setConnectionTimeout($dp_config['connection_timeout']);
         }
 
         return $config;

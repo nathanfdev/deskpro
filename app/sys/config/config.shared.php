@@ -266,6 +266,24 @@ $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('change
 $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
 $container->setDefinition('deskpro.logger.changelog', $definition);
 
+
+############################################################################
+# Global config and Monolog handler
+############################################################################
+$definition = new Definition('DeskPRO\Bundle\AppBundle\Config\DeskproConfigService');
+$container->setDefinition('deskpro_config', $definition);
+
+$definition = new Definition('DeskPRO\Bundle\AppBundle\Logging\DeskproFilesystemHandler');
+$definition->addArgument(new Reference('deskpro_config'));
+$definition->addArgument('%kernel.name%');
+$definition->addArgument('%kernel.environment%');
+$container->setDefinition('monolog.handler.deskpro_filesystem', $definition);
+
+$definition = new Definition('DeskPRO\Bundle\AppBundle\Logging\DeskproFingersCrossedHandler');
+$definition->addArgument(new Reference('monolog.handler.deskpro_filesystem'));
+$definition->addArgument(new Reference('deskpro_config'));
+$container->setDefinition('monolog.handler.deskpro_fingers_crossed', $definition);
+
 $definition = new Definition(
     'Application\\DeskPRO\\Settings\\Settings', array(
         DP_ROOT . '/sys/config/settings.php',

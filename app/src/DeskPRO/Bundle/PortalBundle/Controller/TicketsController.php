@@ -86,8 +86,11 @@ class TicketsController extends AbstractController
         // fetch data
         $tds                  = $this->getTicketsDataService();
         $awaiting_user_pager  = $tds->getPager($person, $awaiting_user_filter, $awaiting_user_pg, $per_page);
-        $awaiting_agent_pager = $tds->getPager($person, $awaiting_agent_filter, $awaiting_agent_pg, $per_page, $awaiting_agent_pg_param);
-        $resolved_pager       = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page, $resolved_pg_param);
+        $awaiting_agent_pager = $tds->getPager($person, $awaiting_agent_filter, $awaiting_agent_pg, $per_page);
+        $resolved_pager       = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page);
+
+        // BREADCRUMBS
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketList();
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
@@ -103,6 +106,8 @@ class TicketsController extends AbstractController
 
                 'type'   => $type,
                 'person' => $person,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets()
             )
         );
     }
@@ -134,7 +139,7 @@ class TicketsController extends AbstractController
                 // TODO: fire an event (Ticket::ADD_MESSAGE)
                 $this->getRepo('DeskPRO:Ticket')->saveNewMessage($ticket, $message);
 
-                $this->addFlash('success', 'ticket.successful_new_reply.translated');
+                $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
 
                 return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }
@@ -144,6 +149,9 @@ class TicketsController extends AbstractController
 
         $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
 
+        // BREADCRUMBS
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
+
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
@@ -151,6 +159,8 @@ class TicketsController extends AbstractController
                 'timeline'    => $timeline,
                 'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'        => $form->createView(),
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets($ticket)
             )
         );
     }
@@ -177,14 +187,18 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
             // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
             if (!$form->has('rerender_form')) {
-                // TODO: fire an event (Ticket::EDIT)
-                $this->getRepo('DeskPRO:Ticket')->saveTicket($ticket);
+                $this->getEm()->persist($ticket);
+                $this->getEm()->flush($ticket);
+                $this->get('portal_custom_per_field_manager')->flushDataQueue();
 
-                $this->addFlash('success', 'updated.ticket.translated');
+                $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
 
                 return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }
         }
+
+        // BREADCRUMBS
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketEdit($ticket);
 
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
@@ -192,6 +206,8 @@ class TicketsController extends AbstractController
                 'ticket'      => $ticket,
                 'form'        => $form->createView(),
                 'rerendering' => $rerendering,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets($ticket)
             )
         );
     }

@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Orb\Util\Strings;
 
 /**
  * Tickets csv file parser.
@@ -109,7 +110,7 @@ final class Tickets extends AbstractParser
             $entity
                 ->setDestination(self::TICKET_PREFIX.$ticket['id'])
                 ->setOid($ticket['id'])
-                ->setRef($ticket['id'])
+                ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
                 ->setSubject($ticket['subject'])
                 ->setPersonEmail($ticket['user'])
                 ->setAgentEmail($ticket['agent'])

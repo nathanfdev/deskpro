@@ -36,11 +36,13 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DownloadsController extends AbstractController
 {
@@ -66,8 +68,18 @@ class DownloadsController extends AbstractController
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
                 'pager' => $pager,
                 'category' => null,
+                'page_title' => $this->createPageTitle()->downloads()
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_downloads',
+            array('_format' => 'rss')
+        );
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
 
         //
         // RENDER THEME
@@ -77,6 +89,10 @@ class DownloadsController extends AbstractController
             array(
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs' => $breadcrumbs,
+                'show_category_link' => true,
+                'page_title' => $this->createPageTitle()->downloads(),
+                'rss_link' => $rss_link
             )
         );
     }
@@ -104,8 +120,36 @@ class DownloadsController extends AbstractController
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
                 'pager' => $pager,
                 'category' => $category,
+                'page_title' => $this->createPageTitle()->downloads($category)
             ));
         }
+        $rss_link = $this->generateUrl('portal_downloads_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
+
+        //
+        // BREADCRUMBS
+        //
+        if ($category) {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloadsCategory($category);
+        } else {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
+        }
+
+        //
+        // SUBSCRIBE
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        //
+        // PAGER
+        //
+        $count = $this->getBrandSetting('portal.per_page_content');
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, $count);
 
         //
         // RENDER THEME
@@ -114,9 +158,13 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:browse.html.twig',
             array(
                 'category' => $category,
+                'breadcrumbs' => $breadcrumbs,
+                'count' => $count,
                 'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true,
+                'pager' => $pager,
+                'is_subscribed' => $is_subscribed,
+                'page_title' => $this->createPageTitle()->downloads($category),
+                'rss_link' => $rss_link
             )
         );
     }
@@ -139,19 +187,37 @@ class DownloadsController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOADS)) {
+            $form_handler = $this->get('form_handler.comment');
             $comment = new DownloadComment();
-            $comment->setObject($file);
-            $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser(),
-            ));
-            $new_comment_form->handleRequest($request);
-            if ($new_comment_form->isValid()) {
-                $file->addComment($comment);
-                $this->getEm()->persist($comment);
-                $this->getEm()->flush($comment, $file);
+            $new_comment_form = $form_handler->createForm($comment);
+            if ($form_result = $form_handler->handle($new_comment_form, $request, $file, $comment)) {
+                if ($form_result instanceof Response) {
+                    return $form_result;
+                }
 
                 return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
             }
+        }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloadsFile($file);
+
+        //
+        // RATING
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
+
+        //
+        // SUBSCRIPTION
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
         }
 
         //
@@ -164,6 +230,10 @@ class DownloadsController extends AbstractController
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'breadcrumbs' => $breadcrumbs,
+                'rating' => $rating,
+                'is_subscribed' => $is_subscribed,
+                'page_title' => $this->createPageTitle()->downloads($file)
             )
         );
     }
@@ -210,6 +280,8 @@ class DownloadsController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($file, $visitor_id, $person);
         }
 
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
         return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
     }
 
@@ -225,10 +297,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedContent($file, $person)) {
             $subscriptions_helper->unsubscribeFromContent($file, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this download.');
+            $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToContent($file, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this download. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.download_subscribe'));
         }
 
         return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
@@ -246,10 +318,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
             $subscriptions_helper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToCategory($category, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
         }
 
         return $this->redirectToRoute('portal_downloads_browse', array('slug' => $category->getSlug()));
@@ -263,7 +335,7 @@ class DownloadsController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('downloads', $this->getUser());
 
-        $this->addFlash('success', 'Unsubscribed from all Downloads subscriptions');
+        $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_index');
     }

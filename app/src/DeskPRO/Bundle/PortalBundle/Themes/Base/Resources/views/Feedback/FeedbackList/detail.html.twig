@@ -1,0 +1,48 @@
+{% for item in pager %}
+    <div class="feedback-item">
+        <div class="feedback-item-controls">
+            <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
+                <i class="fa fa-thumbs-up"></i>
+                <div>{{ phrase('portal.feedback.btn-vote') }}</div>
+                <span class="counter">{{ item.total_rating }}</span>
+            </a>
+            {# fav/stars feature not supported yet #}
+            {#<a href="#" class="star">#}
+                {#<i class="fa fa-star-o"></i>#}
+                {#<div>2</div>#}
+            {#</a>#}
+        </div>
+
+        <div class="feedback-item-content">
+            <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
+                <h1>
+                    <span class="text-tag">{{ item.category }}</span>
+                    <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
+                </h1>
+
+
+            <div class="comment">
+                <p>{{ item.content_html|raw }}</p>
+            </div>
+
+            <div class="feedback-item-meta">
+                <ul>
+                    <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
+                    {% if item.num_comments > 0 %}
+                    <li><a href="{{ path('portal_feedback_view', { slug: item.slug }) }}#comments"><i class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></li>
+                    {% endif %}
+                    {% if item.getCustomDataSelection() %}
+                        <li><a href="#"><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</a></li>
+                    {% endif %}
+                    {% if item.labels|length %}
+                        <li><i class="fa fa-tags"></i>{{ item.labels|join }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <!-- End feedback-item-content -->
+    </div>
+    <!-- End feedback-item -->
+{% else %}
+    <strong>{{ phrase('portal.feedback.none') }}</strong>
+{% endfor %}

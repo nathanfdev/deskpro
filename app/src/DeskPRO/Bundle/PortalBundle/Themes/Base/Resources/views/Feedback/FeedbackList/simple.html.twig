@@ -1,0 +1,24 @@
+{% import 'Theme::icons.html.twig' as icons %}
+<div class="content-list-wrap simple {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
+    {% if pager|length %}
+        <ul>
+            {% for item in pager %}
+                <li>
+                    <span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.total_rating }}</span>
+                    <span class="text-tag">{{ item.status_category ?: item.status }}</span>
+                    <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong>{{ phrase('portal.feedback.none') }}</strong>
+    {% endif %}
+
+    {% if show_category_link %}
+        <div class="list-meta">
+            <a href="{{ path('portal_feedback') }}">
+                {{ phrase('portal.feedback.view-x-feedback', {count: pager|length}) }}{{ icons.view_more() }}
+            </a>
+        </div>
+    {% endif %}
+</div>

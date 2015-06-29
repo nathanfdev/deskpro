@@ -312,6 +312,14 @@ class LabelDef extends AbstractEntityRepository
         return $definitions;
     }
 
+    public function getDefinitionsByType($type)
+    {
+        return $this->getEntityManager()->getConnection()->fetchAll(
+            'SELECT * FROM label_defs where label_type = :type',
+            array('type' => $type)
+        );
+    }
+
     /**
      * @param \Application\DeskPRO\Entity\LabelDef $definition
      */

@@ -33,6 +33,9 @@ namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
 class TicketLayoutFactory
@@ -56,15 +59,49 @@ class TicketLayoutFactory
      */
     public function getLayoutForTicketForm($department = null)
     {
+        $layout = null;
         if ($department) {
-            if ($department_entity = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
+            $layout = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
                 ->setParameter('department', $department)
-                ->getOneOrNullResult()) {
-                return $department_entity;
+                ->getOneOrNullResult();
+        }
+
+        if (!$layout) {
+            $layout = $this->getInitialLayout();
+        }
+
+        // verify that the user layout has a subject, message, and user email
+        $this->verifyRequiredFields($layout->user_layout);
+        $this->verifyRequiredFields($layout->agent_layout);
+
+        return $layout;
+    }
+
+    protected function verifyRequiredFields(Layout $layout)
+    {
+        $required_fields = array(
+            FormFields::SUBJECT => 0,
+            FormFields::MESSAGE => 0,
+            FormFields::USER_EMAIL => 0,
+        );
+
+        /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
+        foreach ($layout as $layout_field) {
+            if (array_key_exists($layout_field->getFieldType(), $required_fields)) {
+                $required_fields[$layout_field->getFieldType()]++;
             }
         }
 
-        return $this->getInitialLayout();
+        // if any are still 0, add them to the layout
+        foreach($required_fields as $field_type => $count) {
+            if (0 === $count) {
+                $new = new LayoutField($field_type);
+                $new->enableOnNew();
+                $new->enableOnEdit();
+                $new->enableOnView();
+                $layout->add($new);
+            }
+        }
     }
 
     /**

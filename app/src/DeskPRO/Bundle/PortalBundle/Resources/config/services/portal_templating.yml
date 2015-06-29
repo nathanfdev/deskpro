@@ -1,16 +1,18 @@
 services:
-
-  templating.portal:
-    class: DeskPRO\Bundle\PortalBundle\Templating\PortalTemplating
-    arguments: [@templating.engine.twig]
-
-
   portal_loader.twig:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalLoader
     arguments: [@brand_stack, @template_repository]
     tags:
       - { name: twig.loader }
 
+  portal_view.breadcrumb_generator:
+    class: DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
+
+  portal_view.page_title_generator:
+    class: DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
+    arguments:
+      - @language_manager
+      - @brand_stack
 
   portal_extension.twig:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalExtension

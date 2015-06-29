@@ -60,13 +60,13 @@ final class PersonLabel extends AbstractImporter
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
-                $this->logWarning(sprintf(
+                $this->logDebug(sprintf(
                     'Found an existing label `%s` for person with oid `%d` (Skipping)',
                     $label, $person->getId()
                 ));
             } else {
                 $person->addLabel($this->createPersonLabel($label));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Creating a new label `%s` for person with oid `%d`',
                     $label, $person->getId()
                 ));

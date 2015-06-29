@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class PortalHttpCache extends EventDispatchingHttpCache
 {
@@ -71,6 +73,18 @@ class PortalHttpCache extends EventDispatchingHttpCache
 
         return array($user_context_subscriber);
     }
+
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    {
+        global $DP_CONFIG;
+
+        if (isset($DP_CONFIG['portal_disable_cache']) && $DP_CONFIG['portal_disable_cache']) {
+            return $this->kernel->handle($request, $type, $catch);
+        }
+
+        return parent::handle($request, $type, $catch);
+    }
+
 
     /**
      * Returns an array of options to customize the Cache configuration.

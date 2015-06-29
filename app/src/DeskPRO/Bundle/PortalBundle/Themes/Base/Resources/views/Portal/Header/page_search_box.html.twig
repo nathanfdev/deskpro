@@ -1,0 +1,28 @@
+<div class="content">
+  <div class="search-and-ticket">
+    <div class="search-form">
+      <form>
+        <div class="input-wrap">
+          <i class="fa fa-search"></i>
+          <input type="text" placeholder="{{ phrase('portal.general.search_btn') }}...">
+        </div>
+        <button type="submit">{{ phrase('portal.general.search_btn') }}</button>
+      </form>
+    </div>
+
+    <div class="search-or-ticket">
+      <span>{{ phrase('portal.general.or') }}</span>
+    </div>
+
+    <div class="search-and-ticket-dropdown">
+      <a href="{{ path('portal_new_ticket') }}">
+         <span class="button select-action">
+          <i class="fa fa-comments"></i> {{ phrase('portal.general.nav-newticket') }}
+          <span class="select-action-dropdown">
+            <i class="fa fa-caret-down"></i>
+          </span>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>

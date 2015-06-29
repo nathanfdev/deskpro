@@ -96,8 +96,6 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
         $token->setAgent($agent);
         $token->setAuthenticated(true);
 
-        $this->session->invalidate();
-
         return $token;
     }
 

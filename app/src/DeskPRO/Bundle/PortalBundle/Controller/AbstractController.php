@@ -31,13 +31,39 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Language;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Application\DeskPRO\Entity\Person;
 
 class AbstractController extends BaseController
 {
+    /**
+     * @return Person|null
+     */
+    public function getUser()
+    {
+        return parent::getUser();
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
+     */
+    public function createPageTitle()
+    {
+        return $this->get('portal_view.page_title_generator');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
+     */
+    public function getBreadcrumbGenerator()
+    {
+        return $this->get('portal_view.breadcrumb_generator');
+    }
+
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -139,6 +165,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver
+     */
+    protected function getFormSaver()
+    {
+        return $this->get('form_saver');
+    }
+
+    /**
      * Adds a flash message to the current session for type.
      *
      * @param string $type    The type
@@ -221,11 +255,27 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\Email\PortalMailer
+     */
+    protected function getMailer()
+    {
+        return $this->get('portal_mailer');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\PersonDataService
      */
     public function getPersonDataService()
     {
         return $this->get('data.person');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\EmailDataService
+     */
+    public function getEmailDataService()
+    {
+        return $this->get('data.email');
     }
 
     /**
@@ -298,5 +348,19 @@ class AbstractController extends BaseController
     protected function getPersonFactory()
     {
         return $this->get('person_factory');
+    }
+
+    /**
+     * Leave language null unless you need a specific lang. The user's lang should already be in the
+     * LanguageStack.
+     *
+     * @param $phrase
+     * @param array $vars
+     * @param Language $lang
+     * @return string
+     */
+    protected function phrase($phrase, array $vars = array(), Language $lang = null)
+    {
+        return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
 }

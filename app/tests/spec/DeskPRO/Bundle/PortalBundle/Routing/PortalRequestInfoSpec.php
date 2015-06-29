@@ -32,6 +32,7 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRequestInfo;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -45,72 +46,89 @@ class PortalRequestInfoSpec extends ObjectBehavior
 {
     public function let(
         Request $request,
-        RouterInterface $router
+        RouterInterface $router,
+        PortalMode $mode,
+        PortalModeFactory $mode_factory
     ) {
-        $this->beConstructedWith($request);
+        $this->beConstructedWith($request, $mode, $mode_factory);
     }
 
     public function it_finds_the_lang_code_in_the_url(
-        Request $request
+        Request $request,
+        PortalModeFactory $mode_factory
     ) {
         $request->getPathInfo()->willReturn('/en/articles');
+        $mode_factory->getInternalPath('/en/articles')->willReturn('/en/articles');
         $this->getLanguageUrlCode()->shouldReturn('en');
 
         $request->getPathInfo()->willReturn('/en');
+        $mode_factory->getInternalPath('/en')->willReturn('/en');
         $this->getLanguageUrlCode()->shouldReturn('en');
 
         $request->getPathInfo()->willReturn('/en/');
+        $mode_factory->getInternalPath('/en/')->willReturn('/en/');
         $this->getLanguageUrlCode()->shouldReturn('en');
 
         $request->getPathInfo()->willReturn('/articles/en');
+        $mode_factory->getInternalPath('/articles/en')->willReturn('/articles/en');
         $this->getLanguageUrlCode()->shouldReturn(null);
 
         $request->getPathInfo()->willReturn('/');
+        $mode_factory->getInternalPath('/')->willReturn('/');
         $this->getLanguageUrlCode()->shouldReturn(null);
 
         $request->getPathInfo()->willReturn('/admin-mode');
+        $mode_factory->getInternalPath('/admin-mode')->willReturn('/admin-mode');
         $this->getLanguageUrlCode()->shouldReturn(null);
     }
 
     public function it_finds_the_routable_path_in_the_url(
-        Request $request
+        Request $request,
+        PortalModeFactory $mode_factory
     ) {
-        $request->getPathInfo()->willReturn('/en/articles');
+        $request->getPathInfo()->willReturn($path_under_test = '/en/articles');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getRoutablePath()->shouldReturn('/articles');
 
-        $request->getPathInfo()->willReturn('/en');
+        $request->getPathInfo()->willReturn($path_under_test = '/en');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getRoutablePath()->shouldReturn('/');
 
-        $request->getPathInfo()->willReturn('/en/');
+        $request->getPathInfo()->willReturn($path_under_test = '/en/');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getRoutablePath()->shouldReturn('/');
 
-        $request->getPathInfo()->willReturn('/articles/en');
+        $request->getPathInfo()->willReturn($path_under_test = '/articles/en');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getRoutablePath()->shouldReturn('/articles/en');
 
-        $request->getPathInfo()->willReturn('/');
+        $request->getPathInfo()->willReturn($path_under_test = '/');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getRoutablePath()->shouldReturn('/');
 
-        $request->getPathInfo()->willReturn('/admin-mode');
+        $request->getPathInfo()->willReturn($path_under_test = '/admin-mode');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getRoutablePath()->shouldReturn('/admin-mode');
     }
 
     public function it_will_use_the_modes_internal_path_instead_of_the_request_pathinfo_if_given(
         Request $request,
-        PortalMode $mode
+        PortalMode $mode,
+        PortalModeFactory $mode_factory
     ) {
-        $request->getPathInfo()->willReturn('/admin-mode/en/articles');
-        $mode->getInternalPath()->willReturn('/en/articles');
-
-        $this->beConstructedWith($request, $mode);
+        $request->getPathInfo()->willReturn($path_under_test = '/admin-mode/en/articles');
+        $mode_factory->getInternalPath($path_under_test)->willReturn('/en/articles');
 
         $this->getLanguageUrlCode()->shouldReturn('en');
         $this->getRoutablePath()->shouldReturn('/articles');
 
-        $mode->getInternalPath()->willReturn('/en/');
+        $request->getPathInfo()->willReturn($path_under_test = '/en/');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getLanguageUrlCode()->shouldReturn('en');
         $this->getRoutablePath()->shouldReturn('/');
 
-        $mode->getInternalPath()->willReturn('/articles');
+        $request->getPathInfo()->willReturn($path_under_test = '/articles');
+        $mode_factory->getInternalPath($path_under_test)->willReturn($path_under_test);
         $this->getLanguageUrlCode()->shouldReturn(null);
         $this->getRoutablePath()->shouldReturn('/articles');
     }

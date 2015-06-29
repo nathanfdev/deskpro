@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use DeskPRO\Bundle\AppBundle\Email\NewMailer;
+use DeskPRO\Bundle\AppBundle\Email\PortalMailer;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,9 +44,9 @@ use Symfony\Component\Security\Http\HttpUtils;
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
     /**
-     * @var NewMailer
+     * @var PortalMailer
      */
-    private $new_mailer;
+    private $portal_mailer;
 
     /**
      * @var Connection
@@ -58,10 +58,10 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      */
     private $person_repo;
 
-    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, NewMailer $new_mailer, Connection $db, PersonRepository $person_repo)
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, PortalMailer $portal_mailer, Connection $db, PersonRepository $person_repo)
     {
         parent::__construct($httpKernel, $httpUtils, $options, $logger);
-        $this->new_mailer  = $new_mailer;
+        $this->portal_mailer  = $portal_mailer;
         $this->db          = $db;
         $this->person_repo = $person_repo;
     }
@@ -77,7 +77,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         // Send alert
         $attempt_person = $this->person_repo->findOneByEmail($token->getUsername());
         if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
-            $this->new_mailer->sendLoginAlert($attempt_person, false);
+            $this->portal_mailer->sendLoginAlert($attempt_person, false);
         }
 
         // Save login log

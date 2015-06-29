@@ -60,13 +60,13 @@ final class DownloadLabel extends AbstractImporter
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
-                $this->logWarning(sprintf(
+                $this->logDebug(sprintf(
                     'Found an existing label `%s` for download with oid `%d` (Skipping)',
                     $label, $download->getId()
                 ));
             } else {
                 $download->addLabel($this->createDownloadLabel($label));
-                $this->logInfo(sprintf(
+                $this->logDebug(sprintf(
                     'Creating a new label `%s` for download with oid `%d`',
                     $label, $download->getId()
                 ));

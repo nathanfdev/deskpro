@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -40,8 +41,36 @@ class LogoutHandler implements LogoutHandlerInterface
 {
     const RECENT_LOGOUT = 'recent_logout';
 
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
+        if ($request->get('_dp_impersonate_exit')) {
+            return; // pass this param to avoid a full logout (only log out of portal)
+        }
+
+        // duplicated for now, from UserBundle:Login:logoutAction
+        foreach (array('dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
+            if (!empty($_COOKIE[$cookie_name])) {
+                $sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+                if ($sess2) {
+                    $this->em->remove($sess2);
+                    $this->em->flush();
+                }
+            }
+
+            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
+            $cookie->send();
+        }
+
         $request->getSession()->set(self::RECENT_LOGOUT, time());
     }
 }

@@ -6,6 +6,7 @@ parameters:
   router.options.matcher.cache_class: null
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
+  templating.globals.class: DeskPRO\Bundle\AppBundle\Twig\GlobalVariables
 
 framework:
     esi:             { enabled: true }
@@ -26,9 +27,15 @@ framework:
         - 127.0.0.1
     session:
         handler_id:  session.handler.dbal
+        name:        dpsid
     fragments:       ~
     http_method_override: true
 
+monolog:
+    handlers:
+        main:
+            type:   service
+            id:     monolog.handler.deskpro_fingers_crossed
 
 # FOSHttpCacheBundle
 fos_http_cache:
@@ -51,6 +58,15 @@ security:
             agent_impersonate:
                 failure_path: /login?retry=auth
                 login_path: /impersonate/agent-login
+                require_previous_session: false
+                remember_me: false
+                always_use_default_target_path: true
+                default_target_path: /
+                target_path_parameter: _destination
+                use_referer: false
+            transfer_session_auth:
+                failure_path: /
+                login_path: /
                 require_previous_session: false
                 remember_me: false
                 always_use_default_target_path: true
@@ -83,6 +99,7 @@ security:
 
 # Twig Configuration
 twig:
+    exception_controller:  PortalBundle:Error:showException
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     form:

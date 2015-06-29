@@ -31,28 +31,46 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CommentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('content_real', 'textarea', array('label' => 'What is your comment?'));
+        $builder->add('content_real', 'textarea', array(
+            'label' => 'What is your comment?',
+            'constraints' => array(
+                new NotBlank()
+            )
+        ));
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $comment = $event->getData();
             $form = $event->getForm();
 
-            if ($person = $form->getConfig()->getOption('person')) {
-                $comment->setPerson($person);
-            } else {
-                $form->add('name', 'text', array('label' => 'Your Name'));
-                $form->add('email', 'email', array('label' => 'Your Email'));
+            // if this is a guest, ask for more information
+            if ($comment->getPerson() instanceof PersonGuest) {
+                $form->add('name', 'text', array(
+                    'label' => 'Your Name',
+                    'constraints' => array(
+                        new NotBlank()
+                    )
+                ));
+                $form->add('email', 'email', array(
+                    'label' => 'Your Email',
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Email()
+                    )
+                ));
                 $form->add('captcha', 'deskpro_captcha', array(
                     'mapped'         => false,
                     'error_bubbling' => false,
@@ -68,7 +86,6 @@ class CommentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
-            'person'     => null,
         ));
 
         $resolver->setRequired(array(
@@ -76,7 +93,7 @@ class CommentType extends AbstractType
         ));
 
         $resolver->setAllowedTypes(array(
-            'person' => array('Application\\DeskPRO\\Entity\\Person', 'null'),
+            'person' => 'Application\\DeskPRO\\Entity\\Person'
         ));
     }
 

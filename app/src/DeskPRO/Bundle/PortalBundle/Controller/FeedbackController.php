@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -78,26 +79,36 @@ class FeedbackController extends AbstractController
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
                 'pager'    => $pager,
                 'category' => null,
+                'page_title' => $this->createPageTitle()->feedback(),
             ));
         }
+        $rss_link = $this->generateUrl('portal_feedback', array('_format' => 'rss'));
 
         //
         // NEW FEEDBACK FORM
         //
+        $rerendering_saved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
+        $is_saved_form = $request->attributes->get('saved-form', false); // true if auto-submit SavedFormController
         $person       = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
             'person' => $person,
+            'action' => $this->generateUrl('portal_feedback'),
+            'allow_extra_fields' => $is_saved_form
         ));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if (
-                !$form->getClickedButton()
-                ||
+                !$rerendering_saved // if we are rerendering dont pass this condition
+                &&
                 (
-                    $form->getClickedButton()
-                    && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
+                    !$form->getClickedButton() // if user clicked more_attachments dont pass condition
+                    ||
+                    (
+                        $form->getClickedButton()
+                        && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
+                    )
                 )
             ) {
                 $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
@@ -105,10 +116,15 @@ class FeedbackController extends AbstractController
 
                 // deal with guests via negotiating with PersonFactory
                 if ($person instanceof PersonGuest) {
-                    $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                    try {
+                        $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                    } catch (LoginRequiredException $e) {
+                        $person = $e->getPerson();
+
+                        return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                    }
 
                     // since the guest is set on the form, we need to update all of the associations
-                    // TODO: we should be able to deal with this better by using a contact to beign with
                     $new_feedback->setPerson($person);
                     foreach ($new_feedback->getAttachments() as $attachment) {
                         $attachment->setPerson($person);
@@ -122,16 +138,38 @@ class FeedbackController extends AbstractController
         }
 
         //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
+
+        //
+        // FILTER CATEGORIES
+        //
+        // TODO: turn this into a service that takes in to account security (access to categories)
+        $feedback_categories = $this->getRepo('DeskPRO:FeedbackCategory')->getAll();
+
+        //
         // RENDER THEME
         //
+        $filter = new FeedbackFilter(); // get the defaults
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
                 'page'            => $page,
+                'feedback_categories' => $feedback_categories,
                 'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
+                'status' => $filter->getStatus(),
+                'status_categories' => $filter->getStatusCategories(),
+                'types' => $filter->getTypes(),
+                'sort' => $filter->getSort(),
+                'sort_direction' => $filter->getSortDirection(),
                 'form'            => $form->createView(),
                 'user'            => $this->getUser(),
+                'rerendering_saved'  => $rerendering_saved,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->feedback(),
+                'rss_link' => $rss_link
             )
         );
     }
@@ -154,13 +192,31 @@ class FeedbackController extends AbstractController
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
 
-        // order was incorrect, redirect them
+        // order was incorrect, redirect
         if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
+            if (strlen($generated_uri) < 1) {
+                // actually, in this case, it is all the defaults, so go back to the index
+                return $this->redirectToRoute(
+                    'portal_feedback'
+                );
+            }
             return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
         }
 
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
+
+        //
+        // FILTER CATEGORIES
+        //
+        // TODO: turn this into a service that takes in to account security (access to categories)
+        $feedback_categories = $this->getRepo('DeskPRO:FeedbackCategory')->getAll();
+
         $page_options = array(
             'page'              => $page,
+            'feedback_categories' => $feedback_categories,
             'count'             => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination'   => true,
             'status'            => $filter->getStatus(),
@@ -168,6 +224,9 @@ class FeedbackController extends AbstractController
             'types'             => $filter->getTypes(),
             'sort'              => $filter->getSort(),
             'sort_direction'    => $filter->getSortDirection(),
+            'breadcrumbs'       => $breadcrumbs,
+            'page_title' => $this->createPageTitle()->feedback(),
+            'rerendering_saved' => false // wont happen here because we always rerender on index
         );
 
         if ($request->isXmlHttpRequest()) {
@@ -213,20 +272,27 @@ class FeedbackController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK)) {
+            $form_handler = $this->get('form_handler.comment');
             $comment = new FeedbackComment();
-            $comment->setObject($item);
-            $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser(),
-            ));
-            $new_comment_form->handleRequest($request);
-            if ($new_comment_form->isValid()) {
-                $item->addComment($comment);
-                $this->getEm()->persist($comment);
-                $this->getEm()->flush($comment, $item);
+            $new_comment_form = $form_handler->createForm($comment);
+            if ($form_result = $form_handler->handle($new_comment_form, $request, $item, $comment)) {
+                if ($form_result instanceof Response) {
+                    return $form_result;
+                }
 
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
             }
         }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedbackView($item);
+
+        //
+        // RATING
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
 
         //
         // RENDER THEME
@@ -238,6 +304,9 @@ class FeedbackController extends AbstractController
                 'content_id'       => $item->getId(),
                 'content_type'     => Feedback::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'page_title' => $this->createPageTitle()->feedback($item),
+                'breadcrumbs' => $breadcrumbs,
+                'rating' => $rating
             )
         );
     }
@@ -257,6 +326,8 @@ class FeedbackController extends AbstractController
         } else {
             $this->getRatingsHelper()->rateContentUp($item, $visitor_id, $person);
         }
+
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
         return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
     }

@@ -70,6 +70,7 @@ class PersonRegistrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array(
+            'label' => $this->language_manager->phrase('portal.forms.label_name'),
             'required'    => true,
             'constraints' => array(
                 new NotBlank(),
@@ -83,9 +84,13 @@ class PersonRegistrationType extends AbstractType
 
         $builder->add('password', 'repeated', array(
             'first_name'     => 'password',
-            'first_options'  => array('label' => 'Password'),
+            'first_options'  => array(
+                'label' => $this->language_manager->phrase('portal.forms.label_password')
+            ),
             'second_name'                     => 'confirm',
-            'second_options'                  => array('label' => 'Confirm'),
+            'second_options'                  => array(
+                'label' => $this->language_manager->phrase('portal.forms.label_password_confirm')
+            ),
             'type'                                             => 'password',
             'mapped'                                           => false,
             'required'                                         => true,
@@ -94,11 +99,15 @@ class PersonRegistrationType extends AbstractType
             ),
         ));
 
-        $builder->add('timezone', 'timezone', array());
+        $builder->add('timezone', 'timezone', array(
+            'label' => $this->language_manager->phrase('portal.forms.label_timezone'),
+            )
+        );
 
         if ($this->language_manager->isMultiLanguagePortal()) {
             $builder->add('language_id', 'deskpro_language', array(
                 'view_context' => 'user',
+                'label' => $this->language_manager->phrase('portal.forms.label_language'),
             ));
         }
 
@@ -119,7 +128,7 @@ class PersonRegistrationType extends AbstractType
                         'person'            => $event->getData(),
                         'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
                         'agent_interface'   => false,
-                        'label'             => false,
+                        'label'             => $field_def->getTitle(),
                     )
                 );
             }

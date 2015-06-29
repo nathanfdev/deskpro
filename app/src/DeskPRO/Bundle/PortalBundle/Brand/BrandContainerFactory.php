@@ -31,9 +31,11 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
+use Doctrine\ORM\EntityManager;
 
 /**
  * The BrandContainerFactory creates BrandContainers for us.
@@ -50,14 +52,31 @@ class BrandContainerFactory
      */
     private $theme_resolver;
 
-    public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver)
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    private $bs;
+
+    public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver, EntityManager $em, DeskproBlobStorage $bs)
     {
         $this->settings_resolver = $settings_resolver;
         $this->theme_resolver    = $theme_resolver;
+        $this->em = $em;
+        $this->bs = $bs;
     }
 
     public function create(Brand $brand)
     {
-        return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand), $this->theme_resolver);
+        return new BrandContainer(
+            $brand,
+            $this->settings_resolver->getBrandSettings($brand),
+            $this->theme_resolver,
+            new BrandAssetLoader($brand, $this->em, $this->bs)
+        );
     }
 }

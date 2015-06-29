@@ -1,4 +1,5 @@
 services:
+
   blob.storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService

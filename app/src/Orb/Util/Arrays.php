@@ -33,6 +33,9 @@
 
 namespace Orb\Util;
 
+use Symfony\Component\PropertyAccess\Exception\AccessException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * Utility functions that work with arrays.
  *
@@ -146,7 +149,7 @@ class Arrays
         $new_array = array();
 
         if ($key_parts) {
-            $key_prefix = implode('.', $key_parts).'.';
+            $key_prefix = implode($sep, $key_parts). $sep;
         } else {
             $key_prefix = '';
         }
@@ -1641,6 +1644,27 @@ class Arrays
     }
 
     /**
+     * Use the Symfony PropertyAccess Component to find a value in an array.
+     *
+     * You will not get an exception with this method if the path does not exist.
+     *
+     * @param array $array
+     * @param string $property_path
+     * @param mixed $not_found the value returned if the property path does not exist
+     * @return mixed
+     */
+    public static function findPropertyPath(array $array, $property_path, $not_found = null)
+    {
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        try {
+            return $accessor->getValue($array, $property_path);
+        } catch (AccessException $e) {
+            return $not_found;
+        }
+    }
+
+    /**
      * Takes an array and normalizes all keys to lowercase.
      *
      * @param array $array     The array to work on
@@ -1897,6 +1921,31 @@ class Arrays
             if ($v == $find) {
                 $v = $replace;
             }
+        }
+
+        return $new;
+    }
+
+    /**
+     * Replace all $key key values in the array with $replace recursively.
+     *
+     * @param array  $array
+     * @param string $key
+     * @param string $replace
+     *
+     * @return array
+     */
+    public static function replaceKeyWithValueRecursive(array $array, $key, $replace)
+    {
+        $new = array();
+
+        foreach ($array as $k => $v) {
+            if ((string)$k === (string)$key) {
+                $v = $replace;
+            } elseif (is_array($v)) {
+                $v = self::replaceKeyWithValueRecursive($v, $key, $replace);
+            }
+            $new[$k] = $v;
         }
 
         return $new;

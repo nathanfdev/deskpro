@@ -23,8 +23,8 @@ echo ".. done"
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/web
-npm install --save --save-dev
-bower install --config.interactive=false --allow-root --save-dev
+npm install
+bower install --config.interactive=false --allow-root
 echo ".. done"
 
 echo ">> Building web assets"
@@ -34,7 +34,7 @@ echo
 
 echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/pub
-npm install --save-dev
+npm install
 echo ".. done"
 
 echo ">> Building new web assets"

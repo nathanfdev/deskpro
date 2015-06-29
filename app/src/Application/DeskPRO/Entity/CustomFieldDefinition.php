@@ -43,6 +43,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A custom field definition.
+ * @property int $id
+ * @property CustomFieldDefinition $parent
+ * @property ArrayCollection $children
  */
 class CustomFieldDefinition extends DomainObject implements HasPhraseName
 {
@@ -174,6 +177,51 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $this->is_enabled      = true;
         $this->is_user_enabled = true;
         $this->is_agent_field  = false;
+    }
+
+    public function isForOrganization()
+    {
+        return $this->context_class == 'Application\DeskPRO\Entity\Organization';
+    }
+
+    public function isForPerson()
+    {
+        return $this->context_class == 'Application\DeskPRO\Entity\Person';
+    }
+
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    public function isRequired($agent_interface = false)
+    {
+        // never required if agent is filling it out
+        if ($agent_interface) {
+            return false;
+        }
+
+        return (bool) $this->getOption('required', false);
+    }
+
+    public function getDefaultValue()
+    {
+        return $this->default_value;
+    }
+
+    public function isMultiple()
+    {
+        return (bool) $this->getOption('multiple', false);
+    }
+
+    public function isExpanded()
+    {
+        return (bool) $this->getOption('expanded', false);
+    }
+
+    public function isOptionsEditableByUser()
+    {
+        return (bool) $this->getOption('allow_edit', false);
     }
 
     /**
@@ -349,5 +397,38 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
                 ),
             ),
         ));
+    }
+
+    /**
+     * @return string
+     */
+    public function getOwnerClass()
+    {
+        return $this->owner_class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContextClass()
+    {
+        return $this->context_class;
+    }
+
+    /**
+     * @return int
+     */
+    public function getContextId()
+    {
+        return $this->context_id;
+    }
+
+    public function getOption($name, $default = null)
+    {
+        if (isset($this->options[$name])) {
+            return $this->options[$name];
+        }
+
+        return $default;
     }
 }

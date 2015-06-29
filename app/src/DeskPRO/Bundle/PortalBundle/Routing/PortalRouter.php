@@ -33,11 +33,13 @@ namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -62,6 +64,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'serve_blob',
         'admin_interface',
         'agent_interface',
+        'serve_brand_asset',
         '_wdt',
         '_profiler',
     );
@@ -81,11 +84,17 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     private $mode_store;
 
-    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store)
+    /**
+     * @var PortalModeFactory
+     */
+    private $mode_factory;
+
+    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store, PortalModeFactory $mode_factory)
     {
         $this->router           = $router;
         $this->language_manager = $language_manager;
         $this->mode_store       = $mode_store;
+        $this->mode_factory = $mode_factory;
         $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
@@ -119,7 +128,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     public function matchRequest(Request $request)
     {
-        $request_info = new PortalRequestInfo($request, $this->getPortalMode());
+        $request_info = new PortalRequestInfo($request, $this->getPortalMode(), $this->mode_factory);
         $request_info->setRouter($this->router);
 
         // if its not safe, or its a special url, just match it immediately
@@ -155,6 +164,22 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         );
 
         return (string) $url_builder;
+    }
+
+    /**
+     * This has a semantically different meaning from the standard generate() function. Both methods were
+     * used in the DpKernel Router, and the difference seems to be that:
+     *
+     * generateUrl is absolute
+     * genereare   is the abs path "/tickets"
+     *
+     * @param $name
+     * @param array $parameters
+     * @return string
+     */
+    public function generateUrl($name, $parameters = array())
+    {
+        return $this->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     protected function getActiveLanguage()

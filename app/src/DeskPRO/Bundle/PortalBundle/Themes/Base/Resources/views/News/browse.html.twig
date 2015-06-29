@@ -1,9 +1,19 @@
 {% extends 'Theme::layout.html.twig' %}
 {% block inner_content %}
-  {% show news_breadcrumbs %}
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
   <div class="browse-page">
+    <header class="section-header padded">
+      <div class="header-button-container">
+        <div class="header-buttons">
+          {% show rss_link %}
+          {% show kb_cat_subscription_link %}
+        </div>
+      </div>
+    </header>
     {% show news_cats_tabs %}
-    {% show news_list_full with { count: 5 } %}
+    {% show news_list_full %}
     {% show news_pager %}
   </div>
 {% endblock inner_content %}

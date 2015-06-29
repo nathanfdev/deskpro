@@ -419,6 +419,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
 			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
 			  var n = $(this).attr('name');
+        if (!n) return;
 			  if (n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')
 			  formData[n] = $(this).val();
 			});

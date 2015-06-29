@@ -1,5 +1,12 @@
 services:
 
+  form_saver:
+    class: DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver
+    arguments:
+      - @router
+      - @doctrine.orm.default_entity_manager
+      - @session
+
   listener.response.double_submit:
         class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
         tags:
@@ -49,6 +56,7 @@ services:
       - @doctrine.orm.default_entity_manager
       - @language_manager
       - @captcha_decider
+      - @portal_custom_per_field_manager
     tags:
       - { name: form.type, alias: ticket }
 
@@ -62,6 +70,7 @@ services:
 
   form.ticket_reply:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
+    arguments: [@language_manager]
     tags:
       - { name: form.type, alias: ticket_reply }
 
@@ -95,7 +104,7 @@ services:
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
-    arguments: [@captcha_decider]
+    arguments: [@captcha_decider, @language_manager]
     tags:
       - { name: form.type, alias: new_feedback }
 
@@ -108,7 +117,7 @@ services:
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: [@blob.storage]
+    arguments: [@blob.storage, @blob_repository]
     tags:
       - { name: form.type, alias: feedback_attachment }
 
@@ -137,6 +146,13 @@ services:
       - { name: form.type, alias: person_change_password }
 
 
+  form.deskpro_custom_per_field_data:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomPerFieldType
+    arguments: [@portal_custom_per_field_manager, @form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_per_field_data }
+
+
   form.custom_data_ticket:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataTicketType
     arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
@@ -151,6 +167,13 @@ services:
       - { name: form.type, alias: deskpro_custom_data_person }
 
 
+  form.custom_data_organization:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataOrganizationType
+    arguments: [@form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_organization }
+
+
   form.custom_data_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataFeedbackType
     arguments: [@form_field_manager]
@@ -160,13 +183,14 @@ services:
 
   form.ticket_message:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageType
+    arguments: [@language_manager]
     tags:
       - { name: form.type, alias: ticket_message }
 
 
   form.ticket_message_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage, @doctrine.orm.default_entity_manager]
+    arguments: [@blob.storage, @blob_repository]
     tags:
       - { name: form.type, alias: ticket_message_attachment }
 
@@ -184,6 +208,13 @@ services:
       - { name: form.type, alias: deskpro_custom_field_choice }
 
 
+  form.deskpro_contextual_per_field_choice:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: deskpro_contextual_per_field_choice }
+
+
   form.language:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\LanguageType
     tags:
@@ -194,6 +225,14 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEmailType
     tags:
       - { name: form.type, alias: deskpro_person_email }
+
+
+  form.person_email_choice:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEmailChoiceType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: deskpro_person_email_choice }
 
 
   form.display_html:
@@ -248,7 +287,7 @@ services:
 
   form.blob:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\BlobType
-    arguments: [@doctrine.orm.default_entity_manager, @blob.storage]
+    arguments: [@doctrine.orm.default_entity_manager, @blob.storage, @blob_repository]
     tags:
       - { name: form.type, alias: deskpro_blob }
 

@@ -9,7 +9,7 @@
 			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_ticket_escalations') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ng-if="ListCtrl.list.length" dp-max-height>
+            <ul class="dp-item-list" dp-max-height>
 				<li ng-repeat="esc in ListCtrl.list_statuses"
 					dp-state-mark="tickets.ticket_escalations.editstatuses.{{ ng_var('esc.sys_num') }}" data-id="{{ ng_var('esc.sys_num') }}">
 					<a href="{{ ng_href('tickets.ticket_escalations.editstatuses', '{id: esc.sys_num}') }}">

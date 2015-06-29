@@ -929,6 +929,16 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		editSnippetEl.find('select.category_id').val(snippet.category_id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
 
+    // resort categories
+    var $sorted = this.getEl('editsnippet_category_select').children().sort(function(a, b){
+      var _a = $.trim($(a).text()).toLowerCase(),
+          _b = $.trim($(b).text()).toLowerCase();
+      if (0 === $(a).data('category-id')) return -1;
+      if (0 === $(b).data('category-id')) return 1;
+      return _a > _b ? 1 : -1;
+    }).remove();
+    this.getEl('editsnippet_category_select').append($sorted);
+
 		if (snippet && snippet.id) {
 			editSnippetEl.find('.is-edit-snippet').show();
 			editSnippetEl.find('.is-add-snippet').hide();

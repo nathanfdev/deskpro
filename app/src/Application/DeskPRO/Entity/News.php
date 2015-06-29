@@ -240,6 +240,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
     protected function addSlugHistory($old_slug)
     {
         $history = new NewsSlugHistory($this, $old_slug);

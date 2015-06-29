@@ -74,11 +74,14 @@ class PortalModeListener implements EventSubscriberInterface
         if ($query_string->has(PortalMode::ATTR_NAME)) {
             if ($serialized_mode = $query_string->get(PortalMode::ATTR_NAME)) {
                 $mode = unserialize(urldecode($serialized_mode));
-                $this->store->setMode($mode);
 
-                $this->logMode($mode);
+                if ($mode instanceof PortalMode) {
+                    $this->store->setMode($mode);
 
-                return true;
+                    $this->logMode($mode);
+                } else {
+                    $this->logger->error(sprintf('MODE NOT FOUND'));
+                }
             }
         }
     }

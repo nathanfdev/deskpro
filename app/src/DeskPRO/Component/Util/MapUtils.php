@@ -62,16 +62,20 @@ class MapUtils
 
     /**
      * @param $array
-     * @param array  $values Values to remove
-     * @param bool   $strict  Strict checking on $values
+     * @param array|mixed  $values Values to remove
+     * @param bool         $strict  Strict checking on $values
      * @return array
      */
-    public static function filterOutValues($array, array $values, $strict = true)
+    public static function filterOutValues($array, $values, $strict = true)
     {
         $new = array();
 
+        if (!is_array($values)) {
+            $values = array($values);
+        }
+
         foreach ($array as $k => $v) {
-            if (in_array($v, $values, $strict)) {
+            if (!in_array($v, $values, $strict)) {
                 $new[$k] = $v;
             }
         }
@@ -92,7 +96,9 @@ class MapUtils
         $new = array($key => $val);
 
         foreach ($array as $k => $v) {
-            $new[$k] = $v;
+            if (!isset($new[$k])) {
+                $new[$k] = $v;
+            }
         }
 
         return $new;

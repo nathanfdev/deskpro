@@ -35,11 +35,13 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ArticlesController extends AbstractController
 {
@@ -62,8 +64,21 @@ class ArticlesController extends AbstractController
                 $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
+            return $this->render('PortalBundle:Articles:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => null,
+                'page_title' => $this->get('portal_view.page_title_generator')->kb()
+            ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_kb',
+            array('_format' => 'rss')
+        );
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
         //
         // RENDER THEME
@@ -73,6 +88,9 @@ class ArticlesController extends AbstractController
             array(
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
+                'rss_link' => $rss_link
             )
         );
     }
@@ -97,8 +115,40 @@ class ArticlesController extends AbstractController
                 $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
+            return $this->render('PortalBundle:Articles:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => $category,
+                'page_title' => $this->get('portal_view.page_title_generator')->kb($category)
+            ));
         }
+        $rss_link = $this->generateUrl('portal_kb_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
+
+        //
+        // BREADCRUMBS
+        //
+        if ($category) {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbCategory($category);
+        } else {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
+        }
+
+        //
+        // SUBSCRIPTION
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+        ) {
+            // waiting info regarding article category subscriptions
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        //
+        // PAGER
+        //
+        $count = $this->getBrandSetting('portal.per_page_content');
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count);
 
         //
         // RENDER THEME
@@ -107,9 +157,13 @@ class ArticlesController extends AbstractController
             'Theme:Articles:browse.html.twig',
             array(
                 'category'        => $category,
+                'breadcrumbs'     => $breadcrumbs,
+                'page_title'      => $this->get('portal_view.page_title_generator')->kb($category),
+                'is_subscribed'   => $is_subscribed,
+                'pager'           => $pager,
+                'count'           => $count,
                 'page'            => $page,
-                'count'           => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true,
+                'rss_link'        => $rss_link
             )
         );
     }
@@ -127,19 +181,38 @@ class ArticlesController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLES)) {
+            $form_handler = $this->get('form_handler.comment');
             $comment = new ArticleComment();
-            $comment->setObject($article);
-            $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser(),
-            ));
-            $new_comment_form->handleRequest($request);
-            if ($new_comment_form->isValid()) {
-                $article->addComment($comment);
-                $this->getEm()->persist($comment);
-                $this->getEm()->flush($comment, $article);
+            $new_comment_form = $form_handler->createForm($comment);
+            if ($form_result = $form_handler->handle($new_comment_form, $request, $article, $comment)) {
+                if ($form_result instanceof Response) {
+                    return $form_result;
+                }
 
                 return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
             }
+        }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbArticle($article);
+
+        //
+        // RATING
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
+
+        //
+        // SUBSCRIPTION
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
+        ) {
+            // waiting on info on the kb subs
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
 
         //
@@ -149,9 +222,13 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             array(
                 'article'          => $article,
+                'rating' => $rating,
+                'is_subscribed' => $is_subscribed,
                 'category'         => $article->getPrimaryCategory(),
+                'breadcrumbs'      => $breadcrumbs,
                 'content_id'       => $article->getId(),
                 'content_type'     => Article::CONTENT_TYPE,
+                'page_title'       => $this->get('portal_view.page_title_generator')->kb($article),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
@@ -173,6 +250,8 @@ class ArticlesController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
         }
 
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
         return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
     }
 
@@ -188,10 +267,10 @@ class ArticlesController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedContent($article, $person)) {
             $subscriptions_helper->unsubscribeFromContent($article, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this article.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToContent($article, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this article. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_subscribe'));
         }
 
         return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
@@ -209,10 +288,10 @@ class ArticlesController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
             $subscriptions_helper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToCategory($category, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
         }
 
         return $this->redirectToRoute('portal_kb_browse', array('slug' => $category->getSlug()));
@@ -226,7 +305,7 @@ class ArticlesController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('kb', $this->getUser());
 
-        $this->addFlash('success', 'Unsubscribed from all Knowledgebase subscriptions');
+        $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_index');
     }

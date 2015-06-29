@@ -31,10 +31,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
+use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 
@@ -55,15 +58,22 @@ class TicketViewService extends AbstractDataService
      */
     private $translate;
 
+    /**
+     * @var CustomPerFieldManager
+     */
+    private $custom_per_field_manager;
+
     public function __construct(
         FormFieldManager $form_field_manager,
         TicketLayoutFactory $ticket_layout_factory,
-        Translate $translate
+        Translate $translate,
+        CustomPerFieldManager $custom_per_field_manager
     )
     {
         $this->form_field_manager    = $form_field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
         $this->translate             = $translate;
+        $this->custom_per_field_manager = $custom_per_field_manager;
     }
 
     public function getUserTicketView(Ticket $ticket)
@@ -109,14 +119,50 @@ class TicketViewService extends AbstractDataService
                         }
                     }
                     break;
+                case FormFields::ORG_FIELD:
+                    if ($layout_field->isVisibleOnView()) {
+                        if (!$ticket->getOrganization() instanceof Organization) {
+                            break;
+                        }
+
+                        /** @var \Application\DeskPRO\Entity\CustomDefOrganization $field_def */
+                        $field_def = $this->form_field_manager->getCustomOrganizationFieldById($layout_field->getFieldId());
+                        /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
+                        if ($data = $ticket->getOrganization()->getCustomDataForField($field_def)) {
+                            $value = $this->getValueForCustomFormField($field_def, $data);
+                            $view->attribute_list[$field_def->getTitle()] = $value;
+                        }
+                    }
+                    break;
                 case FormFields::USER_FIELD:
                     if ($layout_field->isVisibleOnView()) {
                         /** @var \Application\DeskPRO\Entity\CustomDefPerson $field_def */
                         $field_def = $this->form_field_manager->getCustomPersonFieldById($layout_field->getFieldId());
                         /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
                         if ($data = $ticket->person->getCustomDataForField($field_def)) {
-                            $value                                        = $this->getValueForCustomFormField($field_def, $data);
+                            $value = $this->getValueForCustomFormField($field_def, $data);
                             $view->attribute_list[$field_def->getTitle()] = $value;
+                        }
+                    }
+                    break;
+                case FormFields::CUSTOM_FIELD:
+                    if ($layout_field->isVisibleOnView()) {
+                        $context = new CustomFieldTicketContext($ticket);
+
+                        /** @var \Application\DeskPRO\Entity\CustomFieldDefinition $field_def */
+                        if (!$field_def = $this->custom_per_field_manager->getCustomPerFieldDefinition(
+                            $layout_field->getFieldId(),
+                            $context
+                        )) {
+                            break;
+                        }
+
+                        /* @var \Application\DeskPRO\Entity\CustomFieldData $data */
+                        if ($data = $this->custom_per_field_manager->getCustomPerFieldData($field_def, $context)) {
+                            if ($selected_def = $this->findSelectedCustomPerFieldChoice($field_def, $context, $data)) {
+                                $value = $selected_def->getTitle();
+                                $view->attribute_list[$field_def->getTitle()] = $value;
+                            }
                         }
                     }
                     break;
@@ -137,12 +183,20 @@ class TicketViewService extends AbstractDataService
         $value = '';
         switch ($field_def->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
-                $datetime = new \DateTime($data->getData());
-                $value    = date('F j, Y', $datetime->getTimestamp());
+                try {
+                    $datetime = new \DateTime($data->getData());
+                    $value = date('F j, Y', $datetime->getTimestamp());
+                } catch (\Exception $e) {
+                    $value = '';
+                }
                 break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
-                $datetime = new \DateTime($data->getData());
-                $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
+                try {
+                    $datetime = new \DateTime($data->getData());
+                    $value = date('F j, Y, g:i a', $datetime->getTimestamp());
+                } catch (\Exception $e) {
+                    $value = '';
+                }
                 break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
                 if ($data->getData() == 1) {
@@ -176,5 +230,22 @@ class TicketViewService extends AbstractDataService
         }
 
         return $value;
+    }
+
+    /**
+     * @param $field_def
+     * @param $context
+     * @param $data
+     * @return \Application\DeskPRO\Entity\CustomFieldDefinition|null
+     */
+    public function findSelectedCustomPerFieldChoice($field_def, $context, $data)
+    {
+        $choices = $this->custom_per_field_manager->getCustomPerFieldChoices($field_def, $context);
+        /** @var \Application\DeskPRO\Entity\CustomFieldDefinition $choice_def */
+        foreach ($choices as $choice_def) {
+            if ($choice_def->id == $data->value) {
+                return $choice_def;
+            }
+        }
     }
 }

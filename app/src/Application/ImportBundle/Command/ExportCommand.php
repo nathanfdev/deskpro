@@ -28,9 +28,10 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Exception;
+use RuntimeException;
 
 /**
  * Export command
@@ -55,38 +56,30 @@ class ExportCommand extends AbstractGenerateCommand
     /**
      * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
-
-        $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
+        $generator = $this->createGenerator($config, $logger);
 
+        $this->createAndSetProgressBar($generator, $output);
+        $this->generate($generator, $output);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function checkConfiguration(Generator\GeneratorConfig $config)
+    {
         if ($config->isDryRun() === false && ! $config->getOutputPath()) {
-            throw new Exception('Output path must be specified');
+            throw new RuntimeException('Output path must be specified');
         }
         if ($config->needInputPath()) {
             if ( ! $config->getInputPath()) {
-                throw new Exception('Input path must be specified');
+                throw new RuntimeException('Input path must be specified');
             }
             if ($config->getInputPath() === $config->getOutputPath()) {
-                throw new Exception('Output path must be different from input path');
+                throw new RuntimeException('Output path must be different from input path');
             }
         }
-        if ($config->isSilent()) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-        }
-
-        $logger    = $this->createLogger($config, $output);
-        $generator = $this->createGenerator($config, $logger);
-
-        if ($config->getRetryWaitTimeout()) {
-            $logger->warning(sprintf('Retry timeout, %d seconds left', $config->getRetryWaitTimeout()));
-
-            return;
-        }
-
-        $this->createAndSetProgressBar($generator, $output);
-        $this->generate($generator, $output, $logger);
     }
 }

@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
@@ -116,6 +117,35 @@ class HierarchyGenerator
                         }
                     }
                 }
+
+                return $hierarchy;
+            }
+        );
+    }
+
+    public function generateForCustomPerFormField(CustomFieldDefinition $field, array $contextual_choices = array())
+    {
+        return $this->generateAndCache(
+            array(
+                'generateForCustomPerFormField',
+                $field,
+                $contextual_choices
+            ),
+            function () use ($field, $contextual_choices) {
+                $root_nodes = array();
+                foreach ($contextual_choices as $field_child) {
+                    // fields with a parent_id are dealt with below
+                    $root_nodes[] = new HierarchyNode($field_child, 0, HierarchyGenerator::reverseDisplayOrder($field_child->display_order));
+                }
+
+                if ($expanded = $field->getOption('expanded')) {
+                    $formatter = new ParentListFormatter('title');
+                } else {
+                    $formatter = new FlatListFormatter('title');
+                }
+
+                $hierarchy = new Hierarchy($root_nodes, $formatter);
+                $hierarchy->markOnlyLeafSelections();
 
                 return $hierarchy;
             }

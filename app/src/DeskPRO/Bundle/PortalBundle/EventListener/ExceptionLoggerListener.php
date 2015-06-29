@@ -55,7 +55,7 @@ class ExceptionLoggerListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 500), // very high priority
+            KernelEvents::EXCEPTION => array('onKernelException', 2048), // very high priority
         );
     }
 }

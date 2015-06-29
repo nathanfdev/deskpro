@@ -5,6 +5,7 @@
     'user.email_subjects.comment-deleted'          => 'Your comment was read by our agents',
     'user.email_subjects.email-too-big'            => 'Your email "{{subject}}" was not accepted',
     'user.email_subjects.email_new-confirm'        => 'Validate your email address',
+    'user.email_subjects.email_primary-confirm'    => 'Validate your email address',
     'user.email_subjects.feedback_new'             => 'Thank you for submitting your feedback',
     'user.email_subjects.feedback_new-approved'    => 'Your feedback has been approved',
     'user.email_subjects.feedback_new-comment'     => 'There is a new comment on "{{title}}"',

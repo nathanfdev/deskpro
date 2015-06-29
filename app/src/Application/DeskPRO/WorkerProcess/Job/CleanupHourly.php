@@ -58,6 +58,7 @@ class CleanupHourly extends AbstractJob
         $this->_cleanupEmailProcessLogs();
         $this->_cleanupEmailSources();
         $this->_cleanupTicketManagerLogs();
+        $this->_cleanupSavedForms();
         $this->_cleanHttpCacheDirs();
     }
 
@@ -441,6 +442,18 @@ class CleanupHourly extends AbstractJob
 
         if ($count) {
             $this->logStatus("Cleaned up $count old ticket manager logs");
+        }
+    }
+
+    ####################################################################################################################
+
+    private function _cleanupSavedForms()
+    {
+        $datetime = date('Y-m-d H:i:s', time());
+        $count = App::getDb()->executeUpdate('DELETE FROM saved_forms WHERE date_expires < ?', array($datetime));
+
+        if ($count) {
+            $this->logStatus("Cleaned up $count old saved forms");
         }
     }
 

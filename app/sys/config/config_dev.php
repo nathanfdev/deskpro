@@ -12,9 +12,8 @@ $container->loadFromExtension('twig', array(
 $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
-            'type'  => 'stream',
-            'path'  => dp_get_log_dir()."/deskpro.dev.log",
-            'level' => 'debug',
+            'type'  => 'service',
+            'id' => 'monolog.handler.deskpro_fingers_crossed',
         ),
     ),
 ));

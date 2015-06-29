@@ -50,6 +50,6 @@ class Login extends BasePage
         $this->fillField('username', $username);
         $this->fillField('password', $password);
 
-        return $this->pressButton('Log In');
+        return $this->pressButton('Login');
     }
 }

@@ -54,7 +54,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return $this->reader->getDirectoryFilesCount($this->getTicketReaderConfig());
     }
 
     /**
@@ -63,7 +63,7 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->reader->getData($this->getConfig());
+        $tickets    = $this->reader->getData($this->getTicketReaderConfig());
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
@@ -279,7 +279,7 @@ final class Tickets extends AbstractParser
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
-    private function getConfig()
+    private function getTicketReaderConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_TICKET_PATH);
     }

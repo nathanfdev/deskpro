@@ -61,11 +61,11 @@ class CustomDataPersonType extends AbstractType
 
     public function preDataEvent(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
         $custom_data = $event->getData();
         $form        = $event->getForm();
         $config      = $form->getConfig();
-        /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
+        /** @var \Application\DeskPRO\Entity\CustomDefPerson $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 
         if (!$custom_data) {
@@ -106,7 +106,7 @@ class CustomDataPersonType extends AbstractType
 
     public function postSubmitEvent(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
         $custom_data = $event->getData();
         $form        = $event->getForm();
         $config      = $form->getConfig();

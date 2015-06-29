@@ -36,8 +36,9 @@ namespace Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
-use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\OptionsArray;
 use Orb\Util\Util;
+use Application\DeskPRO\Util as DeskPROUtil;
 
 /**
  * This converts between 'new' and 'old' style term definitions.
@@ -215,6 +216,13 @@ class LegacyTermsTransformer
                     'type'    => 'subject',
                     'op'      => $term->getTermOperator(),
                     'options' => array('subject' => $options['subject']),
+                );
+
+            case 'FilterFeedbackRating':
+                return array(
+                    'type' => 'feedback_rating',
+                    'op' => $term->getTermOperator(),
+                    'options' => $term->getTermOptions(),
                 );
 
             case 'FilterUrgency':
@@ -515,6 +523,10 @@ class LegacyTermsTransformer
         $op      = $legacy_term['op'];
         $options = $legacy_term['options'];
 
+        if ($options instanceof OptionsArray) {
+            $options = $options->all();
+        }
+
         $type_name = $legacy_term['type'];
         $type_id   = null;
         if (preg_match('#^(.*?)\[(\d+)\]$#', $type_name, $m)) {
@@ -675,8 +687,8 @@ class LegacyTermsTransformer
 
             case 'sla_status':
                 return new Terms\FilterSlaStatus($op, array(
-                    'sla_ids'    => @$options['sla_ids'] ?: array(),
-                    'sla_status' => @$options['sla_status'] ?: '',
+                    'sla_id'    => @$options['sla_id'] ?: 0,
+                    'sla_status' => @$options['sla_status'] ?: ''
                 ));
 
             case 'user_waiting':
@@ -861,6 +873,9 @@ class LegacyTermsTransformer
                 $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterOrgField($op, $new_opts);
+
+            case 'feedback_rating':
+                return new Terms\FilterFeedbackRating($op, $options);
         }
 
         return;

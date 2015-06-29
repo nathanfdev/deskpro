@@ -35,11 +35,13 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class NewsController extends AbstractController
 {
@@ -63,10 +65,20 @@ class NewsController extends AbstractController
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
+                'page_title' => $this->createPageTitle()->news(),
                 'pager'    => $pager,
                 'category' => null,
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_news',
+            array('_format' => 'rss')
+        );
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
 
         //
         // RENDER THEME
@@ -76,6 +88,9 @@ class NewsController extends AbstractController
             array(
                 'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
+                'page_title' => $this->createPageTitle()->news(),
+                'breadcrumbs' => $breadcrumbs,
+                'rss_link' => $rss_link
             )
         );
     }
@@ -103,8 +118,39 @@ class NewsController extends AbstractController
             return $this->render('PortalBundle:News:feed.rss.twig', array(
                 'pager'    => $pager,
                 'category' => $category,
+                'page_title' => $this->createPageTitle()->news($category),
             ));
         }
+        $rss_link = $this->generateUrl(
+            'portal_news_browse',
+            array('slug' => $category->getSlug(), '_format' => 'rss')
+        );
+
+        //
+        // BREADCRUMBS
+        //
+        if ($category) {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsCategory($category);
+        } else {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
+        }
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        //
+        // PAGER
+        //
+        $count = $this->getBrandSetting('portal.per_page_content');
+        $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count);
 
         //
         // RENDER THEME
@@ -113,9 +159,13 @@ class NewsController extends AbstractController
             'Theme:News:browse.html.twig',
             array(
                 'category'        => $category,
+                'is_subscribed'   => $is_subscribed,
+                'pager'           => $pager,
                 'page'            => $page,
-                'count'           => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true,
+                'count'           => $count,
+                'page_title' => $this->createPageTitle()->news($category),
+                'breadcrumbs' => $breadcrumbs,
+                'rss_link' => $rss_link
             )
         );
     }
@@ -133,19 +183,37 @@ class NewsController extends AbstractController
         //
         $new_comment_form = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS)) {
+            $form_handler = $this->get('form_handler.comment');
             $comment = new NewsComment();
-            $comment->setObject($post);
-            $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser(),
-            ));
-            $new_comment_form->handleRequest($request);
-            if ($new_comment_form->isValid()) {
-                $post->addComment($comment);
-                $this->getEm()->persist($comment);
-                $this->getEm()->flush($comment, $post);
+            $new_comment_form = $form_handler->createForm($comment);
+            if ($form_result = $form_handler->handle($new_comment_form, $request, $post, $comment)) {
+                if ($form_result instanceof Response) {
+                    return $form_result;
+                }
 
                 return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
             }
+        }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsPost($post);
+
+        //
+        // RATINGS
+        //
+        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
         }
 
         //
@@ -155,10 +223,14 @@ class NewsController extends AbstractController
             'Theme:News:view.html.twig',
             array(
                 'post'             => $post,
-                'category'         => $post->category,
+                'is_subscribed'    => $is_subscribed,
+                'rating'           => $rating,
+                'category'         => $post->getCategory(),
                 'content_id'       => $post->getId(),
                 'content_type'     => News::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'page_title' => $this->createPageTitle()->news($post),
+                'breadcrumbs' => $breadcrumbs
             )
         );
     }
@@ -204,6 +276,8 @@ class NewsController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($post, $visitor_id, $person);
         }
 
+        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
     }
 
@@ -219,10 +293,10 @@ class NewsController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedContent($post, $person)) {
             $subscriptions_helper->unsubscribeFromContent($post, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this news article.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToContent($post, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this news article. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_subscribe'));
         }
 
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
@@ -240,10 +314,10 @@ class NewsController extends AbstractController
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
             $subscriptions_helper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_unsubscribe'));
         } else {
             $subscriptions_helper->subscribeToCategory($category, $person);
-            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_subscribe'));
         }
 
         return $this->redirectToRoute('portal_news_browse', array('slug' => $category->getSlug()));
@@ -257,7 +331,7 @@ class NewsController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('news', $this->getUser());
 
-        $this->addFlash('success', 'Unsubscribed from all News subscriptions');
+        $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_index');
     }

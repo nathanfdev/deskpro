@@ -5,6 +5,7 @@
 
         <section>
             <div class="column-full">
+              {% show section alerts %}
               {% show section page_top %}
             </div>
         </section>
@@ -35,6 +36,11 @@
             </div>
         </section>
 
+        <section>
+            <div class="column-full">
+                {% show section footer %}
+            </div>
+        </section>
     </div>
 
 {% endblock body %}

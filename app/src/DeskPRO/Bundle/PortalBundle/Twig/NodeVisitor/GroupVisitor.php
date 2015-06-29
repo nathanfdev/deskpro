@@ -36,6 +36,13 @@ use Twig_NodeInterface;
 use DeskPRO\Bundle\PortalBundle\Twig\Node\GroupNode;
 use DeskPRO\Bundle\PortalBundle\Twig\Node\GroupItemNode;
 
+/**
+ * Registers direct GroupItemNode children to the parent GroupNode
+ * so the GroupNode knows which items it is responsible for rendering.
+ *
+ * You could achieve the same sort of thing without this visitor,
+ * but it's a bit cleaner and easier to understand with it.
+ */
 class GroupVisitor implements \Twig_NodeVisitorInterface
 {
     /**

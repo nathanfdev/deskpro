@@ -321,7 +321,13 @@ class KernelBooter
                     header('Location: '.$request->getBasePath().'/index.php/install/');
                     exit;
                 }
-                throw $e;
+                if (!$debug) {
+                    KernelErrorHandler::logException($e);
+                }
+            } catch (\Exception $e) {
+                if (!$debug) {
+                    KernelErrorHandler::logException($e);
+                }
             }
 
             exit;
@@ -711,76 +717,80 @@ class KernelBooter
      */
     public static function bootCli($env = 'prod', $debug = false, $other_kernel = null)
     {
-        if (!$other_kernel) {
-            static::ensureCli();
-            $app = static::getCliApp('cmd', $env, $debug);
+        try {
+            if (!$other_kernel) {
+                static::ensureCli();
+                $app = static::getCliApp('cmd', $env, $debug);
 
-            if (!$app) {
-                return;
-            }
-
-            $GLOBALS['DP_IS_IN_CLI'] = true;
-            $app->setAutoExit(false);
-
-            libxml_disable_entity_loader(false);
-            $return = $app->run(new ArgvInput());
-            unset($GLOBALS['DP_IS_IN_CLI']);
-
-            return $return;
-        } else {
-            if ($other_kernel == 'portal') {
-                self::bootstrapConfig();
-
-                if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                    $env   = 'dev';
-                    $debug = true;
+                if (!$app) {
+                    return;
                 }
 
-                self::bootstrapLib($debug);
-                self::bootstrapEnv();
+                $GLOBALS['DP_IS_IN_CLI'] = true;
+                $app->setAutoExit(false);
 
-                $input = new ArgvInput();
-                $env   = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
-                $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
-                        array('--no-debug', '')
-                    ) && $env !== 'prod';
+                libxml_disable_entity_loader(false);
+                $return = $app->run(new ArgvInput());
+                unset($GLOBALS['DP_IS_IN_CLI']);
 
-                require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
-                $kernel = new PortalKernel($env, $debug);
+                return $return;
+            } else {
+                if ($other_kernel == 'portal') {
+                    self::bootstrapConfig();
 
-                $app = new Application($kernel);
+                    if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+                        $env = 'dev';
+                        $debug = true;
+                    }
 
-                libxml_disable_entity_loader(false); // needed on some machines
+                    self::bootstrapLib($debug);
+                    self::bootstrapEnv();
 
-                return $app->run($input);
-            }
+                    $input = new ArgvInput();
+                    $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                    $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
+                            array('--no-debug', '')
+                        ) && $env !== 'prod';
 
-            if ($other_kernel == 'api') {
-                self::bootstrapConfig();
+                    require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
+                    $kernel = new PortalKernel($env, $debug);
 
-                if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                    $env = 'dev';
-                    $debug = true;
+                    $app = new Application($kernel);
+
+                    libxml_disable_entity_loader(false); // needed on some machines
+
+                    return $app->run($input);
                 }
 
-                self::bootstrapLib($debug);
-                self::bootstrapEnv();
+                if ($other_kernel == 'api') {
+                    self::bootstrapConfig();
 
-                $input = new ArgvInput();
-                $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
-                $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
-                        array('--no-debug', '')
-                    ) && $env !== 'prod';
+                    if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+                        $env = 'dev';
+                        $debug = true;
+                    }
 
-                require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
-                $kernel = new ApiKernel($env, $debug);
+                    self::bootstrapLib($debug);
+                    self::bootstrapEnv();
 
-                $app = new Application($kernel);
+                    $input = new ArgvInput();
+                    $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                    $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
+                            array('--no-debug', '')
+                        ) && $env !== 'prod';
 
-                libxml_disable_entity_loader(false); // needed on some machines
+                    require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
+                    $kernel = new ApiKernel($env, $debug);
 
-                return $app->run($input);
+                    $app = new Application($kernel);
+
+                    libxml_disable_entity_loader(false); // needed on some machines
+
+                    return $app->run($input);
+                }
             }
+        } catch (\Exception $e) {
+            KernelErrorHandler::handleException($e);
         }
     }
 

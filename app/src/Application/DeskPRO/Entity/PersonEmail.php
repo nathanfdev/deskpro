@@ -270,6 +270,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     public function _postPersist()
     {
         if (!$this->person) {
@@ -324,5 +332,13 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_validated'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isValidated()
+    {
+        return $this->is_validated;
     }
 }

@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @SWG\Resource(
@@ -1948,11 +1949,11 @@ class KbController extends AbstractController
 
         if ($check_perm) {
             if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
             if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 

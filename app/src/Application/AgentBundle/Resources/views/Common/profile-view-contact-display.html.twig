@@ -51,8 +51,11 @@
 
 	{% if not show_only or show_only.phone %}
 	{% for phone in contact_data.phone_numbers if phone.vars.data %}
-		<li class="{{ 1 == phone.vars.data.guessed_type ? 'mobile' : 'phone' }}">
+		<li class="{{ 1 == phone.vars.data.guessed_type ? 'mobile' : 'phone' }}{% if phone.vars.data.label %} tipped{% endif %}"{% if phone.vars.data.label %} title="{{ phone.vars.data.label }}"{% endif %}>
 			<span class="number">{{ phone.vars.data.number }}</span>
+			{% if phone.vars.data.label %}
+				<strong>{{ phone.vars.data.label }}</strong>
+			{% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}

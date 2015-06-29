@@ -261,3 +261,22 @@
 	</div>
 </article>
 <% } %>
+
+{#########################################################################}
+{# Deleted tickets #}
+{#########################################################################}
+
+<% if (group.type == 'deleted_tickets') { var item = result; %>
+<article class="row-item single-row" route-notabreload="1" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- item.id %>'})|raw }}">
+    <div class="top-row">
+        <div class="top-row-left">
+            <h3>
+                <span class="obj-id">#<%- item.id %></span>
+                <a class="subject click-through">
+                    <%= item.reason %>
+                </a>
+            </h3>
+        </div>
+    </div>
+</article>
+<% } %>

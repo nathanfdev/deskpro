@@ -51,7 +51,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\ActiveDirectory';
-
+        $us->setSyncEnabled($app->getSetting('sync_enabled') ? true : false);
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
         $em->persist($app);

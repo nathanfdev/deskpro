@@ -1,0 +1,94 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//-------------------------
+// Paths
+//-------------------------
+
+$pub-path: "../../../../../../../pub";
+$portal-res-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources";
+$portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
+
+$modules-path: "../../../../../../../pub/node_modules";
+$fa-font-path: "#{$modules-path}/font-awesome/fonts";
+
+//-------------------------
+// Outer page
+//-------------------------
+
+$world-background: #fff;
+$world-padding: 20px;
+
+//-------------------------
+// Main scheme
+//-------------------------
+
+$page-background: #fff;
+$fonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$divider-color: rgba(0, 0, 0, 0.1);
+$universal-left-padding: 10px;
+$main-color: #3575bd;
+
+// Font sizes
+$font-small: 0.8em;
+$font-mid: 0.9em;
+$font-default: 1em;
+$font-large: 1.4em;
+
+// Font colors
+$text-color: #606060;
+$text-color-darker: darken($text-color, 30%);
+$text-color-lighter: lighten($text-color, 15%);
+$text-faded: lighten($text-color, 20%);
+$link-color: darken($main-color, 10%);
+
+// Secondary font colors
+$grey: #e6e6e6;
+$red: #dc7575;
+$gold: #d0cf6e;
+$filter: #e0d5ad;
+$text-opacue: 0.5;
+
+// Generic static colors
+$color-twitter: #6eb9e4;
+$color-facebook: #4c6fab;
+
+// Use for placeholders, disabled, can be switched to rgba opacity safely
+$text-faded: #d4d4d4;
+
+// Buttons
+$button-color: $main-color;// Blue
+$button-text: $page-background;// #fff
+$button-color-secondary: #93d06e;// Green
+$button-color-secondary-darker: darken($button-color-secondary, 15%);
+
+// Secondary surface colors
+$surface-main: #f2f2ec;// Grey to yellow-ish
+$surface-secondary: #f6f6f6;// Grey
+
+// Generic use cases
+$button-grey: #e8e8e8;
+$button-text: $page-background;
+$popup-background: #f5f6f7;
+
+// Forms
+$form-input: lighten($page-background, 5%); //#f7f7f7;
+$form-border-color: #c0c0c0;// Could follow from $divider-color for a lot of cases
+
+// This is the marked text when filtering stuff
+$marked-search: #ffe47f;
+
+// Default corners
+$border-radius-main: 4px;
+$border-radius-small: 2px;
+
+// Inner shadow for buttons that need it (usualy large buttons)
+$common-box-shadow-inner: inset 0 0 20px 10px rgba(0, 0, 0, 0.05);
+
+// Form paddings
+$form-padding-vertical: 0.75em;
+$form-padding-horizontal: 1em;
+
+// Max page width
+$max-width: 1080px;

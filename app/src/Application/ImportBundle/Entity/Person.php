@@ -622,7 +622,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'override_display_name' => $this->override_display_name,
             'password'              => $this->password,
             'password_scheme'       => $this->password_scheme,
-            'timezone'              => $this->timezone,
+            'timezone'              => $this->timezone->getName(),
             'date_created'          => $this->date_created->format('Y-m-d H:i:s'),
             'language'              => $this->language,
             'organization'          => $this->organization,

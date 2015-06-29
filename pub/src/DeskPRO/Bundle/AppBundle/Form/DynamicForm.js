@@ -1,6 +1,6 @@
 import _ from "lodash";
 import $ from "jquery";
-import {EventEmitter2} from "eventemitter2";
+import EventEmitter from "eventemitter2";
 
 /**
  * fieldFilter takes the follow parameters:
@@ -30,7 +30,7 @@ export default class DynamicForm {
     this.fieldFilter     = options.fieldFilter;
     this.widgetClassName = options.widgetClassName;
     this.alwaysFields    = options.alwaysFields;
-    this.ee = new EventEmitter2({
+    this.ee = new EventEmitter({
       maxListeners: 0
     });
 

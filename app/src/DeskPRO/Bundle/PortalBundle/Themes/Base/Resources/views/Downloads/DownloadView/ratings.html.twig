@@ -1,0 +1,26 @@
+<article class="kb-article">
+    <div class="rate-article">
+        <div class="titled-header">
+            <h1>{{ phrase('portal.general.rate-page') }}</h1>
+        </div>
+
+        {% if rating %}
+            <div class="rate-article {% if rating.positive %}as-positive{% else %}as-negative{% endif %}">
+                {% if rating.positive %}
+                    {{ phrase('portal.general.rated-positive') }}
+                {% else %}
+                    {{ phrase('portal.general.rated-negative') }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="rate-article">
+            <a href="{{ path('portal_downloads_vote_up', { slug: file.slug }) }}" class="rate-up">
+                {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
+            </a>
+            <a href="{{ path('portal_downloads_vote_down', { slug: file.slug }) }}" class="rate-down">
+                <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
+            </a>
+        </div>
+    </div>
+</article>

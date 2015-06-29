@@ -17,6 +17,7 @@
     'agent.people.and_came_from'                                => 'and came from',
     'agent.people.anonymous_user'                               => 'Anonymous User {{id}}',
     'agent.people.confirm_remove_email'                         => 'Are you sure you want to remove this email address?',
+    'agent.people.confirm_remove_phone'                     => 'Are you sure you want to remove this phone number?',
     'agent.people.contact_info'                                 => 'Contact Information',
     'agent.people.contact_info_for_x'                           => 'Contact Information For {{name}}',
     'agent.people.count_members'                                => '{{count}} member|{{count}} members',
