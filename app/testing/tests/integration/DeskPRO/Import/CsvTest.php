@@ -74,7 +74,7 @@ class CsvTest extends \DpIntegrationTestCase
     private $blob_repository;
 
     /**
-     * Set up
+     * {@inheritdoc}
      */
     public function runBefore()
     {
