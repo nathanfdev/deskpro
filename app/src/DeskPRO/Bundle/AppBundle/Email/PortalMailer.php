@@ -65,7 +65,7 @@ class PortalMailer
         );
 
         $this->sendMessage(
-            'AppBundle:Email:reset-password.html.twig',
+            'EmailBundle:Portal:reset-password.html.twig',
             $context,
             $from,
             $person->getPrimaryEmail()->email
@@ -132,7 +132,7 @@ class PortalMailer
         $from = $this->getDefaultOutgoingEmailAddress();
 
         $this->sendMessage(
-            'AppBundle:Email:login-alert.html.twig',
+            'EmailBundle:Portal:login-alert.html.twig',
             $context,
             $from,
             $person->getPrimaryEmail()->email
