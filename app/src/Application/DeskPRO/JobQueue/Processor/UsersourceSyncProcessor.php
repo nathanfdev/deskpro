@@ -108,7 +108,8 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             static::$max_time = time() + static::MAX_TIME;
             static::$aborted = false;
             static::$count = 0;
-            static::$max_memory_usage = min(max(Env::getMemoryLimit(), 500 * 1024 * 1024), 500 * 1024 * 1024) * 0.8;
+
+            static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
             if (1 == $data['phase']) {
                 return $this->runPhaseOne($data);
             } else {
