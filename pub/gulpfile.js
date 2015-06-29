@@ -1,7 +1,6 @@
 var gulp         = require('gulp'),
     gutil        = require('gulp-util'),
-    browserify   = require('browserify'),
-    watchify     = require('watchify'),
+    webpack      = require("webpack"),
     babelify     = require('babelify'),
     sass         = require('gulp-sass'),
     sourcemaps   = require('gulp-sourcemaps'),
@@ -14,6 +13,7 @@ var gulp         = require('gulp'),
     source       = require('vinyl-source-stream'),
     buffer       = require('vinyl-buffer'),
     prettyHrtime = require('pretty-hrtime'),
+    path         = require("path"),
     _            = require("lodash");
 
 //######################################################################################################################
@@ -73,74 +73,6 @@ function handleErrors() {
   this.emit('end');
 }
 
-function getBundler(entryFile) {
-  if (deskpro.isWatch) {
-    return watchify(browserify(entryFile, _.assign({}, watchify.args, {
-      paths:        [
-        './src'
-      ],
-      basedir:      './',
-      cache:        {},
-      packageCache: {},
-      fullPaths:    true,
-      debug:        true
-    })));
-  } else {
-    return browserify(entryFile, _.assign({}, watchify.args, {
-      paths:     [
-        './src'
-      ],
-      basedir:   './',
-      fullPaths: false,
-      debug:     true
-    }));
-  }
-}
-
-function getBundlePipe(entryFile) {
-  var b = getBundler(entryFile)
-    .transform(babelify);
-
-  var getBundle = function () {
-
-    bundleLogger.start(entryFile);
-
-    var p = b.bundle()
-      .on('error', handleErrors)
-      .pipe(source('PortalBundle.js'))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}));
-
-    if (deskpro.isProd) {
-      p.pipe(uglify());
-    }
-
-    var dest = entryFile.split('/');
-    dest.pop();
-    dest = dest.join('/');
-
-    // All bundles are in X/Y/Z/_Bundle.js
-    // so relative is:
-    var mapSourceRoot = '../../../../';
-
-    p = p.pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: mapSourceRoot}))
-      .pipe(gulp.dest('src-build/' + dest));
-
-    p.on('end', function () {
-      bundleLogger.end(entryFile);
-    });
-
-    return p;
-  };
-
-  if (deskpro.isWatch) {
-    b.on('update', getBundle);
-    bundleLogger.watch(entryFile);
-  }
-
-  return getBundle();
-}
-
 function getSassPipe(glob, noCache, dest) {
 
   if (noCache || !deskpro.isWatch) {
@@ -152,7 +84,7 @@ function getSassPipe(glob, noCache, dest) {
   }
 
   if (!dest) {
-    dest = 'src-build';
+    dest = 'build';
   }
 
   var sassOpts = {
@@ -197,7 +129,7 @@ gulp.task('priv:start-watch', function () {
 });
 
 gulp.task('clean', function (cb) {
-  del(['./src-build'], cb);
+  del(['./build'], cb);
 });
 
 gulp.task('default', ['clean'], function (cb) {
@@ -212,8 +144,46 @@ gulp.task('prod', ['clean', 'priv:start-prod'], function (cb) {
 //# Bundler
 //######################################################################################################################
 
-gulp.task('bundle:portal', function () {
-  return getBundlePipe('DeskPRO/Bundle/PortalBundle/PortalBundle.js');
+gulp.task('bundle:portal', function (callback) {
+  var config = {
+    cache: true,
+    entry: {
+      DeskPRO_PortalBundle: "./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle"
+    },
+    output: {
+      path: path.join(__dirname, "build/bundles"),
+      publicPath: "build/bundles",
+      filename: "[name].js",
+      sourceMapFilename: "[name].map"
+    },
+    resolve: {
+      root: path.join(__dirname, "src")
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: "babel-loader"
+        }
+      ]
+    },
+    plugins: []
+  };
+
+  if (deskpro.isProd) {
+    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+      exclude: [/(node_modules|bower_components)/]
+    }))
+  }
+
+  webpack(config, function(err, stats) {
+    if(err) throw new gutil.PluginError("bundle:portal", err);
+    gutil.log("[bundle:portal]", stats.toString({
+      colors: true
+    }));
+    callback();
+  });
 });
 
 gulp.task('bundle', function (cb) {
@@ -228,7 +198,7 @@ gulp.task('sass:portal', function () {
   return getSassPipe(
     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss',
     false,
-    './src-build/DeskPRO/Bundle/PortalBundle/Resources/style'
+    './build/DeskPRO/Bundle/PortalBundle/Resources/style'
   );
 });
 
@@ -236,7 +206,7 @@ gulp.task('priv:sass:portal:nocache', function () {
   return getSassPipe(
     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss',
     true,
-    './src-build/DeskPRO/Bundle/PortalBundle/Resources/style'
+    './build/DeskPRO/Bundle/PortalBundle/Resources/style'
   );
 });
 
