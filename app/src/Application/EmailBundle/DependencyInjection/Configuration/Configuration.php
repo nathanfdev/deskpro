@@ -26,28 +26,34 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace Application\EmailBundle\DependencyInjection;
+namespace Application\EmailBundle\DependencyInjection\Configuration;
 
-use Application\EmailBundle\DependencyInjection\Configuration\Configuration;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class EmailExtension extends Extension
+class Configuration implements ConfigurationInterface
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function getConfigTreeBuilder()
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('deskpro_email');
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('email_settings.yml');
-        $loader->load('email_templating.yml');
+        $rootNode
+            ->children()
+                ->arrayNode('templating')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('service')->defaultValue('templating.email.engine')
+                    ->end()
+                ->end()
+            ->end()
+        ;
 
-        $container->setAlias('templating.email', $config['templating']['service']);
+        return $treeBuilder;
     }
 }

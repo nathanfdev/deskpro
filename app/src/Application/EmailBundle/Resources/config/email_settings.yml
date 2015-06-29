@@ -16,7 +16,7 @@ services:
 
   email.message_factory:
     class: Application\EmailBundle\SwiftMailer\Message\MessageFactory
-    arguments: [@templating]
+    arguments: [@templating.email]
 
   email.email_account_manager:
     class: Application\DeskPRO\Email\EmailAccount\EmailAccountManager

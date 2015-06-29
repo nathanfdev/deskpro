@@ -1,0 +1,40 @@
+services:
+  templating.email.twig:
+    class: Application\EmailBundle\Twig\Environment
+    arguments:
+      - @templating.email.twig.loader
+      - []
+
+  templating.email.twig.loader:
+    class: Application\EmailBundle\Twig\Loader\HybridLoader
+    arguments:
+      - @templating.email.twig.file_locator
+      - @templating.email.twig.template_name_parser
+
+  templating.email.twig.template_name_parser:
+    class: Application\EmailBundle\Templating\TemplateNameParser
+    arguments:
+      - @kernel
+
+  templating.email.twig.engine:
+    class: Application\DeskPRO\Twig\TwigEngine
+    arguments:
+      - @templating.email.twig
+      - @templating.email.twig.template_name_parser
+      - @templating.email.twig.file_locator
+
+  templating.email.engine:
+    class: Application\EmailBundle\Templating\Engine
+    arguments:
+      - @service_container
+      - ['templating.email.twig.engine']
+
+  templating.email.twig.templating_locator:
+    class: Application\EmailBundle\Templating\Loader\TemplateLocator
+    arguments:
+      - @templating.email.twig.file_locator
+
+  templating.email.twig.file_locator:
+    class: Application\EmailBundle\Templating\FileLocator
+    arguments:
+      - @kernel
