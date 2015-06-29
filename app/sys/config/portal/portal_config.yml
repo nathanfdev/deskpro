@@ -21,6 +21,8 @@ framework:
     validation:      { enable_annotations: false }
     templating:
         engines: ['twig']
+        packages:
+          app_assets: { base_url: "/pub/build" }
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies:

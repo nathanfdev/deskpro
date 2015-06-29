@@ -121,7 +121,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 						DeskPRO_Window.showAlert(div);
 					}
 
-					self.fireEvent('success', data);
+					self.fireEvent('success', [data]);
 				}
 			});
 		});

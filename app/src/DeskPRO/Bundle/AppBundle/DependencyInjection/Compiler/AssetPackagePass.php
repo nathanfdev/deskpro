@@ -26,76 +26,29 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Config;
+namespace AppBundle\DependencyInjection\Compiler;
 
-use Monolog\Logger;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\ExpressionLanguage\Expression;
 
-/**
- * This is meant to be used in the container as a way of using expressions to get at some of our dynamic config
- * methods in config files.
- */
-class DeskproConfigService
+class AssetVersionPass implements CompilerPassInterface
 {
-    /**
-     * The deskpro data dir (absolute path)
-     */
-    public function getDataDir()
+    public function process(ContainerBuilder $container)
     {
-        return dp_get_data_dir();
-    }
+        $exp = new Expression("service('deskpro_config').getBuildNumber()");
 
-    /**
-     * The dir we store all of our logs in (absolute path)
-     *
-     * @return string
-     */
-    public function getLogDir()
-    {
-        return dp_get_log_dir();
-    }
-
-    /**
-     * This (and higher) are the only log level lines we want stored
-     */
-    public function getLogLevel()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level'])) {
-            $log_level = $DP_CONFIG['log_level'];
-        } else {
-            $log_level = Logger::DEBUG;
+        foreach ($container->getDefinitions() as $service_id => $def) {
+            switch ($service_id) {
+                case 'templating.asset.path_package':
+                case 'templating.asset.url_package':
+                case 'templating.asset.default_package':
+                    $def->replaceArgument(1, $exp);
+                    break;
+            }
         }
-
-        return $log_level;
-    }
-
-    /**
-     * We don't store logs unless we hit a line with this log level
-     */
-    public function getLogLevelThreshold()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level_threshold'])) {
-            $log_level = $DP_CONFIG['log_level_threshold'];
-        } else {
-            $log_level = Logger::ERROR;
-        }
-
-        return $log_level;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBuildNumber()
-    {
-        return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
     }
 }

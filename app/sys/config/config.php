@@ -215,6 +215,9 @@ $container->loadFromExtension('framework', array(
     'templating' => array(
         'engines'          => array('twig', 'php'/*, 'jsonphp'*/),
         'assets_base_urls' => 'CONFIG_HTTP',
+        'packages' => array(
+            'app_assets' => array('base_url' => '/pub/build')
+        )
     ),
     'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),
     'session'                                                                                         => array(),
