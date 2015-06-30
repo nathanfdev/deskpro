@@ -99,6 +99,7 @@ final class Ticket extends AbstractImporter
             ->resetMessages()
             ->resetParticipants()
             ->resetLabels()
+            ->resetCustomData()
         ;
 
         if ($entity->getAgentEmail()) {
@@ -111,7 +112,10 @@ final class Ticket extends AbstractImporter
             $ticket->addParticipant($this->createParticipant($participant));
         }
         foreach ($entity->getCustomFields() as $custom_field) {
-            $ticket->addCustomData($this->createCustomData($custom_field));
+            $custom_field = $this->createCustomData($custom_field);
+            if ($custom_field) {
+                $ticket->addCustomData($custom_field);
+            }
         }
 
         $this->records->add($ticket);
@@ -357,12 +361,18 @@ final class Ticket extends AbstractImporter
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
-                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getValue());
-                $custom_field
-                    ->setField($choice_def)
-                    ->setRootField($ticket_def)
-                    ->setValue(1)
-                ;
+                if ( ! is_array($entity->getValue())) {
+                    $this->logError('Custom field `choice` value expected to be array');
+                    return null;
+                }
+
+                foreach ($entity->getValue() as $choice_name) {
+                    $custom_field
+                        ->setField($this->getCustomDefTicketMapper()->findOneByTitle($choice_name))
+                        ->setRootField($ticket_def)
+                        ->setValue(1)
+                    ;
+                }
 
                 break;
 

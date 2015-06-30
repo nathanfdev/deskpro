@@ -112,7 +112,10 @@ final class Person extends AbstractImporter
             }
         }
         foreach ($entity->getCustomFields() as $custom_field) {
-            $person->addCustomData($this->createCustomData($custom_field));
+            $custom_field = $this->createCustomData($custom_field);
+            if ($custom_field) {
+                $person->addCustomData($custom_field);
+            }
         }
 
         $this->records->add($person);
@@ -249,12 +252,18 @@ final class Person extends AbstractImporter
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
-                $choice_def = $this->getCustomDefPersonMapper()->findOneByTitle($entity->getValue());
-                $custom_field
-                    ->setField($choice_def)
-                    ->setRootField($person_def)
-                    ->setValue(1)
-                ;
+                if ( ! is_array($entity->getValue())) {
+                    $this->logError('Custom field `choice` value expected to be array');
+                    return null;
+                }
+
+                foreach ($entity->getValue() as $choice_name) {
+                    $custom_field
+                        ->setField($this->getCustomDefPersonMapper()->findOneByTitle($choice_name))
+                        ->setRootField($person_def)
+                        ->setValue(1)
+                    ;
+                }
 
                 break;
 
