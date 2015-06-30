@@ -26,6 +26,6 @@ export default class AgentApp {
   }
 
   run() {
-    console.log("OK2");
+    console.log("OK!");
   }
 }

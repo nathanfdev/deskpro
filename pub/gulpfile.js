@@ -155,7 +155,9 @@ function getWebpackConfig(isProd) {
     cache: true,
     entry: {
       DeskPRO_PortalBundle: "./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle",
-      DeskPRO_AgentBundle: "./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"
+      DeskPRO_AgentBundle: [
+        "./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"
+      ]
     },
     output: {
       path: path.join(__dirname, "build/bundles"),
@@ -215,11 +217,20 @@ gulp.task('bundle:dev-server', ['clean:bundle'], function(callback) {
   var config = getWebpackConfig(deskpro.isProd);
   config.debug = true;
 
-  config.devServer = {};
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  config.plugins.push(new webpack.NoErrorsPlugin());
+
+  // .js loader
+  config.module.loaders[0].loaders = ['react-hot', 'babel-loader'];
+
+  config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/only-dev-server');
+  config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');
 
   var compiler = webpack(config);
   new WebpackDevServer(compiler, {
     publicPath: "/" + config.output.publicPath,
+    hot: true,
+    historyApiFallback: true,
     stats: {
       colors: true
     }
