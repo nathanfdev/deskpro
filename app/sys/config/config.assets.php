@@ -116,79 +116,21 @@ $CONFIG['agent_vendors'] = array(
 $CONFIG['agent_settingswin'] = array(
     'out'   => 'js/agent-settingswin.js',
     'files' => array(
-        'javascripts/DeskPRO/Agent/ElementHandler/SettingsWindow.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Profile.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Signature.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketNotifications.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/OtherNotifications.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Macros.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/MacroEdit.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
-        'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketSlas.js',
 
-        'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
-        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
-        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Browse.js',
     ),
 );
 
 $CONFIG['agent_window_sections'] = array(
     'out'   => 'js/agent-window-sections.js',
     'files' => array(
-        'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/People.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Publish.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
+
     ),
 );
 
 $CONFIG['agent_pages_lists'] = array(
     'out'   => 'js/agent-pages-lists.js',
     'files' => array(
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/OrganizationList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSla.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentTeamChatHistory.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/UserChatFilter.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackFilter.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishListComments.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingComments.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishDraftsList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearch.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackSearch.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackCommentsValidating.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
 
-        'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
     ),
 );
 
@@ -283,7 +225,6 @@ $CONFIG['agent_element_handlers'] = array(
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
-        'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 
         'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
     ),
@@ -380,14 +321,8 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
         'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
         'javascripts/DeskPRO/Agent/Widget/Merge.js',
-        'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
 
         'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
-
-        'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/SelectNewOption.js',
 
         'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
@@ -403,16 +338,6 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
 
-        'javascripts/DeskPRO/Agent/TicketList/MassActions.js',
-        'javascripts/DeskPRO/Agent/TicketList/ListView.js',
-
-        'javascripts/DeskPRO/Agent/TicketList/ChangeManager.js',
-        'javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js',
-        'javascripts/DeskPRO/Agent/TicketList/Property/StandardOption.js',
-        'javascripts/DeskPRO/Agent/TicketList/Property/NewReply.js',
-        'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
-        'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
-        'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
         'javascripts/DeskPRO/UI/MultiLevelSelect.js',
     )
 );
@@ -559,10 +484,6 @@ $CONFIG['agent_interface_css1'] = array(
     'filters' => array('less'),
     'files'   => array(
         'stylesheets-less/agent/dp-interface.less',
-        'stylesheets-less/agent/dp-agent-chat.less',
-        'stylesheets-less/agent/overlayCreateTicket.less',
-        'stylesheets-less/agent/dp-source-pane.less',
-        'stylesheets-less/agent/dp-list-pane.less',
     ),
 );
 

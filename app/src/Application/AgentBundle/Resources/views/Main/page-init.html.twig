@@ -143,16 +143,6 @@
 		{% endif %}
 
 		window.DeskPRO_Window.initPage();
-
-		{% if js_debug.autoLoadRoutes %}
-			{% for i in js_debug.autoLoadRoutes %}
-				window.DeskPRO_Window.runPageRoute('{{i[0]}}:{{ path(i[1], i[2]) }}');
-			{% endfor %}
-		{% endif %}
-
-		{% for convo in open_chats %}
-			window.DeskPRO_Window.runPageRoute('page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}', {noToggle:true});
-		{% endfor %}
 	};
 </script>
 

@@ -42,6 +42,7 @@
     "pretty-hrtime": "1.0.0"
   },
   "devDependencies": {
-    "react-hot-loader": "^1.2.7"
+    "react-hot-loader": "^1.2.7",
+    "redux": "^0.12.0"
   }
 }
