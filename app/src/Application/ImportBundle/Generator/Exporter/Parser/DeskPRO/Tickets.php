@@ -130,11 +130,20 @@ class Tickets extends AbstractParser
             ->setAsHold($ticket['is_hold'])
             ->setUrgency($ticket['urgency'])
 
-            ->setPriority($ticket->priority ? $ticket->priority['title'] : null)
             ->setCategory($ticket->category ? $ticket->category['title'] : null)
             ->setWorkflow($ticket->workflow ? $ticket->workflow['title'] : null)
             ->setProduct($ticket->product ? $ticket->product['title'] : null)
         ;
+
+        if ($priority = $ticket->priority) {
+            $tp = new Entity\TicketPriority();
+            $tp
+                ->setTitle($priority['title'])
+                ->setValue($priority['priority'])
+                ->setDestination('priority')
+            ;
+            $entity->setPriority($tp);
+        }
 
         foreach ($ticket->messages as $num => $message) {
             /** @var Entity\TicketMessage $message */
