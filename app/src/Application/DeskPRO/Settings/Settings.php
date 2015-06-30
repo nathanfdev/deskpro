@@ -227,6 +227,14 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this->new_settings_resolver->getGlobalSettings()->get('default_timezone');
     }
 
+    /**
+     * @return string
+     */
+    public function getHelpdeskUrl()
+    {
+        return $this->new_settings_resolver->getGlobalSettings()->get('core.deskpro_url');
+    }
+
     public function offsetExists($offset)
     {
         return $this->settings->has($offset);

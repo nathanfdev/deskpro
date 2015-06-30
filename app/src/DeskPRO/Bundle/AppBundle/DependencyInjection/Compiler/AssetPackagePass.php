@@ -29,26 +29,39 @@
  * DeskPRO.
  */
 
-namespace AppBundle\DependencyInjection\Compiler;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
-class AssetVersionPass implements CompilerPassInterface
+class AssetPackagePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $exp = new Expression("service('deskpro_config').getBuildNumber()");
+        //templating.asset.default_package.http
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('web', false));
+        $container->setDefinition('templating.asset.default_package.http', $def);
 
-        foreach ($container->getDefinitions() as $service_id => $def) {
-            switch ($service_id) {
-                case 'templating.asset.path_package':
-                case 'templating.asset.url_package':
-                case 'templating.asset.default_package':
-                    $def->replaceArgument(1, $exp);
-                    break;
-            }
-        }
+        //templating.asset.default_package.ssl
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('web', false));
+        $container->setDefinition('templating.asset.default_package.ssl', $def);
+
+        //templating.asset.package.app_assets.http
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('pub/build', false));
+        $container->setDefinition('templating.asset.package.app_assets.http', $def);
+
+        //templating.asset.package.app_assets.ssl
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('pub/build', true));
+        $container->setDefinition('templating.asset.package.app_assets.ssl', $def);
     }
 }
