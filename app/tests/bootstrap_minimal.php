@@ -15,5 +15,6 @@ require_once DP_ROOT . '/sys/autoload.php';
 
 set_time_limit(0);
 ini_set('max_execution_time', 0);
+ini_set('memory_limit', '-1');
 
 \Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT . '/vendor-src/php-utf8/');
