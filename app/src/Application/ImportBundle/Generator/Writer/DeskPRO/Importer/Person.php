@@ -225,7 +225,8 @@ final class Person extends AbstractImporter
                 $custom_field
                     ->setField($person_def)
                     ->setRootField($person_def)
-                    ->setValue($entity->getValue());
+                    ->setInput($entity->getValue())
+                ;
 
                 break;
 
@@ -233,7 +234,8 @@ final class Person extends AbstractImporter
                 $custom_field
                     ->setField($person_def)
                     ->setRootField($person_def)
-                    ->setValue($entity->getValue() ? 1 : 0);
+                    ->setValue($entity->getValue() ? 1 : 0)
+                ;
 
                 break;
 
@@ -241,7 +243,8 @@ final class Person extends AbstractImporter
                 $custom_field
                     ->setField($person_def)
                     ->setRootField($person_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                ;
 
                 break;
 
@@ -250,7 +253,8 @@ final class Person extends AbstractImporter
                 $custom_field
                     ->setField($choice_def)
                     ->setRootField($person_def)
-                    ->setValue(1);
+                    ->setValue(1)
+                ;
 
                 break;
 

@@ -334,7 +334,8 @@ final class Ticket extends AbstractImporter
                 $custom_field
                     ->setField($ticket_def)
                     ->setRootField($ticket_def)
-                    ->setValue($entity->getValue());
+                    ->setInput($entity->getValue())
+                ;
 
                 break;
 
@@ -350,7 +351,8 @@ final class Ticket extends AbstractImporter
                 $custom_field
                     ->setField($ticket_def)
                     ->setRootField($ticket_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                ;
 
                 break;
 
@@ -359,7 +361,8 @@ final class Ticket extends AbstractImporter
                 $custom_field
                     ->setField($choice_def)
                     ->setRootField($ticket_def)
-                    ->setValue(1);
+                    ->setValue(1)
+                ;
 
                 break;
 
