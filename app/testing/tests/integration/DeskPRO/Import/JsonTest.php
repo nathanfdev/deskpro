@@ -34,6 +34,11 @@ class JsonTest extends \DpIntegrationTestCase
     private $ticket_repository;
 
     /**
+     * @var EntityRepository\TicketAttachment
+     */
+    private $ticket_attachment_repository;
+
+    /**
      * @var EntityRepository\Person
      */
     private $person_repository;
@@ -54,24 +59,39 @@ class JsonTest extends \DpIntegrationTestCase
     private $feedback_repository;
 
     /**
+     * @var EntityRepository\FeedbackAttachment
+     */
+    private $feedback_attachment_repository;
+
+    /**
      * @var EntityRepository\Download
      */
     private $download_repository;
+
+    /**
+     * @var EntityRepository\Blob
+     */
+    private $blob_repository;
 
     /**
      * Set up
      */
     public function runBefore()
     {
-        $entity_manager = $this->helper->getSymfonyContainer()->getEm();
-        $this->helper->enableFreshDatabaseSet('EmptyDb');
+        $this->helper->enableFreshDatabaseSet('FreshDb');
 
-        $this->ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository     = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $entity_manager = $this->helper->getSymfonyContainer()->getEm();
+        $entity_manager->clear();
+
+        $this->ticket_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->ticket_attachment_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
+        $this->person_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->news_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
+        $this->article_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
+        $this->feedback_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
+        $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
+        $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/json';
         $this->output_path = dp_get_data_dir() . '/import/json/export';
@@ -89,6 +109,9 @@ class JsonTest extends \DpIntegrationTestCase
         if (file_exists($this->input_path . '/input.batch.json')) {
             $this->helper->deleteFile($this->input_path . '/input.batch.json');
         }
+
+        $this->overrideDpRootPath('/1/downloads/download1.json');
+        $this->overrideDpRootPath('/1/feedback/feedback1.json');
     }
 
     public function testCheck()
@@ -151,9 +174,11 @@ class JsonTest extends \DpIntegrationTestCase
             'command'       => $command->getName(),
             'script'        => 'json',
             '--input-path'  => $this->input_path,
+            '--verbose'     => true,
             '--batch'       => true,
         ));
 
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonEmpty();
     }
@@ -170,9 +195,11 @@ class JsonTest extends \DpIntegrationTestCase
             'script'        => 'json',
             '--input-path'  => $this->input_path,
             '--output-path' => $this->output_path,
+            '--verbose'     => true,
             '--batch'       => true,
         ));
 
+        $this->checkDbWriterOutput($command_tester);
         $this->checkDbData();
         $this->checkJsonData();
     }
@@ -217,17 +244,74 @@ class JsonTest extends \DpIntegrationTestCase
 
     private function checkDbEmpty()
     {
-        $this->assertEmpty($this->ticket_repository->findAll());
-        $this->assertEmpty($this->person_repository->findAll());
-        $this->assertEmpty($this->news_repository->findAll());
-        $this->assertEmpty($this->article_repository->findAll());
-        $this->assertEmpty($this->feedback_repository->findAll());
-        $this->assertEmpty($this->download_repository->findAll());
+        $this->assertEquals(0, $this->ticket_repository->countAll());
+        $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
+        $this->assertEquals(1, $this->person_repository->countAll());
+        $this->assertEquals(1, $this->news_repository->countAll());
+        $this->assertEquals(1, $this->article_repository->countAll());
+        $this->assertEquals(1, $this->feedback_repository->countAll());
+        $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
+        $this->assertEquals(0, $this->download_repository->countAll());
+        $this->assertEquals(0, $this->blob_repository->countAll());
     }
 
     private function checkDbData()
     {
+        $this->assertCount(2, $this->person_repository->findAll());
+
+        // Checking for tickets
         $this->assertCount(1, $this->ticket_repository->findAll());
-        $this->assertCount(1, $this->person_repository->findAll());
+        $this->assertCount(0, $this->ticket_attachment_repository->findAll());
+
+        // Checking for feedback
+        $this->assertCount(2, $this->feedback_repository->findAll());
+        $this->assertCount(1, $this->feedback_attachment_repository->findAll());
+
+        // Checking for blob
+        $this->assertCount(2, $this->blob_repository->findBy(array('content_type' => 'csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'downloads.csv')));
+        $this->assertCount(1, $this->blob_repository->findBy(array('filename' => 'feedback.csv')));
+    }
+
+    private function checkDbWriterOutput(CommandTester $command_tester)
+    {
+        $output = $command_tester->getDisplay();
+
+        // Checking for people
+        $this->assertContains('Persisted Person #2', $output);
+
+        // Checking for tickets
+        $this->assertContains('Creating new ticket with ref', $output);
+        $this->assertContains('Persisted TicketLog #1', $output);
+        $this->assertContains('Persisted TicketMessage #1', $output);
+        $this->assertContains('Persisted TicketPriority #1', $output);
+        $this->assertContains('Persisted Ticket #1', $output);
+
+        // Checking for news
+        $this->assertContains('Persisted News #2', $output);
+        $this->assertContains('Unable to create `news` with oid `2`. Reason Person not found. Criteria: {"email":"some@email.tld"}', $output);
+
+        // Checking for articles
+        $this->assertContains('Persisted Article #2', $output);
+        $this->assertContains('Unable to create `article` with oid `2`. Reason Person not found. Criteria: {"email":"another@email.tld"}', $output);
+
+        // Checking for downloads
+        $this->assertContains('Persisted Download #1', $output);
+        $this->assertContains('Persisted DownloadCategory #2', $output);
+
+        // Checking for feedback
+        $this->assertContains('Persisted Feedback #2', $output);
+    }
+
+    private function overrideDpRootPath($file)
+    {
+        $dp_root = str_replace('/app', '/', DP_ROOT);
+        $dp_root = str_replace('\'', '', $dp_root);
+        $dp_root = str_replace('/', '\/', $dp_root);
+
+        $content = file_get_contents($this->input_path . $file);
+        $content = str_replace('\/deskpro\/www\/', $dp_root, $content);
+
+        file_put_contents($this->input_path . $file, $content);
     }
 }

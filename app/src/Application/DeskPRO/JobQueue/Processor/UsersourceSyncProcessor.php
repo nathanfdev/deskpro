@@ -37,6 +37,7 @@ namespace Application\DeskPRO\JobQueue\Processor;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\UsersourceSyncLog;
 use Application\DeskPRO\JobQueue\JobQueue;
+use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
@@ -108,11 +109,16 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             static::$max_time = time() + static::MAX_TIME;
             static::$aborted = false;
             static::$count = 0;
-            static::$max_memory_usage = min(max(Env::getMemoryLimit(), 500 * 1024 * 1024), 500 * 1024 * 1024) * 0.8;
+
+            static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
             if (1 == $data['phase']) {
-                return $this->runPhaseOne($data);
+                $return = $this->runPhaseOne($data);
+                $this->sync_manager->getEm()->clear();
+                return $return;
             } else {
-                return $this->runPhaseTwo($data);
+                $return = $this->runPhaseTwo($data);
+                $this->sync_manager->getEm()->clear();
+                return $return;
             }
         } catch (\Exception $e) {
             $this->abort(true);
@@ -125,7 +131,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // we return true if we want to signal to the syncer to pause
 
         // condition 1: if we allocate 80% or greater of our max memory usage
-        if (memory_get_usage(true) > UsersourceSyncProcessor::$max_memory_usage) {
+        if (memory_get_usage() > UsersourceSyncProcessor::$max_memory_usage) {
             return true;
         }
 
@@ -197,7 +203,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                             'sync_cursor_phase' => $cursor->getPhase(),
                             'current_usersource_id' => $last_processed_usersource_id
                         ),
-                        new \DateTime('now')
+                        new \DateTime('now + 20 seconds')
                     );
 
                     // update the log before pausing job
@@ -232,7 +238,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // schedule phase 2 for immediate
         $this->scheduleNextSync(
             array('original_start_timestamp' => $start_timestamp, 'phase' => 2),
-            new \DateTime('now')
+            new \DateTime('now + 20 seconds')
         );
 
         return true;
@@ -308,7 +314,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                         'phase_2_usersource' => $last_processed_usersource_id,
                         'original_start_timestamp' => $data['original_start_timestamp'],
                     ),
-                    new \DateTime('now + 1 minutes')
+                    new \DateTime('now + 20 seconds')
                 );
 
                 return true;

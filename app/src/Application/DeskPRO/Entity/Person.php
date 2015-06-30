@@ -2935,7 +2935,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 	public function clear()
 	{
-		$this->_permissions_manager->clear();
-		$this->_person_logger->clear();
+        if ($this->_permissions_manager) {
+            $this->_permissions_manager->clear();
+        }
+        if ($this->_person_logger) {
+            $this->_person_logger->clear();
+        }
 	}
 }
