@@ -28,32 +28,29 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
+use Application\ImportBundle\Reader\DeskPRO\Factory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * DeskPRO data exporter factory
  */
-class OsTicketFactory extends AbstractFactory
+class DeskPROFactory extends AbstractFactory
 {
     /**
      * {@inheritdoc}
      */
     static public function createExporter(ContainerInterface $container, BaseConfig $config)
     {
-        $reader = OsTicketReaderFactory::createReader($config);
+        $reader = Factory::createReader($config, $container);
+
+        $tickets = new Parser\DeskPRO\Tickets($reader);
+        $tickets->setTicketsMinId($config->getStartTicketId());
+
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+            ->attach(new Parser\DeskPRO\People($reader))
+            ->attach($tickets);
 
-        return new OsTicket($parsers, $reader);
+        return new DeskPRO($parsers, $reader);
     }
 }

@@ -25,35 +25,86 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeConfig;
 
 /**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * OsTicket batch configuration
  */
-class OsTicketFactory extends AbstractFactory
+class BatchConfig extends AbstractBatchSizeConfig
 {
+    /**
+     * @var int
+     */
+    private $users_min_id = 0;
+
+    /**
+     * @var int
+     */
+    private $tickets_min_id = 0;
+
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public function getExporterType()
     {
-        $reader = OsTicketReaderFactory::createReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+        return ExporterInterface::TYPE_DESKPRO;
+    }
 
-        return new OsTicket($parsers, $reader);
+    /**
+     * Returns users table offset
+     *
+     * @return int
+     */
+    public function getUsersMinId()
+    {
+        return $this->users_min_id;
+    }
+
+    /**
+     * Set users table offset
+     *
+     * @param int $min_id
+     * @return $this
+     */
+    public function setUsersMinId($min_id)
+    {
+        $this->users_min_id = (int)$min_id;
+        return $this;
+    }
+
+    /**
+     * Returns tickets table offset
+     *
+     * @return int
+     */
+    public function getTicketsMinId()
+    {
+        return $this->tickets_min_id;
+    }
+
+    /**
+     * Set tickets table offset
+     *
+     * @param int $min_id
+     * @return $this
+     */
+    public function setTicketsMinId($min_id)
+    {
+        $this->tickets_min_id = (int)$min_id;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), array(
+            'users_min_id'   => $this->users_min_id,
+            'tickets_min_id' => $this->tickets_min_id,
+        ));
     }
 }

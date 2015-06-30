@@ -25,35 +25,78 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\ImportBundle\Reader\DeskPRO\Reader;
+use Exception;
 
 /**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Abstract DeskPRO parser
  */
-class OsTicketFactory extends AbstractFactory
+abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    /**
-     * {@inheritdoc}
-     */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
-    {
-        $reader = OsTicketReaderFactory::createReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+    const MAX_BATCH_SIZE = 1000;
 
-        return new OsTicket($parsers, $reader);
+    /**
+     * @var Reader
+     */
+    protected $reader;
+
+    /**
+     * @var int
+     */
+    protected $entities_loaded = 0;
+
+    /**
+     * Constructor
+     *
+     * @param Reader $reader
+     */
+    public function __construct(Reader $reader)
+    {
+        $this->reader = $reader;
+    }
+
+    /**
+     * Returns reader batch size
+     *
+     * @return int
+     */
+    protected function getReaderBatchSize()
+    {
+        $batch_size = self::MAX_BATCH_SIZE;
+        if ($this->getBatchConfig()->getBatchSize() < $batch_size) {
+            $batch_size = $this->getBatchConfig()->getBatchSize();
+        }
+        if ($this->getEntitiesLeftToLoad() < $batch_size) {
+            $batch_size = $this->getEntitiesLeftToLoad();
+        }
+
+        return $batch_size;
+    }
+
+    /**
+     * Returns count of entities to load in a batch
+     *
+     * @return int
+     */
+    protected function getEntitiesLeftToLoad()
+    {
+        return $this->getBatchConfig()->getBatchSize() - $this->entities_loaded;
+    }
+
+    /**
+     * Returns batch config
+     *
+     * @return BatchConfig
+     * @throws Exception
+     */
+    protected function getBatchConfig()
+    {
+        if ($this->config->getExporterBatchConfig()) {
+            return $this->config->getExporterBatchConfig();
+        }
+
+        throw new Exception('Batch config is not defined');
     }
 }

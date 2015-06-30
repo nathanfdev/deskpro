@@ -112,7 +112,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $count    = 0;
         $exporter = $this->getExporter();
 
-        foreach ($this->config->getEntityTypes() as $record_type) {
+        foreach ($exporter::getOrderedTypes() as $record_type) {
             $count += $exporter->getCountByType($record_type);
         }
 
@@ -197,7 +197,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $exporter   = $this->getExporter();
         $exceptions = new ExceptionCollection();
 
-        foreach ($this->config->getEntityTypes() as $type) {
+        foreach ($exporter::getOrderedTypes() as $type) {
             $this->exporterLogHeader($type);
 
             $collection = $exporter->exportByType($type);

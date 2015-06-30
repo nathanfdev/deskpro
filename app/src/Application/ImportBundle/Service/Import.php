@@ -258,19 +258,6 @@ class Import
         $config->setExporterType(str_replace('importers.', '', $importer['name']));
         $config->setWriterType(WriterInterface::TYPE_JSON);
 
-        $supported_types = array(
-            EntityInterface::TYPE_TICKET,
-            EntityInterface::TYPE_PERSON,
-            EntityInterface::TYPE_ARTICLE,
-            EntityInterface::TYPE_DOWNLOAD,
-            EntityInterface::TYPE_FEEDBACK,
-            EntityInterface::TYPE_NEWS,
-        );
-
-        foreach ($supported_types as $type) {
-            $config->addEntityType($type);
-        }
-
         $id = $importer->getData('id');
         $this->initReader($id);
         $config->setReaderConfig($this->getReaderConfig($id));

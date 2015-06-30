@@ -42,6 +42,7 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
     const TYPE_JSON      = 'json';
     const TYPE_OS_TICKET = 'osticket';
     const TYPE_ZENDESK   = 'zendesk';
+    const TYPE_DESKPRO   = 'deskpro';
 
     /**
      * Get an exporter type

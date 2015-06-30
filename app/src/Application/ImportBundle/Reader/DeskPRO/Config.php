@@ -25,35 +25,79 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+
+
+namespace Application\ImportBundle\Reader\DeskPRO;
+
 
 use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * OsTicket data exporter factory
- *
- * Class OsTicketFactory
- * @package Application\ImportBundle\Generator\Exporter
- */
-class OsTicketFactory extends AbstractFactory
+class Config extends BaseConfig
 {
-    /**
-     * {@inheritdoc}
-     */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
-    {
-        $reader = OsTicketReaderFactory::createReader($config);
-        $parsers = new Parser\Collection();
-        $parsers
-            ->attach(new Parser\OsTicket\Downloads($reader))
-            ->attach(new Parser\OsTicket\Feedback($reader))
-            ->attach(new Parser\OsTicket\Articles($reader))
-            ->attach(new Parser\OsTicket\News($reader))
-            ->attach(new Parser\OsTicket\People($reader))
-            ->attach(new Parser\OsTicket\Tickets($reader));
+    protected $host;
 
-        return new OsTicket($parsers, $reader);
+    protected $database;
+
+    protected $user;
+
+    protected $password;
+
+    protected $start_ticket_id;
+
+    public function __construct($host, $db, $user, $password, $start_ticket_id = 0)
+    {
+        $this->host = $host;
+        $this->database = $db;
+        $this->user = $user;
+        $this->password = $password;
+        $this->start_ticket_id = (int) $start_ticket_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function getStartTicketId()
+    {
+        return $this->start_ticket_id;
+    }
+
+    static public function fromArray(array $data)
+    {
+        return new self(
+            $data['host'],
+            $data['db'],
+            $data['user'],
+            $data['password'],
+            @$data['start_ticket_id']
+        );
     }
 }

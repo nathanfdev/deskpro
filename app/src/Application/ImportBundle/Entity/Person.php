@@ -414,7 +414,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
      * @param DateTimeZone $timezone
      * @return $this
      */
-    public function setTimezone(DateTimeZone $timezone)
+    public function setTimezone(DateTimeZone $timezone = null)
     {
         $this->timezone = $timezone;
         return $this;

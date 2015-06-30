@@ -36,6 +36,7 @@ use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
+use Application\ImportBundle\Reader\DeskPRO\Factory as DeskPROReaderFactory;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -161,6 +162,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
+            ExporterInterface::TYPE_DESKPRO,
         );
 
         if (!in_array($input->getArgument('script'), $allowed)) {
@@ -246,7 +248,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
-            $config          = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $config          = $this->createGeneratorConfig($input);
             $exporter_config = $config->getExporterBatchConfig();
 
             if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
@@ -276,7 +278,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         try {
-            $config = $this->createGeneratorConfig($input, $this->getSupportedEntityTypes());
+            $config = $this->createGeneratorConfig($input);
             $logger = $this->createLogger($config, $input, $output);
 
             if ($config->isSilent()) {
@@ -362,12 +364,11 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * The export is executing in the order of the entity type collection
      *
      * @param InputInterface $input
-     * @param array          $supported_types
      *
      * @return GeneratorConfig
      * @throws RuntimeException
      */
-    protected function createGeneratorConfig(InputInterface $input, array $supported_types)
+    protected function createGeneratorConfig(InputInterface $input)
     {
         $config = new GeneratorConfig();
 
@@ -375,30 +376,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $this->setParamsByInputInterface($config, $input);
         $this->setBatchConfigByInputInterface($config, $input);
 
-        foreach ($supported_types as $type) {
-            $config->addEntityType($type);
-        }
-
         $this->checkConfiguration($config);
 
         return $config;
-    }
-
-    /**
-     * Returns a list of supported entity types
-     *
-     * @return string[]
-     */
-    protected function getSupportedEntityTypes()
-    {
-        return array(
-            Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_ARTICLE,
-            Entity\EntityInterface::TYPE_DOWNLOAD,
-            Entity\EntityInterface::TYPE_FEEDBACK,
-            Entity\EntityInterface::TYPE_NEWS,
-        );
     }
 
     /**
@@ -466,6 +446,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                     break;
                 case ExporterInterface::TYPE_OS_TICKET:
                     $readerConfig = OsTicketReaderFactory::getDefaultConfig();
+                    break;
+                case ExporterInterface::TYPE_DESKPRO:
+                    $readerConfig = DeskPROReaderFactory::getDefaultConfig();
                     break;
                 default:
                     throw new \RuntimeException('No reader config defined');
