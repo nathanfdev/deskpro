@@ -56,7 +56,7 @@ services:
       - @doctrine.orm.default_entity_manager
       - @language_manager
       - @captcha_decider
-      - @portal_custom_per_field_manager
+      - @tickets.custom_per_field_manager
     tags:
       - { name: form.type, alias: ticket }
 
@@ -148,7 +148,7 @@ services:
 
   form.deskpro_custom_per_field_data:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomPerFieldType
-    arguments: [@portal_custom_per_field_manager, @form_field_manager]
+    arguments: [@tickets.custom_per_field_manager, @form_field_manager]
     tags:
       - { name: form.type, alias: deskpro_custom_per_field_data }
 
