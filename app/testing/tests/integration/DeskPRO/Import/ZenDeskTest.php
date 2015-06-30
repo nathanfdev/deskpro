@@ -4,6 +4,7 @@ namespace DpIntegrationTests\DeskPRO\Import;
 
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Command\CheckExportCommand;
+use Application\ImportBundle\Command\ExportCommand;
 use Application\ImportBundle\Reader\ZenDesk\Request\JsonMockAdapter;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderMockFactory;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -98,10 +99,46 @@ class ZenDeskTest extends \DpIntegrationTestCase
         $this->assertContains('Done. Checking was successful.', $output);
     }
 
+    public function testExport()
+    {
+        $application = new Application($this->helper->getSymfonyContainer()->getKernel());
+        $application->add(new ExportCommand());
+
+        $command = $application->find('dp:export:run');
+        $command_tester = new CommandTester($command);
+        $command_tester->execute(array(
+            'command'       => $command->getName(),
+            'script'        => 'zendesk',
+            '--output-path' => $this->output_path,
+            '--verbose'     => true,
+            '--batch'       => true,
+        ));
+
+        $this->checkDbEmpty();
+        $this->checkJsonData();
+    }
+
     private function checkJsonEmpty()
     {
         $this->assertFalse(file_exists('1/people/'));
         $this->assertFalse(file_exists('1/tickets/'));
+    }
+
+    private function checkJsonData()
+    {
+        $this->helper->seeFileFound('output.batch.json');
+
+        $this->helper->seeFileFound('1/people/person_1.json');
+        $this->helper->seeInThisFile('Person 1');
+
+        $this->helper->seeFileFound('1/people/person_2.json');
+        $this->helper->seeInThisFile('Person 2');
+
+        $this->helper->seeFileFound('1/tickets/ticket_1.json');
+        $this->helper->seeInThisFile('Ticket 1');
+
+        $this->helper->seeFileFound('1/tickets/ticket_2.json');
+        $this->helper->seeInThisFile('Ticket 2');
     }
 
     private function checkDbEmpty()
@@ -115,6 +152,10 @@ class ZenDeskTest extends \DpIntegrationTestCase
     {
         $date1 = new \DateTime('-1 year');
         $date2 = new \DateTime('-5 months');
+        $date3 = new \DateTime('-2 months');
+        $date4 = new \DateTime('-1 months');
+        $now   = new \DateTime();
+
 
         $this->adapter
             ->addTicketsIncrementalExportResponse((object)array(
@@ -146,9 +187,27 @@ class ZenDeskTest extends \DpIntegrationTestCase
                         'tags'            => (object)array('label 1', 'label 3'),
                     ),
                 ),
+                'end_time' => $now->getTimestamp(),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
-                'comments' => array(),
+                'comments' => array(
+                    (object)array(
+                        'id'          => 1,
+                        'author_id'   => 1,
+                        'body'        => 'Reply #1',
+                        'public'      => true,
+                        'created_at'  => $date3->format('Y-m-d H:i:s'),
+                        'attachments' => array(),
+                    ),
+                    (object)array(
+                        'id'          => 2,
+                        'author_id'   => 2,
+                        'body'        => 'Reply #2',
+                        'public'      => true,
+                        'created_at'  => $date4->format('Y-m-d H:i:s'),
+                        'attachments' => array(),
+                    ),
+                ),
             ))
             ->addTicketCommentsFindAllResponse((object)array(
                 'comments' => array(),
