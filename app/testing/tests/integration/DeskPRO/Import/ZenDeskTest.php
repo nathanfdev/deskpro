@@ -48,6 +48,17 @@ class ZenDeskTest extends \DpIntegrationTestCase
      */
     public function runBefore()
     {
+        global $DP_CONFIG;
+
+        $DP_CONFIG['zendesk_import'] = array(
+            'subdomain'          => 'subdomain',
+            'username'           => 'username',
+            'password'           => 'password',
+            'api_token'          => '',
+            'initial_time'       => '2013-01-01 00:00:00',
+            'connection_timeout' => 60,
+        );
+
         $this->helper->enableFreshDatabaseSet('FreshDb');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
