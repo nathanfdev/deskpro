@@ -105,7 +105,7 @@ class DeskproConfigService
      * @param mixed  $default
      * @return mixed
      */
-    public function getConfig($k, $default = null)
+    public function getConfigValue($k, $default = null)
     {
         return dp_get_config($k, $default);
     }

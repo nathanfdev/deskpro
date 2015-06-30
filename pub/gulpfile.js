@@ -1,6 +1,7 @@
 var gulp         = require('gulp'),
     gutil        = require('gulp-util'),
     webpack      = require("webpack"),
+    WebpackDevServer = require("webpack-dev-server"),
     babelify     = require('babelify'),
     sass         = require('gulp-sass'),
     sourcemaps   = require('gulp-sourcemaps'),
@@ -149,7 +150,7 @@ gulp.task('clean:bundle', function (cb) {
   del(['./build/bundles'], cb);
 });
 
-gulp.task('bundle', ['clean:bundle'], function (callback) {
+function getWebpackConfig(isProd) {
   var config = {
     cache: true,
     entry: {
@@ -188,12 +189,18 @@ gulp.task('bundle', ['clean:bundle'], function (callback) {
     ]
   };
 
-  if (deskpro.isProd) {
+  if (isProd) {
     config.devool = "source-map";
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
       exclude: [/(node_modules|bower_components)/]
     }))
   }
+
+  return config;
+}
+
+gulp.task('bundle', ['clean:bundle'], function (callback) {
+  var config = getWebpackConfig(deskpro.isProd);
 
   webpack(config, function(err, stats) {
     if(err) throw new gutil.PluginError("bundle", err);
@@ -201,6 +208,26 @@ gulp.task('bundle', ['clean:bundle'], function (callback) {
       colors: true
     }));
     callback();
+  });
+});
+
+gulp.task('bundle:dev-server', ['clean:bundle'], function(callback) {
+  var config = getWebpackConfig(deskpro.isProd);
+  config.debug = true;
+
+  config.devServer = {};
+
+  var compiler = webpack(config);
+  new WebpackDevServer(compiler, {
+    publicPath: "/" + config.output.publicPath,
+    stats: {
+      colors: true
+    }
+  }).listen(9666, "localhost", function(err) {
+    if(err) throw new gutil.PluginError("webpack-dev-server", err);
+    gutil.log("[webpack-dev-server]", "http://localhost:9666/");
+    gutil.log("[webpack-dev-server]", "In your config.php, add this line: ");
+    gutil.log("[webpack-dev-server]", "$DP_CONFIG['pub_asset_urls'] = array('pub/build' => 'http://localhost:9666/build/');");
   });
 });
 

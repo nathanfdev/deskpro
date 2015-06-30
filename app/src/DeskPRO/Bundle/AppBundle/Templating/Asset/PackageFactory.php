@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Templating\Asset;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Config\DeskproConfigService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Templating\Asset\UrlPackage;
 use Symfony\Component\Templating\Asset\PathPackage;
@@ -15,17 +16,24 @@ class PackageFactory
     private $settings;
 
     /**
+     * @var DeskproConfigService
+     */
+    private $config;
+
+    /**
      * @var RequestStack
      */
     private $request_stack;
 
     /**
      * @param SettingsResolver $settings
+     * @param DeskproConfigService $config
      * @param RequestStack $request_stack
      */
-    function __construct(SettingsResolver $settings, RequestStack $request_stack)
+    function __construct(SettingsResolver $settings, DeskproConfigService $config, RequestStack $request_stack)
     {
         $this->settings = $settings;
+        $this->config = $config;
         $this->request_stack = $request_stack;
     }
 
@@ -50,9 +58,15 @@ class PackageFactory
      */
     private function getBaseUrl($path)
     {
-        if ($path === 'pub/build' && ($config_url = $this->settings->getGlobalSettings()->get('pub_asset_url'))) {
-            $config_url = rtrim($config_url, '/');
-            return $config_url . '/' . $path;
+        $config_url = $this->config->getConfigValue('pub_assets_base_url');
+        $config_urls_map = $this->config->getConfigValue('pub_asset_urls') ?: array();
+
+        if ($path === 'pub/build' && ($config_url || !empty($config_urls_map[$path]))) {
+            if (!empty($config_urls_map[$path])) {
+                return rtrim($config_urls_map[$path], '/');
+            } else {
+                return rtrim($config_url, '/') . '/' . $path;
+            }
         }
 
         return $this->autoGenPath($path);
