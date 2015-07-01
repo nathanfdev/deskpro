@@ -30,9 +30,11 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
+use Doctrine\DBAL\DriverManager;
 use Exception;
 
 /**
@@ -174,6 +176,12 @@ class DeskProWriterFactory extends AbstractFactory
 
         /** @var EntityWatcher $entity_watcher */
         $entity_watcher = $this->container->get('deskpro.search.entity_listener');
+
+        /** @var EntityManager $entity_manager */
+        $entity_manager = $entity_manager->create(
+            $entity_manager->getConnection(),
+            $entity_manager->getConfiguration()
+        );
 
         return new DeskProWriter($importers, $entity_manager, $entity_watcher);
     }
