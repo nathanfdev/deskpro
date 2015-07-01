@@ -31,7 +31,6 @@
 
 namespace Application\DeskPRO;
 
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AssetPackagePass;
 use Application\DeskPRO\DependencyInjection\AppSecretPass;
 use Application\DeskPRO\DependencyInjection\CoreExtension;
 use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
@@ -51,8 +50,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
     {
         // register the extension(s) found in DependencyInjection/ directory
         parent::build($container);
-
-        $container->addCompilerPass(new AssetPackagePass());
 
         $container->registerExtension(new CoreExtension());
         $container->registerExtension(new SearchExtension());

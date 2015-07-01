@@ -54,7 +54,7 @@ DeskPRO.Agent.PageHelper.NewUserOverlay = new Class({
 			cancel: false
 		};
 
-		this.fireEvent('beforeSave', [eventData]);
+		this.fireEvent('beforeSave', eventData);
 		if (eventData.cancel) return;
 
 		$.ajax({
@@ -83,7 +83,7 @@ DeskPRO.Agent.PageHelper.NewUserOverlay = new Class({
 		// Reset incase there's another one
 		this._clear();
 
-		this.fireEvent('afterSave', [eventData]);
+		this.fireEvent('afterSave', eventData);
 	},
 
 	_clear: function() {

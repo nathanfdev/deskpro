@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,68 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Config;
+namespace Application\DeskPRO\Templating\Asset;
 
-use Monolog\Logger;
+use Symfony\Component\HttpFoundation\Request;
 
-/**
- * This is meant to be used in the container as a way of using expressions to get at some of our dynamic config
- * methods in config files.
- */
-class DeskproConfigService
+class PathPackage extends UrlPackage
 {
-    /**
-     * The deskpro data dir (absolute path)
-     */
-    public function getDataDir()
+    public function __construct(Request $request, $version = null, $format = null)
     {
-        return dp_get_data_dir();
-    }
-
-    /**
-     * The dir we store all of our logs in (absolute path)
-     *
-     * @return string
-     */
-    public function getLogDir()
-    {
-        return dp_get_log_dir();
-    }
-
-    /**
-     * This (and higher) are the only log level lines we want stored
-     */
-    public function getLogLevel()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level'])) {
-            $log_level = $DP_CONFIG['log_level'];
-        } else {
-            $log_level = Logger::DEBUG;
-        }
-
-        return $log_level;
-    }
-
-    /**
-     * We don't store logs unless we hit a line with this log level
-     */
-    public function getLogLevelThreshold()
-    {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['log_level_threshold'])) {
-            $log_level = $DP_CONFIG['log_level_threshold'];
-        } else {
-            $log_level = Logger::ERROR;
-        }
-
-        return $log_level;
+        parent::__construct(array('CONFIG_HTTP'), $version, $format);
     }
 }

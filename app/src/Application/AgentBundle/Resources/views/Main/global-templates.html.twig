@@ -6,6 +6,19 @@
 
 <div id="deskpro_window_templates" style="display: none;">
 
+{# Comment Menu #}
+<ul id="comment_tools_menu" data-menu-flag="copy-menu">
+	<li data-action="edit">{{ phrase('agent.general.edit_comment') }}</li>
+	<li data-action="delete">{{ phrase('agent.general.delete_comment') }}</li>
+	<li data-action="create-ticket">{{ phrase('agent.general.create_ticket') }}</li>
+</ul>
+
+{# Comment Validation Menu #}
+<ul id="comment_validation_menu" data-menu-flag="copy-menu">
+	<li data-action="approve">{{ phrase('agent.general.validate_comment') }}</li>
+	<li data-action="delete">{{ phrase('agent.general.delete_comment') }}</li>
+</ul>
+
 {# Popover tempalte #}
 <script type="text/x-deskpro-plain" id="popover_tpl">
 	<div class="mass-actions-overlay-container open popover-wrapper doc-layer">
@@ -51,6 +64,70 @@
 	{% endfor %}
 </ul>
 
+{##############################################################}
+{# Feedback related #}
+{##############################################################}
+
+<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
+	{% for cat in app.getDataService('FeedbackCategory').getRootNodes() %}
+		{% if last_with_child %}
+			<li class="sep">-</li>
+		{% endif %}
+		{% if cat.children|length %}
+			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
+			{% for subcat in cat.children %}
+				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
+			{% endfor %}
+			{% set last_with_child = true %}
+		{% else %}
+			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
+			{% set last_with_child = false %}
+		{% endif %}
+	{% endfor %}
+</ul>
+
+<ul id="feedback_status_menu" data-menu-type="feedback-status-menu" data-menu-flag="copy-menu">
+	<li
+		class="status-new"
+		data-status-type="new"
+		data-option-value="new"
+	>{{ phrase('agent.feedback.status_new') }}</li>
+	<li
+		class="section-title status-active"
+		data-status-type="active"
+		data-option-value="active"
+	>{{ phrase('agent.feedback.status_active') }}</li>
+	{% for cat in app.getDataService('FeedbackStatusCategory').getActiveCategories() %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="active"
+			data-option-value="active.{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+	<li
+		class="section-title status-closed"
+		data-status-type="closed"
+		data-option-value="closed"
+	>{{ phrase('agent.feedback.status_closed') }}</li>
+	{% for cat in app.getDataService('FeedbackStatusCategory').getClosedCategories() %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="closed"
+			data-option-value="closed.{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+</ul>
+
+{##############################################################}
+{# Search related #}
+{##############################################################}
+
+<script type="text/x-deskpro-plain" id="related_content_newitem">
+	<li>
+		<button class="clean-white small remove">Remove</button>
+		<a class="link-title link-route with-route"></a>
+	</li>
+</script>
 
 {#
 	This isnt a jQuery template. Its used in TabStrip.js because
@@ -198,5 +275,13 @@
 		<button class="dismiss-trigger clean-white">{{ phrase('agent.general.dismiss') }}</button>
 	</footer>
 </section>
+
+{% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
+{% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
+
+<script type="text/x-deskpro-plain" id="tickets_snippet_shell_tpl">{% include 'AgentBundle:TextSnippets:tickets-widget-shell.html.twig' with { snippet_cats: ticket_snippet_cats } %}</script>
+<script type="text/x-deskpro-plain" id="chat_snippet_shell_tpl">{% include 'AgentBundle:TextSnippets:chat-widget-shell.html.twig' with { snippet_cats: chat_snippet_cats } %}</script>
+
+{{ tpl_source('snippet_rows_tpl', 'AgentBundle:TextSnippets:snippet-rows.html.twig') }}
 
 </div>

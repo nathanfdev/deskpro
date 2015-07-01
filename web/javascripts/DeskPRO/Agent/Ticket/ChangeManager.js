@@ -146,7 +146,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			this.applyChangeForProperty(property, newValue);
 		}, this);
 
-		this.fireEvent('changesApplied', [{ changes: this.changes }]);
+		this.fireEvent('changesApplied', { changes: this.changes });
 		window.setTimeout(this.ticketPage.updateUi.bind(this.ticketPage), 450);
 	},
 
@@ -211,7 +211,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		var data = [];
 		this._addPropertyValueToData(data, property.getName(), property.getValue());
 
-		this.fireEvent('changesApplied', [{ changes: [property, newValue] }]);
+		this.fireEvent('changesApplied', { changes: [property, newValue] });
 
 		var classname = 'saving-' + property.getName().replace('.', '_');
 		this.ticketPage.wrapper.addClass(classname);

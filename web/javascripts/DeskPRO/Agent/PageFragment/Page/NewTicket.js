@@ -580,7 +580,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	closeSelf: function() {
 		var ev = {cancel: false};
-		this.fireEvent('closeSelf', [ev]);
+		this.fireEvent('closeSelf', ev);
 
 		if (!ev.cancel) {
 			this.parent();

@@ -68,6 +68,87 @@ class MainController extends AbstractController
             $last_message_id = -1;
         }
 
+        // Used in some header menus for search options
+        $titles                  = array();
+        $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
+        $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
+
+        if ($this->container->getDataService('Language')->isMultiLang()) {
+            $titles['languages'] = $this->container->getDataService('Language')->getTitles();
+        }
+
+        // Person menu needs these
+        $people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
+        $org_fields    = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
+
+        // Ticket options for search pane of tickets menu
+        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+        // Agent info
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
+
+        // Countr code
+        $phone_country_info = \Orb\Data\CountryCallingCodes::getData();
+
+        if (App::getConfig('debug.raw_assets')) {
+            $has_raw_assets = true;
+        } else {
+            $has_raw_assets = false;
+        }
+
+        // Auto-load chats in tabs if assigned to an agent
+        $open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
+
+        $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
+        $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+        $ticket_options['custom_ticket_fields'] = $custom_fields;
+
+        // People stuff
+        $ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
+        $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
+        $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+
+        $people_options                         = $titles;
+        $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
+
+        $org_options = array(
+            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
+        );
+
+        $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
+        $online_agent_ids = $this->db->fetchAllCol("
+            SELECT p.id
+            FROM sessions s
+            LEFT JOIN people AS p ON p.id = s.person_id
+            WHERE p.is_agent = true AND s.date_last > ?
+        ", array($cutoff));
+
+        $with_chat_perm = array();
+        foreach ($this->container->getAgentData()->getAgents() as $a) {
+            if ($a->hasPerm('agent_chat.use')) {
+                $with_chat_perm[] = $a->id;
+            }
+        }
+
+        if ($with_chat_perm) {
+            $agent_chat_depmap = $this->db->fetchAllGrouped("
+                SELECT department_permissions.person_id, department_permissions.department_id
+                FROM department_permissions
+                WHERE
+                    department_permissions.person_id IN (?)
+                    AND department_permissions.app = 'chat' AND department_permissions.value = 1
+            ", array($with_chat_perm), 'person_id', null, 'department_id', array(Connection::PARAM_INT_ARRAY));
+
+            foreach ($agent_chat_depmap as &$v) {
+                if ($v) {
+                    $v = array_unique($v, \SORT_NUMERIC);
+                }
+            }
+        } else {
+            $agent_chat_depmap = array();
+        }
+
         $is_first_login = false;
         $is_first_login_name = false;
 
@@ -76,22 +157,54 @@ class MainController extends AbstractController
             $is_first_login_name = $this->person->getPref('agent.first_login_name');
         }
 
-        if (App::getConfig('debug.raw_assets')) {
-            $has_raw_assets = true;
-        } else {
-            $has_raw_assets = false;
-        }
+        $chat_dep_ids = $this->person->getHelper('PermissionsManager')->get('Departments')->getAllowed('chat');
 
         \Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
+        $ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
+        $chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
+
+        /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+        $password_validator = App::$container->getSystemService('password_policy_validator');
+
+        $dp_news        = require_once DP_ROOT.'/sys/config/config.news.php';
+        $read_news      = $this->person->getPref('agent.ui.dp_news', array());
+        $unread_dp_news = array();
+        $person_time    = $this->person->date_created->getTimestamp();
+        foreach ($dp_news as $info) {
+            $d = @strtotime($info['date']);
+            if ($d && ($d > $person_time) && !in_array($info['id'], $read_news)) {
+                $unread_dp_news[] = $info;
+            }
+        }
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
             'has_raw_assets'      => $has_raw_assets,
+            'password_expired'    => $password_validator->isPasswordExpired($this->person),
+            'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
+            'agent_names'         => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
+            'online_agent_ids'    => $online_agent_ids,
+            'agent_chat_depmap'   => $agent_chat_depmap,
+            'chat_dep_ids'        => $chat_dep_ids,
             'is_demo'             => $this->in->checkIsset('show-demo-bar'),
             'last_message_id'     => $last_message_id,
             'js_debug'            => App::getConfig('debug.js', array()),
+            'titles'              => $titles,
+            'people_fields'       => $people_fields,
+            'org_fields'          => $org_fields,
+            'ticket_options'      => $ticket_options,
+            'agents'              => $agents,
+            'agent_teams'         => $agent_teams,
+            'phone_country_info'  => $phone_country_info,
+            'open_chats'          => $open_chats,
+            'people_options'      => $people_options,
+            'org_options'         => $org_options,
             'is_first_login'      => $is_first_login,
             'is_first_login_name' => $is_first_login_name,
             'timezones'           => \DateTimeZone::listIdentifiers(),
+            'ticket_snippet_cats' => $ticket_snippet_cats,
+            'chat_snippet_cats'   => $chat_snippet_cats,
+            'unread_dp_news'      => $unread_dp_news,
         ));
     }
 

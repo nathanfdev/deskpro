@@ -110,7 +110,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 
 		var evData = { overlay: this, cancel: false };
-		this.fireEvent('beforeOverlayOpened', [evData]);
+		this.fireEvent('beforeOverlayOpened', evData);
 		if (evData.cancel) {
 			return;
 		}
@@ -182,7 +182,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		this.reposition();
 		this.elements.wrapperOuter.fadeIn(450, (function() {
-			this.fireEvent('overlayOpened', [{ overlay: this }]);
+			this.fireEvent('overlayOpened', { overlay: this });
 		}).bind(this));
 	},
 
@@ -216,7 +216,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			setTop: function(x) { this.top = x; }
 		};
 
-		this.fireEvent('position', [evData]);
+		this.fireEvent('position', evData);
 
 		this.elements.wrapperOuter.css({
 			'top': evData.top,
@@ -249,15 +249,15 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 
 		var eventData = { overlay: this, cancelClose: false };
-		this.fireEvent('beforeOverlayClosed', [eventData]);
+		this.fireEvent('beforeOverlayClosed', eventData);
 
 		if (eventData.cancelClose) return;
 
 		this.elements.modal.fadeOut(450);
 		this.elements.wrapperOuter.fadeOut(200);
 
-		this.fireEvent('overlayClosed', [{ overlay: this }]);
-		this.fireEvent('close', [{ overlay: this }]);
+		this.fireEvent('overlayClosed', { overlay: this });
+		this.fireEvent('close', { overlay: this });
 
 		if (this.options.destroyOnClose) {
 			this.destroy();
@@ -383,7 +383,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			overlay: this,
 			ajaxData: data
 		};
-		this.fireEvent('ajaxDone', [eventData]);
+		this.fireEvent('ajaxDone', eventData);
 
 		this.openOverlay();
 	},
@@ -427,11 +427,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		this.reposition();
 
-		this.fireEvent('contentSet', [{
+		this.fireEvent('contentSet', {
 			overlay: this,
 			contentEl: el,
 			wrapperEl: this.elements.wrapper
-		}]);
+		});
 	},
 
 	setContent: function(el) {

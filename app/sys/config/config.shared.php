@@ -131,11 +131,6 @@ $definition->setClass('DeskPRO\Bundle\AppBundle\Content\ContentSlugManager');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('content_slug_manager', $definition);
 
-$definition = new Definition();
-$definition->setClass('DeskPRO\Bundle\AppBundle\Templating\Asset\PackageFactory');
-$definition->setArguments(array(new Reference('settings_resolver'), new Reference('deskpro_config'), new Reference('request_stack')));
-$container->setDefinition('dp.asset_package_factory', $definition);
-
 // doctrine.orm.default_query_cache
 $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');

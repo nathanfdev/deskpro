@@ -257,7 +257,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 		this.resetSentItems(sent_info);
 
-		this.fireEvent('ajaxSuccess', [data]);
+		this.fireEvent('ajaxSuccess', data);
 	},
 
 	resetSentItems: function(sent_info) {
