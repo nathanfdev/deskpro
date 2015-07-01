@@ -138,4 +138,9 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
             Entity\EntityInterface::TYPE_NEWS,
         );
     }
+
+    public function getAllowedTypes()
+    {
+        return $this->getOrderedTypes();
+    }
 }
