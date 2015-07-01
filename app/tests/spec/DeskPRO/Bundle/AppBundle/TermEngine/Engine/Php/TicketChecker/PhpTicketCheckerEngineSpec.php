@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler;
@@ -53,7 +53,7 @@ class PhpTicketCheckerEngineSpec extends ObjectBehavior
     function it_evals_the_compiler_result_and_returns_the_compiled_checker(
         PhpTicketCheckerEngineCompiler $compiler,
         TermEngineExpressionLanguage $expression_language,
-        Filter $filter,
+        TicketFilter $filter,
         TermEngineContext $context,
         PhpCheck $php_check,
         EventDispatcherInterface $event_dispatcher,

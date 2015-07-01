@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
@@ -91,11 +91,11 @@ class PhpTicketCheckerEngine extends PhpEngine
      * Takes a filter and the context and returns to you an instance of
      * PhpTicketCheckerInterface that satisfies the filters terms.
      *
-     * @param Filter $filter
+     * @param TicketFilter $filter
      * @param TermEngineContext $context
      * @return PhpTicketCheckerInterface
      */
-    public function evaluate(Filter $filter, TermEngineContext $context)
+    public function evaluate(TicketFilter $filter, TermEngineContext $context)
     {
         $timer = new SimpleTimer();
 

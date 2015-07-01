@@ -38,7 +38,7 @@ use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
@@ -112,7 +112,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Filter"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      */
     public function getAction($id)
@@ -137,12 +137,12 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Filter"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      */
     public function postAction(Request $request)
     {
-        $filter = new Filter();
+        $filter = new TicketFilter();
 
         return $this->handleFormSubmission($request, $filter);
     }
@@ -164,7 +164,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *          404="Not Found",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Filter"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      */
     public function putAction(Request $request, $id)
@@ -215,7 +215,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
     /**
      * we will be making this more abstract for general use by other controllers
      */
-    protected function handleFormSubmission(Request $request, Filter $filter)
+    protected function handleFormSubmission(Request $request, TicketFilter $filter)
     {
         $status = $filter->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 

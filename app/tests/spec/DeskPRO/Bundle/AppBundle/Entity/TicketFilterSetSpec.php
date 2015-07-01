@@ -34,81 +34,97 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\Entity\FilterView;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Entity\FilterPreference;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\Entity\FilterPreference
+ * @mixin \DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet
  */
-class FilterPreferenceSpec extends ObjectBehavior
+class TicketFilterSetSpec extends ObjectBehavior
 {
     function it_starts_with_a_null_id()
     {
         $this->getId()->shouldBe(null);
     }
 
-    function it_is_used_with_a_single_filter(Filter $filter)
+    function it_starts_with_no_filters()
     {
-        $this->getFilter()->shouldBe(null);
-
-        $this->setFilter($filter);
-
-        $filter->addFilterPreference($this)->shouldHaveBeenCalled();
-        $this->getFilter()->shouldBe($filter);
+        $this->getFilters()->toArray()->shouldBeLike(array());
     }
 
-    function it_is_used_with_a_single_view(FilterView $view)
+    function it_lets_you_add_a_filter(TicketFilter $filter)
     {
-        $this->getFilterView()->shouldBe(null);
+        $this->addFilter($filter);
 
-        $this->setFilterView($view);
-
-        $this->getFilterView()->shouldBe($view);
+        $filter->setFilterSet($this)->shouldHaveBeenCalled();
+        $this->getFilters()->toArray()->shouldBeLike(array($filter));
     }
 
-    function it_defaults_to_shared()
+    function it_has_a_title()
     {
-        $this->isPrivate()->shouldBe(false);
-        $this->getAgent()->shouldBe(null);
-    }
+        $this->getTitle()->shouldBe(null);
 
-    function it_can_be_private_to_a_single_agent_once_you_set_it(Person $agent)
-    {
-        $this->setAgent($agent);
-        $this->getAgent()->shouldBe($agent);
-        $this->isPrivate()->shouldBe(true);
+        $this->setTitle('title');
+
+        $this->getTitle()->shouldReturn('title');
     }
 
     function it_has_a_display_order()
     {
         $this->getDisplayOrder()->shouldBe(0);
-        $this->setDisplayOrder(5);
-        $this->getDisplayOrder()->shouldBe(5);
+
+        $this->setDisplayOrder(40);
+
+        $this->getDisplayOrder()->shouldBe(40);
     }
 
-    function it_has_a_main_grouping()
+    function it_initializes_by_not_being_a_default_filter_set()
     {
-        $this->getMainGrouping()->shouldReturn(null);
-        $this->setMainGrouping('grouping');
-        $this->getMainGrouping()->shouldReturn('grouping');
+        $this->isDefault()->shouldBe(false);
     }
 
-    function it_has_a_result_grouping()
+    function it_can_be_toggled_on_and_off_default_status()
     {
-        $this->getResultGrouping()->shouldReturn(null);
-        $this->setResultGrouping('grouping');
-        $this->getResultGrouping()->shouldReturn('grouping');
+        $this->setDefault(true);
+
+        $this->isDefault()->shouldBe(true);
+
+        $this->setDefault(false);
+
+        $this->isDefault()->shouldBe(false);
     }
 
-    function it_can_show_sla()
+    function it_initialized_with_no_agents_and_shared()
     {
-        $this->hasShowSla()->shouldBe(false);
+        $this->getPrivateAgent()->shouldBe(null);
+        $this->getSharedAgents()->toArray()->shouldBeLike(array());
 
-        $this->setShowSla(true);
+        $this->isPrivate()->shouldBe(false);
+    }
 
-        $this->hasShowSla()->shouldBe(true);
+    function it_marks_itself_private_if_a_single_agent_is_assigned(Person $agent)
+    {
+        $this->setPrivateAgent($agent);
+
+        $this->getPrivateAgent($agent);
+        $this->getSharedAgents()->toArray()->shouldBeLike(array());
+        $this->isPrivate()->shouldBe(true);
+    }
+
+    function it_marks_itself_shared_if_agent_is_added(Person $agent1, Person $agent2)
+    {
+        $this->addSharedAgent($agent1);
+
+        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1));
+        $this->getPrivateAgent()->shouldBe(null);
+        $this->isPrivate()->shouldBe(false);
+
+        $this->addSharedAgent($agent2);
+
+        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1, $agent2));
+        $this->getPrivateAgent()->shouldBe(null);
+        $this->isPrivate()->shouldBe(false);
     }
 }

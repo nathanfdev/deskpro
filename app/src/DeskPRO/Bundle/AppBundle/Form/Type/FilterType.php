@@ -75,7 +75,7 @@ class FilterType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Filter',
+                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilter',
             )
         );
     }

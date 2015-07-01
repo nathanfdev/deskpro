@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\FilterInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
 use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
@@ -63,7 +63,7 @@ class PhpTicketCheckerEngineCompiler
         $this->logger = $logger;
     }
 
-    public function compile(Filter $filter)
+    public function compile(FilterInterface $filter)
     {
         $this->logger->info(
             'START FILTER COMPILE',
@@ -99,7 +99,7 @@ class PhpTicketCheckerEngineCompiler
         return $compiled_query;
     }
 
-    protected function generateKey(Filter $filter)
+    protected function generateKey(FilterInterface $filter)
     {
         return sprintf('%s.%s', $filter->getId(), $filter->getDateUpdated()->getTimestamp());
     }

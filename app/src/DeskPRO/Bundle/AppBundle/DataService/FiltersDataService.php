@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;

@@ -38,10 +38,10 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterPreferenceRepository")
- * @ORM\Table(name="filter_preferences")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterPreferenceRepository")
+ * @ORM\Table(name="ticket_filter_preferences")
  */
-class FilterPreference extends NotifyPropertyChangeEntity
+class TicketFilterPreference extends NotifyPropertyChangeEntity
 {
     /**
      * @ORM\Id()
@@ -51,14 +51,14 @@ class FilterPreference extends NotifyPropertyChangeEntity
     protected $id;
 
     /**
-     * @var Filter
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Filter", inversedBy="filter_preferences")
+     * @var TicketFilter
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", inversedBy="filter_preferences")
      */
     protected $filter;
 
     /**
-     * @var FilterView
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterView")
+     * @var TicketFilterView
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView")
      */
     protected $filter_view;
 
@@ -108,7 +108,7 @@ class FilterPreference extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return Filter
+     * @return TicketFilter
      */
     public function getFilter()
     {
@@ -116,16 +116,16 @@ class FilterPreference extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param Filter $filter
+     * @param TicketFilter $filter
      */
-    public function setFilter(Filter $filter)
+    public function setFilter(TicketFilter $filter)
     {
         $this->setModelField('filter', $filter);
         $filter->addFilterPreference($this);
     }
 
     /**
-     * @return FilterView
+     * @return TicketFilterView
      */
     public function getFilterView()
     {
@@ -133,9 +133,9 @@ class FilterPreference extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param FilterView $filter_view
+     * @param TicketFilterView $filter_view
      */
-    public function setFilterView(FilterView $filter_view)
+    public function setFilterView(TicketFilterView $filter_view)
     {
         $this->setModelField('filter_view', $filter_view);
     }

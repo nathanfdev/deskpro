@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
@@ -58,7 +58,7 @@ class PhpTicketCheckerEngineCompilerSpec extends ObjectBehavior
     }
 
     function it_compiles_a_filter_if_it_is_not_cached(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         PhpCheck $php_check,
@@ -83,7 +83,7 @@ class PhpTicketCheckerEngineCompilerSpec extends ObjectBehavior
     }
 
     function it_returns_the_cached_version_of_the_compiled_query_if_exists(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         PhpCheck $php_check,

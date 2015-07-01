@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
@@ -59,7 +59,7 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
     }
 
     function it_compiles_a_filter_if_it_is_not_cached(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         DbalQuery $compiled,
@@ -86,7 +86,7 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
     }
 
     function it_returns_the_cached_version_of_the_compiled_query_if_exists(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         DbalQuery $compiled,

@@ -33,94 +33,82 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
-use DeskPRO\Bundle\AppBundle\Entity\FilterPreference;
-use DeskPRO\Bundle\AppBundle\Entity\FilterSet;
-use DeskPRO\Bundle\AppBundle\Entity\FilterView;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterView;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\Entity\Filter
+ * @mixin \DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference
  */
-class FilterSpec extends ObjectBehavior
+class TicketFilterPreferenceSpec extends ObjectBehavior
 {
     function it_starts_with_a_null_id()
     {
         $this->getId()->shouldBe(null);
     }
 
-    function it_constructs_with_created_and_updated_dates()
+    function it_is_used_with_a_single_filter(TicketFilter $filter)
     {
-        $this->getDateUpdated()->shouldBeAnInstanceOf('\DateTime');
-        $this->getDateCreated()->shouldBeAnInstanceOf('\DateTime');
+        $this->getFilter()->shouldBe(null);
+
+        $this->setFilter($filter);
+
+        $filter->addFilterPreference($this)->shouldHaveBeenCalled();
+        $this->getFilter()->shouldBe($filter);
     }
 
-    function it_lets_you_change_updated_datetime()
+    function it_is_used_with_a_single_view(TicketFilterView $view)
     {
-        $new_date = new \DateTime();
+        $this->getFilterView()->shouldBe(null);
 
-        $this->setDateUpdated($new_date);
+        $this->setFilterView($view);
 
-        $this->getDateUpdated()->shouldBeLike($new_date);
+        $this->getFilterView()->shouldBe($view);
     }
 
-    function it_belongs_to_only_one_filter_set(FilterSet $set)
+    function it_defaults_to_shared()
     {
-        $this->getFilterSet()->shouldBe(null);
-
-        $this->setFilterSet($set);
-
-        $this->getFilterSet()->shouldBe($set);
+        $this->isPrivate()->shouldBe(false);
+        $this->getAgent()->shouldBe(null);
     }
 
-    function it_can_be_associated_with_views(FilterView $view1, FilterView $view2)
+    function it_can_be_private_to_a_single_agent_once_you_set_it(Person $agent)
     {
-        $this->getFilterViews()->toArray()->shouldBeLike(array());
-
-        $this->addFilterView($view1);
-        $this->addFilterView($view2);
-
-        $this->getFilterViews()->toArray()->shouldBeLike(array($view1, $view2));
-    }
-
-    function it_can_be_associated_with_preferences(FilterPreference $pref1, FilterPreference $pref2)
-    {
-        $this->getFilterPreferences()->toArray()->shouldBeLike(array());
-
-        $this->addFilterPreference($pref1);
-        $this->addFilterPreference($pref2);
-
-        $this->getFilterPreferences()->toArray()->shouldBeLike(array($pref1, $pref2));
-    }
-
-    function it_has_a_title()
-    {
-        $this->getTitle()->shouldBe(null);
-
-        $this->setTitle('title');
-
-        $this->getTitle()->shouldBe('title');
+        $this->setAgent($agent);
+        $this->getAgent()->shouldBe($agent);
+        $this->isPrivate()->shouldBe(true);
     }
 
     function it_has_a_display_order()
     {
         $this->getDisplayOrder()->shouldBe(0);
-
-        $this->setDisplayOrder(32);
-
-        $this->getDisplayOrder()->shouldBe(32);
+        $this->setDisplayOrder(5);
+        $this->getDisplayOrder()->shouldBe(5);
     }
 
-    function it_holds_its_term_engine_term(
-        TermInterface $term
-    )
+    function it_has_a_main_grouping()
     {
-        $this->getTerm()->shouldBe(null);
+        $this->getMainGrouping()->shouldReturn(null);
+        $this->setMainGrouping('grouping');
+        $this->getMainGrouping()->shouldReturn('grouping');
+    }
 
-        $this->setTerm($term);
+    function it_has_a_result_grouping()
+    {
+        $this->getResultGrouping()->shouldReturn(null);
+        $this->setResultGrouping('grouping');
+        $this->getResultGrouping()->shouldReturn('grouping');
+    }
 
-        $this->getTerm()->shouldBe($term);
+    function it_can_show_sla()
+    {
+        $this->hasShowSla()->shouldBe(false);
+
+        $this->setShowSla(true);
+
+        $this->hasShowSla()->shouldBe(true);
     }
 }

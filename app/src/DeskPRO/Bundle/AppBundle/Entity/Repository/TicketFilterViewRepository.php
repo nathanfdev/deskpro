@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,30 +31,10 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
+namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
-use DeskPRO\Bundle\AppBundle\Entity\FilterInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use Doctrine\ORM\EntityRepository;
 
-class PhpEnginePreCompileEvent extends PhpEngineEvent
+class TicketFilterViewRepository extends EntityRepository
 {
-    /**
-     * @var TicketFilter
-     */
-    private $filter;
-
-    public function __construct(TermEngineContext $context, FilterInterface $filter)
-    {
-        parent::__construct($context);
-        $this->filter = $filter;
-    }
-
-    /**
-     * Retrieve the filter
-     * @return FilterInterface the filter.
-     */
-    public function getFilter()
-    {
-        return $this->filter;
-    }
 }

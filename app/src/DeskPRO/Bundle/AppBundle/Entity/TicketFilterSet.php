@@ -39,10 +39,10 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterSetRepository")
- * @ORM\Table(name="filter_sets")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
+ * @ORM\Table(name="ticket_filter_sets")
  */
-class FilterSet extends NotifyPropertyChangeEntity
+class TicketFilterSet extends NotifyPropertyChangeEntity
 {
     /**
      * @ORM\Id()
@@ -64,8 +64,8 @@ class FilterSet extends NotifyPropertyChangeEntity
     protected $display_order;
 
     /**
-     * @var Filter[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Filter", mappedBy="filter_set")
+     * @var TicketFilter[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", mappedBy="filter_set")
      */
     protected $filters;
 
@@ -113,7 +113,7 @@ class FilterSet extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return Filter[]|ArrayCollection
+     * @return TicketFilter[]|ArrayCollection
      */
     public function getFilters()
     {
@@ -121,9 +121,9 @@ class FilterSet extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param Filter $filter
+     * @param TicketFilter $filter
      */
-    public function addFilter(Filter $filter)
+    public function addFilter(TicketFilter $filter)
     {
         $this->filters->add($filter);
 
