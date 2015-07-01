@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
-use Application\ImportBundle\Entity\CustomField;
 
 /**
  * Custom def people record mapper
@@ -72,12 +71,6 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
         if ( ! $record && $throw_exception) {
             throw new MapperException('Custom def people not found', $criteria);
         }
-        if ( ! $this->isSupportType($record->getTypeName())) {
-            throw new MapperException(
-                sprintf('Custom field  does not support type `%s`', $record->getTypeName()),
-                $criteria
-            );
-        }
 
         return $record;
     }
@@ -88,30 +81,5 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     public function findOneByTitle($title, $throw_exception = true)
     {
         return $this->findOneBy(array('title' => $title), $throw_exception);
-    }
-
-    /**
-     * Returns true if a type is supported by the custom field entity
-     *
-     * @param string $type
-     * @return bool
-     */
-    public function isSupportType($type)
-    {
-        return in_array($type, self::getSupportedTypes(), true);
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSupportedTypes()
-    {
-        return array(
-            CustomField::FIELD_TYPE_TEXT,
-            CustomField::FIELD_TYPE_TEXTAREA,
-            CustomField::FIELD_TYPE_CHOICE,
-            CustomField::FIELD_TYPE_TOGGLE,
-            CustomField::FIELD_TYPE_DATE,
-        );
     }
 }
