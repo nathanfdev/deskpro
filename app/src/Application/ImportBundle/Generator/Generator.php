@@ -128,7 +128,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $outputWriter = $this->getWriter();
         $collection   = new GenerateCollection();
 
-        $this->logger->error('GENERATING STATE ' . ImportService::STATUS_IMPORT);
         $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
 
         // Exports data to a collection of entities
@@ -137,13 +136,6 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             $collection->attach($type, $exporter->exportByType($type));
         }
 
-        // Writes batch config (even no entities to write to support "retry-after" timeout)
-        // Writes batch config before validation to skip broken batches
-
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            $outputWriter->setBatchConfig($exporter->getUpdatedBatchConfig());
-            $outputWriter->writeBatchConfig();
-        }
 
         if ($collection->hasEntities()) {
 
@@ -186,7 +178,20 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             $this->progress_bar->advance($collection->getSkippedCount() * 2);
         }
 
-        $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+        // Writes batch config (even no entities to write to support "retry-after" timeout)
+        // Writes batch config before validation to skip broken batches
+
+        if ($exporter instanceof Exporter\ExporterBatchInterface) {
+            $updated = $exporter->getUpdatedBatchConfig();
+            $outputWriter->setBatchConfig($updated);
+            $outputWriter->writeBatchConfig();
+
+            if (!$updated->getHasRemaining()) {
+                $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+            }
+        } else {
+            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+        }
     }
 
     /**
