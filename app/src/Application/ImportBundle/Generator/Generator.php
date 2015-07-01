@@ -46,7 +46,7 @@ use Exception;
 final class Generator extends AbstractGenerator implements GeneratorInterface, ExporterAwareInterface
 {
     /**
-     * @var Exporter\ExporterInterface
+     * @var Exporter\AbstractExporter
      */
     private $exporter;
 
@@ -68,14 +68,14 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * Constructor
      *
-     * @param Exporter\ExporterInterface $exporter
+     * @param Exporter\AbstractExporter $exporter
      * @param Writer\WriterInterface     $writer
      * @param SymfonyValidator           $validator
      * @param GeneratorConfig            $config
      * @param ImportService              $is
      */
     public function __construct(
-        Exporter\ExporterInterface $exporter,
+        Exporter\AbstractExporter $exporter,
         Writer\WriterInterface     $writer = null,
         SymfonyValidator           $validator,
         GeneratorConfig            $config,
@@ -112,7 +112,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $count    = 0;
         $exporter = $this->getExporter();
 
-        foreach ($exporter::getOrderedTypes() as $record_type) {
+        foreach ($exporter->getAllowedTypes() as $record_type) {
             $count += $exporter->getCountByType($record_type);
         }
 
@@ -197,7 +197,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         $exporter   = $this->getExporter();
         $exceptions = new ExceptionCollection();
 
-        foreach ($exporter::getOrderedTypes() as $type) {
+        foreach ($exporter->getAllowedTypes() as $type) {
             $this->exporterLogHeader($type);
 
             $collection = $exporter->exportByType($type);
@@ -214,7 +214,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
     /**
      * Get exporter by configuration type
      *
-     * @return Exporter\ExporterInterface
+     * @return Exporter\AbstractExporter
      * @throws Exception
      */
     public function getExporter()
@@ -349,8 +349,9 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
         }
 
         $_types = array();
+        $allowed = $this->getExporter()->getAllowedTypes();
         foreach ($types as $type) {
-            if ($this->config->hasEntityType($type)) {
+            if (in_array($type, $allowed)) {
                 $_types[] = $type;
             }
         }
