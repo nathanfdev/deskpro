@@ -151,7 +151,6 @@ final class JsonWriter extends AbstractWriter
     private function getEntityPath(Entity\EntityInterface $entity)
     {
         $destination = $this->mapping->getByEntityType($entity->getType());
-        var_dump($this->getDestinationOutputPath($destination) . '/' . $entity->getDestination() . '.json');
         return $this->getDestinationOutputPath($destination) . '/' . $entity->getDestination() . '.json';
     }
 }
