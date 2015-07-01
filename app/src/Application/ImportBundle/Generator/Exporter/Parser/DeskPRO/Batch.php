@@ -25,31 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\DeskPRO;
 
-/**
- * Batch config files exporter factory
- *
- * Class BatchFactory
- * @package Application\ImportBundle\Generator\Exporter
- */
-class BatchFactory
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractBatchSizeParser;
+
+class Batch extends AbstractBatchSizeParser
 {
     /**
-     * Creates an exporter instance
-     *
-     * @return Batch
+     * {@inheritdoc}
      */
-    public static function createExporter()
+    public function getExporterType()
     {
-        $parsers = new Parser\BatchCollection();
-        $parsers
-            ->attach(new Parser\Json\Batch())
-            ->attach(new Parser\OsTicket\Batch())
-            ->attach(new Parser\ZenDesk\Batch())
-            ->attach(new Parser\DeskPRO\Batch())
-        ;
+        return ExporterInterface::TYPE_DESKPRO;
+    }
 
-        return new Batch($parsers);
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultBatchConfig()
+    {
+        return new BatchConfig();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validate(array $config)
+    {
+        $columns = array(
+            'users_min_id',
+            'tickets_min_id',
+        );
+
+        return parent::validate($config) && $this->hasRequiredColumns($config, $columns);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function parse(array $config)
+    {
+        /** @var BatchConfig $batch_config */
+        $batch_config = parent::parse($config);
+        $batch_config
+            ->setUsersMinId($config['users_min_id'])
+            ->setTicketsMinId($config['tickets_min_id']);
+
+        return $batch_config;
     }
 }
