@@ -128,6 +128,7 @@ class GeneratorConfig
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
+            ExporterInterface::TYPE_DESKPRO,
         );
 
         return in_array($this->exporter_type, $batch_exporters, true);
