@@ -243,6 +243,7 @@ final class Person extends AbstractImporter
                 break;
 
             case Entity\CustomField::FIELD_TYPE_DATE:
+            case Entity\CustomField::FIELD_TYPE_DATETIME:
                 $custom_field
                     ->setField($person_def)
                     ->setRootField($person_def)
@@ -264,6 +265,18 @@ final class Person extends AbstractImporter
                         ->setValue(1)
                     ;
                 }
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DISPLAY:
+
+                // todo implement
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_HIDDEN:
+
+                // todo implement
 
                 break;
 
