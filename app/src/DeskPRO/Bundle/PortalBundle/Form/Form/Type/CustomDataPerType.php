@@ -71,10 +71,6 @@ class CustomDataPerType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomFieldDefinition $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->definition : $config->getOption('custom_data_field');
 
-        if (!$custom_data) {
-            if ($custom_data_field->)
-        }
-
         if (!$custom_data->getData()) {
             $custom_data->setData($custom_data_field->getDefaultValue());
         }
