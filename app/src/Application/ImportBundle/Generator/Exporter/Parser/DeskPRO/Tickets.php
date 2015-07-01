@@ -42,9 +42,11 @@ class Tickets extends AbstractParser
      */
     private $tickets_min_id;
 
-    public function setTicketsMinId($minId)
+    protected $start_ticket_id;
+
+    public function setStartTicketId($id)
     {
-        $this->tickets_min_id = (int) $minId;
+        $this->start_ticket_id = (int) $id;
     }
 
     /**
@@ -62,7 +64,10 @@ class Tickets extends AbstractParser
      */
     public function getCurrentTicketsMinId()
     {
-        return $this->tickets_min_id ? : $this->getBatchConfig()->getTicketsMinId();
+        return max(
+            $this->tickets_min_id ?: $this->getBatchConfig()->getTicketsMinId(),
+            $this->start_ticket_id
+        );
     }
 
     /**

@@ -36,7 +36,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               @$scope.ready = val && val.subdomain && val.username && (val.password || val.token)
             true
           )
-        else if 'osticket' == @$scope.importer?.id
+        else if 'osticket' == @$scope.importer?.id || 'deskpro' == @$scope.importer?.id
           @$scope.$watch(
             'importer.config'
             (val) =>
@@ -99,17 +99,25 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     importTest: ->
-      @$scope.importer.status = 'testing'
       @$scope.busy = true
-      @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
-        (res) =>
-          @$scope.busy = false
-          @$scope.test_error = !res.data.result
-          @$scope.test_error_message = res.data.error_message
+      @importSave().then(
+        =>
+          @$scope.importer.status = 'testing'
+          @Api.sendGet("/server/importers/#{@$scope.id}/test").then(
+            (res) =>
+            @$scope.busy = false
+            @$scope.test_error = !res.data.result
+            @$scope.test_error_message = res.data.error_message
+            (res) =>
+              @$scope.busy = false
+              @$scope.test_error = true
+          )
         (res) =>
           @$scope.busy = false
           @$scope.test_error = true
       )
+
+
 
 
 

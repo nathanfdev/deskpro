@@ -44,7 +44,7 @@ class DeskPROFactory extends AbstractFactory
         $reader = Factory::createReader($config, $container);
 
         $tickets = new Parser\DeskPRO\Tickets($reader);
-        $tickets->setTicketsMinId($config->getStartTicketId());
+        $tickets->setStartTicketId($config->getStartTicketId());
 
         $parsers = new Parser\Collection();
         $parsers

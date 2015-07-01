@@ -32,13 +32,12 @@ namespace Application\ImportBundle\Service;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\DataStore;
-use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
-use Application\ImportBundle\Generator\Generator;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
+use Application\ImportBundle\Reader\DeskPRO\Config as DeskPROReaderConfig;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
 use Orb\Util\Strings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -72,11 +71,6 @@ class Import
      * @var \Application\DeskPRO\EntityRepository\DataStore
      */
     protected $rep;
-
-    /**
-     * @var DataStore
-     */
-    protected $current;
 
     public function __construct(DeskproContainer $container)
     {
@@ -125,12 +119,14 @@ class Import
             throw new NotFoundHttpException;
         }
 
-        if ($importer = $this->rep->getByName('importers.'.$id)) {
-           return $this->current = $importer;
+        $name = 'importers.' . $id;
+
+        if ($importer = $this->rep->getByName($name)) {
+           return $importer;
         }
 
         $importer = new DataStore();
-        $importer['name'] = 'importers.'.$id;
+        $importer['name'] = $name;
         $importer->setData('id', $id);
         $importer->setData('title', ucfirst($id));
 
@@ -141,13 +137,13 @@ class Import
 
         $this->em->persist($importer);
         $this->em->flush($importer);
-        return $this->current = $importer;
+        return $importer;
     }
 
     /**
-     * create reader config
      * @param $id
-     * @return CsvConfig|OsTicketConfig|ZenDeskConfig|null
+     * @return CsvConfig|DeskPROReaderConfig|OsTicketConfig|ZenDeskConfig|null
+     * @throws \Exception
      */
     public function getReaderConfig($id)
     {
@@ -165,6 +161,11 @@ class Import
             case ExporterInterface::TYPE_OS_TICKET:
                 $readerConfig = OsTicketConfig::fromArray($config);
                 break;
+            case ExporterInterface::TYPE_DESKPRO:
+                $readerConfig = DeskPROReaderConfig::fromArray($config);
+                break;
+            default:
+                throw new \Exception(sprintf('Unknown importer "%s"', $id));
         }
 
         return $readerConfig;
@@ -238,6 +239,10 @@ class Import
         $this->em->flush($importer);
     }
 
+    /**
+     * @param $id
+     * @return DataStore
+     */
     public function startImport($id)
     {
         $importer = $this->initReader($id);
@@ -252,6 +257,11 @@ class Import
         return $importer;
     }
 
+    /**
+     * @param DataStore $importer
+     * @return GeneratorConfig
+     * @throws \Exception
+     */
     public function createGeneratorConfig(DataStore $importer)
     {
         $config = new GeneratorConfig();
@@ -266,6 +276,9 @@ class Import
         return $config;
     }
 
+    /**
+     * @param DataStore $importer
+     */
     public function cleanup(DataStore $importer)
     {
         $readerConfigData = $importer->getData('config');
@@ -277,7 +290,14 @@ class Import
                 : exec("rm -rf {$tmp}");
 
             unset($readerConfigData['temp']);
-            $this->em->flush($importer);
         }
+
+        $importer->setData('status', null);
+        $importer->setData('log', null);
+        $importer->setData('progress_start', null);
+        $importer->setData('progress_step', null);
+        $importer->setData('progress_max', null);
+
+        $this->em->flush($importer);
     }
 }

@@ -144,17 +144,12 @@ class ImportersController extends AbstractController implements ProtectedControl
         $is = $this->is();
         $importer = $is->getImporter($id);
         $importer->setData('config', @$data['config']);
+        $this->em->flush($importer);
 
         if ($request->get('reset') && $is::STATUS_DONE === $importer->getData('status')) {
             $is->cleanup($importer);
-            $importer->setData('status', null);
-            $importer->setData('log', null);
-            $importer->setData('progress_start', null);
-            $importer->setData('progress_step', null);
-            $importer->setData('progress_max', null);
         }
 
-        $this->em->flush($importer);
 
         return $this->getAction($id);
     }
