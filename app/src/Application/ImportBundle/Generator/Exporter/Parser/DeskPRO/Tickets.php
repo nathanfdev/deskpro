@@ -178,7 +178,9 @@ class Tickets extends AbstractParser
             ->setOid($num)
             ->setPersonEmail($message->person->getPrimaryEmail()->email)
             ->setDateCreated($message['date_created'])
-            ->setMessageHtml($message['message']);
+            ->setMessageHtml($message['message'])
+            ->setAsNote($message['is_agent_note'])
+        ;
 
         foreach ($message->attachments as $num => $attachment) {
             /** @var Entity\Attachment $attachment */
