@@ -79,6 +79,7 @@ class CsvTest extends \DpIntegrationTestCase
     public function runBefore()
     {
         $this->helper->enableFreshDatabaseSet('FreshDb');
+        $this->helper->loadFixtures('Import/CustomTicketDef');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();

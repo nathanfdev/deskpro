@@ -55,7 +55,17 @@ class CustomDefTicket extends CustomDefAbstract
      */
     protected $children = null;
 
-
+    /**
+     * Set parent
+     *
+     * @param CustomDefTicket $parent
+     * @return $this
+     */
+    public function setParent(CustomDefTicket $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+        return $this;
+    }
 
     ############################################################################
     # Doctrine Metadata
