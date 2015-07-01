@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "6d69b830e8cb1bd2bcdba786cddfbf38",
@@ -332,7 +332,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkExtension/zipball/ba5329be65a816adfc2d9ba9b639a92f548371da",
+                "url": "https://api.github.com/repos/Behat/MinkExtension/zipball/c7fb932533292567aa57bfbe4ec40f1490ae6d58",
                 "reference": "ba5329be65a816adfc2d9ba9b639a92f548371da",
                 "shasum": ""
             },
@@ -586,7 +586,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/719129a91ac6bbdf2db22583db31bbbfbfbb2361",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/3c2c71aca37e1fb7ffda8b2f940b0d720579b3bb",
                 "reference": "719129a91ac6bbdf2db22583db31bbbfbfbb2361",
                 "shasum": ""
             },
@@ -1026,7 +1026,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/2f8d7263c4c44445b51fc2d9bf71d21f7016347d",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/2f28f691d8bba2aedb3537d12917d92ba3f63cb8",
                 "reference": "2f8d7263c4c44445b51fc2d9bf71d21f7016347d",
                 "shasum": ""
             },
@@ -1420,7 +1420,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/058a4635ac9b80a5b1997df28a754e64b1425a1d",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/70c580174e4e16a79296a02256fb40a34192731c",
                 "reference": "058a4635ac9b80a5b1997df28a754e64b1425a1d",
                 "shasum": ""
             },
@@ -1734,7 +1734,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/2401b1083c2113a52f9846488f7bca264da23f4f",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/ba4a401a62a7f1543a82e908b3c05359cf43f1ab",
                 "reference": "2401b1083c2113a52f9846488f7bca264da23f4f",
                 "shasum": ""
             },
@@ -3247,7 +3247,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/1934fe9e57e2e847551da22fed4f4a6ce3070acf",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/976e7df01b5fea711bf83295e2fc725869e10821",
                 "reference": "1934fe9e57e2e847551da22fed4f4a6ce3070acf",
                 "shasum": ""
             },
@@ -5965,7 +5965,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willdurand/BazingaHateoasBundle/zipball/3c86e8080e8a229365a0ce91818da6fe6562376b",
+                "url": "https://api.github.com/repos/willdurand/BazingaHateoasBundle/zipball/a99f48ea5004a89ecf0927229d9c912fed9fa4ab",
                 "reference": "3c86e8080e8a229365a0ce91818da6fe6562376b",
                 "shasum": ""
             },
@@ -6105,7 +6105,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/41d42e14b932301d12f580bb6cebabd883a2696a",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/3fddea8dd177f365b2b8fe0bfa89e75ffdd4615d",
                 "reference": "41d42e14b932301d12f580bb6cebabd883a2696a",
                 "shasum": ""
             },
@@ -6403,7 +6403,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/be361d2f1224a6b9ebcf42bf06006a8db2639368",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/93b904dcdf88ab3a4d195679229943ffc766a0d1",
                 "reference": "be361d2f1224a6b9ebcf42bf06006a8db2639368",
                 "shasum": ""
             },

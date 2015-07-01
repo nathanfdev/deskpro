@@ -42,8 +42,12 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Main representation of a ticket filter definition.
+ *
+ * Describes a criterion or set of criteria that make up a ticket filter.
+ *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository")
- * @ORM\Table(name="ticket_filters")
+ * @ORM\Table(name="custom_ticket_filters")
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
