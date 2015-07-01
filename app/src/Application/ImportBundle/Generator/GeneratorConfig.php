@@ -196,7 +196,7 @@ class GeneratorConfig
     /**
      * Returns exporter batch config
      *
-     * @return BatchConfigInterface
+     * @return AbstractBatchConfig
      */
     public function getExporterBatchConfig()
     {

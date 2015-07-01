@@ -70,7 +70,8 @@ class Batch extends AbstractBatchSizeParser
         $batch_config = parent::parse($config);
         $batch_config
             ->setUsersMinId($config['users_min_id'])
-            ->setTicketsMinId($config['tickets_min_id']);
+            ->setTicketsMinId($config['tickets_min_id'])
+        ;
 
         return $batch_config;
     }

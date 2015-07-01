@@ -251,7 +251,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $config          = $this->createGeneratorConfig($input);
             $exporter_config = $config->getExporterBatchConfig();
 
-            if ($exporter_config instanceof Generator\Exporter\Parser\BatchConfigInterface) {
+            if ($exporter_config instanceof Generator\Exporter\Parser\AbstractBatchConfig) {
                 $rerun = $exporter_config->getHasRemaining();
                 if ($rerun) {
                     $output->writeln("<info>Running next batch</info>");

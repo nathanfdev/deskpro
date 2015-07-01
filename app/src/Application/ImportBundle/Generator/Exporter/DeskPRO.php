@@ -88,6 +88,8 @@ class DeskPRO extends AbstractExporter implements ExporterBatchInterface
             ->setTicketsMinId($tickets_parser->getCurrentTicketsMinId())
             ->setDateModified(new DateTime());
 
+        $updated_config->setHasRemaining($tickets_parser->getCount() || $people_parser->getCount());
+
         return $updated_config;
     }
 

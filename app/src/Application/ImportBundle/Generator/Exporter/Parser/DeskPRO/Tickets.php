@@ -179,7 +179,7 @@ class Tickets extends AbstractParser
             ->setPersonEmail($message->person->getPrimaryEmail()->email)
             ->setDateCreated($message['date_created'])
             ->setMessageHtml($message['message'])
-            ->setAsNote($message['is_agent_note'])
+            ->setAsNote((bool) $message['is_agent_note'])
         ;
 
         foreach ($message->attachments as $num => $attachment) {
