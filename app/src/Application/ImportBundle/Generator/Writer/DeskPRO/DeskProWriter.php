@@ -110,7 +110,14 @@ final class DeskProWriter extends AbstractWriter
                 $records = $importer->getDoctrineEntities($entity);
                 foreach ($records as $record) {
                     if ($this->config->isDryRun() === false) {
-                        $this->entity_manager->persist($record);
+
+                        /**
+                         * getting error on duplicates:
+                         * Entity of type Application\DeskPRO\Entity\PersonPref has identity through a foreign entity Application\DeskPRO\Entity\Person, however this entity has no identity itself. You have to call EntityManager#persist() on the related entity and make sure that an identifier was generated before trying to persist 'Application\DeskPRO\Entity\PersonPref'. In case of Post Insert ID Generation (such as MySQL Auto-Increment or PostgreSQL SERIAL) this means you have to call EntityManager#flush() between both persist operations.
+                         */
+                        if (!$record['id']) {
+                            $this->entity_manager->persist($record);
+                        }
                     }
                 }
 
