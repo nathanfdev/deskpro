@@ -124,73 +124,82 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
      */
     public function generate()
     {
-        $exporter     = $this->getExporter();
-        $outputWriter = $this->getWriter();
-        $collection   = new GenerateCollection();
-
-        $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
-
-        // Exports data to a collection of entities
-        foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
-            $this->exporterLogHeader($type);
-            $collection->attach($type, $exporter->exportByType($type));
-        }
+        try {
 
 
-        if ($collection->hasEntities()) {
+            $exporter     = $this->getExporter();
+            $outputWriter = $this->getWriter();
+            $collection   = new GenerateCollection();
 
-            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
+            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_EXPORT);
 
-            // Validate the collection of entities
-            foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
-                if ($collection->hasEntitiesByType($type)) {
-                    $entities   = $collection->getByEntityType($type);
-                    $exceptions = $this->validateExportingCollection($type, $entities);
+            // Exports data to a collection of entities
+            foreach ($this->getRequiredExportersOrderedEntityTypes() as $type) {
+                $this->exporterLogHeader($type);
+                $collection->attach($type, $exporter->exportByType($type));
+            }
 
-                    if (count($exceptions) > 0) {
-                        throw new GeneratorException($exceptions);
+
+            if ($collection->hasEntities()) {
+
+                $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_VALIDATION);
+
+                // Validate the collection of entities
+                foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
+                    if ($collection->hasEntitiesByType($type)) {
+                        $entities   = $collection->getByEntityType($type);
+                        $exceptions = $this->validateExportingCollection($type, $entities);
+
+                        if (count($exceptions) > 0) {
+                            throw new GeneratorException($exceptions);
+                        }
+                    }
+                }
+
+                $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
+
+                // Writes entities to a storage
+                $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
+                $outputWriter->prepare();
+
+                foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
+                    if ($collection->hasEntitiesByType($type)) {
+                        $this->writerLogHeader($type);
+                        $entities = $collection->getByEntityType($type);
+
+                        foreach ($entities as $entity) {
+                            $this->advanceProgressBar();
+
+                            /** @var Entity\EntityInterface $entity */
+                            $outputWriter->writeData($entity);
+                        }
                     }
                 }
             }
 
-            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_IMPORT);
-
-            // Writes entities to a storage
-            $outputWriter->setWritingEntityTypes($collection->getContainingEntityTypes());
-            $outputWriter->prepare();
-
-            foreach ($this->getRequiredWritersOrderedEntityTypes() as $type) {
-                if ($collection->hasEntitiesByType($type)) {
-                    $this->writerLogHeader($type);
-                    $entities = $collection->getByEntityType($type);
-
-                    foreach ($entities as $entity) {
-                        $this->advanceProgressBar();
-
-                        /** @var Entity\EntityInterface $entity */
-                        $outputWriter->writeData($entity);
-                    }
-                }
+            if ($this->progress_bar && $collection->getSkippedCount()) {
+                $this->progress_bar->advance($collection->getSkippedCount() * 2);
             }
-        }
 
-        if ($this->progress_bar && $collection->getSkippedCount()) {
-            $this->progress_bar->advance($collection->getSkippedCount() * 2);
-        }
+            // Writes batch config (even no entities to write to support "retry-after" timeout)
+            // Writes batch config before validation to skip broken batches
 
-        // Writes batch config (even no entities to write to support "retry-after" timeout)
-        // Writes batch config before validation to skip broken batches
+            if ($exporter instanceof Exporter\ExporterBatchInterface) {
+                $updated = $exporter->getUpdatedBatchConfig();
+                $outputWriter->setBatchConfig($updated);
+                $outputWriter->writeBatchConfig();
 
-        if ($exporter instanceof Exporter\ExporterBatchInterface) {
-            $updated = $exporter->getUpdatedBatchConfig();
-            $outputWriter->setBatchConfig($updated);
-            $outputWriter->writeBatchConfig();
-
-            if (!$updated->getHasRemaining()) {
+                if (!$updated->getHasRemaining()) {
+                    $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+                }
+            } else {
                 $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
             }
-        } else {
-            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_DONE);
+
+
+        } catch (\Exception $e) {
+            $this->is->setStatus($this->config->getExporterType(), ImportService::STATUS_ERROR);
+            throw $e;
         }
     }
 

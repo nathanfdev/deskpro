@@ -126,12 +126,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
                 InputOption::VALUE_NONE,
                 'Whether to load config from DB'
             )
-            ->addOption(
-                'skip-pid-check',
-                'pid',
-                InputOption::VALUE_NONE,
-                'Skip pid check'
-            )
         ;
     }
 
@@ -140,7 +134,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$input->getOption('skip-pid-check')) {
+        if (!$input->getOption('batch')) {
             $pid_file = dp_get_data_dir() . '/importer.pid';
             if (file_exists($pid_file)) {
                 throw new \Exception('Import/Export already in process');
@@ -227,7 +221,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         // todo always verbose mode by now
         // todo check for progress bar in unattended mode
         $arguments[] = '-vvv';
-        $arguments[] = '--skip-pid-check';
 
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
@@ -593,20 +586,23 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      *
      * @return ProgressBar|null
      */
-    protected function createAndSetProgressBar(Generator\Generator $generator, OutputInterface $output)
+    protected function createAndSetProgressBar(Generator\Generator $generator, InputInterface $input, OutputInterface $output)
     {
-        if ($generator->getConfig()->isProgressbarEnabled()) {
-            $total_count = $generator->getTotalRecordsCount();
-            $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
-
-            $progress_bar = new ProgressBar($output, $total_count);
-            $progress_bar->start();
-
-            $generator->setProgressBarHelper($progress_bar);
-            return $progress_bar;
+        if (!$generator->getConfig()->isProgressbarEnabled()) {
+            return null;
         }
 
-        return null;
+        $total_count = $generator->getTotalRecordsCount();
+        $total_count = $generator->getConfig()->hasWriter() ? $total_count * 3 : $total_count * 2;
+
+        $progress_bar = $input->getOption('config-from-db')
+            ? $this->getContainer()->get('deskpro.import')->createProgressBar($total_count)
+            : new ProgressBar($output, $total_count);
+
+        $progress_bar->start();
+
+        $generator->setProgressBarHelper($progress_bar);
+        return $progress_bar;
     }
 
     /**

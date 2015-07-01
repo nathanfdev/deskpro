@@ -34,6 +34,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\DataStore;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\ImporterProgressBar;
 use Application\ImportBundle\Generator\Writer\WriterInterface;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
@@ -55,6 +56,7 @@ class Import
     const STATUS_EXPORT      = 'export';
     const STATUS_VALIDATION  = 'validation';
     const STATUS_IMPORT      = 'import';
+    const STATUS_ERROR       = 'error';
     const STATUS_DONE        = 'done';
 
     /**
@@ -299,5 +301,15 @@ class Import
         $importer->setData('progress_max', null);
 
         $this->em->flush($importer);
+    }
+
+    /**
+     * @param $total_count
+     * @return ImporterProgressBar
+     */
+    public function createProgressBar($total_count)
+    {
+        $importer = $this->getImporter($this->getCurrentName());
+        return new ImporterProgressBar($importer, $this->em, $total_count);
     }
 }

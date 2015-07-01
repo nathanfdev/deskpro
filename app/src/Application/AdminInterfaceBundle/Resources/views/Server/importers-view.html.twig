@@ -12,7 +12,7 @@
                         &nbsp;
                         {{ ng_var('importer.title') }}
                         &nbsp;
-                        <span ng-if="busy || importer.status && 'testing' !== importer.status && 'done' !== importer.status">
+                        <span ng-if="busy || !done && importer.status && 'testing' !== importer.status">
                             <i class="fa fa-spinner fa-spin"></i>
                         </span>
                     </h3>
@@ -269,7 +269,7 @@
 
                     <div ng-if="importer.status && 'testing' !== importer.status">
 
-                        <div ng-if="'done' !== importer.status && importer.progress_start">
+                        <div ng-if="!done && importer.progress_start">
                             Import process was started <span am-time-ago="importer.progress_start"></span>.
                         </div>
 
@@ -288,7 +288,7 @@
                         <br/>
 
                         <textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;" scroll-glue>{{ ng_var('importer.log') }}</textarea>
-                        <div ng-show="log_download_url && 'done' === importer.status" style="margin-top: 2px;">
+                        <div ng-show="log_download_url && done" style="margin-top: 2px;">
                           <a class="btn btn-default btn-xs" ng-href="{{ ng_var('log_download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log</a>
                         </div>
 
@@ -327,7 +327,7 @@
 
                     <button class="btn btn-primary"
                             ng-click="Ctrl.importReset()"
-                            ng-if="'done' === importer.status"
+                            ng-if="done"
                             >
                         New Import
                     </button>

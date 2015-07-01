@@ -61,7 +61,7 @@ class ImportCommand extends AbstractGenerateCommand
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
         $generator = $this->createGenerator($config, $logger);
 
-        $this->createAndSetProgressBar($generator, $output);
+        $this->createAndSetProgressBar($generator, $input, $output);
         $this->generate($generator, $output);
     }
 

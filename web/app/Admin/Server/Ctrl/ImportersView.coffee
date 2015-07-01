@@ -12,11 +12,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @$scope.log_download_url = if val then @$http.formatApiUrl('/server/importers/'+@$scope.id+'/download-log') else null
 
       @$scope.$watch 'importer.status', (val) =>
-        if val && 'testing' != val && 'done' != val
+        if val && 'testing' != val && 'done' != val && 'error' != val
           @updateImportStatus = @$interval (=> @importGet()), 1000 if !@updateImportStatus
         else if @updateImportStatus
           @$interval.cancel @updateImportStatus
           @updateImportStatus = null
+
+        if 'done' == val || 'error' == val
+          @$scope.done = true
 
       @$scope.$on '$destroy', =>
         @$interval.cancel @updateImportStatus
@@ -94,6 +97,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     importReset: =>
+      @$scope.done = false
       @importSave true
 
 
