@@ -9,7 +9,7 @@ Feature: /filters endpoint
 
   @reinstall
   Scenario: Successfully create a filter
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
   "title": "My Sales Tickets",
@@ -51,17 +51,17 @@ Feature: /filters endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/filters/1"
+    And the header "Location" should be equal to "/api/v2/ticket_filters/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My Sales Tickets"
     And the JSON node "data.term.type" should be equal to "composite"
     And the JSON node "data.term.op" should be equal to "and"
     And the JSON node "data.term.terms[0].type" should be equal to "agent"
     And the JSON node "data.term.terms[0].options.agent_ids[0]" should be equal to "me"
-    And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
+    And the JSON node "data.links.self" should be equal to "/api/v2/ticket_filters/1"
 
   Scenario: I GET a single filter
-    When I send a GET request to "/api/v2/filters/1"
+    When I send a GET request to "/api/v2/ticket_filters/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -70,10 +70,10 @@ Feature: /filters endpoint
     And the JSON node "data.term.op" should be equal to "and"
     And the JSON node "data.term.terms[0].type" should be equal to "agent"
     And the JSON node "data.term.terms[0].options.agent_ids[0]" should be equal to "me"
-    And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
+    And the JSON node "data.links.self" should be equal to "/api/v2/ticket_filters/1"
 
   Scenario: I GET filters
-    When I send a GET request to "/api/v2/filters"
+    When I send a GET request to "/api/v2/ticket_filters"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
@@ -87,10 +87,10 @@ Feature: /filters endpoint
     And the JSON node "data[0].term.op" should be equal to "and"
     And the JSON node "data[0].term.terms[0].type" should be equal to "agent"
     And the JSON node "data[0].term.terms[0].options.agent_ids[0]" should be equal to "me"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/filters/1"
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/ticket_filters/1"
 
   Scenario: I modify a filter
-    When I send a PUT request to "/api/v2/filters/1" with body:
+    When I send a PUT request to "/api/v2/ticket_filters/1" with body:
     """
     {
       "title": "NEW TITLE"
@@ -100,30 +100,30 @@ Feature: /filters endpoint
     And the response should be empty
 
   Scenario: I verify the resource from the PUT above was actually updated
-    When I send a GET request to "/api/v2/filters/1"
+    When I send a GET request to "/api/v2/ticket_filters/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "NEW TITLE"
     And the JSON node "data.term.type" should be equal to "composite"
-    And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
+    And the JSON node "data.links.self" should be equal to "/api/v2/ticket_filters/1"
 
   Scenario: I fail to GET a filter
-    When I send a GET request to "/api/v2/filters/101"
+    When I send a GET request to "/api/v2/ticket_filters/101"
     Then the response status code should be 404
 
   Scenario: I DELETE a filter
-    When I send a DELETE request to "/api/v2/filters/1"
+    When I send a DELETE request to "/api/v2/ticket_filters/1"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I fail to GET the deleted filter
-    When I send a GET request to "/api/v2/filters/1"
+    When I send a GET request to "/api/v2/ticket_filters/1"
     Then the response status code should be 404
 
   @reinstall
   Scenario: If there is a missing term op, we use default op
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -141,10 +141,10 @@ Feature: /filters endpoint
     And the JSON node "data.title" should exist
     And the JSON node "data.term.type" should be equal to "agent"
     And the JSON node "data.term.op" should be equal to "is"
-    And the JSON node "data.links.self" should be equal to "/api/v2/filters/1"
+    And the JSON node "data.links.self" should be equal to "/api/v2/ticket_filters/1"
 
   Scenario: Create a filter that successfully uses all of the terms
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
   "title": "Big Test",
@@ -221,7 +221,7 @@ Feature: /filters endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/filters/2"
+    And the header "Location" should be equal to "/api/v2/ticket_filters/2"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "Big Test"
     And the JSON node "data.term.type" should be equal to "composite"

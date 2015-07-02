@@ -14,7 +14,7 @@ api_batch_annotation:
     type: annotation
     resource: "@ApiBundle/Controller/BatchController.php"
 
-filters:
+ticket_filters:
     type: rest
     resource: DeskPRO\Bundle\ApiBundle\Controller\Filters\FiltersController
 

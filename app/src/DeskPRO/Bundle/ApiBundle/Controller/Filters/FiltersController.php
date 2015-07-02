@@ -51,6 +51,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 
+/**
+ * @RouteResource("ticket_filters")
+ */
 class FiltersController extends BaseController implements ClassResourceInterface
 {
     /**
@@ -239,7 +242,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
                 $this->createRepresentation($filter),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('get_filters', array('id' => $filter->getId()))
+                    'Location' => $this->generateUrl('get_ticket_filters', array('id' => $filter->getId()))
                 )
             );
         }

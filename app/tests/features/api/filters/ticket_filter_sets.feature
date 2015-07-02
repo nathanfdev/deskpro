@@ -21,7 +21,7 @@ Feature: /ticket_filter_sets endpoint
     And the header "Location" should be equal to "/api/v2/ticket_filter_sets/1"
 
   Scenario: Successfully create a filter
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
 "title": "My Sales Tickets",
@@ -64,7 +64,7 @@ Feature: /ticket_filter_sets endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/filters/1"
+    And the header "Location" should be equal to "/api/v2/ticket_filters/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My Sales Tickets"
 
@@ -82,4 +82,4 @@ Feature: /ticket_filter_sets endpoint
     And the JSON node "data[0].filters[0].term.op" should be equal to "and"
     And the JSON node "data[0].filters[0].term.terms[0].type" should be equal to "agent"
     And the JSON node "data[0].filters[0].term.terms[0].options.agent_ids[0]" should be equal to "me"
-    And the JSON node "data[0].filters[0].links.self" should be equal to "/api/v2/filters/1"
+    And the JSON node "data[0].filters[0].links.self" should be equal to "/api/v2/ticket_filters/1"
