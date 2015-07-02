@@ -36,6 +36,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Sandbox;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
@@ -46,9 +49,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use FOS\RestBundle\Controller\Annotations\Get;
 
 /**
- * @RouteResource("sandbox_widgets")
+ * THIS IS A TEST CONTROLLER AND IS NOT PRODUCTION CODE. It is used for testing the api, and that is it.)
  */
 class SandboxWidgetsController extends BaseController implements ClassResourceInterface
 {
@@ -68,6 +72,8 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *          400="Invalid request"
      *      }
      * )
+     *
+     * @Get("/sandbox_widgets", name="api_sandbox_widgets")
      */
     public function cgetAction()
     {
@@ -99,6 +105,8 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
      * )
+     *
+     * @Get("/sandbox_widgets/{id}", name="api_sandbox_widgets_get")
      */
     public function getAction($id)
     {
@@ -120,6 +128,8 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
      * )
+     *
+     * @Post("/sandbox_widgets", name="api_sandbox_widgets_post")
      */
     public function postAction(Request $request)
     {
@@ -146,6 +156,8 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\SandboxWidget"
      * )
+     *
+     * @Put("/sandbox_widgets/{id}", name="api_sandbox_widgets_put")
      */
     public function putAction(Request $request, $id)
     {
@@ -170,6 +182,8 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
      *          404="Not Found"
      *      }
      * )
+     *
+     * @Delete("/sandbox_widgets/{id}", name="api_sandbox_widgets_delete")
      */
     public function deleteAction($id)
     {

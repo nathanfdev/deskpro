@@ -57,7 +57,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 
 /**
  * API access to TicketFilterSet entities.
- * @RouteResource("ticket_filter_sets")
  */
 class TicketFilterSetsController extends BaseController implements ClassResourceInterface
 {
@@ -70,6 +69,8 @@ class TicketFilterSetsController extends BaseController implements ClassResource
      *          200="Success"
      *      }
      * )
+     *
+     * @Get("/ticket_filter_sets", name="api_ticket_filter_sets")
      */
     public function cgetAction(Request $request)
     {
@@ -100,6 +101,8 @@ class TicketFilterSetsController extends BaseController implements ClassResource
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
+     *
+     * @Get("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_get")
      */
     public function getAction($id)
     {
@@ -125,6 +128,8 @@ class TicketFilterSetsController extends BaseController implements ClassResource
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
+     *
+     * @Post("/ticket_filter_sets", name="api_ticket_filter_sets_post")
      */
     public function postAction(Request $request)
     {
