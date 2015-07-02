@@ -15,7 +15,7 @@ framework:
     #translator:      { fallback: "%locale%" }
     secret:          "irrelevant - compiler pass will override this"
     router:
-        resource: "%kernel.root_dir%/config/api_routing.yml"
+        resource: "%kernel.root_dir%/config/api/api_routing.yml"
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
@@ -32,7 +32,7 @@ framework:
     http_method_override: true
 
 monolog:
-    channels:
+    channels: # you MUST also update portal_config.yml if you change these
         - "dp.tickets.filters.tengine.dbal.engine"
         - "dp.tickets.filters.tengine.dbal.compiler"
         - "dp.tickets.filters.tengine.php.engine"
