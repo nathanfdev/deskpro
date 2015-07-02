@@ -51,12 +51,20 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Delete;
+
+
 /**
  * @RouteResource("ticket_filters")
  */
 class FiltersController extends BaseController implements ClassResourceInterface
 {
     /**
+     * @Get("/ticket_filters", name="cget_ticket_filters")
+     *
      * @ApiDoc(
      *      description="get a list of filters",
      *      parameters={
@@ -98,6 +106,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Get("/ticket_filters/{id}", name="get_ticket_filters")
+     *
      * @ApiDoc(
      *      description="get a filter",
      *      requirements={
@@ -130,6 +140,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Post("/ticket_filters", name="post_ticket_filters")
+     *
      * @ApiDoc(
      *      description="create a filter",
      *      input={"class"="filter","name"=""},
@@ -148,6 +160,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Put("/ticket_filters/{id}", name="put_ticket_filters")
+     *
      * @ApiDoc(
      *      description="modify a filter",
      *      requirements={
@@ -179,6 +193,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Delete("/ticket_filters/{id}")
+     *
      * @ApiDoc(
      *      description="delete a filter",
      *      requirements={
