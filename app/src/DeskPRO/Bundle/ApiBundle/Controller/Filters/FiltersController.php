@@ -51,9 +51,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 
-/**
- * @RouteResource("filters")
- */
 class FiltersController extends BaseController implements ClassResourceInterface
 {
     /**
