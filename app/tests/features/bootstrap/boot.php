@@ -8,5 +8,6 @@ define('DP_TESTS_START_TIME', time());
 
 require_once __DIR__ . '/../../../sys/preboot.php';
 require_once __DIR__ . '/../../../sys/autoload.php';
+require_once __DIR__ . '/../../../sys/system.php';
 
 ini_set('max_execution_time', 0);
