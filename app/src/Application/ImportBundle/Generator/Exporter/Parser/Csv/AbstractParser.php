@@ -46,18 +46,18 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     const FILE_ARTICLE_CUSTOM_FIELDS  = 'article_custom_fields.csv';
     const FILE_DOWNLOADS              = 'downloads.csv';
     const FILE_DOWNLOAD_ATTACHMENTS   = 'downloads_attachments.csv';
-    const FILE_DOWNLOAD_CUSTOM_FIELDS = 'download_custom_fields.csv';
     const FILE_FEEDBACK               = 'feedback.csv';
     const FILE_FEEDBACK_ATTACHMENTS   = 'feedback_attachments.csv';
     const FILE_FEEDBACK_CUSTOM_FIELDS = 'feedback_custom_fields.csv';
     const FILE_NEWS                   = 'news.csv';
-    const FILE_NEWS_CUSTOM_FIELDS     = 'news_custom_fields.csv';
     const FILE_PEOPLE                 = 'people.csv';
     const FILE_PEOPLE_CUSTOM_FIELDS   = 'people_custom_fields.csv';
     const FILE_TICKETS                = 'tickets.csv';
     const FILE_TICKET_MESSAGES        = 'ticket_messages.csv';
     const FILE_TICKET_ATTACHMENTS     = 'ticket_attachments.csv';
     const FILE_TICKET_CUSTOM_FIELDS   = 'ticket_custom_fields.csv';
+
+    const CUSTOM_FIELD_PREFIX         = 'custom_field_';
 
     /**
      * @var CsvReaderInterface
@@ -198,7 +198,8 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 ->setBlobPath($attachment['blob_path'])
                 ->setFileName($attachment['file_name'])
                 ->setContentType($attachment['content_type'])
-                ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
+                ->setAsInline($this->isBooleanTrue($attachment['is_inline']))
+            ;
 
             return $entity;
         }
@@ -227,5 +228,89 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         );
 
         return $this->hasRequiredColumns($attachment, $columns);
+    }
+
+    /**
+     * Returns a collection of custom fields
+     *
+     * @param CsvConfig $config
+     * @param string    $destination_prefix
+     * @param string    $ref_column
+     *
+     * @return Entity\Collection
+     */
+    protected function exportCustomFields(CsvConfig $config, $destination_prefix, $ref_column)
+    {
+        $collection    = new Entity\Collection();
+        $custom_fields = $this->getReaderData($config);
+
+        foreach ($custom_fields as $num => $custom_field) {
+            try {
+                $entity = $this->exportAttachment($num, $destination_prefix, $custom_field, $ref_column);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf(
+                        'Custom field of entity `%s%s` parsed successfully!',
+                        $destination_prefix, $entity->getOid())
+                    );
+                } else {
+                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logWarning(sprintf(
+                    'Invalid custom field record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns an attachment entity
+     *
+     * @param int    $num
+     * @param string $destination_prefix
+     * @param array  $custom_field
+     * @param string $ref_column
+     *
+     * @return Entity\CustomField|null
+     */
+    protected function exportCustomField($num, $destination_prefix, array $custom_field, $ref_column)
+    {
+        if ($this->isAttachmentValid($custom_field, $ref_column)) {
+            $entity = new Entity\CustomField();
+            $entity
+                ->setDestination($destination_prefix . $custom_field[$ref_column])
+                ->setOid($num)
+                ->setKey($custom_field['field_name'])
+                ->setValue($custom_field['value'])
+            ;
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if a custom field has all required columns
+     *
+     * @param array  $custom_field
+     * @param string $ref_column
+     *
+     * @return bool
+     */
+    protected function isCustomFieldValid(array $custom_field, $ref_column)
+    {
+        $columns = array(
+            $ref_column,
+            'field_name',
+            'value',
+        );
+
+        return $this->hasRequiredColumns($custom_field, $columns);
     }
 }
