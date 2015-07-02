@@ -224,7 +224,7 @@ class SandboxWidgetsController extends BaseController implements ClassResourceIn
                 $this->createRepresentation($widget),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('get_sandbox_widgets', array('id' => $widget->getId()))
+                    'Location' => $this->generateUrl('api_sandbox_widgets_get', array('id' => $widget->getId()))
                 )
             );
         }

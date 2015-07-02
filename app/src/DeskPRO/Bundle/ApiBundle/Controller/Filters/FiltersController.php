@@ -253,7 +253,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
                 $this->createRepresentation($filter),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('get_ticket_filters', array('id' => $filter->getId()))
+                    'Location' => $this->generateUrl('api_ticket_filters_get', array('id' => $filter->getId()))
                 )
             );
         }

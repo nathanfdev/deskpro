@@ -155,7 +155,7 @@ class TicketFilterSetsController extends BaseController implements ClassResource
                 $this->createRepresentation($set),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('get_ticket_filter_sets', array('id' => $set->getId()))
+                    'Location' => $this->generateUrl('api_ticket_filter_sets_get', array('id' => $set->getId()))
                 )
             );
         } else {
