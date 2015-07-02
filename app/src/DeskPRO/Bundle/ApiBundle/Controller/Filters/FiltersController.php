@@ -38,6 +38,7 @@ use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
@@ -50,6 +51,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -135,6 +137,29 @@ class FiltersController extends BaseController implements ClassResourceInterface
 
         return View::create(
             $this->createRepresentation($filter),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Get("/ticket_filters/{id}/count")
+     */
+    public function getTicketsCountAction($id)
+    {
+        $filter = $this->get('data.filters')->getFilter($id);
+
+        if (!$filter) {
+            throw $this->createNotFoundException();
+        }
+
+        // Let's retrieve the tickets for this filter.
+        $engine = $this->get('term_engine.dbal_ticket_filters.engine');
+        $conn = $this->get('database_connection');
+
+        $num_tickets = $engine->evaluate($filter, new TermEngineContext($this->getUser()))->fetchCount();
+
+        return View::create(
+            $num_tickets,
             Response::HTTP_OK
         );
     }
