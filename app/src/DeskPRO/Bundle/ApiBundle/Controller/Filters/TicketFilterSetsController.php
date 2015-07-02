@@ -53,10 +53,10 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSets;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 
 /**
- * API access to TicketFilterSets entities.
+ * API access to TicketFilterSet entities.
  * @RouteResource("ticket_filter_sets")
  */
 class TicketFilterSetsController extends BaseController implements ClassResourceInterface
@@ -84,11 +84,26 @@ class TicketFilterSetsController extends BaseController implements ClassResource
     }
 
     /**
-     * @Get("/ticket_filter_sets/{setId}", name="get_ticket_filter_sets")
+     * @ApiDoc(
+     *      description="get a filter set",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter set",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
+     * )
      */
-    public function getAction($setId)
+    public function getAction($id)
     {
-        $set = $this->getEm()->find('App:TicketFilterSet', $setId);
+        $set = $this->getEm()->find('App:TicketFilterSet', $id);
 
         if (!$set) {
             throw new NotFoundHttpException();
@@ -101,11 +116,9 @@ class TicketFilterSetsController extends BaseController implements ClassResource
     }
 
     /**
-     * @Post("/ticket_filter_sets", name="post_ticket_filter_sets")
-     *
      * @ApiDoc(
      *      description="Add a new filter set.",
-     *      input={class="TicketFilterSet", name=""},
+     *      input={"class"="ticket_filter_set", "name"=""},
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request",
@@ -124,7 +137,7 @@ class TicketFilterSetsController extends BaseController implements ClassResource
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
         $form = $this->get('form.factory')
-            ->createNamedBuilder(null, 'form', $set)
+            ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 
         $form->submit($request->request->all(), 'PUT' !== $request->getMethod());
@@ -148,6 +161,6 @@ class TicketFilterSetsController extends BaseController implements ClassResource
     // A bit of comfort.
     protected function getEm()
     {
-        return $this->getDoctrine->getManager();
+        return $this->getDoctrine()->getManager();
     }
 }

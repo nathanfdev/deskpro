@@ -73,7 +73,7 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
      * @var bool
      * @ORM\Column(name="is_default", type="boolean")
      */
-    protected $is_default;
+    protected $is_default = false;
 
     /**
      * @var Person

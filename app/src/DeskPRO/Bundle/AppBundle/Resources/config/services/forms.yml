@@ -37,3 +37,8 @@ services:
       class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
       arguments:
           - @term_to_json_converter
+
+  form.filter_set:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\FilterSetType
+      tags:
+          - { name: form.type, alias: filter_set }

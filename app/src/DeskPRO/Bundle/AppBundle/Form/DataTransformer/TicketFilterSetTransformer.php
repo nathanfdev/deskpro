@@ -31,69 +31,63 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Doctrine\ORM\EntityManager;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 
-class FilterType extends AbstractType
+/**
+ * Convert user input into a TicketFilterSet and vice-versa.
+ */
+class TicketFilterSetTransformer implements DataTransformerInterface
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    public function __construct(EntityManager $em)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
-        $builder
-            ->add(
-                'title',
-                'text',
-                array(
-                    'description' => 'the filter title'
-                )
-            )
-            ->add(
-                'display_order',
-                'integer',
-                array(
-                    'description' => 'the display order',
-                    'required' => false
-                )
-            )
-            ->add(
-                'filter_set',
-                'entity',
-                array(
-                    'description' => 'the filter set to which this filter belongs',
-                    'required' => false,
-                    'class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet',
-                    'property' => 'id',
-                )
-            )
-            ->add(
-                'term',
-                'term_engine_term',
-                array(
-                    'description' => 'the term definition in JSON',
-                )
-            );
+        $this->em = $em;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * Transforms a TicketFilterSet object into its ID.
+     *
+     * @param TicketFilterSet|null $set
+     * @return integer|null
+     */
+    public function transform($value)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilter',
-            )
-        );
+        if (!$value) {
+            return null;
+        }
+
+        return $value->getId();
     }
 
-    public function getName()
+    /**
+     * Transforms an integer (id) into a TicketFilterSet object.
+     *
+     * @param integer $id
+     * @return TicketFilterSet|null
+     * @throws TransformationFailedException if object TicketFilterSet not found.
+     */
+    public function reverseTransform($id)
     {
-        return 'filter';
+        if (!$id) {
+            return null;
+        }
+
+        $set = $this->em->find('App:TicketFilterSet', $id);
+
+        if (null === $set) {
+            throw new TransformationFailedException(sprintf('A filter set of ID "%d" does not exist!', $id));
+        }
+
+        return $set;
     }
 }

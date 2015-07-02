@@ -12,9 +12,8 @@ Feature: /ticket_filter_sets endpoint
     When I send a POST request to "/api/v2/ticket_filter_sets" with body:
     """
 {
-    person_id: null,
-    title: "Awaiting agent",
-    display_order: 0,
+    "title": "Awaiting Agent",
+    "display_order": 0
 }
     """
     Then the response should be in JSON
@@ -26,7 +25,7 @@ Feature: /ticket_filter_sets endpoint
     """
 {
 "title": "My Sales Tickets",
-"filter_set_id": 1,
+"filter_set": 1,
 "term": {
   "type": "composite",
   "op": "and",
@@ -68,7 +67,6 @@ Feature: /ticket_filter_sets endpoint
     And the header "Location" should be equal to "/api/v2/filters/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My Sales Tickets"
-    And the JSON node "data.filter_set_id" should be equal to "1"
 
   Scenario: I GET filter sets
     When I send a GET request to "/api/v2/ticket_filter_sets"

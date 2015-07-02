@@ -232,7 +232,6 @@ class FiltersController extends BaseController implements ClassResourceInterface
         }
 
         if ($form->isValid()) {
-
             $this->getDoctrine()->getManager()->persist($filter);
             $this->getDoctrine()->getManager()->flush($filter);
 
