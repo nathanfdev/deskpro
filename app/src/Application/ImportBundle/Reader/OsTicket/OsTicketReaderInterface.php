@@ -27,13 +27,15 @@
 
 namespace Application\ImportBundle\Reader\OsTicket;
 
+use Application\ImportBundle\Reader\ReaderInterface;
+
 /**
  * Os ticket reader interface
  *
  * Interface OsTicketReaderInterface
  * @package Application\ImportBundle\Reader\OsTicket
  */
-interface OsTicketReaderInterface
+interface OsTicketReaderInterface extends ReaderInterface
 {
     /**
      * Returns total count of staff records

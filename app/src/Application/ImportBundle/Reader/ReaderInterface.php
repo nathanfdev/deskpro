@@ -28,39 +28,18 @@
 namespace Application\ImportBundle\Reader;
 
 /**
- * Class BaseReader
+ * Interface ReaderInterface
  * @package Application\ImportBundle\Reader
  */
-abstract class BaseReader implements ReaderInterface
+interface ReaderInterface
 {
     /**
-     * @var BaseConfig
+     * @return BaseConfig
      */
-    protected $config;
+    public function getConfig();
 
     /**
-     * Constructor
-     *
-     * @param BaseConfig $config
+     * @return bool
      */
-    public function __construct(BaseConfig $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isReady()
-    {
-        return false;
-    }
+    public function isReady();
 }

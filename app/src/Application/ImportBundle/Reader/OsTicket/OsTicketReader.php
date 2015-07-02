@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Reader\OsTicket;
 
 use Application\ImportBundle\Reader\BaseReader;
-use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
 use Pdo;
 
 /**
@@ -298,7 +297,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
      */
     public function findStaffEmailById($id)
     {
-        $query = 'SELECT email FROM ost_staff WHERE id = :id';
+        $query = 'SELECT email FROM ost_staff WHERE staff_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
@@ -314,7 +313,7 @@ class OsTicketReader extends BaseReader implements OsTicketReaderInterface
      */
     public function findTeamNameById($id)
     {
-        $query = 'SELECT name FROM ost_team WHERE id = :id';
+        $query = 'SELECT name FROM ost_team WHERE team_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
