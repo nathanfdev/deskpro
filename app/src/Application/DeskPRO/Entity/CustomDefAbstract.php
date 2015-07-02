@@ -234,7 +234,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function setDescription($description)
     {
-        $this->setModelField('title', $description);
+        $this->setModelField('description', $description);
         return $this;
     }
 
