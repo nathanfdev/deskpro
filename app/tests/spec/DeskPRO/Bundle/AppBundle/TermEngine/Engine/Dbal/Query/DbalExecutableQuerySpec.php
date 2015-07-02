@@ -96,6 +96,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         );
 
         $stmt->fetch()->willReturn(array('count' => 5));
+        $stmt->rowCount()->willReturn(5);
 
         $connection->executeQuery(
             'SELECT COUNT(*) as count FROM tickets ticket WHERE ticket.param = :param1',
@@ -138,6 +139,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
                     )
                 )
         );
+        $stmt->rowCount()->willReturn(5);
 
         $this->fetchIds()->shouldReturn(
             array(
@@ -179,6 +181,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
                     )
                 )
         );
+        $stmt->rowCount()->willReturn(5);
 
         $this->fetchIds(
             array(

@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use Psr\Log\LoggerInterface;
 
 class DbalQueryCacher
 {
@@ -49,30 +50,44 @@ class DbalQueryCacher
      */
     private $serializer;
 
-    public function __construct(CacheAdapterInterface $cache_adapter, DbalQuerySerializer $serializer)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(CacheAdapterInterface $cache_adapter, DbalQuerySerializer $serializer, LoggerInterface $logger)
     {
         $this->cache_adapter = $cache_adapter;
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
-    public function fetchQuery($key)
+    public function fetchQuery($requested_key)
     {
-        $key = $this->generateKey($key);
+        $key = $this->generateKey($requested_key);
 
         $serialized = $this->cache_adapter->get($key);
+
+        if ($serialized) {
+            $this->logger->debug('DbalQueryCacher: cache hit');
+        } else {
+            $this->logger->debug('DbalQueryCacher: cache miss');
+        }
 
         $compiled_query = $this->serializer->unserialize($serialized);
 
         return $compiled_query;
     }
 
-    public function saveQuery($key, DbalQuery $compiled_query)
+    public function saveQuery($requested_key, DbalQuery $compiled_query)
     {
         $serialized = $this->serializer->serialize($compiled_query);
 
-        $key = $this->generateKey($key);
+        $key = $this->generateKey($requested_key);
 
         $this->cache_adapter->set($key, $serialized);
+
+        $this->logger->debug('DbalQueryCacher: serialized and saved compiled query');
     }
 
     /**
@@ -84,6 +99,15 @@ class DbalQueryCacher
     private function generateKey($key)
     {
         $add_unique = sprintf('dbal.term_engine.query.%s', $key);
+
+        $this->logger->debug(
+            'DbalQueryCacher: Prefixing key',
+            array(
+                'requested_key' => $key,
+                'using_prefixed_key' => $add_unique
+            )
+        );
+
         return $add_unique;
     }
 }

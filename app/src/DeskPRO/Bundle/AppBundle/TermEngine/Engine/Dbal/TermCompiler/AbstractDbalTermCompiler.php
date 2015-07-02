@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
@@ -41,28 +42,21 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStri
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
-abstract class AbstractDbalTermCompiler
+abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
 {
-    /**
-     * @var TermCompilerHelperPool
-     */
-    private $helper_pool;
-
-    public function setHelperPool(TermCompilerHelperPool $helper_pool)
+    public function logQueryPart(DbalQueryPart $part)
     {
-        $this->helper_pool = $helper_pool;
-    }
-
-    /**
-     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
-     *
-     * @param $id
-     * @return TermCompilerHelperInterface
-     */
-    public function getHelper($id)
-    {
-        return $this->helper_pool->getHelper($id);
+        $this->logDebug('Constructed QueryPart', array(
+            'where' => $part->getWhereString(),
+            'params' => $part->getParameters(),
+            'joins' => $part->getJoins(),
+            'unique_joins' => $part->getUniqueJoins()
+        ));
     }
 
     /**
@@ -96,37 +90,4 @@ abstract class AbstractDbalTermCompiler
     {
         return $this->helper_pool->getHelper('numeric');
     }
-
-    /**
-     * Use this shortcut to see if two op codes are the same.
-     *
-     * This normalizes the codes and then does the comparrison in a safe way.
-     *
-     * @param string $op
-     * @param string $code
-     * @return bool
-     */
-    protected function isOp($op, $code)
-    {
-        return strtolower($op) === strtolower($code);
-    }
-
-    /**
-     * Take a term and return a DbalQueryPart representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     * @return DbalQueryPart
-     */
-    public function compile(TermInterface $term)
-    {
-        return $this->doCompile($term);
-    }
-
-    /**
-     * Take a term and return a DbalQueryPart representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     * @return DbalQueryPart
-     */
-    abstract protected function doCompile(TermInterface $term);
 }

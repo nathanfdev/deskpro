@@ -33,17 +33,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalCompositeQueryBuilder;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompilerInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\QueryBuilder;
 use DeskPRO\Bundle\AppBundle\TermEngine\VisitorInterface;
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
+use Psr\Log\LoggerInterface;
 
 abstract class DbalCompiler implements DbalCompilerInterface
 {
@@ -57,13 +55,20 @@ abstract class DbalCompiler implements DbalCompilerInterface
      */
     protected $visitors;
 
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     public function __construct(
         DbalTermCompilerFactory $compiler_factory,
-        array $visitors
+        array $visitors,
+        LoggerInterface $logger
     )
     {
         $this->compiler_factory = $compiler_factory;
         $this->visitors = $visitors;
+        $this->logger = $logger;
     }
 
     /**
@@ -88,9 +93,22 @@ abstract class DbalCompiler implements DbalCompilerInterface
      */
     public function compile(TermInterface $term)
     {
+        $timer = new SimpleTimer();
+
+        // the fastest way to do this performance-wise is with reflection
+        $ref = new \ReflectionClass($term);
+        $term_class_name = $ref->getShortName();
+
+        $this->logger->info('DBAL TERM COMPILER START', array('term' => $term_class_name));
+
         // let visitors alter the term
         foreach ($this->visitors as $visitor) {
+            $this->logger->debug('Passing term to visitor', array('visitor' => get_class($visitor)));
             $visitor->visit($term);
+        }
+
+        if (!count($this->visitors)) {
+            $this->logger->debug('No visitors were registered, moving on');
         }
 
         $query_builder = new DbalQueryBuilder(new DbalQuery());
@@ -103,8 +121,16 @@ abstract class DbalCompiler implements DbalCompilerInterface
         // engine post hook
         $this->enginePostCompile($query_builder);
 
+        $this->logger->info('DBAL TERM COMPILER END', array(
+            'time' => $timer->getElapsedTime()
+        ));
+
         // result is a DbalQuery
-        return $query_builder->getQuery();
+        $query = $query_builder->getQuery();
+
+        $this->logger->debug('DbalCompiler result', array('query' => $query));
+
+        return $query;
     }
 
     public function getTermCompiler(TermInterface $term)
@@ -119,6 +145,15 @@ abstract class DbalCompiler implements DbalCompilerInterface
     protected function compileTerm(TermInterface $term, DbalQueryBuilder $query_builder)
     {
         if ($term instanceof CompositeTermInterface) {
+
+            $timer = new SimpleTimer();
+
+            $this->logger->debug(
+                'START CompositeTerm',
+                array(
+                    'op' => $term->getOp(),
+                )
+            );
 
             // compile each term in the composite with a special DbalCompositeQueryBuilder instead
             // of the normal DbalQueryBuilder so we can catch the WHERE strings and process them before writing.
@@ -142,6 +177,13 @@ abstract class DbalCompiler implements DbalCompilerInterface
 
             // write it in its own parenthesis
             $query_builder->setWhereString($where_string);
+
+            $this->logger->debug(
+                'END CompositeTerm',
+                array(
+                    'time' => $timer->getElapsedTime()
+                )
+            );
 
         } else {
 

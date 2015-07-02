@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use Psr\Log\LoggerInterface;
 
 class PhpCheckCacher
 {
@@ -49,30 +50,44 @@ class PhpCheckCacher
      */
     private $serializer;
 
-    public function __construct(CacheAdapterInterface $cache_adapter, PhpCheckSerializer $serializer)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(CacheAdapterInterface $cache_adapter, PhpCheckSerializer $serializer, LoggerInterface $logger)
     {
         $this->cache_adapter = $cache_adapter;
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
-    public function fetchCheck($key)
+    public function fetchCheck($requested_key)
     {
-        $key = $this->generateKey($key);
+        $key = $this->generateKey($requested_key);
 
         $serialized = $this->cache_adapter->get($key);
+
+        if ($serialized) {
+            $this->logger->debug('PhpCheckCacher: cache hit');
+        } else {
+            $this->logger->debug('PhpCheckCacher: cache miss');
+        }
 
         $compiled_query = $this->serializer->unserialize($serialized);
 
         return $compiled_query;
     }
 
-    public function saveCheck($key, PhpCheck $php_check)
+    public function saveCheck($requested_key, PhpCheck $php_check)
     {
         $serialized = $this->serializer->serialize($php_check);
 
-        $key = $this->generateKey($key);
+        $key = $this->generateKey($requested_key);
 
         $this->cache_adapter->set($key, $serialized);
+
+        $this->logger->debug('PhpCheckCacher: serialized and saved compiled php check');
     }
 
     /**
@@ -84,6 +99,15 @@ class PhpCheckCacher
     private function generateKey($key)
     {
         $add_unique = sprintf('php.term_engine.php_check.%s', $key);
+
+        $this->logger->debug(
+            'PhpCheckCacher: Prefixing key',
+            array(
+                'requested_key' => $key,
+                'using_prefixed_key' => $add_unique
+            )
+        );
+
         return $add_unique;
     }
 }

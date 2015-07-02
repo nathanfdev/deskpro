@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler;
@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler;
+use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler
@@ -49,14 +50,15 @@ class PhpTicketCheckerEngineCompilerSpec extends ObjectBehavior
 {
     function let(
         PhpTicketCheckerCompiler $compiler,
-        PhpCheckCacher $cache
+        PhpCheckCacher $cache,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($compiler, $cache);
+        $this->beConstructedWith($compiler, $cache, $logger);
     }
 
     function it_compiles_a_filter_if_it_is_not_cached(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         PhpCheck $php_check,
@@ -65,6 +67,7 @@ class PhpTicketCheckerEngineCompilerSpec extends ObjectBehavior
     )
     {
         $filter->getId()->willReturn(3);
+        $filter->getTitle()->willReturn('title');
         $filter->getDateUpdated()->willReturn($filter_updated);
         $filter->getTerm()->willReturn($filter_term);
         $filter_updated->getTimestamp()->willReturn(1234567890);
@@ -80,7 +83,7 @@ class PhpTicketCheckerEngineCompilerSpec extends ObjectBehavior
     }
 
     function it_returns_the_cached_version_of_the_compiled_query_if_exists(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         PhpCheck $php_check,
@@ -89,6 +92,7 @@ class PhpTicketCheckerEngineCompilerSpec extends ObjectBehavior
     )
     {
         $filter->getId()->willReturn(3);
+        $filter->getTitle()->willReturn('title');
         $filter->getDateUpdated()->willReturn($filter_updated);
         $filter_updated->getTimestamp()->willReturn(123456789011);
 

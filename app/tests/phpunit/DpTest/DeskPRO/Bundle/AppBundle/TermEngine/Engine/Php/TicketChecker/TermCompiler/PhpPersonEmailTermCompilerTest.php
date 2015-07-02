@@ -93,6 +93,7 @@ class PhpPersonEmailTermCompilerTest extends AbstractPhpTermCompilerTest
         if (!$email) {
             $email = null;
         }
+        $ticket->getId()->willReturn(5);
         $ticket->getPersonEmailAddress()->willReturn($email);
 
         return $ticket;

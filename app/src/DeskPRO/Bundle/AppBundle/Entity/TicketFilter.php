@@ -42,16 +42,20 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository")
- * @ORM\Table(name="filters")
+ * Main representation of a ticket filter definition.
+ *
+ * Describes a criterion or set of criteria that make up a ticket filter.
+ *
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository")
+ * @ORM\Table(name="custom_ticket_filters")
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
- *      href=@Hateoas\Route("get_filters", parameters={"id" = "expr(object.getId())"})
+ *      href=@Hateoas\Route("api_ticket_filters_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class Filter extends NotifyPropertyChangeEntity
+class TicketFilter extends NotifyPropertyChangeEntity implements FilterInterface
 {
     /**
      * @ORM\Id()
@@ -86,20 +90,20 @@ class Filter extends NotifyPropertyChangeEntity
     protected $display_order;
 
     /**
-     * @var FilterSet
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterSet", inversedBy="filters")
+     * @var TicketFilterSet
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet", inversedBy="filters")
      */
     protected $filter_set;
 
     /**
-     * @var FilterView[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterView", mappedBy="filter")
+     * @var TicketFilterView[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter")
      */
     protected $filter_views;
 
     /**
-     * @var FilterPreference[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\FilterPreference", mappedBy="filter")
+     * @var TicketFilterPreference[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference", mappedBy="filter")
      */
     protected $filter_preferences;
 
@@ -167,7 +171,7 @@ class Filter extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return FilterSet
+     * @return TicketFilterSet
      */
     public function getFilterSet()
     {
@@ -175,15 +179,15 @@ class Filter extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param FilterSet $filter_set
+     * @param TicketFilterSet $filter_set
      */
-    public function setFilterSet(FilterSet $filter_set)
+    public function setFilterSet(TicketFilterSet $filter_set)
     {
         $this->setModelField('filter_set', $filter_set);
     }
 
     /**
-     * @return ArrayCollection|FilterView[]
+     * @return ArrayCollection|TicketFilterView[]
      */
     public function getFilterViews()
     {
@@ -191,7 +195,7 @@ class Filter extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return ArrayCollection|FilterPreference[]
+     * @return ArrayCollection|TicketFilterPreference[]
      */
     public function getFilterPreferences()
     {
@@ -199,9 +203,9 @@ class Filter extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param FilterPreference $filter_preference
+     * @param TicketFilterPreference $filter_preference
      */
-    public function addFilterPreference(FilterPreference $filter_preference)
+    public function addFilterPreference(TicketFilterPreference $filter_preference)
     {
         $this->filter_preferences->add($filter_preference);
 
@@ -209,9 +213,9 @@ class Filter extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param FilterView $view
+     * @param TicketFilterView $view
      */
-    public function addFilterView(FilterView $view)
+    public function addFilterView(TicketFilterView $view)
     {
         $this->filter_views->add($view);
 

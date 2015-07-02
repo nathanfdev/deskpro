@@ -32,6 +32,11 @@ framework:
     http_method_override: true
 
 monolog:
+    channels: # you MUST also update api_config.yml if you change these
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"
     handlers:
         main:
             type:   service
@@ -115,3 +120,4 @@ white_october_pagerfanta:
     exceptions_strategy:
         out_of_range_page:        to_http_not_found
         not_valid_current_page:   to_http_not_found
+

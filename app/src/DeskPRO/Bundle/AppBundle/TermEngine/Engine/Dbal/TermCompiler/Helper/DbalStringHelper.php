@@ -37,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalStringHelper implements TermCompilerHelperInterface
+class DbalStringHelper extends AbstractDbalHelper
 {
 
     /**
@@ -103,7 +103,12 @@ class DbalStringHelper implements TermCompilerHelperInterface
         }
 
         $and_or = (TermInterface::OP_NOT === $op || TermInterface::OP_NOT_HAS === $op) ? ' AND ' : ' OR ';
-        $part->setWhereString(implode($and_or, $parts));
+
+        $where = implode($and_or, $parts);
+
+        $this->getLogger()->debug('DbalStringHelper: asserting WHERE', array('where' => $where));
+
+        $part->setWhereString($where);
 
         return $part;
     }

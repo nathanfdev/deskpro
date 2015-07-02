@@ -1,4 +1,4 @@
-Feature: /filters endpoint error codes
+Feature: /ticket_filters endpoint error codes
   To report errors on the UI
   As a developer
   I need detailed information on term engine validation errors
@@ -9,7 +9,7 @@ Feature: /filters endpoint error codes
 
   @reinstall
   Scenario: If there is a non-valid term "type" I always get "term_type_does_not_exist" error code
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
 }
@@ -20,7 +20,7 @@ Feature: /filters endpoint error codes
     And the JSON node "code" should be equal to "term_type_does_not_exist"
 
   Scenario: If there is a non-valid term "type" I always get "term_type_does_not_exist" error code 2
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
   "title": "My Sales Tickets",
@@ -41,7 +41,7 @@ Feature: /filters endpoint error codes
     And the JSON node "code" should be equal to "term_type_does_not_exist"
 
   Scenario: I pass in options that is not an array
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -58,7 +58,7 @@ Feature: /filters endpoint error codes
     And the JSON node "errors.fields.term.fields.options.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: agent term options is missing a REQUIRED option
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -76,7 +76,7 @@ Feature: /filters endpoint error codes
     And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "required"
 
   Scenario: agent term option has an option of an INVALID TYPE
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -95,7 +95,7 @@ Feature: /filters endpoint error codes
     And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: ticket status term option has an option with an unacceptable value (CHOICE)
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -114,7 +114,7 @@ Feature: /filters endpoint error codes
     And the JSON node "errors.fields.term.fields.options.fields.status.errors[0].code" should be equal to "bad_choice"
 
   Scenario: person email term option has an invalid email
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -133,7 +133,7 @@ Feature: /filters endpoint error codes
     And the JSON node "errors.fields.term.fields.options.fields.email.errors[0].code" should be equal to "invalid_email"
 
   Scenario: agent term option has an agent_id that is not in the database
-    When I send a POST request to "/api/v2/filters" with body:
+    When I send a POST request to "/api/v2/ticket_filters" with body:
     """
 {
     "title": "My Sales Tickets",
@@ -150,6 +150,3 @@ Feature: /filters endpoint error codes
     And the JSON node "status" should be equal to 400
     And the JSON node "code" should be equal to "invalid_input"
     And the JSON node "errors.fields.term.fields.options.fields.agent_ids.errors[0].code" should be equal to "resource_not_found"
-
-
-

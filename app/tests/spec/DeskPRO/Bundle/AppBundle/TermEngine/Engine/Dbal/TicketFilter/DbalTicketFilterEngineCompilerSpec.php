@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler;
+use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler
@@ -50,14 +51,15 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
 {
     function let(
         DbalTicketFilterCompiler $compiler,
-        DbalQueryCacher $query_cache
+        DbalQueryCacher $query_cache,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($compiler, $query_cache);
+        $this->beConstructedWith($compiler, $query_cache, $logger);
     }
 
     function it_compiles_a_filter_if_it_is_not_cached(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         DbalQuery $compiled,
@@ -66,6 +68,7 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
     )
     {
         $filter->getId()->willReturn(2);
+        $filter->getTitle()->willReturn('title');
         $filter->getDateUpdated()->willReturn($filter_updated);
         $filter->getTerm()->willReturn($filter_term);
         $filter_updated->getTimestamp()->willReturn(123456789011);
@@ -83,7 +86,7 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
     }
 
     function it_returns_the_cached_version_of_the_compiled_query_if_exists(
-        Filter $filter,
+        TicketFilter $filter,
         \DateTime $filter_updated,
         TermInterface $filter_term,
         DbalQuery $compiled,
@@ -92,6 +95,7 @@ class DbalTicketFilterEngineCompilerSpec extends ObjectBehavior
     )
     {
         $filter->getId()->willReturn(2);
+        $filter->getTitle()->willReturn('title');
         $filter->getDateUpdated()->willReturn($filter_updated);
         $filter_updated->getTimestamp()->willReturn(123456789011);
 

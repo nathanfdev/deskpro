@@ -11,25 +11,28 @@ services:
             - @term_engine.expression_language
             - @event_dispatcher
             - @term_engine.php.helper_pool
+            - @monolog.logger.dp.tickets.filters.tengine.php.engine
 
     term_engine.php_ticket_checker.engine.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler
         arguments:
             - @term_engine.php_ticket_checker.compiler
             - @term_engine.php.php_check_cacher
+            - @monolog.logger.dp.tickets.filters.tengine.php.compiler
 
     term_engine.php_ticket_checker.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler
         arguments:
             - @term_engine.php_ticket_checker.compiler.factory
             - []  # the visitors added in compiler pass with tag "php_ticket_checker_visitor"
-            - @cache.one_day
+            - @monolog.logger.dp.tickets.filters.tengine.php.compiler
 
     term_engine.php.php_check_cacher:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher
         arguments:
             - @cache.one_day
             - @term_engine.php.php_check_serializer
+            - @monolog.logger.dp.tickets.filters.tengine.php.compiler
 
     term_engine.php.php_check_serializer:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckSerializer
@@ -48,6 +51,7 @@ services:
             abstract: true
             calls:
                 - ['setHelperPool', ["@term_engine.php.helper_pool"]]
+                - ['setLogger', ["@monolog.logger.dp.tickets.filters.tengine.php.compiler"]]
 
     term_engine.php_ticket_checker.compiler.agent:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpAgentTermCompiler

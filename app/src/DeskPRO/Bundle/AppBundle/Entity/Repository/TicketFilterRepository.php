@@ -35,6 +35,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class FilterViewRepository extends EntityRepository
+class TicketFilterRepository extends EntityRepository
 {
 }

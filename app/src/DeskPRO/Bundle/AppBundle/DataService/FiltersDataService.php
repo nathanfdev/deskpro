@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use DeskPRO\Bundle\AppBundle\Entity\Repository\FilterRepository;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -101,7 +101,7 @@ class FiltersDataService extends AbstractDataService
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('f')
-                    ->from('App:Filter', 'f');
+                    ->from('App:TicketFilter', 'f');
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 $pager->setMaxPerPage($count);
@@ -117,6 +117,6 @@ class FiltersDataService extends AbstractDataService
      */
     public function getFilterRepo()
     {
-        return $this->em->getRepository('App:Filter');
+        return $this->em->getRepository('App:TicketFilter');
     }
 }

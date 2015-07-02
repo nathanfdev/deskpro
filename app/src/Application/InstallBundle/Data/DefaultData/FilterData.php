@@ -34,8 +34,8 @@
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
-use DeskPRO\Bundle\AppBundle\Entity\FilterSet;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeamTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
@@ -58,7 +58,7 @@ class FilterData extends AbstractDefaultData
         # Define filters
         #------------------------------
 
-        $filter_set = new FilterSet();
+        $filter_set = new TicketFilterSet();
         $filter_set->setTitle('Awaiting Agent');
         $filter_set->setDefault(true);
 
@@ -448,9 +448,9 @@ class FilterData extends AbstractDefaultData
      * @param $term
      * @param $filter_set
      */
-    private function saveFilter($filter_name, TermInterface $term, FilterSet $filter_set)
+    private function saveFilter($filter_name, TermInterface $term, TicketFilterSet $filter_set)
     {
-        $filter = new Filter();
+        $filter = new TicketFilter();
         $filter->setTitle($filter_name);
         $filter->setTerm($term);
         $filter_set->addFilter($filter);

@@ -66,6 +66,8 @@ class DbalTicketCustomDataTermCompiler extends AbstractDbalTermCompiler
         $query_part->setParameter('values', $term->getOption('values'));
         $query_part->setWhereString('{custom_data}.value IN (:values)');
 
+        $this->logQueryPart($query_part);
+
         return $query_part;
     }
 }

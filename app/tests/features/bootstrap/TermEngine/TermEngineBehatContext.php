@@ -164,7 +164,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iEvaluateTheFilter($filter_name)
     {
-        $filter = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\Filter')->findOneBy(
+        $filter = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\TicketFilter')->findOneBy(
             array('title' => $filter_name)
         );
 

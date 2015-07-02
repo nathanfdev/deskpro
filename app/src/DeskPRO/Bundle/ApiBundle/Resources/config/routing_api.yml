@@ -2,18 +2,6 @@ sandbox_widgets:
     type: rest
     resource: DeskPRO\Bundle\ApiBundle\Controller\Sandbox\SandboxWidgetsController
 
-me:
-    type: rest
-    resource: DeskPRO\Bundle\ApiBundle\Controller\Authentication\MeController
-
-api_tokens:
-    type: rest
-    resource: DeskPRO\Bundle\ApiBundle\Controller\Authentication\ApiTokensController
-
-api_batch_annotation:
+api_controllers:
     type: annotation
-    resource: "@ApiBundle/Controller/BatchController.php"
-
-filters:
-    type: rest
-    resource: DeskPRO\Bundle\ApiBundle\Controller\Filters\FiltersController
+    resource: "@ApiBundle/Controller"

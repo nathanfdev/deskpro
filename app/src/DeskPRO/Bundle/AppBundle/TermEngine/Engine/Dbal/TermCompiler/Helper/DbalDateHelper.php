@@ -37,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class DbalDateHelper implements TermCompilerHelperInterface
+class DbalDateHelper extends AbstractDbalHelper
 {
 
     /**
@@ -112,6 +112,8 @@ class DbalDateHelper implements TermCompilerHelperInterface
                 $where .= '= :date';
                 break;
         }
+
+        $this->getLogger()->debug('DbalDateHelper: asserting WHERE', array('where' => $where));
 
         $part->setWhereString($where);
 

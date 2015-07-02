@@ -92,6 +92,7 @@ class PhpDepartmentTermCompilerTest extends AbstractPhpTermCompilerTest
         if (!$dep) {
             $dep = 0;
         }
+        $ticket->getId()->willReturn(5);
         $ticket->getDepartmentId()->willReturn($dep);
 
         return $ticket;

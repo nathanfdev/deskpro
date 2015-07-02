@@ -53,6 +53,18 @@ define('DP_DATABASE_NAME', 'deskpro_test');
 define('DP_TECHNICAL_EMAIL', '');
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# The mySQL database settings are the only required
+# settings needed to install DeskPRO. You only need
+# to change the settings that follow if the DeskPRO
+# software, a knowledgebase article or a member
+# of DeskPRO's customer service team advise you
+# to do so.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// do not edit the next line
+$DP_CONFIG = array('debug' => array(), 'cache' => array());
+
 ######################################################
 ######################################################
 ######################################################
@@ -82,24 +94,7 @@ $DP_CONFIG['SETTINGS']['core.use_gravatar'] = false;
 $DP_CONFIG['SETTINGS']['core.default_timezone'] = 'EST';
 $DP_CONFIG['rewrite_urls'] = false;
 
-
-
-
-
-
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# The mySQL database settings are the only required
-# settings needed to install DeskPRO. You only need
-# to change the settings that follow if the DeskPRO
-# software, a knowledgebase article or a member
-# of DeskPRO's customer service team advise you
-# to do so.
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// do not edit the next line
-$DP_CONFIG = array('debug' => array(), 'cache' => array());
+$DP_CONFIG['enable_termengine_log'] = true;
 
 # ~~~~~~~~~~~~~~~~~~~~  PATHS ~~~~~~~~~~~~~~~~~~~~~~~~
 

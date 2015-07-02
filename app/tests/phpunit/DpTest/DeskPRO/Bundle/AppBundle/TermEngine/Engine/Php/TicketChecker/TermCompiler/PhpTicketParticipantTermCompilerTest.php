@@ -107,6 +107,7 @@ class PhpTicketParticipantTermCompilerTest extends AbstractPhpTermCompilerTest
     protected function createTicketProphecy()
     {
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket->getId()->willReturn(4);
 
         return $ticket;
     }

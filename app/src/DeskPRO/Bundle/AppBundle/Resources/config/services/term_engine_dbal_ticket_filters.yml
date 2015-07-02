@@ -10,28 +10,32 @@ services:
             - @term_engine.dbal_ticket_filters.engine.compiler
             - @event_dispatcher
             - @doctrine.dbal.default_connection
+            - @monolog.logger.dp.tickets.filters.tengine.dbal.engine
 
     term_engine.dbal_ticket_filters.engine.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngineCompiler
         arguments:
             - @term_engine.dbal_ticket_filters.compiler
             - @term_engine.dbal.compiled_query_cacher
+            - @monolog.logger.dp.tickets.filters.tengine.dbal.compiler
 
     term_engine.dbal_ticket_filters.compiler:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler\DbalTicketFilterCompiler
         arguments:
             - @term_engine.dbal_ticket_filters.compiler.factory
             - []  # the visitors added in compiler pass with tag "dbal_ticket_filter_visitor"
-
-    term_engine.dbal_ticket_filters.compiler.factory:
-        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
-        # compiler pass will add the term compilers on tag "dbal_ticket_filter_compiler"
+            - @monolog.logger.dp.tickets.filters.tengine.dbal.compiler
 
     term_engine.dbal.compiled_query_cacher:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher
         arguments:
             - @cache.one_day
             - @term_engine.dbal.compiled_query_serializer
+            - @monolog.logger.dp.tickets.filters.tengine.dbal.compiler
+
+    term_engine.dbal_ticket_filters.compiler.factory:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
+        # compiler pass will add the term compilers on tag "dbal_ticket_filter_compiler"
 
     term_engine.dbal.compiled_query_serializer:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuerySerializer
@@ -45,6 +49,7 @@ services:
             abstract: true
             calls:
                 - ['setHelperPool', ["@term_engine.dbal.helper_pool"]]
+                - ['setLogger', ["@monolog.logger.dp.tickets.filters.tengine.dbal.compiler"]]
 
     term_engine.dbal_ticket_filters.compiler.ticket_status:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketStatusTermCompiler
@@ -157,22 +162,31 @@ services:
     term_engine.dbal.helper_pool:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
 
+    term_engine.dbal.abstract_helper:
+            abstract: true
+            arguments:
+                - @monolog.logger.dp.tickets.filters.tengine.dbal.compiler
+
     term_engine.dbal.entity_helper:
+        parent: term_engine.dbal.abstract_helper
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper
         tags:
             - { name: dbal_term_engine_helper }
 
     term_engine.dbal.string_helper:
+        parent: term_engine.dbal.abstract_helper
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper
         tags:
             - { name: dbal_term_engine_helper }
 
     term_engine.dbal.date_helper:
+        parent: term_engine.dbal.abstract_helper
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper
         tags:
             - { name: dbal_term_engine_helper }
 
     term_engine.dbal.numeric_helper:
+        parent: term_engine.dbal.abstract_helper
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper
         tags:
             - { name: dbal_term_engine_helper }

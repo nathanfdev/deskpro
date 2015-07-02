@@ -33,33 +33,66 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterView;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Entity\FilterSet;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\Entity\FilterSet
+ * @mixin \DeskPRO\Bundle\AppBundle\Entity\TicketFilter
  */
-class FilterSetSpec extends ObjectBehavior
+class TicketFilterSpec extends ObjectBehavior
 {
     function it_starts_with_a_null_id()
     {
         $this->getId()->shouldBe(null);
     }
 
-    function it_starts_with_no_filters()
+    function it_constructs_with_created_and_updated_dates()
     {
-        $this->getFilters()->toArray()->shouldBeLike(array());
+        $this->getDateUpdated()->shouldBeAnInstanceOf('\DateTime');
+        $this->getDateCreated()->shouldBeAnInstanceOf('\DateTime');
     }
 
-    function it_lets_you_add_a_filter(Filter $filter)
+    function it_lets_you_change_updated_datetime()
     {
-        $this->addFilter($filter);
+        $new_date = new \DateTime();
 
-        $filter->setFilterSet($this)->shouldHaveBeenCalled();
-        $this->getFilters()->toArray()->shouldBeLike(array($filter));
+        $this->setDateUpdated($new_date);
+
+        $this->getDateUpdated()->shouldBeLike($new_date);
+    }
+
+    function it_belongs_to_only_one_filter_set(TicketFilterSet $set)
+    {
+        $this->getFilterSet()->shouldBe(null);
+
+        $this->setFilterSet($set);
+
+        $this->getFilterSet()->shouldBe($set);
+    }
+
+    function it_can_be_associated_with_views(TicketFilterView $view1, TicketFilterView $view2)
+    {
+        $this->getFilterViews()->toArray()->shouldBeLike(array());
+
+        $this->addFilterView($view1);
+        $this->addFilterView($view2);
+
+        $this->getFilterViews()->toArray()->shouldBeLike(array($view1, $view2));
+    }
+
+    function it_can_be_associated_with_preferences(TicketFilterPreference $pref1, TicketFilterPreference $pref2)
+    {
+        $this->getFilterPreferences()->toArray()->shouldBeLike(array());
+
+        $this->addFilterPreference($pref1);
+        $this->addFilterPreference($pref2);
+
+        $this->getFilterPreferences()->toArray()->shouldBeLike(array($pref1, $pref2));
     }
 
     function it_has_a_title()
@@ -68,63 +101,26 @@ class FilterSetSpec extends ObjectBehavior
 
         $this->setTitle('title');
 
-        $this->getTitle()->shouldReturn('title');
+        $this->getTitle()->shouldBe('title');
     }
 
     function it_has_a_display_order()
     {
         $this->getDisplayOrder()->shouldBe(0);
 
-        $this->setDisplayOrder(40);
+        $this->setDisplayOrder(32);
 
-        $this->getDisplayOrder()->shouldBe(40);
+        $this->getDisplayOrder()->shouldBe(32);
     }
 
-    function it_initializes_by_not_being_a_default_filter_set()
+    function it_holds_its_term_engine_term(
+        TermInterface $term
+    )
     {
-        $this->isDefault()->shouldBe(false);
-    }
+        $this->getTerm()->shouldBe(null);
 
-    function it_can_be_toggled_on_and_off_default_status()
-    {
-        $this->setDefault(true);
+        $this->setTerm($term);
 
-        $this->isDefault()->shouldBe(true);
-
-        $this->setDefault(false);
-
-        $this->isDefault()->shouldBe(false);
-    }
-
-    function it_initialized_with_no_agents_and_shared()
-    {
-        $this->getPrivateAgent()->shouldBe(null);
-        $this->getSharedAgents()->toArray()->shouldBeLike(array());
-
-        $this->isPrivate()->shouldBe(false);
-    }
-
-    function it_marks_itself_private_if_a_single_agent_is_assigned(Person $agent)
-    {
-        $this->setPrivateAgent($agent);
-
-        $this->getPrivateAgent($agent);
-        $this->getSharedAgents()->toArray()->shouldBeLike(array());
-        $this->isPrivate()->shouldBe(true);
-    }
-
-    function it_marks_itself_shared_if_agent_is_added(Person $agent1, Person $agent2)
-    {
-        $this->addSharedAgent($agent1);
-
-        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1));
-        $this->getPrivateAgent()->shouldBe(null);
-        $this->isPrivate()->shouldBe(false);
-
-        $this->addSharedAgent($agent2);
-
-        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1, $agent2));
-        $this->getPrivateAgent()->shouldBe(null);
-        $this->isPrivate()->shouldBe(false);
+        $this->getTerm()->shouldBe($term);
     }
 }

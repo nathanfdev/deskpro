@@ -98,6 +98,15 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             }
         }
 
+        // if we are in apache we send a special error message, because apache removes the
+        // Authorization header in some cgi cases:
+        // http://stackoverflow.com/questions/17488656/zend-server-windows-authorization-header-is-not-passed-to-php-script
+        if (function_exists('apache_get_version') && false !== apache_get_version()) {
+            if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+                $this->throwUnauthorized(ApiErrors::UNAUTHORIZED_CHECK_APACHE);
+            }
+        }
+
         $this->throwUnauthorized(ApiErrors::UNAUTHORIZED);
     }
 

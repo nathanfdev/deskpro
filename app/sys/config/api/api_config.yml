@@ -15,7 +15,7 @@ framework:
     #translator:      { fallback: "%locale%" }
     secret:          "irrelevant - compiler pass will override this"
     router:
-        resource: "%kernel.root_dir%/config/api_routing.yml"
+        resource: "%kernel.root_dir%/config/api/api_routing.yml"
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
@@ -32,15 +32,28 @@ framework:
     http_method_override: true
 
 monolog:
+    channels: # you MUST also update portal_config.yml if you change these
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"
     handlers:
         main:
             type:   service
             id:     monolog.handler.deskpro_fingers_crossed
+        term_engine:
+            type: service
+            id: term_engine.log_handler
+            channels:
+                - "dp.tickets.filters.tengine.dbal.engine"
+                - "dp.tickets.filters.tengine.dbal.compiler"
+                - "dp.tickets.filters.tengine.php.engine"
+                - "dp.tickets.filters.tengine.php.compiler"
 
 jms_serializer:
     visitors:
         json:
-            options: JSON_PRETTY_PRINT
+            options: 128 # JSON_PRETTY_PRINT constant unavailable in php 5.3, use int instead
 
 fos_rest:
     disable_csrf_role: ROLE_API

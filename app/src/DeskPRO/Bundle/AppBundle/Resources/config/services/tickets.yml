@@ -4,6 +4,10 @@ services:
     class: Application\DeskPRO\Tickets\TicketManager
     arguments: [@service_container]
 
+  portal_custom_per_field_manager:
+      class: DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager
+      arguments: [@doctrine.orm.default_entity_manager]
+
   tickets.view:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketViewService
       arguments: [@form_field_manager, @ticket_layout_factory, @deskpro.core.translate, @tickets.custom_per_field_manager]

@@ -41,9 +41,16 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionProvider;
 use DpTest\ApiTestCase;
+use Monolog\Handler\NullHandler;
+use Monolog\Logger;
 
 abstract class AbstractPhpTermCompilerTest extends ApiTestCase
 {
+    /**
+     * @var Logger
+     */
+    static $logger;
+
     protected function makChecker(PhpCheck $check, array $variables)
     {
         //
@@ -67,7 +74,12 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
             $i++;
         }
 
-        $checker = new TicketChecker($check, $context, $lang, $helper_pool);
+        if (!static::$logger) {
+            static::$logger = new Logger('null');
+            static::$logger->pushHandler(new NullHandler());
+        }
+
+        $checker = new TicketChecker($check, $context, $lang, $helper_pool, static::$logger);
 
         return $checker;
     }

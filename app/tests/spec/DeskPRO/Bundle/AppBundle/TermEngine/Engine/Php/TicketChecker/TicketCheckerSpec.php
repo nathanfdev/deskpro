@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
+use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TicketChecker
@@ -52,10 +53,11 @@ class TicketCheckerSpec extends ObjectBehavior
         TermEngineExpressionLanguage $expression_language,
         TermEngineContext $context,
         PhpCheck $check,
-        TermCompilerHelperPool $helper_pool
+        TermCompilerHelperPool $helper_pool,
+        LoggerInterface $logger
     )
     {
-        $this->beConstructedWith($check, $context, $expression_language, $helper_pool);
+        $this->beConstructedWith($check, $context, $expression_language, $helper_pool, $logger);
     }
 
     function it_is_the_default_implementation_of_a_ticket_checker()

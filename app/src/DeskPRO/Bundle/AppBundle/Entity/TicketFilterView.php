@@ -38,10 +38,10 @@ use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\FilterViewRepository")
- * @ORM\Table(name="filter_views")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterViewRepository")
+ * @ORM\Table(name="ticket_filter_views")
  */
-class FilterView extends NotifyPropertyChangeEntity
+class TicketFilterView extends NotifyPropertyChangeEntity
 {
     const TYPE_LIST = 'list';
     const TYPE_TABLE = 'table';
@@ -60,8 +60,8 @@ class FilterView extends NotifyPropertyChangeEntity
     protected $type;
 
     /**
-     * @var Filter
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Filter", inversedBy="filter_views")
+     * @var TicketFilter
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", inversedBy="filter_views")
      */
     protected $filter;
 
@@ -135,7 +135,7 @@ class FilterView extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return Filter
+     * @return TicketFilter
      */
     public function getFilter()
     {
@@ -143,9 +143,9 @@ class FilterView extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param Filter $filter
+     * @param TicketFilter $filter
      */
-    public function setFilter(Filter $filter = null)
+    public function setFilter(TicketFilter $filter = null)
     {
         $this->filter = $filter;
 

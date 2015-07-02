@@ -34,15 +34,15 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Entity\FilterView;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterView;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\Entity\FilterView
+ * @mixin \DeskPRO\Bundle\AppBundle\Entity\TicketFilterView
  */
-class FilterViewSpec extends ObjectBehavior
+class TicketFilterViewSpec extends ObjectBehavior
 {
     function it_starts_with_a_null_id()
     {
@@ -51,19 +51,19 @@ class FilterViewSpec extends ObjectBehavior
 
     function it_defaults_to_list_type_so_it_always_has_a_type()
     {
-        $this->getType()->shouldBe(FilterView::TYPE_LIST);
+        $this->getType()->shouldBe(TicketFilterView::TYPE_LIST);
     }
 
     function it_allows_change_type_to_valid_type()
     {
-        $this->setType(FilterView::TYPE_TABLE);
+        $this->setType(TicketFilterView::TYPE_TABLE);
 
-        $this->getType()->shouldBe(FilterView::TYPE_TABLE);
+        $this->getType()->shouldBe(TicketFilterView::TYPE_TABLE);
 
         $this->shouldThrow('\InvalidArgumentException')->during('setType', array('invalid'));
     }
 
-    function it_is_associated_with_a_filter(Filter $filter)
+    function it_is_associated_with_a_filter(TicketFilter $filter)
     {
         $this->getFilter()->shouldBe(null);
 

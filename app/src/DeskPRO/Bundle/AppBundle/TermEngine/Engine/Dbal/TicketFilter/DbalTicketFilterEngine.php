@@ -33,14 +33,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
 use Doctrine\DBAL\Connection;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DbalTicketFilterEngine extends DbalEngine
@@ -60,24 +62,43 @@ class DbalTicketFilterEngine extends DbalEngine
      */
     private $connection;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         DbalTicketFilterEngineCompiler $compiler,
         EventDispatcherInterface $event_dispatcher,
-        Connection $connection
+        Connection $connection,
+        LoggerInterface $logger
     )
     {
         $this->compiler = $compiler;
         $this->event_dispatcher = $event_dispatcher;
         $this->connection = $connection;
+        $this->logger = $logger;
     }
 
-    public function evaluate(Filter $filter, TermEngineContext $context)
+    public function evaluate(TicketFilter $filter, TermEngineContext $context)
     {
+        $timer = new SimpleTimer();
+
+        $this->logger->info('START EVALUATE FILTER', array(
+            'filter_id' => $filter->getId(),
+            'filter_title' => $filter->getTitle()
+        ));
         $compiled_query = $this->compiler->compile($filter);
 
         $event = new DbalEngineEvent($compiled_query, $context);
         $this->event_dispatcher->dispatch(DbalEngineEvents::MANIPULATE_QUERY, $event);
 
-        return new DbalExecutableQuery($compiled_query, $this->connection);
+        $this->logger->info('END EVALUATE FILTER', array(
+            'filter_id' => $filter->getId(),
+            'filter_title' => $filter->getTitle(),
+            'time' => $timer->getElapsedTime()
+        ));
+
+        return new DbalExecutableQuery($compiled_query, $this->connection, $this->logger);
     }
 }

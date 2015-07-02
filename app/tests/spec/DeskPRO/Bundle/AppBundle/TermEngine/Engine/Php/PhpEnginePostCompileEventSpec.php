@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpClass;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
@@ -46,7 +46,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
  */
 class PhpEnginePostCompileEventSpec extends ObjectBehavior
 {
-    function let(TermEngineContext $context, Filter $filter, PhpCheck $php_check)
+    function let(TermEngineContext $context, TicketFilter $filter, PhpCheck $php_check)
     {
         $this->beConstructedWith($context, $filter, $php_check);
     }
@@ -56,7 +56,7 @@ class PhpEnginePostCompileEventSpec extends ObjectBehavior
         $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvent');
     }
 
-    function it_also_has_the_filter_being_evaluated(Filter $filter)
+    function it_also_has_the_filter_being_evaluated(TicketFilter $filter)
     {
         $this->getFilter()->shouldBe($filter);
     }

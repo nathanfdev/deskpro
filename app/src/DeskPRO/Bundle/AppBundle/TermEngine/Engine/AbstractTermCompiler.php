@@ -1,0 +1,244 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
+
+
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+
+abstract class AbstractTermCompiler
+{
+    /**
+     * @var TermCompilerHelperPool
+     */
+    protected $helper_pool;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var SimpleTimer
+     */
+    protected $stateful_timer;
+
+    /**
+     * @var string
+     */
+    protected $short_name;
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    public function logStartingCompile(TermInterface $term)
+    {
+        // logEndingCompile method relies on $this->stateful_timer here
+        $this->stateful_timer = new SimpleTimer();
+
+        $this->logDebug(
+            'START',
+            array(
+                'term_name' => TermTypeCodes::getTermTypeCode($term),
+                'op' => $term->getOp(),
+                'options' => $term->getOptions()
+            )
+        );
+    }
+
+    public function logEndingCompile(TermInterface $term)
+    {
+        $this->logDebug(
+            'END',
+            array(
+                'term_name' => TermTypeCodes::getTermTypeCode($term),
+                'op' => $term->getOp(),
+                'time_in_ms' => $this->stateful_timer->getElapsedTime()
+            )
+        );
+    }
+
+    public function log($level, $message, array $context = array())
+    {
+        $message = sprintf('%s: %s', $this->getShortName(), $message);
+
+        $this->getLogger()->log($level, $message, $context);
+    }
+
+    public function logDebug($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::DEBUG, $message, $context);
+    }
+
+    public function logInfo($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::INFO, $message, $context);
+    }
+
+    public function logNotice($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::NOTICE, $message, $context);
+    }
+
+    public function logWarning($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->getLogger()->log(Logger::WARNING, $message, $context);
+    }
+
+    public function logError($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::ERROR, $message, $context);
+    }
+
+    public function logCritical($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::CRITICAL, $context);
+    }
+
+    public function logAlert($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::ALERT, $message, $context);
+    }
+
+    public function logEmergency($message, array $context = array())
+    {
+        if (!$this->getLogger()) {
+            return;
+        }
+
+        $this->log(Logger::EMERGENCY, $message, $context);
+    }
+
+    public function getShortName()
+    {
+        if (!$this->short_name) {
+            $ref = new \ReflectionClass($this);
+            $this->short_name = $ref->getShortName();
+        }
+
+        return $this->short_name;
+    }
+
+    public function setHelperPool(TermCompilerHelperPool $helper_pool)
+    {
+        $this->helper_pool = $helper_pool;
+    }
+
+    /**
+     * Get a registered helper by ID (TermCompilerHelperInterface::getId())
+     *
+     * @param $id
+     * @return TermCompilerHelperInterface
+     */
+    public function getHelper($id)
+    {
+        return $this->helper_pool->getHelper($id);
+    }
+
+    /**
+     * @param TermInterface $term
+     */
+    public function compile(TermInterface $term)
+    {
+        $this->logStartingCompile($term);
+
+        $return = $this->doCompile($term);
+
+        $this->logEndingCompile($term);
+
+        return $return;
+    }
+
+    /**
+     * Use this shortcut to see if two op codes are the same.
+     *
+     * This normalizes the codes and then does the comparrison in a safe way.
+     *
+     * @param string $op
+     * @param string $code
+     * @return bool
+     */
+    protected function isOp($op, $code)
+    {
+        return strtolower($op) === strtolower($code);
+    }
+
+    /**
+     * Take a term and return a DbalQueryPart representing the term's query conditions.
+     *
+     * @param TermInterface $term
+     * @return DbalQueryPart
+     */
+    abstract protected function doCompile(TermInterface $term);
+}

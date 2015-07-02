@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,30 +31,63 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
+namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use DeskPRO\Bundle\AppBundle\Entity\FilterInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Doctrine\ORM\EntityManager;
 
-class PhpEnginePreCompileEvent extends PhpEngineEvent
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+
+/**
+ * Convert user input into a TicketFilterSet and vice-versa.
+ */
+class TicketFilterSetTransformer implements DataTransformerInterface
 {
     /**
-     * @var TicketFilter
+     * @var EntityManager
      */
-    private $filter;
+    protected $em;
 
-    public function __construct(TermEngineContext $context, FilterInterface $filter)
+    public function __construct(EntityManager $em)
     {
-        parent::__construct($context);
-        $this->filter = $filter;
+        $this->em = $em;
     }
 
     /**
-     * Retrieve the filter
-     * @return FilterInterface the filter.
+     * Transforms a TicketFilterSet object into its ID.
+     *
+     * @param TicketFilterSet|null $set
+     * @return integer|null
      */
-    public function getFilter()
+    public function transform($value)
     {
-        return $this->filter;
+        if (!$value) {
+            return null;
+        }
+
+        return $value->getId();
+    }
+
+    /**
+     * Transforms an integer (id) into a TicketFilterSet object.
+     *
+     * @param integer $id
+     * @return TicketFilterSet|null
+     * @throws TransformationFailedException if object TicketFilterSet not found.
+     */
+    public function reverseTransform($id)
+    {
+        if (!$id) {
+            return null;
+        }
+
+        $set = $this->em->find('App:TicketFilterSet', $id);
+
+        if (null === $set) {
+            throw new TransformationFailedException(sprintf('A filter set of ID "%d" does not exist!', $id));
+        }
+
+        return $set;
     }
 }

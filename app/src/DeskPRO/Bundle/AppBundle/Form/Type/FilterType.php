@@ -41,6 +41,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
 
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+
 class FilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -63,6 +65,16 @@ class FilterType extends AbstractType
                 )
             )
             ->add(
+                'filter_set',
+                'entity',
+                array(
+                    'description' => 'the filter set to which this filter belongs',
+                    'required' => false,
+                    'class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet',
+                    'property' => 'id',
+                )
+            )
+            ->add(
                 'term',
                 'term_engine_term',
                 array(
@@ -75,7 +87,7 @@ class FilterType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Filter',
+                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilter',
             )
         );
     }

@@ -33,8 +33,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class DbalExecutableQuery
 {
@@ -77,7 +79,12 @@ class DbalExecutableQuery
     private $and_group_where;
     private $group_by;
 
-    public function __construct(DbalQuery $query, Connection $connection)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(DbalQuery $query, Connection $connection, LoggerInterface $logger = null)
     {
         $this->query = $query;
         $this->connection = $connection;
@@ -88,6 +95,15 @@ class DbalExecutableQuery
         $this->group_by = array();
         $this->page = 1;
         $this->count = null;
+        $this->logger = $logger;
+    }
+
+    protected function log($level, $message, array $context = array())
+    {
+        if ($this->logger) {
+            $message = sprintf('DbalExecutableQuery: %s', $message);
+            $this->logger->log($level, $message, $context);
+        }
     }
 
     /**
@@ -97,18 +113,25 @@ class DbalExecutableQuery
      */
     public function fetchIds()
     {
+        $timer = new SimpleTimer();
+
+        $this->log(Logger::DEBUG, 'fetchIds() called');
+
         $query = clone $this->query;
 
+        $this->log(Logger::DEBUG, 'mutating query to select IDs');
         $query->setSelectPart('{from}.id');
 
         // pagination
         if ($this->count) {
+            $this->log(Logger::DEBUG, 'adding pagination to query', array('page' => $this->page, 'count' => $this->count));
             $query->setPage($this->page);
             $query->setLimit($this->count);
         }
 
         // ordering
         foreach ($this->order_by as $order_by => $direction) {
+            $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
             $query->addOrderBy($order_by, $direction);
         }
 
@@ -123,6 +146,11 @@ class DbalExecutableQuery
         foreach ($stmt->fetchAll() as $row) {
             $ids[] = $row['id'];
         }
+
+        $this->log(Logger::DEBUG, 'selected IDs', array('ids' => $ids));
+        $this->log(Logger::DEBUG, 'row count', array('count' => $stmt->rowCount()));
+
+        $this->log(Logger::DEBUG, 'finished fetchIds()', array('time' => $timer->getElapsedTime()));
 
         return $ids;
     }
@@ -207,6 +235,8 @@ class DbalExecutableQuery
             }
         }
 
+        $this->log(Logger::DEBUG, 'adding count group', array('group' => $group, 'alias' => $optional_select_alias));
+
         $this->group_by[$optional_select_alias] = $group;
     }
 
@@ -234,11 +264,22 @@ class DbalExecutableQuery
         $this->last_run_parameters = $query->getParameters();
         $this->last_run_parameter_types = $this->determineParameterTypes($this->last_run_parameters);
 
+        $timer = new SimpleTimer();
+
+        $this->log(Logger::DEBUG, 'running execution', array(
+            'sql' => $this->last_run_sql,
+            'params' => $this->last_run_parameters
+        ));
+
         $stmt = $this->connection->executeQuery(
             $this->last_run_sql,
             $this->last_run_parameters,
             $this->last_run_parameter_types
         );
+
+        $this->log(Logger::DEBUG, 'finished execution', array(
+            'time' => $timer->getElapsedTime()
+        ));
 
         return $stmt;
     }
@@ -298,6 +339,9 @@ class DbalExecutableQuery
 
             throw new \InvalidArgumentException('unable to determine param type in DbalExecutableQuery');
         }
+
+        $this->log(Logger::DEBUG, 'determining dbal types for params', array('params' => $params));
+        $this->log(Logger::DEBUG, 'determined types', array('types' => $types));
 
         return $types;
     }
@@ -418,13 +462,16 @@ class DbalExecutableQuery
     {
         // extra where
         foreach ($this->and_where as $where) {
+            $this->log(Logger::DEBUG, 'adding AND where', array('where' => $where));
             $query->appendWhere(sprintf('AND (%s)', $where));
         }
 
         // group where (allows setting a special group field to a value in the where clause)
         foreach ($this->and_group_where as $group_name => $value) {
             $param_name = $query->addParameter('group_name', $value);
-            $query->appendWhere(sprintf('AND (%s = :%s)', $this->transformAliasGroupName($group_name), $param_name));
+            $and_clause = sprintf('(%s = :%s)', $this->transformAliasGroupName($group_name), $param_name);
+            $this->log(Logger::DEBUG, 'and group by clause', array('where' => $and_clause));
+            $query->appendWhere('AND ' . $and_clause);
         }
     }
 

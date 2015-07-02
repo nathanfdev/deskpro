@@ -6,3 +6,9 @@ services:
 
     term_engine.expression_language:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage
+
+    term_engine.log_handler:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Log\TermEngineHandler
+        arguments:
+            - %kernel.logs_dir%
+            - "termengine.log"
