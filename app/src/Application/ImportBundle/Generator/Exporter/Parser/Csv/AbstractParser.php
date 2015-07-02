@@ -57,8 +57,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     const FILE_TICKET_ATTACHMENTS     = 'ticket_attachments.csv';
     const FILE_TICKET_CUSTOM_FIELDS   = 'ticket_custom_fields.csv';
 
-    const CUSTOM_FIELD_PREFIX         = 'custom_field_';
-
     /**
      * @var CsvReaderInterface
      */
@@ -246,13 +244,10 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         foreach ($custom_fields as $num => $custom_field) {
             try {
-                $entity = $this->exportAttachment($num, $destination_prefix, $custom_field, $ref_column);
+                $entity = $this->exportCustomField($num, $destination_prefix, $custom_field, $ref_column);
                 if ($entity) {
                     $collection->attach($entity);
-                    $this->logInfo(sprintf(
-                        'Custom field of entity `%s%s` parsed successfully!',
-                        $destination_prefix, $entity->getOid())
-                    );
+                    $this->logInfo(sprintf('Custom field of entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
                     $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
                 }
@@ -280,7 +275,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportCustomField($num, $destination_prefix, array $custom_field, $ref_column)
     {
-        if ($this->isAttachmentValid($custom_field, $ref_column)) {
+        if ($this->isCustomFieldValid($custom_field, $ref_column)) {
             $entity = new Entity\CustomField();
             $entity
                 ->setDestination($destination_prefix . $custom_field[$ref_column])
