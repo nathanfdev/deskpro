@@ -74,12 +74,23 @@ class CsvTest extends \DpIntegrationTestCase
     private $blob_repository;
 
     /**
+     * @var EntityRepository\CustomDataTicket
+     */
+    private $custom_data_ticket_repository;
+
+    /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
+    private $custom_data_person_repository;
+
+    /**
      * Set up
      */
     public function runBefore()
     {
         $this->helper->enableFreshDatabaseSet('FreshDb');
-        $this->helper->loadFixtures('Import/CustomTicketDef');
+        $this->helper->loadFixtures('Import/CustomDefTicket');
+        $this->helper->loadFixtures('Import/CustomDefPerson');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
@@ -93,6 +104,8 @@ class CsvTest extends \DpIntegrationTestCase
         $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
         $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
         $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
+        $this->custom_data_ticket_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataTicket');
+        $this->custom_data_person_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataPerson');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';

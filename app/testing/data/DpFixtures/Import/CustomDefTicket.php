@@ -2,15 +2,15 @@
 
 namespace DpFixtures\Import;
 
-use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Class CustomTicketDef
+ * Class CustomDefTicket
  * @package DpFixtures\Import
  */
-class CustomTicketDef extends AbstractFixture
+class CustomDefTicket extends AbstractFixture
 {
     /**
      * {@inheritdoc}
@@ -34,11 +34,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addTextField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Text field')
             ->setDescription('Text field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_TEXT)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_TEXT)
         ;
 
         $manager->persist($ticket_def);
@@ -46,11 +46,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addTextareaField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Textarea field')
             ->setDescription('Textarea field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_TEXTAREA)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_TEXTAREA)
         ;
 
         $manager->persist($ticket_def);
@@ -58,20 +58,20 @@ class CustomTicketDef extends AbstractFixture
 
     private function addSelectBoxField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Custom ticket select box field')
             ->setDescription('Select box field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_CHOICE)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new CustomDefTicket();
+        $ticket_def_choice1 = new Entity\CustomDefTicket();
         $ticket_def_choice1
             ->setTitle('Choice 1')
             ->setParent($ticket_def)
         ;
 
-        $ticket_def_choice2 = new CustomDefTicket();
+        $ticket_def_choice2 = new Entity\CustomDefTicket();
         $ticket_def_choice2
             ->setTitle('Choice 2')
             ->setParent($ticket_def)
@@ -84,44 +84,44 @@ class CustomTicketDef extends AbstractFixture
 
     private function addMultipleSelectBoxField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Multiple-select box field')
             ->setDescription('Multiple-select box field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_CHOICE)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new CustomDefTicket();
+        $ticket_def_choice1 = new Entity\CustomDefTicket();
         $ticket_def_choice1
             ->setTitle('Choice 1')
             ->setParent($ticket_def)
         ;
 
-        $ticket_def_choice2 = new CustomDefTicket();
+        $ticket_def_choice2 = new Entity\CustomDefTicket();
         $ticket_def_choice2
             ->setTitle('Choice 2')
             ->setParent($ticket_def_choice1)
         ;
 
-        $ticket_def_choice3 = new CustomDefTicket();
+        $ticket_def_choice3 = new Entity\CustomDefTicket();
         $ticket_def_choice3
             ->setTitle('Choice 3')
             ->setParent($ticket_def_choice1)
         ;
 
-        $ticket_def_choice4 = new CustomDefTicket();
+        $ticket_def_choice4 = new Entity\CustomDefTicket();
         $ticket_def_choice4
             ->setTitle('Choice 4')
             ->setParent($ticket_def)
         ;
 
-        $ticket_def_choice5 = new CustomDefTicket();
+        $ticket_def_choice5 = new Entity\CustomDefTicket();
         $ticket_def_choice5
             ->setTitle('Choice 5')
             ->setParent($ticket_def_choice4)
         ;
 
-        $ticket_def_choice6 = new CustomDefTicket();
+        $ticket_def_choice6 = new Entity\CustomDefTicket();
         $ticket_def_choice6
             ->setTitle('Choice 6')
             ->setParent($ticket_def_choice4)
@@ -138,20 +138,20 @@ class CustomTicketDef extends AbstractFixture
 
     private function addRadioButtonField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Radio button field')
             ->setDescription('Radio button field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_CHOICE)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new CustomDefTicket();
+        $ticket_def_choice1 = new Entity\CustomDefTicket();
         $ticket_def_choice1
             ->setTitle('Choice 1')
             ->setParent($ticket_def)
         ;
 
-        $ticket_def_choice2 = new CustomDefTicket();
+        $ticket_def_choice2 = new Entity\CustomDefTicket();
         $ticket_def_choice2
             ->setTitle('Choice 2')
             ->setParent($ticket_def)
@@ -164,20 +164,20 @@ class CustomTicketDef extends AbstractFixture
 
     private function addCheckboxField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Checkbox field')
             ->setDescription('Checkbox field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_CHOICE)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_CHOICE)
         ;
 
-        $ticket_def_choice1 = new CustomDefTicket();
+        $ticket_def_choice1 = new Entity\CustomDefTicket();
         $ticket_def_choice1
             ->setTitle('Choice 1')
             ->setParent($ticket_def)
         ;
 
-        $ticket_def_choice2 = new CustomDefTicket();
+        $ticket_def_choice2 = new Entity\CustomDefTicket();
         $ticket_def_choice2
             ->setTitle('Choice 2')
             ->setParent($ticket_def)
@@ -190,11 +190,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addToggleField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Toggle field')
             ->setDescription('Toggle field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_TOGGLE)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_TOGGLE)
         ;
 
         $manager->persist($ticket_def);
@@ -202,11 +202,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addDateField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Date field')
             ->setDescription('Date field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_DATE)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_DATE)
         ;
 
         $manager->persist($ticket_def);
@@ -214,11 +214,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addDatetimeField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Datetime field')
             ->setDescription('Datetime field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_DATETIME)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_DATETIME)
         ;
 
         $manager->persist($ticket_def);
@@ -226,11 +226,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addDisplayField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Display field')
             ->setDescription('Display field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_DISPLAY)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_DISPLAY)
         ;
 
         $manager->persist($ticket_def);
@@ -238,11 +238,11 @@ class CustomTicketDef extends AbstractFixture
 
     private function addHiddenField(ObjectManager $manager)
     {
-        $ticket_def = new CustomDefTicket();
+        $ticket_def = new Entity\CustomDefTicket();
         $ticket_def
             ->setTitle('Hidden field')
             ->setDescription('Hidden field description')
-            ->setHandlerClass(CustomDefTicket::HANDLER_CLASS_HIDDEN)
+            ->setHandlerClass(Entity\CustomDefTicket::HANDLER_CLASS_HIDDEN)
         ;
 
         $manager->persist($ticket_def);
