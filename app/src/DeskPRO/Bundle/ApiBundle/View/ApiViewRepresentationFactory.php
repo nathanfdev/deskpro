@@ -56,6 +56,16 @@ class ApiViewRepresentationFactory
         if (!$data instanceof Pagerfanta) {
             if (self::DATATYPE_GROUPED_COUNT === $datatype) {
                 $representation = $this->serializeGroupedCount($data);
+            } else if (is_array($data)) {
+                $representation = new StandardRepresentation($data, array(
+                    'count' => count($data),
+                    'total_count' => count($data),
+                ));
+            } else if (is_object($data) && method_exists($data, 'count')) { // A bit of duck-typing.
+                $representation = new StandardRepresentation($data, array(
+                    'count' => $data->count(),
+                    'total_count' => $data->count(),
+                ));
             } else {
                 $representation = new StandardRepresentation($data);
             }

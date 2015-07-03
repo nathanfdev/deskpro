@@ -38,7 +38,6 @@ use Aws\CloudWatch\Exception\InvalidFormatException;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +57,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 /**
  * API access to TicketFilterSet entities.
  */
-class TicketFilterSetsController extends BaseController implements ClassResourceInterface
+class TicketFilterSetsController extends BaseController
 {
     /**
      * @Get("/ticket_filter_sets", name="all_ticket_filter_sets")

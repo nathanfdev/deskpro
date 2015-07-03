@@ -43,3 +43,7 @@ services:
   data.filters:
       class: DeskPRO\Bundle\AppBundle\DataService\FiltersDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticketflags:
+      class: DeskPRO\Bundle\AppBundle\Model\TicketFlags
+      arguments: []
