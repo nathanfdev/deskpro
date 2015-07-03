@@ -144,9 +144,10 @@ class FiltersController extends BaseController implements ClassResourceInterface
     /**
      * @Get("/ticket_filters/{id}/count")
      */
-    public function getTicketsCountAction($id)
+    public function getTicketsCountAction(Request $request, $id)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
+        $filters = $this->get('data.filters');
+        $filter = $filters->getFilter($id);
 
         if (!$filter) {
             throw $this->createNotFoundException();
@@ -156,12 +157,29 @@ class FiltersController extends BaseController implements ClassResourceInterface
         $engine = $this->get('term_engine.dbal_ticket_filters.engine');
         $conn = $this->get('database_connection');
 
-        $num_tickets = $engine->evaluate($filter, new TermEngineContext($this->getUser()))->fetchCount();
+        $context = new TermEngineContext($this->getUser());
+        // Applying the group-by clauses.
+        $groupby = $request->query->get('group_by');
+        if ($groupby) {
+            $context->addGroupByFromString($groupby);
+        }
 
-        return View::create(
-            $num_tickets,
-            Response::HTTP_OK
-        );
+        $tickets_query = $engine->evaluate($filter, $context);
+
+        if ($groupby) {
+            $view_factory = $this->get('api_view_representation_factory');
+            return View::create(
+                $view_factory->createRepresentation($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
+                Response::HTTP_OK
+            );
+        } else {
+            return View::create(
+                $this->createRepresentation(array(
+                    'count' => $tickets_query->fetchCount()
+                )),
+                Response::HTTP_OK
+            );
+        }
     }
 
     /**

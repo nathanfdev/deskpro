@@ -64,6 +64,8 @@ fos_rest:
     body_converter:
         enabled: false
     param_fetcher_listener: true
+    serializer:
+        serialize_null: true
     body_listener:
         default_format: json
         throw_exception_on_unsupported_content_type:  true

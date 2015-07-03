@@ -99,6 +99,15 @@ class DbalTicketFilterEngine extends DbalEngine
             'time' => $timer->getElapsedTime()
         ));
 
-        return new DbalExecutableQuery($compiled_query, $this->connection, $this->logger);
+        $query = new DbalExecutableQuery($compiled_query, $this->connection, $this->logger);
+
+        // Do we need to apply grouping clauses?
+        if (count($context->getGroupBys()) > 0) {
+            foreach($context->getGroupBys() as $group_by) {
+                $query->addCountGroup($group_by->getColumn());
+            }
+        }
+
+        return $query;
     }
 }

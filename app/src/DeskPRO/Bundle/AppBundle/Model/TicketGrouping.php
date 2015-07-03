@@ -1,12 +1,13 @@
 <?php
+
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at https://www.deskpro.com/eula/                            |
+ * | can be found at http://www.deskpro.com/license                           |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -26,88 +27,63 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
+namespace DeskPRO\Bundle\AppBundle\Model;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
+use \ReflectionClass;
 
-class TermEngineContext
+/**
+ * Defines grouping columns for the Ticket table.
+ */
+class TicketGrouping
 {
-    /**
-     * @var Person
-     */
-    protected $agent;
+    const DEPARTMENT      = 'department';
+    const PERSON          = 'person';
+    const AGENT           = 'agent';
+    const DATE_CREATED    = 'date_created';
+
+    // Contains this grouping's value.
+    protected $column = null;
 
     /**
-     * @var [TicketGrouping]
+     * This class must either be instanciated with ::fromString() or ::fromConst().
      */
-    protected $groupings;
-
-    public function __construct(Person $agent)
+    protected function __construct($column)
     {
-        $this->agent = $agent;
-        $this->groupings = array();
+        $this->column = $column;
     }
 
-    /**
-     * @return Person
-     */
-    public function getAgent()
+    public static function fromString($col_string)
     {
-        return $this->agent;
-    }
+        // A tiny bit of magic. Need PHP 5.3+
+        $constant = constant(sprintf('%s::%s', __CLASS__, strtoupper($col_string)));
 
-    /**
-     * @param Person $agent
-     */
-    public function setAgent(Person $agent)
-    {
-        $this->agent = $agent;
-    }
-
-    /**
-     * Adds a group-by clause to the resulting query.
-     */
-    public function addGroupBy(TicketGrouping $group_by)
-    {
-        $this->groupings[] = $group_by;
-
-        return $this;
-    }
-
-    /**
-     * Adds group by from a string.
-     * @param string $group_by_string is a string of comma-separated columns to group the tickets by.
-     * @return itself.
-     */
-    public function addGroupByFromString($group_by_string)
-    {
-        $group_bys = explode(',', $group_by_string);
-        foreach($group_bys as $group_by) {
-            $grouping = null;
-            try {
-                $grouping = TicketGrouping::fromString($group_by);
-            } catch (UnknownTicketGroupingColumnException $e) {
-                continue;
-            }
-            $this->addGroupBy($grouping);
+        if (null === $constant) {
+            throw new UnknownTicketGroupingColumnException(
+                sprintf("Column %s can't be used to group tickets.", $col_string)
+            );
         }
 
-        return $this;
+        return new self($constant);
     }
 
-    /**
-     * public function getGroupBys
-     * @return Array [TicketGrouping]
-     */
-    public function getGroupBys()
+    public static function fromConst($value)
     {
-        return $this->groupings;
+        $refl = new \ReflectionClass(__CLASS__);
+        $constants = $refl->getConstants();
+
+        if (false === array_search($value, $constants)) {
+            throw new UnknownTicketGroupingColumnException();
+        }
+
+        return new self($value);
+    }
+
+    function getColumn()
+    {
+        return $this->column;
     }
 }
