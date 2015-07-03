@@ -176,7 +176,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			this.isWaiting = false;
 
 			var ev = {pop: this, cancel: false};
-			this.fireEvent('closeTabClick', ev);
+			this.fireEvent('closeTabClick', [ev]);
 			if (ev.cancel) {
 				return;
 			}
@@ -513,7 +513,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.formString = '';
 
 		var ev = {pop: this, cancel: false};
-		this.fireEvent('close', ev);
+		this.fireEvent('close', [ev]);
 		if (ev.cancel) {
 			return;
 		}

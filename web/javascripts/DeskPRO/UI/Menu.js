@@ -255,11 +255,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		var eventData = { menu: this, cancelOpen: false };
 
 		if (event && event.customEvents) {
-			event.customEvents.fireEvent('beforeMenuOpened', eventData);
+			event.customEvents.fireEvent('beforeMenuOpened', [eventData]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('beforeMenuOpened', eventData);
+			this.fireEvent('beforeMenuOpened', [eventData]);
 		}
 
 		if (eventData.cancelOpen) {
@@ -451,11 +451,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.openedTime = new Date();
 
 		if (event && event.customEvents) {
-			event.customEvents.fireEvent('menuOpened', { menu: this });
+			event.customEvents.fireEvent('menuOpened', [{ menu: this }]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('menuOpened', { menu: this });
+			this.fireEvent('menuOpened', [{ menu: this }]);
 		}
 
 		if (this.targetEl) {
@@ -483,11 +483,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		var eventData = { menu: this, cancelClose: false };
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
-			this.openTriggerEvent.customEvents.fireEvent('beforeMenuClosed', eventData);
+			this.openTriggerEvent.customEvents.fireEvent('beforeMenuClosed', [eventData]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('beforeMenuClosed', eventData);
+			this.fireEvent('beforeMenuClosed', [eventData]);
 		}
 
 		if (eventData.cancelClose) return false;
@@ -506,11 +506,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
-			this.openTriggerEvent.customEvents.fireEvent('menuClosed', { menu: this });
+			this.openTriggerEvent.customEvents.fireEvent('menuClosed', [{ menu: this }]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('menuClosed', { menu: this });
+			this.fireEvent('menuClosed', [{ menu: this }]);
 		}
 
 		this.openTriggerEvent = null;
@@ -547,11 +547,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
-			this.openTriggerEvent.customEvents.fireEvent('itemClicked', eventData);
+			this.openTriggerEvent.customEvents.fireEvent('itemClicked', [eventData]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('itemClicked', eventData);
+			this.fireEvent('itemClicked', [eventData]);
 		}
 
 		event.stopPropagation();
@@ -576,11 +576,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		var eventData = { menu: this, event: event, itemEl: event.currentTarget };
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
-			this.openTriggerEvent.customEvents.fireEvent('itemMouseover', eventData);
+			this.openTriggerEvent.customEvents.fireEvent('itemMouseover', [eventData]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('itemMouseover', eventData);
+			this.fireEvent('itemMouseover', [eventData]);
 		}
 
 		event.stopPropagation();
@@ -614,11 +614,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		var eventData = { menu: this, event: event, itemEl: event.currentTarget };
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
-			this.openTriggerEvent.customEvents.fireEvent('itemMouseout', eventData);
+			this.openTriggerEvent.customEvents.fireEvent('itemMouseout', [eventData]);
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('itemMouseout', eventData);
+			this.fireEvent('itemMouseout', [eventData]);
 		}
 
 		event.stopPropagation();
@@ -763,7 +763,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			}
 		});
 
-		this.fireEvent('menuInit', { menu: this });
+		this.fireEvent('menuInit', [{ menu: this }]);
 
 		return true;
 	},

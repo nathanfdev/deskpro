@@ -81,7 +81,7 @@ Orb.Util.Events = {
 
 		defaultContext = this.__events_default_context || this;
 
-		args = Array.from(args);
+		args = Array.from(args || []);
 		for (var i = 0; i < this.__events[type].length; i++) {
 			fn_info = this.__events[type][i];
 			if (delay) {
