@@ -54,10 +54,10 @@ class ExceptionController extends BaseController
 {
     public function showAction(\Exception $exception)
     {
-        echo '<pre>';
+        /*echo '<pre>';
         echo $exception->getMessage() . PHP_EOL . PHP_EOL;
         echo $exception->getTraceAsString();
-        die();
+        die();*/
         $parameters = array();
         if ($exception instanceof WrappedApiErrorException) {
             $parameters = $exception->getParams();

@@ -33,6 +33,7 @@ namespace DpTests\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Usersource;
@@ -53,7 +54,7 @@ class ApiDb extends AbstractDbSet
      */
     protected function installSet()
     {
-        $count = 0;
+        static $count = 0;
 
         $em = $this->getEm();
 
@@ -168,6 +169,29 @@ class ApiDb extends AbstractDbSet
                 ('portal.smaxage_user_tag', '0');
         "
         );
+
+        $agent1 = $em->find('DeskPRO:Person', 1);
+        $agent2 = $em->find('DeskPRO:Person', 2);
+
+		$ticket1 = new Ticket();
+        $ticket1->disableAutoTicketProcess();
+		$ticket1->setPersonId(3);
+        $ticket1->agent = $agent1;
+        $ticket1->setDepartmentId(1);
+		$em->persist($ticket1);
+        $ticket2 = new Ticket();
+        $ticket2->disableAutoTicketProcess();
+		$ticket2->setPersonId(3);
+        $ticket2->agent = $agent2;
+        $ticket2->setDepartmentId(1);
+		$em->persist($ticket2);
+        $ticket3 = new Ticket();
+        $ticket3->disableAutoTicketProcess();
+		$ticket3->setPersonId(3);
+        $ticket3->agent = $agent1;
+        $ticket3->setDepartmentId(2);
+		$em->persist($ticket3);
+        $em->flush();
 
         $count++;
 

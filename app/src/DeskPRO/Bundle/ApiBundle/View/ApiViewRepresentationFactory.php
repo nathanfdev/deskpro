@@ -120,6 +120,10 @@ class ApiViewRepresentationFactory
 
     protected function serializeSingleGroupedCount($data, $group = null, array $group_values = null)
     {
+        if(!$data) {
+            return null;
+        }
+
         // Let's inspect the headers.
         $groups = array_keys($data[0]);
         array_shift($groups); // Removing the count column.
