@@ -1,0 +1,26 @@
+// Controls when bulk edit is enabled
+
+
+.bulk-edit-buttons {
+  display: inline-block;
+  vertical-align: middle;
+
+  a {
+    display: inline-block;
+    margin-top: 8px;
+    line-height: 1em;
+    text-decoration: none;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    color: #9d9d9d;
+    font-weight: bold;
+    background: #d6d6d6;
+    border-radius: 2px;
+    padding: 4px 6px;
+  }
+
+  .cancel {
+    background: #525252;
+    color: #979797;
+  }
+}
