@@ -332,4 +332,12 @@ class SyncManager implements SyncerInterface
             $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array());
         }
     }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEm()
+    {
+        return $this->em;
+    }
 }
