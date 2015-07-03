@@ -40,11 +40,12 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use Symfony\Component\Validator\Constraints\NotNull;
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+
+use FOS\RestBundle\Controller\Annotations\Post;
 
 class ApiTokensController extends BaseController
 {

@@ -38,8 +38,6 @@ use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -50,6 +48,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
+use FOS\RestBundle\Controller\Annotations\Get;
 
 class MeController extends BaseController
 {
