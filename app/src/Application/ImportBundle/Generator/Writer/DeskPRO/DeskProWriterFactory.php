@@ -50,65 +50,78 @@ class DeskProWriterFactory extends AbstractFactory
      */
     public function createWriter()
     {
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
+        /** @var EntityManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
+        // recreate isolated entity manager to prevent unnecessary inserts and clears
+        $params = $entity_manager->getConnection()->getParams();
+        $params = array_intersect_key($params, array(
+            'driver' => 1,
+            'host' => 1,
+            'user' => 1,
+            'password' => 1,
+            'port' => 1,
+            'dbname' => 1,
+        ));
+        $entity_manager = $entity_manager->create(
+            $params,
+            $entity_manager->getConfiguration()
+        );
+
 
         /** @var EntityRepository\Article $article_repository */
-        $article_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Article');
+        $article_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
         /** @var EntityRepository\ArticleCategory $article_category_repository */
-        $article_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\ArticleCategory');
+        $article_category_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\ArticleCategory');
         /** @var EntityRepository\LabelArticle $article_label_repository */
-        $article_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelArticle');
+        $article_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelArticle');
         /** @var EntityRepository\CustomDefPerson $custom_def_person_repository */
-        $custom_def_person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
+        $custom_def_person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
-        $custom_def_ticket_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
+        $custom_def_ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
         /** @var EntityRepository\Department $departmentRepository */
-        $departmentRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Department');
+        $departmentRepository = $entity_manager->getRepository('Application\DeskPRO\Entity\Department');
         /** @var EntityRepository\Download $download_repository */
-        $download_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Download');
+        $download_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
         /** @var EntityRepository\DownloadCategory $download_category_repository */
-        $download_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\DownloadCategory');
+        $download_category_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\DownloadCategory');
         /** @var EntityRepository\LabelDownload $download_label_repository */
-        $download_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelDownload');
+        $download_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelDownload');
         /** @var EntityRepository\Feedback $feedback_repository */
-        $feedback_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Feedback');
+        $feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
         /** @var EntityRepository\FeedbackCategory $feedback_category_repository */
-        $feedback_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\FeedbackCategory');
+        $feedback_category_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackCategory');
         /** @var EntityRepository\LabelFeedback $feedback_label_repository */
-        $feedback_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelFeedback');
+        $feedback_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelFeedback');
         /** @var EntityRepository\Language $language_repository */
-        $language_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Language');
+        $language_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Language');
         /** @var EntityRepository\News $news_repository */
-        $news_repository = $doctrine->getRepository('Application\DeskPRO\Entity\News');
+        $news_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
         /** @var EntityRepository\NewsCategory $news_category_repository */
-        $news_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\NewsCategory');
+        $news_category_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\NewsCategory');
         /** @var EntityRepository\LabelNews $news_label_repository */
-        $news_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelNews');
+        $news_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelNews');
         /** @var EntityRepository\Organization $organization_repository */
-        $organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
+        $organization_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Organization');
         /** @var EntityRepository\Person $person_repository */
-        $person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Person');
+        $person_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
         /** @var EntityRepository\LabelPerson $person_label_repository */
-        $person_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelPerson');
+        $person_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelPerson');
         /** @var EntityRepository\PersonEmail $person_email_repository */
-        $person_email_repository = $doctrine->getRepository('Application\DeskPRO\Entity\PersonEmail');
+        $person_email_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\PersonEmail');
         /** @var EntityRepository\Product $product_repository */
-        $product_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Product');
+        $product_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Product');
         /** @var EntityRepository\Ticket $ticket_repository */
-        $ticket_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Ticket');
+        $ticket_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
         /** @var EntityRepository\TicketPriority $ticket_priority_repository */
-        $ticket_priority_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketPriority');
+        $ticket_priority_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketPriority');
         /** @var EntityRepository\TicketCategory $ticket_category_repository */
-        $ticket_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketCategory');
+        $ticket_category_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketCategory');
         /** @var EntityRepository\LabelTicket $ticket_label_repository */
-        $ticket_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelTicket');
+        $ticket_label_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\LabelTicket');
         /** @var EntityRepository\TicketWorkflow $ticket_workflow_repository */
-        $ticket_workflow_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketWorkflow');
+        $ticket_workflow_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketWorkflow');
         /** @var EntityRepository\Usergroup $user_group_repository */
-        $user_group_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Usergroup');
+        $user_group_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\Usergroup');
 
         if ($this->container instanceof DeskproContainer) {
             $email_account_manager = $this->container->getEmailAccountManager();
@@ -175,13 +188,8 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\TicketLabel($mappers));
 
         /** @var EntityWatcher $entity_watcher */
-        $entity_watcher = $this->container->get('deskpro.search.entity_listener');
-
         /** @var EntityManager $entity_manager */
-        $entity_manager = $entity_manager->create(
-            $entity_manager->getConnection(),
-            $entity_manager->getConfiguration()
-        );
+        $entity_watcher = $this->container->get('deskpro.search.entity_listener');
 
         return new DeskProWriter($importers, $entity_manager, $entity_watcher);
     }

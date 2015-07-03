@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
@@ -81,14 +82,12 @@ final class Ticket extends AbstractImporter
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-
         $ticket = $this->findOrCreateTicket($entity);
         $ticket
             ->disableAutoTicketProcess()
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
-            ->setLanguageId($this->findLanguageId($entity->getLanguage()))
             ->setDepartment($this->findOrCreateTicketDepartment($entity->getDepartment()))
             ->setPriority($this->findOrCreateTicketPriority($entity->getPriority()))
             ->setCategory($this->findOrCreateTicketCategory($entity->getCategory()))
@@ -101,8 +100,12 @@ final class Ticket extends AbstractImporter
             ->resetLabels()
         ;
 
+        if ($entity->getLanguage()) {
+            $ticket['language'] = $this->findLanguage($entity->getLanguage());
+        }
+
         if ($entity->getAgentEmail()) {
-            $ticket->setAgentId($this->getPersonMapper()->findOneByEmail($entity->getAgentEmail())->getId());
+            $ticket['agent'] = $this->getPersonMapper()->findOneByEmail($entity->getAgentEmail());
         }
         foreach ($entity->getMessages() as $message) {
             $ticket->addMessage($this->createTicketMessage($message, $ticket));
@@ -185,7 +188,6 @@ final class Ticket extends AbstractImporter
             $message->addAttachment($this->createAttachment($attachment, $entity->getPersonEmail()));
         }
 
-        $this->records->add($message);
         return $message;
     }
 
@@ -222,7 +224,6 @@ final class Ticket extends AbstractImporter
         $participant = new DeskPROEntity\TicketParticipant();
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
-        $this->records->add($participant);
         return $participant;
     }
 

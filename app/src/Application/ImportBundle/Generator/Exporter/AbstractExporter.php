@@ -130,8 +130,8 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
     static public function getOrderedTypes()
     {
         return array(
-            Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_TICKET,
             Entity\EntityInterface::TYPE_ARTICLE,
             Entity\EntityInterface::TYPE_DOWNLOAD,
             Entity\EntityInterface::TYPE_FEEDBACK,

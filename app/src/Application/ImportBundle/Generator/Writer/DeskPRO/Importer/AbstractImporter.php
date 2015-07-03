@@ -111,24 +111,22 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      */
     protected function findOrCreateOrganization($title)
     {
+        if (!$title) return null;
         /** @var Mapper\Organization $mapper */
         $mapper       = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
-        $organization = null;
 
-        if ($title) {
-            $organization = $mapper->findOneByTitle($title, false);
-            if ($organization) {
-                $this->logDebug(sprintf(
-                    'Found existing organization `%d` with title `%s`',
-                    $organization->getId(), $organization->getName()
-                ));
-            } else {
-                $organization = new DeskPROEntity\Organization();
-                $organization->setName($title);
+        $organization = $mapper->findOneByTitle($title, false);
+        if ($organization) {
+            $this->logDebug(sprintf(
+                'Found existing organization `%d` with title `%s`',
+                $organization->getId(), $organization->getName()
+            ));
+        } else {
+            $organization = new DeskPROEntity\Organization();
+            $organization->setName($title);
 
-                $this->records->add($organization);
-                $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
-            }
+            $this->records->add($organization);
+            $this->logInfo(sprintf('Creating new organization `%s`', $organization->getName()));
         }
 
         return $organization;

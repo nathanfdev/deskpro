@@ -940,10 +940,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetParticipants()
     {
-        foreach ($this->participants as $participant) {
-            App::getOrm()->remove($participant);
-        }
-
         $this->participants->clear();
         $this->_onPropertyChanged('participants', null, $this->participants);
 
@@ -1360,10 +1356,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetMessages()
     {
-        foreach ($this->messages as $message) {
-            App::getOrm()->remove($message);
-        }
-
+        $this->messages->clear();
         $this->messages->clear();
         $this->_onPropertyChanged('messages', null, $this->messages);
 
@@ -1660,10 +1653,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        foreach ($this->labels as $label) {
-            App::getOrm()->remove($label);
-        }
-
         $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
@@ -3696,6 +3685,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'language',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Language',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'language_id',
                 'referencedColumnName' => 'id',
@@ -3707,6 +3697,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'department',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Department',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'department_id',
                 'referencedColumnName' => 'id',
@@ -3762,6 +3753,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'person',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'person_id',
                 'referencedColumnName' => 'id',
@@ -3818,6 +3810,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $metadata->mapManyToOne(array(
             'fieldName'            => 'organization',
             'targetEntity'         => 'Application\\DeskPRO\\Entity\\Organization',
+            'cascade'              => array('persist'),
             'joinColumns'          => array(array(
                 'name'                 => 'organization_id',
                 'referencedColumnName' => 'id',

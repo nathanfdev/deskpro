@@ -1921,7 +1921,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetEmails()
     {
-        $this->emails = new ArrayCollection();
+        $this->emails->clear();
         $this->_onPropertyChanged('emails', null, $this->emails);
 
         return $this;
@@ -2000,7 +2000,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetUsergroups()
     {
-        $this->usergroups = new ArrayCollection();
+        $this->usergroups->clear();
         $this->_onPropertyChanged('usergroups', null, $this->usergroups);
 
         return $this;
@@ -2049,7 +2049,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function resetLabels()
     {
-        $this->labels = new ArrayCollection();
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
@@ -3361,13 +3361,11 @@ class Person extends DomainObject implements HighlightableModelInterface
                 'dpApi' => true
             )
         );
-        $metadata->mapManyToOne(
+        $metadata->mapOneToOne(
             array(
                 'fieldName' => 'primary_email',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
                 'cascade' => array('persist', 'detach'),
-                'mappedBy' => null,
-                'inversedBy' => null,
                 'fetch' => ClassMetadata::FETCH_EAGER,
                 'joinColumns' => array(
                     0 => array(
@@ -3454,7 +3452,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             array(
                 'fieldName' => 'preferences',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
-                'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
+                'cascade' => array('remove', 'merge'),
                 'mappedBy' => 'person',
             )
         );
