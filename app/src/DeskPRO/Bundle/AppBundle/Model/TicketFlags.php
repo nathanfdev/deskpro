@@ -32,7 +32,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Model;
 
-use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
+use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketFlagException;
+use Doctrine\ORM\EntityManager;
+
 
 /**
  * Pseudo-implementation of ticket flags. Those were hard-coded so this makes coupling a
@@ -51,6 +53,21 @@ class TicketFlags
     );
 
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    protected function getEm()
+    {
+        return $this->em;
+    }
+
+    /**
      * Get the list of available flags.
      * @return array[string] the list of all ticket flag names
      */
@@ -67,5 +84,24 @@ class TicketFlags
     public function flagIsValid($flag_name)
     {
         return in_array($flag_name, $this->flags);
+    }
+
+    /**
+     * Gets all the tickets matching a flag.
+     * @param int $person_id is the ID of the person whos has the flag.
+     * @param string the flag name.
+     * @return a list of tickets.
+     * @throws UnknownTicketFlagException
+     */
+    public function getAllTicketsForFlag($person_id, $flag_name)
+    {
+        if (!$this->flagIsValid($flag_name)) {
+            throw new UnknownTicketFlagException();
+        }
+
+        return $this->getEm()->getRepository('DeskPRO:TicketFlagged')->findBy(array(
+            'color' => $flag_name,
+            'person_id' => $person_id,
+        ));
     }
 }

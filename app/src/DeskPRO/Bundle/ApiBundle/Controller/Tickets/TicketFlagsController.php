@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketFlagException;
 
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -72,6 +73,28 @@ class TicketFlagsController extends BaseController
         $flags = $this->get('data.ticketflags');
         return View::create(
             $this->createRepresentation($flags->getFlags()),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get the count of tickets marked with each flag",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Get("/ticket_flags/{flag}/count", name="api_ticket_flag_count")
+     */
+    public function getTicketFlagCount($flag)
+    {
+        $tickets = $this->get('data.ticketflags')->getAllTicketsForFlag($this->getUser()->getId(), $flag);
+
+        return View::create(
+            $this->createRepresentation(array(
+                'count' => count($tickets),
+            )),
             Response::HTTP_OK
         );
     }
