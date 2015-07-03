@@ -38,12 +38,10 @@ use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Util\Arrays;
-
 use Orb\Log\Logger;
-use Orb\Log\Loggable;
 use Zend\Ldap\Ldap;
 
-class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Loggable
+class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
     const OPT_HOST               = 'host';
     const OPT_PORT               = 'port';
@@ -471,7 +469,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface, Lo
     /**
      * @param \Orb\Log\Logger $logger
      */
-    public function setLogger(\Orb\Log\Logger $logger)
+    public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
     }

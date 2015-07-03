@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,49 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\AdminInterfaceBundle\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\ApiToken;
-
-class StartController extends AbstractController
+class Build1435766624 extends AbstractBuild
 {
-    public function preAction($action, $arguments = null)
+    public function run()
     {
-        if (defined('DPC_IS_CLOUD')) {
-            throw $this->createNotFoundException();
-        }
-
-        return parent::preAction($action, $arguments);
-    }
-
-    ####################################################################################################################
-    # index
-    ####################################################################################################################
-
-    public function indexAction()
-    {
-        $token = new ApiToken();
-        $token->scope = ApiToken::SCOPE_SESSION;
-        $token->person = $this->person;
-        $token->date_expires = new \DateTime("+1 hour");
-
-        $this->em->persist($token);
-        $this->em->flush();
-
-        $php_path = $this->container->getPhpBinaryPath();
-        $php_path_set = dp_get_config('php_path');
-
-        $not_user = $this->person->getLabelManager()->hasLabel('not_user');
-
-        return $this->render('AdminInterfaceBundle:Start:layout.html.twig', array(
-            'api_token'              => $token,
-            'session'                => $this->session->getEntity(),
-            'initial_request_token'  => $this->session->generateSecurityToken('request_token', 600),
-            'php_path'               => $php_path,
-            'php_path_set'           => $php_path_set,
-            'not_user' => $not_user,
-        ));
+        $this->out("Correct status escalations");
+		$this->execMutateSql("
+		    UPDATE ticket_escalations
+		    SET event_trigger = 'time.agent_waiting'
+		    WHERE sys_name IN ('statuses_awaiting_user_warning', 'statuses_awaiting_user_final', 'statuses_awaiting_user_set_resolved')
+		");
     }
 }
