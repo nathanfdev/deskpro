@@ -1,0 +1,89 @@
+@import "raw/styles";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+//######################################################################################################################
+//# Frame positioning
+//######################################################################################################################
+
+$window-header-height: 44px;
+$app-switcher-width: 55px;
+$nav-frame-width: 220px;
+
+$list-frame-width: 45%;
+$tab-frame-width: 55%;
+
+.dp-window {
+.dp-window-header {
+  @extend .site-header;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $window-header-height;
+  z-index: 100;
+}
+
+.dp-app-switcher {
+  @extend .app-bar-wrapper;
+  float: none;
+  height: auto;
+
+  position: absolute;
+  top: $window-header-height;
+  left: 0;
+  bottom: 0;
+  width: $app-switcher-width;
+  z-index: 100;
+}
+
+.dp-nav-frame {
+  @extend .sidebar;
+  float: none;
+  height: auto;
+  overflow: hidden;
+
+  position: absolute;
+  top: $window-header-height;
+  left: $app-switcher-width;
+  bottom: 0;
+  width: $nav-frame-width;
+  z-index: 100;
+}
+
+.dp-content-outer-frame {
+  position: absolute;
+  top: $window-header-height;
+  left: $app-switcher-width + $nav-frame-width;
+  bottom: 0;
+  right: 0;
+  z-index: 95;
+}
+
+.dp-list-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $list-frame-width;
+  background: #f8f8f8;
+  border-right: 1px solid darken(#f8f8f8, 10%);
+}
+
+.dp-tab-frame {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: $tab-frame-width;
+}
+}

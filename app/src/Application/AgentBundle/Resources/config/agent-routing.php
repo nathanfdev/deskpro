@@ -11,7 +11,7 @@ $collection = new RouteCollection();
 
 $collection->create('agent', array(
     'path'        => '/',
-    'controller'  => 'AgentBundle:Main:index',
+    'controller'  => 'AgentBundle:AgentChrome:agentChrome',
 ));
 
 $collection->create('geoip', array(

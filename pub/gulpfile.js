@@ -1,7 +1,7 @@
 var gulp         = require('gulp'),
     gutil        = require('gulp-util'),
     webpack      = require("webpack"),
-    babelify     = require('babelify'),
+    WebpackDevServer = require("webpack-dev-server"),
     sass         = require('gulp-sass'),
     sourcemaps   = require('gulp-sourcemaps'),
     uglify       = require('gulp-uglify'),
@@ -14,6 +14,7 @@ var gulp         = require('gulp'),
     buffer       = require('vinyl-buffer'),
     prettyHrtime = require('pretty-hrtime'),
     path         = require("path"),
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
     _            = require("lodash");
 
 //######################################################################################################################
@@ -144,41 +145,74 @@ gulp.task('prod', ['clean', 'priv:start-prod'], function (cb) {
 //# Bundler
 //######################################################################################################################
 
-gulp.task('bundle:portal', function (callback) {
+gulp.task('clean:bundle', function (cb) {
+  del(['./build/bundles'], cb);
+});
+
+function getWebpackConfig(isProd) {
   var config = {
     cache: true,
     entry: {
-      DeskPRO_PortalBundle: "./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle"
+      DeskPRO_PortalBundle: "./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle",
+      DeskPRO_AgentBundle: [
+        "./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"
+      ]
     },
     output: {
-      path: path.join(__dirname, "build/bundles"),
-      publicPath: "build/bundles",
+      path: path.join(__dirname, "build/"),
+      publicPath: "/pub/build/",
       filename: "[name].js",
       sourceMapFilename: "[name].map"
     },
     resolve: {
       root: path.join(__dirname, "src")
     },
+    devtool: "inline-source-map",
     module: {
       loaders: [
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
           loader: "babel-loader"
+        },
+        {
+          test: /\.(png|gif|jpg|jpeg)$/,
+          loader: "file-loader?context=src&name=[path][name].[ext]"
+        },
+        {
+          test: /\.scss$/,
+          loader: ExtractTextPlugin.extract("style-loader",
+            "css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&" +
+            "includePaths[]=" + (path.resolve(__dirname, "./bower_components")) + "&" +
+            "includePaths[]=" + (path.resolve(__dirname, "./node_modules")),
+            { "publicPath": "./" }
+          )
         }
       ]
     },
-    plugins: []
+    plugins: [
+      new ExtractTextPlugin("[name].css"),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      })
+    ]
   };
 
-  if (deskpro.isProd) {
+  if (isProd) {
+    config.devool = "source-map";
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
       exclude: [/(node_modules|bower_components)/]
     }))
   }
 
+  return config;
+}
+
+gulp.task('bundle', ['clean:bundle'], function (callback) {
+  var config = getWebpackConfig(deskpro.isProd);
+
   webpack(config, function(err, stats) {
-    if(err) throw new gutil.PluginError("bundle:portal", err);
+    if(err) throw new gutil.PluginError("bundle", err);
     gutil.log("[bundle:portal]", stats.toString({
       colors: true
     }));
@@ -186,8 +220,36 @@ gulp.task('bundle:portal', function (callback) {
   });
 });
 
-gulp.task('bundle', function (cb) {
-  runSeq(['bundle:portal'], cb);
+gulp.task('bundle:dev-server', ['clean:bundle'], function(callback) {
+  var config = getWebpackConfig(deskpro.isProd);
+  config.debug = true;
+  config.devtool = "eval";
+
+  config.output.publicPath = "http://localhost:9666/pub/build/";
+
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  config.plugins.push(new webpack.NoErrorsPlugin());
+
+  // .js loader
+  config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader'];
+
+  config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/only-dev-server');
+  config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');
+
+  var compiler = webpack(config);
+  new WebpackDevServer(compiler, {
+    publicPath: "http://localhost:9666/pub/build/",
+    hot: true,
+    historyApiFallback: true,
+    stats: {
+      colors: true
+    }
+  }).listen(9666, "localhost", function(err) {
+    if(err) throw new gutil.PluginError("webpack-dev-server", err);
+    gutil.log("[webpack-dev-server]", "http://localhost:9666/");
+    gutil.log("[webpack-dev-server]", "In your config.php, add this line: ");
+    gutil.log("[webpack-dev-server]", "$DP_CONFIG['pub_asset_urls'] = array('pub/build' => 'http://localhost:9666/pub/build/');");
+  });
 });
 
 //######################################################################################################################
@@ -220,7 +282,7 @@ gulp.task('sass', function () {
 
 gulp.task('watch', ['clean', 'priv:start-watch'], function (cb) {
   runSeq([
-    'bundle:portal',
+    'bundle',
     'sass'
   ], function () {
     sassLogger.watch('./src/DeskPRO/Bundle/PortalBundle/Resources/style/*.scss');

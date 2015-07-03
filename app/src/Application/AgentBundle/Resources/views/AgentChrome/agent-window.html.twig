@@ -1,0 +1,17 @@
+<html>
+<head>
+  <title>DeskPRO</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0" id="dp_meta_viewport" />
+  <script type="text/javascript">
+    window.BASE_URL =  '{{ app.request.getSchemeAndHttpHost() }}';
+  </script>
+  <link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentBundle.css', 'app_assets') }}" />
+  <script type="text/javascript" src="{{ asset('DeskPRO_AgentBundle.js', 'app_assets') }}"></script>
+</head>
+<body>
+<div id="deskpro_app_window"></div>
+</body>
+</html>

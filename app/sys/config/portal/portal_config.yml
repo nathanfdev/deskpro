@@ -21,6 +21,9 @@ framework:
     validation:      { enable_annotations: false }
     templating:
         engines: ['twig']
+        assets_base_urls: "SET_IN_ASSET_PACKAGE_PASS"
+        packages:
+          app_assets: { base_url: "SET_IN_ASSET_PACKAGE_PASS" }
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies:
