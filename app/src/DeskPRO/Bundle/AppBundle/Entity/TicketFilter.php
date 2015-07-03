@@ -52,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @Hateoas\Relation(
  *      "self",
- *      href=@Hateoas\Route("get_ticket_filters", parameters={"id" = "expr(object.getId())"})
+ *      href=@Hateoas\Route("api_ticket_filters_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
 class TicketFilter extends NotifyPropertyChangeEntity implements FilterInterface

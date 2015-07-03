@@ -22,3 +22,6 @@ ticket_filter_sets:
     type: rest
     resource: DeskPRO\Bundle\ApiBundle\Controller\Filters\TicketFilterSetsController
     #resource: "@ApiBundle/Controller/Filters/TicketFilterSetsController.php"
+=======
+    resource: "@ApiBundle/Controller"
+>>>>>>> 7120c09705a3ec23f73f3ac042ce1657b9d019b0

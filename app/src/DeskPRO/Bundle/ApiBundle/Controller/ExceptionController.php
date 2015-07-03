@@ -37,7 +37,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Kernel\KernelErrorHandler;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Debug\Debug;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -65,6 +67,18 @@ class ExceptionController extends BaseController
         $errors_array = array();
         if ($exception instanceof InvalidFormException) {
             $errors_array = $this->generateFormErrors($exception->getForm());
+        }
+
+        if (!$exception instanceof InvalidFormException && !$exception instanceof HttpException) {
+            KernelErrorHandler::handleException($exception);
+        }
+
+        // in dev environment, display a stack trace, dont show if we have a test.client
+        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
+            $error = new Response((string)$exception, 500);
+            $error->headers->set('content-type', 'text/html');
+
+            return $error;
         }
 
         $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;

@@ -1,7 +1,6 @@
 var gulp         = require('gulp'),
     gutil        = require('gulp-util'),
     webpack      = require("webpack"),
-    babelify     = require('babelify'),
     sass         = require('gulp-sass'),
     sourcemaps   = require('gulp-sourcemaps'),
     uglify       = require('gulp-uglify'),

@@ -41,7 +41,12 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     protected static $api_kernel;
     protected static $portal_kernel;
     protected static $last_installed_data_set;
-
+    
+    /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected abstract function getContainer();
+    
     /**
      * @param mixed $service
      * @return object
@@ -49,6 +54,20 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     protected function get($service)
     {
         return $this->getContainer()->get($service);
+    }
+
+    /**
+     * @param array $server - lets you override $_SERVER variables
+     * @return \Symfony\Bundle\FrameworkBundle\Client
+     */
+    public function getClient($server = array())
+    {
+        // TODO: we need a good way of setting the 'HTTP_HOST' key on $server to the dev's machine
+        // maybe just use the a global we declare in config.test.php ?? might be best option.
+        $client = $this->getContainer()->get('test.client');
+        $client->setServerParameters($server);
+
+        return $client;
     }
 
     /**
@@ -88,11 +107,6 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
         return self::$portal_kernel;
     }
-
-    /**
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected abstract function getContainer();
 
     /**
      * Install a data set. To ensure a reinstall, send a flag.

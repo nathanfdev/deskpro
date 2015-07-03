@@ -20,10 +20,6 @@ services:
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
 
-  portal_custom_per_field_manager:
-      class: DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager
-      arguments: [@doctrine.orm.default_entity_manager]
-
   portal_person_validator:
       class: DeskPRO\Bundle\PortalBundle\Person\PersonValidator
       arguments: [@doctrine.orm.default_entity_manager, @brand_stack, @language_router, @data.email, @portal_mailer]

@@ -42,6 +42,8 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
@@ -58,10 +60,6 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
 
-
-/**
- * @RouteResource("ticket_filters")
- */
 class FiltersController extends BaseController implements ClassResourceInterface
 {
     /**
@@ -89,6 +87,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *          200="Success"
      *      }
      * )
+     *
+     * @Get("/ticket_filters", name="api_ticket_filters")
      */
     public function cgetAction(Request $request)
     {
@@ -126,6 +126,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
+     *
+     * @Get("/ticket_filters/{id}", name="api_ticket_filters_get")
      */
     public function getAction($id)
     {
@@ -194,6 +196,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
+     *
+     * @Post("/ticket_filters", name="api_ticket_filters_post")
      */
     public function postAction(Request $request)
     {
@@ -223,6 +227,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
+     *
+     * @Put("/ticket_filters/{id}", name="api_ticket_filters_put")
      */
     public function putAction(Request $request, $id)
     {
@@ -253,6 +259,8 @@ class FiltersController extends BaseController implements ClassResourceInterface
      *          404="Not Found"
      *      }
      * )
+     *
+     * @Delete("/ticket_filters/{id}", name="api_ticket_filters_delete")
      */
     public function deleteAction($id)
     {
@@ -301,7 +309,7 @@ class FiltersController extends BaseController implements ClassResourceInterface
                 $this->createRepresentation($filter),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('get_ticket_filters', array('id' => $filter->getId()))
+                    'Location' => $this->generateUrl('api_ticket_filters_get', array('id' => $filter->getId()))
                 )
             );
         }
