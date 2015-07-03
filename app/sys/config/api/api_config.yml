@@ -32,10 +32,23 @@ framework:
     http_method_override: true
 
 monolog:
+    channels: # you MUST also update portal_config.yml if you change these
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"
     handlers:
         main:
             type:   service
             id:     monolog.handler.deskpro_fingers_crossed
+        term_engine:
+            type: service
+            id: term_engine.log_handler
+            channels:
+                - "dp.tickets.filters.tengine.dbal.engine"
+                - "dp.tickets.filters.tengine.dbal.compiler"
+                - "dp.tickets.filters.tengine.php.engine"
+                - "dp.tickets.filters.tengine.php.compiler"
 
 jms_serializer:
     visitors:
@@ -114,22 +127,6 @@ security:
 
     access_control:
         - { path: '^/api/v2(?!/api_tokens|/doc)', roles: ['ROLE_API'] }
-
-monolog:
-    channels: # you MUST also update portal_config.yml if you change these
-        - "dp.tickets.filters.tengine.dbal.engine"
-        - "dp.tickets.filters.tengine.dbal.compiler"
-        - "dp.tickets.filters.tengine.php.engine"
-        - "dp.tickets.filters.tengine.php.compiler"
-    handlers:
-        term_engine:
-            type: service
-            id: term_engine.log_handler
-            channels:
-                - "dp.tickets.filters.tengine.dbal.engine"
-                - "dp.tickets.filters.tengine.dbal.compiler"
-                - "dp.tickets.filters.tengine.php.engine"
-                - "dp.tickets.filters.tengine.php.compiler"
 
 sensio_framework_extra:
     cache:    { annotations: true }

@@ -173,7 +173,7 @@ function getWebpackConfig(isProd) {
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
-          loader: "babel-loader"
+          loader: "babel-loader?stage=0"
         },
         {
           test: /\.(png|gif|jpg|jpeg)$/,
@@ -231,7 +231,7 @@ gulp.task('bundle:dev-server', ['clean:bundle'], function(callback) {
   config.plugins.push(new webpack.NoErrorsPlugin());
 
   // .js loader
-  config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader'];
+  config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
 
   config.entry['DeskPRO_AgentBundle'].unshift('webpack/hot/only-dev-server');
   config.entry['DeskPRO_AgentBundle'].unshift('webpack-dev-server/client?http://localhost:9666');

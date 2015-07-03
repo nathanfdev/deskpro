@@ -5,7 +5,10 @@ import $ from "jquery";
 import React from 'react';
 import { createRedux, createDispatcher, composeStores } from 'redux';
 import thunkMiddleware from 'redux/lib/middleware/thunk';
+import promiseMiddleware from 'redux-promise';
 import { Provider } from 'redux/react';
+
+import * as stores from "DeskPRO/Bundle/AgentBundle/Application/Store/index";
 
 import DpWindow from "DeskPRO/Bundle/AgentBundle/Application/Component/DpWindow";
 
@@ -15,8 +18,7 @@ export default class AgentApp {
   }
 
   start() {
-    const store = composeStores({});
-
+    const store = composeStores(stores);
     const dispatcher = createDispatcher(
       store,
       getState => [promiseMiddleware(), thunkMiddleware(getState)]

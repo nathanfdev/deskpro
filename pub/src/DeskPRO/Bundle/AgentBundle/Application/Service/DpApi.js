@@ -1,5 +1,5 @@
 import $ from "jquery";
-import Http from "DeskPRO/Component/Http/DpApi";
+import DpApi from "DeskPRO/Component/Http/DpApi";
 import UrlCorrector from "DeskPRO/Bundle/AppBundle/Http/UrlCorrector";
 
 const api = new DpApi($.ajax);
