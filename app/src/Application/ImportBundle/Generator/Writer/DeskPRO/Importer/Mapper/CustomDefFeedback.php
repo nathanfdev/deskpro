@@ -31,24 +31,24 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Custom def people record mapper
+ * Custom def ticket record mapper
  *
- * Class CustomDefPeople
+ * Class CustomDefFeedback
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
  */
-final class CustomDefPerson implements MapperInterface
+final class CustomDefFeedback implements MapperInterface
 {
     /**
-     * @var EntityRepository\CustomDefPerson
+     * @var EntityRepository\CustomDefFeedback
      */
     private $repository;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\CustomDefPerson $repository
+     * @param EntityRepository\CustomDefFeedback $repository
      */
-    public function __construct(EntityRepository\CustomDefPerson $repository)
+    public function __construct(EntityRepository\CustomDefFeedback $repository)
     {
         $this->repository = $repository;
     }
@@ -58,7 +58,7 @@ final class CustomDefPerson implements MapperInterface
      */
     public function getType()
     {
-        return self::TYPE_CUSTOM_DEF_PERSON;
+        return self::TYPE_CUSTOM_DEF_FEEDBACK;
     }
 
     /**
@@ -66,10 +66,10 @@ final class CustomDefPerson implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        /** @var Entity\CustomDefPerson $record */
+        /** @var Entity\CustomDefFeedback $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
-            throw new MapperException('Custom def people not found', $criteria);
+        if (!$record && $throw_exception) {
+            throw new MapperException('Custom def feedback not found', $criteria);
         }
 
         return $record;

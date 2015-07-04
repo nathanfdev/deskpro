@@ -63,6 +63,8 @@ class DeskProWriterFactory extends AbstractFactory
         $custom_def_person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
         $custom_def_ticket_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
+        /** @var EntityRepository\CustomDefFeedback $custom_def_feedback_repository */
+        $custom_def_feedback_repository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefFeedback');
         /** @var EntityRepository\Department $departmentRepository */
         $departmentRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Department');
         /** @var EntityRepository\Download $download_repository */
@@ -121,6 +123,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\ArticleLabel($article_label_repository))
             ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository))
             ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository))
+            ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository))
             ->attach(new Importer\Mapper\Department($departmentRepository))
             ->attach(new Importer\Mapper\Download($download_repository))
             ->attach(new Importer\Mapper\DownloadCategory($download_category_repository))
@@ -145,7 +148,8 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
             ->attach(new Importer\Mapper\BlobData())
-            ->attach(new Importer\Mapper\EmailAccount($email_account_manager));
+            ->attach(new Importer\Mapper\EmailAccount($email_account_manager))
+        ;
 
         /** @var DeskproBlobStorage $blob_storage */
         if ($this->container instanceof DeskproContainer) {

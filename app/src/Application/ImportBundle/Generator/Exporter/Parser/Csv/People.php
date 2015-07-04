@@ -63,6 +63,7 @@ final class People extends AbstractParser
     public function export()
     {
         $collection    = new Entity\Collection();
+
         $people        = $this->getReaderData($this->getPersonReaderConfig());
         $custom_fields = $this->exportPersonCustomFields();
 

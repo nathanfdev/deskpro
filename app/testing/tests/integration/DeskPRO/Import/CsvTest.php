@@ -79,9 +79,14 @@ class CsvTest extends \DpIntegrationTestCase
     private $custom_data_ticket_repository;
 
     /**
-     * @var \Doctrine\ORM\EntityRepository
+     * @var \Application\DeskPRO\EntityRepository\AbstractEntityRepository
      */
     private $custom_data_person_repository;
+
+    /**
+     * @var \Application\DeskPRO\EntityRepository\AbstractEntityRepository
+     */
+    private $custom_data_feedback_repository;
 
     /**
      * Set up
@@ -91,21 +96,23 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->enableFreshDatabaseSet('FreshDb');
         $this->helper->loadFixtures('Import/CustomDefTicket');
         $this->helper->loadFixtures('Import/CustomDefPerson');
+        $this->helper->loadFixtures('Import/CustomDefFeedback');
 
         $entity_manager = $this->helper->getSymfonyContainer()->getEm();
         $entity_manager->clear();
 
-        $this->ticket_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
-        $this->ticket_attachment_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
-        $this->person_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
-        $this->news_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
-        $this->article_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
-        $this->feedback_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
-        $this->feedback_attachment_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
-        $this->download_repository            = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
-        $this->blob_repository                = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
-        $this->custom_data_ticket_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataTicket');
-        $this->custom_data_person_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataPerson');
+        $this->ticket_repository               = $entity_manager->getRepository('Application\DeskPRO\Entity\Ticket');
+        $this->ticket_attachment_repository    = $entity_manager->getRepository('Application\DeskPRO\Entity\TicketAttachment');
+        $this->person_repository               = $entity_manager->getRepository('Application\DeskPRO\Entity\Person');
+        $this->news_repository                 = $entity_manager->getRepository('Application\DeskPRO\Entity\News');
+        $this->article_repository              = $entity_manager->getRepository('Application\DeskPRO\Entity\Article');
+        $this->feedback_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Feedback');
+        $this->feedback_attachment_repository  = $entity_manager->getRepository('Application\DeskPRO\Entity\FeedbackAttachment');
+        $this->download_repository             = $entity_manager->getRepository('Application\DeskPRO\Entity\Download');
+        $this->blob_repository                 = $entity_manager->getRepository('Application\DeskPRO\Entity\Blob');
+        $this->custom_data_ticket_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataTicket');
+        $this->custom_data_person_repository   = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataPerson');
+        $this->custom_data_feedback_repository = $entity_manager->getRepository('Application\DeskPRO\Entity\CustomDataFeedback');
 
         $this->input_path  = DP_ROOT . '/src/Application/ImportBundle/Resources/docs/data_example/csv';
         $this->output_path = dp_get_data_dir() . '/import/csv/export';
@@ -261,7 +268,6 @@ class CsvTest extends \DpIntegrationTestCase
     {
         $this->assertEquals(0, $this->ticket_repository->countAll());
         $this->assertEquals(0, $this->ticket_attachment_repository->countAll());
-        $this->assertEquals(0, $this->custom_data_ticket_repository->countAll());
         $this->assertEquals(1, $this->person_repository->countAll());
         $this->assertEquals(1, $this->news_repository->countAll());
         $this->assertEquals(1, $this->article_repository->countAll());
@@ -269,6 +275,9 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertEquals(0, $this->feedback_attachment_repository->countAll());
         $this->assertEquals(0, $this->download_repository->countAll());
         $this->assertEquals(0, $this->blob_repository->countAll());
+        $this->assertEquals(0, $this->custom_data_ticket_repository->countAll());
+        $this->assertEquals(0, $this->custom_data_person_repository->countAll());
+        $this->assertEquals(0, $this->custom_data_feedback_repository->countAll());
     }
 
     private function checkDbData()
@@ -294,6 +303,7 @@ class CsvTest extends \DpIntegrationTestCase
         // Checking for feedback
         $this->assertEquals(2, $this->feedback_repository->countAll());
         $this->assertEquals(1, $this->feedback_attachment_repository->countAll());
+        $this->assertEquals(2, $this->custom_data_feedback_repository->countAll());
 
         // Checking for blob
         $this->assertCount(3, $this->blob_repository->findBy(array('content_type' => 'csv')));

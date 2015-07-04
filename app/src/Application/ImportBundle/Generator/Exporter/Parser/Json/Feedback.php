@@ -135,6 +135,12 @@ final class Feedback extends AbstractParser
                 $entity->addAttachment($attachment);
             }
 
+            $custom_fields = $this->exportCustomFields($feedback['custom_fields']);
+            foreach ($custom_fields as $custom_field) {
+                /** @var Entity\CustomField $custom_field */
+                $entity->addCustomField($custom_field);
+            }
+
             return $entity;
         }
 
@@ -210,6 +216,7 @@ final class Feedback extends AbstractParser
 
         return $this->hasRequiredColumns($feedback, $columns)
             && $this->isArrayColumn($feedback, 'labels')
-            && $this->isArrayColumn($feedback, 'attachments');
+            && $this->isArrayColumn($feedback, 'attachments')
+            && $this->isArrayColumn($feedback, 'custom_fields');
     }
 }
