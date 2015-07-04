@@ -94,7 +94,7 @@ class CsvTest extends \DpIntegrationTestCase
     private $custom_data_article_repository;
 
     /**
-     * Set up
+     * {@inheritdoc}
      */
     public function runBefore()
     {
