@@ -136,6 +136,83 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * Returns custom def person entity
+     *
+     * @param MapperInterface                  $mapper
+     * @param Entity\CustomField               $entity
+     * @param DeskPROEntity\CustomDataAbstract $custom_field
+     *
+     * @return DeskPROEntity\CustomDataTicket
+     * @throws ImporterException
+     */
+    protected function createCustomData(MapperInterface $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
+    {
+        $custom_field_def = $mapper->findOneBy(array(
+            'title'  => $entity->getKey(),
+            'parent' => null,
+        ));
+
+        switch ($custom_field_def->getTypeName()) {
+            case Entity\CustomField::FIELD_TYPE_TEXT:
+            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setInput($entity->getValue())
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_TOGGLE:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setValue($entity->getValue() ? 1 : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DATE:
+            case Entity\CustomField::FIELD_TYPE_DATETIME:
+                $custom_field
+                    ->setField($custom_field_def)
+                    ->setRootField($custom_field_def)
+                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0)
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_CHOICE:
+                /** @var DeskPROEntity\CustomDataAbstract $choice */
+                $choice = $this->findChoiceCustomDef($mapper, $entity->getValue(), $custom_field_def);
+                $custom_field
+                    ->setField($choice)
+                    ->setRootField($custom_field_def)
+                    ->setValue(1)
+                ;
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DISPLAY:
+
+                // todo implement
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_HIDDEN:
+
+                // todo implement
+
+                break;
+
+            default:
+                throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
+        }
+
+        $this->records->add($custom_field);
+        return $custom_field;
+    }
+
+    /**
      * Find a choice custom def entity
      * We store value for choice custom fields like "A > A1"
      *
