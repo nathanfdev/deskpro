@@ -1033,10 +1033,12 @@ HTML;
                     'email' => $email
                 );
 
+                $this->container->getTranslator()->setDefaultPersonContext($person);
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
                 $this->container->getMailer()->send($message);
+                $this->container->getTranslator()->setDefaultPersonContext($this->person);
 
                 if ($_format == 'json') {
                     return $this->createJsonResponse(array('success' => 1));
@@ -1063,11 +1065,12 @@ HTML;
             'interface' => DP_INTERFACE
         );
 
+        $this->container->getTranslator()->setDefaultPersonContext($person);
         $message = $this->container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
         $message->setTo($email, $person->getDisplayName());
-
         $this->container->getMailer()->send($message);
+        $this->container->getTranslator()->setDefaultPersonContext($this->person);
 
         if ($_format == 'json') {
             return $this->createJsonResponse(array('success' => 1));
