@@ -82,7 +82,6 @@ class CustomDefFeedback extends CustomDefAbstract
     /**
      * @return CustomDefFeedback
      */
-
     public static function createFeedbackCategory()
     {
         $category = new self();

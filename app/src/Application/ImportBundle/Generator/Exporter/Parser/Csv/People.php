@@ -140,7 +140,12 @@ final class People extends AbstractParser
      */
     private function isPersonValid(array $person)
     {
-        $columns = array('name', 'email');
+        $columns = array(
+            'id',
+            'name',
+            'email',
+        );
+
         return $this->hasRequiredColumns($person, $columns);
     }
 

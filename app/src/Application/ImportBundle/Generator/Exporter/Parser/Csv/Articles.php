@@ -38,6 +38,8 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
  */
 final class Articles extends AbstractParser
 {
+    const ARTICLE_PREFIX = 'article_';
+
     /**
      * {@inheritdoc}
      */
@@ -59,15 +61,24 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $articles   = $this->getReaderData($this->getArticleReaderConfig());
+        $collection    = new Entity\Collection();
+
+        $articles      = $this->getReaderData($this->getArticleReaderConfig());
+        $custom_fields = $this->exportArticleCustomFields();
 
         foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportArticle($num, $article);
+                $entity = $this->exportArticle($article);
                 if ($entity) {
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
+                        }
+                    }
+
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
@@ -88,18 +99,16 @@ final class Articles extends AbstractParser
     /**
      * Returns an article entity
      *
-     * @param int   $num
      * @param array $article
-     *
      * @return Entity\Article|null
      */
-    private function exportArticle($num, array $article)
+    private function exportArticle(array $article)
     {
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination('article_' . $num)
-                ->setOid($num)
+                ->setDestination(self::ARTICLE_PREFIX . $article['id'])
+                ->setOid($article['id'])
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
                 ->setContent($article['content'])
@@ -122,6 +131,16 @@ final class Articles extends AbstractParser
     }
 
     /**
+     * Returns a collection of articles custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportArticleCustomFields()
+    {
+        return $this->exportCustomFields($this->getArticleCustomFieldReaderConfig(), self::ARTICLE_PREFIX, 'article_id');
+    }
+
+    /**
      * Check if article has all required columns
      *
      * @param array $article
@@ -130,6 +149,7 @@ final class Articles extends AbstractParser
     private function isArticleValid(array $article)
     {
         $columns = array(
+            'id',
             'person',
             'title',
             'content',
@@ -152,5 +172,15 @@ final class Articles extends AbstractParser
     private function getArticleReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_ARTICLES);
+    }
+
+    /**
+     * Returns reader config for articles custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getArticleCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_ARTICLE_CUSTOM_FIELDS);
     }
 }
