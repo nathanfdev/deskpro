@@ -39,6 +39,8 @@ use DateTime;
  */
 final class People extends AbstractParser
 {
+    const PERSON_PREFIX = 'person_';
+
     /**
      * {@inheritdoc}
      */
@@ -60,15 +62,23 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $people     = $this->getReaderData($this->getPersonReaderConfig());
+        $collection    = new Entity\Collection();
+        $people        = $this->getReaderData($this->getPersonReaderConfig());
+        $custom_fields = $this->exportPersonCustomFields();
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportPerson($num, $person);
+                $entity = $this->exportPerson($person);
                 if ($entity) {
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
+                        }
+                    }
+
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
@@ -89,27 +99,36 @@ final class People extends AbstractParser
     /**
      * Returns a person entity
      *
-     * @param int   $num
      * @param array $person
-     *
      * @return Entity\Person|null
      */
-    private function exportPerson($num, array $person)
+    private function exportPerson(array $person)
     {
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('person_' . $num)
-                ->setOid($num)
+                ->setDestination(self::PERSON_PREFIX . $person['id'])
+                ->setOid($person['id'])
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])
                 ->setDateCreated(new DateTime())
-                ->addEmail($person['email']);
+                ->addEmail($person['email'])
+            ;
 
             return $entity;
         }
 
         return null;
+    }
+
+    /**
+     * Returns a collection of people custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportPersonCustomFields()
+    {
+        return $this->exportCustomFields($this->getPersonCustomFieldReaderConfig(), self::PERSON_PREFIX, 'person_id');
     }
 
     /**
@@ -132,6 +151,16 @@ final class People extends AbstractParser
     private function getPersonReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_PEOPLE);
+    }
+
+    /**
+     * Returns reader config for people custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getPersonCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_PEOPLE_CUSTOM_FIELDS);
     }
 
     /**

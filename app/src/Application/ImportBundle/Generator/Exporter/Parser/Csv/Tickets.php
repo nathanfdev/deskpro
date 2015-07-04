@@ -83,7 +83,7 @@ final class Tickets extends AbstractParser
                         }
                     }
                     foreach ($custom_fields as $custom_field_entity) {
-                        /** @var Entity\TicketMessage $message_entity */
+                        /** @var Entity\CustomField $custom_field_entity */
                         if ($entity->getDestination() === $custom_field_entity->getDestination()) {
                             $entity->addCustomField($custom_field_entity);
                         }

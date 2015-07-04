@@ -147,7 +147,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertContains('Entity `ticket_144` parsed successfully!', $output);
         $this->assertContains('Entity `ticket_145` parsed successfully!', $output);
         $this->assertContains('Custom field of entity `ticket_144` parsed successfully!', $output);
-        $this->assertContains('Entity `person_0` parsed successfully!', $output);
+        $this->assertContains('Entity `person_1` parsed successfully!', $output);
         $this->assertContains('Entity `person_6` parsed successfully!', $output);
         $this->assertContains('Entity `article_0` parsed successfully!', $output);
         $this->assertContains('Entity `article_1` parsed successfully!', $output);
@@ -239,7 +239,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->helper->seeFileFound('1/feedback/feedback_1.json');
         $this->helper->seeInThisFile('Feedback 1');
 
-        $this->helper->seeFileFound('1/people/person_2.json');
+        $this->helper->seeFileFound('1/people/person_3.json');
         $this->helper->seeInThisFile('Some Customer');
 
         $this->helper->seeFileFound('1/tickets/ticket_144.json');
@@ -274,7 +274,10 @@ class CsvTest extends \DpIntegrationTestCase
     private function checkDbData()
     {
         $this->assertCount(3, $this->news_repository->findAll());
+
+        // Checking for people
         $this->assertCount(8, $this->person_repository->findAll());
+        $this->assertCount(2, $this->custom_data_person_repository->findAll());
 
         // Checking for tickets
         $this->assertNotEmpty($this->ticket_repository->findOneBy(array(

@@ -221,7 +221,7 @@ final class Person extends AbstractImporter
     {
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
 
-        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataTicket());
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
     }
 
     /**
