@@ -286,7 +286,7 @@ class CsvTest extends \DpIntegrationTestCase
         $this->assertCount(2, $this->ticket_repository->findAll());
         $this->assertCount(1, $this->ticket_attachment_repository->findAll());
 
-        $this->assertCount(2, $this->custom_data_ticket_repository->findAll());
+        $this->assertCount(4, $this->custom_data_ticket_repository->findAll());
 
         // Checking for feedback
         $this->assertEquals(2, $this->feedback_repository->countAll());

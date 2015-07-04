@@ -329,8 +329,12 @@ final class Ticket extends AbstractImporter
      */
     private function createCustomData(Entity\CustomField $entity)
     {
-        $ticket_def   = $this->getCustomDefTicketMapper()->findOneByTitle($entity->getKey());
         $custom_field = new DeskPROEntity\CustomDataTicket();
+        $mapper       = $this->getCustomDefTicketMapper();
+        $ticket_def   = $mapper->findOneBy(array(
+            'title'  => $entity->getKey(),
+            'parent' => null,
+        ));
 
         switch ($ticket_def->getTypeName()) {
             case Entity\CustomField::FIELD_TYPE_TEXT:
@@ -362,18 +366,13 @@ final class Ticket extends AbstractImporter
                 break;
 
             case Entity\CustomField::FIELD_TYPE_CHOICE:
-                if ( ! is_array($entity->getValue())) {
-                    $this->logError('Custom field `choice` value expected to be array');
-                    return null;
-                }
-
-                foreach ($entity->getValue() as $choice_name) {
-                    $custom_field
-                        ->setField($this->getCustomDefTicketMapper()->findOneByTitle($choice_name))
-                        ->setRootField($ticket_def)
-                        ->setValue(1)
-                    ;
-                }
+                /** @var DeskPROEntity\CustomDefTicket $choice */
+                $choice = $this->findChoiceCustomDef($mapper, $entity->getValue(), $ticket_def);
+                $custom_field
+                    ->setField($choice)
+                    ->setRootField($ticket_def)
+                    ->setValue(1)
+                ;
 
                 break;
 
