@@ -38,6 +38,7 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
+use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

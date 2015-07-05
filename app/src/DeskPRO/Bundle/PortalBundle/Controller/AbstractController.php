@@ -255,11 +255,11 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Email\PortalMailer
+     * @return \DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
      */
-    protected function getMailer()
+    protected function getEmailSender()
     {
-        return $this->get('portal_mailer');
+        return $this->get('portal_email_sender');
     }
 
     /**

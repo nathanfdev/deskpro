@@ -71,7 +71,7 @@ class CommonController extends AbstractController
         //
         // ACCOUNT VALIDATION
         //
-        $person_validator = $this->get('portal_person_validator');
+        $person_validator = $this->get('person.portal_validator');
         $validation_alerts = array();
         if ($user && !$user->isUserValid()) {
             $primary_email = $user->getPrimaryEmail();

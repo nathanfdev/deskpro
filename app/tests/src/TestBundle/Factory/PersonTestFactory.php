@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,47 +26,52 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace Application\EmailBundle;
+namespace DpTests\TestBundle\Factory;
 
-use Application\EmailBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Doctrine\ORM\EntityManager;
+use Faker\Generator;
+use DpTests\TestBundle\Factory\Builder\PersonTestBuilder;
 
-class EmailBundle extends Bundle
+/**
+ * This is a service available in tests that lets you easily create a person
+ */
+class PersonTestFactory 
 {
-    public function build(ContainerBuilder $container)
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var Generator
+     */
+    private $faker;
+
+    public function __construct(EntityManager $em, Generator $faker)
     {
-        $container->addCompilerPass(new TwigEnvironmentPass());
+        $this->em = $em;
+        $this->faker = $faker;
     }
 
     /**
-     * @param Application $application An Application instance
+     * Returns a basic user as a new Person, already flushed to the database.
+     *
+     * @param null $email
+     * @param null $name
+     * @return \Application\DeskPRO\Entity\Person
      */
-    public function registerCommands(Application $application)
+    public function createNewInvalidUser($email = null, $name = null, $flush = true)
     {
-        $commands = array(
-            'Application\\EmailBundle\\Command\\SendSourceCommand',
-            'Application\\EmailBundle\\Command\\GenTestEmailCommand',
-            'Application\\EmailBundle\\Command\\ProcessQueueCommand',
-            'Application\\EmailBundle\\Command\\QueueRawEmailCommand',
-        );
-
-        foreach ($commands as $cmd) {
-            $application->add(new $cmd());
-        }
+        return $this->getBuilder()->createNew($email, $name)->getPerson($flush);
     }
 
-    public function getNamespace()
+    public function getBuilder()
     {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        return new PersonTestBuilder($this->em, $this->faker);
     }
 }

@@ -26,55 +26,91 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace Application\EmailBundle\DependencyInjection;
+namespace DpTests\TestBundle\Factory\Builder;
 
-use Application\EmailBundle\DependencyInjection\Configuration\Configuration;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Person;
+use Faker\Generator;
 
-class EmailExtension extends Extension
+/**
+ * This is a service that exposes fluent methods that let you build a Person,
+ * meant to maily be used for making a Person entity in a test case
+ */
+class PersonTestBuilder 
 {
-    public function load(array $configs, ContainerBuilder $container)
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var Person
+     */
+    private $person;
+    /**
+     * @var Generator
+     */
+    private $faker;
+
+    public function __construct(EntityManager $em, Generator $faker)
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
-
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('email_settings.yml');
-        $loader->load('email_templating.yml');
-
-        $container->setAlias('templating.email', $config['templating']['service']);
-
-
-        // add paths to the templating.email twig env
-        $twigFilesystemLoaderDefinition = $container->getDefinition('templating.email.twig.loader');
-        // register bundles as Twig namespaces
-        foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
-            if (is_dir($dir = $container->getParameter('kernel.root_dir') . '/Resources/' . $bundle . '/views')) {
-                $this->addTwigPath($twigFilesystemLoaderDefinition, $dir, $bundle);
-            }
-
-            $reflection = new \ReflectionClass($class);
-            if (is_dir($dir = dirname($reflection->getFilename()) . '/Resources/views')) {
-                $this->addTwigPath($twigFilesystemLoaderDefinition, $dir, $bundle);
-            }
-        }
-
-        // extensions
-
+        $this->em = $em;
+        $this->faker = $faker;
     }
 
-    private function addTwigPath($twigFilesystemLoaderDefinition, $dir, $bundle)
+    /**
+     * start building a new person. uses faker if you dont supply name/email data.
+     *
+     * @param null $primary_email
+     * @param null $name
+     * @return $this
+     */
+    public function createNew($primary_email = null, $name = null)
     {
-        $name = $bundle;
-        if ('Bundle' === substr($name, -6)) {
-            $name = substr($name, 0, -6);
+        $this->person = new Person();
+
+        if ($name === null) {
+            $name = $this->faker->name;
         }
-        $twigFilesystemLoaderDefinition->addMethodCall('addPath', array($dir, $name));
+        $this->person->name = $name;
+
+        if ($primary_email === null) {
+            $primary_email = $this->faker->email;
+        }
+        $this->person->setEmail($primary_email);
+
+        return $this;
+    }
+
+    /**
+     * build the person as an agent
+     *
+     * @return $this
+     */
+    public function makeAgent()
+    {
+        $this->person->is_agent = true;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $flush pass false if you don't want to flush the user to the db
+     * @return Person
+     */
+    public function getPerson($flush = true)
+    {
+        $this->em->persist($this->person);
+
+        if ($flush) {
+            $this->em->flush($this->person);
+        }
+
+        return $this->person;
     }
 }

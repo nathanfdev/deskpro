@@ -65,7 +65,7 @@ class ProfileController extends AbstractController
         if ($form->isValid()) {
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
-            $this->getMailer()->sendWelcomeEmail($person);
+            $this->getEmailSender()->sendWelcomeEmail($person);
             if ($this->getBrandSetting('core.email_validation')) {
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
             } else {
@@ -169,7 +169,7 @@ class ProfileController extends AbstractController
                 return $this->redirectToRoute('portal_user_profile');
             }
         } else {
-            $verify_url = $this->get('portal_person_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
+            $verify_url = $this->get('person.portal_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
         }
 
 
