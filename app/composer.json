@@ -61,10 +61,10 @@
 		"vipsoft/code-coverage-extension": "*@dev",
 		"sensiolabs/behat-page-object-extension": "2.0.*@dev",
 		"friendsofsymfony/rest-bundle": "~1.5",
-		"jms/serializer-bundle": "0.13.*",
+		"jms/serializer-bundle": "~1.0",
 		"behatch/contexts": "*",
 		"nelmio/api-doc-bundle": "~2.7",
-		"willdurand/hateoas-bundle": "1.0.*@dev",
+		"willdurand/hateoas-bundle": "~1.0",
 		"phpspec/prophecy-phpunit": "~1.0"
 	},
 	"preferred-install": "dist"
