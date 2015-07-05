@@ -34,8 +34,8 @@ use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\MapperInte
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Abstract DeskPro importer
- * Finds or creates DeskPro entities
+ * Abstract DeskPRO importer
+ * Finds or creates DeskPRO entities
  *
  * Class AbstractImporter
  * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer
@@ -193,16 +193,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
                 break;
 
             case Entity\CustomField::FIELD_TYPE_DISPLAY:
-
-                // todo implement
-
-                break;
-
             case Entity\CustomField::FIELD_TYPE_HIDDEN:
-
-                // todo implement
-
-                break;
+                return null;
 
             default:
                 throw new ImporterException('Unknown custom field type `%s`', $custom_field_def->getTypeName());
