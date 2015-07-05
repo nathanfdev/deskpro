@@ -4,6 +4,18 @@ parameters:
 
 services:
 
+    test_faker:
+        class: Faker\Generator
+        factory_class: Faker\Factory
+        factory_method: create
+
+    test_factory.person:
+        class: DpTests\TestBundle\Factory\PersonTestFactory
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @test_faker
+
+
     dataset_manager:
         class: DpTests\TestBundle\DataSetManager
         arguments:
