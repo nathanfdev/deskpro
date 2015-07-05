@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,54 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Orb\Auth\Adapter;
+namespace Application\InstallBundle\Upgrade\Build;
 
-
-use Application\DeskPRO\Ldap\LdapPagedSearcher;
-use Orb\Log\Loggable;
-use Orb\Log\Logger;
-use Zend\Ldap\Ldap;
-
-abstract class AbstractLdapBasedAdapter implements Loggable
+class Build1435766624 extends AbstractBuild
 {
-    protected $options;
-
-    /**
-     * @return \Zend\Authentication\Adapter\Ldap
-     */
-    abstract function getZendAuthAdapter();
-
-    /**
-     * Return all user/person records
-     *
-     * @return \Zend\Ldap\Collection
-     * @throws \Zend\Ldap\Exception\LdapException
-     */
-    public function findAllRecords($size_limit = 1000, $paging = true, $objectClass = 'inetOrgPerson')
+    public function run()
     {
-        if ($this->getLogger()) {
-            $this->getLogger()->log("START find all", Logger::DEBUG);
-        }
-
-        $zend_auth = $this->getZendAuthAdapter();
-        // Bogus because zend only creates ldap obj when its needed,
-        // so this is a hack to get it to set all the correct options
-        // for us
-        try {
-            $zend_auth->setUsername('__bogus__');
-            $zend_auth->setPassword('__bogus__');
-            $zend_auth->authenticate();
-        } catch (\Exception $e) {
-        }
-
-        /** @var $ldap \Zend\Ldap\Ldap */
-        $ldap = $zend_auth->getLdap();
-
-        $filter = 'objectClass=' . $objectClass;
-
-        return new LdapPagedSearcher($ldap, $filter, $size_limit, $this->options['baseDn'], $paging);
+        $this->out("Correct status escalations");
+		$this->execMutateSql("
+		    UPDATE ticket_escalations
+		    SET event_trigger = 'time.agent_waiting'
+		    WHERE sys_name IN ('statuses_awaiting_user_warning', 'statuses_awaiting_user_final', 'statuses_awaiting_user_set_resolved')
+		");
     }
-
 }
