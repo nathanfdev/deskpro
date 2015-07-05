@@ -36,11 +36,26 @@ namespace DpTest\Application\EmailBundle\Templating;
 
 use DpTest\PortalTestCase;
 
+/**
+ * Very simple tests that just make sure the templating.email.engine is
+ * not throwing exceptions when loading/trying to render templates
+ */
 class EngineTest extends PortalTestCase
 {
-    public function testEngineRendersBasicTemplate()
+    public function testEngineRendersBasicEmailBundleTemplate()
     {
-        $this->getTemplating()->render('EmailBundle:Portal:reset-password.html.twig', array());
+        $this->assertNotEmpty(
+            $this->getTemplating()->render('EmailBundle:Portal:reset-password.html.twig', array()),
+            'EmailBundle templates load and can be rendered'
+        );
+    }
+
+    public function testEngineRendersBasicDeskproEmailTemplate()
+    {
+        $this->assertNotEmpty(
+            $this->getTemplating()->render('DeskPRO:emails_agent:agent-welcome-usersource.html.twig', array()),
+            'DeskPRO email templates load and can be rendered'
+        );
     }
 
     /**

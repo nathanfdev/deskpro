@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Person;
 
 
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
-use DeskPRO\Bundle\AppBundle\Email\PortalMailer;
+use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
@@ -63,21 +63,20 @@ class PersonValidator
     private $email_data;
 
     /**
-     * @var PortalMailer
+     * @var \DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
      */
-    private $mailer;
+    private $portal_email_sender;
 
     /**
      * @var EntityManager
      */
     private $em;
 
-    public function __construct(EntityManager $em, BrandStack $brand_stack, PortalRouter $router, EmailDataService $email_data, PortalMailer $mailer)
+    public function __construct(EntityManager $em, PortalRouter $router, EmailDataService $email_data, PortalEmailSender $portal_email_sender)
     {
-        $this->brand_stack = $brand_stack;
         $this->router = $router;
         $this->email_data = $email_data;
-        $this->mailer = $mailer;
+        $this->portal_email_sender = $portal_email_sender;
         $this->em = $em;
     }
 
@@ -150,10 +149,10 @@ class PersonValidator
 
         switch ($type) {
             case PersonValidator::TYPE_EMAIL:
-                $this->mailer->sendEmailConfirmationEmail($person_email);
+                $this->portal_email_sender->sendEmailConfirmationEmail($person_email);
                 return true;
             case PersonValidator::TYPE_EMAIL_PRIMARY:
-                $this->mailer->sendEmailConfirmationEmail($person_email, true);
+                $this->portal_email_sender->sendEmailConfirmationEmail($person_email, true);
                 return true;
         }
 

@@ -132,4 +132,13 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
         // remember that we installed this
         self::$last_installed_data_set = $data_set_id;
     }
+
+    /**
+     * @param $entity
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getRepo($entity)
+    {
+        return $this->get('doctrine.orm.default_entity_manager')->getRepository($entity);
+    }
 }

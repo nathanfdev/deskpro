@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use DeskPRO\Bundle\AppBundle\Email\PortalMailer;
+use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +44,7 @@ use Symfony\Component\Security\Http\HttpUtils;
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
     /**
-     * @var PortalMailer
+     * @var PortalEmailSender
      */
     private $portal_mailer;
 
@@ -58,7 +58,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      */
     private $person_repo;
 
-    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, PortalMailer $portal_mailer, Connection $db, PersonRepository $person_repo)
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, PortalEmailSender $portal_mailer, Connection $db, PersonRepository $person_repo)
     {
         parent::__construct($httpKernel, $httpUtils, $options, $logger);
         $this->portal_mailer  = $portal_mailer;
