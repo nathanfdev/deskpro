@@ -38,8 +38,16 @@ use DeskPRO\Kernel\PortalKernel;
 
 abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 {
+    /**
+     * @var ApiKernel|null
+     */
     protected static $api_kernel;
+
+    /**
+     * @var PortalKernel|null
+     */
     protected static $portal_kernel;
+
     protected static $last_installed_data_set;
     
     /**
@@ -80,6 +88,11 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             return self::$api_kernel;
         }
 
+        if (self::$api_kernel) {
+            self::$api_kernel->shutdown();
+            self::$api_kernel = null;
+        }
+
         require_once DP_ROOT . '/sys/Kernel/ApiKernel.php';
         $kernel = new ApiKernel('test', true);
         $kernel->boot();
@@ -97,6 +110,11 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     {
         if (self::$portal_kernel && !$force_reboot) {
             return self::$portal_kernel;
+        }
+
+        if (self::$portal_kernel) {
+            self::$portal_kernel->shutdown();
+            self::$portal_kernel = null;
         }
 
         require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
@@ -139,6 +157,14 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      */
     protected function getRepo($entity)
     {
-        return $this->get('doctrine.orm.default_entity_manager')->getRepository($entity);
+        return $this->getEntityManager()->getRepository($entity);
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->get('doctrine.orm.default_entity_manager');
     }
 }
