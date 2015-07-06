@@ -122,7 +122,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
             $name = $block->getData('tpl');
         }
 
-        $set = $this->getTemplateSet();
+        $set = $this->getEmailTemplateSet();
 
         try {
             $template = $set->getTemplate($name);
@@ -145,7 +145,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
     public function setTemplateAction($name)
     {
-        $set = $this->getTemplateSet();
+        $set = $this->getEmailTemplateSet();
 
         try {
             $template = $set->getCustomTemplate($name);
@@ -206,7 +206,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
     public function deleteTemplateAction($name)
     {
-        $set = $this->getTemplateSet();
+        $set = $this->getEmailTemplateSet();
 
         try {
             $template = $set->getTemplate($name);
@@ -234,14 +234,8 @@ class TemplatesController extends AbstractController implements ProtectedControl
     /**
      * @return TemplateSet
      */
-    private function getTemplateSet()
+    private function getEmailTemplateSet()
     {
-        $set = new TemplateSet(
-            $this->em,
-            $this->container->get('twig'),
-            $this->container->getSystemService('style')
-        );
-
-        return $set;
+        return $this->container->get('templating.email.template_set');
     }
 }

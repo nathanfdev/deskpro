@@ -5,6 +5,12 @@ services:
       - @templating.email.twig.loader
       - []
 
+  templating.email.template_set:
+    class: Application\EmailBundle\Templating\Templates\TemplateSet
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @templating.email.twig
+
   templating.email.twig.loader:
     class: Application\EmailBundle\Twig\Loader\HybridLoader
     arguments:
@@ -17,7 +23,7 @@ services:
       - @kernel
 
   templating.email.twig.engine:
-    class: Application\DeskPRO\Twig\TwigEngine
+    class: Application\EmailBundle\Twig\TwigEngine
     arguments:
       - @templating.email.twig
       - @templating.email.twig.template_name_parser
