@@ -52,7 +52,10 @@ class Environment extends \Twig_Environment
         }
 
         if (!$has_done) {
-            stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+            if (!in_array('dptpl', stream_get_wrappers())) {
+                stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+            }
+            $has_done = true;
         }
 
         $options['base_template_class'] = '\\Application\\DeskPRO\\Twig\\Template';
@@ -159,7 +162,7 @@ class Environment extends \Twig_Environment
                                 }
 
                                 $name_str = (string) $name;
-                                if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|CloudAdminBundle):#', $name_str)) {
+                                if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle):#', $name_str)) {
                                     if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
                                         $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
                                         KernelErrorHandler::logException($e, false, 'twig_write_failed');
