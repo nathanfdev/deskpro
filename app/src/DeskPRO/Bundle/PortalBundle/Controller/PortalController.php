@@ -122,7 +122,7 @@ class PortalController extends AbstractController
                 $person->setDatePasswordResetRequested(new \DateTime());
 
                 $this->persistAndFlushEntity($person);
-                $this->get('portal_mailer')->sendPasswordResetLink($person);
+                $this->get('portal_email_sender')->sendPasswordResetLink($person);
             }
 
             return $this->renderThemeView('Theme:Portal:User/password-reset-requested.html.twig', array(
@@ -250,6 +250,6 @@ class PortalController extends AbstractController
      */
     protected function getPersonValidator()
     {
-        return $this->get('portal_person_validator');
+        return $this->get('person.portal_validator');
     }
 }

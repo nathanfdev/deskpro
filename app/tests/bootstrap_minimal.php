@@ -10,8 +10,8 @@ define('DP_TESTS_RUNNING', true);
 define('DP_INTERFACE', 'user');
 define('DP_TESTS_START_TIME', time());
 
+require_once DP_ROOT . '/sys/bootstrap-dev.php';
 require_once DP_ROOT . '/sys/preboot.php';
-require_once DP_ROOT . '/sys/autoload.php';
 
 set_time_limit(0);
 ini_set('max_execution_time', 0);

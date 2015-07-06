@@ -1,5 +1,9 @@
 services:
 
+  person.portal_validator:
+      class: DeskPRO\Bundle\PortalBundle\Person\PersonValidator
+      arguments: [@doctrine.orm.default_entity_manager, @language_router, @data.email, @portal_email_sender]
+
   session.handler.dbal:
     class: DeskPRO\Bundle\PortalBundle\Session\DbalSessionHandler
     arguments: [@doctrine.dbal.default_connection, %portal.session.name%]
@@ -19,7 +23,3 @@ services:
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
-
-  portal_person_validator:
-      class: DeskPRO\Bundle\PortalBundle\Person\PersonValidator
-      arguments: [@doctrine.orm.default_entity_manager, @brand_stack, @language_router, @data.email, @portal_mailer]

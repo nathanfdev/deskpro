@@ -38,3 +38,11 @@ services:
     class: Application\EmailBundle\Templating\FileLocator
     arguments:
       - @kernel
+
+  templating.email.twig.cache_warmer:
+    class: Application\EmailBundle\Twig\CacheWarmer\TemplateCacheCacheWarmer
+    arguments:
+      - @service_container
+      - @templating.finder
+    tags:
+        - { name: kernel.cache_warmer }

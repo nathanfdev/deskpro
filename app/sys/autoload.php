@@ -12,7 +12,7 @@ set_include_path(
 );
 
 // Composer-managed sources
-$composer_loader = require_once DP_ROOT . '/vendor/autoload.php';
+$composer_loader = require DP_ROOT . '/vendor/autoload.php';
 require_once DP_ROOT . '/src/Orb/Util/ClassLoader.php';
 
 $loader = new \Orb\Util\ClassLoader();

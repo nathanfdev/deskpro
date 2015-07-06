@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Email;
+namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
@@ -40,7 +40,7 @@ use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class PortalMailer
+class PortalEmailSender
 {
     protected $container;
 
@@ -198,8 +198,10 @@ class PortalMailer
     protected function getSetting($name, $default = null)
     {
         // if we have a brand activated, use its settings
-        if ($brand = $this->container->get('brand_stack')->getActive()) {
-            return $brand->getSetting($name, $default);
+        if ($this->container->has('brand_stack')) {
+            if ($brand = $this->container->get('brand_stack')->getActive()) {
+                return $brand->getSetting($name, $default);
+            }
         }
 
         return $this->container->get('settings_resolver')->getGlobalSettings()->get($name, $default);
@@ -218,6 +220,6 @@ class PortalMailer
      */
     protected function getPersonValidator()
     {
-        return $this->container->get('portal_person_validator');
+        return $this->container->get('person.portal_validator');
     }
 }

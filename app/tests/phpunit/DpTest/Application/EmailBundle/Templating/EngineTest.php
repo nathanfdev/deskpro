@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,47 +26,45 @@
 \**************************************************************************/
 
 /**
- * DeskPRO.
+ * DeskPRO
+ *
+ * @package DeskPRO
  */
 
-namespace Application\EmailBundle;
+namespace DpTest\Application\EmailBundle\Templating;
 
-use Application\EmailBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class EmailBundle extends Bundle
+use DpTest\PortalTestCase;
+
+/**
+ * Very simple tests that just make sure the templating.email.engine is
+ * not throwing exceptions when loading/trying to render templates
+ */
+class EngineTest extends PortalTestCase
 {
-    public function build(ContainerBuilder $container)
+    public function testEngineRendersBasicEmailBundleTemplate()
     {
-        $container->addCompilerPass(new TwigEnvironmentPass());
+        $this->installDataSet('fresh');
+        $this->assertNotEmpty(
+            $this->getTemplating()->render('EmailBundle:Portal:reset-password.html.twig', array()),
+            'EmailBundle templates load and can be rendered'
+        );
+    }
+
+    public function testEngineRendersBasicDeskproEmailTemplate()
+    {
+        $this->installDataSet('fresh');
+        $this->assertNotEmpty(
+            $this->getTemplating()->render('DeskPRO:emails_agent:agent-welcome-usersource.html.twig', array()),
+            'DeskPRO email templates load and can be rendered'
+        );
     }
 
     /**
-     * @param Application $application An Application instance
+     * @return \Application\EmailBundle\Templating\Engine
      */
-    public function registerCommands(Application $application)
+    protected function getTemplating()
     {
-        $commands = array(
-            'Application\\EmailBundle\\Command\\SendSourceCommand',
-            'Application\\EmailBundle\\Command\\GenTestEmailCommand',
-            'Application\\EmailBundle\\Command\\ProcessQueueCommand',
-            'Application\\EmailBundle\\Command\\QueueRawEmailCommand',
-        );
-
-        foreach ($commands as $cmd) {
-            $application->add(new $cmd());
-        }
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        return $this->get('templating.email.engine');
     }
 }

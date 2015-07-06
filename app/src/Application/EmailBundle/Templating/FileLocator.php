@@ -31,6 +31,7 @@
 
 namespace Application\EmailBundle\Templating;
 
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\Config\FileLocator as BaseFileLocator;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -51,7 +52,11 @@ class FileLocator extends BaseFileLocator
      */
     public function locate($file, $currentPath = null, $first = true)
     {
-        if ('@' === $file[0]) {
+        if ($file instanceof TemplateReference) {
+            return $this->kernel->locateResource($file->getPath());
+        }
+
+        if (is_string($file) && '@' === $file[0]) {
             if (!$currentPath and strpos($file, '@TwigBundle') === 0) {
                 $currentPath = DP_ROOT.'/sys/Resources';
             }
