@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+use JMS\Serializer\Annotation as Serializer;
+
 /**
  * Labels on tickets.
  */

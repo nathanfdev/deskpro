@@ -47,3 +47,7 @@ services:
   data.ticketflags:
       class: DeskPRO\Bundle\AppBundle\Model\TicketFlags
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.ticketlabels:
+      class: DeskPRO\Bundle\AppBundle\DataService\TicketLabelsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
