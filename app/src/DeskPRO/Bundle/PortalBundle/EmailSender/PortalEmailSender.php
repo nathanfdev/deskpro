@@ -34,8 +34,9 @@ namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
-use Application\DeskPRO\Templating\Templates\EmailTemplateFile;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
+use Application\EmailBundle\Templating\Templates\EmailTemplateFile;
+use Application\EmailBundle\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -115,7 +116,6 @@ class PortalEmailSender
 
     public function sendToPerson(Person $person, $template, $vars)
     {
-        $email_template = new EmailTemplateFile($template);
         $message = $this->container->get('mailer')->createMessage();
         $message->setTo($person->getPrimaryEmail()->email, $person->name);
         $message->setTemplate($template, $vars);

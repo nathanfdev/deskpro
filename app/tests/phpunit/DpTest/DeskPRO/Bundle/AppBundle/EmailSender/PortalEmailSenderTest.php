@@ -34,6 +34,8 @@
 namespace DpTest\DeskPRO\Bundle\Appbundle\EmailSender;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Template;
+use Application\EmailBundle\Templating\Templates\TemplateCustom;
 use DpTest\PortalTestCase;
 use DpTests\TestBundle\Factory\PersonTestFactory;
 
@@ -41,7 +43,47 @@ class PortalEmailSenderTest extends PortalTestCase
 {
     public function testSendWelcomeEmail()
     {
+//        $this->installDataSet('fresh', true);
+//
+//        $person = $this->getPersonFactory()->createNewInvalidUser('john@appleseed.com', 'John Appleseed');
+//        $this->getEmailSender()->sendWelcomeEmail($person);
+//
+//        $sources = $this->getSendmailSources($person->getPrimaryEmailAddress());
+//        $last_source = end($sources);
+//
+//        $this->assertNotFalse($last_source, 'an email was sent');
+//        $this->assertEquals('Thank you for registering', $last_source->getHeaderSubject(), 'subject is correct');
+//        $this->assertContains('john@appleseed.com', $last_source->getHeaderTo(), 'sent to the correct address');
+//
+//        $this->assertContains(
+//            '/validate/email/' . $person->getPrimaryEmail()->getId(),
+//            $this->getMessageFromEmailSource($last_source),
+//            'it contains the right link'
+//        );
+    }
+
+    public function testCustomWelcomeEmail()
+    {
         $this->installDataSet('fresh', true);
+
+        //
+        // simulate saving a custom template
+        //
+        $t = <<<CODE
+<dp:subject>This is the custom subject</dp:subject>
+Hello there this is the message
+CODE;
+        $tt = new Template();
+        $tt->name = 'DeskPRO:emails_user:register-welcome.html.twig';
+        $tt->template_code = $t;
+        $template = new TemplateCustom('DeskPRO:emails_user:register-welcome.html.twig', $tt);
+        $this->get('templating.email.template_set')->saveTemplate($template);
+        //
+        //
+
+        // load a new kernel (to get rid of the twig template cache)
+        // TODO: actually, we need to clear the cache here
+        $this->getPortalKernel(true);
 
         $person = $this->getPersonFactory()->createNewInvalidUser('john@appleseed.com', 'John Appleseed');
         $this->getEmailSender()->sendWelcomeEmail($person);
@@ -49,16 +91,15 @@ class PortalEmailSenderTest extends PortalTestCase
         $sources = $this->getSendmailSources($person->getPrimaryEmailAddress());
         $last_source = end($sources);
 
-        $this->assertNotFalse($last_source, 'an email was sent');
-        $this->assertEquals('Thank you for registering', $last_source->getHeaderSubject(), 'subject is correct');
-        $this->assertContains('john@appleseed.com', $last_source->getHeaderTo(), 'sent to the correct address');
-    }
+        $this->assertNotFalse($last_source, 'a custom email was sent');
+        $this->assertEquals('This is the custom subject', $last_source->getHeaderSubject(), 'custom email subject is correct');
+        $this->assertContains('john@appleseed.com', $last_source->getHeaderTo(), 'custom email sent to the correct address');
 
-    public function testCustomWelcomeEmail()
-    {
-        // test creating a custom template for 'DeskPRO:emails_user:register-welcome.html.twig' in DB
-        // then, we're moving this to EmailBundle:Email:register-welcome.html.twig
-        $this->markTestIncomplete('awaiting implementation');
+        $this->assertContains(
+            'Hello there this is the message',
+            $this->getMessageFromEmailSource($last_source),
+            'it contains the right link'
+        );
     }
 
     /**
@@ -89,5 +130,15 @@ class PortalEmailSenderTest extends PortalTestCase
         ;
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param $last_source
+     * @return mixed
+     */
+    public function getMessageFromEmailSource($last_source)
+    {
+        $message = $this->get('deskpro.blob_storage')->copyBlobRowIdToString($last_source->getBlob()->getId());
+        return $message;
     }
 }
