@@ -193,6 +193,20 @@ class ApiDb extends AbstractDbSet
 		$em->persist($ticket3);
         $em->flush();
 
+        // Add a blue flag on the first ticket.
+        $ticket1->setFlagForPerson($agent, 'blue');
+        $ticket1->setFlagForPerson($admin, 'green');
+        $ticket2->setFlagForPerson($admin, 'green');
+
+        // Adding a couple of labels.
+        $ticket1->addLabelByString('foo');
+        $ticket2->addLabelByString('bar');
+        $ticket3->addLabelByString('bar'); // This adds a duplicate 'bar' record.
+        $em->persist($ticket1);
+        $em->persist($ticket2);
+        $em->persist($ticket3);
+        $em->flush();
+
         $count++;
 
         return $count;
