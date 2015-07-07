@@ -27,7 +27,7 @@ define ['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
 
       @form_model = new EditTicketAccountModel(@account, [], {})
       @form_model.form.incoming_type = ''
-      @form_model.form.outgoing_type = 'mail'
+      @form_model.form.outgoing_type = 'php_mail'
       @$scope.form = @form_model.form
 
     ###
