@@ -43,7 +43,10 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
       )
 
     showRequestDemo: ->
-      url = @$scope.opt.deskpro_url
+      url   = @$scope.opt.deskpro_url
+      name  = if @$scope.opt.first_name then @$scope.opt.first_name + ' ' + (@$scope.opt.last_name+'')
+      email = @$scope.opt.email || ''
+
       @$modal.open({
         templateUrl: 'AdminInterface/Start/get-demo-modal.html',
         controller: ['$scope', '$modalInstance', '$http', 'Api', ($scope, $modalInstance, $http, Api) =>
@@ -55,9 +58,9 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
           }
 
           $scope.setInitialVals = (vals) ->
-            $scope.form_vals.user_name = vals.user_name
-            $scope.form_vals.email_address = vals.email_address
-            $scope.form_vals.org_name = vals.org_name
+            $scope.form_vals.user_name = name || vals.user_name
+            $scope.form_vals.email_address = email || vals.email_address
+            $scope.form_vals.org_name = if vals.org_name != 'Example' then vals.org_name else ''
             $scope.vals = vals
 
           $scope.dismiss = ->
