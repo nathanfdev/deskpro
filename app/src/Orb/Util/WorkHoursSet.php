@@ -117,7 +117,7 @@ class WorkHoursSet implements WorkHoursInterface
             }
         }
 
-        if (!$any) {
+        if (!$any || !Arrays::removeFalsey($work_days_array)) {
             $work_days_array = array(null, true, true, true, true, true, true, true);
         }
 
