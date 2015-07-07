@@ -10,7 +10,7 @@ define [
 
     init: ->
       @list = []
-      @filterData = @DataService.get('TicketFilters')
+      @filterSetData = @DataService.get('TicketFilterSets')
       @$scope.display_filter = {
         type:  "all",
         agent: "0",
@@ -30,28 +30,26 @@ define [
           orders = []
           $list.find('li').each(->
             id = parseInt($(this).data('id'))
-            console.log(id)
 
             if id
               orders.push(id)
           )
 
-          @filterData.saveDisplayOrder(orders).then( =>
+          @filterSetData.saveDisplayOrder(orders).then( =>
             @pingElement('display_orders')
           )
       }
 
     initialLoad: ->
-      promise = @filterData.loadList()
+      promise = @filterSetData.loadList()
       promise.then( (list) =>
-
         @list = list
 
-        if @$state.current.name == 'tickets.ticket_filters'
+        if @$state.current.name == 'tickets.ticket_filter_sets'
           if @list[0]
-            @$state.go('tickets.ticket_filters.edit', { id: @list[0].id })
+            @$state.go('tickets.ticket_filter_sets.edit', { id: @list[0].id })
           else
-            @$state.go('tickets.ticket_filters.create')
+            @$state.go('tickets.ticket_filter_sets.create')
       )
 
       data_promise = @Api.sendDataGet({
@@ -64,7 +62,6 @@ define [
         if not @teams[0]
           @teams = null
       )
-
       bothPromise = @$q.all([promise, data_promise])
       bothPromise.then(=>
         @updateFilterList()
@@ -108,7 +105,7 @@ define [
           break
 
       inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketFilters/delete-modal.html'),
+        templateUrl: @getTemplatePath('TicketFilterSets/delete-modal.html'),
         controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
           $scope.confirm = ->
             $modalInstance.close();
@@ -119,9 +116,9 @@ define [
       });
 
       inst.result.then( =>
-        @filterData.deleteFilterId(filter.id).then(=>
-          if @$state.current.name == 'tickets.ticket_filters.edit' and parseInt(@$state.params.id) == filter.id
-            @$state.go('tickets.ticket_filters')
+        @filterSetData.deleteFilterId(filter.id).then(=>
+          if @$state.current.name == 'tickets.ticket_filter_sets.edit' and parseInt(@$state.params.id) == filter.id
+            @$state.go('tickets.ticket_filter_sets')
         )
       )
 

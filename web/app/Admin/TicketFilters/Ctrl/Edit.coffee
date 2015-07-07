@@ -12,40 +12,16 @@ define [
 
     init: ->
       @filterId = parseInt(@$stateParams.id || 0)
-      @filterData = @DataService.get('TicketFilters')
-      @filter = null
-
+      @filterSetData = @DataService.get('TicketFilterSets')
+      @filterset = null
       @filter_criteria = {}
       @criteriaTypeDef = @dpObTypesDefTicketFilter
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
 
     initialLoad: ->
-      p = @filterData.loadEditFilterData(@filterId).then( (data) =>
-        @agents = data.agents
-        @teams = data.teams
-        if not @teams[0]
-          @teams = null
-
-        if data.filter
-          @filter = data.filter
-        else
-          @filter = {
-            is_global: true
-          }
-      )
-
-      p2 = @criteriaTypeDef.loadDataOptions().then(=>
-        @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-      )
-
-      return @$q.all([p, p2]).then(=>
-        @form = @getFormFromModel(@filter)
-
-        @filter_criteria = {}
-        if @filter.terms
-          for term in @filter.terms.terms
-            rowId = Util.uid('term')
-            @filter_criteria[rowId] = term
+      p = @filterSetData.loadEditFilterSetData(@filterId).then( (data) =>
+        console.log data
+        @filterset = data
       )
 
     getFormFromModel: (filterModel) ->
@@ -109,7 +85,7 @@ define [
         if @form.perm_type == 'team'
           @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
 
-        @filterData.mergeDataModel(@filter)
+        @filterSetData.mergeDataModel(@filter)
 
         if !@filterId
           @$state.go('tickets.ticket_filters.gocreate')

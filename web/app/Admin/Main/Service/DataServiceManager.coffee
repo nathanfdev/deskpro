@@ -6,6 +6,7 @@ define [
   'Admin/CustomFields/Org/DataService/OrgFields',
   'Admin/CustomFields/DataService/CustomFields',
   'Admin/TicketFilters/DataService/TicketFilters',
+  'Admin/TicketFilters/DataService/TicketFilterSets',
   'Admin/TicketDeps/DataService/TicketDeps',
   'Admin/ChatDeps/DataService/ChatDeps',
   'Admin/TicketEscalations/DataService/TicketEscalations',
@@ -34,6 +35,7 @@ define [
   DataService_OrgFields,
   DataService_CustomFields,
   DataService_TicketFilters,
+  DataService_TicketFilterSets,
   DataService_TicketDeps,
   DataService_ChatDeps,
   DataService_TicketEscalations,
@@ -62,8 +64,6 @@ define [
     constructor: (@$injector) ->
       @ds_cache = {}
       @registered = {}
-
-
 
     get: (serviceId, args...) ->
       cacheKey = serviceId

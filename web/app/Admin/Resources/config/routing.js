@@ -1507,7 +1507,7 @@ define(function() {
     templateName: 'Portal/portal-editor.html',
     controller: 'Admin_Portal_Ctrl_PortalEditor'
   });
-  
+
   //###
   //# Portal Settings
   //###

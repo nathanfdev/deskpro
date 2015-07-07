@@ -3,8 +3,7 @@
 <div class="admin-content-main">
 
 <div class="admin-content-major-header">
-	<h1><span>Manage Filter Set:</span> Inbox</h1>
-	<p>This is a description added to the filter set. Lorel ipsum dolor sit amet.</p>
+	<h1><span>Manage Filter Set:</span> {{ ng_var('EditCtrl.filterset.title') }}</h1>
 
 	<div class="help-panel">
 	<i class="fa fa-support"></i>
@@ -127,38 +126,18 @@
 	</div>
 
 
-	<div class="admin-switchboard">
-		<div class="switchboard-row">
-		<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-		<a href="#" class="slider-button">
-			<span class="status"><span class="text">On</span></span>
-			<span class="slider-button-switch"><i class="fa fa-check"></i></span>
-		</a>
-		<span class="slider-button-label">
-			My Tickets
-		</span>
-		<a href="#" class="config"><i class="fa fa-cog"></i></a>
-		</div>
-
-		<div class="switchboard-row">
-		<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-		<a href="#" class="slider-button">
-			<span class="status"><span class="text">On</span></span>
-			<span class="slider-button-switch"><i class="fa fa-check"></i></span>
-		</a>
-		<span class="slider-button-label">
-			More Tickets
-		</span>
-		<a href="#" class="config"><i class="fa fa-cog"></i></a>
+	<div class="admin-switchboard" >
+		<div class="switchboard-row" ng-repeat="filter in EditCtrl.filterset.filters">
+			<a href="#" class="move"><i class="fa fa-navicon"></i></a>
+			<span class="slider-button-label">
+				{{ ng_var('filter.title') }}
+			</span>
+			<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}" class="config" data-id="{{ ng_var('filter.id') }}"><i class="fa fa-cog"></i></a>
 		</div>
 
 		<div class="switchboard-row switchboard-row-expanded">
 		<div class="switchboard-selected-header">
 			<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-			<a href="#" class="slider-button">
-			<span class="status"><span class="text">On</span></span>
-			<span class="slider-button-switch"><i class="fa fa-check"></i></span>
-			</a>
 			<span class="slider-button-label">
 			More Tickets
 			</span>
@@ -300,32 +279,6 @@
 
 		</div>
 		</div><!-- end .switchboard-row -->
-
-		<div class="switchboard-row">
-		<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-
-		<a href="#" class="slider-button slider-button-off">
-			<span class="status"><span class="text">Off</span></span>
-			<span class="slider-button-switch"><i class="fa fa-times"></i></span>
-		</a>
-		<span class="slider-button-label">
-			These Excellent Tickets
-		</span>
-		<a href="#" class="config"><i class="fa fa-cog"></i></a>
-		</div>
-
-		<div class="switchboard-row">
-		<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-
-		<a href="#" class="slider-button">
-			<span class="status"><span class="text">On</span></span>
-			<span class="slider-button-switch"><i class="fa fa-check"></i></span>
-		</a>
-		<span class="slider-button-label">
-			More Excellent Tickets
-		</span>
-		<a href="#" class="config"><i class="fa fa-cog"></i></a>
-		</div>
 	</div>
 
 

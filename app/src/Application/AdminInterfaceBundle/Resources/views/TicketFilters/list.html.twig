@@ -10,11 +10,12 @@
 	</div>
 
 	<div class="admin-sidebar-content">
-	<ul class="admin-list">
-		<li>
-		<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
-		<a href="#" class="item">Inbox</a>
+	<ul class="admin-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
+		<li class="" ng-repeat="filter in filterList" data-id="{{ ng_var('filter.id') }}">
+			<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
+			<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}" class="item">{{ ng_var('filter.title') }}</a>
 		</li>
+		<!--
 		<li>
 		<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
 		<a href="#" class="item">Urgent Tickets</a>
@@ -23,6 +24,7 @@
 		<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
 		<a href="#" class="item">Extra Tickets (disabled)</a>
 		</li>
+		-->
 	</ul>
 
 	<div class="sidebar-content-wrapper">
