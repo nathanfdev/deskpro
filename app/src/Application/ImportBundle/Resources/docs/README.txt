@@ -28,7 +28,6 @@ Commands:
 
         Examples:
         php cmd.php dp:export:check csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" --verbose
-        php cmd.php dp:export:check json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv_to_json" --verbose
 
         php cmd.php dp:export:check osticket --verbose
         php cmd.php dp:export:check osticket --batch-config="app/src/Application/ImportBundle/Resources/docs/data_example/osticket.batch.json" --verbose
@@ -105,7 +104,6 @@ Commands:
 
         Examples:
         php cmd.php dp:import:run csv --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv" --verbose
-        php cmd.php dp:import:run json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/csv_to_json" --verbose
         php cmd.php dp:import:run json --input-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket_to_json" --verbose
         php cmd.php dp:import:run osticket --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/osticket" --verbose
         php cmd.php dp:import:run zendesk --output-path="app/src/Application/ImportBundle/Resources/docs/data_example/zendesk" --verbose
@@ -385,11 +383,12 @@ Exporters:
         Add `zendesk_import` configuration to your www/config.php
 
             $DP_CONFIG['zendesk_import'] = array(
-                'subdomain'    => 'your account subdomain',
-                'username'     => 'email@deskpro.com',
-                'password'     => '',
-                'api_token'    => '',
-                'initial_time' => '2013-01-01 00:00:00'
+                'subdomain'          => 'your account subdomain',
+                'username'           => 'email@deskpro.com',
+                'password'           => '',
+                'api_token'          => '',
+                'initial_time'       => '2013-01-01 00:00:00',
+                'connection_timeout' => 60,
             );
 
         Supported tickets and people data export.
