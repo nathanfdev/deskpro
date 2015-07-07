@@ -1,0 +1,393 @@
+<?php
+
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at https://www.deskpro.com/eula/                            |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @category Entities
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Application\DeskPRO\Entity\Person;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="tasks_new")
+ */
+class Task extends NotifyPropertyChangeEntity
+{
+    /**
+     * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     * @Assert\NotNull()
+     */
+    protected $id = null;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     * @Assert\NotNull()
+     */
+    protected $title;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     * @Assert\NotNull()
+     */
+    protected $status;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    protected $complete = false;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     */
+    protected $percent_complete = 0;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $date_created;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $task_type;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $date_due;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $date_event_start;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $date_event_end;
+
+    /**
+     * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     */ 
+    protected $creator;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $visibility;
+
+    /**
+     * @var TaskProject
+     * @ORM\ManyToOne(targetEntity="\DeskPro\Bundle\AppBundle\Entity\TaskProject")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     */
+    protected $project;
+
+    /**
+     * @var TaskList
+     * @ORM\ManyToOne(targetEntity="\DeskPro\Bundle\AppBundle\Entity\TaskList")
+     * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
+     */
+    protected $list;
+
+    /**
+     * @var int
+     * @ORM\Column(name="urgency", type="integer")
+     */
+    protected $urgency;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getComplete()
+    {
+        return $this->complete;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPercentComplete()
+    {
+        return $this->percent_complete;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaskType()
+    {
+        return $this->task_type;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateDue()
+    {
+        return $this->date_due;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEventStart()
+    {
+        return $this->date_event_start;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEventEnd()
+    {
+        return $this->date_event_end;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * @return TaskProject
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @return TaskList
+     */
+    public function getList()
+    {
+        return $this->list;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUrgency()
+    {
+        return $this->urgency;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+        $this->setModelField('title', $title);
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        $this->setModelField('status', $status);
+    }
+
+    /**
+     * @param bool $complete
+     */
+    public function setComplete($complete)
+    {
+        $this->complete = $complete;
+        $this->setModelField('complete', $complete);
+    }
+
+    /**
+     * @param int $percent_complete
+     */
+    public function setPercentComplete($percent_complete)
+    {
+        $this->percent_complete = $percent_complete;
+        $this->setModelField('percent_complete', $percent_complete);
+    }
+
+    /**
+     * @param \DateTime $date_created
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->date_created = $date_created;
+        $this->setModelField('date_created', $date_created);
+    }
+
+    /**
+     * @param string $task_type
+     */
+    public function setTaskType($task_type)
+    {
+        $this->task_type = $task_type;
+        $this->setModelField('task_type', $task_type);
+    }
+
+    /**
+     * @param \DateTime $date_due
+     */
+    public function setDateDue(\DateTime $date_due)
+    {
+        $this->date_due = $date_due;
+        $this->setModelField('date_due', $date_due);
+    }
+
+    /**
+     * @param \DateTime $date_event_start
+     */
+    public function setDateEventStart(\DateTime $date_event_start)
+    {
+        $this->date_event_start = $date_event_start;
+        $this->setModelField('date_event_start', $date_event_start);
+    }
+
+    /**
+     * @param \DateTime $date_event_end
+     */
+    public function setDateEventEnd(\DateTime $date_event_end)
+    {
+        $this->date_event_end = $date_event_end;
+        $this->setModelField('date_event_end', $date_event_end);
+    }
+
+    /**
+     * @param Person $creator
+     */
+    public function setCreator(Person $creator)
+    {
+        $this->creator = $creator;
+        $this->setModelField('creator', $creator);
+    }
+
+    /**
+     * @param string $visibility
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+        $this->setModelField('visibility', $visibility);
+    }
+
+    /**
+     * @param TaskProject $project
+     */
+    public function setProject(TaskProject $project)
+    {
+        $this->project = $project;
+        $this->setModelField('project', $project);
+    }
+
+    /**
+     * @param TaskList $list
+     */
+    public function setList(TaskList $list)
+    {
+        $this->list = $list;
+        $this->setModelField('list', $list);
+    }
+
+    /**
+     * @param int $urgency
+     */
+    public function setUrgency($urgency)
+    {
+        $this->urgency = $urgency;
+        $this->setModelField('urgency', $urgency);
+    }
+}
