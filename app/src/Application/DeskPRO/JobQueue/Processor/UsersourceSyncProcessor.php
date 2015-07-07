@@ -113,11 +113,9 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             static::$max_memory_usage = min(Env::getMemoryLimit(), 500 * 1024 * 1024) * 0.8;
             if (1 == $data['phase']) {
                 $return = $this->runPhaseOne($data);
-                $this->sync_manager->getEm()->clear();
                 return $return;
             } else {
                 $return = $this->runPhaseTwo($data);
-                $this->sync_manager->getEm()->clear();
                 return $return;
             }
         } catch (\Exception $e) {
