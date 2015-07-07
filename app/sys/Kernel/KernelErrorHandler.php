@@ -305,6 +305,10 @@ class KernelErrorHandler
         if (self::$is_logging) return;
         self::$is_logging = true;
 
+        if (!empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
+            return;
+        }
+
         if (!class_exists('Application\DeskPRO\App')) {
             return;
         }
@@ -585,7 +589,7 @@ class KernelErrorHandler
         $summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
 
         $display = true;
-        if (!(error_reporting() & E_ERROR)) {
+        if (!(error_reporting() & E_ERROR) && empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
             $display = false;
         }
 
