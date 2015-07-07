@@ -84,7 +84,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         $base = $this->reader->getConfig();
 
         $config = clone $base;
-        $config->setResource($base->getResource() . '/' . $record_type);
+        $config->setResource(rtrim($base->getResource(), '/') . '/' . $record_type);
 
         return $config;
     }
