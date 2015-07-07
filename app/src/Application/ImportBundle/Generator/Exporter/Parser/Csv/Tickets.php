@@ -250,6 +250,7 @@ final class Tickets extends AbstractParser
             'message_id',
             'message_text',
             'user',
+            'date_created',
         );
 
         return $this->hasRequiredColumns($message, $columns);

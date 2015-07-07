@@ -267,6 +267,7 @@ Exporters:
 
         - People required columns
 
+            'id',
             'name',
             'email'
 
@@ -292,7 +293,8 @@ Exporters:
             'ticket_id',
             'message_id',
             'message_text',
-            'user'
+            'user',
+            'date_created'
 
             User means a user email
 
