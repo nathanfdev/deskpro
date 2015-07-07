@@ -1,51 +1,206 @@
 // Sidebar contains all the styles for the filter sidebar on the left.
-// Combination of content from sidebar.html (main styles) and sidebar-kb.html (knowledge base specifics)
 //
+
+
+// Sidebar title with the page title, collapse icon etc
+.sidebar-title {
+  background: #fff;
+  width: 100%;
+  height: 50px;
+  padding-top: 10px;
+  padding-left: 10px;
+  position: relative;
+  border-bottom: 1px solid #dbddde;
+
+  z-index: 299;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+  .sidebar-type-icon {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: 2px;// to align with the slider butto nand bulk edit checkbox
+    border: 1px solid #e4e4e4;
+    border-radius: 2px;
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+    text-align: center;
+
+    > .fa {
+      position: relative;
+      top: 5px;
+      color: #c9c9c9;
+    }
+
+    .help {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: -9px;
+      right: -9px;
+      border-radius: 19px;
+      background: #ededed;
+      color: #a5a5a5;
+      text-align: center;
+      border: 2px solid #fff;
+      font-size: 10px;
+      i { top: 1px; }
+    }
+
+    .help:hover {
+      background: darken(#ededed, 10%);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  h1 {
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #737373;
+  }
+
+  hr {
+    display: inline-block;
+    vertical-align: middle;
+    width: 60px;
+    margin-left: 10px;
+  }
+
+  .slider-control {
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 12px;
+    border: 1px solid #e2e5e8;
+    border-radius: 2px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border-right: 0px;
+    width: 26px;
+    height: 26px;
+    @include retina-image('../img/icon-collapse', 11px 12px);
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .slider-control:hover {
+    border: 1px solid darken(#e2e5e8, 10%);
+    border-right: 0px;
+  }
+}
+
 
 .sidebar {
   background: $sidebar-background;
   font-weight: 400;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 
   a {
     text-decoration: none;
     color: $sidebar-link-color;
   }
 
+  .section-info {
+    display: block;
+    margin: 5px 7px;
+  }
+
+  .add-new {
+    display: inline-block;
+    line-height: 1em;
+    padding: 5px 8px;
+    background: #93be44;
+    border-radius: 2px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-top: 5px;
+    &:hover { color: darken(#6f6f70, 15%); }
+  }
+
 }
 
 
 
+// Section title
 .list-sidebar-title {
-  background: #e1e6eb;
-  padding: 7px;
-  border-top: 1px solid $global-border;
-  border-bottom: 1px solid $global-border;
-  margin-top: 30px;
-  color: #2b77b5;
-  text-transform: uppercase;
-  font-size: 0.95em;
+  background: #eef1f3;
+  border-radius: 2px;
+  padding: 5px 12px;
+  border-top: 1px solid #dce4ea;
+  border-bottom: 1px solid #dce4ea;
+  color: #7f8081;
+  font-size: 0.9em;
   font-weight: 600;
+  margin: 20px 0px 5px 0px;
+  position: relative;
+
+  &:first-child { margin-top: 10px; }
+
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 15px;
+    background: #3c6e98;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  // Single icon
+  /* .sidebar-title-settings {
+    float: right;
+    position: relative;
+    top: 2px;
+    right: -2px;
+    opacity: 0.25;
+
+    &:hover { opacity: 0.75; }
+  } */
+
+  .title-down {
+    margin-left: 4px;
+    color: #c8cacc;
+    position: relative;
+    top: 1px;
+  }
+
+  .title-down:hover {
+    color: #333;
+  }
 
   // Controls on the title (me/all buttons on the side of the title)
   .controls {
-    float: right;
+    position: absolute;
+    top: 3px;
+    right: 5px;
     font-weight: 800;
     font-size: 10px;
 
     a {
+      text-transform: uppercase;
       display: inline-block;
       line-height: 1em;
       padding: 3px 5px;
       font-size: 0.9em;
       vertical-align: top;
       margin-left: 5px;
-      border: 1px solid $global-border;
-      color: $global-border;
+      border: 1px solid #d6d8da;
+      border-radius: 2px;
+      color: #acacac;
     }
 
     a:hover, a.active {
-      color: $top-bar-blue;
-      background: #fff;
+      color: #fff;
+      border: 1px solid $top-bar-blue;
+      background: $top-bar-blue;
     }
   }
 
@@ -79,20 +234,17 @@
   }
 }
 
-
 .list-sidebar-title.list-sidebar-title-kb {
   border: 0px;
   background: none;
-  margin-top: 5px;
+  margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 10px;
   padding-right: 4px;
 }
 
 
-
-
-// SLA on any kind of sidebar .item | these should work in any .item
+// SLA on any kind of sidebar .item | these work in any .item
 .sla {
   margin-top: 5px;
   font-size: 0.8em;
@@ -119,32 +271,26 @@
     top: -1px;
     margin-right: 4px;
     background: #3acf5d;
-    border-radius: 140px;
+    border-radius: 199px;
   }
 
-  span.sla-yellow:before {
-    background: #f6be1a;
-  }
+  span.sla-yellow:before {  background: #f6be1a; }
+  span.sla-red:before { background: #ff5460; }
+}
+// Adjustments for slas on active items
+.item.active, .item:hover {
+  .sla {
+    span { opacity: 0.5; }
 
-  span.sla-red:before {
-    background: #ff5460;
+    span.selected, span:hover { opacity: 1; }
   }
 }
 
 
-.sidebar-collapse {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: #c5ced8;
-  border-radius: 2px;
-  display: inline-block;
-  padding: 3px 4px;
-  font-size: 0.9em;
-}
 
 // Forms in sidebars
 .sidebar {
+
   form {
     padding: 10px;
     .title {
@@ -199,41 +345,53 @@
 .sidebar-tabs {
   @extend %flat-list;
   @extend %inline-list;
-  font-weight: 700;
-  background: #e1e6eb;
-  border-bottom: 1px solid #cfd0d0;
-  padding-top: 3px;
-  padding-left: 3px;
+  font-weight: 800;
+  font-size: 0.75em;
+  background: #e7e7e7;
   cursor: default;
+  height: 24px;
+  z-index: 199;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #d1d4d6;
 
   li {
-    position: relative;
-    top: 1px;
-    border: 1px solid rgba(0, 0, 0, 0);
-    border-right: 1px solid #d0d4d9;
-    &:last-child { border-right: 0px; }
+    display: block;
+    width: 30%;
+    float: left;
+    height: 24px;
   }
 
   a {
     display: block;
-    padding: 3px 5px;
-    color: #a0a3a6;
+    height: 24px;
+    padding-top: 5px;
+    position: relative;
+    color: #7f7f7f;
     text-transform: uppercase;
-    font-size: 0.85em;
+    text-align: center;
+    outline: none;
+    border-right: 1px solid #d1d4d6;
   }
 
   li.active, li:hover {
-    border: 1px solid #cbcccd;
-    border-bottom: 1px solid rgba(0, 0, 0, 0);
-    background: #f5f6f7;
-    a { color: $sidebar-link-color; }
+    background: #f8f8f8;
+    top: 2px;
+    z-index: 999;
+    border-bottom: 1px solid #f8f8f8;
+    a { color: #3c6e98; }
+  }
+
+  li:hover {
+    background: #f8f8f8;
+      background: #f8f8f8;
   }
 }
 
 // A large list of sidebar items (and sublists)
 .sidebar-list {
   font-weight: 400;
-  line-height: 18px;
+  line-height: 14px;
+  font-size: 12px;
 
   ul {
     @extend %flat-list;
@@ -257,7 +415,7 @@
     }
   }
 
-  > ul > li ul {
+  > ul > li ul, .sidebar-urgent-sliders  {
     .list-counter {
       background: #dcddde;
       color: #8c8c8d;
@@ -265,13 +423,14 @@
   }
 
   a.item {
+    @extend %whitespace;
     display: block;
-    padding: 6px 5px;
+    padding: 5px;
     padding-left: 16px;
     color: #5b5b5b;
     padding-right: 40px;
-    @extend %whitespace;
     position: relative;
+    outline: none;
 
     > i {
       display: inline-block;
@@ -281,26 +440,13 @@
       color: #979797;
     }
 
-    &:hover {
+    &:hover, &.active {
       background: $top-bar-blue;
       color: #fff;
       position: relative;
       z-index: 89;
 
-      i {
-        color: #fff;
-      }
-
-      &:before {
-        content: "";
-        background: darken($top-bar-blue, 15%);
-        width: 7px;
-        height: 100%;
-        position: absolute;
-        top: 0px;
-        left: -1px;
-        z-index: 999;
-      }
+      i { color: #fff; }
     }
   }
 
@@ -314,6 +460,7 @@
   .with-connectors {
     // Between the main line and items (horizontal small lines)
     position: relative;
+    margin-bottom: 5px;
 
     // vertical line on secondary list
     &:after {
@@ -333,11 +480,12 @@
       content: " ";
       position: absolute;
       left: 5px;
-      top: 14px;
+      top: 12px;
       width: 5px;
       height: 1px;
       background: #c7c8c9;
-      z-index: 82;
+      z-index: 99;
+      opacity: 0.5;
     }
   }
 
@@ -356,8 +504,7 @@
     margin-top: -4px;
   }
 
-
-  // Custom status icons
+  // Custom status icons on filters
   a.status-icon, .status-icon {
     background: #56b3ff;
     display: block;
@@ -374,12 +521,6 @@
       position: relative;
       top: 3px;
     }
-
-    &.red { background: red;}
-
-    &.green { background: green; }
-
-    &.black { background: #fff; }
   }
 
   .sidebar-brand {
@@ -428,11 +569,7 @@
           border-radius: 0px;
         }
 
-        &:last-child {
-          a {
-            border-bottom: 1px solid #c1cad4;
-          }
-        }
+        &:last-child a {  border-bottom: 1px solid #c1cad4;}
       }
     }
   }
@@ -448,10 +585,8 @@
     display: block;
     width: 16px;
     height: 16px;
-    border-radius: 140px;
     background-size: cover;
   }
-
 }
 
 a.item.urgent {
@@ -475,6 +610,7 @@ a.item.urgent {
   &.level-7 { background: #ff6054; }
   &.level-8 { background: #e53f3f; }
   &.level-9 { background: #cf2d2d; }
+  &.level-10 { background: #ac2020; }
 
   .label {
     display: inline-block;
@@ -507,12 +643,14 @@ a.item.urgent {
   a {
     display: inline-block;
     line-height: 1em;
-    padding: 4px;
+    padding: 3px 5px;
     text-align: center;
     position: relative;
-    top: 5px;
+    top: 4px;
     z-index: 99;
     color: #fff;
+    font-weight: 600;
+    font-size: 0.9em;
 
     i {
       font-size: 1.3em;
@@ -536,64 +674,15 @@ a.item.urgent {
 
   a.list-counter, .list-counter, a.list-counter-dropdown, .list-counter-dropdown  {
     background: $sidebar-color-selected-counter;
-    border-radius: 2px;
+    border-radius: 199px;
     color: #fff;
+    outline: none;
 
     &.active, &:hover {
-      background: rgba(255, 255, 255, 1);
-      color: #000;
+      background: #dae6f0;
+      color: #27557b;
     }
   }
-}
 
-
-.sidebar-apps {
-  position: fixed;
-  bottom: 0px;
-  background: #e1e6eb;
-  border-top: 1px solid $global-border;
-  width: 100%;
-  width: 220px;
-  z-index: 99;
-  text-align: center;
-
-  .title {
-    text-transform: uppercase;
-    margin: 8px;
-    font-weight: 800;
-    font-size: 0.9em;
-    color: #646464;
-  }
-
-  .app {
-    display: inline-block;
-    width: 30%;
-    margin-bottom: 10px;
-    position: relative;
-    text-align: center;
-
-    a {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      border-radius: 2px;
-      border-bottom: 1px solid #b4b8bc;
-      background: #f0f3f5;
-
-    }
-
-    span {
-      margin-top: 5px;
-      display: block;
-      position: relative;
-      color: #333;
-    }
-
-    i {
-      position: relative;
-      top: 16px;
-      font-size: 1.4em;
-      color: #abacac;
-    }
-  }
+  a.list-counter.faded { background: none; }
 }

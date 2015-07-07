@@ -3,6 +3,7 @@ define [
   'DeskPRO/Util/Strings',
   'DeskPRO/Main/Service/AppState',
   'DeskPRO/Main/Service/DpApi',
+  'DeskPRO/Main/Service/DpApi2',
   'DeskPRO/Main/Service/Growl',
   'DeskPRO/Main/Service/InhelpState',
 ], (
@@ -10,6 +11,7 @@ define [
   Strings,
   DeskPRO_Main_Service_AppState,
   DeskPRO_Main_Service_DpApi,
+  DeskPRO_Main_Service_DpApi2,
   DeskPRO_Main_Service_Growl,
   DeskPRO_Main_Service_InhelpState,
 ) ->
@@ -24,6 +26,14 @@ define [
         window.DP_BASE_API_URL,
         window.DP_API_TOKEN
       )
+    ])
+
+    Module.service('Api2', ['$http', ($http) ->
+        return new DeskPRO_Main_Service_DpApi2(
+            $http,
+            window.DP_BASE_API_URL,
+            window.DP_API_TOKEN
+        )
     ])
 
     Module.service('InhelpState', ['Api', (Api) ->

@@ -6,17 +6,6 @@ $stack-2: Baskerville, Georgia, Serif;
 $stack-3: Lato, "Myriad Pro", Myriad, Arial, Sans-Serif;
 $stack-4: "Ubuntu", "Trebuchet Ms", Arial, Sans-Serif;
 
-// Panel measurements
-// This should idealy have a total max width of about 1500px for any large screens
-
-// Width of the left side panel
-$panel-width: 340px;
-$editor-min-width: 1200px;
-
-// Width of the preview
-$editor-gutters: 20px;
-$editor-panel-gutters: 10px;
-
 // About the font stacks:
 // Lato, Open Sans & Ubuntu all come from google fonts. Should only load the extra fonts
 // on the editor page for performance.
@@ -30,68 +19,56 @@ $editor-panel-gutters: 10px;
 .stack-4 { font-family: $stack-4; }
 
 // Overall wrapper
-.portal-editor-wrapper {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  background: url("#{$ifce-img-path}/grid.png");
-  overflow: auto;
+.editor { background: url(../img/grid.png); }
 
-  .ps-scrollbar-y-rail {
-    right: 2px;
-  }
-  .ps-container {
-    > .ps-scrollbar-y-rail { width: 11px; }
-    >.ps-scrollbar-y-rail >.ps-scrollbar-y { width: 4px; }
-    >.ps-scrollbar-y-rail:hover >.ps-scrollbar-y, >.ps-scrollbar-y-rail.in-scrolling >.ps-scrollbar-y { width: 8px; }
-    &:hover >.ps-scrollbar-y-rail, >.ps-scrollbar-y-rail.in-scrolling {
-      background-color: transparent;
-      opacity: 1;
-    }
-  }
-}
+
+
+// Panel measurements
+// This should idealy have a total max width of about 1500px for any large screens
+
+// Width of the left side panel
+$panel-width: 340px;
+
+// Width of the preview
+$preview-panel-width: 960px;
+$editor-gutters: 20px;
+
+// Total width of the dark background panel is the width of the editor sidebar + the preview + the gutters(padding of the overall wrapper)
+$total-width: $panel-width + 960px + $editor-gutters;
 
 // The bucket for everything
-.peditor {
-  position: absolute;
-  top: $editor-gutters; right: $editor-gutters; bottom: $editor-gutters; left: $editor-gutters;
-  min-width: $editor-min-width;
+.editor {
+  position: relative;
+  padding: $editor-gutters;
 }
 
 // Dark background wrapper
-.peditor-panel {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  padding: $editor-panel-gutters;
+.editor-panel {
+  @include clearfix;
+  padding: 10px;
+  // Total width of the panel
+  width: $total-width;
+
+  // The space on the right we allocate to the preview
+  padding-right: $preview-panel-width;
+  position: relative;
 }
 
 // Holds the panel sidebar stuff
 .panel-wrapper {
+  float: left;
   width: $panel-width;
-
-  .panel-sections-wrap {
-    position: absolute;
-    top: 55px;
-    width: $panel-width + $editor-panel-gutters;
-    padding-right: $editor-panel-gutters;
-    left: $editor-panel-gutters;
-    bottom: $editor-panel-gutters;
-    overflow: hidden;
-  }
-
-  .panel-section-body {
-    padding-right: 8px;
-  }
 }
 
 
 // Theme preview area
 .preview-panel {
   position: absolute;
-  top: 55px;
-  right: $editor-panel-gutters;
-  bottom: $editor-panel-gutters;
-  left: $panel-width + $editor-panel-gutters + $editor-panel-gutters;
+  top: 75px;
+  left: $panel-width + 40px;
   display: block;
+  width: $preview-panel-width;
+  height: 1500px;//Calculate with js
   border-radius: 2px;
   background: #fff;
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.1);
@@ -196,7 +173,7 @@ $editor-panel-gutters: 10px;
 $editor-panel-bg: #3a3f45;
 $transition: all 0.15s ease;
 
-.peditor-panel {
+.editor-panel {
   background: $editor-panel-bg;
   color: #9da3a8;
   border-radius: 2px;
@@ -374,7 +351,7 @@ $transition: all 0.15s ease;
       margin-right: 5px;
       width: 12px;
       height: 12px;
-      border-radius: 140px;
+      border-radius: 199px;
       background: #505458;
       position: relative;
       top: 1px;
@@ -425,6 +402,7 @@ $transition: all 0.15s ease;
     font-size: 0.8em;
     position: relative;
     height: 190px;
+    width: 342px;
     span { vertical-align: middle; }
 
     // The upload icon
@@ -720,7 +698,7 @@ $transition: all 0.15s ease;
     }
 
 
-    .peditor-footer {
+    .editor-footer {
       text-align: right;
       a {
         padding-left: 25px;
@@ -864,3 +842,7 @@ $transition: all 0.15s ease;
     background: rgba(0, 0, 0, 0.1);
   }
 }
+
+
+
+//

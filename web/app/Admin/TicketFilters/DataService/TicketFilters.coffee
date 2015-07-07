@@ -4,17 +4,14 @@ define [
   BaseListEdit,
 )  ->
   class Admin_TicketFilters_DataService_TicketFilters extends BaseListEdit
-    @$inject = ['Api', '$q']
+    @$inject = ['Api2', '$q']
 
     _doLoadList: ->
       deferred = @$q.defer()
 
-      @Api.sendGet('/ticket_filters').success( (data) =>
-        models = data.filters
-        deferred.resolve(models)
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+      @Api2.sendGet('/ticket_filter_sets')
+        .success( (data) => deferred.resolve(data.data) )
+        .error( (data, status, headers, config) => deferred.reject() )
 
       return deferred.promise
 

@@ -101,7 +101,7 @@ define [
 
 
     ###
-    # Sets ist data on the @listModels object
+    # Sets list data on the @listModels object
     ###
     _setListData: (listModels) ->
       @listModels.length = 0
