@@ -66,20 +66,11 @@ class PortalEmailSenderTest extends PortalTestCase
     {
         $this->installDataSet('fresh', true);
 
-        //
-        // simulate saving a custom template
-        //
-        $t = <<<CODE
+        $custom_template = <<<CODE
 <dp:subject>This is the custom subject</dp:subject>
 Hello there this is the message
 CODE;
-        $tt = new Template();
-        $tt->name = 'DeskPRO:emails_user:register-welcome.html.twig';
-        $tt->template_code = $t;
-        $template = new TemplateCustom('DeskPRO:emails_user:register-welcome.html.twig', $tt);
-        $this->get('templating.email.template_set')->saveTemplate($template);
-        //
-        //
+        $this->saveCustomTemplate('EmailBundle:Portal:register-welcome.html.twig', $custom_template);
 
         // load a new kernel (to get rid of the twig template cache)
         // TODO: actually, we need to clear the cache here
@@ -140,5 +131,20 @@ CODE;
     {
         $message = $this->get('deskpro.blob_storage')->copyBlobRowIdToString($last_source->getBlob()->getId());
         return $message;
+    }
+
+    /**
+     * Simulates saving a custom template
+     *
+     * @param $name
+     * @param $template_code
+     */
+    public function saveCustomTemplate($name, $template_code)
+    {
+        $tt = new Template();
+        $tt->name = $name;
+        $tt->template_code = $template_code;
+        $template = new TemplateCustom($name, $tt);
+        $this->get('templating.email.template_set')->saveTemplate($template);
     }
 }

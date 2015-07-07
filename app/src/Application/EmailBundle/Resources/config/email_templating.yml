@@ -52,3 +52,27 @@ services:
       - @templating.finder
     tags:
         - { name: kernel.cache_warmer }
+
+  #
+  # EXTENSIONS
+  # these apply only to email.templating.twig (note the different tag name)
+  #
+  templating.email.twig.extension.routing:
+    class: Application\EmailBundle\Twig\Extension\RoutingExtension
+    arguments: [@router]
+    tags:
+      - { name: email.templating.twig.extension  }
+  templating.email.twig.extension.assets:
+    class: Symfony\Bundle\TwigBundle\Extension\AssetsExtension
+    arguments: [@service_container, "@?router.request_context"]
+    tags:
+      - { name: email.templating.twig.extension  }
+  templating.email.twig.extension.expression:
+    class: Symfony\Bridge\Twig\Extension\ExpressionExtension
+    tags:
+      - { name: email.templating.twig.extension  }
+  templating.email.twig.extension.templating:
+    class: Application\EmailBundle\Twig\Extension\TemplatingExtension
+    arguments: [@service_container]
+    tags:
+      - { name: email.templating.twig.extension  }

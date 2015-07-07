@@ -83,7 +83,7 @@ class PortalEmailSender
 
         $portal_url = $this->getRouter()->generate('portal_index', array(), UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->sendToPerson($person, 'DeskPRO:emails_user:register-welcome.html.twig', array(
+        $this->sendToPerson($person, 'EmailBundle:Portal:register-welcome.html.twig', array(
             'person' => $person,
             'email' => $email,
             'verify_url' => $verify_url,
