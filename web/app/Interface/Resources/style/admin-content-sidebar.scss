@@ -16,9 +16,11 @@
     font-weight: 600;
     margin-top: 5px;
     color: #a1a1a1;
+	background-color: #fff;
 
     &:hover {
       color: #333;
+	  cursor: pointer;
     }
   }
 

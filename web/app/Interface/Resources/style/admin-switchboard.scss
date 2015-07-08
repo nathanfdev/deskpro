@@ -98,12 +98,6 @@ $slider-button-width: 50px;
     padding-bottom: 5px;
   }
 
-  // Large expanded panels (admin-manage-filter-set.html)
-  .switchboard-row.switchboard-row-expanded {
-    position: relative;
-    left: -10px;
-  }
-
   .switchboard-row-expanded-content {
     border: 1px solid #d0d9e6;
     /* padding: 10px; */
@@ -111,7 +105,7 @@ $slider-button-width: 50px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
 
-  .switchboard-selected-header {
+  .switchboard-row.active {
     display: inline-block;
     background: #f7f7f7;
     border: 1px solid #d0d9e6;

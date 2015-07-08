@@ -16,6 +16,11 @@ define [
         agent: "0",
         team:  "0"
       }
+      @$scope.foobar = {
+        addingNewFilterSet: false,
+        new_filterset_name: ""
+      }
+      @$scope.addFilterSet = @addFilterSet
 
       @$scope.$watch('display_filter', =>
         @updateFilterList()
@@ -93,6 +98,20 @@ define [
 
       @$scope.filterList = filterList
 
+    ###
+    # Add a brand new filter set.
+    ###
+    addFilterSet: =>
+      @filterSetData.saveTicketFilterSet(@$scope.foobar.new_filterset_name).then(
+        (data) =>
+          @$scope.filterList.push(data.data)
+          @$scope.foobar.new_filterset_name = ""
+          @$scope.foobar.addingNewFilterSet = false
+      ,
+        (data) =>
+          console.log "failure"
+      )
+        
     ###
     # Show the delete dlg
     ###

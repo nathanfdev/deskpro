@@ -19,6 +19,7 @@ define [
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
 
     initialLoad: ->
+      console.log "initialLoad " + @filterId
       p = @filterSetData.loadEditFilterSetData(@filterId).then( (data) =>
         @filterset = data
       )

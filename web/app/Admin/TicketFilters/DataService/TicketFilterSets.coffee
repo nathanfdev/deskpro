@@ -9,6 +9,7 @@ define [
     @filter_sets = []
 
     _doLoadList: ->
+      console.log "Load list"
       deferred = @$q.defer()
 
       @Api2.sendGet('/ticket_filter_sets')
@@ -32,6 +33,28 @@ define [
           (data) => deferred.reject()
         )
 
+      return deferred.promise
+
+    ###
+    # Save a new filter set.
+    #
+    # @param {String} The new filter set's name
+    # @return {promise}
+    ###
+    saveTicketFilterSet: (name) ->
+      deferred = @$q.defer()
+      
+      @Api2.sendPostJson(
+        '/ticket_filter_sets',
+        { "title": name }
+      )
+      .success( (data) =>
+        deferred.resolve(data)
+      )
+      .error( (data, status, headers, config) =>
+        deferred.reject(data)
+      )
+      
       return deferred.promise
 
     ###
@@ -71,7 +94,7 @@ define [
     loadEditFilterSetData: (id) ->
       deferred = @$q.defer()
 
-      @_loadListOrCache().then(
+      @_doLoadList().then(
         (data) =>
           filter_set = (filter for filter in data when filter.id is id)
           if filter_set?
