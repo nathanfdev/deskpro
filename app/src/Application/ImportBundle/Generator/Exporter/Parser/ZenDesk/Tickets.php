@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Exporter\Parser\SkippingException;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 use DateTime;
@@ -249,35 +250,64 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns a ticket comments entity
+     * Returns a ticket comments entity collection
      *
      * @param array $ticket
      * @return Entity\TicketMessage[]
      */
     private function exportMessages(array $ticket)
     {
-        $comments = new Entity\Collection();
+        $collection = new Entity\Collection();
 
-        foreach ($ticket['comments'] as $comment) {
+        foreach ($ticket['comments'] as $num => $comment) {
+            try {
+                $entity = $this->exportMessage($comment);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
+                }
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid ticket message record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a ticket comments entity
+     *
+     * @param array $comment
+     * @return Entity\TicketMessage|null
+     */
+    private function exportMessage(array $comment)
+    {
+        if ($this->isMessageValid($comment)) {
             if (empty($comment['author_id'])) {
                 $this->logError(sprintf('Comment #%d without author_id, skipping', $comment['id']));
-                continue;
+                return null;
             }
 
             $author_email = $this->tickets_people->getPersonEmail($comment['author_id']);
             if ( ! $author_email) {
                 $this->logError(sprintf('Unable to get comment author #%d, skipping', $comment['author_id']));
-                continue;
+                return null;
             }
 
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination('message_' . $ticket['id'])
+                ->setDestination('message_' . $comment['id'])
                 ->setOid($comment['id'])
                 ->setPersonEmail($author_email)
                 ->setMessageText($comment['body'])
                 ->setAsNote($comment['public'] === false)
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['created_at']))
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($comment['created_at']))
             ;
 
             $attachments = $this->exportAttachments($comment['attachments']);
@@ -286,10 +316,10 @@ final class Tickets extends AbstractParser
                 $entity->addAttachment($attachment);
             }
 
-            $comments->attach($entity);
+            return $entity;
         }
 
-        return $comments;
+        return null;
     }
 
     /**
@@ -391,7 +421,7 @@ final class Tickets extends AbstractParser
 
             $response = $this->reader->getTickets($this->getBatchConfig()->getTicketsEndTime());
             if (count($response)) {
-                // ZenDesk API does not allow to get ticket comments in a single request
+                // ZenDesk API does not allow to get ticket comments in a single request due to huge response (could be ~20 MB)
                 // We have to load comments for each ticket separately
                 foreach ($response as $ticket) {
                     if ($ticket['status'] !== self::STATUS_DELETED) {
@@ -428,16 +458,20 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Check if ticket has all required columns
+     * Checks if ticket has all required columns
      *
      * @param array $ticket
      * @return bool
+     *
+     * @throws NoColumnException
+     * @throws NotArrayException
      */
     private function isTicketValid(array $ticket)
     {
         $columns = array(
             'id',
             'submitter_id',
+            'assignee_id',
             'subject',
             'description',
             'status',
@@ -456,10 +490,35 @@ final class Tickets extends AbstractParser
     }
 
     /**
+     * Checks if ticket reply has all required columns
+     *
+     * @param array $comment
+     * @return bool
+     *
+     * @throws NoColumnException
+     * @throws NotArrayException
+     */
+    private function isMessageValid(array $comment)
+    {
+        $columns = array(
+            'id',
+            'author_id',
+            'body',
+            'public',
+            'created_at',
+            'attachments',
+        );
+
+        return $this->hasRequiredColumns($comment, $columns) && $this->isArrayColumn($comment, 'attachments');
+    }
+
+    /**
      * Check if ticket message attachment has all required columns
      *
      * @param array $attachment
      * @return bool
+     *
+     * @throws NoColumnException
      */
     private function isAttachmentValid(array $attachment)
     {
@@ -475,7 +534,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Get DeskPro status by ZenDesk status
+     * Returns DeskPRO status by ZenDesk status
      *
      * @param string $status
      *

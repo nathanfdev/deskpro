@@ -104,7 +104,17 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
      */
     protected function getFromStringOrCurrentDateTime($format)
     {
-        return $format ? new DateTime($format) : new DateTime();
+        if ($format) {
+            try {
+                return new DateTime($format);
+
+            } catch (\Exception $e) {
+                $this->logWarning(sprintf('Unable to set datetime, format = `%s`', (string)$format));
+                $this->logWarning($e->getMessage());
+            }
+        }
+
+        return new DateTime();
     }
 
     /**

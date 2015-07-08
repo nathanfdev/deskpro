@@ -64,9 +64,11 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $tickets    = $this->getReaderData($this->getTicketReaderConfig());
-        $messages   = $this->exportMessages();
+        $collection    = new Entity\Collection();
+
+        $tickets       = $this->getReaderData($this->getTicketReaderConfig());
+        $messages      = $this->exportMessages();
+        $custom_fields = $this->exportTicketCustomFields();
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
@@ -78,6 +80,12 @@ final class Tickets extends AbstractParser
                         /** @var Entity\TicketMessage $message_entity */
                         if ($entity->getDestination() === $message_entity->getDestination()) {
                             $entity->addMessage($message_entity);
+                        }
+                    }
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
                         }
                     }
 
@@ -200,6 +208,16 @@ final class Tickets extends AbstractParser
     }
 
     /**
+     * Returns a collection of ticket custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportTicketCustomFields()
+    {
+        return $this->exportCustomFields($this->getTicketCustomFieldReaderConfig(), self::TICKET_PREFIX, 'ticket_id');
+    }
+
+    /**
      * Check if ticket has all required columns
      *
      * @param array $ticket
@@ -232,13 +250,14 @@ final class Tickets extends AbstractParser
             'message_id',
             'message_text',
             'user',
+            'date_created',
         );
 
         return $this->hasRequiredColumns($message, $columns);
     }
 
     /**
-     * Returns reader config of ticket records
+     * Returns reader config for ticket records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -248,7 +267,7 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config of ticket message records
+     * Returns reader config for ticket message records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -258,12 +277,22 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader config of ticket attachment records
+     * Returns reader config for ticket attachment records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
     private function getTicketAttachmentReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
+    }
+
+    /**
+     * Returns reader config for ticket custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getTicketCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_TICKET_CUSTOM_FIELDS);
     }
 }

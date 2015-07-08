@@ -112,7 +112,10 @@ final class Person extends AbstractImporter
             }
         }
         foreach ($entity->getCustomFields() as $custom_field) {
-            $person->addCustomData($this->createCustomData($custom_field));
+            $custom_field = $this->createPersonCustomData($custom_field);
+            if ($custom_field) {
+                $person->addCustomData($custom_field);
+            }
         }
 
         $this->records->add($person);
@@ -214,52 +217,11 @@ final class Person extends AbstractImporter
      * @return DeskPROEntity\CustomDataPerson
      * @throws ImporterException
      */
-    private function createCustomData(Entity\CustomField $entity)
+    private function createPersonCustomData(Entity\CustomField $entity)
     {
-        $person_def   = $this->getCustomDefPersonMapper()->findOneByTitle($entity->getKey());
-        $custom_field = new DeskPROEntity\CustomDataPerson();
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
 
-        switch ($person_def->getTypeName()) {
-            case Entity\CustomField::FIELD_TYPE_TEXT:
-            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
-                $custom_field
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($entity->getValue());
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_TOGGLE:
-                $custom_field
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($entity->getValue() ? 1 : 0);
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_DATE:
-                $custom_field
-                    ->setField($person_def)
-                    ->setRootField($person_def)
-                    ->setValue($entity->getValue() ? strtotime($entity->getValue()) : 0);
-
-                break;
-
-            case Entity\CustomField::FIELD_TYPE_CHOICE:
-                $choice_def = $this->getCustomDefPersonMapper()->findOneByTitle($entity->getValue());
-                $custom_field
-                    ->setField($choice_def)
-                    ->setRootField($person_def)
-                    ->setValue(1);
-
-                break;
-
-            default:
-                throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
-        }
-
-        $this->records->add($custom_field);
-        return $custom_field;
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataPerson());
     }
 
     /**
@@ -282,16 +244,5 @@ final class Person extends AbstractImporter
     private function getEmailAccountMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_EMAIL_ACCOUNT);
-    }
-
-    /**
-     * Returns the custom def person mapper
-     *
-     * @return Mapper\CustomDefPerson
-     * @throws \Exception
-     */
-    private function getCustomDefPersonMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
     }
 }

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,53 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper;
-
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
+namespace Application\ImportBundle\Reader\ZenDesk;
 
 /**
- * Custom def ticket record mapper
+ * Create a ZenDesk reader for testing
  *
- * Class CustomDefTicket
- * @package Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper
+ * Class ZenDeskReaderMockFactory
+ * @package Application\ImportBundle\Reader\ZenDesk
  */
-final class CustomDefTicket implements MapperInterface
+class ZenDeskReaderMockFactory implements ZenDeskReaderFactoryInterface
 {
     /**
-     * @var EntityRepository\CustomDefTicket
+     * @var Request\RequestAdapterInterface
      */
-    private $repository;
+    private $adapter;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\CustomDefTicket $repository
+     * @param Request\RequestAdapterInterface $adapter
      */
-    public function __construct(EntityRepository\CustomDefTicket $repository)
+    public function __construct(Request\RequestAdapterInterface $adapter)
     {
-        $this->repository = $repository;
+        $this->adapter = $adapter;
     }
 
     /**
-     * {@inheritdoc}
+     *
+     *
+     * @param ZenDeskConfig $config
+     * @return ZenDeskReader
      */
-    public function getType()
+    public function createReader(ZenDeskConfig $config)
     {
-        return self::TYPE_CUSTOM_DEF_TICKET;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        /** @var Entity\CustomDefTicket $record */
-        $record = $this->repository->findOneBy($criteria);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Custom def ticket not found', $criteria);
-        }
-
-        return $record;
+        return new ZenDeskReader(new Request\RequestCacheAdapter($this->adapter), $config);
     }
 }

@@ -29,8 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\Exporter\Parser\ZenDesk\TicketsMapper;
 use Application\ImportBundle\Reader\BaseConfig;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactoryInterface;
 use Application\ImportBundle\Entity;
 use Application\DeskPRO\EntityRepository;
 use Guzzle\Http\Client;
@@ -47,10 +46,12 @@ class ZenDeskFactory extends AbstractFactory
     /**
      * {@inheritdoc}
      */
-    static public function createExporter(ContainerInterface $container, BaseConfig $config)
+    public static function createExporter(ContainerInterface $container, BaseConfig $config)
     {
-        /** @var ZenDeskReaderInterface $reader */
-        $reader = ZenDeskReaderFactory::createReader($config);
+        /** @var ZenDeskReaderFactoryInterface $reader_factory */
+        $reader_factory = $container->get('deskpro.import.zendesk_reader_factory');
+
+        $reader  = $reader_factory->createReader($config);
         $storage = new Parser\ZenDesk\PeopleStorage();
 
         // People parser

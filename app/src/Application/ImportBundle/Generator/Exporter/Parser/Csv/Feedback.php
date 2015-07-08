@@ -63,8 +63,10 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
+
         $feedback_items = $this->getReaderData($this->getFeedbackReaderConfig());
         $attachments    = $this->exportFeedbackAttachments();
+        $custom_fields  = $this->exportFeedbackCustomFields();
 
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
@@ -76,6 +78,12 @@ final class Feedback extends AbstractParser
                         /** @var Entity\Attachment $attachment */
                         if ($attachment->getDestination() === self::FEEDBACK_PREFIX . $entity->getOid()) {
                             $entity->addAttachment($attachment);
+                        }
+                    }
+                    foreach ($custom_fields as $custom_field_entity) {
+                        /** @var Entity\CustomField $custom_field_entity */
+                        if ($entity->getDestination() === $custom_field_entity->getDestination()) {
+                            $entity->addCustomField($custom_field_entity);
                         }
                     }
 
@@ -143,6 +151,16 @@ final class Feedback extends AbstractParser
     }
 
     /**
+     * Returns a collection of ticket custom field data
+     *
+     * @return Entity\Collection
+     */
+    private function exportFeedbackCustomFields()
+    {
+        return $this->exportCustomFields($this->getFeedbackCustomFieldReaderConfig(), self::FEEDBACK_PREFIX, 'feedback_id');
+    }
+
+    /**
      * Check if feedback has all required columns
      *
      * @param array $feedback
@@ -186,5 +204,15 @@ final class Feedback extends AbstractParser
     private function getFeedbackAttachmentsReaderConfig()
     {
         return $this->getReaderConfig(self::FILE_FEEDBACK_ATTACHMENTS);
+    }
+
+    /**
+     * Returns reader config for feedback custom field records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getFeedbackCustomFieldReaderConfig()
+    {
+        return $this->getReaderConfig(self::FILE_FEEDBACK_CUSTOM_FIELDS);
     }
 }

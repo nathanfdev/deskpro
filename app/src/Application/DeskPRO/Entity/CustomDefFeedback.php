@@ -68,9 +68,20 @@ class CustomDefFeedback extends CustomDefAbstract
     protected $sys_name = null;
 
     /**
+     * Set parent
+     *
+     * @param CustomDefFeedback $parent
+     * @return $this
+     */
+    public function setParent(CustomDefFeedback $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+        return $this;
+    }
+
+    /**
      * @return CustomDefFeedback
      */
-
     public static function createFeedbackCategory()
     {
         $category = new self();

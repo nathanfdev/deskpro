@@ -97,6 +97,12 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
                 $entity->getPersonEmail()
             ));
         }
+        foreach ($entity->getCustomFields() as $custom_field) {
+            $custom_field = $this->createFeedbackCustomData($custom_field);
+            if ($custom_field) {
+                $feedback->addCustomData($custom_field);
+            }
+        }
 
         $this->records->add($feedback);
         return $this->records;
@@ -160,6 +166,21 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
 
         $this->records->add($attachment);
         return $attachment;
+    }
+
+    /**
+     * Returns custom def feedback entity
+     *
+     * @param Entity\CustomField $entity
+     *
+     * @return DeskPROEntity\CustomDataFeedback
+     * @throws ImporterException
+     */
+    private function createFeedbackCustomData(Entity\CustomField $entity)
+    {
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_FEEDBACK);
+
+        return $this->createCustomData($mapper, $entity, new DeskPROEntity\CustomDataFeedback());
     }
 
     /**

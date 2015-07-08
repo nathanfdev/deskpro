@@ -1,4 +1,8 @@
 services:
+
+  deskpro.import.zendesk_reader_factory:
+    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
+
   deskpro.import.config:
     class: Application\ImportBundle\Generator\GeneratorConfig
 

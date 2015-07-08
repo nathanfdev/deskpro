@@ -110,6 +110,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isCustomFieldValid($custom_field)) {
             $entity = new Entity\CustomField();
             $entity
+                ->setDestination('custom_field_' . $custom_field['oid'])
                 ->setOid($custom_field['oid'])
                 ->setKey($custom_field['key'])
                 ->setValue($custom_field['value']);
