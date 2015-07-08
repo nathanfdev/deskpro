@@ -21,6 +21,9 @@ define [
     initialLoad: ->
       console.log "initialLoad " + @filterId
       p = @filterSetData.loadEditFilterSetData(@filterId).then( (data) =>
+        if data.filters.length == 0
+          @$state.go('tickets.ticket_filters.edit.single_filter', { id: data.id, filter_id: 0 })
+        
         @filterset = data
       )
 
