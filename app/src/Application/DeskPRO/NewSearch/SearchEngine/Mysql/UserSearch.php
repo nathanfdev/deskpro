@@ -188,7 +188,8 @@ class UserSearch implements UserSearchInterface
         $content = $content ?: '';
         $content = Strings::utf8_accents_to_ascii($content);
         $content = strtolower($content);
-        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+//        todo?
+//        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
         $content = preg_replace('#\s+#', ' ', $content);
         $content = explode(' ', $content);
         $content = array_filter($content, function ($s) { return isset($s[2]); });
