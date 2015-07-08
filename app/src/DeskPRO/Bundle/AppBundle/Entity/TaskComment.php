@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Person;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskComment extends NotifyPropertyChangeEntity
 {
@@ -103,8 +104,6 @@ class TaskComment extends NotifyPropertyChangeEntity
     public function setPerson(Person $person)
     {
         $this->person = $person;
-        $this->team = null;
-        $this->department = null;
         $this->setModelField('person', $person);
     }
 

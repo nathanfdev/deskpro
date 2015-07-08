@@ -37,7 +37,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Application\DeskPRO\Entity\Person;
 
 /**
  * @ORM\Entity

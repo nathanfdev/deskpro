@@ -37,16 +37,13 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\AgentTeam as Team;
-use Application\DeskPRO\Entity\Department;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="task_assignments")
+ * @ORM\Table(name="custom_task_data")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-class TaskAssignment extends NotifyPropertyChangeEntity
+class CustomDataTask extends NotifyPropertyChangeEntity
 {
     /**
      * @var int
@@ -65,25 +62,18 @@ class TaskAssignment extends NotifyPropertyChangeEntity
     protected $task;
 
     /**
-     * @var Person
-	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @var CustomDefTask
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\CustomDefTask")
+     * @ORM\JoinColumn(name="field_id", referencedColumnName="id")
      */
-    protected $person;
+    protected $field;
 
     /**
-     * @var Team
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     * @var CustomDefTask
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\CustomDefTask")
+     * @ORM\JoinColumn(name="root_field_id", referencedColumnName="id")
      */
-    protected $team;
-
-    /**
-     * @var Department
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
-     */
-    protected $department;
+    protected $root_field;
 
     /**
      * @return int
@@ -91,6 +81,40 @@ class TaskAssignment extends NotifyPropertyChangeEntity
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return CustomDefTask
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
+     * @param CustomDefTask $field
+     */
+    public function setField($field)
+    {
+        $this->field = $field;
+        $this->setModelField('field', $field);
+    }
+
+    /**
+     * @return CustomDefTask
+     */
+    public function getRootField()
+    {
+        return $this->root_field;
+    }
+
+    /**
+     * @param CustomDefTask $root_field
+     */
+    public function setRootField($root_field)
+    {
+        $this->root_field = $root_field;
+        $this->setModelField('root_field', $root_field);
     }
 
     /**
@@ -108,62 +132,5 @@ class TaskAssignment extends NotifyPropertyChangeEntity
     {
         $this->task = $task;
         $this->setModelField('task', $task);
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPerson()
-    {
-        return $this->person;
-    }
-
-    /**
-     * @param Person $person
-     */
-    public function setPerson(Person $person)
-    {
-        $this->person = $person;
-        $this->team = null;
-        $this->department = null;
-        $this->setModelField('person', $person);
-    }
-
-    /**
-     * @return Team
-     */
-    public function getTeam()
-    {
-        return $this->team;
-    }
-
-    /**
-     * @param Team $team
-     */
-    public function setTeam(Team $team)
-    {
-        $this->team = $team;
-        $this->department = null;
-        $this->person = null;
-        $this->setModelField('team', $team);
-    }
-
-    /**
-     * @return Department
-     */
-    public function getDepartment()
-    {
-        return $this->department;
-    }
-
-    /**
-     * @param Department $department
-     */
-    public function setDepartment(Department $department)
-    {
-        $this->department = $department;
-        $this->team = null;
-        $this->person = null;
-        $this->setModelField('department', $department);
     }
 }

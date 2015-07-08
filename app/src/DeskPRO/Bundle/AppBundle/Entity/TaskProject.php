@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,6 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_projects")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskProject extends NotifyPropertyChangeEntity
 {

@@ -38,13 +38,14 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\AgentTeam as Team;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_members")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskMember extends NotifyPropertyChangeEntity
 {

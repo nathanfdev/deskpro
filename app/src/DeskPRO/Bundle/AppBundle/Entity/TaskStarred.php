@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Person;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_starred")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskStarred extends NotifyPropertyChangeEntity
 {
@@ -83,8 +84,6 @@ class TaskStarred extends NotifyPropertyChangeEntity
     public function setPerson(Person $person)
     {
         $this->person = $person;
-        $this->team = null;
-        $this->department = null;
         $this->setModelField('person', $person);
     }
 }

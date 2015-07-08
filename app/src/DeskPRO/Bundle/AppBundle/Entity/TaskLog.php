@@ -36,11 +36,13 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_log")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskLog extends NotifyPropertyChangeEntity
 {
@@ -48,7 +50,7 @@ class TaskLog extends NotifyPropertyChangeEntity
      * @var int
      * @ORM\Id()
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Assert\NotNull()
      */
     protected $id = null;
@@ -97,17 +99,22 @@ class TaskLog extends NotifyPropertyChangeEntity
 
     /**
      * @var TaskLog
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TaskLog")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLog")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent;
 
     /**
      * @var Task
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Task")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      */
     protected $task;
+
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+    }
 
     /**
      * @return int
@@ -131,8 +138,55 @@ class TaskLog extends NotifyPropertyChangeEntity
     public function setPerson(Person $person)
     {
         $this->person = $person;
-        $this->team = null;
-        $this->department = null;
         $this->setModelField('person', $person);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDetails()
+    {
+        return $this->details;
+    }
+
+    /**
+     * @param array $details
+     */
+    public function setDetails(array $details)
+    {
+        if (isset($details['id_before'])) {
+            $this['id_before'] = $details['id_before'];
+            unset($details['id_before']);
+        }
+        if (isset($details['id_after'])) {
+            $this['id_after'] = $details['id_after'];
+            unset($details['id_after']);
+        }
+        if (isset($details['id_object'])) {
+            $this['id_object'] = $details['id_object'];
+            unset($details['id_object']);
+        }
+
+        $this->setModelField('details', $details);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setDetailItem($name, $value)
+    {
+        $details        = $this->details;
+        $details[$name] = $value;
+
+        $this->setModelField('details', $details);
     }
 }

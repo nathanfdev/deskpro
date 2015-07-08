@@ -34,13 +34,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_lists")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskList extends NotifyPropertyChangeEntity
 {
@@ -132,7 +135,7 @@ class TaskList extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param TicketFilterPreference $filter_preference
+     * @param Task $task
      */
     public function addTask(Task $task)
     {
