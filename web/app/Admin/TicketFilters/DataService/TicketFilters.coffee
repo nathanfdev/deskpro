@@ -52,24 +52,29 @@ define [
       # @return {promise}
     ###
     loadEditFilterData: (id) ->
-
       deferred = @$q.defer()
 
-      types = {}
-      if id
-        types.filter = '/ticket_filters/' + id
+      @Api2.sendGet('/ticket_filters/' + id).then(
+        (res) => deferred.resolve(res.data.data)
+      ,
+        (data) => deferred.reject()
+      )
 
-      types.agents = '/agents'
-      types.teams = '/agent_teams'
-
-      @Api.sendDataGet(types).then( (res) ->
-        data = {}
-        if res.data.filter
-          data.filter = res.data.filter.filter
-
-        data.agents = res.data.agents.agents
-        data.teams  = res.data.teams.agent_teams
-        deferred.resolve(data)
-      , -> deferred.reject())
+      # types = {}
+      # if id
+      #   types.filter = '/ticket_filters/' + id
+      #
+      # types.agents = '/agents'
+      # types.teams = '/agent_teams'
+      #
+      # @Api2.sendDataGet(types).then( (res) ->
+      #   data = {}
+      #   if res.data.filter
+      #     data.filter = res.data.filter.filter
+      #
+      #   data.agents = res.data.agents.agents
+      #   data.teams  = res.data.teams.agent_teams
+      #   deferred.resolve(data)
+      # , -> deferred.reject())
 
       return deferred.promise

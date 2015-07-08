@@ -20,7 +20,6 @@ define [
 
     initialLoad: ->
       p = @filterSetData.loadEditFilterSetData(@filterId).then( (data) =>
-        console.log data
         @filterset = data
       )
 

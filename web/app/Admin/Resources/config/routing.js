@@ -607,6 +607,13 @@ define(function() {
 		controller: 'Admin_TicketFilters_Ctrl_Edit'
 	});
 
+	routes.push({
+		id: 'tickets.ticket_filters.edit.single_filter',
+		url: '/filter/{filter_id:[0-9]+}',
+		templateName: 'TicketFilters/edit_single.html',
+		controller: 'Admin_TicketFilters_Ctrl_EditSingle'
+	});
+
 	//###
 	//# Satisfaction
 	//###
