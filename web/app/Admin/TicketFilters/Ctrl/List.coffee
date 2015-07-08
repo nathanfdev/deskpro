@@ -47,15 +47,7 @@ define [
 
     initialLoad: ->
       promise = @filterSetData.loadList()
-      promise.then( (list) =>
-        @list = list
-
-        if @$state.current.name == 'tickets.ticket_filter_sets'
-          if @list[0]
-            @$state.go('tickets.ticket_filter_sets.edit', { id: @list[0].id })
-          else
-            @$state.go('tickets.ticket_filter_sets.create')
-      )
+      promise.then( (list) => @list = list )
 
       data_promise = @Api.sendDataGet({
         agents: '/agents',
@@ -107,6 +99,7 @@ define [
           @$scope.filterList.push(data.data)
           @$scope.foobar.new_filterset_name = ""
           @$scope.foobar.addingNewFilterSet = false
+          @$state.go('tickets.ticket_filters.edit', { id: data.data.id })
       ,
         (data) =>
           console.log "failure"
