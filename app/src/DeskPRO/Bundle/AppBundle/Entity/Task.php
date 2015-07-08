@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
@@ -128,14 +128,14 @@ class Task extends NotifyPropertyChangeEntity
 
     /**
      * @var TaskProject
-     * @ORM\ManyToOne(targetEntity="\DeskPro\Bundle\AppBundle\Entity\TaskProject")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
      */
     protected $project;
 
     /**
      * @var TaskList
-     * @ORM\ManyToOne(targetEntity="\DeskPro\Bundle\AppBundle\Entity\TaskList")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
      * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
      */
     protected $list;

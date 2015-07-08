@@ -69,7 +69,7 @@ class TaskProject extends NotifyPropertyChangeEntity
 
     /**
      * @var TaskMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="taskMember", mappedBy="project")
+     * @ORM\OneToMany(targetEntity="TaskMember", mappedBy="project")
      */
     protected $members;
 

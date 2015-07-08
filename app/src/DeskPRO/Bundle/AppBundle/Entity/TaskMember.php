@@ -60,7 +60,7 @@ class TaskMember extends NotifyPropertyChangeEntity
 
     /**
      * @var Project
-     * @ORM\ManyToOne(targetEntity="\DeskPro\Bundle\AppBundle\Entity\TaskProject")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
     protected $project;
