@@ -17,6 +17,7 @@
     'user.email_subjects.kb_sub_updated'           => 'Updated Articles',
     'user.email_subjects.password_agent-reset'     => 'An agent has reset your password',
     'user.email_subjects.password_reset'           => 'Reset Password',
+    'user.email_subjects.password_set'             => 'Set Your Password',
     'user.email_subjects.re'                       => 'RE: {{subject}}',
     'user.email_subjects.register-welcome'         => 'Thank you for registering',
     'user.email_subjects.register-welcome-byagent' => 'Your new helpdesk account',

@@ -32,6 +32,7 @@
     'user.emails.message-clipped'             => '(Message has been clipped)',
     'user.emails.password_agent-reset'        => 'An agent has reset your account password. You can log in with these credentials',
     'user.emails.password_reset'              => 'You requested a password reset. To reset your password, click on the link below:',
+    'user.emails.password_set'              => 'To set your password, click on the link below:',
     'user.emails.profile_email-new-confirm'   => 'To finish adding this secondary email address to your account, simply click on the following validation link',
     'user.emails.profile_email-primary-confirm'   => 'To verify your primary email address, simply click on the following validation link',
     'user.emails.profile_email_link-validate' => 'Simply click on the following link to validate to your email address',

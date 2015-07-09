@@ -1,5 +1,6 @@
 <?php return array(
     'portal.account.section-title-reset-password'     => 'Reset Password',
+    'portal.account.section-title-set-password'     => 'Set Password',
     'portal.account.section-title-register'     => 'Register',
     'portal.account.section-title-your-account'     => 'Your Account',
     'portal.account.section-title-login'     => 'Login',
@@ -30,6 +31,16 @@
     'portal.account.reset-password-sent-desc'     => 'We have recieved your password reset request for the email shown below. If this email address is associated with a registered account, we have sent an email with a password reset link to that account\'s primary email address. Please check your email inbox for further instructions.',
     'portal.account.reset-password-sent-to'     => 'We sent an email to',
     'portal.account.reset-password-success'     => 'Your password has been reset. You may now login with your new password.',
+    'portal.account.set-password-btn'     => 'Set Password',
+    'portal.account.set-password-invalid-desc'     => 'Your password code is invalid or has expired. For security reasons, to set your password, please request a new code.',
+    'portal.account.set-password-invalid-input'     => 'Error: please enter a valid email address or username',
+    'portal.account.set-password-click-here'     => 'Click here to set your password',
+    'portal.account.set-password-request-title'     => 'Set Your Password',
+    'portal.account.set-password-request-desc'     => 'Fill out this form and we will email you a link to set your password.',
+    'portal.account.set-password-sent-title'     => 'Set Your Password',
+    'portal.account.set-password-sent-desc'     => 'We have sent an email with instruction on how to set your password. Please check your email inbox for further instructions.',
+    'portal.account.set-password-sent-to'     => 'We sent an email to',
+    'portal.account.set-password-success'     => 'Your password has been set. You may now login.',
     'portal.account.email-managment'     => 'Manage Emails',
     'portal.account.email-primary-needs-validation'     => 'Your email (<strong>{{ email }}</strong>) is awaiting validation. Please check your email. After you click the verification link, you will be able to add more emails. <br><a href="{{ verify_url }}">Click here to send the email again.</a>',
     'portal.account.email-primary-indicator'     => 'primary',
@@ -40,5 +51,7 @@
     'portal.account.impersonating'     => 'you are impersonating the user',
     'portal.account.exit_impersonation'     => 'exit impersonation mode',
     'portal.account.validation_alert' =>  'Please verify your email address by clicking the link we sent you. Some helpdesk features may be disabled until you verify. Click here to re-send the email.',
-    'portal.account.validation_agent_alert' =>  'Your account is waiting to be validated by our agents. Tickets and other content you submit will be held in a validation queue until an agent validates your account.'
+    'portal.account.validation_agent_alert' =>  'Your account is waiting to be validated by our agents. Tickets and other content you submit will be held in a validation queue until an agent validates your account.',
+    'portal.account.registration-set-password' => 'We have detected that an account for your email already exists but does not yet have login capabilities. We have sent you an email that will allow you to set your password and login. Please check your email.',
+    'portal.account.registration-email-already-exists' => 'An account with this email already exists. Please login normally. If you forgot your password, use the forgot password feature.',
 );

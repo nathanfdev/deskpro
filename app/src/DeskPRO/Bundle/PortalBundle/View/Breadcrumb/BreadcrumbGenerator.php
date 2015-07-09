@@ -218,8 +218,12 @@ class BreadcrumbGenerator
         return $this->createBuilder()->addLogin()->done();
     }
 
-    public function buildPasswordReset()
+    public function buildPasswordReset($isResetting = true)
     {
+        if (!$isResetting) {
+            return $this->createBuilder()->addPasswordSet()->done();
+        }
+
         return $this->createBuilder()->addPasswordReset()->done();
     }
 }
