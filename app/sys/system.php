@@ -729,6 +729,14 @@ final class License
         return isset($this->options['managed']);
     }
 
+    /**
+     * @return bool
+     */
+    public function getIsUnlimited()
+    {
+        return isset($this->options['is_unlimited']);
+    }
+
     public function getLicenseCode()
     {
         return $this->raw_code;
@@ -756,11 +764,7 @@ final class License
 
     public function getMaxAgents()
     {
-        if (!isset($this->data['agents']) || !$this->data['agents']) {
-            return 0;
-        }
-
-        if (!$this->isCloud() && $this->data['agents'] >= 100) {
+        if (!isset($this->data['agents']) || !$this->data['agents'] || $this->getIsUnlimited()) {
             return 0;
         }
 
