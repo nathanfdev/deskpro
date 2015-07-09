@@ -63,6 +63,17 @@ Feature: /projects endpoint
     And the JSON node "data.title" should be equal to "New project title"
     And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
+  Scenario: I POST a task to a project
+    When I send a POST request to "/api/v2/tasks" with body:
+    """
+{
+  "title": "Test project task",
+  "project_id": 1
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 200
+
   Scenario: I DELETE a single project
     When I send a DELETE request to "/api/v2/projects/1"
     Then the response should be in JSON

@@ -90,6 +90,14 @@ class TaskType extends AbstractType
                     'required' => false,
                     'description' => 'the task urgency',
                 )
+            )
+            ->add(
+                'project_id',
+                'integer',
+                array(
+                    'required' => false,
+                    'description' => 'the id of the project',
+                )
             );
     }
 

@@ -218,6 +218,59 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     }
 
     /**
+     * @APIDoc(
+     *      description="get tasks for a project",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the project",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      parameters={
+     *          {
+     *              "name"="page",
+     *              "requirement"="\d+",
+     *              "description"="the page you are requesting",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "requirement"="\d+",
+     *              "description"="results per page",
+     *              "dataType"="integer",
+     *              "required"=false
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/projects/{id}", name="api_projects_tasks_get")
+     * @param Request $request
+     * @param int $id
+     * @return View
+     */
+    public function getTasksAction(Request $request, $id)
+    {
+        $id = (int) $id;
+        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('project_id' => $id));
+        $page = $request->query->get('page', 1);
+        $count = $request->query->get('count', 10);
+
+        $pager = new Pagerfanta(new ArrayAdapter($tasks));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return View::create(
+            $this->createRepresentation($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @param int $id
      * @return Project
      */
