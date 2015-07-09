@@ -321,6 +321,7 @@ Exporters:
             'date_created' is optional
 
             User means a user email
+            Date created could be empty (current time)
 
 
         - Ticket attachments required columns
