@@ -33,7 +33,7 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Person;
 use DpBehat\Portal\BasePortalContext;
-use DpTests\TestBundle\UserDetailsRepo;
+use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AuthContext extends BasePortalContext

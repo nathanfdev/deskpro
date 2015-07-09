@@ -70,11 +70,15 @@ class PageTitleGenerator
         return (string) $this->createHelpdeskTitleBuilder();
     }
 
-    public function passwordReset()
+    public function passwordReset($isResetting = true)
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
-        $builder->prependSection($this->phrase('portal.account.section-title-reset-password'));
+        if ($isResetting) {
+            $builder->prependSection($this->phrase('portal.account.section-title-reset-password'));
+        } else {
+            $builder->prependSection($this->phrase('portal.account.section-title-set-password'));
+        }
 
         return (string) $builder;
     }
@@ -124,6 +128,16 @@ class PageTitleGenerator
         $builder = $this->createHelpdeskTitleBuilder();
 
         $builder->prependSection($this->phrase('portal.tickets.new-section-title'));
+
+        return (string)$builder;
+    }
+
+    public function newticketGuestThankYou()
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $builder->prependSection($this->phrase('portal.tickets.new-section-title'));
+        $builder->prependSection($this->phrase('portal.tickets.guest-thanks-section-title'));
 
         return (string)$builder;
     }

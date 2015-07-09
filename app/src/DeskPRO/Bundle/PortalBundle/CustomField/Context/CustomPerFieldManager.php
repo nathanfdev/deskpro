@@ -56,6 +56,7 @@ class CustomPerFieldManager
 
     public function __construct(EntityManager $em)
     {
+        $this->save_queue = array();
         $this->em = $em;
     }
 

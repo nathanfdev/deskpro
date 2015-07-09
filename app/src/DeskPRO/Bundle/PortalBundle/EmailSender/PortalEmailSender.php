@@ -34,8 +34,10 @@ namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
-use Application\DeskPRO\Templating\Templates\EmailTemplateFile;
+use Application\DeskPRO\Entity\Ticket;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
+use Application\EmailBundle\Templating\Templates\EmailTemplateFile;
+use Application\EmailBundle\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -51,24 +53,37 @@ class PortalEmailSender
 
     public function sendPasswordResetLink(Person $person)
     {
-        $from = $this->getDefaultOutgoingEmailAddress();
-
-        $context = array(
-            'person'                  => $person,
-            'reset_url'               => $this->getRouter()->generate(
-                'portal_reset_password_process',
-                array(
-                    'password_reset_code' => $person->getPasswordResetCode(),
-                ),
-                UrlGeneratorInterface::ABSOLUTE_URL
+        $this->sendToPerson(
+            $person,
+            'EmailBundle:Portal:reset-password.html.twig',
+            array(
+                'person' => $person,
+                'reset_url' => $this->getRouter()->generate(
+                    'portal_reset_password_process',
+                    array(
+                        'password_reset_code' => $person->getPasswordResetCode(),
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
             )
         );
+    }
 
-        $this->sendMessage(
-            'EmailBundle:Portal:reset-password.html.twig',
-            $context,
-            $from,
-            $person->getPrimaryEmail()->email
+    public function sendPasswordSetLink(Person $person)
+    {
+        $this->sendToPerson(
+            $person,
+            'EmailBundle:Portal:set-password.html.twig',
+            array(
+                'person' => $person,
+                'reset_url' => $this->getRouter()->generate(
+                    'portal_set_password_process',
+                    array(
+                        'password_reset_code' => $person->getPasswordResetCode(),
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            )
         );
     }
 
@@ -82,12 +97,16 @@ class PortalEmailSender
 
         $portal_url = $this->getRouter()->generate('portal_index', array(), UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->sendToPerson($person, 'DeskPRO:emails_user:register-welcome.html.twig', array(
-            'person' => $person,
-            'email' => $email,
-            'verify_url' => $verify_url,
-            'portal_url' => $portal_url
-        ));
+        $this->sendToPerson(
+            $person,
+            'EmailBundle:Portal:register-welcome.html.twig',
+            array(
+                'person' => $person,
+                'email' => $email,
+                'verify_url' => $verify_url,
+                'portal_url' => $portal_url
+            )
+        );
     }
 
     public function sendEmailConfirmationEmail(PersonEmail $email, $primary = false)
@@ -113,9 +132,27 @@ class PortalEmailSender
         );
     }
 
+    public function sendNewTicketGuestThankYou(Ticket $ticket)
+    {
+        $person = $ticket->getPerson();
+
+        $this->sendToPerson(
+            $person,
+            'EmailBundle:Portal:new-ticket-guest.html.twig',
+            array(
+                'ticket_view_url' => $this->getRouter()->generate(
+                    'portal_tickets_guest_view',
+                    array(
+                        'auth' => $ticket->auth
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            )
+        );
+    }
+
     public function sendToPerson(Person $person, $template, $vars)
     {
-        $email_template = new EmailTemplateFile($template);
         $message = $this->container->get('mailer')->createMessage();
         $message->setTo($person->getPrimaryEmail()->email, $person->name);
         $message->setTemplate($template, $vars);
@@ -125,17 +162,12 @@ class PortalEmailSender
 
     public function sendLoginAlert(Person $person, $success)
     {
-        $context = array(
-            'success' => $success,
-        );
-
-        $from = $this->getDefaultOutgoingEmailAddress();
-
-        $this->sendMessage(
+        $this->sendToPerson(
+            $person,
             'EmailBundle:Portal:login-alert.html.twig',
-            $context,
-            $from,
-            $person->getPrimaryEmail()->email
+            array(
+                'success' => $success,
+            )
         );
     }
 
@@ -146,38 +178,35 @@ class PortalEmailSender
         return $account->getUseEmailAddress();
     }
 
-    /**
-     * @param string $templateName
-     * @param array  $context
-     * @param string $fromEmail
-     * @param string $toEmail
-     */
-    protected function sendMessage($templateName, $context, $fromEmail, $toEmail)
-    {
-        $context = $this->getTwig()->mergeGlobals($context);
-
-        if (isset($context['person']) && !isset($context['to_name'])) {
-            $person = $context['person'];
-            $context['to_name'] = $person->name;
-        }
-
-        $template = $this->getTwig()->loadTemplate($templateName);
-        $subject  = trim($template->renderBlock('subject', $context));
-        $textBody = trim($template->renderBlock('text', $context));
-        $htmlBody = trim($template->renderBlock('html', $context));
-        $message  = \Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setFrom($fromEmail)
-            ->setTo($toEmail);
-        if (!empty($htmlBody)) {
-            $message->setBody($htmlBody, 'text/html')
-                ->addPart($textBody, 'text/plain');
-        } else {
-            $message->setBody($textBody);
-        }
-
-        $this->getSwiftMailer()->send($message);
-    }
+// the email format we are using right now is the same as what is used in DpKernel (<dp:subject> tags)
+// but we will be moving towards more twig-based stuff for new portal. This method will be refactored
+// to look more like sendToPerson() but use the new syntax. Keeping for reference.
+//    protected function sendMessage()
+//    {
+//        $context = $this->getTwig()->mergeGlobals($context);
+//
+//        if (isset($context['person']) && !isset($context['to_name'])) {
+//            $person = $context['person'];
+//            $context['to_name'] = $person->name;
+//        }
+//
+//        $template = $this->getTwig()->loadTemplate($templateName);
+//        $subject  = trim($template->renderBlock('subject', $context));
+//        $textBody = trim($template->renderBlock('text', $context));
+//        $htmlBody = trim($template->renderBlock('html', $context));
+//        $message  = \Swift_Message::newInstance()
+//            ->setSubject($subject)
+//            ->setFrom($fromEmail)
+//            ->setTo($toEmail);
+//        if (!empty($htmlBody)) {
+//            $message->setBody($htmlBody, 'text/html')
+//                ->addPart($textBody, 'text/plain');
+//        } else {
+//            $message->setBody($textBody);
+//        }
+//
+//        $this->getSwiftMailer()->send($message);
+//    }
 
     /**
      * @return \Swift_Mailer

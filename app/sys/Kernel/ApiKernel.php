@@ -34,11 +34,13 @@
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
+use Doctrine\DBAL\DBALException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 class ApiKernel extends Kernel
@@ -80,12 +82,24 @@ class ApiKernel extends Kernel
         }
 
         if ('test' === $this->getEnvironment()) {
-            $bundles[] = new \DpTests\TestBundle\TestBundle();
+            $bundles[] = new \DpTestSrc\TestBundle\TestBundle();
         }
 
         return $bundles;
     }
 
+    public function handle(\Symfony\Component\HttpFoundation\Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    {
+        try {
+            return parent::handle($request, $type, $catch);
+        } catch (\Exception $e) {
+            // we catch the DBALExceptions in KernelBooter, so don't handle that here.
+            if (!$e instanceof DBALException) {
+                // the http kernel will handle exception inside in most cases. this is a "just in case" catch.
+                KernelErrorHandler::handleException($e);
+            }
+        }
+    }
 
     /**
      * {@inheritDoc}

@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpTest\Sms;
+namespace DpTest\Orb\Sms;
 
 use DpTest\DeskProTestCase;
 use Orb\Sms\SmsResult;
