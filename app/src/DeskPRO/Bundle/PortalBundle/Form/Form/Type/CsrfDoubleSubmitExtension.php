@@ -48,15 +48,25 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
      */
     private $request_stack;
 
-    public function __construct(RequestStack $request_stack)
+    /**
+     * @var string the kernel env (dev/test/prod)
+     */
+    private $environment;
+
+    public function __construct(RequestStack $request_stack, $environment)
     {
         // generally its not a good idea to make form's directly associated with a request object,
         // but in this case its the easiest way to access the cookie value
         $this->request_stack = $request_stack;
+        $this->environment = $environment;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ('test' === $this->environment) {
+            return;
+        }
+
         if (!$options['csrf_double_submit_protection']) {
             return;
         }
