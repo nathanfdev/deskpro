@@ -1,5 +1,5 @@
-Feature: /tasks endpoint
-  To CRUD DeskPRO tasks
+Feature: /projects endpoint
+  To CRUD DeskPRO projects
   As a developer
   I want an API endpoint
 
@@ -8,31 +8,31 @@ Feature: /tasks endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: Successfully create a task
-    When I send a POST request to "/api/v2/tasks" with body:
+  Scenario: Successfully create a project
+    When I send a POST request to "/api/v2/projects" with body:
     """
 {
-  "title": "My test task"
+  "title": "My test project"
 }
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/tasks/1"
+    And the header "Location" should be equal to "/api/v2/projects/1"
     And the JSON node "data" should exist
-    And the JSON node "data.title" should be equal to "My test task"
+    And the JSON node "data.title" should be equal to "My test project"
     And the JSON node "data.links" should exist
-    And the JSON node "data.links.self" should be equal to "/api/v2/tasks/1"
+    And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
-  Scenario: I GET a single task
-    When I send a GET request to "/api/v2/tasks/1"
+  Scenario: I GET a single project
+    When I send a GET request to "/api/v2/projects/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.title" should be equal to "My test task"
-    And the JSON node "data.links.self" should be equal to "/api/v2/tasks/1"
+    And the JSON node "data.title" should be equal to "My test project"
+    And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
-  Scenario: I GET tasks
-    When I send a GET request to "/api/v2/tasks"
+  Scenario: I GET projects
+    When I send a GET request to "/api/v2/projects"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
@@ -41,14 +41,14 @@ Feature: /tasks endpoint
     And the JSON node "meta.total_pages" should be equal to 1
     And the JSON node "meta.total_count" should be equal to 1
     And the JSON node "data" should exist
-    And the JSON node "data[0].title" should be equal to "My test task"
-    And the JSON node "data[0].links.self" should be equal to "/api/v2/tasks/1"
+    And the JSON node "data[0].title" should be equal to "My test project"
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/projects/1"
 
-  Scenario: I modify a task
-    When I send a PUT request to "/api/v2/tasks/1" with body:
+  Scenario: I modify a project
+    When I send a PUT request to "/api/v2/projects/1" with body:
     """
 {
-  "title": "New task title"
+  "title": "New project title"
 }
     """
     Then the response should be in JSON
@@ -56,19 +56,19 @@ Feature: /tasks endpoint
     And the response should be empty
 
   Scenario: I verify the resource has been updated by the PUT request
-    When I send a GET request to "/api/v2/tasks/1"
+    When I send a GET request to "/api/v2/projects/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.title" should be equal to "New task title"
-    And the JSON node "data.links.self" should be equal to "/api/v2/tasks/1"
+    And the JSON node "data.title" should be equal to "New project title"
+    And the JSON node "data.links.self" should be equal to "/api/v2/projects/1"
 
-  Scenario: I DELETE a single task
-    When I send a DELETE request to "/api/v2/tasks/1"
+  Scenario: I DELETE a single project
+    When I send a DELETE request to "/api/v2/projects/1"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I verify the resource has been removed by the DELETE request
-    When I send a GET request to "/api/v2/tasks/1"
+    When I send a GET request to "/api/v2/projects/1"
     Then the response should be in JSON
     And the response status code should be 404

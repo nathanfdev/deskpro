@@ -42,7 +42,6 @@ use Application\DeskPRO\Entity\Person;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_starred")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskStarred extends NotifyPropertyChangeEntity
 {

@@ -38,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -52,11 +52,11 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class TasksController extends BaseController implements ClassResourceInterface
+class ProjectsController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
-     *      description="get a list of tasks",
+     *      description="get a list of projects",
      *      parameters={
      *          {
      *              "name"="page",
@@ -77,18 +77,17 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          200="Success"
      *      }
      * )
-     * @Get("/tasks", name="api_tasks")
+     * @Get("/projects", name="api_projects")
      * @param Request $request
      * @return View
      */
     public function cgetAction(Request $request)
     {
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findAll();
-
+        $projects = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->findAll();
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
+        $pager = new Pagerfanta(new ArrayAdapter($projects));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -100,12 +99,12 @@ class TasksController extends BaseController implements ClassResourceInterface
 
     /**
      * @ApiDoc(
-     *      description="get a task",
+     *      description="get a project",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the task",
+     *              "description"="the id of the project",
      *              "dataType"="integer"
      *          }
      *      },
@@ -113,37 +112,37 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
-     * @Get("/tasks/{id}", name="api_tasks_get")
+     * @Get("/projects/{id}", name="api_projects_get")
      * @param int $id
      * @return View
      */
     public function getAction($id)
     {
-        $task = $this->getTask($id);
+        $project = $this->getProject($id);
 
-        if (empty($task)) {
+        if (empty($project)) {
             throw $this->createNotFoundException();
         }
 
         return View::create(
-            $this->createRepresentation($task),
+            $this->createRepresentation($project),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="create a new task",
-     *      input={"class"="task", "name"=""},
+     *      description="create a new project",
+     *      input={"class"="project", "name"=""},
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
      * )
-     * @Post("/tasks", name="api_tasks_post")
+     * @Post("/projects", name="api_projects_post")
      * @param Request $request
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
@@ -151,29 +150,29 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function postAction(Request $request)
     {
-        $task = new Task();
-        return $this->handleFormSubmission($request, $task);
+        $project = new Project();
+        return $this->handleFormSubmission($request, $project);
     }
 
     /**
      * @APIDoc(
-     *      description="update a task",
+     *      description="update a project",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the task",
+     *              "description"="the id of the project",
      *              "dataType"="integer"
      *          }
      *      },
-     *      input={"class"="task", "name"=""},
+     *      input={"class"="project", "name"=""},
      *      statusCodes={
      *          204="Updated",
      *          400="Bad Request",
      *          404="Not Found"
      *      }
      * )
-     * @Put("/tasks/{id}", name="api_tasks_put")
+     * @Put("/projects/{id}", name="api_projects_put")
      * @param Request $request
      * @param $id
      * @throws WrappedApiErrorException
@@ -181,19 +180,19 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function putAction(Request $request, $id)
     {
-        $task = $this->getTask($id);
+        $project = $this->getProject($id);
 
-        return $this->handleFormSubmission($request, $task);
+        return $this->handleFormSubmission($request, $project);
     }
 
     /**
      * @APIDoc(
-     *      description="delete a task",
+     *      description="delete a project",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the task",
+     *              "description"="the id of the project",
      *              "dataType"="integer"
      *          }
      *      },
@@ -202,14 +201,14 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/tasks/{id}", name="api_tasks_delete")
+     * @Delete("/projects/{id}", name="api_projects_delete")
      * @param $id
      * @return View
      */
     public function deleteAction($id)
     {
-        $task = $this->getTask($id);
-        $this->getDoctrine()->getManager()->remove($task);
+        $project = $this->getProject($id);
+        $this->getDoctrine()->getManager()->remove($project);
         $this->getDoctrine()->getManager()->flush();
 
         return View::create(
@@ -220,32 +219,32 @@ class TasksController extends BaseController implements ClassResourceInterface
 
     /**
      * @param int $id
-     * @return Task
+     * @return Project
      */
-    protected function getTask($id)
+    protected function getProject($id)
     {
         $id = (int) $id;
-        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find($id);
+        $project = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->find($id);
 
-        if (!$task) {
+        if (!$project) {
             throw $this->createNotFoundException();
         }
 
-        return $task;
+        return $project;
     }
 
     /**
      * Will be abstracted for use by other controllers
      * @param Request $request
-     * @param Task $task
+     * @param Project $project
      * @return View
      * @throws WrappedApiErrorException
      */
-    protected function handleFormSubmission(Request $request, Task $task)
+    protected function handleFormSubmission(Request $request, Project $project)
     {
-        $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $status = $project->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
 
         $submitted = $request->request->all();
 
@@ -261,13 +260,13 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($task);
+            $this->getDoctrine()->getManager()->persist($project);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
+            $location = $this->generateUrl('api_projects_get', array('id' => $project->getId()));
 
             return View::create(
-                $this->createRepresentation($task),
+                $this->createRepresentation($project),
                 $status,
                 array(
                     'Location' => $location,

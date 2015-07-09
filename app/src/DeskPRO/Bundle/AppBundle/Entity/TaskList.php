@@ -43,7 +43,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_lists")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskList extends NotifyPropertyChangeEntity
 {

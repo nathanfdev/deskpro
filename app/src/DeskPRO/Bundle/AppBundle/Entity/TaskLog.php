@@ -42,7 +42,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_log")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskLog extends NotifyPropertyChangeEntity
 {

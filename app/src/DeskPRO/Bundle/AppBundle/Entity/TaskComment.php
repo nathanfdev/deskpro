@@ -42,7 +42,6 @@ use Application\DeskPRO\Entity\Person;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskComment extends NotifyPropertyChangeEntity
 {

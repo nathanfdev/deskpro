@@ -44,7 +44,6 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(

@@ -38,11 +38,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_projects")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("api_projects_get", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class TaskProject extends NotifyPropertyChangeEntity
 {
@@ -51,25 +58,28 @@ class TaskProject extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Expose()
      */
     protected $title;
 
     /**
      * @var Task[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="Task", mappedBy="project")
+     * @Serializer\Expose()
      */
     protected $tasks;
 
     /**
      * @var TaskMember[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="TaskMember", mappedBy="project")
+     * @Serializer\Expose()
      */
     protected $members;
 

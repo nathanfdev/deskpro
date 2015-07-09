@@ -44,7 +44,6 @@ use Application\DeskPRO\Entity\Department;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_assignments")
- * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskAssignment extends NotifyPropertyChangeEntity
 {
