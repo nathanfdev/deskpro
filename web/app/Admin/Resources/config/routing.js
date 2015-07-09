@@ -195,14 +195,14 @@ define(function() {
 
   routes.push({
     id: 'setup.languages.edit',
-    url: '/{id:[a-z]+}',
+    url: '/{id:[a-z_]+}',
     templateName: 'Languages/edit.html',
     controller: 'Admin_Languages_Ctrl_Edit'
   });
 
   routes.push({
     id: 'setup.languages.install',
-    url: '/{id:install\\-[a-z]+}',
+    url: '/{id:install\\-[a-z_]+}',
     templateName: 'Languages/install.html',
     controller: 'Admin_Languages_Ctrl_Install'
   });
@@ -222,7 +222,7 @@ define(function() {
 
   routes.push({
     id: 'setup.phrases',
-    url: '/{id:phrases\\-[a-z]+}',
+    url: '/{id:phrases\\-[a-z_]+}',
     templateName: 'Languages/phrases-list.html',
     controller: 'Admin_Languages_Ctrl_PhraseList'
   });
