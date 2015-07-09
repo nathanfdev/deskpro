@@ -4,7 +4,7 @@ namespace DpUnitTests\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\SetAgentTeam;
 use Application\DeskPRO\Tickets\ExecutorContext;
-use DpTestingMocks\ContainerMock;
+use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
 use DpTest\DeskProTestCase;
 

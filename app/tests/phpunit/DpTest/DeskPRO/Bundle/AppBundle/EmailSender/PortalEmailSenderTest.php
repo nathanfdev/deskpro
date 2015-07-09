@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
 use Application\EmailBundle\Templating\Templates\TemplateCustom;
 use DpTest\PortalTestCase;
-use DpTests\TestBundle\Factory\PersonTestFactory;
+use DpTestSrc\TestBundle\Factory\PersonTestFactory;
 
 class PortalEmailSenderTest extends PortalTestCase
 {

@@ -29,9 +29,9 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle;
+namespace DpTestSrc\TestBundle;
 
-use DpTests\TestBundle\DependencyInjection\TestExtension;
+use DpTestSrc\TestBundle\DependencyInjection\TestExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

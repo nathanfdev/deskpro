@@ -5,7 +5,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\SetDepartment;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use DpTest\ApiTestCase;
-use DpTestingMocks\ContainerMock;
+use DpTestSrc\TestBundle\Mock\ContainerMock;
 use DpTest\DeskProTestCase;
 
 class SetDepartmentTest extends ApiTestCase

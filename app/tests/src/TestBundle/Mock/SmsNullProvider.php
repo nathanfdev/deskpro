@@ -25,20 +25,26 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-/**
- * DeskPRO.
- */
+namespace DpTestSrc\TestBundle\Mock;
 
-namespace DpTest\Orb\Sms;
-
-use DpTest\DeskProTestCase;
 use Orb\Sms\SmsMessageChunk;
+use Orb\Sms\SmsProviderInterface;
+use Orb\Sms\SmsResult;
 
-class SmsMessageChunkTest extends DeskProTestCase
+class SmsNullProvider implements SmsProviderInterface
 {
-    public function testExceptionOnChunkTooBig()
+    public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber)
     {
-        $this->setExpectedException('Orb\Sms\SmsException');
-        new SmsMessageChunk(str_repeat('ten chars ', 20));
+        return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, array());
+    }
+
+    public function getName()
+    {
+        return 'null';
+    }
+
+    public function getParams()
+    {
+        return array();
     }
 }

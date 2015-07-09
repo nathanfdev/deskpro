@@ -82,7 +82,7 @@ class ApiKernel extends Kernel
         }
 
         if ('test' === $this->getEnvironment()) {
-            $bundles[] = new \DpTests\TestBundle\TestBundle();
+            $bundles[] = new \DpTestSrc\TestBundle\TestBundle();
         }
 
         return $bundles;
