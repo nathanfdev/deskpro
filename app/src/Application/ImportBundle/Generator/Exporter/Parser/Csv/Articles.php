@@ -107,6 +107,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
+                ->setRawData($article)
                 ->setDestination(self::ARTICLE_PREFIX . $article['id'])
                 ->setOid($article['id'])
                 ->setPersonEmail($article['person'])

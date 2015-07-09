@@ -117,6 +117,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
+                ->setRawData($ticket)
                 ->setDestination(self::TICKET_PREFIX . $ticket['id'])
                 ->setOid($ticket['id'])
                 ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
@@ -185,6 +186,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
+                ->setRawData($message)
                 ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
                 ->setOid($message['message_id'])
                 ->setPersonEmail($message['user'])

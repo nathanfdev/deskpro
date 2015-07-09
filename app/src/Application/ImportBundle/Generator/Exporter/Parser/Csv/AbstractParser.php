@@ -189,6 +189,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isAttachmentValid($attachment, $ref_column)) {
             $entity = new Entity\Attachment();
             $entity
+                ->setRawData($attachment)
                 ->setDestination($destination_prefix . $attachment[$ref_column])
                 ->setOid($num)
                 ->setPersonEmail($attachment['person'])
@@ -278,6 +279,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isCustomFieldValid($custom_field, $ref_column)) {
             $entity = new Entity\CustomField();
             $entity
+                ->setRawData($custom_field)
                 ->setDestination($destination_prefix . $custom_field[$ref_column])
                 ->setOid($num)
                 ->setKey($custom_field['field_name'])
