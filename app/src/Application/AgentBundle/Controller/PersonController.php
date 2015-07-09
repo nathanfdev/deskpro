@@ -585,31 +585,18 @@ class PersonController extends AbstractController
                     $data['html'] = '';
                 }
 
-                if ($person->organization) {
-                    $tickets = $this->em->createQuery("
-                        SELECT t
-                        FROM DeskPRO:Ticket t
-                        WHERE t.person = ?0 AND t.organization IS NULL
-                        ORDER BY t.id DESC
-                    ")->setMaxResults(250)->execute(array($person));
 
-                    foreach ($tickets as $t) {
-                        $t->organization = $person->organization;
-                        $this->em->persist($t);
-                        $this->em->flush();
-                    }
-                } elseif ($old_org) {
-                    $tickets = $this->em->createQuery("
-                        SELECT t
-                        FROM DeskPRO:Ticket t
-                        WHERE t.person = ?0 AND t.organization = ?1
-                        ORDER BY t.id DESC
-                    ")->setMaxResults(250)->execute(array($person, $old_org));
-                    foreach ($tickets as $t) {
-                        $t->organization = null;
-                        $this->em->persist($t);
-                        $this->em->flush();
-                    }
+                $conn = $this->em->getConnection();
+                foreach (array('tickets', 'tickets_search_active') as $table) {
+                    $conn->executeQuery(
+                        sprintf(
+                            'update %s set organization_id = %s where person_id = %d and organization_id %s',
+                            $table,
+                            $person->organization ? $person->organization['id'] : 'null',
+                            $person['id'],
+                            $old_org ? ' = '.$old_org['id'] : 'is null'
+                        )
+                    );
                 }
 
                 break;
