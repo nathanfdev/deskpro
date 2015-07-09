@@ -39,6 +39,7 @@ use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -48,7 +49,6 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TasksController extends BaseController implements ClassResourceInterface
 {
@@ -77,6 +77,10 @@ class TasksController extends BaseController implements ClassResourceInterface
     {
         $task = $this->getTask($id);
 
+        if (empty($task)) {
+            throw $this->createNotFoundException();
+        }
+
         return View::create(
             $this->createRepresentation($task),
             Response::HTTP_OK
@@ -97,15 +101,29 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @Put("/tasks/{id}", name="api_tasks_put")
+     * @param Request $request
+     * @param $id
+     * @throws WrappedApiErrorException
+     * @return View
+     */
+    public function putAction(Request $request, $id)
+    {
+        $task = $this->getTask($id);
+
+        return $this->handleFormSubmission($request, $task);
+    }
+
+    /**
      * @param int $id
-     * @return object
+     * @return Task
      */
     protected function getTask($id)
     {
         $id = (int) $id;
         $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find($id);
 
-        if (empty($task)) {
+        if (!$task) {
             throw $this->createNotFoundException();
         }
 
@@ -139,20 +157,17 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->persist($task);
-            $this->getDoctrine()->getManager()->flush($task);
+            $this->getDoctrine()->getManager()->flush();
+
+            $location = $this->generateUrl('api_tasks_get', array('id' => $task->getId()));
 
             return View::create(
                 $this->createRepresentation($task),
                 $status,
                 array(
-                    'Location' => $this->generateUrl('api_tasks_get', array('id' => $task->getId())),
+                    'Location' => $location,
                 )
             );
-        }
-
-        var_dump('form not valid');
-        foreach ($form->getErrors() as $error) {
-            var_dump($error);
         }
 
         throw new InvalidFormException($form);

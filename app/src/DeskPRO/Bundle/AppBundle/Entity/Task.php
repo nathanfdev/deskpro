@@ -38,11 +38,19 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("api_tasks_get", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class Task extends NotifyPropertyChangeEntity
 {
@@ -51,7 +59,7 @@ class Task extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -59,55 +67,58 @@ class Task extends NotifyPropertyChangeEntity
      * @var string
      * @ORM\Column(type="string")
      * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $title;
 
     /**
+     * Complete or incomplete
      * @var string
-     * @ORM\Column(type="string")
-     * @Assert\NotNull()
+     * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Expose()
      */
-    protected $status;
-
-    /**
-     * @var bool
-     * @ORM\Column(type="boolean")
-     */
-    protected $complete = false;
+    protected $status = 'incomplete';
 
     /**
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
+     * @Serializer\Expose()
      */
     protected $percent_complete = 0;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @Serializer\Expose()
      */
     protected $date_created;
 
     /**
+     * Either task or event
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Expose()
      */
-    protected $task_type;
+    protected $task_type = 'task';
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Expose()
      */
     protected $date_due;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Expose()
      */
     protected $date_event_start;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Expose()
      */
     protected $date_event_end;
 
@@ -115,21 +126,23 @@ class Task extends NotifyPropertyChangeEntity
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id")
-     * @Assert\NotNull()
-     * @Assert\Valid()
+     * @Serializer\Expose()
      */ 
     protected $creator;
 
     /**
+     * Project, public or private
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Expose()
      */
-    protected $visibility;
+    protected $visibility = 'private';
 
     /**
      * @var TaskProject
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     * @Serializer\Expose()
      */
     protected $project;
 
@@ -137,14 +150,22 @@ class Task extends NotifyPropertyChangeEntity
      * @var TaskList
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
      * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
+     * @Serializer\Expose()
      */
     protected $list;
 
     /**
+     * Between 1 and 10
      * @var int
-     * @ORM\Column(name="urgency", type="integer")
+     * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
-    protected $urgency;
+    protected $urgency = 5;
+
+    public function __construct()
+    {
+        $this->setDateCreated(new \DateTime());
+    }
 
     /**
      * @return mixed
@@ -168,14 +189,6 @@ class Task extends NotifyPropertyChangeEntity
     public function getStatus()
     {
         return $this->status;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getComplete()
-    {
-        return $this->complete;
     }
 
     /**
@@ -285,15 +298,6 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param bool $complete
-     */
-    public function setComplete($complete)
-    {
-        $this->complete = $complete;
-        $this->setModelField('complete', $complete);
-    }
-
-    /**
      * @param int $percent_complete
      */
     public function setPercentComplete($percent_complete)
@@ -305,7 +309,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param \DateTime $date_created
      */
-    public function setDateCreated(\DateTime $date_created)
+    protected function setDateCreated(\DateTime $date_created)
     {
         $this->date_created = $date_created;
         $this->setModelField('date_created', $date_created);
@@ -323,7 +327,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param \DateTime $date_due
      */
-    public function setDateDue(\DateTime $date_due)
+    public function setDateDue($date_due)
     {
         $this->date_due = $date_due;
         $this->setModelField('date_due', $date_due);
@@ -332,7 +336,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param \DateTime $date_event_start
      */
-    public function setDateEventStart(\DateTime $date_event_start)
+    public function setDateEventStart($date_event_start)
     {
         $this->date_event_start = $date_event_start;
         $this->setModelField('date_event_start', $date_event_start);
@@ -341,7 +345,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param \DateTime $date_event_end
      */
-    public function setDateEventEnd(\DateTime $date_event_end)
+    public function setDateEventEnd($date_event_end)
     {
         $this->date_event_end = $date_event_end;
         $this->setModelField('date_event_end', $date_event_end);
@@ -350,7 +354,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param Person $creator
      */
-    public function setCreator(Person $creator)
+    public function setCreator($creator)
     {
         $this->creator = $creator;
         $this->setModelField('creator', $creator);
@@ -368,7 +372,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param TaskProject $project
      */
-    public function setProject(TaskProject $project)
+    public function setProject($project)
     {
         $this->project = $project;
         $this->setModelField('project', $project);
@@ -377,7 +381,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @param TaskList $list
      */
-    public function setList(TaskList $list)
+    public function setList($list)
     {
         $this->list = $list;
         $this->setModelField('list', $list);
