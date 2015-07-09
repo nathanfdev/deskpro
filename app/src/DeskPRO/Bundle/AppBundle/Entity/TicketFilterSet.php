@@ -66,6 +66,7 @@ class TicketFilterSet extends NotifyPropertyChangeEntity
     /**
      * @var TicketFilter[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", mappedBy="filter_set")
+     * @ORM\OrderBy({"display_order" = "ASC"})
      */
     protected $filters;
 

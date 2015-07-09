@@ -130,14 +130,16 @@
 
 
 	<div class="admin-switchboard" >
-		<div class="switchboard-row" dp-state-mark="filter_id:tickets.ticket_filters.edit.single_filter.{{ ng_var('filter.id') }}" ng-repeat="filter in EditCtrl.filterset.filters">
-			<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-			<span class="slider-button-label">
-				{{ ng_var('filter.title') }}
-			</span>
-			<a href="{{ ng_href('tickets.ticket_filters.edit.single_filter', '{id: EditCtrl.filterset.id, filter_id: filter.id}') }}"
-				class="config" ng-click="editFilter()" data-id="{{ ng_var('filter.id') }}"><i class="fa fa-cog"></i></a>
-		</div>
+        <ul class="admin-list" ui-sortable="EditCtrl.sortedListOptions">
+    		<li class="switchboard-row with-drag-handle" ng-repeat="filter in EditCtrl.filterset.filters" data-id="{{ ng_var('filter.id') }}"
+                dp-state-mark="filter_id:tickets.ticket_filters.edit.single_filter.{{ ng_var('filter.id') }}">
+    			<a href="{{ ng_href('tickets.ticket_filters.edit.single_filter', '{id: EditCtrl.filterset.id, filter_id: filter.id}') }}"
+    				class="" ng-click="editFilter()" data-id="{{ ng_var('filter.id') }}">
+                    <i class="fa fa-bars drag-handle"></i>
+                    {{ ng_var('filter.title') }}
+                </a>
+    		</li>
+        </ul>
 
 		<div ui-view autoscroll="false"></div>
 

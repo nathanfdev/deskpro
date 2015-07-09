@@ -13,10 +13,30 @@ define [
     init: ->
       @filterId = parseInt(@$stateParams.id || 0)
       @filterSetData = @DataService.get('TicketFilterSets')
+      @filterData = @DataService.get('TicketFilters')
       @filterset = null
       @filter_criteria = {}
       @criteriaTypeDef = @dpObTypesDefTicketFilter
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+      
+      @sortedListOptions = {
+        axis: 'y',
+        handle: '.drag-handle',
+        update: (ev, data) =>
+          $list = data.item.closest('ul')
+
+          orders = []
+          $list.find('li').each(->
+            id = parseInt($(this).data('id'))
+
+            if id
+              orders.push(id)
+          )
+
+          @filterData.saveDisplayOrder(orders).then( =>
+            @pingElement('display_orders')
+          )
+      }
 
     initialLoad: ->
       console.log "initialLoad " + @filterId

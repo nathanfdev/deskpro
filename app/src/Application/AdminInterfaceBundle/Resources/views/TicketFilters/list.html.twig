@@ -11,9 +11,11 @@
 
 	<div class="admin-sidebar-content">
 	<ul class="admin-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
-		<li class="" ng-repeat="filter in filterList" data-id="{{ ng_var('filter.id') }}">
-			<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
-			<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}" class="item">{{ ng_var('filter.title') }}</a>
+		<li class="with-drag-handle" ng-repeat="filter in filterList" data-id="{{ ng_var('filter.id') }}">
+			<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}" class="item">
+        <i class="fa fa-bars drag-handle"></i>
+        {{ ng_var('filter.title') }}
+      </a>
 		</li>
 		<li ng-show="foobar.addingNewFilterSet" class="ng-hide">
 			<input type="text" ng-model="foobar.new_filterset_name" placeholder="My new filter set" />

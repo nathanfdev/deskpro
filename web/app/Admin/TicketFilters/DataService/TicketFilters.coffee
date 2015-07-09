@@ -23,13 +23,14 @@ define [
       # @return {promise}
     ###
     saveDisplayOrder: (orders) ->
+      ###
       for id, idx in orders
         model = @findListModelById(id)
         if model
           model.display_order = idx
+      ###
 
-      promise = @Api.sendPostJson('/ticket_filters/display_order', { display_order: orders })
-      return promise
+      @Api2.sendPostJson('/ticket_filters/display_order', { display_order: orders })
 
 
     ###

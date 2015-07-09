@@ -201,6 +201,46 @@ class FiltersController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Reorder filters.",
+     *      input={"Array"},
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Post("/ticket_filters/display_order", name="api_ticket_filters_display_order_post")
+     */
+    public function postReorderAction(Request $request)
+    {
+        $data = $request->request->all();
+        
+        if (!is_array($data) || !isset($data['display_order'])) {
+            throw new NotFoundHttpException();
+        }
+        
+        $results = array();
+        foreach ($data['display_order'] as $order => $filter_id) {
+            $filter = $this->getEm()->find('App:TicketFilter', $filter_id);
+            
+            if (!$filter) {
+                continue;
+            }
+            
+            $filter->setDisplayOrder($order);
+            $this->getEm()->persist($filter);
+            $results[$order] = $filter_id;
+        }
+        
+        $this->getEm()->flush();
+        
+        return View::create(
+            $this->createRepresentation($results),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @Put("/ticket_filters/{id}", name="put_ticket_filters")
      *
      * @ApiDoc(
@@ -309,5 +349,12 @@ class FiltersController extends BaseController
         }
 
         throw new InvalidFormException($form); // let our listeners generate the form error response
+    }
+    
+
+    // A bit of comfort.
+    protected function getEm()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }

@@ -75,7 +75,7 @@ class TicketFilterSetsController extends BaseController
     {
         $sets = $this->getEm()
             ->getRepository('App:TicketFilterSet')
-            ->findAll();
+            ->findBy(array(), array('display_order' => 'ASC'));
 
         return View::create(
             $this->createRepresentation($sets),
@@ -135,6 +135,46 @@ class TicketFilterSetsController extends BaseController
         $set = new TicketFilterSet();
 
         return $this->handleFormSubmission($request, $set);
+    }
+    
+    /**
+     * @ApiDoc(
+     *      description="Reorder filter sets.",
+     *      input={"Array"},
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
+     * @Post("/ticket_filter_sets/display_order", name="api_ticket_filter_sets_display_order_post")
+     */
+    public function postReorderAction(Request $request)
+    {
+        $data = $request->request->all();
+        
+        if (!is_array($data) || !isset($data['display_order'])) {
+            throw new NotFoundHttpException();
+        }
+        
+        $results = array();
+        foreach ($data['display_order'] as $order => $filter_set_id) {
+            $filter_set = $this->getEm()->find('App:TicketFilterSet', $filter_set_id);
+            
+            if (!$filter_set) {
+                continue;
+            }
+            
+            $filter_set->setDisplayOrder($order);
+            $this->getEm()->persist($filter_set);
+            $results[$order] = $filter_set_id;
+        }
+        
+        $this->getEm()->flush();
+        
+        return View::create(
+            $this->createRepresentation($results),
+            Response::HTTP_OK
+        );
     }
 
     protected function handleFormSubmission(Request $request, TicketFilterSet $set)
