@@ -11,15 +11,36 @@ define [
     @DEPS      = ['dpObTypesDefTicketFilter', '$stateParams', '$timeout']
 
     init: ->
+      @filterSetId = parseInt(@$stateParams.id || 0)
       @filterId = parseInt(@$stateParams.filter_id || 0)
       @filterData = @DataService.get('TicketFilters')
       @filter_criteria = {}
       @criteriaTypeDef = @dpObTypesDefTicketFilter
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+      @$scope.addTheFilter = @saveFilter
+      @$scope.newFilter = {}
 
     initialLoad: ->
       p = @filterData.loadEditFilterData(@filterId).then( (data) =>
         @filter = data
+        @$scope.newFilter = data
+      )
+
+    saveFilter: =>
+      filter = @$scope.newFilter
+      # Let's fake the bloody filter for now.
+      filter.term = {
+        "type": "agent",
+        "options": {
+          "agent_ids": [1,2]
+        }
+      }
+      filter.filter_set = @filterSetId
+      
+      @filterData.saveFilterData(filter).then( (response) =>
+        @filter = response.data
+        @$scope.$parent.EditCtrl.filterset.filters.push(@filter)
+        @$state.go('tickets.ticket_filters.edit', { id: @filterSetId })
       )
 
     # getFormFromModel: (filterModel) ->

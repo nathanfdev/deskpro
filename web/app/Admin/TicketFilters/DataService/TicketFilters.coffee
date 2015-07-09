@@ -9,7 +9,7 @@ define [
     _doLoadList: ->
       deferred = @$q.defer()
 
-      @Api2.sendGet('/ticket_filter_sets')
+      @Api2.sendGet('/ticket_filters')
         .success( (data) => deferred.resolve(data.data) )
         .error( (data, status, headers, config) => deferred.reject() )
 
@@ -43,6 +43,18 @@ define [
         @removeListModelById(id)
       )
       return promise
+    
+    ###
+    # Save a brand new filter.
+    ###
+    saveFilterData: (filter) ->
+      deferred = @$q.defer()
+      @Api2.sendPostJson('/ticket_filters', filter).then(
+        (data) => deferred.resolve(data.data)
+      ,
+        (data) => deferred.reject()
+      )
+      return deferred.promise
 
 
     ###

@@ -1,6 +1,8 @@
 		<div class="switchboard-row-expanded-content">
 			<div class="content-row">
-			<label>Title:</label> <input type="text" value="{{ ng_var('EditSingleCtrl.filter.title') }}"> <span class="form-info"> This title will be displayed in the agent interface in the Filter list. It should be kept short.</span>
+			  <label>Title:</label>
+        <input type="text" placeholder="My nice filter" ng-model="newFilter.title" />
+        <span class="form-info"> This title will be displayed in the agent interface in the Filter list. It should be kept short.</span>
 			</div>
 			<hr>
 
@@ -128,5 +130,6 @@
 			</div>
 
 			<div class="content-row footer">
-			<a href="#" class="button">Save Changes</a> <a href="#" class="button secondary">Cancel Changes</a>
+			  <button ng-click="addTheFilter()" class="button">Save Changes</button>
+        <a href="#" class="button secondary">Cancel Changes</a>
 			</div>
