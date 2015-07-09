@@ -5,7 +5,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 	initialize: function() {
 		var self = this;
-
+    console.log(DESKPRO_ENABLE_KB_SHORTCUTS);
 		if (!DESKPRO_ENABLE_KB_SHORTCUTS) {
 			return;
 		}
