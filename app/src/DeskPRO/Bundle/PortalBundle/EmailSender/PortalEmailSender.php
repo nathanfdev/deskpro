@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Ticket;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use Application\EmailBundle\Templating\Templates\EmailTemplateFile;
 use Application\EmailBundle\Templating\Templates\TemplateCustom;
@@ -110,6 +111,25 @@ class PortalEmailSender
                 'person' => $person,
                 'email' => $email,
                 'verify_url' => $verify_url
+            )
+        );
+    }
+
+    public function sendNewTicketGuestThankYou(Ticket $ticket)
+    {
+        $person = $ticket->getPerson();
+
+        $this->sendToPerson(
+            $person,
+            'EmailBundle:Portal:new-ticket-guest.html.twig',
+            array(
+                'ticket_view_url' => $this->getRouter()->generate(
+                    'portal_tickets_guest_view',
+                    array(
+                        'auth' => $ticket->auth
+                    ),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
             )
         );
     }

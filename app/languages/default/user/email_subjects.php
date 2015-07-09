@@ -22,6 +22,7 @@
     'user.email_subjects.register-welcome-byagent' => 'Your new helpdesk account',
     'user.email_subjects.ticket-rate'              => 'Rate your support experience on your ticket "{{ticket.subject}}"',
     'user.email_subjects.ticket_new-participant'   => 'A new person has been added to your ticket',
+    'user.email_subjects.new-ticket-guest'         => 'Thank you for contacting us',
     'user.email_subjects.tickets_re'               => 'RE: {{ticket.subject}}',
     'user.email_subjects.validate-email'           => 'Validate your email address',
     'user.email_subjects.too-many-emails'          => 'NOTICE: You have sent too many emails',

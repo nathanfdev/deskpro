@@ -35,6 +35,9 @@ namespace DpTest;
 
 use DeskPRO\Kernel\ApiKernel;
 use DeskPRO\Kernel\PortalKernel;
+use Application\EmailBundle\Entity\SendmailSource;
+use Application\DeskPRO\Entity\Template;
+use Application\EmailBundle\Templating\Templates\TemplateCustom;
 
 abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 {
@@ -166,5 +169,108 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     protected function getEntityManager()
     {
         return $this->get('doctrine.orm.default_entity_manager');
+    }
+
+    /**
+     * Assert an email with the correct subject was sent to the address provided.
+     *
+     * Optionally, a check on what the email message contains can be done.
+     *
+     * Be sure to be somewhat specific with the email message "contains" text because
+     * it asserts on the entire raw email message.
+     *
+     * @param $to
+     * @param $subject
+     * @param null $message_contains
+     */
+    public function assertEmailWithSubjectWasSentTo($to, $subject, $message_contains = null) {
+        $email_info = $this->getLastEmailInfo($to);
+
+        $this->assertNotFalse($email_info, 'an email was sent');
+        $this->assertEquals($subject, $email_info['subject'], 'email subject is correct');
+        $this->assertContains($to, $email_info['to'], 'email sent to the correct address');
+        if ($message_contains) {
+            $processed_msg = preg_replace('#[\s]+#', ' ', $email_info['message']);
+            $this->assertContains($message_contains, $processed_msg, 'email contains the right text');
+        }
+    }
+
+    /**
+     * Takes an email address and returns useful info to assert on for the last email
+     * that entered the queue for this address. This should cover most uses cases
+     * for email testing.
+     *
+     * If you need more than that, it will take some more work, but some methods
+     * that might help are: getSendmailSources() and getMessageFromEmailSource().
+     *
+     * The array returned is:
+     *
+     *  message: the text of the message being sent (the entire raw email)
+     *  to: the TO header of the email
+     *  from: the FROM header of the email
+     *  subject: the SUBJECT header of the email
+     *
+     * @param $email_address_string
+     * @return array|false false if no emails in the queue, the last one in queue otherwise
+     */
+    protected function getLastEmailInfo($email_address_string)
+    {
+        $sources = $this->getSendmailSources($email_address_string);
+        /** @var SendmailSource $last_source */
+        $last_source = end($sources);
+
+        if (!$last_source) {
+            return false;
+        }
+
+        return array(
+            'from' => $last_source->getHeaderFrom(),
+            'to' => $last_source->getHeaderTo(),
+            'subject' => $last_source->getHeaderSubject(),
+            'message' => $this->getMessageFromEmailSource($last_source)
+        );
+    }
+
+    /**
+     * @param $email
+     * @return SendmailSource[]
+     */
+    protected function getSendmailSources($email)
+    {
+        /** @var \Application\EmailBundle\EntityRepository\SendmailSourceRepository $repo */
+        $repo = $this->getRepo('EmailBundle:SendmailSource');
+
+        $query = $repo->createQueryBuilder('s')
+            ->select('s')
+            ->where("s.to_emails LIKE '%$email%'")
+            ->orderBy('s.date_created', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param SendmailSource $last_source
+     * @return string
+     */
+    public function getMessageFromEmailSource($last_source)
+    {
+        $message = $this->get('deskpro.blob_storage')->copyBlobRowIdToString($last_source->getBlob()->getId());
+
+        return $message;
+    }
+
+    /**
+     * Simulates saving a custom email template
+     *
+     * @param $name
+     * @param $template_code
+     */
+    public function saveCustomEmailTemplate($name, $template_code)
+    {
+        $tt = new Template();
+        $tt->name = $name;
+        $tt->template_code = $template_code;
+        $template = new TemplateCustom($name, $tt);
+        $this->get('templating.email.template_set')->saveTemplate($template);
     }
 }

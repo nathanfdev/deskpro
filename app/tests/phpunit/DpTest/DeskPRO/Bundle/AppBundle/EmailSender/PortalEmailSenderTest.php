@@ -36,8 +36,11 @@ namespace DpTest\DeskPRO\Bundle\Appbundle\EmailSender;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
 use Application\EmailBundle\Templating\Templates\TemplateCustom;
+use Application\EmailBundle\Entity\SendmailSource;
+use Bdt\Clickatell\Response\SendMsg;
 use DpTest\PortalTestCase;
 use DpTestSrc\TestBundle\Factory\PersonTestFactory;
+use Swagger\Annotations\AbstractAnnotation;
 
 class PortalEmailSenderTest extends PortalTestCase
 {
@@ -70,26 +73,15 @@ class PortalEmailSenderTest extends PortalTestCase
 <dp:subject>This is the custom subject</dp:subject>
 Hello there this is the message
 CODE;
-        $this->saveCustomTemplate('EmailBundle:Portal:register-welcome.html.twig', $custom_template);
-
-        // load a new kernel (to get rid of the twig template cache)
-        // TODO: actually, we need to clear the cache here
-        $this->getPortalKernel(true);
+        $this->saveCustomEmailTemplate('EmailBundle:Portal:register-welcome.html.twig', $custom_template);
 
         $person = $this->getPersonFactory()->createNewInvalidUser('john@appleseed.com', 'John Appleseed');
         $this->getEmailSender()->sendWelcomeEmail($person);
 
-        $sources = $this->getSendmailSources($person->getPrimaryEmailAddress());
-        $last_source = end($sources);
-
-        $this->assertNotFalse($last_source, 'a custom email was sent');
-        $this->assertEquals('This is the custom subject', $last_source->getHeaderSubject(), 'custom email subject is correct');
-        $this->assertContains('john@appleseed.com', $last_source->getHeaderTo(), 'custom email sent to the correct address');
-
-        $this->assertContains(
-            'Hello there this is the message',
-            $this->getMessageFromEmailSource($last_source),
-            'it contains the right link'
+        $this->assertEmailWithSubjectWasSentTo(
+            $person->getPrimaryEmailAddress(),
+            'This is the custom subject',
+            'Hello there this is the message'
         );
     }
 
@@ -107,44 +99,5 @@ CODE;
     protected function getEmailSender()
     {
         return $this->get('portal_email_sender');
-    }
-
-    protected function getSendmailSources($email)
-    {
-        /** @var \Application\EmailBundle\EntityRepository\SendmailSourceRepository $repo */
-        $repo = $this->getRepo('EmailBundle:SendmailSource');
-
-        $query = $repo->createQueryBuilder('s')
-            ->select('s')
-            ->where("s.to_emails LIKE '%$email%'")
-            ->orderBy('s.date_created', 'DESC')
-        ;
-
-        return $query->getQuery()->getResult();
-    }
-
-    /**
-     * @param $last_source
-     * @return mixed
-     */
-    public function getMessageFromEmailSource($last_source)
-    {
-        $message = $this->get('deskpro.blob_storage')->copyBlobRowIdToString($last_source->getBlob()->getId());
-        return $message;
-    }
-
-    /**
-     * Simulates saving a custom template
-     *
-     * @param $name
-     * @param $template_code
-     */
-    public function saveCustomTemplate($name, $template_code)
-    {
-        $tt = new Template();
-        $tt->name = $name;
-        $tt->template_code = $template_code;
-        $template = new TemplateCustom($name, $tt);
-        $this->get('templating.email.template_set')->saveTemplate($template);
     }
 }

@@ -8,6 +8,7 @@
     'portal.tickets.list_subject' => 'Subject',
     'portal.tickets.list_last_action' => 'Last Action',
     'portal.tickets.new-section-title' => 'Contact Us',
+    'portal.tickets.guest-thanks-section-title' => 'Thank You',
     'portal.tickets.new-intro' => 'Please complete this form and one of our agents will reply to you by email as soon as possible.',
     'portal.tickets.form-changed-notice' => 'New relevant fields have been added to the form. Please review these new fields and then re-submit the form.',
     'portal.tickets.section-title' => 'Tickets',
@@ -27,4 +28,7 @@
     'portal.tickets.timeline_closed' => 'Ticket closed',
     'portal.tickets.timeline_you' => 'You',
     'portal.tickets.timeline_wrote' => 'wrote',
+    'portal.tickets.please_login_to_reply' => 'Login to reply.',
+    'portal.tickets.guest_thank_you_title' => 'Thank You',
+    'portal.tickets.guest_thank_you_desc' => 'Thank you for contacting us. We have sent you an email with instructions on how to manage your ticket with us.',
 );

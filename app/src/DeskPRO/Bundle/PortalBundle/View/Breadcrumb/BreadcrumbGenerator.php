@@ -177,6 +177,11 @@ class BreadcrumbGenerator
         return $this->createBuilder()->addNewTicket()->done();
     }
 
+    public function buildNewTicketGuestThankYou()
+    {
+        return $this->createBuilder()->addNewTicket()->done();
+    }
+
     public function buildTicketList()
     {
         return $this->createBuilder()->addTicketList()->done();
