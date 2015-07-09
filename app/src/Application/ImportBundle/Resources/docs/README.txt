@@ -151,20 +151,25 @@ Exporters:
 
         Files
          - articles.csv
+         - article_custom_fields.csv
          - downloads.csv
          - feedback.csv
          - feedback_attachments.csv
+         - feedback_custom_fields.csv
          - news.csv
          - people.csv
+         - people_custom_fields.csv
          - tickets.csv
          - ticket_messages.csv
          - ticket_attachments.csv
+         - ticket_custom_fields.csv
 
         Example files dir:
         app/src/Application/ImportBundle/Resources/docs/data_example/csv
 
          - Articles required columns
 
+            'id',
             'person',
             'title',
             'content',
@@ -180,6 +185,13 @@ Exporters:
             Date created could be empty (current time)
             Label could be empty (only one label is supported)
             Category could be empty
+
+
+         - Article custom fields required columns
+
+            'article_id',
+            'field_name',
+            'value'
 
 
          - Downloads required columns
@@ -231,7 +243,7 @@ Exporters:
 
         - Feedback attachments required columns
 
-            'feedback_id'
+            'feedback_id',
             'person',
             'blob_url',
             'blob_path',
@@ -240,6 +252,13 @@ Exporters:
             'is_inline'
 
             Person means a person email
+
+
+        - Feedback custom fields required columns
+
+            'feedback_id'
+            'field_name'
+            'value'
 
 
         - News required columns
@@ -272,6 +291,13 @@ Exporters:
             'is_agent' is optional
 
 
+        - People custom fields required columns
+
+            'person_id',
+            'field_name',
+            'value'
+
+
         - Tickets required columns
 
             'id',
@@ -279,7 +305,7 @@ Exporters:
             'user',
             'agent',
             'status',
-            'date_created'
+            'date_created' is optional
 
             User means a user email
             Agent means a agent email
@@ -292,14 +318,14 @@ Exporters:
             'message_id',
             'message_text',
             'user',
-            'date_created'
+            'date_created' is optional
 
             User means a user email
 
 
         - Ticket attachments required columns
 
-            'message_id'
+            'message_id',
             'person',
             'blob_url',
             'blob_path',
@@ -308,6 +334,13 @@ Exporters:
             'is_inline'
 
             Person means a person email
+
+
+        - Ticket custom fields required columns
+
+            'ticket_id',
+            'field_name',
+            'value'
 
 
     2) OsTicket
