@@ -40,16 +40,6 @@ use Pagerfanta\Pagerfanta;
 class EmailDataService extends AbstractDataService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @param int|null|PersonEmail $person_email
      *
      * @return PersonEmail|null

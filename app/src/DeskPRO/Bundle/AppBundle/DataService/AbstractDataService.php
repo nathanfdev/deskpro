@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use Application\DeskPRO\ORM\EntityManager;
 
 /**
  * Provides a simple interface to cache various data requests so that data requests through the DataServices' apis are
@@ -52,6 +53,21 @@ class AbstractDataService
      * @var ConvenientCache
      */
     protected $cache;
+    
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    protected function getEm()
+    {
+        return $this->em;
+    }
 
     /**
      * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable

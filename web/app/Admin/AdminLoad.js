@@ -80,6 +80,7 @@ define([
   'Admin/TicketFilters/Ctrl/List',
   'Admin/TicketFilters/Ctrl/Edit',
   'Admin/TicketFilters/Ctrl/EditSingle',
+  'Admin/TicketFilters/Ctrl/EditView',
   'Admin/TicketMacros/Ctrl/List',
   'Admin/TicketMacros/Ctrl/Edit',
   'Admin/TicketSlas/Ctrl/List',

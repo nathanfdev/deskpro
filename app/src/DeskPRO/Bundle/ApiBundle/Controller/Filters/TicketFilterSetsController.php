@@ -60,8 +60,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 class TicketFilterSetsController extends BaseController
 {
     /**
-     * @Get("/ticket_filter_sets", name="all_ticket_filter_sets")
-     *
      * @ApiDoc(
      *      description="Get the list of ticket filter sets available",
      *      statusCodes={

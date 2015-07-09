@@ -10,7 +10,9 @@ define [
 
     init: ->
       @list = []
+      @viewList = []
       @filterSetData = @DataService.get('TicketFilterSets')
+      @filterViewData = @DataService.get('TicketFilterViews')
       @$scope.display_filter = {
         type:  "all",
         agent: "0",
@@ -46,10 +48,18 @@ define [
       }
 
     initialLoad: ->
-      promise = @filterSetData.loadList()
-      promise.then( (list) => @list = list )
-
-      data_promise = @Api.sendDataGet({
+      # Promises, promises...
+      @filterSetData.loadList().then( (list) =>
+        @list = list
+        @updateFilterList()
+      )
+      @filterViewData.loadList().then( (list) =>
+        @viewList = list
+        @updateFilterViewList()
+      )
+      
+      ###
+      promises.push(@Api.sendDataGet({
         agents: '/agents',
         teams: '/agent_teams'
       }).then( (res) =>
@@ -58,15 +68,11 @@ define [
 
         if not @teams[0]
           @teams = null
-      )
-      bothPromise = @$q.all([promise, data_promise])
-      bothPromise.then(=>
-        @updateFilterList()
-      )
-
-      return bothPromise;
-
+      ))
+      ###
+      
     updateFilterList: ->
+      ###
       filterList = []
       display_filter = @$scope.display_filter
 
@@ -87,8 +93,12 @@ define [
             filterList = @list.filter((x) -> !x.is_global && x.agent_team && x.agent_team.id == teamId)
           else
             filterList = @list.filter((x) -> !x.is_global && x.agent_team)
+      ###
 
-      @$scope.filterList = filterList
+      @$scope.filterList = @list
+    
+    updateFilterViewList: =>
+      @$scope.filterViewList = @viewList
 
     ###
     # Add a brand new filter set.

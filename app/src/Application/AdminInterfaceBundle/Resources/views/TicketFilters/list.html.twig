@@ -10,23 +10,23 @@
 	</div>
 
 	<div class="admin-sidebar-content">
-	<ul class="admin-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
-		<li class="with-drag-handle" ng-repeat="filter in filterList" data-id="{{ ng_var('filter.id') }}">
-			<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}" class="item">
-        <i class="fa fa-bars drag-handle"></i>
-        {{ ng_var('filter.title') }}
-      </a>
-		</li>
-		<li ng-show="foobar.addingNewFilterSet" class="ng-hide">
-			<input type="text" ng-model="foobar.new_filterset_name" placeholder="My new filter set" />
-			<button class="btn btn-primary" ng-href="#here" ng-click="addFilterSet()">Save</button>
-			<button ng-click="foobar.addingNewFilterSet=false" class="btn btn-danger">cancel</button>
-		</li>
-	</ul>
+    	<ul class="admin-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
+    		<li class="with-drag-handle" ng-repeat="filter in filterList" data-id="{{ ng_var('filter.id') }}">
+    			<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}" class="item">
+                    <i class="fa fa-bars drag-handle"></i>
+                    {{ ng_var('filter.title') }}
+                </a>
+    		</li>
+    		<li ng-show="foobar.addingNewFilterSet" class="ng-hide">
+    			<input type="text" ng-model="foobar.new_filterset_name" placeholder="My new filter set" />
+    			<button class="btn btn-primary" ng-href="#here" ng-click="addFilterSet()">Save</button>
+    			<button ng-click="foobar.addingNewFilterSet=false" class="btn btn-danger">cancel</button>
+    		</li>
+    	</ul>
 
-	<div id="foobar2" class="sidebar-content-wrapper">
-		<button ng-click="foobar.addingNewFilterSet=true" class="sidebar-control">Create a new filter set</button>
-	</div>
+    	<div class="sidebar-content-wrapper">
+    		<button ng-click="foobar.addingNewFilterSet=true" class="sidebar-control">Create a new filter set</button>
+    	</div>
 	</div>
 </div>
 
@@ -36,24 +36,23 @@
 	</div>
 
 	<div class="admin-sidebar-content">
-	<ul class="admin-list">
-		<li>
-		<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
-		<a href="#" class="item">Simple</a>
-		</li>
-		<li>
-		<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
-		<a href="#" class="item">Detailed</a>
-		</li>
-		<li>
-		<a href="#" class="move-item"><i class="fa fa-navicon"></i></a>
-		<a href="#" class="item">Complete</a>
-		</li>
-	</ul>
+    	<ul class="admin-list" ng-if="ListCtrl.viewList.length">
+    		<li class="with-drag-handle" ng-repeat="filterView in filterViewList" data-id="{{ ng_var('filterView.id') }}">
+    			<a href="{{ ng_href('tickets.ticket_filters.views.edit', '{id: filterView.id}') }}" class="item">
+                    <i class="fa fa-bars drag-handle"></i>
+                    {{ ng_var('filterView.title') }}
+                </a>
+    		</li>
+    		<li ng-show="foobar.addingNewFilterView" class="ng-hide">
+    			<input type="text" ng-model="foobar.new_filterset_name" placeholder="My new filter set" />
+    			<button class="btn btn-primary" ng-href="#here" ng-click="addFilterSet()">Save</button>
+    			<button ng-click="foobar.addingNewFilterSet=false" class="btn btn-danger">cancel</button>
+    		</li>
+    	</ul>
 
-	<div class="sidebar-content-wrapper">
-		<a href="#" class="sidebar-control">Add a filter view</a>
-	</div>
+    	<div class="sidebar-content-wrapper">
+    		<button ng-click="foobar.addingNewFilterSet=true" class="sidebar-control">Add a filter view</button>
+    	</div>
 	</div>
 </div>
 

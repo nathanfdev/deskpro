@@ -613,6 +613,13 @@ define(function() {
 		templateName: 'TicketFilters/edit_single.html',
 		controller: 'Admin_TicketFilters_Ctrl_EditSingle'
 	});
+  
+  routes.push({
+    id: 'tickets.ticket_filters.views.edit',
+    url: '/view/{id:[0-9]+}',
+    templateName: 'TicketFilterViews/edit.html',
+    controller: 'Admin_TicketFilterViews_Ctrl_EditView'
+  })
 
 	//###
 	//# Satisfaction

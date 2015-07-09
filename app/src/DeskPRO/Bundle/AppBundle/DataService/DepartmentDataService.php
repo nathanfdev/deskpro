@@ -38,18 +38,14 @@ use Doctrine\ORM\EntityManager;
 class DepartmentDataService extends AbstractDataService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    /**
      * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
      */
     private $portal_permissions_manager;
 
     public function __construct(EntityManager $em, PortalPermissionsManager $portal_permissions_manager)
     {
-        $this->em                         = $em;
+        parent::__construct($em);
+        
         $this->portal_permissions_manager = $portal_permissions_manager;
     }
 

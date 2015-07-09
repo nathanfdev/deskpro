@@ -30,40 +30,26 @@
  * @package DeskPRO.
  */
 
+
+
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketFlagException;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
-
 /**
- * Provides controller data access to the ticket labels.
+ * Facilitate access to TicketFilterView data from controllers with loose coupling.
  */
-class TicketLabelsDataService extends AbstractDataService
+class TicketFilterViewDataService extends AbstractDataService
 {
     /**
-     * Get the list of available ticket labels.
-     * @return Doctrine\ORM\Query the list of all ticket flag names
+     * Retrieve the filter views that are public (don't belong to anyone).
+     * TODO: document the correct return type.
+     * @return DotrineResultOrSomething the filter views.
      */
-    public function getLabels()
+    function getUnassignedFilterViews()
     {
-        /* So we're duplicating the labels per ticket. Hence we must do a group by operation
-         * on the (hopefully) unique label names. That means using a querybuilder. */
-        $qb = $this->getEm()->createQueryBuilder();
-        $qb
-            ->select('l.label')
-            ->from('DeskPRO:LabelTicket', 'l')
-            ->groupBy('l.label')
-            ->orderBy('l.label', 'ASC');
-
-        $iterator = $qb->getQuery()->iterate();
-        $labels = array();
-        foreach($iterator as $data) {
-            foreach($data as $row) {
-                $labels[] = $row['label'];
-            }
-        }
-
-        return $labels;
+        $views = $this->getEm()
+            ->getRepository('App:TicketFilterView')
+            ->findBy(array('agent' => null), array('display_order' => 'ASC'));
+        
+        return $views;
     }
 }
