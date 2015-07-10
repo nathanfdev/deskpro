@@ -25,12 +25,11 @@ class TaskType extends AbstractType
                 )
             )
             ->add(
-                'status',
-                'choice',
+                'done',
+                'checkbox',
                 array(
                     'description' => 'the task status',
                     'required' => false,
-                    'choices' => array('complete' => 'Complete', 'incomplete' => 'Incomplete'),
                 )
             )
             ->add(

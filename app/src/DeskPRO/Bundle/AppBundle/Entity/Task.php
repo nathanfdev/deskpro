@@ -72,11 +72,11 @@ class Task extends NotifyPropertyChangeEntity
 
     /**
      * Complete or incomplete
-     * @var string
-     * @ORM\Column(type="string", nullable=true)
+     * @var bool
+     * @ORM\Column(type="boolean", nullable=true)
      * @Serializer\Expose()
      */
-    protected $status = 'incomplete';
+    protected $is_done = 'incomplete';
 
     /**
      * @var int
@@ -185,9 +185,9 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @return string
      */
-    public function getStatus()
+    public function isDone()
     {
-        return $this->status;
+        return $this->is_done = false;
     }
 
     /**
@@ -288,12 +288,12 @@ class Task extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param string $status
+     * @param string $is_done
      */
-    public function setStatus($status)
+    public function setDone($is_done)
     {
-        $this->status = $status;
-        $this->setModelField('status', $status);
+        $this->is_done = $is_done;
+        $this->setModelField('status', $is_done);
     }
 
     /**

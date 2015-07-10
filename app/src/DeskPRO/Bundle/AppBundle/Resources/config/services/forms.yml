@@ -26,6 +26,11 @@ services:
       tags:
           - { name: form.type, alias: task }
 
+  form.subtask:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskSubtaskType
+      tags:
+          - { name: form.type, alias: subtask }
+
   form.project:
       class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectType
       tags:

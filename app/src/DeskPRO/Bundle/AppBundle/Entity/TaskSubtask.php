@@ -38,10 +38,18 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_subtask")
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href=@Hateoas\Route("api_subtasks_get", parameters={"id" = "expr(object.getId())"})
+ * )
  */
 class TaskSubtask extends NotifyPropertyChangeEntity
 {
@@ -50,53 +58,60 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @Assert\NotNull()
+     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Expose()
      */
     protected $title;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Serializer\Expose()
      */
-    protected $done = false;
+    protected $is_done = false;
 
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true)
+     * @Serializer\Expose()
      */
     protected $task;
 
     /**
      * @var \DateTime
-     * @Orm\Column(type="datetime")
+     * @Orm\Column(type="datetime", nullable=true)
+     * @Serializer\Expose()
      */
     protected $date_created;
 
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true)
+     * @Serializer\Expose()
      */
     protected $creator;
 
     /**
      * @var int
-     * @Orm\Column(type="integer")
+     * @Orm\Column(type="integer", nullable=true)
+     * @Serializer\Expose()
      */
-    protected $order = 0;
+    protected $display_order = 0;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Expose()
      */
-    protected $date_completed;
+    protected $date_completed = null;
 
     public function __construct()
     {
@@ -114,7 +129,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
     /**
      * @return Person
      */
-    public function getPerson()
+    public function getCreator()
     {
         return $this->creator;
     }
@@ -122,7 +137,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
     /**
      * @param Person $creator
      */
-    public function setPerson(Person $creator)
+    public function setCreator(Person $creator)
     {
         $this->creator = $creator;
         $this->setModelField('creator', $creator);
@@ -149,7 +164,7 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function isDone()
     {
-        return $this->done;
+        return $this->is_done;
     }
 
     /**
@@ -157,7 +172,8 @@ class TaskSubtask extends NotifyPropertyChangeEntity
      */
     public function setDone($done)
     {
-        $this->done = $done;
+        $this->is_done = $done;
+        $this->setDateCompleted(new \DateTime());
     }
 
     /**
@@ -179,17 +195,17 @@ class TaskSubtask extends NotifyPropertyChangeEntity
     /**
      * @return int
      */
-    public function getOrder()
+    public function getDisplayOrder()
     {
-        return $this->order;
+        return $this->display_order;
     }
 
     /**
-     * @param int $order
+     * @param int $display_order
      */
-    public function setOrder($order)
+    public function setDisplayOrder($display_order)
     {
-        $this->order = $order;
+        $this->display_order = $display_order;
     }
 
     /**
