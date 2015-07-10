@@ -31,7 +31,7 @@
  * @package DeskPRO
  */
 
-namespace DpTests\TestBundle\Factory\Builder;
+namespace DpTestSrc\TestBundle\Factory\Builder;
 
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Person;

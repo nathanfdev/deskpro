@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle\DataSet;
+namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
@@ -45,7 +45,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DpTests\TestBundle\UserDetailsRepo;
+use DpTestSrc\TestBundle\UserDetailsRepo;
 
 class TermEngineDb extends AbstractDbSet
 {

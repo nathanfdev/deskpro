@@ -37,7 +37,9 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 class ProfileController extends AbstractController
 {
@@ -55,6 +57,11 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_index');
         }
 
+        // Registration "intercept": to implement a registration intercept, don't use this
+        // method of creating a person. Instead, make the form work with a PersonGuest,
+        // and after the form is valid, use the PersonFactory to turn the guest into a
+        // person. Please see NewTicketController to see how it does this exact process
+        // to "intercept" new tickets.
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM
@@ -62,6 +69,32 @@ class ProfileController extends AbstractController
             'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            // check if the person already has an account (or is a contact)
+            if ($email = $person->getEmailAddress()) {
+                if ($person = $this->get('data.person')->getPersonForEmail($email)) {
+                    if ($person->isUser()) {
+                        // this is an error, a registered user cannot register again
+                       $form->get('primary_email')->addError(new FormError($this->phrase('portal.account.registration-email-already-exists')));
+                    } else {
+                        // contact, they should now get a "set password" email and a redirection
+                        // set the reset code
+                        $random = new UriSafeTokenGenerator();
+                        $person->setPasswordResetCode($random->generateToken());
+                        $person->setDatePasswordResetRequested(new \DateTime());
+                        $this->persistAndFlushEntity($person);
+
+                        $this->get('portal_email_sender')->sendPasswordSetLink($person);
+
+                        return $this->redirectToRoute('portal_user_register_set_password', array(
+                            'email' => $person->getPrimaryEmailAddress()
+                        ));
+                    }
+                }
+            }
+        }
+
         if ($form->isValid()) {
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
@@ -84,6 +117,21 @@ class ProfileController extends AbstractController
             array(
                 'form' => $form->createView(),
                 'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->register()
+            )
+        );
+    }
+
+    /**
+     * @Route("/register/set-password", name="portal_user_register_set_password")
+     */
+    public function registerSetPasswordAction(Request $request)
+    {
+        return $this->renderThemeView(
+            'Theme:Portal:User/send-set-password-email.html.twig',
+            array(
+                'email' => $request->get('email', 'N/A'),
+                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildRegistration(),
                 'page_title' => $this->createPageTitle()->register()
             )
         );

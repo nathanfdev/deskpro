@@ -20,7 +20,13 @@ CODING STANDARDS
 phpStorm / IntelliJ
 -------------------
 
-Install the Symfony2 plugin: http://plugins.jetbrains.com/plugin/7219?pr=phpStorm
+Recommended plugins:
+
+* [PHP Advanced AutoComplete](https://plugins.jetbrains.com/plugin/7276)
+* [PHP Annotations](https://plugins.jetbrains.com/plugin/7320)
+* [Symfony2 Plugin](https://plugins.jetbrains.com/plugin/7219)
+* [Symfony2 Clickable Views](https://plugins.jetbrains.com/plugin/7057)
+* [CodeGlance](https://plugins.jetbrains.com/plugin/7275)
 
 
 TEST FILES

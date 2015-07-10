@@ -29,11 +29,11 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle\DataSet;
+namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\InstallBundle\Data\DefaultDataProcessor;
-use DpTests\TestBundle\UserDetailsRepo;
+use DpTestSrc\TestBundle\UserDetailsRepo;
 
 class FreshDb extends AbstractDbSet
 {

@@ -32,6 +32,7 @@
     'user.emails.message-clipped'             => '(Message has been clipped)',
     'user.emails.password_agent-reset'        => 'An agent has reset your account password. You can log in with these credentials',
     'user.emails.password_reset'              => 'You requested a password reset. To reset your password, click on the link below:',
+    'user.emails.password_set'              => 'To set your password, click on the link below:',
     'user.emails.profile_email-new-confirm'   => 'To finish adding this secondary email address to your account, simply click on the following validation link',
     'user.emails.profile_email-primary-confirm'   => 'To verify your primary email address, simply click on the following validation link',
     'user.emails.profile_email_link-validate' => 'Simply click on the following link to validate to your email address',
@@ -64,5 +65,6 @@
     'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
     'user.emails.view_full_history_online'    => 'View full ticket online',
     'user.emails.ratelimit_explain'           => 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.',
-    'user.emails.ratelimit_submit-online'     => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
+    'user.emails.ratelimit_submit-online'     => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:',
+    'user.emails.new-ticket-guest-link'     => 'Thank you for contacting us. You may view the status of your ticket online at this address:'
 );

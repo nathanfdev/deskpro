@@ -226,6 +226,18 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    public function addPasswordSet()
+    {
+        $this->b->add(
+            'portal_set_password',
+            null,
+            Breadcrumbs::PASSWORD_SET,
+            array('phrase' => 'portal.general.nav-set-password')
+        );
+
+        return $this;
+    }
+
     #####################################################################################################################
     # Feedback
     #####################################################################################################################
