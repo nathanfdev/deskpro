@@ -9,7 +9,6 @@ define [
     @filter_sets = []
 
     _doLoadList: ->
-      console.log "Load list"
       deferred = @$q.defer()
 
       @Api2.sendGet('/ticket_filter_sets')

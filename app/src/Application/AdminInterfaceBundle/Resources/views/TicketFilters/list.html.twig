@@ -38,7 +38,7 @@
 	<div class="admin-sidebar-content">
     	<ul class="admin-list" ng-if="ListCtrl.viewList.length">
     		<li class="with-drag-handle" ng-repeat="filterView in filterViewList" data-id="{{ ng_var('filterView.id') }}">
-    			<a href="{{ ng_href('tickets.ticket_filters.views.edit', '{id: filterView.id}') }}" class="item">
+    			<a href="{{ ng_href('tickets.ticket_filters.edit_view', '{id: filterView.id}') }}" class="item">
                     <i class="fa fa-bars drag-handle"></i>
                     {{ ng_var('filterView.title') }}
                 </a>

@@ -615,10 +615,10 @@ define(function() {
 	});
   
   routes.push({
-    id: 'tickets.ticket_filters.views.edit',
+    id: 'tickets.ticket_filters.edit_view',
     url: '/view/{id:[0-9]+}',
     templateName: 'TicketFilterViews/edit.html',
-    controller: 'Admin_TicketFilterViews_Ctrl_EditView'
+    controller: 'Admin_TicketFilters_Ctrl_EditView'
   })
 
 	//###

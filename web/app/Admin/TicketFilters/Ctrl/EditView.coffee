@@ -16,9 +16,9 @@ define [
       @filterView = null
 
     initialLoad: ->
-      console.log "initialLoad " + @filterId
-      p = @filterViewData.loadEditFilterSetData(@filterId).then( (data) =>
+      p = @filterViewData.loadEditFilterViewData(@filterViewId).then( (data) =>
         @filterView = data
+        console.log @filterView
       )
 
   Admin_TicketFilters_Ctrl_EditView.EXPORT_CTRL()
