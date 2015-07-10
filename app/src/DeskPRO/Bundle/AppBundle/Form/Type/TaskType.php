@@ -92,11 +92,11 @@ class TaskType extends AbstractType
                 )
             )
             ->add(
-                'project_id',
-                'integer',
+                'project',
+                'entity',
                 array(
-                    'required' => false,
-                    'description' => 'the id of the project',
+                    'class' => 'App:TaskProject',
+                    'property' => 'title',
                 )
             );
     }

@@ -248,7 +248,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      *          200="Success"
      *      }
      * )
-     * @Get("/projects/{id}", name="api_projects_tasks_get")
+     * @Get("/projects/{id}/tasks", name="api_projects_tasks_get")
      * @param Request $request
      * @param int $id
      * @return View
@@ -256,7 +256,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     public function getTasksAction(Request $request, $id)
     {
         $id = (int) $id;
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('project_id' => $id));
+        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('project' => $id));
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 

@@ -140,7 +140,7 @@ class Task extends NotifyPropertyChangeEntity
     /**
      * @var TaskProject
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Serializer\Expose()
      */
     protected $project;

@@ -68,11 +68,19 @@ Feature: /projects endpoint
     """
 {
   "title": "Test project task",
-  "project_id": 1
+  "project": 1
 }
     """
     Then the response should be in JSON
+    And the response status code should be 201
+
+  Scenario: I verify that the project has tasks attached
+    When I send a GET request to "/api/v2/projects/1/tasks"
+    Then the response should be in JSON
     And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data[0].title" should be equal to "Test project task"
+    And the JSON node "data[0].links.self" should be equal to "/api/v2/tasks/1"
 
   Scenario: I DELETE a single project
     When I send a DELETE request to "/api/v2/projects/1"
