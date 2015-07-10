@@ -63,6 +63,7 @@ class PortalKernel extends Kernel
 
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),

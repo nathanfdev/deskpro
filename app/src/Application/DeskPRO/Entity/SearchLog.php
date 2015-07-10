@@ -83,17 +83,11 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;
 
-    public static function create($query, $num_results, $use_request = true)
+    public static function create($query, $num_results)
     {
         $searchlog              = new self();
         $searchlog->query       = $query;
         $searchlog->num_results = $num_results;
-
-        if ($use_request && App::has('request')) {
-            if (!App::getCurrentPerson()->isGuest()) {
-                $searchlog->person = App::getCurrentPerson();
-            }
-        }
 
         return $searchlog;
     }

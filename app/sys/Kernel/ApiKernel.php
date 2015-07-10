@@ -64,6 +64,7 @@ class ApiKernel extends Kernel
 
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new \FOS\RestBundle\FOSRestBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
