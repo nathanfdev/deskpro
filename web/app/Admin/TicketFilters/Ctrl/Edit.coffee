@@ -20,7 +20,10 @@ define [
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
       @$scope.formstate = {
         editingFilterSetTitle: false,
-        filterset_title: null
+        filterset: {
+          title: null,
+          is_default: false
+        }
       }
       
       @sortedListOptions = {
@@ -47,12 +50,26 @@ define [
         if data.filters.length == 0
           @$state.go('tickets.ticket_filters.edit.single_filter', { id: data.id, filter_id: 0 })
         
+        console.log data
+        
         @filterset = data
-        @$scope.formstate.filterset_title = data.title
+        @$scope.formstate.filterset.title = data.title
+        @$scope.formstate.filterset.is_default = data.is_default
+      )
+      
+    changedFilterDefault: ->
+      @filterset.title = @$scope.formstate.filterset.title
+      # This event fires before the custom control changes the model.
+      @filterset.is_default = !@$scope.formstate.filterset.is_default
+      
+      @filterSetData.saveTicketFilterSet(@filterset).then(=>
+        # Nothing
       )
 
     saveFilterSet: ->
-      @filterset.title = @$scope.formstate.filterset_title
+      @filterset.title = @$scope.formstate.filterset.title
+      @filterset.is_default = @$scope.formstate.filterset.is_default
+      
       @filterSetData.saveTicketFilterSet(@filterset).then(=>
         @$scope.formstate.editingFilterSetTitle = false
       )

@@ -37,7 +37,8 @@ define [
     _cleanUpFilterSet: (filter_set) ->
       clean_filter_set = {
         title: filter_set.title,
-        display_order: filter_set.display_order
+        display_order: filter_set.display_order,
+        is_default: filter_set.is_default
       }
       
       if filter_set.id?
@@ -53,9 +54,6 @@ define [
     ###
     saveTicketFilterSet: (filter_set) ->
       deferred = @$q.defer()
-      
-      if filter_set.filters?
-        delete filter_set.filters
       
       data_promise = null
       if filter_set.id?

@@ -208,11 +208,11 @@ class TicketFilterSetsController extends BaseController
             ->getForm();
 
         $submitted = $request->request->all();
-        if ('PUT' == $request->getMethod()) {
-            // Sanitizing the submitted data when running and update.
-            unset($submitted['id']);
+        
+        if(array_key_exists('is_default', $submitted)) {
+            $submitted['is_default'] = $submitted['is_default'] == true;
         }
-
+        
         $form->submit($submitted, 'PUT' !== $request->getMethod());
 
         if ($form->isValid()) {

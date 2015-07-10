@@ -10,7 +10,7 @@
     </h1>
     <h1 ng-show="formstate.editingFilterSetTitle" class="ng-hide">
         <span>Manage Filter Set:</span>
-        <input type="text" ng-model="formstate.filterset_title" />
+        <input type="text" ng-model="formstate.filterset.title" />
         <button class="btn btn-primary" ng-href="#here" ng-click="EditCtrl.saveFilterSet()">save</button>
         <button class="btn btn-danger" ng-click="formstate.editingFilterSetTitle=false">cancel</button>
     </h1>
@@ -29,11 +29,8 @@
 
 	<div class="admin-switchboard">
 		<div class="switchboard-row short">
-		<a href="#" class="slider-button pointer">
-			<span class="status"><span class="text">Yes</span></span>
-			<span class="slider-button-switch"><i class="fa fa-check"></i></span>
-		</a>
-		<span class="slider-button-label grey">Default Filter Set</span>
+            <button dp-toggle-switch ng-model="formstate.filterset.is_default" ng-click="EditCtrl.changedFilterDefault()">Blah blah</button>
+		    <span class="slider-button-label grey">Default Filter Set</span>
 		</div>
 	</div>
 
