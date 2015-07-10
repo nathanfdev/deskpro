@@ -1,0 +1,55 @@
+<?php
+
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
+
+use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class TaskMemberType extends AbstractType
+{
+    public function getName()
+    {
+        return 'taskmember';
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
+        $builder->add(
+               'person',
+                'entity',
+                array(
+                    'class' => 'DeskPRO:Person',
+                    'property' => 'name',
+                    'required' => false,
+                )
+            )
+            ->add(
+                'team',
+                'entity',
+                array(
+                    'class' => 'DeskPRO:AgentTeam',
+                    'property' => 'name',
+                    'required' => false,
+                )
+            )
+            ->add(
+                'department',
+                'entity',
+                array(
+                    'class' => 'DeskPRO:Department',
+                    'property' => 'name',
+                    'required' => false,
+                )
+            );
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskMember',
+        ));
+    }
+}

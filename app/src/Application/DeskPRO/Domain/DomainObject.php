@@ -36,9 +36,11 @@ namespace Application\DeskPRO\Domain;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Orb\Util\Util;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * The basic entity class.
+ * @Serializer\ExclusionPolicy("ALL")
  */
 abstract class DomainObject extends BasicDomainObject
 {

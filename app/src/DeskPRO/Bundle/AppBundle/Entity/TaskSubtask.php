@@ -38,62 +38,70 @@ use Doctrine\ORM\Mapping as ORM;
 use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\AgentTeam as Team;
-use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
-use JMS\Serializer\Annotation as Serializer;
-use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="task_members")
- * @Serializer\ExclusionPolicy("ALL")
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_task_members_get", parameters={"id" = "expr(object.getId())"})
- * )
+ * @ORM\Table(name="task_subtask")
  */
-class TaskMember extends NotifyPropertyChangeEntity
+class TaskSubtask extends NotifyPropertyChangeEntity
 {
     /**
      * @var int
      * @ORM\Id()
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     * @Serializer\Expose()
+     * @ORM\GeneratedValue
+     * @Assert\NotNull()
      */
     protected $id = null;
 
     /**
-     * @var Project
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @var string
+     * @ORM\Column(type="string")
      */
-    protected $project;
+    protected $title;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    protected $done = false;
+
+    /**
+     * @var Task
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     */
+    protected $task;
+
+    /**
+     * @var \DateTime
+     * @Orm\Column(type="datetime")
+     */
+    protected $date_created;
 
     /**
      * @var Person
-	 * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true)
-     * @Serializer\Expose()
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
      */
-    protected $person;
+    protected $creator;
 
     /**
-     * @var Team
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true)
-     * @Serializer\Expose()
+     * @var int
+     * @Orm\Column(type="integer")
      */
-    protected $team;
+    protected $order = 0;
 
     /**
-     * @var Department
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true)
+     * @var \DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $department;
+    protected $date_completed;
+
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+    }
 
     /**
      * @return int
@@ -104,76 +112,99 @@ class TaskMember extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return Project
-     */
-    public function getProject()
-    {
-    	return $this->project;
-    }
-
-    /**
-     * @param Project $project
-     */
-    public function setProject(Project $project)
-    {
-    	$this->project = $project;
-        $this->setModelField('project', $project);
-    }
-
-    /**
      * @return Person
      */
     public function getPerson()
     {
-        return $this->person;
+        return $this->creator;
     }
 
     /**
-     * @param Person $person
+     * @param Person $creator
      */
-    public function setPerson(Person $person = null)
+    public function setPerson(Person $creator)
     {
-        $this->person = $person;
-        $this->team = null;
-        $this->department = null;
-        $this->setModelField('person', $person);
+        $this->creator = $creator;
+        $this->setModelField('creator', $creator);
     }
 
     /**
-     * @return Team
+     * @return string
      */
-    public function getTeam()
+    public function getTitle()
     {
-        return $this->team;
+        return $this->title;
     }
 
     /**
-     * @param Team $team
+     * @param string $title
      */
-    public function setTeam(Team $team = null)
+    public function setTitle($title)
     {
-        $this->team = $team;
-        $this->department = null;
-        $this->person = null;
-        $this->setModelField('team', $team);
+        $this->title = $title;
     }
 
     /**
-     * @return Department
+     * @return boolean
      */
-    public function getDepartment()
+    public function isDone()
     {
-        return $this->department;
+        return $this->done;
     }
 
     /**
-     * @param Department $department
+     * @param boolean $done
      */
-    public function setDepartment(Department $department = null)
+    public function setDone($done)
     {
-        $this->department = $department;
-        $this->team = null;
-        $this->person = null;
-        $this->setModelField('department', $department);
+        $this->done = $done;
+    }
+
+    /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask($task)
+    {
+        $this->task = $task;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCompleted()
+    {
+        return $this->date_completed;
+    }
+
+    /**
+     * @param \DateTime $date_completed
+     */
+    public function setDateCompleted($date_completed)
+    {
+        $this->date_completed = $date_completed;
     }
 }

@@ -43,6 +43,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Departments.
@@ -54,11 +55,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property int $display_order
  * @property Department $parent
  * @property Department $children
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class Department extends DomainObject implements HasPhraseName
 {
     /**
      * @var int
+     * @Serializer\Expose()
      */
     protected $id;
 
@@ -74,6 +77,7 @@ class Department extends DomainObject implements HasPhraseName
 
     /**
      * @var string
+     * @Serializer\Expose()
      */
     protected $title;
 

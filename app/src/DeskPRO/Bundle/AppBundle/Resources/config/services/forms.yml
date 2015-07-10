@@ -31,6 +31,11 @@ services:
       tags:
           - { name: form.type, alias: project }
 
+  form.taskmember:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskMemberType
+      tags:
+          - { name: form.type, alias: taskmember }
+
   form.term_engine.term:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
       arguments:

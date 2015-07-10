@@ -40,9 +40,11 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,11 +52,13 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
+     * @Serializer\Expose()
      */
     protected $id = null;
 
     /**
      * @var string
+     * @Serializer\Expose()
      */
     protected $name;
 
