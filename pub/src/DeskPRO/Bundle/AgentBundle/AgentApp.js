@@ -8,9 +8,9 @@ import thunkMiddleware from 'redux/lib/middleware/thunk';
 import promiseMiddleware from 'redux-promise';
 import { Provider } from 'redux/react';
 
-import * as stores from "DeskPRO/Bundle/AgentBundle/Application/Store/index";
+import * as stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Store/index";
 
-import DpWindow from "DeskPRO/Bundle/AgentBundle/Application/Component/DpWindow";
+import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Component/DpAppContainer";
 
 export default class AgentApp {
   run() {
@@ -21,14 +21,14 @@ export default class AgentApp {
     const store = composeStores(stores);
     const dispatcher = createDispatcher(
       store,
-      getState => [promiseMiddleware(), thunkMiddleware(getState)]
+      getState => [thunkMiddleware(getState), promiseMiddleware]
     );
 
     const redux = createRedux(dispatcher);
 
     React.render(
       <Provider redux={redux}>
-        {() => <DpWindow />}
+        {() => <DpAppContainer />}
       </Provider>,
       document.getElementById('deskpro_app_window')
     );
