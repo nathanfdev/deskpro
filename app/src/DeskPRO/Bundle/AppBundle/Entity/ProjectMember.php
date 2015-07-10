@@ -46,15 +46,15 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="task_members")
+ * @ORM\Table(name="project_members")
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @Hateoas\Relation(
  *      "self",
- *      href=@Hateoas\Route("api_task_members_get", parameters={"id" = "expr(object.getId())"})
+ *      href=@Hateoas\Route("api_project_members_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
-class TaskMember extends NotifyPropertyChangeEntity
+class ProjectMember extends NotifyPropertyChangeEntity
 {
     /**
      * @var int

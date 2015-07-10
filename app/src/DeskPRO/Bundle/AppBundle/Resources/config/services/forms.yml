@@ -31,10 +31,10 @@ services:
       tags:
           - { name: form.type, alias: project }
 
-  form.taskmember:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskMemberType
+  form.projectmember:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType
       tags:
-          - { name: form.type, alias: taskmember }
+          - { name: form.type, alias: projectmember }
 
   form.term_engine.term:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType

@@ -38,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Entity\TaskMember as TaskMember;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -52,7 +52,7 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class TaskMembersController extends BaseController implements ClassResourceInterface
+class ProjectMembersController extends BaseController implements ClassResourceInterface
 {
     /**
      * @ApiDoc(
@@ -77,13 +77,13 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      *          200="Success"
      *      }
      * )
-     * @Get("/task_members", name="api_task_members")
+     * @Get("/project_members", name="api_project_members")
      * @param Request $request
      * @return View
      */
     public function cgetAction(Request $request)
     {
-        $members = $this->getDoctrine()->getManager()->getRepository('App:TaskMember')->findAll();
+        $members = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->findAll();
         $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
@@ -112,15 +112,15 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskMember"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
      * )
-     * @Get("/task_members/{id}", name="api_task_members_get")
+     * @Get("/project_members/{id}", name="api_project_members_get")
      * @param int $id
      * @return View
      */
     public function getAction($id)
     {
-        $member = $this->getTaskMember($id);
+        $member = $this->getProjectMember($id);
 
         if (empty($member)) {
             throw $this->createNotFoundException();
@@ -140,9 +140,9 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskMember"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
      * )
-     * @Post("/task_members", name="api_task_members_post")
+     * @Post("/project_members", name="api_project_members_post")
      * @param Request $request
      * @throws WrappedApiErrorException
      * @throws InvalidFormException
@@ -150,7 +150,7 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      */
     public function postAction(Request $request)
     {
-        $member = new TaskMember();
+        $member = new ProjectMember();
         return $this->handleFormSubmission($request, $member);
     }
 
@@ -175,7 +175,7 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      *
      * @TODO: Make sure this works with changing member types e.g. person -> team
      *
-     * @Put("/task_members/{id}", name="api_task_members_put")
+     * @Put("/project_members/{id}", name="api_project_members_put")
      * @param Request $request
      * @param $id
      * @throws WrappedApiErrorException
@@ -183,7 +183,7 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      */
     public function putAction(Request $request, $id)
     {
-        $member = $this->getTaskMember($id);
+        $member = $this->getProjectMember($id);
 
         return $this->handleFormSubmission($request, $member);
     }
@@ -204,13 +204,13 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/task_members/{id}", name="api_task_members_delete")
+     * @Delete("/project_members/{id}", name="api_projectmembers_delete")
      * @param $id
      * @return View
      */
     public function deleteAction($id)
     {
-        $member = $this->getTaskMember($id);
+        $member = $this->getProjectMember($id);
         $this->getDoctrine()->getManager()->remove($member);
         $this->getDoctrine()->getManager()->flush();
 
@@ -251,7 +251,7 @@ class TaskMembersController extends BaseController implements ClassResourceInter
      *          200="Success"
      *      }
      * )
-     * @Get("/task_members/{id}/tasks", name="api_task_members_tasks_get")
+     * @Get("/project_members/{id}/tasks", name="api_project_members_tasks_get")
      * @param Request $request
      * @param int $id
      * @return View
@@ -275,12 +275,12 @@ class TaskMembersController extends BaseController implements ClassResourceInter
 
     /**
      * @param int $id
-     * @return TaskMember
+     * @return ProjectMember
      */
-    protected function getTaskMember($id)
+    protected function getProjectMember($id)
     {
         $id = (int) $id;
-        $member = $this->getDoctrine()->getManager()->getRepository('App:TaskMember')->find($id);
+        $member = $this->getDoctrine()->getManager()->getRepository('App:ProjectMember')->find($id);
 
         if (!$member) {
             throw $this->createNotFoundException();
@@ -292,15 +292,15 @@ class TaskMembersController extends BaseController implements ClassResourceInter
     /**
      * Will be abstracted for use by other controllers
      * @param Request $request
-     * @param TaskMember $member
+     * @param ProjectMember $member
      * @return View
      * @throws WrappedApiErrorException
      */
-    protected function handleFormSubmission(Request $request, TaskMember $member)
+    protected function handleFormSubmission(Request $request, ProjectMember $member)
     {
         $status = $member->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'taskmember', $member)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
 
         $submitted = $request->request->all();
 
@@ -319,7 +319,7 @@ class TaskMembersController extends BaseController implements ClassResourceInter
             $this->getDoctrine()->getManager()->persist($member);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_task_members_get', array('id' => $member->getId()));
+            $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
 
             return View::create(
                 $this->createRepresentation($member),

@@ -77,8 +77,8 @@ class TaskProject extends NotifyPropertyChangeEntity
     protected $tasks;
 
     /**
-     * @var TaskMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="TaskMember", mappedBy="project")
+     * @var ProjectMember[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="ProjectMember", mappedBy="project")
      * @Serializer\Expose()
      */
     protected $members;
@@ -116,7 +116,7 @@ class TaskProject extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @return TaskMember[]|ArrayCollection
+     * @return ProjectMember[]|ArrayCollection
      */
     public function getMembers()
     {
@@ -142,9 +142,9 @@ class TaskProject extends NotifyPropertyChangeEntity
     }
 
     /**
-     * @param TaskMember $member
+     * @param ProjectMember $member
      */
-    public function addMember(TaskMember $member)
+    public function addMember(ProjectMember $member)
     {
         $this->members->add($member);
         $this->setModelField('member', $member);

@@ -7,11 +7,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskMemberType extends AbstractType
+class ProjectMemberType extends AbstractType
 {
     public function getName()
     {
-        return 'taskmember';
+        return 'projectmember';
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -49,7 +49,7 @@ class TaskMemberType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskMember',
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\ProjectMember',
         ));
     }
 }
