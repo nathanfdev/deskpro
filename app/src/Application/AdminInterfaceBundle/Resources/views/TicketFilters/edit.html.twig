@@ -3,14 +3,22 @@
 <div class="admin-content-main">
 
 <div class="admin-content-major-header">
-	<h1><span>Manage Filter Set:</span> {{ ng_var('EditCtrl.filterset.title') }}</h1>
+	<h1 ng-hide="formstate.editingFilterSetTitle">
+        <span>Manage Filter Set:</span>
+        {{ ng_var('EditCtrl.filterset.title') }}
+        <span><a ng-click="formstate.editingFilterSetTitle=true"><i class="fa fa-pencil"></i></a></span>
+    </h1>
+    <h1 ng-show="formstate.editingFilterSetTitle" class="ng-hide">
+        <span>Manage Filter Set:</span>
+        <input type="text" ng-model="formstate.filterset_title" />
+        <button class="btn btn-primary" ng-href="#here" ng-click="EditCtrl.saveFilterSet()">save</button>
+        <button class="btn btn-danger" ng-click="formstate.editingFilterSetTitle=false">cancel</button>
+    </h1>
 
 	<div class="help-panel">
 	<i class="fa fa-support"></i>
 	</div>
 </div>
-
-
 
 <div class="admin-content-container">
 

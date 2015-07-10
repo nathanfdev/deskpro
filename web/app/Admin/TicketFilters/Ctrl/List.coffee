@@ -104,7 +104,9 @@ define [
     # Add a brand new filter set.
     ###
     addFilterSet: =>
-      @filterSetData.saveTicketFilterSet(@$scope.foobar.new_filterset_name).then(
+      filterSet = @filterSetData.blank()
+      filterSet.title = @$scope.foobar.new_filterset_name
+      @filterSetData.saveTicketFilterSet(filterSet).then(
         (data) =>
           @$scope.filterList.push(data.data)
           @$scope.foobar.new_filterset_name = ""

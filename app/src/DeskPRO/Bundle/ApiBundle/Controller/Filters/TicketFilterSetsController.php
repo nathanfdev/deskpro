@@ -137,6 +137,30 @@ class TicketFilterSetsController extends BaseController
     
     /**
      * @ApiDoc(
+     *      description="Edit an existing filter set",
+     *      input={"class"="ticket_filter_set", "name"=""},
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request",
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
+     * )
+     *
+     * @Put("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_put")
+     */
+    public function putAction(Request $request, $id)
+    {
+        $set = $this->getEm()->find('App:TicketFilterSet', $id);
+        
+        if (!$set) {
+            throw new NotFoundHttpException();
+        } else {
+            return $this->handleFormSubmission($request, $set);
+        }
+    }
+    
+    /**
+     * @ApiDoc(
      *      description="Reorder filter sets.",
      *      input={"Array"},
      *      statusCodes={
@@ -178,11 +202,18 @@ class TicketFilterSetsController extends BaseController
     protected function handleFormSubmission(Request $request, TicketFilterSet $set)
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        
         $form = $this->get('form.factory')
             ->createNamedBuilder(null, 'filter_set', $set)
             ->getForm();
 
-        $form->submit($request->request->all(), 'PUT' !== $request->getMethod());
+        $submitted = $request->request->all();
+        if ('PUT' == $request->getMethod()) {
+            // Sanitizing the submitted data when running and update.
+            unset($submitted['id']);
+        }
+
+        $form->submit($submitted, 'PUT' !== $request->getMethod());
 
         if ($form->isValid()) {
             $this->getEm()->persist($set);
@@ -196,6 +227,9 @@ class TicketFilterSetsController extends BaseController
                 )
             );
         } else {
+            foreach($form->getErrors() as $error) {
+                echo $error->getMessage() . "\n";
+            }
             throw new InvalidFormException($form); // let our listeners generate the form error response
         }
     }

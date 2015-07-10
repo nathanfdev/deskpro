@@ -18,6 +18,10 @@ define [
       @filter_criteria = {}
       @criteriaTypeDef = @dpObTypesDefTicketFilter
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+      @$scope.formstate = {
+        editingFilterSetTitle: false,
+        filterset_title: null
+      }
       
       @sortedListOptions = {
         axis: 'y',
@@ -44,73 +48,13 @@ define [
           @$state.go('tickets.ticket_filters.edit.single_filter', { id: data.id, filter_id: 0 })
         
         @filterset = data
+        @$scope.formstate.filterset_title = data.title
       )
 
-    getFormFromModel: (filterModel) ->
-      form = {}
-      form.title = filterModel.title || ''
-
-      if filterModel.is_global
-        form.perm_type = 'global'
-      else if filterModel.agent_team and @teams[0]
-        form.perm_type = 'team'
-      else
-        form.perm_type = 'agent'
-
-      if @filter.person
-        form.agent_id = @filter.person.id + ""
-      else
-        form.agent_id = @agents[0].id + ""
-
-      form.team_id = null
-      if @teams
-        if @filter.agent_team
-          form.team_id = @filter.agent_team.id + ""
-        else
-          form.team_id = @teams[0].id + ""
-
-      return form
-
-    saveForm: ->
-      if not @$scope.form_props.$valid then return
-
-      if @filterId
-        method = 'POST'
-        url = "/ticket_filters/#{@filterId}"
-      else
-        method = 'PUT'
-        url = "/ticket_filters"
-
-      postData = {
-        filter: {
-          title: @form.title,
-          is_global:     @form.perm_type == 'global',
-          person_id:     if @form.perm_type == 'agent' then parseInt(@form.agent_id) || null else null,
-          agent_team_id: if @form.perm_type == 'team' then parseInt(@form.team_id) || null else null
-        }
-      }
-      postData.filter.terms = @filter_criteria
-
-      @sendFormSaveApiCall(method, url, postData).then( (res) =>
-        @Growl.success(@getRegisteredMessage('saved_filter'))
-
-        @filter.title = @form.title
-        if res.data.filter_id
-          @filter.id = res.data.filter_id
-
-        @filter.is_global = @form.perm_type == 'global'
-        @filter.person = null
-        @filter.agent_team = null
-
-        if @form.perm_type == 'agent'
-          @filter.person = @agents.filter((x) => x.id == parseInt(@form.agent_id))[0]
-        if @form.perm_type == 'team'
-          @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
-
-        @filterSetData.mergeDataModel(@filter)
-
-        if !@filterId
-          @$state.go('tickets.ticket_filters.gocreate')
+    saveFilterSet: ->
+      @filterset.title = @$scope.formstate.filterset_title
+      @filterSetData.saveTicketFilterSet(@filterset).then(=>
+        @$scope.formstate.editingFilterSetTitle = false
       )
 
   Admin_TicketFilters_Ctrl_Edit.EXPORT_CTRL()

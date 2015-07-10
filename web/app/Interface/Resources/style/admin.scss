@@ -124,11 +124,19 @@
     margin: 0px;
     font-size: 1.3em;
     margin-bottom: 0px;
+    
+    span {
+      color: #959595;
+      
+      a {
+        color: #959595;
+      }
+      
+      &.email {
+        font-size: 0.8em;
+      }
+    }
   }
-
-  h1 span { color: #959595; }
-
-  h1 span.email { font-size: 0.8em; }
 
   .chat-avatar {
     width: 36px;

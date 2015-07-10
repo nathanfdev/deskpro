@@ -34,19 +34,36 @@ define [
 
       return deferred.promise
 
+    _cleanUpFilterSet: (filter_set) ->
+      clean_filter_set = {
+        title: filter_set.title,
+        display_order: filter_set.display_order
+      }
+      
+      if filter_set.id?
+        clean_filter_set.id = filter_set.id
+      
+      return clean_filter_set
+
     ###
     # Save a new filter set.
     #
     # @param {String} The new filter set's name
     # @return {promise}
     ###
-    saveTicketFilterSet: (name) ->
+    saveTicketFilterSet: (filter_set) ->
       deferred = @$q.defer()
       
-      @Api2.sendPostJson(
-        '/ticket_filter_sets',
-        { "title": name }
-      )
+      if filter_set.filters?
+        delete filter_set.filters
+      
+      data_promise = null
+      if filter_set.id?
+        data_promise = @Api2.sendPutJson('/ticket_filter_sets/' + filter_set.id, @_cleanUpFilterSet(filter_set))
+      else
+        data_promise = @Api2.sendPostJson('/ticket_filter_sets', filter_set)
+      
+      data_promise
       .success( (data) =>
         deferred.resolve(data)
       )
@@ -55,6 +72,11 @@ define [
       )
       
       return deferred.promise
+
+    blank: ->
+      return {
+        title: null
+      }
 
     ###
       # Save order of filters
