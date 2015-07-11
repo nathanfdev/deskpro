@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\ORM\EntityManager;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use Doctrine\DBAL\Connection;
 
@@ -88,12 +89,12 @@ class PortalPermissionsManager
     /**
      * @var PortalUsergroupDecider
      */
-    private $usergroupDecider;
+    private $usergroup_decider;
 
     /**
      * @var PortalPermissionsLoader
      */
-    protected $permissionsLoader;
+    protected $permissions_loader;
 
     public function __construct(
         SettingsResolver $settingsResolver,
@@ -103,9 +104,9 @@ class PortalPermissionsManager
         PortalPermissionsLoader $permissionsLoader
     ) {
         $this->settingsResolver  = $settingsResolver;
-        $this->usergroupDecider  = $usergroupDecider;
-        $this->permissionsLoader = $permissionsLoader;
-        $this->cache             = new ConvenientCache($cacheAdapter);
+        $this->usergroup_decider  = $usergroupDecider;
+        $this->permissions_loader = $permissionsLoader;
+        $this->cache             = new ConvenientCache($cacheAdapter); // the cache adapter knows details of how/where we cache permissions to
         $this->conn              = $em->getConnection();
         $this->em                = $em;
     }
@@ -118,8 +119,40 @@ class PortalPermissionsManager
         // execute a SQL statement to update the portal.global_cache_timestamp setting
         $this->conn->executeQuery('REPLACE INTO settings SET name = "'.static::CACHE_TIMESTAMP_SETTING_NAME.'", value = '.time());
 
-        // force a reload of global settings
+        // force a reload of global settings so our update to the timestamp is immediately applied
         $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
+    }
+
+    /**
+     * Returns the PermissionBag for a guest.
+     *
+     * @return PermissionsBag
+     */
+    public function getPermissionsBagForGuest()
+    {
+        $that = $this;
+        $generate = function () use ($that) {
+            return $that->generatePermissionsMapForGuest();
+        };
+
+        if (!$this->isCacheDisabled()) {
+            $usergoupIds = $this->usergroup_decider->getUsergroupIdsForGuest();
+            $permissions_map = $this->cache->get(
+                $this->getCacheKeyForUsergroupIds($usergoupIds),
+                $generate
+            );
+        } else {
+            // no cache available, always generate
+            $permissions_map = $generate();
+        }
+
+        $allowed_departments = $this->getAllowedDepartmentIds(new PersonGuest());
+
+        return new PermissionsBag(
+            $permissions_map,
+            isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : array(),
+            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array()
+        );
     }
 
     /**
@@ -131,70 +164,38 @@ class PortalPermissionsManager
      */
     public function getPermissionsBagForPerson(Person $person)
     {
+        if ($person instanceof PersonGuest) {
+            // if we get here with a PersonGuest (usually in a form), grab the guest bag (faster).
+            return $this->getPermissionsBagForGuest();
+        }
+
         $that     = $this;
         $generate = function () use ($that, $person) {
             return $that->generatePermissionsMapForPerson($person);
         };
 
         if (!$this->isCacheDisabled()) {
-            $permissions = $this->cache->get(
+            $permissions_map = $this->cache->get(
                 $this->getCacheKeyForPerson($person),
                 $generate
             );
         } else {
             // no cache available, always generate
-            $permissions = $generate();
+            $permissions_map = $generate();
         }
 
-        return new PermissionsBag($permissions);
+        $allowed_departments = $this->getAllowedDepartmentIds($person);
+
+        return new PermissionsBag(
+            $permissions_map,
+            isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : array(),
+            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array()
+        );
     }
 
-    /**
-     * Returns the PermissionBag for a guest.
-     *
-     * @return PermissionsBag
-     */
-    public function getPermissionsBagForGuest()
+    protected function getAllowedDepartmentIds(Person $person)
     {
-        $that     = $this;
-        $generate = function () use ($that) {
-            return $that->generatePermissionsMapForGuest();
-        };
-
-        if (!$this->isCacheDisabled()) {
-            $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
-            $permissions = $this->cache->get(
-                $this->getCacheKeyForUsergroupIds($usergoupIds),
-                $generate
-            );
-        } else {
-            // no cache available, always generate
-            $permissions = $generate();
-        }
-
-        return new PermissionsBag($permissions);
-    }
-
-    public function getAllowedDepartmentIds(Person $person)
-    {
-        // TODO: this is just returning back all departments. add logic in the closure for actual permission logic.
-        $that     = $this;
-        $generate = function () use ($person, $that) {
-            $ids = $that->getEm()->createQuery('SELECT d.id FROM DeskPRO:Department d')->getScalarResult();
-
-            return array_map(function ($val) {
-                return $val['id'];
-            }, $ids);
-        };
-
-        if (!$this->isCacheDisabled()) {
-            $cache_key = $this->getCacheTimestamp().'-deps-'.$this->getCacheKeyForPerson($person);
-
-            return $this->cache->get($cache_key, $generate);
-        }
-
-        // no cache available, always generate
-        return $generate();
+        return $this->permissions_loader->loadAllowedDepartments($person);
     }
 
     /**
@@ -231,7 +232,7 @@ class PortalPermissionsManager
         // cache THIS for a request. It won't change during a single request!
 
         // cache this below as well..... it does lots of querying etc
-        $usergroup_ids = $this->usergroupDecider->getUsergroupIdsForPerson($person);
+        $usergroup_ids = $this->usergroup_decider->getUsergroupIdsForPerson($person);
 
         return $this->getCacheKeyForUsergroupIds($usergroup_ids);
     }
@@ -263,16 +264,16 @@ class PortalPermissionsManager
      */
     public function generatePermissionsMapForPerson(Person $person)
     {
-        $usergoupIds = $this->usergroupDecider->getUsergroupIdsForPerson($person);
+        $usergoupIds = $this->usergroup_decider->getUsergroupIdsForPerson($person);
 
-        return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
+        return $this->permissions_loader->loadPermissions($usergoupIds);
     }
 
     public function generatePermissionsMapForGuest()
     {
-        $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
+        $usergoupIds = $this->usergroup_decider->getUsergroupIdsForGuest();
 
-        return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
+        return  $this->permissions_loader->loadPermissions($usergoupIds);
     }
 
     public function isCacheDisabled()

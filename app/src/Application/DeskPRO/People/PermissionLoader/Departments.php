@@ -173,6 +173,13 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         return !empty($this->allowed_cats[$app][$id][$permission]);
     }
 
+    public function getAllAllowed()
+    {
+        $this->_init();
+
+        return $this->allowed_cats;
+    }
+
     /**
      * Get an array of all allowed categories.
      *

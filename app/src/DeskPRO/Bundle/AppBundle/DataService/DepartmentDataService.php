@@ -31,6 +31,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Doctrine\ORM\EntityManager;
@@ -53,7 +54,18 @@ class DepartmentDataService extends AbstractDataService
         $this->portal_permissions_manager = $portal_permissions_manager;
     }
 
-    public function getAuthorizedDepartmentsForPersonInPortal(Person $person)
+    /**
+     * An array of departments that are allowed for this person in tickets.
+     *
+     * If a department that is returned has a parent, the calling code is expected to
+     * deal with parent hierarchies (the parent's are not returned here).
+     *
+     * See the HierarchyGenerator which makes hierarchy's for you.
+     *
+     * @param Person $person
+     * @return Department[]
+     */
+    public function getTicketDepartmentsForPerson(Person $person)
     {
         $portal_permissions_manager = $this->portal_permissions_manager;
         $em                         = $this->em;
@@ -64,14 +76,54 @@ class DepartmentDataService extends AbstractDataService
                 $person,
             ),
             function () use ($person, $portal_permissions_manager, $em) {
-                $allowed_department_ids = $portal_permissions_manager->getAllowedDepartmentIds($person);
+                $permission_bag = $portal_permissions_manager->getPermissionsBagForPerson($person);
+                $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
 
-                // TODO: make sure allowed_department_ids is correct
                 $departments = $em
                     ->getRepository('DeskPRO:Department')
                     ->createQueryBuilder('d')
                     ->select('d')
-                    ->where('d.id IN (:allowed_department_ids) AND d.parent IS NULL AND d.is_tickets_enabled = true')
+                    ->where('d.id IN (:allowed_department_ids) AND d.is_tickets_enabled = true')
+                    ->orderBy('d.display_order', 'ASC')
+                    ->setParameter('allowed_department_ids', $allowed_department_ids)
+                    ->getQuery()
+                    ->getResult();
+
+                return $departments;
+            }
+        );
+    }
+
+    /**
+     * An array of departments that are allowed for this person in chat.
+     *
+     * If a department that is returned has a parent, the calling code is expected to
+     * deal with parent hierarchies (the parent's are not returned here).
+     *
+     * See the HierarchyGenerator which makes hierarchy's for you.
+     *
+     * @param Person $person
+     * @return Department[]
+     */
+    public function getChatDepartmentsForPerson(Person $person)
+    {
+        $portal_permissions_manager = $this->portal_permissions_manager;
+        $em                         = $this->em;
+
+        return $this->generateAndCache(
+            array(
+                'getAuthorizedDepartmentsForPersonInPortal',
+                $person,
+            ),
+            function () use ($person, $portal_permissions_manager, $em) {
+                $permission_bag = $portal_permissions_manager->getPermissionsBagForPerson($person);
+                $allowed_department_ids = $permission_bag->getAllowedChatDepartmentIds();
+
+                $departments = $em
+                    ->getRepository('DeskPRO:Department')
+                    ->createQueryBuilder('d')
+                    ->select('d')
+                    ->where('d.id IN (:allowed_department_ids) AND d.is_chat_enabled = true')
                     ->orderBy('d.display_order', 'ASC')
                     ->setParameter('allowed_department_ids', $allowed_department_ids)
                     ->getQuery()
