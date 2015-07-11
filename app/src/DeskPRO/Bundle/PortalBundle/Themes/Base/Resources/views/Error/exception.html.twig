@@ -1,8 +1,106 @@
-<h1>An exception occured.</h1>
-<h2>{{ status_code }} ({{ status_text }})</h2>
-<p>You are viewing BaseTheme's template: Theme:Error:exception.html.twig</p>
-<p>This <i>should be a standalone page</i> and should not be wrapped in the theme layout.html.twig.</p>
-<p>Hitting an exceptionX.html.twig template means this is a 500 error or above. It is not safe to render out the theme layout here, because the layout contains many tags/service calls, and they could be the cause of the error (e.g. database connection cant be established, or something).</p>
-<p>This should be a rare place to hit, obviously we don't want to be throwing out 500s very often.</p>
-<p>On the other hand, the errorX.html.twig templates are for all safter http status codes, like 404, and it is safe to wrap them in the normal looking layout.</p>
-<p>Of course, all of these templates (including this one) are still themeable.</p>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta charset="utf-8"/>
+    <title>An error occurred</title>
+    <meta name="viewport" content="width=device-width">
+    <link href="{{ base_url }}/pub/src-build/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.css" media="all"
+          rel="stylesheet"/>
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700'
+          rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<div class="dp-page-body">
+    <div class="world with-searchbox">
+        <section>
+            <div class="column-full">
+                <header class="top-bar">
+                    <div class="brand">
+                        <a href="{{ base_url }}">
+                            Helpdesk
+                        </a>
+                    </div>
+
+                    <ul id="menu">
+                        <li>
+                            <a href="{{ base_url }}/register" class="button-small button-signup">Create a new account</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ base_url }}/login" class="button-small button-login">Login <i
+                                        class="fa fa-caret-down"></i></a>
+                        </li>
+
+                    </ul>
+                </header>
+            </div>
+        </section>
+
+        <section class="search-section">
+            <div class="column-full">
+                <div class="content">
+                    <div class="search-and-ticket">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-wrap">
+                                    <i class="fa fa-search"></i>
+                                    <input disabled="disabled" type="text" placeholder="Search...">
+                                </div>
+                                <button disabled="disabled" type="submit">Search</button>
+                            </form>
+                        </div>
+
+                        <div class="search-or-ticket">
+                            <span>or</span>
+                        </div>
+
+                        <div class="search-and-ticket-dropdown">
+                            <a href="{{ base_url }}/new-ticket">
+         <span class="button select-action">
+          <i class="fa fa-comments"></i> Contact Us
+          <span class="select-action-dropdown">
+            <i class="fa fa-caret-down"></i>
+          </span>
+        </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="column-full">
+                <article class="news kb-article">
+                    <header>
+                        <h1>An Error Occured</h1>
+
+                        <div class="article-meta">
+                            <p>Sorry, but there was an error trying to load this page. Please try again later or <a href="{{ base_url }}/new-ticket">contact us</a>.</p>
+                        </div>
+                    </header>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="column-full">
+                <footer class="site-footer">
+                    <hr>
+
+                    <div class="back-to-top">
+                        <a onclick="window.scrollTo(0,0); return false;">Top <i class="fa fa-angle-double-up"></i></a>
+                    </div>
+
+                    <a href="https://www.deskpro.com/" class="footer-mark">
+                        <span class="logo-wrapper"><span class="deskpro-logo"></span></span>
+                        <span class="tagline">Helpdesk software provided by <strong>DeskPRO</strong></span>
+                    </a>
+                </footer>
+            </div>
+        </section>
+    </div>
+
+</div>
+</body>
+</html>

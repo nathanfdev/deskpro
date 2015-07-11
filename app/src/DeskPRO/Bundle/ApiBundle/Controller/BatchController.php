@@ -34,6 +34,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class BatchController extends BaseController
 {
     /**
-     * @Route("/batch", name="api_batch", methods={"POST"})
+     * @Post("/batch", name="api_batch")
      */
     public function executeBatchAction(Request $request)
     {

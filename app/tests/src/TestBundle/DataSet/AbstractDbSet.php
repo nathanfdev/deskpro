@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle\DataSet;
+namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\ORM\EntityManager;
@@ -109,7 +109,7 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function clearDatabase()
     {
-        $this->getDb()->exec("DROP DATABASE {$this->getDatabaseName()}");
+        $this->getDb()->exec("DROP DATABASE IF EXISTS {$this->getDatabaseName()}");
         $this->getDb()->exec("CREATE DATABASE {$this->getDatabaseName()}");
         $this->getDb()->exec("USE {$this->getDatabaseName()}");
 

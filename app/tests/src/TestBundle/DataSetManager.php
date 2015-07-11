@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle;
+namespace DpTestSrc\TestBundle;
 
 /**
  * AbstractDbSet does so much work that is is basically what this class *should* be, but this is just a service we

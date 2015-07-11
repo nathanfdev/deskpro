@@ -37,6 +37,7 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
     const PROFILE          = 'profile';
     const REGISTER         = 'register';
     const PASSWORD_RESET   = 'password.reset';
+    const PASSWORD_SET     = 'password.set';
     const LOGIN            = 'login';
     const KB               = 'kb';
     const KB_CAT           = 'kb.cat';

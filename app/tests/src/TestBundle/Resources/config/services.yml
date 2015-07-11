@@ -4,8 +4,20 @@ parameters:
 
 services:
 
+    test_faker:
+        class: Faker\Generator
+        factory_class: Faker\Factory
+        factory_method: create
+
+    test_factory.person:
+        class: DpTestSrc\TestBundle\Factory\PersonTestFactory
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @test_faker
+
+
     dataset_manager:
-        class: DpTests\TestBundle\DataSetManager
+        class: DpTestSrc\TestBundle\DataSetManager
         arguments:
             sets:
                 - @dbset.empty
@@ -14,7 +26,7 @@ services:
                 - @dbset.term_engine
 
     dbset.empty:
-        class: DpTests\TestBundle\DataSet\EmptyDb
+        class: DpTestSrc\TestBundle\DataSet\EmptyDb
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
@@ -22,7 +34,7 @@ services:
             - %kernel.cache_dir%/dbset
 
     dbset.fresh:
-        class: DpTests\TestBundle\DataSet\FreshDb
+        class: DpTestSrc\TestBundle\DataSet\FreshDb
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
@@ -30,7 +42,7 @@ services:
             - %kernel.cache_dir%/dbset
 
     dbset.api:
-        class: DpTests\TestBundle\DataSet\ApiDb
+        class: DpTestSrc\TestBundle\DataSet\ApiDb
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
@@ -38,7 +50,7 @@ services:
             - %kernel.cache_dir%/dbset
 
     dbset.term_engine:
-        class: DpTests\TestBundle\DataSet\TermEngineDb
+        class: DpTestSrc\TestBundle\DataSet\TermEngineDb
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
@@ -46,6 +58,6 @@ services:
             - %kernel.cache_dir%/dbset
 
     user_details:
-        class: DpTests\TestBundle\UserDetailsRepo
+        class: DpTestSrc\TestBundle\UserDetailsRepo
         arguments:
             - @doctrine.orm.default_entity_manager

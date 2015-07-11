@@ -166,6 +166,45 @@ class TicketsController extends AbstractController
     }
 
     /**
+     * This URL is accessible if you know the ticket auth code. No other security is done here.
+     *
+     * VIEW ONLY. Must login to interact with things (which will redirect you to viewAction above).
+     *
+     * @Route("/ticket-view/{auth}", name="portal_tickets_guest_view")
+     */
+    public function viewGuestAction(Ticket $ticket, Request $request)
+    {
+        if (
+            $this->isGranted('TICKET_VIEW', $ticket)
+            && $this->isGranted('USE_TICKETS')
+            && $this->isGranted('ROLE_USER')
+        ) {
+            // the user passes all security requirements to view the normal ticket view page. Redirect them to there.
+            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+        }
+
+        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
+
+        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
+
+        // BREADCRUMBS
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
+
+
+        // TODO: if a user is logged in, we might want to allow SOME interaction on the ticket here...
+
+        return $this->renderThemeView(
+            'Theme:Tickets:guest-view.html.twig',
+            array(
+                'ticket'      => $ticket_view,
+                'timeline'    => $timeline,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title' => $this->createPageTitle()->tickets($ticket)
+            )
+        );
+    }
+
+    /**
      * @Route("/tickets/{id}/edit", name="portal_tickets_edit")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_EDIT', ticket)")
      */

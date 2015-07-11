@@ -29,7 +29,7 @@
  * DeskPRO.
  */
 
-namespace DpTests\TestBundle\DataSet;
+namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
@@ -40,12 +40,12 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\InstallBundle\Data\DefaultDataProcessor;
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use DpTests\TestBundle\UserDetailsRepo;
+use DpTestSrc\TestBundle\UserDetailsRepo;
 
 class TermEngineDb extends AbstractDbSet
 {
@@ -448,10 +448,10 @@ class TermEngineDb extends AbstractDbSet
             )
         );
 
-        $filter = new Filter();
+        $filter = new TicketFilter();
         $filter->setTitle('Fav. Color is Red');
         $filter->setTerm($term);
-        $filter->setFilterSet($this->getEm()->getRepository('App:FilterSet')->find(1));
+        $filter->setFilterSet($this->getEm()->getRepository('App:TicketFilterSet')->find(1));
         $this->getEm()->persist($filter);
 
         // tickets that are assigned to the current user, whos custom color field is RED
@@ -491,10 +491,10 @@ class TermEngineDb extends AbstractDbSet
             $embedded_or
         );
 
-        $filter = new Filter();
+        $filter = new TicketFilter();
         $filter->setTitle('Fav. Color is Red or Blue');
         $filter->setTerm($main_term);
-        $filter->setFilterSet($this->getEm()->getRepository('App:FilterSet')->find(1));
+        $filter->setFilterSet($this->getEm()->getRepository('App:TicketFilterSet')->find(1));
         $this->getEm()->persist($filter);
     }
 }

@@ -33,7 +33,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
@@ -80,7 +80,7 @@ class DbalTicketFilterEngine extends DbalEngine
         $this->logger = $logger;
     }
 
-    public function evaluate(Filter $filter, TermEngineContext $context)
+    public function evaluate(TicketFilter $filter, TermEngineContext $context)
     {
         $timer = new SimpleTimer();
 

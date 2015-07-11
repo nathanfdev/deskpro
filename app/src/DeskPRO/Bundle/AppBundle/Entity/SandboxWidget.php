@@ -49,7 +49,7 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @Hateoas\Relation(
  *      "self",
- *      href=@Hateoas\Route("get_sandbox_widgets", parameters={"id" = "expr(object.getId())"})
+ *      href=@Hateoas\Route("api_sandbox_widgets_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
 class SandboxWidget extends NotifyPropertyChangeEntity

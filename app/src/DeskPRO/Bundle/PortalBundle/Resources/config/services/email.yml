@@ -1,0 +1,5 @@
+services:
+
+  portal_email_sender:
+      class: DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
+      arguments: [@service_container]

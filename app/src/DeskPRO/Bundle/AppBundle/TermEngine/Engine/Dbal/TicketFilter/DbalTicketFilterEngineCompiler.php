@@ -34,7 +34,7 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler\DbalCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryCacher;
@@ -71,10 +71,10 @@ class DbalTicketFilterEngineCompiler
     }
 
     /**
-     * @param Filter $filter
+     * @param TicketFilter $filter
      * @return DbalQuery|mixed
      */
-    public function compile(Filter $filter)
+    public function compile(TicketFilter $filter)
     {
         $this->logger->info('START FILTER COMPILE', array(
             'filter_id' => $filter->getId(),
@@ -106,7 +106,7 @@ class DbalTicketFilterEngineCompiler
         return $compiled_query;
     }
 
-    protected function generateKey(Filter $filter)
+    protected function generateKey(TicketFilter $filter)
     {
         return sprintf('%s.%s', $filter->getId(), $filter->getDateUpdated()->getTimestamp());
     }

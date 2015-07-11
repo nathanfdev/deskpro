@@ -1,0 +1,227 @@
+<?php
+/**************************************************************************\
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Doctrine\NotifyPropertyChangeEntity;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterPreferenceRepository")
+ * @ORM\Table(name="ticket_filter_preferences")
+ */
+class TicketFilterPreference extends NotifyPropertyChangeEntity
+{
+    /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
+     * @var TicketFilter
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", inversedBy="filter_preferences")
+     */
+    protected $filter;
+
+    /**
+     * @var TicketFilterView
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView")
+     */
+    protected $filter_view;
+
+    /**
+     * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id")
+     */
+    protected $agent;
+
+    /**
+     * @var int
+     * @ORM\Column(name="display_order", type="integer")
+     */
+    protected $display_order;
+
+    /**
+     * @var string
+     * @ORM\Column(name="main_grouping", type="string")
+     */
+    protected $main_grouping;
+
+    /**
+     * @var string
+     * @ORM\Column(name="result_grouping", type="string")
+     */
+    protected $result_grouping;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_sla", type="boolean")
+     */
+    protected $show_sla;
+
+    public function __construct()
+    {
+        $this->display_order = 0;
+        $this->show_sla = false;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return TicketFilter
+     */
+    public function getFilter()
+    {
+        return $this->filter;
+    }
+
+    /**
+     * @param TicketFilter $filter
+     */
+    public function setFilter(TicketFilter $filter)
+    {
+        $this->setModelField('filter', $filter);
+        $filter->addFilterPreference($this);
+    }
+
+    /**
+     * @return TicketFilterView
+     */
+    public function getFilterView()
+    {
+        return $this->filter_view;
+    }
+
+    /**
+     * @param TicketFilterView $filter_view
+     */
+    public function setFilterView(TicketFilterView $filter_view)
+    {
+        $this->setModelField('filter_view', $filter_view);
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Person $agent
+     */
+    public function setAgent(Person $agent = null)
+    {
+        $this->setModelField('agent', $agent);
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->setModelField('display_order', (int)$display_order);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMainGrouping()
+    {
+        return $this->main_grouping;
+    }
+
+    /**
+     * @param string $main_grouping
+     */
+    public function setMainGrouping($main_grouping)
+    {
+        $this->setModelField('main_grouping', $main_grouping);
+    }
+
+    /**
+     * @return array
+     */
+    public function getResultGrouping()
+    {
+        return $this->result_grouping;
+    }
+
+    /**
+     * @param string $result_grouping
+     */
+    public function setResultGrouping($result_grouping)
+    {
+        $this->setModelField('result_grouping', $result_grouping);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasShowSla()
+    {
+        return $this->show_sla;
+    }
+
+    /**
+     * @param boolean $show_sla
+     */
+    public function setShowSla($show_sla)
+    {
+        $this->setModelField('show_sla', (bool)$show_sla);
+    }
+
+    public function isPrivate()
+    {
+        return null !== $this->agent;
+    }
+}

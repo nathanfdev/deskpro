@@ -31,6 +31,7 @@
 
 namespace Application\EmailBundle;
 
+use Application\EmailBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -39,6 +40,7 @@ class EmailBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new TwigEnvironmentPass());
     }
 
     /**

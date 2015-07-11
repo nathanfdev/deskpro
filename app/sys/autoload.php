@@ -12,7 +12,7 @@ set_include_path(
 );
 
 // Composer-managed sources
-$composer_loader = require_once DP_ROOT . '/vendor/autoload.php';
+$composer_loader = require DP_ROOT . '/vendor/autoload.php';
 require_once DP_ROOT . '/src/Orb/Util/ClassLoader.php';
 
 $loader = new \Orb\Util\ClassLoader();
@@ -102,12 +102,12 @@ spl_autoload_register(
     }
 );
 
-// psr-4 style autoloading for DpBehat\ and DpTests\ namespace
+// psr-4 style autoloading for DpBehat\ and DpTestSrc\ namespace
 spl_autoload_register(
     function ($class) {
         $namespaces = array(
             'DpBehat\\' => DP_ROOT . '/tests/features/bootstrap/',
-            'DpTests\\' => DP_ROOT . '/tests/src/',
+            'DpTestSrc\\' => DP_ROOT . '/tests/src/',
             'DeskPRO\\Kernel' => DP_ROOT . '/sys/Kernel'
         );
 

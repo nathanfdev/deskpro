@@ -7,6 +7,7 @@ parameters:
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
   templating.globals.class: DeskPRO\Bundle\AppBundle\Twig\GlobalVariables
+  monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
 
 framework:
     esi:             { enabled: true }
@@ -35,6 +36,11 @@ framework:
     http_method_override: true
 
 monolog:
+    channels: # you MUST also update api_config.yml if you change these
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"
     handlers:
         main:
             type:   service
@@ -119,9 +125,3 @@ white_october_pagerfanta:
         out_of_range_page:        to_http_not_found
         not_valid_current_page:   to_http_not_found
 
-monolog:
-    channels: # you MUST also update api_config.yml if you change these
-        - "dp.tickets.filters.tengine.dbal.engine"
-        - "dp.tickets.filters.tengine.dbal.compiler"
-        - "dp.tickets.filters.tengine.php.engine"
-        - "dp.tickets.filters.tengine.php.compiler"

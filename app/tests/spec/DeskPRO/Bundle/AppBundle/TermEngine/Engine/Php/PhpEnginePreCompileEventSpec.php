@@ -33,7 +33,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php;
 
-use DeskPRO\Bundle\AppBundle\Entity\Filter;
+use DeskPRO\Bundle\AppBundle\Entity\FilterInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -44,7 +44,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent;
  */
 class PhpEnginePreCompileEventSpec extends ObjectBehavior
 {
-    function let(TermEngineContext $context, Filter $filter)
+    function let(TermEngineContext $context, FilterInterface $filter)
     {
         $this->beConstructedWith($context, $filter);
     }
@@ -54,7 +54,7 @@ class PhpEnginePreCompileEventSpec extends ObjectBehavior
         $this->shouldHaveType('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvent');
     }
 
-    function it_also_has_the_filter_being_evaluated(Filter $filter)
+    function it_also_has_the_filter_being_evaluated(FilterInterface $filter)
     {
         $this->getFilter()->shouldBe($filter);
     }

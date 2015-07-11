@@ -1,5 +1,10 @@
 services:
 
+    # Each kernel bundle will have their own specific security services dedicated to it
+    # these are some general security services that should be able to be used app-wide.
+    # For specific security implmentation details, see security.yml in the kernel bundles.
+    # PortalBundle/ApiBundle/etc.
+
     portal_permissions_manager:
         class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
         arguments:
@@ -16,78 +21,6 @@ services:
     portal_usergroup_decider:
         class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider
         arguments: [@doctrine.orm.default_entity_manager]
-
-    security.authentication.success_handler:
-            class:  DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationSuccessHandler
-            arguments:  [@security.http_utils, {}]
-            calls:
-                - [ setContainer, [ @service_container ] ]
-            tags:
-                - { name: 'monolog.logger', channel: 'security' }
-
-    security.authentication.logout_handler:
-            class:  DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler
-            arguments:
-                - @doctrine.orm.default_entity_manager
-
-    security.authentication.failure_handler:
-        class: DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationFailureHandler
-        arguments:
-          - @http_kernel
-          - @security.http_utils
-          - {}
-          - @logger
-          - @portal_mailer
-          - @doctrine.dbal.default_connection
-          - @person_repository
-        tags:
-            - { name: 'monolog.logger', channel: 'security' }
-
-    dp_security.form_login.provider:
-        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\DpFormLoginProvider
-        arguments:
-          - @dp_authentication_manager.user
-          - @dp_person_user_provider
-          - @session
-
-    dp_security.agent_impersonate.provider:
-        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\AgentImpersonateProvider
-        arguments:
-          - @dp_authentication_manager.user
-          - @dp_person_user_provider
-          - @session
-          - @doctrine.orm.default_entity_manager
-
-    dp_security.transfer_session.provider:
-        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\TransferSessionAuthProvider
-        arguments:
-          - @dp_authentication_manager.user
-          - @dp_person_user_provider
-          - @session
-          - @doctrine.orm.default_entity_manager
-
-    dp_security.form_login.listener:
-        class: DeskPRO\Bundle\AppBundle\Security\Firewall\DpAuthListener
-        parent: security.authentication.listener.abstract
-        abstract: true
-        calls:
-            - [ setContainer, [@service_container] ]
-
-    dp_security.transfer_session.listener:
-        class: DeskPRO\Bundle\AppBundle\Security\Firewall\DpTransferSessionAuthListener
-        parent: security.authentication.listener.abstract
-        abstract: true
-        calls:
-            - [ setContainer, [@service_container] ]
-
-    dp_security.sso_listener:
-        class: DeskPRO\Bundle\AppBundle\Security\EventListener\SsoListener
-        arguments:
-          - @security.authorization_checker
-          - @dp_authentication_manager.user
-          - @logger
-        tags:
-            - { name: kernel.event_subscriber }
 
     dp_person_user_provider:
         class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
@@ -117,55 +50,3 @@ services:
         factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService
         factory_method: create
         arguments: [@service_container]
-
-    dp_security.twig_extension:
-        class: DeskPRO\Bundle\AppBundle\Security\Twig\AuthTwigExtension
-        arguments: [@service_container]
-        tags:
-            - { name: twig.extension }
-
-    ###############
-    # VOTERS
-    ###############
-
-    use_section.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }
-
-    tickets.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }
-
-    profile.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ProfileVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }
-
-    content_subscriptions.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }
-
-    content_ratings.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }
-
-    content_comment.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }
-
-    content_access.voter:
-        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter
-        arguments: [@service_container]
-        tags:
-            - { name: security.voter }

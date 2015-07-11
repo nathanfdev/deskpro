@@ -12,7 +12,7 @@ use Behat\Behat\Tester\Exception\PendingException;
 use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
 use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
-use DpTests\TestBundle\UserDetailsRepo;
+use DpTestSrc\TestBundle\UserDetailsRepo;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
