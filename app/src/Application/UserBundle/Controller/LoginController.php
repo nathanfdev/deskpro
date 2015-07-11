@@ -467,6 +467,7 @@ HTML;
         $identity = $result->getIdentity();
 
         $person = $identity['person'];
+        $person->language = $this->container->getTranslator()->getLanguage();
 
         if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
             $this->session->set('account_disabled', $person->id);
