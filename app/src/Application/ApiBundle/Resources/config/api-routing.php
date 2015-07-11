@@ -5093,4 +5093,55 @@ $collection->create(
     )
 );
 
+
+##############################################################################################
+# Billing Fields
+##############################################################################################
+
+$collection->create('api_billing_fields_get', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'ApiBundle:BillingFields:getCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_billing_fields_create', array(
+    'path'       => '/billing_fields',
+    'controller' => 'ApiBundle:BillingFields:saveCustomField',
+    'defaults'   => array('id' => '0'),
+    'methods'    => array('PUT'),
+));
+
+$collection->create('api_billing_fields_save', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'ApiBundle:BillingFields:saveCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_billing_fields_delete', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'ApiBundle:BillingFields:deleteCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('DELETE'),
+));
+
+$collection->create('api_billing_fields', array(
+    'path'        => '/billing_fields',
+    'controller'  => 'ApiBundle:BillingFields:list',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_billing_fields_setenabled', array(
+    'path'        => '/billing_fields/set-enabled/{field_id}/{is_enabled}',
+    'controller'  => 'ApiBundle:BillingFields:toggleField',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_billing_fields_update_order', array(
+    'path'        => '/billing_fields/display-order',
+    'controller'  => 'ApiBundle:BillingFields:saveDisplayOrder',
+    'methods'     => array('POST'),
+));
+
 return $collection;
