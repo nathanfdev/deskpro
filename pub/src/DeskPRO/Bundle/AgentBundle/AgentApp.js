@@ -8,9 +8,9 @@ import thunkMiddleware from 'redux/lib/middleware/thunk';
 import promiseMiddleware from 'redux-promise';
 import { Provider } from 'redux/react';
 
-import * as stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Store/index";
+import * as stores from "DeskPRO/Bundle/AgentBundle/Modules/Application/Stores/index";
 
-import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Component/DpAppContainer";
+import DpAppContainer from "DeskPRO/Bundle/AgentBundle/Modules/Application/Components/DpAppContainer";
 
 export default class AgentApp {
   run() {

@@ -74,6 +74,7 @@ class MeController extends BaseController
         $me = new Me();
         $me->auth_method = $this->makeAuthMethodString($token);
         $me->person_id = $token->getUser()->getId();
+        $me->person = $person->toApiData(); //TODO
 
         if ($token instanceof AgentSessionSecurityToken) {
             $me->app_id = $token->getAppId();

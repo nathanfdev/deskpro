@@ -5,6 +5,6 @@ import UrlCorrector from "DeskPRO/Bundle/AppBundle/Http/UrlCorrector";
 const api = new DpApi($.ajax);
 api.enableJsonPayloads();
 api.addInterceptor(new UrlCorrector(window.DP_BASE_URL));
-api.addInterceptor(new UrlCorrector(window.DP_BASE_URL + '/api/v2', /^\/?DP_API\//));
+api.addInterceptor(new UrlCorrector(window.DP_BASE_URL + '/api/v2/', /^\/?DP_API\//));
 
 export default api;

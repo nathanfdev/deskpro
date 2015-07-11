@@ -6,22 +6,21 @@ import NavFrame from "./NavFrame";
 import ListFrame from "./ListFrame";
 import TabFrame from "./TabFrame";
 
-import * as AppActions from "../Action/AppActions";
+import * as AppActions from "../Actions/AppActions";
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'redux/react';
 
 @connect(state => ({
-  User: state.User
+  user: state.user
 }))
 export default class DpApp extends React.Component {
   render() {
+    const { user, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
-    const { User } = this.props.User;
 
-    return
-      <div className="dp-window">
-        <Header user={User} actions={actions} />
+    return <div className="dp-window">
+        <Header user={user} actions={actions} />
         <AppSwitcher />
         <NavFrame />
         <div className="dp-content-outer-frame">
