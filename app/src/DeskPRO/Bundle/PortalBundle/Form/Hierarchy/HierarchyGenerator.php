@@ -39,12 +39,14 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Component\Hierarchy\Formatter\FlatListFormatter;
 use DeskPRO\Component\Hierarchy\Formatter\ParentListFormatter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
 //
@@ -190,7 +192,15 @@ class HierarchyGenerator
         );
     }
 
-    public function generateTicketDepartmentsHierarchy(Person $person)
+    /**
+     * If you provide a $ticket, we ensure that the department of that ticket is always in the hierarchy
+     * regardless of that person's department permissions.
+     *
+     * @param Person $person
+     * @param Ticket $ticket
+     * @return mixed|null
+     */
+    public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
     {
         $department_data_service = $this->department_data_service;
 
@@ -198,25 +208,65 @@ class HierarchyGenerator
             array(
                 'generateTicketDepartmentsHierarchy',
                 $person,
+                $ticket
             ),
-            function () use ($department_data_service, $person) {
-                $departments = $department_data_service->getAuthorizedDepartmentsForPersonInPortal($person);
+            function () use ($department_data_service, $person, $ticket) {
+                $allowed_departments = $department_data_service->getTicketDepartmentsForPerson($person);
+                $allowed_departments = new ArrayCollection($allowed_departments); // for convenient methods
+                if ($ticket) {
+                    $ticket_department = $ticket->getDepartment();
+                    if (!$allowed_departments->contains($ticket_department)) {
+                        // the dep on the ticket is not allowed for this person, so we force it
+                        // to be allowed here...
+                        $allowed_departments->add($ticket_department);
+                    }
+                }
 
                 $root_nodes = array();
-                foreach ($departments as $department) {
-                    $root_nodes[] = new HierarchyNode($department, 0, HierarchyGenerator::reverseDisplayOrder($department->display_order));
+                /** @var \Application\DeskPRO\Entity\Department $department */
+                foreach ($allowed_departments as $department) {
+                    $found_root = null;
+                    if ($department->getParent()) {
+                        // go through all parents, add them to the "allowed" array so they are in our hierarchy.
+                        $parents = $department->getAllParents();
+                        foreach ($parents as $parent_dep) {
+                            if (!$allowed_departments->contains($parent_dep)) {
+                                $allowed_departments->add($parent_dep);
+                            }
+                            if (!$parent_dep->getParent()) {
+                                $found_root = $parent_dep;
+                            }
+                        }
+                    }
+
+                    if ($found_root) {
+                        // if we found a root, that means the dep has parents and we need to use it's root
+                        $department = $found_root;
+                    }
+
+                    $root_nodes[] = new HierarchyNode(
+                        $department,
+                        0,
+                        HierarchyGenerator::reverseDisplayOrder($department->display_order)
+                    );
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive) {
+                $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive,
+                    $allowed_departments) {
+                    /** @var \Application\DeskPRO\Entity\Department $child */
                     foreach ($dep->children as $child) {
+                        if (!$allowed_departments->contains($child)) {
+                            continue; // not allowed to use this dep.
+                        }
                         $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
 
+                /** @var \Application\DeskPRO\Entity\Department $root_node */
                 foreach ($hierarchy as $root_node) {
                     $recursive($root_node->getData(), $root_node, 1);
                 }

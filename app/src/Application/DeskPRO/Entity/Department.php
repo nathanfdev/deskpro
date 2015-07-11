@@ -215,6 +215,22 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
+     * An array of all parents in this tree.
+     *
+     * @return Department[]
+     */
+    public function getAllParents()
+    {
+        $parents = array();
+        $d = $this;
+        while ($d = $d->getParent()) {
+            $parents[] = $d;
+        }
+
+        return $parents;
+    }
+
+    /**
      * @return int
      */
     public function getParentId()
