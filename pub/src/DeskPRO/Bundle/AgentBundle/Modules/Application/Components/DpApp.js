@@ -24,17 +24,21 @@ export default class DpApp extends React.Component {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (<div className="dp-window">
-        <Header user={user} actions={actions} />
+        <Header user={user} />
+
         <AppSwitcher switchApp={actions.setActiveApp} activeAppId={dp_window.activeAppId} />
+
         <NavFrame activeAppId={dp_window.activeAppId}>
           <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsNavFrame /></AppFrameWrapper>
         </NavFrame>
+
         <div className="dp-content-outer-frame">
           <ListFrame>
             <AppFrameWrapper appId="tickets" activeAppId={dp_window.activeAppId}><TicketsListFrame /></AppFrameWrapper>
           </ListFrame>
           <TabFrame />
         </div>
+
       </div>);
   }
 }

@@ -156,6 +156,9 @@ function getWebpackConfig(isProd) {
       DeskPRO_PortalBundle: "./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle",
       DeskPRO_AgentBundle: [
         "./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"
+      ],
+      DeskPRO_AgentBundle_style: [
+        "./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss"
       ]
     },
     output: {
@@ -172,7 +175,9 @@ function getWebpackConfig(isProd) {
       loaders: [
         {
           test: /\.js$/,
-          exclude: /(node_modules|bower_components)/,
+          include: [
+            path.resolve(__dirname, "src/DeskPRO")
+          ],
           loader: "babel-loader?stage=0"
         },
         {
@@ -238,7 +243,7 @@ gulp.task('bundle:dev-server', ['clean:bundle'], function(callback) {
 
   var compiler = webpack(config);
   new WebpackDevServer(compiler, {
-    publicPath: "http://localhost:9666/pub/build/",
+    publicPath: config.output.publicPath,
     hot: true,
     historyApiFallback: true,
     stats: {

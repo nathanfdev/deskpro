@@ -1,5 +1,3 @@
-require("DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss");
-
 import "babel/polyfill";
 import $ from "jquery";
 import React from 'react';
