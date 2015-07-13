@@ -3,8 +3,9 @@ import { createAction } from "redux-actions";
 import DpApi from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
 import ActionTypes from "./ActionTypes";
 
-export const setAppUser  = createAction(ActionTypes.APP_SET_USER);
-export const setIsLoaded = createAction(ActionTypes.APP_IS_LOADED);
+export const setAppUser   = createAction(ActionTypes.APP_SET_USER);
+export const setIsLoaded  = createAction(ActionTypes.APP_IS_LOADED);
+export const setActiveApp = createAction(ActionTypes.SET_ACTIVE_APP);
 
 export const loadWindow = () => {
 	return dispatch => {

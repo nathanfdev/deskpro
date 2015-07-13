@@ -176,7 +176,7 @@ function getWebpackConfig(isProd) {
           loader: "babel-loader?stage=0"
         },
         {
-          test: /\.(png|gif|jpg|jpeg)$/,
+          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
           loader: "file-loader?context=src&name=[path][name].[ext]"
         },
         {

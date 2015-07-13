@@ -4,4 +4,5 @@ export default keyMirror({
 	APP_LOAD_WINDOW: null,
 	APP_SET_USER:    null,
 	APP_IS_LOADED:   null,
+	SET_ACTIVE_APP:  null,
 });
