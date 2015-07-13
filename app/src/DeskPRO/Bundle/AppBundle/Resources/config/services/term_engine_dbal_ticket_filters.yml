@@ -194,6 +194,14 @@ services:
             ticket_filter:
                 name: dbal_ticket_filter_compiler
                 term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply\TicketDateLastAgentReplyTerm'
+    
+    term_engine.dbal_ticket_filters.compiler.ticket_date_first_agent_reply:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply\DbalTicketDateFirstAgentReplyTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply\TicketDateFirstAgentReplyTerm'
 
     #
     # VISITORS

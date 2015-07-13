@@ -173,6 +173,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReplyTerm\TicketDateLastAgentReplyTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_date_first_agent_reply:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply\PhpTicketDateFirstAgentReplyTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReplyTerm\TicketDateFirstAgentReplyTerm'
 
     #
     # VISITORS
