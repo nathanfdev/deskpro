@@ -31,28 +31,79 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply\TicketDateFirstAgentReplyTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-class PhpTicketDateFirstAgentReplyTermCompiler extends AbstractPhpTermCompiler
+class PhpDateHelper extends AbstractPhpHelper
 {
+
     /**
-     * Take a term and return a PhpCheck representing the term's query conditions.
+     * An identifier for this helper
      *
-     * @param TermInterface $term
-     * @return PhpCheck
+     * @return string
      */
-    protected function doCompile(TermInterface $term)
+    public function getId()
     {
-        return $this->getDateHelper()->buildQueryPart(
-            'ticket.date_first_agent_reply',
-            $term->getOp(),
-            $term->getOption('date'),
-            $term->getOption('date2')
+        return 'date';
+    }
+
+
+    public function buildQueryPart($field_name, $op, \DateTime $date1, \DateTime $date2 = null, $ignore_time = false)
+    {
+        $expression = '';
+        if (TermInterface::OP_RANGE == $op) {
+            $expression = sprintf(
+                '%s >= :date1 and %s <= :date2',
+                $field_name,
+                $field_name
+            );
+        } elseif (TermInterface::OP_NOT_RANGE == $op) {
+            $expression = sprintf(
+                '%s < :date1 or %s > :date2',
+                $field_name,
+                $field_name
+            );
+        } else {
+            $expression_op = '==';
+            switch($op) {
+                case TermInterface::OP_IS:
+                    $expression_op = '==';
+                    break;
+                case TermInterface::OP_NOT:
+                    $expression_op = '!=';
+                    break;
+                case TermInterface::OP_GT:
+                    $expression_op = '>';
+                    break;
+                case TermInterface::OP_GTE:
+                    $expression_op = '>=';
+                    break;
+                case TermInterface::OP_LT:
+                    $expression_op = '<';
+                    break;
+                case TermInterface::OP_LTE:
+                    $expression_op = '<=';
+                    break;
+                default:
+                    throw new \Exception('Uknown operation: ' . $op);
+            }
+            
+            $expression = sprintf(
+                '%s %s :date1',
+                $field_name,
+                $expression_op
+            );
+        }
+            
+        return new PhpCheck(
+                $expression,
+            array(
+                'date1' => $date1,
+                'date2' => $date2
+            )
         );
     }
 }

@@ -48,59 +48,11 @@ class PhpTicketDateArchivedTermCompiler extends AbstractPhpTermCompiler
      */
     protected function doCompile(TermInterface $term)
     {
-        $op = $term->getOp();
-        $date1 = $term->getOption('date');
-        $date2 = $term->getOption('date2');
-        
-        if (TermInterface::OP_RANGE == $op) {
-            return new PhpCheck(
-                'ticket.date_archived >= :date1 and ticket.date_archived <= :date2',
-                array(
-                    'op' => $op,
-                    'date1' => $date1,
-                    'date2' => $date2
-                )
-            );
-        } elseif (TermInterface::OP_NOT_RANGE == $op) {
-            return new PhpCheck(
-                'ticket.date_archived < :date1 or ticket.date_archived > :date2',
-                array(
-                    'op' => $op,
-                    'date1' => $date1,
-                    'date2' => $date2
-                )
-            );
-        } else {
-            $real_op = '==';
-            switch($op) {
-                case TermInterface::OP_IS:
-                    $real_op = '==';
-                    break;
-                case TermInterface::OP_NOT:
-                    $real_op = '!=';
-                    break;
-                case TermInterface::OP_GT:
-                    $real_op = '>';
-                    break;
-                case TermInterface::OP_GTE:
-                    $real_op = '>=';
-                    break;
-                case TermInterface::OP_LT:
-                    $real_op = '<';
-                    break;
-                case TermInterface::OP_LTE:
-                    $real_op = '<=';
-                    break;
-                default:
-                    throw new \Exception('Uknown operation: ' . $op);
-            }
-            
-            return new PhpCheck(
-                'ticket.date_archived '. $real_op .' :date',
-                array(
-                    'date' => $date1
-                )
-            );
-        }
+        return $this->getDateHelper()->buildQueryPart(
+            'ticket.date_archived',
+            $term->getOp(),
+            $term->getOption('date'),
+            $term->getOption('date2')
+        );
     }
 }

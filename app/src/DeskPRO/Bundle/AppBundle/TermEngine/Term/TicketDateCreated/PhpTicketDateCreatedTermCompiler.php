@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -31,61 +31,28 @@
  * @package DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
-abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
+class PhpTicketDateCreatedTermCompiler extends AbstractPhpTermCompiler
 {
     /**
-     * Must return a PhpCheck
+     * Take a term and return a PhpCheck representing the term's query conditions.
      *
      * @param TermInterface $term
      * @return PhpCheck
      */
-    public function compile(TermInterface $term)
+    protected function doCompile(TermInterface $term)
     {
-        $check = parent::compile($term);
-
-        $this->logCheck($check);
-
-        return $check;
-    }
-
-    public function logCheck(PhpCheck $check)
-    {
-        $this->logDebug(
-            'Constructed PhpCheck',
-            array(
-                'expression' => $check->getExpression(),
-                'vars' => $check->getVariables()
-            )
+        return $this->getDateHelper()->buildQueryPart(
+            'ticket.date_created',
+            $term->getOp(),
+            $term->getOption('date'),
+            $term->getOption('date2')
         );
-    }
-
-    /**
-     * @return MethodCheckHelper
-     */
-    public function getMethodCheckHelper()
-    {
-        return $this->helper_pool->getHelper('method_check');
-    }
-    
-    /**
-     * @return PhpDateHelper
-     */
-    public function getDateHelper()
-    {
-        return $this->helper_pool->getHelper('date');
-    }
-
-    public function turnArrayIntoPhpArrayString(array $values = array())
-    {
-        return 'array(' . implode(',', $values) . ')';
     }
 }

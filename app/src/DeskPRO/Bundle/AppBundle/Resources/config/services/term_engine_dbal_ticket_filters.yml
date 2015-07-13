@@ -210,6 +210,14 @@ services:
             ticket_filter:
                 name: dbal_ticket_filter_compiler
                 term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRef\TicketRefTerm'
+    
+    term_engine.dbal_ticket_filters.compiler.ticket_creation_system:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem\DbalTicketCreationSystemTermCompiler
+        parent: term_engine.dbal_ticket_filters.term_compiler
+        tags:
+            ticket_filter:
+                name: dbal_ticket_filter_compiler
+                term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem\TicketCreationSystemTerm'
 
     #
     # VISITORS
@@ -242,9 +250,9 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
 
     term_engine.dbal.abstract_helper:
-            abstract: true
-            arguments:
-                - @monolog.logger.dp.tickets.filters.tengine.dbal.compiler
+        abstract: true
+        arguments:
+            - @monolog.logger.dp.tickets.filters.tengine.dbal.compiler
 
     term_engine.dbal.entity_helper:
         parent: term_engine.dbal.abstract_helper

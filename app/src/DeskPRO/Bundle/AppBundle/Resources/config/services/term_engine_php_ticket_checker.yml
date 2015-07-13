@@ -141,6 +141,14 @@ services:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentRepliesTerm\TicketNumAgentRepliesTerm'
     
+    term_engine.php_ticket_checker.compiler.ticket_date_created:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\PhpTicketDateCreatedTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm\TicketDateCreatedTerm'
+    
     term_engine.php_ticket_checker.compiler.ticket_date_resolved:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved\PhpTicketDateResolvedTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler
@@ -189,6 +197,14 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRefTerm\TicketRefTerm'
+    
+    term_engine.php_ticket_checker.compiler.ticket_creation_system:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem\PhpTicketCreationSystemTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystemTerm\TicketCreationSystemTerm'
 
     #
     # VISITORS
@@ -206,6 +222,12 @@ services:
     # HELPERS - inject these into your TermCompiler to help build DbalQueryPart's for you
     #
 
+    term_engine.php.abstract_helper:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\AbstractPhpHelper
+        abstract: true
+        arguments:
+            - @monolog.logger.dp.tickets.filters.tengine.php.compiler
+
     term_engine.php.helper_pool:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
 
@@ -213,3 +235,10 @@ services:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper
         tags:
             - { name: php_term_engine_helper }
+    
+    term_engine.php.date_helper:
+        parent: term_engine.php.abstract_helper
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpDateHelper
+        tags:
+            - { name: php_term_engine_helper }
+    
